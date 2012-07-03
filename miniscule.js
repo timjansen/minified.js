@@ -1,6 +1,9 @@
+// ==ClosureCompiler==
+// @output_file_name miniscule-minified.js
+// @compilation_level ADVANCED_OPTIMIZATIONS
+// ==/ClosureCompiler==
 
-window['MINI'] = {};
-(function(MINI) {
+window['MINI'] = (function(MINI) {
     //// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  	function throwError(num) {
@@ -17,7 +20,7 @@ window['MINI'] = {};
 				list.splice(i--, 1);
     }
 	
-	var substring = 'substring', animate='animate', addEventName = 'addEvent', getPageCoordinates = 'getPageCoordinates';
+	var substring = 'substring';
 	var backslashB = '\\b';
 
 	// helper for set and get
@@ -114,21 +117,18 @@ window['MINI'] = {};
 	
 
 	function filterElements(parent, elementName, className) { 
-		var getElementsBy = 'getElementsBy';
-		var getElementsByTagName = getElementsBy+'TagName';
-		var getElementsByClassName = getElementsBy+'ClassName'; 
 		var elements, regexpFilter, prop;
-		parent = parent ? EL(parent) : document[getElementsByTagName]('html')[0];
+		parent = parent ? EL(parent) : document.getElementsByTagName('html')[0];
 		if (!parent) // if parent not found by EL
 			return []; 
 	
-		if (className && parent[getElementsByClassName]) { // not all browsers support getElementsByClassName
-			elements = parent[getElementsByClassName](className); 
+		if (className && parent.getElementsByClassName) { // not all browsers support getElementsByClassName
+			elements = parent.getElementsByClassName(className); 
 			 regexpFilter = elementName;
 			prop = 'nodeName';
 		} 
 		else { // also fallback for getElementsByClassName (slow!)
-			elements = parent[getElementsByTagName]( elementName || '*' ); 
+			elements = parent.getElementsByTagName(elementName || '*'); 
 			regexpFilter = className;
 			prop = 'className';
 		}
@@ -200,7 +200,7 @@ window['MINI'] = {};
 		 * @syntax remove()
 		 * Removes all nodes of the list from the DOM tree.
 		 */
-		list.remove = function() {
+		list['remove'] = function() {
 			removeList(this);
 		};
 		/**
@@ -212,7 +212,7 @@ window['MINI'] = {};
 		 * Removes all child nodes from the list's elements, but does not remove the list nodes themselves.
 		 * @return the list
 		 */
-		list.removeChildren = function() {
+		list['removeChildren'] = function() {
 			for (var i = list.length-1; i >= 0; i--) // go backward
 				removeList(list[i].childNodes);
 			return this;
@@ -228,7 +228,7 @@ window['MINI'] = {};
 		 * of the nodes in this list.
 		 * @return the list
 		 */
-		list.set = function(name, value) {
+		list['set'] = function(name, value) {
 			return set(list, name, value);
 		};
 		
@@ -244,8 +244,8 @@ window['MINI'] = {};
 		 * Convenience function that invokes MINI.animate() with the list as first argument, to animate the nodes of this list.
 		 * @return the list
 		 */
-		list[animate] = function (properties, duration, makeLinear, callback) {
-			return MINI[animate](list, properties, duration, makeLinear, callback);
+		list['animate'] = function (properties, duration, makeLinear, callback) {
+			return MINI['animate'](list, properties, duration, makeLinear, callback);
 		};
 		/**
 		 * @id listaddevent
@@ -257,7 +257,7 @@ window['MINI'] = {};
 		 * all nodes of this list.
 		 * @return the list
 		 */
-		list[addEventName] = function (name, handler) {
+		list['addEvent'] = function (name, handler) {
 			return MINI[addEventName](list, name, handler);
 		};
 	    /**
@@ -269,8 +269,8 @@ window['MINI'] = {};
 	     * Returns the page coordinates of the list's first element.
 	     * @return an object containing pixel coordinates in two properties 'left' and 'top', or null if no element
 	     */
-	    list[getPageCoordinates] = function() {
-	    	return MINI[getPageCoordinates](list[0]);
+	    list['getPageCoordinates'] = function() {
+	    	return MINI['getPageCoordinates'](list[0]);
 	    };
 	    
 	    /**
@@ -283,7 +283,7 @@ window['MINI'] = {};
 	     * @param className the name to find 
 	     * @return the first element found with the class name, or null if not found
 	     */
-	    list.hasClass = function(className) {
+	    list['hasClass'] = function(className) {
 	        var reg = createClassNameRegExp(className); 
 	        for (var i = 0; i < list.length; i++)
 	        	if (reg.test(list[i].className||''))
@@ -300,7 +300,7 @@ window['MINI'] = {};
 	     * Removes the given class from all elements of the list.
 	     * @param className the name to remove
 	     */
-	    list.removeClass = function(className) {
+	    list['removeClass'] = function(className) {
 	        var reg = createClassNameRegExp(className); 
 	        for (var i = 0; i < list.length; i++)
 	            list[i].className = list[i].className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/, ' ');
@@ -316,7 +316,7 @@ window['MINI'] = {};
 	     * Adds the given class name to all elements to the list.
 	     * @param className the name to add
 	     */
-	    list.addClass = function(className) {
+	    list['addClass'] = function(className) {
 	        list.removeClass(className);
 	        for (var i = 0; i < list.length; i++)
 	            if (list[i].className)
@@ -335,7 +335,7 @@ window['MINI'] = {};
 	     * Checks for all elements of the list whether they have the given class. If yes, it will be removed. Otherwise it will be added.
 	     * @param className the name to toggle
 	     */
-	    list.toggleClass = function(className) {
+	    list['toggleClass'] = function(className) {
 	        var reg = createClassNameRegExp(className); 
 	        for (var i = 0; i < list.length; i++) {
 	            var li = list[i];
@@ -855,7 +855,7 @@ window['MINI'] = {};
      * @param handler the function to invoke when the event has been triggered. The handler gets an event object as
      *                parameter (except 'domready' which has no argument).
      */
-    var addEvent = MINI[addEventName] = function(el, name, handler) {
+    var addEvent = MINI['addEvent'] = function(el, name, handler) {
     	if (isList(el)) {
     		for (var i = 0; i < el.length; i++)
     			addEvent(el[i], name, handler);
@@ -1156,7 +1156,7 @@ window['MINI'] = {};
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0.
 	 * @param callback optional if given, this function will be invoked without parameters when the animation finished
 	 */
-	MINI[animate] = function(list, properties, durationMs, linearity, callback) {
+	MINI['animate'] = function(list, properties, durationMs, linearity, callback) {
 		durationMs = durationMs || 500;
 		linearity = Math.max(0, Math.min(1, linearity || 0));
 		var initState = []; // for each item contains property name -> startValue
@@ -1200,7 +1200,7 @@ window['MINI'] = {};
 	 @stop animate
 	 */
 
-})(window['MINI']);
+})({});
 
 /**
  * @id toplevelel
@@ -1212,7 +1212,7 @@ window['MINI'] = {};
  * @param selector the selector (see MINI.el())
  * @return the result element (see MINI.el())
  */
-EL = MINI.el;
+window['EL'] = MINI['el'];
 /**
  * @id topleveldollar
  * @module 1
@@ -1223,7 +1223,7 @@ EL = MINI.el;
  * @param selector the selector (see MINI.$())
  * @return the result list (see MINI.$())
  */
-$ = MINI.$;
+window['$'] = MINI['$'];
 /**
  @stop topleveldollar
  */
