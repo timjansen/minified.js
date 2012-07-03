@@ -1,0 +1,28 @@
+<html>
+	<head><title>Miniscule Animation</title>
+	
+	<script type="text/javascript" src="../miniscule.js"></script>
+	<script type="text/javascript">
+	var POSITIONS = [{$top: '10px', $left: '10px'}, {$top: '10px', $left: '280px'}, {$top: '280px', $left: '280px'}, {$top: '280px', $left: '10px'}];
+	var BOXES = [{id: '#box1', pos: 0}, {id: '#box2', pos: 2}];
+	
+	MINI.ready(function() {
+		$('#moveButton').addEvent('click', function() {
+			EL('#moveButton').disabled = true;
+			for (var i = 0; i < BOXES.length; i++) 
+				$(BOXES[i].id).animate(POSITIONS[(++BOXES[i].pos)%POSITIONS.length], parseFloat(EL('#durationField').value), parseFloat(EL('#linearityField').value), function() {EL('#moveButton').disabled = false;});
+		});
+	});
+	</script>
+	
+	</head>
+	<body>
+		Duration (ms): <input id='durationField' value='1500'/><br/>
+		Smoothness (0=very smooth, 1=linear): <input id='linearityField' value='0.25'/><br/>
+		<button id="moveButton">Move!</button>
+		<div style="margin-top: 2em; border: 1px solid black; position: relative; width: 400px; height: 400px;">
+			<div id="box1" style="background-color: red; position: absolute; top: 10px; left: 10px; width: 100px; height: 100px;"></div>
+			<div id="box2" style="background-color: green; position: absolute; top: 280px; left: 280px; width: 100px; height: 100px;"></div>
+		</div>
+	</body>
+</html>
