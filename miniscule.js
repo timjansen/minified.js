@@ -258,7 +258,7 @@ window['MINI'] = (function(MINI) {
 		 * @return the list
 		 */
 		list['addEvent'] = function (name, handler) {
-			return MINI[addEventName](list, name, handler);
+			return MINI['addEvent'](list, name, handler);
 		};
 	    /**
 		 * @id listgetpagecoordinates
@@ -1199,7 +1199,7 @@ window['MINI'] = (function(MINI) {
 	/**
 	 @stop animate
 	 */
-
+	return MINI;
 })({});
 
 /**
