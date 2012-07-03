@@ -1,0 +1,41 @@
+<html>
+	<head><title>Miniscule Element Example</title>
+	
+	<style type="text/css">
+		body {font-family: sans-serif;}
+	</style> 
+	
+	<script type="text/javascript" src="../miniscule.js"></script>
+	<script type="text/javascript">
+
+	MINI.ready(function() {
+		$('#changeButton').addEvent('click', function() {
+			var boxStyle = EL('#boxSelect').value;
+			var textStyle = EL('#textSelect').value;
+			var text = EL('#text').value;
+			
+			var innerElem;
+			if (textStyle == 'none')
+				innerElem = MINI.text(text);
+			else if (textStyle == 'bold')
+				innerElem = MINI.element('b', null, text);
+			else // small
+				innerElem = MINI.element('span', {style: 'font-size: x-small;'}, text);
+				
+			MINI.element('div', {style: 'border: '+boxStyle+'; margin: 6px; padding: 3px;'}, innerElem, '#container');
+		});
+	});
+	</script>
+
+	</head>
+	<body>
+		Box Style: <select id="boxSelect"><option>2px solid black</option><option>1px solid black</option><option>2px solid red</option>
+		<option>2px dotted black</option><option>0</option></select>
+		Text Style: <select id="textSelect"><option>none</option><option>bold</option><option>small</option></select>
+		Text: <input id="text" value="Your text here..."/> 
+		<button id="changeButton">Change!</button>
+		
+		<div id='container' style="margin-top: 1em; border: 2px solid black; width: 600px; height: 300px; overflow: auto;">
+		</div>
+	</body>
+</html>
