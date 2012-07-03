@@ -26,7 +26,7 @@ window['MINI'] = (function(MINI) {
 	// helper for set and get
 	function getNameComponents(name) {
 		if (/^\$/.test(name))
-			name = name.replace(/^\$/, 'style.').replace(/([a-z])_/, '\\1-');
+			name = name.replace(/^\$/, 'style.').replace(/([a-z])_/, '$1-');
 		return name.split('.');
 	}
 
@@ -37,11 +37,11 @@ window['MINI'] = (function(MINI) {
 	 * @public yes
 	 * @syntax MINI.set(obj, name, value)
 	 * @syntax MINI.set(obj, properties)
-	 * Modifies an object, DOM element or a list of them by setting their properties and/or attributes.
+	 * Modifies an object, DOM element or a list of objects/elements by setting their properties and/or attributes.
 	 * @param obj either an object, a DOM element or a list of them, specifying the objects to modify (does NOT support MINI.$ syntax)
 	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
 	 *                     If it contains one or more dots ('.'), the function will traverse the properties of those names.
-	 *                     A hash ('#') prefix is a shortcut for 'style.' and will also replace all '_' with '-'.
+	 *                     A hash ('#') prefix is a shortcut for 'style.' and will also replace all '_' with '-' in the name.
 	 * @param value the value to set
 	 * @param properties a map containing names as keys and the values to set as map values
 	 * @return the obj given as first argument
@@ -176,7 +176,7 @@ window['MINI'] = (function(MINI) {
 		if (dotPos < 0) 
 		    return filterElements(parent, mainSelector); 
 		else if (dotPos) 
-		    return filterElements(parent, null, mainSelector[substring](0, dotPos), mainSelector[substring](dotPos+1)); 
+		    return filterElements(parent, mainSelector[substring](0, dotPos), mainSelector[substring](dotPos+1)); 
 		else 
 		    return filterElements(parent, null, mainSelector[substring](1)); 
 	}; 
@@ -397,7 +397,7 @@ window['MINI'] = (function(MINI) {
 	 *             'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
 	 *             You can also separate two selectors by space to find all descendants of the first selector's first match that also match
 	 *             the second selector.
-     *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
+	 *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
 	 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
 	 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
 	 *             You can also use a DOM node as selector, it will be returned as a single-element list.  
