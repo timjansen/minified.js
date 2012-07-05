@@ -1,5 +1,5 @@
 // ==ClosureCompiler==
-// @output_file_name miniscule-minified.js
+// @output_file_name minified.js
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
@@ -264,6 +264,10 @@ window['MINI'] = (function() {
 	        return null;
 	    };
 
+		function removeClassRegExp(el, reg) {
+			el.className = el.className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/, ' ');
+		}
+
 	    /**
 	     * @id listremoveclass
 	     * @module 1
@@ -276,7 +280,7 @@ window['MINI'] = (function() {
 	    list['removeClass'] = function(className) {
 	        var reg = createClassNameRegExp(className); 
 	        for (var i = 0; i < list.length; i++)
-	            list[i].className = list[i].className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/, ' ');
+	            removeClassRegExp(list[i], reg);
 			return list;
 	    };
 
@@ -313,6 +317,8 @@ window['MINI'] = (function() {
 	        for (var i = 0; i < list.length; i++) {
 	            var li = list[i];
 	            if (li.className && reg.test(li.className))
+	                removeClassRegExp(li, reg);
+	            else if (li.className)
 	                li.className += ' ' + className;
 	            else
 	                li.className = className;
@@ -353,6 +359,10 @@ window['MINI'] = (function() {
 	 * @function listset
 	 * @function listanimate
 	 * @function listaddevent
+	 * @function listhasclass
+	 * @function listaddclass
+	 * @function listremoveclass
+	 * @function listtoggleclass
 	 */
 	function $(selector) { 
 		return addElementListFuncs(dollarUnfiltered(selector));
@@ -384,8 +394,35 @@ window['MINI'] = (function() {
 		return dollarUnfiltered(selector)[0];
 	}
 	MINI['el'] = EL;
+	
+	/**
+	 * @id filter
+	 * @module 1
+	 * @requires 
+	 * @public yes
+	 * @syntax MINI.filter(parent, elementName, className)
+	 * Returns a list of all elements with the given parent, element name and/or class name.
+	 * @param parent optional the root node to search in. If null, the top-level &lt;html> element will be chosen
+	 * @param elementName optional the name of the elements to return, or null for all element names
+	 * @param className optional if given, only elements with that class name will be returned
+	 * @return the array-like object containing the content specified by the filter parameters. The array has several
+	 *         convenience methods listed below:
+	 * @function listremove
+	 * @function listremovechildren
+	 * @function listset
+	 * @function listanimate
+	 * @function listaddevent
+	 * @function listhasclass
+	 * @function listaddclass
+	 * @function listremoveclass
+	 * @function listtoggleclass
+	 */
+    function filter(parent, elementName, className) {
+    	return addElementListFuncs(filterElements(parent, elementName, className));
+	}
+	MINI['filter'] = filter;
    /**
-     * @stop el
+     * @stop
      */
 		
 	//// 2. ELEMENT MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -507,7 +544,7 @@ window['MINI'] = (function() {
 		return node;
 	}
     /**
-     * @stop text
+     * @stop
      */
     
 
@@ -622,7 +659,7 @@ window['MINI'] = (function() {
 		}
 	};
 	/**
-	 * @stop request
+	 * @stop
 	 */  
 	
 	
@@ -735,7 +772,7 @@ window['MINI'] = (function() {
         throwError(2);
     };
     /**
-	 * @stop parsejson
+	 * @stop
 	 */  
     
     
@@ -769,11 +806,11 @@ window['MINI'] = (function() {
     }
     
     // gets the DOM event object and creates MINI's
-    function getEventObject(eventArg) {
+    function getEventObject(eventArg, src) {
     	var e = eventArg || window.event;
      	var nev = { 
     			original: e, 
-    			src: this,
+    			src: src,
     			keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
     			button: e.which || e.button,
     			rightClick: e.which ? (e.which == 3) : (e.button ? (e.button == 2) : false),
@@ -824,17 +861,18 @@ window['MINI'] = (function() {
      * </ul>
      * If the handler returns 'false', the event will not be propagated to other handlers.
      * 
-     * @param el one or more elements
+     * @param el optional one or more elements (as list or HTML element), or null for window.
      * @param name the name of the event. Case-insensitive. The 'on' prefix in front of the name is not needed (but would be understood),
      *             so write 'click' instead of 'onclick'.
      * @param handler the function to invoke when the event has been triggered. The handler gets an event object as
      *                parameter (except 'domready' which has no argument).
+     * @return the value given as el (window if null)
      */
     function addEvent(el, name, handler) {
     	if (isList(el)) {
     		for (var i = 0; i < el.length; i++)
     			addEvent(el[i], name, handler);
-    		return;
+    		return el;
     	}
     	el = el || window;
 
@@ -845,7 +883,7 @@ window['MINI'] = (function() {
 				setTimeout(handler, 0);
 			else
     			DOMREADY_HANDLER.push(handler);
-    		return;
+    		return el;
     	}
     	
     	var nameUC = name.toUpperCase();
@@ -861,11 +899,9 @@ window['MINI'] = (function() {
 	    		if (oldHandler)
 	    			oldHandler(e);
 	
-	    		var len = handlerList.length;
-	    		
-	    		var evObj = getEventObject(e);
+	    		var evObj = getEventObject(e, this);
 	    		var keepBubbling = true;
-	    		for (var i = 0; i < len; i++) {
+	    		for (var i = 0; i < handlerList.length; i++) {
 	    			var r = handlerList[i](evObj);
 	    			if (r != null)
 	    				keepBubbling = keepBubbling && r;
@@ -884,10 +920,11 @@ window['MINI'] = (function() {
 	    	if (el.captureEvents) 
 	    		el.captureEvents(Event[nameUC]);
 	    }
+	    return el;
     }
     MINI['addEvent'] = addEvent;
 	/**
-	 * @stop addevent
+	 * @stop
 	 */  
 		
     
@@ -938,7 +975,7 @@ window['MINI'] = (function() {
     };
     
     /**
-     * @stop ready
+     * @stop
      */
     
     
@@ -961,7 +998,7 @@ window['MINI'] = (function() {
      *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax.
      * @param value the value of the cookie. All characters except alphanumeric and "*@-_+./" will be escaped using the 
      *              JavaScript escape() function and thus can be used, unless you set the optional dontEscape parameter.
-     * @param dateOfDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
+     * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
      *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
      *                   browser has been closes.
      * @param path optional if set, the cookie will be restricted to documents in the given certain path. Otherwise it is valid
@@ -1014,7 +1051,7 @@ window['MINI'] = (function() {
     };
  
  	/**
- 	 * @stop deletecookie
+ 	 * @stop
  	 */
  
     //// 7. POSITION MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1054,7 +1091,7 @@ window['MINI'] = (function() {
     };
     
    	/**
- 	 * @stop getpagecoordinates
+ 	 * @stop
  	 */
     
     //// 8. ANIMATION MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1112,7 +1149,7 @@ window['MINI'] = (function() {
     MINI['runAnimation'] = runAnimation;
     
 	/**
-	 @stop runanimation
+	 @stop
 	 */
 	var REMOVE_UNIT = /[^0-9]+$/;
 
@@ -1175,7 +1212,7 @@ window['MINI'] = (function() {
 		});
 	}; 
 	/**
-	 @stop animate
+	 @stop
 	 */
 	return MINI;
 })();
@@ -1203,6 +1240,6 @@ window['EL'] = MINI['el'];
  */
 window['$'] = MINI['$'];
 /**
- @stop topleveldollar
+ * @stop 
  */
 

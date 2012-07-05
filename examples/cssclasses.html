@@ -1,0 +1,58 @@
+<html>
+	<head><title>Minified.js Selector Example</title>
+	
+	<style type="text/css">
+		body {font-family: sans-serif;}
+		#container { font-family: monospace; font-size: smaller; }
+		#container div { border: 2px solid black; margin: 12px; padding: 4px; }
+		#container p { margin: 0; padding: 2px; }
+		
+		.dotted { border: 3px dotted black !important; }
+		.red { background-color: red; }
+		.large: {font-size: large;}
+	</style> 
+	
+	<script type="text/javascript" src="../minified-src.js"></script>
+	<script type="text/javascript">
+
+	MINI.ready(function() {
+		$('.styleCheckbox').addEvent('change', function(e) {
+			var className = {dottedCheckbox:'dotted', redCheckbox: 'red', largeCheckbox: 'large'}[e.src.id];
+console.log(e.src, e.src.id);
+			$(EL('#selector').value).toggleClass(className);
+			
+			var allDivs = $('#container div');
+			for (var i = 0; i < allDivs.length; i++)
+				MINI.filter(allDivs[i], 'span').set('innerText', allDivs[i].className);
+		});
+		
+		$('#styleCheckbox').addEvent('change', function(e) {
+			$('dottedCheckbox').selected = $(EL('#selector').value).hasClass('dotted');
+			$('redCheckbox').selected = $(EL('#selector').value).hasClass('red');
+			$('largeCheckbox').selected = $(EL('#selector').value).hasClass('large');
+		});
+	});
+	</script>
+
+	</head>
+	<body>
+		Selector: <select id="selector"><option>#a</option><option>#b</option><option>#b</option><option value="#container div">all</option></select>
+		<input type="checkbox" class="styleCheckbox" id="dottedCheckbox"><label for="dottedCheckbox">Dotted Border</label>
+		<input type="checkbox" class="styleCheckbox" id="redCheckbox"><label for="redCheckbox">Red Background</label>
+		<input type="checkbox" class="styleCheckbox" id="largeCheckbox"><label for="largeCheckbox">Large Font</label>
+		
+		<div id="container">
+			<div id="a">
+				<p>&lt;div id="a" class="<span></span>"/></p>
+			</div>
+
+			<div id="b">
+				<p>&lt;div id="b" class="<span></span>"/></p>
+			</div>
+
+			<div id="c">
+				<p>&lt;div id="c" class="<span></span>"/></p>
+			</div>
+		</div>
+	</body>
+</html>
