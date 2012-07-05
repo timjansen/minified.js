@@ -3,7 +3,9 @@
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
-window['MINI'] = (function(MINI) {
+window['MINI'] = (function() {
+	var MINI = {};
+	
     //// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  	function throwError(num) {
@@ -31,8 +33,30 @@ window['MINI'] = (function(MINI) {
 	}
 
 	/**
+	 * @stop set
+	 */    
+
+	function checkType(value, type) {
+		return value && Object.prototype.toString.call(value) == '[object '+type+']'
+	}
+	
+    function isArray(value) {
+        return checkType(value, 'Array');
+    };
+
+	function isList(value) {
+		return isArray(value) || checkType(value, 'NodeList');
+	}
+	 
+    function now() {
+    	return new Date().getTime();
+    }
+    
+    //// 1. SELECTOR MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
 	 * @id set
-	 * @module 0
+	 * @module 1
 	 * @requires 
 	 * @public yes
 	 * @syntax MINI.set(obj, name, value)
@@ -64,57 +88,6 @@ window['MINI'] = (function(MINI) {
 		}
 		return obj;
 	};
-
-	/**
-	 * @stop set
-	 */    
-
-	function checkType(value, type) {
-		return value && Object.prototype.toString.call(value) == '[object '+type+']'
-	}
-	
-	function isList(value) {
-		return isArray(value) || checkType(value, 'NodeList');
-	}
-	
-    /**
-     * @id isarray
-     * @module 0
-     * @requires
-     * @public yes
-     * @syntax MINI.isArray(value)
-     * Checks whether the given value is an array.
-     * @param value the object to test. May be null.
-     * @return true only if the given object is an array
-     */
-    var isArray = MINI['isArray'] = function(value) {
-        return checkType(value, 'Array');
-    };
-    /**
-     * @id isfunction
-     * @module 0
-     * @requires
-     * @public yes
-     * @syntax MINI.isFunction(value)
-     * Checks whether the given value is a function.
-     * @param value the object to test. May be null.
-     * @return true only if the given object is a function
-     */
-    var isFunction = MINI['isFunction'] = function(value) {
-        return checkType(value, 'Function');
-    }
-	/**
-	 * @stop isfunction
-	 */  
-	 
-	 
-	 
-    function now() {
-    	return new Date().getTime();
-    }
-    
-    //// 1. SELECTOR MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 
 	function filterElements(parent, elementName, className) { 
 		var elements, regexpFilter, prop;
@@ -381,9 +354,10 @@ window['MINI'] = (function(MINI) {
 	 * @function listanimate
 	 * @function listaddevent
 	 */
-	var $ = MINI['$'] = function(selector) { 
+	function $(selector) { 
 		return addElementListFuncs(dollarUnfiltered(selector));
 	}
+	MINI['$'] = $;
 
     /**
 	 * @id el
@@ -404,11 +378,12 @@ window['MINI'] = (function(MINI) {
 	 *             If you pass a list, the list will be returned.
 	 * @return a DOM object of the first match, or undefined
 	 */
-    var EL = MINI['el'] = function(selector) {
+    function EL(selector) {
     	if (selector && (selector.nodeType || selector === window))
     		return selector;
 		return dollarUnfiltered(selector)[0];
 	}
+	MINI['el'] = EL;
    /**
      * @stop el
      */
@@ -418,7 +393,7 @@ window['MINI'] = (function(MINI) {
 	/**
 	 * @id element
 	 * @module 2
-	 * @requires isarray el
+	 * @requires el
 	 * @public yes
 	 * @syntax MINI.element(name)
 	 * @syntax MINI.element(name, attributes)
@@ -680,7 +655,7 @@ window['MINI'] = (function(MINI) {
     /**
 	 * @id tojson
 	 * @module 4
-	 * @requires isarray
+	 * @requires 
 	 * @public yes
 	 * @syntax MINI.toJSON(value)
      * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, date, boolean or null.
@@ -855,7 +830,7 @@ window['MINI'] = (function(MINI) {
      * @param handler the function to invoke when the event has been triggered. The handler gets an event object as
      *                parameter (except 'domready' which has no argument).
      */
-    var addEvent = MINI['addEvent'] = function(el, name, handler) {
+    function addEvent(el, name, handler) {
     	if (isList(el)) {
     		for (var i = 0; i < el.length; i++)
     			addEvent(el[i], name, handler);
@@ -909,7 +884,8 @@ window['MINI'] = (function(MINI) {
 	    	if (el.captureEvents) 
 	    		el.captureEvents(Event[nameUC]);
 	    }
-    };
+    }
+    MINI['addEvent'] = addEvent;
 	/**
 	 * @stop addevent
 	 */  
@@ -997,11 +973,12 @@ window['MINI'] = (function(MINI) {
      *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
      *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
      */
-	var setCookie = MINI['setCookie'] = function(name, value, dateOrDays, path, domain, dontEscape) {
+	function setCookie(name, value, dateOrDays, path, domain, dontEscape) {
     	document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
     	    (dateOrDays ? ((dateOrDays instanceof Date) ? dateOrDays: new Date(now() + dateOrDays * 24 * 3600000)) : '') + 
     		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
-    };
+    }
+    MINI['setCookie'] = setCookie;
 
     /**
 	 * @id getcookie
@@ -1110,7 +1087,7 @@ window['MINI'] = (function(MINI) {
 	 * @param element optional if not null, the HTMLElement that contains the animation. Can be speficied in any way accepted by MINI.el.
 	 * @return a function that, when you invoke it, stops the currently running animation.
 	 */
-    var runAnimation = MINI['runAnimation'] = function(paintCallback, element) { 
+    function runAnimation(paintCallback, element) { 
         element = EL(element);
         var entry = {c: paintCallback, t: now()}; 
         var stopFunc = function() {
@@ -1132,6 +1109,7 @@ window['MINI'] = (function(MINI) {
         } 
         return stopFunc; 
     };
+    MINI['runAnimation'] = runAnimation;
     
 	/**
 	 @stop runanimation
@@ -1200,7 +1178,7 @@ window['MINI'] = (function(MINI) {
 	 @stop animate
 	 */
 	return MINI;
-})({});
+})();
 
 /**
  * @id toplevelel
