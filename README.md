@@ -5,15 +5,15 @@ Overview
 ----------
 minified.js is a universal javascript library for HTML applications. It should provide you with everything that you need to work 
 within the browser on an HTML page. While the purpose and scope of minified.js are comparable to jQuery and MooTools, its size is 
-smaller by an order of magnitude. The compressed (minified) size is only 8.7kb, and the gzip'd size is less than 3.8kb. 
+smaller by an order of magnitude. The compressed size is only 8.6kb, and the gzip'd size is less than 3.8kb. 
 You can make it even smaller when you don't require all modules of minified.js. Then the build tool will allow you to remove 
 everything that you don't need to reduce its size even more. 
 
 Size Comparison
 -----------------
 <table>
-<tr><th>Name</th><th>Source Code</th><th>Minified</th><th>Minified and Gzip'd</th></tr>
-<tr><td>minified.js</td><td></td><td>8.6kb</td><td>3.8kb</td></tr>
+<tr><th>Name</th><th>Source Code</th><th>Minified</th><th>Minified and GZip'd</th></tr>
+<tr><td>minified.js</td><td>47kb</td><td>8.6kb</td><td>3.8kb</td></tr>
 <tr><td>jQuery  1.7.2</td><td>274kb</td><td>93kb</td><td>33kb</td></tr>
 <tr><td>MooTools Core NoCompat 1.4.5</td><td>148kb</td><td>88kb</td><td>29kb</td></tr>
 </table>
@@ -59,7 +59,7 @@ This code needs to be parsed and executed on every page that you include them on
 and especially for what I need. And the 25-30kb size that they have after gzipping will can also cause a significant delay on low-bandwidth networks.
 
 In the last years I worked on some personal projects (<a href="http://jarfiller.org">jarfiller.org</a> is the only one that has been published), 
-and when I work on them, I usually strive for perfection. Every unneccessary kilobyte hurts.  So instead of using jQuery, I started writing my own 
+and when I work on them, I usually strive for perfection. Every unnecessary kilobyte hurts.  So instead of using jQuery, I started writing my own 
 little helper functions to replace jQuery functionality without the overhead. As I worked on several projects, I wrote more and more helper 
 functions and started sharing them between projects until they became a library of their own.  By now they are so mature that I believe that this 
 library, called minified.js, became a valid alternative to jQuery and MooTools at a fraction of the size.
