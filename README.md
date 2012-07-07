@@ -3,10 +3,12 @@ minified.js
 
 Overview
 ----------
-minified.js is a universal javascript library for HTML applications. It should provide you with everything that you need to work 
-within the browser on an HTML page. While the purpose and scope of minified.js are comparable to jQuery and MooTools, its size is 
+minified.js is a universal javascript library for HTML applications. It gives you a clean and simple API that provides you 
+with everything that you need to work interact with the browser on an HTML page. 
+
+While the purpose and scope of minified.js are comparable to jQuery and MooTools, its size is 
 smaller by an order of magnitude. The compressed size is only 8.6kb, and the gzip'd size is less than 3.8kb. 
-You can make it even smaller when you don't require all modules of minified.js. Then the build tool will allow you to remove 
+You can make it even smaller if you don't require all modules of minified.js. The build tool allows you to remove 
 everything that you don't need to reduce its size even more. 
 
 Size Comparison
@@ -47,7 +49,7 @@ What you can expect from minified.js
 -------------------------------------
 * General purpose functions to effectively write HTML-based web applications
 * A very small footprint. It will always be smaller than 4kb.
-* A clear, easy to use API 
+* A clean and simple, easy to use API 
 * A stable API that won't change
 
 
