@@ -2,7 +2,7 @@
 // @output_file_name minified.js
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
-
+ 
 window['MINI'] = (function() {
 	var MINI = {};
 	
@@ -214,11 +214,12 @@ window['MINI'] = (function() {
 		 * @syntax animate(properties, duration)
 		 * @syntax animate(properties, duration, makeLinear)
 		 * @syntax animate(properties, duration, makeLinear, callback)
+		 * @syntax animate(properties, duration, makeLinear, callback, delayMs)
 		 * Convenience function that invokes MINI.animate() with the list as first argument, to animate the nodes of this list.
 		 * @return the list
 		 */
-		list['animate'] = function (properties, duration, makeLinear, callback) {
-			return MINI['animate'](list, properties, duration, makeLinear, callback);
+		list['animate'] = function (properties, duration, makeLinear, callback, delayMs) {
+			return MINI['animate'](list, properties, duration, makeLinear, callback, delayMs);
 		};
 		/**
 		 * @id listaddevent
@@ -402,7 +403,7 @@ window['MINI'] = (function() {
 	 * @public yes
 	 * @syntax MINI.filter(parent, elementName, className)
 	 * Returns a list of all elements with the given parent, element name and/or class name.
-	 * @param parent optional the root node to search in. If null, the top-level &lt;html> element will be chosen
+	 * @param parent optional the root node to search in (MINI.EL selector allowed). If null, the top-level &lt;html> element will be chosen
 	 * @param elementName optional the name of the elements to return, or null for all element names
 	 * @param className optional if given, only elements with that class name will be returned
 	 * @return the array-like object containing the content specified by the filter parameters. The array has several
@@ -418,7 +419,7 @@ window['MINI'] = (function() {
 	 * @function listtoggleclass
 	 */
     function filter(parent, elementName, className) {
-    	return addElementListFuncs(filterElements(parent, elementName, className));
+    	return addElementListFuncs(filterElements(EL(parent), elementName, className));
 	}
 	MINI['filter'] = filter;
    /**
@@ -1170,8 +1171,13 @@ window['MINI'] = (function() {
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms;
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0.
 	 * @param callback optional if given, this function will be invoked without parameters when the animation finished
+	 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
 	 */
-	MINI['animate'] = function(list, properties, durationMs, linearity, callback) {
+	MINI['animate'] = function animate(list, properties, durationMs, linearity, callback, delayMs) {
+		if (delayMs) {
+				window.setTimeout(function(){animate(list, properties, durationMs, linearity, callback);}, delayMs);
+				return;
+		}
 		durationMs = durationMs || 500;
 		linearity = Math.max(0, Math.min(1, linearity || 0));
 		var initState = []; // for each item contains property name -> startValue
