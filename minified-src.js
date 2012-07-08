@@ -102,7 +102,6 @@ window['MINI'] = (function() {
 
     
     function dollarRaw(selector, context) { 
-console.log('dollarRaw', selector, context);
 		if (!selector) 
 		    return [];
 		var parent;
