@@ -54,39 +54,23 @@ window['MINI'] = (function() {
     
     //// 1. SELECTOR MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * @id set
-	 * @module 1
-	 * @requires 
-	 * @public yes
-	 * @syntax MINI.set(obj, name, value)
-	 * @syntax MINI.set(obj, properties)
-	 * Modifies an object, DOM element or a list of objects/elements by setting their properties and/or attributes.
-	 * @param obj either an object, a DOM element or a list of them, specifying the objects to modify (does NOT support MINI.$ syntax)
-	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
-	 *                     If it contains one or more dots ('.'), the function will traverse the properties of those names.
-	 *                     A hash ('#') prefix is a shortcut for 'style.' and will also replace all '_' with '-' in the name.
-	 * @param value the value to set
-	 * @param properties a map containing names as keys and the values to set as map values
-	 * @return the obj given as first argument
-	 */
-	var set = MINI['set'] = function(obj, name, value) {
-		if (isList(obj)) 
-			for (var i = obj.length-1; i >= 0; i--)
-				set(obj[i], name, value);
-		else if (typeof value == 'undefined')
-			for (var n in name) 
-				set(obj, n, name[n]);
+	function set(list, name, value, undef) {
+		if (value === undef)
+			for (var n in name) // property map given
+				set(list, n, name[n]);
 		else if (/^@/.test(name))
-			obj.setAttribute(name[substring](1), value);
+			for (var i = 0; i < list.length; i++)
+				list[i].setAttribute(name[substring](1), value);
 		else {
 			var components = getNameComponents(name);
-			var a = obj;
-			for (var j = 0; j < components.length-1; j++)
-				a = a[components[j]];
-			a[components[components.length-1]] = value;
+			for (var i = 0; i < list.length; i++) {
+				var a = list[i];
+				for (var j = 0; j < components.length-1; j++)
+					a = a[components[j]];
+				a[components[components.length-1]] = value;
+			}
 		}
-		return obj;
+		return list;
 	};
 
 	function findElements(parent, elementName, className) { 
@@ -123,13 +107,15 @@ window['MINI'] = (function() {
 			context = dollarRaw(context);
 			if (context.length > 1) {
 				var r = []; 
-				for (var i = 0; i < context.length; i++)
-					r.push(dollarRaw(selector, context[i]));
+				for (var i = 0; i < context.length; i++) {
+					var a = dollarRaw(selector, context[i]);
+					for (var j = 0; j < a.length; j++)
+						r.push(a[j]);
+				}
 				return r; 
 			}
 			parent = context[0]; 
 		}
-		
 		
 		function filterElements(list) {
 			if (!parent)
@@ -214,17 +200,22 @@ window['MINI'] = (function() {
 		list['removeChildren'] = function() {
 			for (var i = list.length-1; i >= 0; i--) // go backward
 				removeList(list[i].childNodes);
-			return this;
+			return list;
 		};
 		/**
-		 * @id listset
+		 * @id set
 		 * @module 1
-		 * @requires dollar set
-		 * @public no
-		 * @syntax set(name, value)
-		 * @syntax set(properties)
-		 * Convenience function that invokes MINI.set() with the list as first argument, in order to set properties and attributes
-		 * of the nodes in this list.
+		 * @requires 
+		 * @public yes
+		 * @syntax MINI.$(selector).set(name, value)
+		 * @syntax MINI.$(selector).set(properties)
+		 * @shortcut $(selector).set(obj, properties) - Enabled by default, unless disabled with "Disable $ and EL" option
+		 * Modifies the list's DOM elements or objects by setting their properties and/or attributes.
+		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
+		 *                     If it contains one or more dots ('.'), the function will traverse the properties of those names.
+		 *                     A hash ('#') prefix is a shortcut for 'style.' and will also replace all '_' with '-' in the name.
+		 * @param value the value to set
+		 * @param properties a map containing names as keys and the values to set as map values
 		 * @return the list
 		 */
 		list['set'] = function(name, value) {
@@ -233,44 +224,97 @@ window['MINI'] = (function() {
 		
 		/**
 		 * @id listanimate
-		 * @module 1
-		 * @requires dollar animate
-		 * @public no
-		 * @syntax animate(properties)
-		 * @syntax animate(properties, duration)
-		 * @syntax animate(properties, duration, makeLinear)
-		 * @syntax animate(properties, duration, makeLinear, callback)
-		 * @syntax animate(properties, duration, makeLinear, callback, delayMs)
-		 * Convenience function that invokes MINI.animate() with the list as first argument, to animate the nodes of this list.
+		 * @module 8
+		 * @requires runanimation
+		 * @public yes
+		 * @syntax MINI.$(selector).animate(properties)
+		 * @syntax MINI.$(selector).animate(properties, durationMs)
+		 * @syntax MINI.$(selector).animate(properties, durationMs, linearity)
+		 * @syntax MINI.$(selector).animate(properties, durationMs, linearity, callback)
+		 * @shortcut $(selector).animate(properties, durationMs, linearity, callback) - Enabled by default, unless disabled with "Disable $ and EL" option
+		 * Animates the objects or elements of the list by modifying their properties and attributes.
+		 * @param list a list of objects
+		 * @param properties a property map describing the end values of the corresponding properties. The names can use the
+		 *                   MINI.set syntax ('@' prefix for attributes, '$' for styles). Values must be either numbers or numbers with
+		 *                   units (e.g. "2 px"). Those properties will be set for all elements of the list.
+		 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms;
+		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0.
+		 * @param callback optional if given, this function will be invoked without parameters when the animation finished
+		 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
 		 * @return the list
 		 */
 		list['animate'] = function (properties, duration, makeLinear, callback, delayMs) {
-			return MINI['animate'](list, properties, duration, makeLinear, callback, delayMs);
+			return animate(list, properties, duration, makeLinear, callback, delayMs);
 		};
-		/**
+		
+	    /**
 		 * @id listaddevent
-		 * @module 1
-		 * @requires dollar addevent
-		 * @public no
-		 * @syntax addEvent(name, handler)
-		 * Convenience function that invokes MINI.addEvent() with the list as first argument, in order to add an event handler to
-		 * all nodes of this list.
-		 * @return the list
-		 */
+		 * @module 5
+		 * @requires 
+		 * @public yes
+		 * @syntax MINI.$(selector).addEvent(el, name, handler)
+		 * @shortcut $(selector).addEvent(el, name, handler) - Enabled by default, unless disabled with "Disable $ and EL" option
+	     * Registers the given function as handler for the event with the given name. It is possible to register several
+	     * handlers for a single event.
+	     * 
+	     * In addition to the standard DOM events, MINI also supports an artificial event called
+	     * 'domready' for the window object. On supporting browsers, it is called as soon as the HTML has been loaded completely (but
+	     * possibly before images and other elements have been loaded). On older browsers, it is the same as 'window.onload'. 
+	     * 
+	     * All handlers get a event object as only argument (except 'domready' which has no argument). It has the following properties:
+	     * <ul><li><code>original</code> - the original event object, as either given to the event or obtained from 'window.event', to give to direct access to the event</li>
+	     * <li><code>src</code> - the source (HTML element) of the event</li>
+	     * <li><code>keyCode</code> - the key code, if it was a key press. See http://unixpapa.com/js/key.html and other tables.</li>
+	     * <li><code>button</code> - the mouse button pressed, for mouse events. Note that this is browser-dependent and <strong>not reliable</strong>. Better check rightClick.</li>
+	     * <li><code>rightClick</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
+	     * <li><code>clientX</code> - for mouse events, the mouse position in the browser window showing document (so 0/0 is always the top left of the browser's window showing, even if the user scrolled)</li>
+	     * <li><code>clientY</code> - see clientX</li>
+	     * <li><code>screenX</code> - for mouse events, the mouse position on the physical screen</li>
+	     * <li><code>screenY</code> - see screenX</li>
+	     * <li><code>pageX</code> - for mouse events, the mouse position on the page (so 0/0 is the top left of the page, but when the user scrolled down not the top of the browser window)</li>
+	     * <li><code>pageY</code> - see pageX</li>
+		 * <li><code>wheelDir</code> - for mouse wheel or scroll events, the direction (1 for up or -1 for down)</li>
+	     * </ul>
+	     * If the handler returns 'false', the event will not be propagated to other handlers.
+	     * 
+	     * @param name the name of the event. Case-insensitive. The 'on' prefix in front of the name is not needed (but would be understood),
+	     *             so write 'click' instead of 'onclick'.
+	     * @param handler the function to invoke when the event has been triggered. The handler gets an event object as
+	     *                parameter (except 'domready' which has no argument).
+	     * @return the list
+	     */
 		list['addEvent'] = function (name, handler) {
-			return MINI['addEvent'](list, name, handler);
+			return addEvent(list, name, handler);
 		};
+
+	    /**
+		 * @id listremoveevent
+		 * @module 5
+		 * @requires 
+		 * @public yes
+		 * @syntax MINI.removeEvent(element, name, handler)
+	     * Removes the event handler. The call will be ignored if the given handler is not registered.
+	     * @param name the name of the event (see addEvent)
+	     * @param handler the handler to unregister, as given to addEvent()
+	     * @return the list
+	     */
+		list['removeEvent'] = function (name, handler) {
+			return removeEvent(list, name, handler);
+		};
+		
 	    /**
 		 * @id listgetpagecoordinates
-		 * @module 1
-		 * @requires getpagecoordinates
-		 * @public no
-		 * @syntax getPageCoordinates()
+		 * @module 6
+		 * @requires
+		 * @public yes
+		 * @syntax MINI.$(selector).getPageCoordinates()
+		 * @shortcut $(selector).getPageCoordinates() - Enabled by default, unless disabled with "Disable $ and EL" option
 	     * Returns the page coordinates of the list's first element.
-	     * @return an object containing pixel coordinates in two properties 'left' and 'top', or null if no element
+	     * @param element the element
+	     * @return an object containing pixel coordinates in two properties 'left' and 'top'
 	     */
 	    list['getPageCoordinates'] = function() {
-	    	return MINI['getPageCoordinates'](list[0]);
+	    	return list[0] ? getBodyCoords(list[0], {left: 0, top: 0}) : null;
 	    };
 
 		 
@@ -391,6 +435,7 @@ window['MINI'] = (function() {
 	 * @function listset
 	 * @function listanimate
 	 * @function listaddevent
+	 * @function listremoveevent
 	 * @function listhasclass
 	 * @function listaddclass
 	 * @function listremoveclass
@@ -838,97 +883,56 @@ window['MINI'] = (function() {
      	return nev;
     }
     
-    /**
-	 * @id addevent
-	 * @module 5
-	 * @requires dollar
-	 * @public yes
-	 * @syntax MINI.addEvent(el, name, handler)
-     * Registers the given function as handler for the event with the given name. It is possible to register several
-     * handlers for a single event.
-     * 
-     * In addition to the standard DOM events, MINI also supports an artificial event called
-     * 'domready' for the window object. On supporting browsers, it is called as soon as the HTML has been loaded completely (but
-     * possibly before images and other elements have been loaded). On older browsers, it is the same as 'window.onload'. 
-     * 
-     * All handlers get a event object as only argument (except 'domready' which has no argument). It has the following properties:
-     * <ul><li><code>original</code> - the original event object, as either given to the event or obtained from 'window.event', to give to direct access to the event</li>
-     * <li><code>src</code> - the source (HTML element) of the event</li>
-     * <li><code>keyCode</code> - the key code, if it was a key press. See http://unixpapa.com/js/key.html and other tables.</li>
-     * <li><code>button</code> - the mouse button pressed, for mouse events. Note that this is browser-dependent and <strong>not reliable</strong>. Better check rightClick.</li>
-     * <li><code>rightClick</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
-     * <li><code>clientX</code> - for mouse events, the mouse position in the browser window showing document (so 0/0 is always the top left of the browser's window showing, even if the user scrolled)</li>
-     * <li><code>clientY</code> - see clientX</li>
-     * <li><code>screenX</code> - for mouse events, the mouse position on the physical screen</li>
-     * <li><code>screenY</code> - see screenX</li>
-     * <li><code>pageX</code> - for mouse events, the mouse position on the page (so 0/0 is the top left of the page, but when the user scrolled down not the top of the browser window)</li>
-     * <li><code>pageY</code> - see pageX</li>
-	 * <li><code>wheelDir</code> - for mouse wheel or scroll events, the direction (1 for up or -1 for down)</li>
-     * </ul>
-     * If the handler returns 'false', the event will not be propagated to other handlers.
-     * 
-     * @param el optional one or more elements (as list or HTML element), or null for window.
-     * @param name the name of the event. Case-insensitive. The 'on' prefix in front of the name is not needed (but would be understood),
-     *             so write 'click' instead of 'onclick'.
-     * @param handler the function to invoke when the event has been triggered. The handler gets an event object as
-     *                parameter (except 'domready' which has no argument).
-     * @return the value given as el (window if null)
-     */
-    function addEvent(el, name, handler) {
-    	if (isList(el)) {
-    		for (var i = 0; i < el.length; i++)
-    			addEvent(el[i], name, handler);
-    		return el;
-    	}
-    	el = el || window;
-
+    function addEvent(list, name, handler) {
     	name = cleanEventName(name);
-    	
+
     	if (name == DOMREADY) {
 			if (DOMREADY_CALLED) // if DOM ready, call immediately
 				setTimeout(handler, 0);
 			else
     			DOMREADY_HANDLER.push(handler);
-    		return el;
+    		return list;
     	}
-    	
+
     	var nameUC = name.toUpperCase();
     	var onName = 'on'+name;
-    	    	
-    	var oldHandler = el[onName];
-    	if (oldHandler && oldHandler.MINIeventHandlerList) // already a MINI event handler set?
-    		oldHandler.MINIeventHandlerList.push(handler);
-		else {
-	    	
-	    	var handlerList = [handler];
-	    	var newHandler = function(e) {
-	    		if (oldHandler)
-	    			oldHandler(e);
-	
-	    		var evObj = getEventObject(e, this);
-	    		var keepBubbling = true;
-	    		for (var i = 0; i < handlerList.length; i++) {
-	    			var r = handlerList[i](evObj);
-	    			if (r != null)
-	    				keepBubbling = keepBubbling && r;
-	    		}
-	    		
-	    		if (!keepBubbling) {
-	    			e.cancelBubble = true;
-	    			if (e.stopPropagation) 
-	    				e.stopPropagation();
-	    		}
-	    		return keepBubbling;
-	    	};
-	    	newHandler.MINIeventHandlerList = handlerList;
-	    	
-	    	el[onName] = newHandler;
-	    	if (el.captureEvents) 
-	    		el.captureEvents(Event[nameUC]);
-	    }
-	    return el;
+    	
+    	for (var k = 0; k < list.length; k++) {
+    		var el = list[k];
+   	
+	    	var oldHandler = el[onName];
+	    	if (oldHandler && oldHandler.MINIeventHandlerList) // already a MINI event handler set?
+	    		oldHandler.MINIeventHandlerList.push(handler);
+			else {
+		    	var handlerList = [handler];
+		    	var newHandler = function(e) {
+		    		if (oldHandler)
+		    			oldHandler(e);
+		
+		    		var evObj = getEventObject(e, this);
+		    		var keepBubbling = true;
+		    		for (var i = 0; i < handlerList.length; i++) {
+		    			var r = handlerList[i](evObj);
+		    			if (r != null)
+		    				keepBubbling = keepBubbling && r;
+		    		}
+		    		
+		    		if (!keepBubbling) {
+		    			e.cancelBubble = true;
+		    			if (e.stopPropagation) 
+		    				e.stopPropagation();
+		    		}
+		    		return keepBubbling;
+		    	};
+		    	newHandler.MINIeventHandlerList = handlerList;
+		    	
+		    	el[onName] = newHandler;
+		    	if (el.captureEvents) 
+		    		el.captureEvents(Event[nameUC]);
+		    }
+    	}
+	    return list;
     }
-    MINI['addEvent'] = addEvent;
 	/**
 	 * @stop
 	 */  
@@ -941,28 +945,21 @@ window['MINI'] = (function() {
 	 * @public yes
 	 * @syntax MINI.removeEvent(element, name, handler)
      * Removes the event handler. The call will be ignored if the given handler is not registered.
-     * @param element the monitored object, or its id. If null, it is assumed to be window.
      * @param name the name of the event (see addEvent)
      * @param handler the handler to unregister, as given to addEvent()
      */
-    MINI['removeEvent'] = function(element, name, handler) {
-    	if (isList(element)) {
-    		for (var i = 0; i < element.length; i++)
-    			removeEvent(element[i], name, handler);
-    		return;
-    	}
-    		
-    	element = element || window;
+    function removeEvent(list, name, handler) {
     	name = cleanEventName(name);
     	
-    	if (name == DOMREADY) {
+    	if (name == DOMREADY)
     		removeFromList(DOMREADY_HANDLER, handler);
-    		return;
-    	}
-
-    	var oldHandler = element['on'+name];
-    	if (oldHandler && oldHandler.MINIeventHandlerList) 
-    		removeFromList(oldHandler.MINIeventHandlerList, handler);
+    	else 
+	   		for (var i = 0; i < list.length; i++) {
+		    	var oldHandler = list[i]['on'+name];
+		    	if (oldHandler && oldHandler.MINIeventHandlerList) 
+		    		removeFromList(oldHandler.MINIeventHandlerList, handler);
+	   		}
+    	return list;
     };
     
     /**
@@ -977,7 +974,7 @@ window['MINI'] = (function() {
      * @param handler the handler to unregister, as given to addEvent()
      */
     MINI['ready'] = function(handler) {
-    	addEvent(null, DOMREADY, handler);
+    	addEvent(0, DOMREADY, handler);
     };
     
     /**
@@ -1082,20 +1079,6 @@ window['MINI'] = (function() {
    		return getBodyCoordsInternal(elem, dest);
     }
     
-    /**
-	 * @id getpagecoordinates
-	 * @module 6
-	 * @requires
-	 * @public yes
-	 * @syntax MINI.getPageCoordinates(element)
-     * Returns the page coordinates of the given element.
-     * @param element the element
-     * @return an object containing pixel coordinates in two properties 'left' and 'top'
-     */
-    MINI['getPageCoordinates'] = function(element) {
-    	return element ? getBodyCoords(element, {left: 0, top: 0}) : null;
-    };
-    
    	/**
  	 * @stop
  	 */
@@ -1159,29 +1142,11 @@ window['MINI'] = (function() {
 	 */
 	var REMOVE_UNIT = /[^0-9]+$/;
 
-	/**
-	 * @id animate
-	 * @module 8
-	 * @requires el runanimation set
-	 * @public yes
-	 * @syntax MINI.animate(list, properties)
-	 * @syntax MINI.animate(list, properties, durationMs)
-	 * @syntax MINI.animate(list, properties, durationMs, linearity)
-	 * @syntax MINI.animate(list, properties, durationMs, linearity, callback)
-	 * Animates one or more objects or DOM elements by modifying their properties and attributes.
-	 * @param list a list of objects
-	 * @param properties a property map describing the end values of the corresponding properties. The names can use the
-	 *                   MINI.set syntax ('@' prefix for attributes, '$' for styles). Values must be either numbers or numbers with
-	 *                   units (e.g. "2 px"). Those properties will be set for all elements of the list.
-	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms;
-	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0.
-	 * @param callback optional if given, this function will be invoked without parameters when the animation finished
-	 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
-	 */
-	MINI['animate'] = function animate(list, properties, durationMs, linearity, callback, delayMs) {
+
+	function animate(list, properties, durationMs, linearity, callback, delayMs) {
 		if (delayMs) {
 				window.setTimeout(function(){animate(list, properties, durationMs, linearity, callback);}, delayMs);
-				return;
+				return list;
 		}
 		durationMs = durationMs || 500;
 		linearity = Math.max(0, Math.min(1, linearity || 0));
@@ -1218,9 +1183,10 @@ window['MINI'] = (function() {
 								 				(1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) + 
 								' ' +  properties[name].replace(/^-?[0-9. ]*/,''); // unit
 					}
-					set(list[i], p);
+					set([list[i]], p);
 				}
 		});
+		return list;
 	}; 
 	/**
 	 @stop

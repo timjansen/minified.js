@@ -7,7 +7,7 @@ minified.js is a universal javascript library for HTML applications. It gives yo
 with everything that you need to work interact with the browser on an HTML page. 
 
 While the purpose and scope of minified.js are comparable to jQuery and MooTools, its size is 
-smaller by an order of magnitude. The compressed size is only 8.9kb, and the gzip'd size is about than 3.9kb. 
+smaller by an order of magnitude. The compressed size is only 8.8kb, and the gzip'd size is less than 3.9kb. 
 You can make it even smaller if you don't require all modules of minified.js. The build tool allows you to remove 
 everything that you don't need to reduce its size even more. 
 
@@ -15,7 +15,7 @@ Size Comparison
 -----------------
 <table>
 <tr><th>Name</th><th>Source Code</th><th>Minified</th><th>Minified and GZip'd</th></tr>
-<tr><td>minified.js</td><td>47kb</td><td>8.9kb</td><td>3.9kb</td></tr>
+<tr><td>minified.js</td><td>47kb</td><td>8.8kb</td><td>3.9kb</td></tr>
 <tr><td>jQuery  1.7.2</td><td>274kb</td><td>93kb</td><td>33kb</td></tr>
 <tr><td>MooTools Core NoCompat 1.4.5</td><td>148kb</td><td>88kb</td><td>29kb</td></tr>
 </table>
