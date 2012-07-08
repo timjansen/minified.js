@@ -186,7 +186,7 @@ window['MINI'] = (function() {
 		 * Removes all nodes of the list from the DOM tree.
 		 */
 		list['remove'] = function() {
-			removeList(this);
+			removeList(list);
 		};
 		/**
 		 * @id listremovechildren
@@ -314,7 +314,7 @@ window['MINI'] = (function() {
 	     * @return an object containing pixel coordinates in two properties 'left' and 'top'
 	     */
 	    list['getPageCoordinates'] = function() {
-	    	return list[0] ? getBodyCoords(list[0], {left: 0, top: 0}) : null;
+	    	return list[0] ? getBodyCoordsInternal(list[0], {left: 0, top: 0}) : null;
 	    };
 
 		 
@@ -453,21 +453,12 @@ window['MINI'] = (function() {
 	 * @public yes
 	 * @syntax MINI.el(selector)
 	 * @shortcut EL(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
-	 * Returns an DOM object containing the first match of the given selector, or null if no match.
-	 * @param selector a simple, CSS-like selector for the elements. It supports '#id' (lookup by id), '.class' (lookup by class),
-	 *             'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
-	 *             You can also separate two selectors by space to find all descendants of the first selector's first match that also match
-	 *             the second selector.
-	 *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
-	 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
-	 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
-	 *             You can also use a DOM node as selector, it will be returned as a single-element list.  
-	 *             If you pass a list, the list will be returned.
-	 * @return a DOM object of the first match, or undefined
+	 * Returns an DOM object containing the first match of the given selector, or undefined if no match.
+	 * @param selector a simple, CSS-like selector for the element. Uses the syntax described in MINI.$. The most common
+	 *                 parameter for this function is the id selector with the syntax "#id".
+	 * @return a DOM object of the first match, or undefined if the selector did not return at least one match
 	 */
     function EL(selector) {
-    	if (selector && (selector.nodeType || selector === window))
-    		return selector;
 		return dollarRaw(selector)[0];
 	}
 	MINI['el'] = EL;
@@ -913,7 +904,7 @@ window['MINI'] = (function() {
 		    		var keepBubbling = true;
 		    		for (var i = 0; i < handlerList.length; i++) {
 		    			var r = handlerList[i](evObj);
-		    			if (r != null)
+		    			if (r != null) // must check null here
 		    				keepBubbling = keepBubbling && r;
 		    		}
 		    		
@@ -1059,7 +1050,6 @@ window['MINI'] = (function() {
  
     //// 7. POSITION MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // internal helper for getBodyCoords
     function getBodyCoordsInternal(elem, dest) {
    		dest.left += elem.offsetLeft;
     	dest.top += elem.offsetTop;
@@ -1068,31 +1058,20 @@ window['MINI'] = (function() {
     	return o ? getBodyCoordsInternal(o, dest) : dest;
     }
     
-    // Gets the coordinate of node elem relative to the page, adds it to dest
-    function getBodyCoords(elem, dest) {
-    	if (elem.getBoundingClientRect) {
-    		var c = elem.getBoundingClientRect();
-    		dest.left = c.left+window.scrollX;
-    		dest.top = c.top+window.scrollY;
-    		return dest;
-    	}
-   		return getBodyCoordsInternal(elem, dest);
-    }
-    
    	/**
  	 * @stop
  	 */
     
     //// 8. ANIMATION MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    function getRequestAnimationFrame(fallbackFps) {
+    function getRequestAnimationFrame() {
         for (var n in {r:1, webkitR:1, mozR:1, oR:1, msR:1}) {
         	var f = window[n+'equestAnimationFrame'];
         	if (f)
         		return f;
         }
-		return function(callback, element) {
-				window.setTimeout(function() {callback();}, 100/3); // 30 fps as fallback
+		return function(callback) {
+			window.setTimeout(function() {callback();}, 100/3); // 30 fps as fallback
 		};
 	}
 	
