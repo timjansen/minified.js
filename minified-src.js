@@ -1154,7 +1154,7 @@ window['MINI'] = (function() {
 		for (var i = 0; i < list.length; i++) {
 			var p = {};
 			for (var name in properties)
-				if (name.charAt(0) == '@')
+				if (/^@/.test(name))
 					p[name] = list[i].getAttribute(name[substring](1)) || 0;
 				else {
 					var components = getNameComponents(name)
