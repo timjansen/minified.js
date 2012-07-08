@@ -479,7 +479,8 @@ window['MINI'] = (function() {
 	 * @syntax MINI.element(name, attributes, children)
 	 * @syntax MINI.element(name, attributes, children, parent)
 	 * Creates an element for insertion into the DOM, optionally with attributes and children. It can optionally be appended to the end of 
-	 * the specified element. Returns a DOM HTMLElement.
+	 * the specified element. Returns a DOM HTMLElement. This function is namespace-aware and will create XHTML nodes if called in an
+	 * XHTML document.
 	 * 
 	 * @example Creating a simple &lt;span> element with some text:
 	 * <pre>
@@ -533,28 +534,23 @@ window['MINI'] = (function() {
 	 */
 	MINI['element'] = function (name, attributes, children, parent) {
 		var doc = document;
-		var nu =  doc.documentElement.namespaceURI;
-		var e = nu ? doc.createElementNS(nu, name) : doc.createElement(name);
+		var nu =  doc.documentElement.namespaceURI; // to check whether doc is XHTML
+		var e = nu ? doc.createElementNS(nu, name) : doc.createElement(name); 
 
 		for (attrName in attributes) // works even if attributes is null or undef
 			if (attributes.hasOwnProperty(attrName))
 				e.setAttribute(attrName, (attributes[attrName] != null) ? toString(attributes[attrName]) : ''); // null check required here
-		
-		function append(o) { 
-			if (o != null) {  // must check null, as 0 is a valid parameter
-				if (o.nodeType) 
-					e.appendChild(o); 
-				else 
-					e.appendChild(doc.createTextNode(toString(o))); 
-			}
-		};
-		
+			
 		function appendChildren(c) {
 			if (isArray(c))
 				for (var i = 0; i < c.length; i++)
 					appendChildren(c[i]);
-			else
-				append(c);
+			else if (c != null) {  // must check null, as 0 is a valid parameter
+				if (c.nodeType) 
+					e.appendChild(c); 
+				else 
+					e.appendChild(doc.createTextNode(toString(c))); 
+			}
 		}
 
 		if (children != null) // must check null, as 0 is a valid parameter
@@ -576,7 +572,7 @@ window['MINI'] = (function() {
 	 * the specified element. Returns the text node.
 	 * @param text the text to add
 	 * @param parent optional if set, the created text node will be added as last element of this DOM node. The DOM node can be speficied
-	 *                        in any way accepted by MINI.el.
+	 *                        in any way accepted by MINI.el().
 	 * @return the resulting DOM text node
 	 */
 	MINI['text'] = function element(text, parent) {
