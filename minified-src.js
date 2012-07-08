@@ -56,8 +56,10 @@ window['MINI'] = (function() {
 	
 	function set(list, name, value, undef) {
 		if (value === undef)
-			for (var n in name) // property map given
-				set(list, n, name[n]);
+			for (var n in name) {// property map given
+				if (name.hasOwnProperty(n)) 
+					set(list, n, name[n]);
+			}
 		else if (/^@/.test(name))
 			for (var i = 0; i < list.length; i++)
 				list[i].setAttribute(name[substring](1), value);
@@ -100,6 +102,7 @@ window['MINI'] = (function() {
 
     
     function dollarRaw(selector, context) { 
+console.log('dollarRaw', selector, context);
 		if (!selector) 
 		    return [];
 		var parent;
@@ -632,7 +635,7 @@ window['MINI'] = (function() {
 				if (params.hasOwnProperty(paramName)) {
 					s += splitter + encodeURIComponent(paramName);
 					var v = params[paramName];
-					if (v != null)
+					if (v != null) // must check nulls
 						s += '=' + encodeURIComponent(v);
 					splitter = '&';
 				}
@@ -640,11 +643,8 @@ window['MINI'] = (function() {
 		}
 		
 		try {
-			var msprefix = "Msxml2.XMLHTTP.";
-			if (!XMLHttpRequest) {
-				try {xhr = new ActiveXObject(msprefix+"6.0");}
-				catch (e) {xhr = new ActiveXObject(msprefix+"3.0");}
-			}		    		
+			if (!XMLHttpRequest)
+				xhr = new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			else 
 				xhr = new XMLHttpRequest();
 			
