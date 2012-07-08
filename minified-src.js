@@ -89,15 +89,13 @@ window['MINI'] = (function() {
 		return obj;
 	};
 
-	function filterElements(parent, elementName, className) { 
+	function findElements(parent, elementName, className) { 
 		var elements, regexpFilter, prop;
-		parent = parent ? EL(parent) : document.getElementsByTagName('html')[0];
-		if (!parent) // if parent not found by EL
-			return []; 
+		parent = parent || document.getElementsByTagName('html')[0];
 	
 		if (className && parent.getElementsByClassName) { // not all browsers support getElementsByClassName
 			elements = parent.getElementsByClassName(className); 
-			 regexpFilter = elementName;
+			regexpFilter = elementName;
 			prop = 'nodeName';
 		} 
 		else { // also fallback for getElementsByClassName (slow!)
@@ -115,14 +113,44 @@ window['MINI'] = (function() {
 		}
 		return list; 
 	}
+
     
-    function dollarUnfiltered(selector) { 
+    function dollarRaw(selector, context) { 
 		if (!selector) 
-		    return []; 
+		    return [];
+		var parent;
+		if (context) {
+			context = dollarRaw(context);
+			if (context.length > 1) {
+				var r = []; 
+				for (var i = 0; i < context.length; i++)
+					r.push(dollarRaw(selector, context[i]));
+				return r; 
+			}
+			parent = context[0]; 
+		}
+		
+		
+		function filterElements(list) {
+			if (!parent)
+				return list;
+			var r = []; 
+			for (var i = 0; i < list.length; i++) {
+				var a = list[i];
+				while (a) 
+					if (a.parentNode === parent) {
+						r.push(list[i]);
+						break;
+					}
+					else
+						a = a.parentNode;
+			}
+			return r;
+		}
 		if (selector.nodeType || selector === window) 
-		    return [selector]; 
+		    return filterElements([selector]); 
 		if (isList(selector))
-		    return selector; 
+		    return filterElements(selector); 
 		if (typeof selector != 'string')
 		    throwError(3);
 
@@ -130,28 +158,30 @@ window['MINI'] = (function() {
 		if (subSelectors.length>1) {
 			var r = []; 
 			for (var i = 0; i < subSelectors.length; i++)  {
-				var a = dollarUnfiltered(subSelectors[i]);
+				var a = dollarRaw(subSelectors[i], parent);
 				for (var j = 0; j < a.length; j++)
 					r.push(a[j]);
 			}
 			return r; 
 		}
-		
-		var splitMatch = selector.match(/^(\S+)(\s+(\S+))?$/);           // handle space between two selectors
-		var mainSelector = splitMatch[3] || splitMatch[1];
+
+		var steps = selector.split(/\s+/);
+		if (steps.length > 1)
+			return dollarRaw(steps.slice(1).join(' '), dollarRaw(steps[0], parent));
+
+		var mainSelector = steps[0];
 		if (/^#/.test(mainSelector))
-			return [document.getElementById(mainSelector[substring](1))]; 
-		var parent = splitMatch[3] ? splitMatch[1] : null;
-		// now it can be assumed that selector is a string!
+			return filterElements([document.getElementById(mainSelector[substring](1))]); 
+
 		if (/[ :]/.test(mainSelector)) 
 		    throwError(1); 
 		var dotPos = mainSelector.indexOf('.'); 
 		if (dotPos < 0) 
-		    return filterElements(parent, mainSelector); 
+		    return findElements(parent, mainSelector); 
 		else if (dotPos) 
-		    return filterElements(parent, mainSelector[substring](0, dotPos), mainSelector[substring](dotPos+1)); 
+		    return findElements(parent, mainSelector[substring](0, dotPos), mainSelector[substring](dotPos+1)); 
 		else 
-		    return filterElements(parent, null, mainSelector[substring](1)); 
+		    return findElements(parent, null, mainSelector[substring](1)); 
 	}; 
 	
 	function removeList(n) {
@@ -159,10 +189,6 @@ window['MINI'] = (function() {
 			for (var j = n.length-1; j >= 0; j--) // go backward - NodeList may shrink when elements are removed!
 				n[j].parentNode.removeChild(n[j]);
 	}	
-	 
-    function createClassNameRegExp(className) {
-        return new RegExp(backslashB + className + backslashB);
-    }
     
 	function addElementListFuncs(list) {
 		/**
@@ -246,6 +272,15 @@ window['MINI'] = (function() {
 	    list['getPageCoordinates'] = function() {
 	    	return MINI['getPageCoordinates'](list[0]);
 	    };
+
+		 
+	    function createClassNameRegExp(className) {
+	        return new RegExp(backslashB + className + backslashB);
+	    }
+	    
+		function removeClassRegExp(el, reg) {
+			el.className = el.className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/, ' ');
+		}
 	    
 	    /**
 	     * @id listhasclass
@@ -264,10 +299,6 @@ window['MINI'] = (function() {
 	           		return list[i];
 	        return null;
 	    };
-
-		function removeClassRegExp(el, reg) {
-			el.className = el.className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/, ' ');
-		}
 
 	    /**
 	     * @id listremoveclass
@@ -343,18 +374,18 @@ window['MINI'] = (function() {
 	 * @shortcut $(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
 	 * Returns an array-like object containing all elements that fulfill the filter conditions. The returned object is guaranteed to
 	 * have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
-	 * regular arrays (e.g. list[2] for the second elements).
+	 * regular arrays (e.g. list[2] for the second elements). It also provides you with a number of convenience functions.
 	 * @param selector a simple, CSS-like selector for the elements. It supports '#id' (lookup by id), '.class' (lookup by class),
 	 *             'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
-	 *             You can also separate two selectors by space to find all descendants of the first selector's first match that also match
-	 *             the second selector.
+	 *             You can also separate two (or more) selectors by space to find elements which are descendants of the previous selectors.
      *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
 	 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
 	 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
 	 *             You can also use a DOM node as selector, it will be returned as a single-element list.  
 	 *             If you pass a list, the list will be returned.
-	 * @return the array-like object containing the content specified by the selector. The array has several
-	 *         convenience methods listed below:
+	 * @param context optional an optional selector, DOM node or list of DOM nodes which specifies one or more common root nodes for the selection
+	 * @return the array-like object containing the content specified by the selector. Please note that duplicates (e.g. created using the
+	 * *       comma-syntax or several context nodes) will not be removed. The array returned has several convenience functions listed below:
 	 * @function listremove
 	 * @function listremovechildren
 	 * @function listset
@@ -365,8 +396,8 @@ window['MINI'] = (function() {
 	 * @function listremoveclass
 	 * @function listtoggleclass
 	 */
-	function $(selector) { 
-		return addElementListFuncs(dollarUnfiltered(selector));
+	function $(selector, context) { 
+		return addElementListFuncs(dollarRaw(selector, context));
 	}
 	MINI['$'] = $;
 
@@ -392,36 +423,10 @@ window['MINI'] = (function() {
     function EL(selector) {
     	if (selector && (selector.nodeType || selector === window))
     		return selector;
-		return dollarUnfiltered(selector)[0];
+		return dollarRaw(selector)[0];
 	}
 	MINI['el'] = EL;
-	
-	/**
-	 * @id filter
-	 * @module 1
-	 * @requires 
-	 * @public yes
-	 * @syntax MINI.filter(parent, elementName, className)
-	 * Returns a list of all elements with the given parent, element name and/or class name.
-	 * @param parent optional the root node to search in (MINI.EL selector allowed). If null, the top-level &lt;html> element will be chosen
-	 * @param elementName optional the name of the elements to return, or null for all element names
-	 * @param className optional if given, only elements with that class name will be returned
-	 * @return the array-like object containing the content specified by the filter parameters. The array has several
-	 *         convenience methods listed below:
-	 * @function listremove
-	 * @function listremovechildren
-	 * @function listset
-	 * @function listanimate
-	 * @function listaddevent
-	 * @function listhasclass
-	 * @function listaddclass
-	 * @function listremoveclass
-	 * @function listtoggleclass
-	 */
-    function filter(parent, elementName, className) {
-    	return addElementListFuncs(filterElements(EL(parent), elementName, className));
-	}
-	MINI['filter'] = filter;
+
    /**
      * @stop
      */
