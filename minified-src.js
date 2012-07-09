@@ -40,7 +40,6 @@ window['MINI'] = (function() {
 				list.splice(i--, 1);
     }
     
-	var backslashB = '\\b';
 
 	// helper for set and get
 	function getNameComponents(name) {
@@ -70,6 +69,8 @@ window['MINI'] = (function() {
     }
     
     //// 1. SELECTOR MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	var backslashB = '\\b';
 	
 	function set(list, name, value, undef) {
 		if (value === undef) {
@@ -78,11 +79,11 @@ window['MINI'] = (function() {
 					set(list, n, name[n]);
 		}
 		else {
-			var components = /^@/.test(name) ? null : getNameComponents(name);
-			for (var i = 0; i < list.length; i++) {
-				var obj = list[i];
+			var components = (!/^@/.test(name)) && getNameComponents(name);
+			for (var i = 0, obj, j; i < list.length; i++) {
+				obj = list[i];
 		    	if (components) {
-					for (var j = 0; j < components.length-1; j++)
+					for (j = 0; j < components.length-1; j++)
 						obj = obj[components[j]];
 					obj[components[components.length-1]] = value;
 				}
