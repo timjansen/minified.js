@@ -1,8 +1,26 @@
+/*
+ * Minified.js - All that you need in a web application in less than 4kb
+ * 
+ * Public Domain. Use, modify and distribute it any way you like. No attribution required.
+ *
+ * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+ * 
+ * Contains code based on https://github.com/douglascrockford/JSON-js (also Public Domain).
+ */
+
+/*
+ * When you read this code, please keep in mind that it is optimized to produce small and gzip'able code
+ * after being minimized using Closure (http://closure-compiler.appspot.com). Run-time performance and readability
+ * should be acceptable, but are not a primary concern.
+ */
+
 // ==ClosureCompiler==
 // @output_file_name minified.js
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
- 
+
+
+
 window['MINI'] = (function() {
 	var MINI = {};
 	
@@ -22,7 +40,6 @@ window['MINI'] = (function() {
 				list.splice(i--, 1);
     }
 	
-	var substring = 'substring';
 	var backslashB = '\\b';
 
 	// helper for set and get
@@ -62,7 +79,7 @@ window['MINI'] = (function() {
 			}
 		else if (/^@/.test(name))
 			for (var i = 0; i < list.length; i++)
-				list[i].setAttribute(name[substring](1), value);
+				list[i].setAttribute(name.substring(1), value);
 		else {
 			var components = getNameComponents(name);
 			for (var i = 0; i < list.length; i++) {
@@ -159,7 +176,7 @@ window['MINI'] = (function() {
 
 		var mainSelector = steps[0];
 		if (/^#/.test(mainSelector))
-			return filterElements([document.getElementById(mainSelector[substring](1))]); 
+			return filterElements([document.getElementById(mainSelector.substring(1))]); 
 
 		if (/[ :]/.test(mainSelector)) 
 		    throwError(1); 
@@ -167,9 +184,9 @@ window['MINI'] = (function() {
 		if (dotPos < 0) 
 		    return findElements(parent, mainSelector); 
 		else if (dotPos) 
-		    return findElements(parent, mainSelector[substring](0, dotPos), mainSelector[substring](dotPos+1)); 
+		    return findElements(parent, mainSelector.substring(0, dotPos), mainSelector.substring(dotPos+1)); 
 		else 
-		    return findElements(parent, null, mainSelector[substring](1)); 
+		    return findElements(parent, null, mainSelector.substring(1)); 
 	}; 
 	
 	function removeList(n) {
@@ -259,10 +276,6 @@ window['MINI'] = (function() {
 	     * Registers the given function as handler for the event with the given name. It is possible to register several
 	     * handlers for a single event.
 	     * 
-	     * In addition to the standard DOM events, MINI also supports an artificial event called
-	     * 'domready' for the window object. On supporting browsers, it is called as soon as the HTML has been loaded completely (but
-	     * possibly before images and other elements have been loaded). On older browsers, it is the same as 'window.onload'. 
-	     * 
 	     * All handlers get a event object as only argument (except 'domready' which has no argument). It has the following properties:
 	     * <ul><li><code>original</code> - the original event object, as either given to the event or obtained from 'window.event', to give to direct access to the event</li>
 	     * <li><code>src</code> - the source (HTML element) of the event</li>
@@ -282,7 +295,7 @@ window['MINI'] = (function() {
 	     * @param name the name of the event. Case-insensitive. The 'on' prefix in front of the name is not needed (but would be understood),
 	     *             so write 'click' instead of 'onclick'.
 	     * @param handler the function to invoke when the event has been triggered. The handler gets an event object as
-	     *                parameter (except 'domready' which has no argument).
+	     *                parameter.
 	     * @return the list
 	     */
 		list['addEvent'] = function (name, handler) {
@@ -343,7 +356,6 @@ window['MINI'] = (function() {
 	        for (var i = 0; i < list.length; i++)
 	        	if (reg.test(list[i].className||''))
 	           		return list[i];
-	        return null;
 	    };
 
 	    /**
@@ -392,16 +404,14 @@ window['MINI'] = (function() {
 	     */
 	    list['toggleClass'] = function(className) {
 	        var reg = createClassNameRegExp(className); 
-	        for (var i = 0; i < list.length; i++) {
-	            var li = list[i];
-	            if (li.className && reg.test(li.className))
+	        for (var li, i = 0; i < list.length; i++)
+	            if ((li = list[i]).className && reg.test(li.className))
 	                removeClassRegExp(li, reg);
 	            else if (li.className)
 	                li.className += ' ' + className;
 	            else
 	                li.className = className;
-	        }
-			return list;
+	        return list;
 	    };
 		/**
 		 * @stop listtoggleclass
@@ -409,8 +419,6 @@ window['MINI'] = (function() {
 		return list;
 	}
 	
-
-		 
 	/**
 	 * @id dollar
 	 * @module 1
@@ -539,7 +547,7 @@ window['MINI'] = (function() {
 		var nu =  doc.documentElement.namespaceURI; // to check whether doc is XHTML
 		var e = nu ? doc.createElementNS(nu, name) : doc.createElement(name); 
 
-		for (attrName in attributes) // works even if attributes is null or undef
+		for (var attrName in attributes) // works even if attributes is null or undef
 			if (attributes.hasOwnProperty(attrName))
 				e.setAttribute(attrName, (attributes[attrName] != null) ? toString(attributes[attrName]) : ''); // null check required here
 			
@@ -624,21 +632,15 @@ window['MINI'] = (function() {
 	 */
 	MINI['request'] = function (method, url, data, onSuccess, onFailure, headers, username, password) {
 		method = method.toUpperCase();
-		var callbackCalled = 0;
+		var xhr, callbackCalled = 0, body, contentType, hdrName;
 	
 		// simple function to encode HTTP parameters
 		function encodeParams(params) {
-			var s = '';
-			var splitter = '';
+			var paramName, s = [];
 			for (paramName in params)
-				if (params.hasOwnProperty(paramName)) {
-					s += splitter + encodeURIComponent(paramName);
-					var v = params[paramName];
-					if (v != null) // must check nulls
-						s += '=' + encodeURIComponent(v);
-					splitter = '&';
-				}
-			return s;
+				if (params.hasOwnProperty(paramName))
+					s.push(splitter + encodeURIComponent(paramName) + ((params[paramName] != null) ?  '=' + encodeURIComponent(params[paramName]) : ''));
+			return s.join('&');
 		}
 		
 		try {
@@ -652,9 +654,7 @@ window['MINI'] = (function() {
 			
 			xhr.open(method, url, true, username, password);
 			
-			var body;
 			if (method == 'POST' && data != null) {
-				var contentType = null;
 				if (typeof data == 'string') {
 					body = data;
 					contentType = 'text/plain; charset="UTF-8"';
@@ -668,24 +668,22 @@ window['MINI'] = (function() {
 				if (contentType && !(headers && headers['Content-Type']))
 					xhr.setRequestHeader('Content-Type', contentType);
 			}
-			else
-				body = null;
 			
-			if (headers)
-				for (hdrName in headers)
-					if (headers.hasOwnProperty(hdrName))
-						xhr.setRequestHeader(hdrName, headers[hdrName]);
+			for (hdrName in headers) // headers may be undefined. all JS engines should then do nothing (i hope)
+				if (headers.hasOwnProperty(hdrName))
+					xhr.setRequestHeader(hdrName, headers[hdrName]);
 			
-			if (onSuccess || onFailure)
-				xhr.onreadystatechange = function() {
-					if (xhr.readyState == 4 && !callbackCalled) {
-						if (xhr.status == 200 && onSuccess)
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState == 4 && !callbackCalled) {
+					if (xhr.status == 200) {
+						if (onSuccess)
 							onSuccess(xhr.responseText, xhr.responseXML);
-						if (xhr.status != 200 && onFailure)
-							onFailure(xhr.status, xhr.statusText, xhr.responseText);
-						callbackCalled = 1;
 					}
-				};
+					else if (onFailure)
+						onFailure(xhr.status, xhr.statusText, xhr.responseText);
+					callbackCalled = 1;
+				}
+			};
 			
 			xhr.send(body);
 			return xhr;
@@ -719,10 +717,9 @@ window['MINI'] = (function() {
     
 	function quoteStringForJSON(string) {
     	var escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
-        escapable.lastIndex = 0;
-        return '"' + (escapable.test(string) ? string.replace(escapable, function (a) {
+        return '"' + string.replace(escapable, function (a) {
                 return STRING_SUBSTITUTIONS[a] || '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-            }): string) + '"' ;
+            }) + '"' ;
 	}
 
 
@@ -738,30 +735,26 @@ window['MINI'] = (function() {
      * @return the JSON string
      */
 	MINI['toJSON'] = (JSON && JSON.stringify) ? JSON.stringify : function toJSON(value) {
+		var c, t, v, n='null';
 		if (value && typeof value == 'object') {
-			var c = value.constructor;
-			if (c == String || c == Number || c == Boolean)
-				value = value.valueOf(); // convert to string
+			if ((c = value.constructor) == String || c == Number || c == Boolean)
+				value = toString(value); 
 			else if (c == Date) {
 				function f(n) {
 					return n < 10 ? '0' + n : n;
 				}
-		        value = value.getUTCFullYear()   + '-' +
-		             f(value.getUTCMonth() + 1) + '-' +
-		             f(value.getUTCDate())      + 'T' +
-		             f(value.getUTCHours())     + ':' +
-		             f(value.getUTCMinutes())   + ':' +
-		             f(value.getUTCSeconds())   + 'Z';
+				value = value.getUTCFullYear()   + '-' +
+				     f(value.getUTCMonth() + 1) + '-' +
+				     f(value.getUTCDate())      + 'T' +
+				     f(value.getUTCHours())     + ':' +
+				     f(value.getUTCMinutes())   + ':' +
+				     f(value.getUTCSeconds())   + 'Z';
 			}
 		}
 	
-		var t = typeof value;
-		var n = 'null';
-		if (t == 'string')
+		if ((t = typeof value) == 'string')
 			return quoteStringForJSON(value);
-		if (t == 'number' && !isFinite(value))
-			return isFinite(value) ? toString(value) : n;
-		if (t == 'boolean' || t == n)
+		if (t == 'boolean' || t == n || t == 'number') // handle infinite numbers?
 			return toString(value);
 		if (!value)
 			return n;
@@ -773,8 +766,7 @@ window['MINI'] = (function() {
 		}
 		for (var k in value) 
 			if (value.hasOwnProperty(k)) {
-				var v = toJSON(value[k]);
-				if (v)
+				if (v = toJSON(value[k]) != null)
 					partial.push(quoteStringForJSON(k) + ':' + v);
 			}
 		return '{' + partial.join() + '}';
@@ -792,15 +784,12 @@ window['MINI'] = (function() {
      * @return the resulting JavaScript object
      */
     MINI['parseJSON'] = (JSON && JSON.parse) ? JSON.parse : function (text) {
-        text = toString(text);
-        var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
-        cx.lastIndex = 0;
-        if (cx.test(text))
-            text = text.replace(cx, function (a) {
-                return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-            });
+    	text = toString(text).replace(/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, 
+    		function (a) {
+    			return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+    		});
 
-        if (/^[\],:{}\s]*$/
+        if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
 				.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
 				.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
 				.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) 
@@ -815,8 +804,6 @@ window['MINI'] = (function() {
     
     //// 5. EVENT MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    var DOMREADY = 'domready';
-    
     function cleanEventName(name) {
     	return name.toLowerCase().replace(/^on/, '');
     }
@@ -828,18 +815,16 @@ window['MINI'] = (function() {
     if (document.addEventListener)
     	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
     var DOMREADY_OLD_UNLOAD = window.onload;
-    window.onload = function(){
-      setTimeout(triggerDomReady, 0);
+    window.onload = function() {
+      window.setTimeout(triggerDomReady, 0);
       if (DOMREADY_OLD_UNLOAD)
     	  DOMREADY_OLD_UNLOAD.call(this);
     }
     
     function triggerDomReady() {
-    	if (!DOMREADY_CALLED) {
-	    	DOMREADY_CALLED = 1;
+    	if (!DOMREADY_CALLED++)
 	    	for (var i = 0; i < DOMREADY_HANDLER.length; i++)
     			DOMREADY_HANDLER[i]();
-    	}
     }
     
     // gets the DOM event object and creates MINI's
@@ -872,14 +857,6 @@ window['MINI'] = (function() {
     function addEvent(list, name, handler) {
     	name = cleanEventName(name);
 
-    	if (name == DOMREADY) {
-			if (DOMREADY_CALLED) // if DOM ready, call immediately
-				setTimeout(handler, 0);
-			else
-    			DOMREADY_HANDLER.push(handler);
-    		return list;
-    	}
-
     	var nameUC = name.toUpperCase();
     	var onName = 'on'+name;
     	
@@ -897,11 +874,10 @@ window['MINI'] = (function() {
 		
 		    		var evObj = getEventObject(e, this);
 		    		var keepBubbling = true;
-		    		for (var i = 0; i < handlerList.length; i++) {
-		    			var r = handlerList[i](evObj);
-		    			if (r != null) // must check null here
+		    		var r;
+		    		for (var i = 0; i < handlerList.length; i++)
+		    			if ((r = handlerList[i](evObj)) != null) // must check null here
 		    				keepBubbling = keepBubbling && r;
-		    		}
 		    		
 		    		if (!keepBubbling) {
 		    			e.cancelBubble = true;
@@ -935,17 +911,11 @@ window['MINI'] = (function() {
      * @param handler the handler to unregister, as given to addEvent()
      */
     function removeEvent(list, name, handler) {
-    	name = cleanEventName(name);
-    	
-    	if (name == DOMREADY)
-    		removeFromList(DOMREADY_HANDLER, handler);
-    	else 
-	   		for (var i = 0; i < list.length; i++) {
-		    	var oldHandler = list[i]['on'+name];
-		    	if (oldHandler && oldHandler.MINIeventHandlerList) 
-		    		removeFromList(oldHandler.MINIeventHandlerList, handler);
-	   		}
-    	return list;
+    	var oldHandler;
+    	for (var i = 0; i < list.length; i++)
+    		if ((oldHandler = list[i]['on'+cleanEventName(name)]) && oldHandler.MINIeventHandlerList) 
+    			removeFromList(oldHandler.MINIeventHandlerList, handler);
+        return list;
     };
     
     /**
@@ -954,13 +924,15 @@ window['MINI'] = (function() {
 	 * @requires addevent
 	 * @public yes
 	 * @syntax MINI.ready(handler)
-     * Removes the event handler. The call will be ignored if the given handler is not registered.
-     * @param element the monitored object, or its id. If null, it is assumed to be window.
-     * @param name the name of the event (see addEvent)
-     * @param handler the handler to unregister, as given to addEvent()
+     * Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).
+     * On older browsers, it is the same as 'window.onload'. 
+     * @param handler the function to be called when the HTML is ready
      */
     MINI['ready'] = function(handler) {
-    	addEvent(0, DOMREADY, handler);
+		if (DOMREADY_CALLED) // if DOM ready, call immediately
+			setTimeout(handler, 0);
+		else
+			DOMREADY_HANDLER.push(handler);
     };
     
     /**
@@ -1059,17 +1031,6 @@ window['MINI'] = (function() {
     
     //// 8. ANIMATION MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    function getRequestAnimationFrame() {
-        for (var n in {r:1, webkitR:1, mozR:1, oR:1, msR:1}) {
-        	var f = window[n+'equestAnimationFrame'];
-        	if (f)
-        		return f;
-        }
-		return function(callback) {
-			window.setTimeout(function() {callback();}, 100/3); // 30 fps as fallback
-		};
-	}
-	
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currenetly active
 
 	/**
@@ -1096,16 +1057,21 @@ window['MINI'] = (function() {
         entry.s = stopFunc;
         
         if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
-            var requestAnim = getRequestAnimationFrame(); 
-            var raFunc = function() { 
-                for (var i = 0; i < ANIMATION_HANDLERS.length; i++) { 
-                    var a = ANIMATION_HANDLERS[i]; 
-                    a.c(Math.max(0, now() - a.t), a.s); 
-                } 
-                if (ANIMATION_HANDLERS.length) // check len now, in case the callback invoked stopFunc() 
-                    requestAnim(raFunc, element); 
-            }; 
-            requestAnim(raFunc, element); 
+			var f;
+			var requestAnim = function(callback) {
+				window.setTimeout(function() {callback();}, 100/3); // 30 fps as fallback
+			};
+			for (var n in {r:1, webkitR:1, mozR:1, oR:1, msR:1})
+				if (f = window[n+'equestAnimationFrame'])
+					requestAnim = f;
+		
+			(function raFunc() {
+				var t = now();
+				for (var i = 0; i < ANIMATION_HANDLERS.length; i++) 
+				    ANIMATION_HANDLERS[i].c(Math.max(0, t - ANIMATION_HANDLERS[i].t), ANIMATION_HANDLERS[i].s); 
+				if (ANIMATION_HANDLERS.length) // check len now, in case the callback invoked stopFunc() 
+				    requestAnim(raFunc, element); 
+			})(); 
         } 
         return stopFunc; 
     };
@@ -1129,7 +1095,7 @@ window['MINI'] = (function() {
 			var p = {};
 			for (var name in properties)
 				if (/^@/.test(name))
-					p[name] = list[i].getAttribute(name[substring](1)) || 0;
+					p[name] = list[i].getAttribute(name.substring(1)) || 0;
 				else {
 					var components = getNameComponents(name)
 					var a = list[i];
