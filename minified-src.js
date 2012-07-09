@@ -39,7 +39,7 @@ window['MINI'] = (function() {
 			if (list[i] === element) 
 				list.splice(i--, 1);
     }
-	
+    
 	var backslashB = '\\b';
 
 	// helper for set and get
@@ -72,58 +72,35 @@ window['MINI'] = (function() {
     //// 1. SELECTOR MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	function set(list, name, value, undef) {
-		if (value === undef)
-			for (var n in name) {// property map given
+		if (value === undef) {
+			for (var n in name) // property map given
 				if (name.hasOwnProperty(n)) 
 					set(list, n, name[n]);
-			}
-		else if (/^@/.test(name))
-			for (var i = 0; i < list.length; i++)
-				list[i].setAttribute(name.substring(1), value);
+		}
 		else {
-			var components = getNameComponents(name);
+			var components = /^@/.test(name) ? null : getNameComponents(name);
 			for (var i = 0; i < list.length; i++) {
-				var a = list[i];
-				for (var j = 0; j < components.length-1; j++)
-					a = a[components[j]];
-				a[components[components.length-1]] = value;
+				var obj = list[i];
+		    	if (components) {
+					for (var j = 0; j < components.length-1; j++)
+						obj = obj[components[j]];
+					obj[components[components.length-1]] = value;
+				}
+		    	else
+					obj.setAttribute(name.substring(1), value);
 			}
 		}
 		return list;
 	};
 
-	function findElements(parent, elementName, className) { 
-		var elements, regexpFilter, prop;
-		parent = parent || document.getElementsByTagName('html')[0];
-	
-		if (className && parent.getElementsByClassName) { // not all browsers support getElementsByClassName
-			elements = parent.getElementsByClassName(className); 
-			regexpFilter = elementName;
-			prop = 'nodeName';
-		} 
-		else { // also fallback for getElementsByClassName (slow!)
-			elements = parent.getElementsByTagName(elementName || '*'); 
-			regexpFilter = className;
-			prop = 'className';
-		}
-		var list = elements;
-		if (regexpFilter) {
-			list = [];
-			var reg = new RegExp(backslashB +  regexpFilter + backslashB, 'i'); 
-			for (var i=0; i < elements.length; i++)
-				if(reg.test(elements[i][prop])) 
-					list.push(elements[i]); 
-		}
-		return list; 
-	}
-
-    
     function dollarRaw(selector, context) { 
 		if (!selector) 
 		    return [];
 		var parent;
-		if (context) {
-			context = dollarRaw(context);
+		var steps, dotPos, mainSelector, subSelectors, list;
+		var elements, regexpFilter, prop, className, elementName;
+
+		if (context = dollarRaw(context)) {
 			if (context.length > 1) {
 				var r = []; 
 				for (var i = 0; i < context.length; i++) {
@@ -159,8 +136,7 @@ window['MINI'] = (function() {
 		if (typeof selector != 'string')
 		    throwError(3);
 
-		var subSelectors = selector.split(/\s*,\s*/); 
-		if (subSelectors.length>1) {
+		if ((subSelectors = selector.split(/\s*,\s*/)).length>1) {
 			var r = []; 
 			for (var i = 0; i < subSelectors.length; i++)  {
 				var a = dollarRaw(subSelectors[i], parent);
@@ -170,23 +146,44 @@ window['MINI'] = (function() {
 			return r; 
 		}
 
-		var steps = selector.split(/\s+/);
-		if (steps.length > 1)
+		if ((steps = selector.split(/\s+/)).length > 1)
 			return dollarRaw(steps.slice(1).join(' '), dollarRaw(steps[0], parent));
 
-		var mainSelector = steps[0];
-		if (/^#/.test(mainSelector))
+		if (/^#/.test(mainSelector = steps[0]))
 			return filterElements([document.getElementById(mainSelector.substring(1))]); 
 
 		if (/[ :]/.test(mainSelector)) 
 		    throwError(1); 
-		var dotPos = mainSelector.indexOf('.'); 
-		if (dotPos < 0) 
-		    return findElements(parent, mainSelector); 
-		else if (dotPos) 
-		    return findElements(parent, mainSelector.substring(0, dotPos), mainSelector.substring(dotPos+1)); 
-		else 
-		    return findElements(parent, null, mainSelector.substring(1)); 
+
+		parent = parent || document.getElementsByTagName('html')[0];
+		
+		if ((dotPos = mainSelector.indexOf('.')) < 0)
+		    elementName = mainSelector;
+		else {
+			elementName = mainSelector.substring(0, dotPos);  // element name only set of dotPos > 0
+			className = mainSelector.substring(dotPos+1);     
+		}
+	
+		if (className && parent.getElementsByClassName) { // not all browsers support getElementsByClassName
+			elements = parent.getElementsByClassName(className); 
+			regexpFilter = elementName;
+			prop = 'nodeName';
+		} 
+		else { // also fallback for getElementsByClassName (slow!)
+			elements = parent.getElementsByTagName(elementName || '*'); 
+			regexpFilter = className;
+			prop = 'className';
+		}
+		list = elements;
+		if (regexpFilter) {
+			list = [];
+			var reg = new RegExp(backslashB +  regexpFilter + backslashB, 'i'); 
+			for (var i=0; i < elements.length; i++)
+				if(reg.test(elements[i][prop])) 
+					list.push(elements[i]); 
+		}
+		
+		return list;
 	}; 
 	
 	function removeList(n) {
@@ -403,8 +400,9 @@ window['MINI'] = (function() {
 	     * @param className the name to toggle
 	     */
 	    list['toggleClass'] = function(className) {
-	        var reg = createClassNameRegExp(className); 
-	        for (var li, i = 0; i < list.length; i++)
+	        var reg = createClassNameRegExp(className);
+	        var li;
+	        for (var i = 0; i < list.length; i++)
 	            if ((li = list[i]).className && reg.test(li.className))
 	                removeClassRegExp(li, reg);
 	            else if (li.className)
@@ -546,10 +544,11 @@ window['MINI'] = (function() {
 		var doc = document;
 		var nu =  doc.documentElement.namespaceURI; // to check whether doc is XHTML
 		var e = nu ? doc.createElementNS(nu, name) : doc.createElement(name); 
-
-		for (var attrName in attributes) // works even if attributes is null or undef
-			if (attributes.hasOwnProperty(attrName))
-				e.setAttribute(attrName, (attributes[attrName] != null) ? toString(attributes[attrName]) : ''); // null check required here
+		var a;
+		
+		for (var attrName in attributes) // works even if attributes is null or undef!?
+			if (attributes.hasOwnProperty(attrName) && ((a = attributes[attrName]) != null))  // null check required here
+				e.setAttribute(attrName, toString(a));
 			
 		function appendChildren(c) {
 			if (isArray(c))
@@ -563,8 +562,7 @@ window['MINI'] = (function() {
 			}
 		}
 
-		if (children != null) // must check null, as 0 is a valid parameter
-			appendChildren(children);
+		appendChildren(children);
 		
 		if (parent)
 			EL(parent).appendChild(e);
@@ -734,12 +732,12 @@ window['MINI'] = (function() {
      * @param value the value (map-like object, array, string, number, date, boolean or null)
      * @return the JSON string
      */
-	MINI['toJSON'] = (JSON && JSON.stringify) ? JSON.stringify : function toJSON(value) {
-		var c, t, v, n='null';
+	MINI['toJSON'] = (JSON && JSON.stringify) || function toJSON(value) {
+		var ctor, type, v, k, i, NULL='null';
 		if (value && typeof value == 'object') {
-			if ((c = value.constructor) == String || c == Number || c == Boolean)
+			if ((ctor = value.constructor) == String || ctor == Number || ctor == Boolean)
 				value = toString(value); 
-			else if (c == Date) {
+			else if (ctor == Date) {
 				function f(n) {
 					return n < 10 ? '0' + n : n;
 				}
@@ -752,19 +750,20 @@ window['MINI'] = (function() {
 			}
 		}
 	
-		if ((t = typeof value) == 'string')
+		if ((type = typeof value) == 'string')
 			return quoteStringForJSON(value);
-		if (t == 'boolean' || t == n || t == 'number') // handle infinite numbers?
+		if (type == 'boolean' || type == NULL || type == 'number') // handle infinite numbers?
 			return toString(value);
 		if (!value)
-			return n;
+			return NULL;
+		
 		var partial = [];
 		if (isArray(value)) {
-			for (var i = 0; i < value.length; i ++)
+			for (i = 0; i < value.length; i ++)
 				partial.push(toJSON(value[i]));
 			return '[' + partial.join() + ']';
 		}
-		for (var k in value) 
+		for (k in value) 
 			if (value.hasOwnProperty(k)) {
 				if (v = toJSON(value[k]) != null)
 					partial.push(quoteStringForJSON(k) + ':' + v);
@@ -783,7 +782,7 @@ window['MINI'] = (function() {
      * @param text the JSON string
      * @return the resulting JavaScript object
      */
-    MINI['parseJSON'] = (JSON && JSON.parse) ? JSON.parse : function (text) {
+    MINI['parseJSON'] = (JSON && JSON.parse) || function (text) {
     	text = toString(text).replace(/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, 
     		function (a) {
     			return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
@@ -930,7 +929,7 @@ window['MINI'] = (function() {
      */
     MINI['ready'] = function(handler) {
 		if (DOMREADY_CALLED) // if DOM ready, call immediately
-			setTimeout(handler, 0);
+			window.setTimeout(handler, 0);
 		else
 			DOMREADY_HANDLER.push(handler);
     };
@@ -1082,7 +1081,6 @@ window['MINI'] = (function() {
 	 */
 	var REMOVE_UNIT = /[^0-9]+$/;
 
-
 	function animate(list, properties, durationMs, linearity, callback, delayMs) {
 		if (delayMs) {
 				window.setTimeout(function(){animate(list, properties, durationMs, linearity, callback);}, delayMs);
@@ -1110,21 +1108,21 @@ window['MINI'] = (function() {
 			if (timePassedMs >= durationMs || timePassedMs < 0) {
 				set(list, properties);
 				stop();
-				if (callback) callback();
+				if (callback) 
+					callback();
 			}
 			else
-				for (var i = 0; i < list.length; i++) {
-					var p = {};
+				for (var i = 0; i < list.length; i++)
 					for (var name in initState[i]) {
 						var startValue = parseFloat(toString(initState[i][name]).replace(REMOVE_UNIT));
 						var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
 						var c = delta/(durationMs*durationMs)*timePassedMs*timePassedMs;
-						p[name] = (startValue + linearity * timePassedMs/durationMs * delta + 
-								 				(1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) + 
-								' ' +  properties[name].replace(/^-?[0-9. ]*/,''); // unit
+						set([list[i]], name, 
+								(startValue + linearity * timePassedMs/durationMs * delta + 
+						 				(1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) + 
+						 				' ' +  properties[name].replace(/^-?[0-9. ]*/,''));
 					}
-					set([list[i]], p);
-				}
+					
 		});
 		return list;
 	}; 
