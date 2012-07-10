@@ -230,7 +230,11 @@ window['MINI'] = (function() {
 			}
 			return list;
 		};
-		
+		/**
+		 @stop
+		 */
+		var REMOVE_UNIT = /[^0-9]+$/;
+
 		/**
 		 * @id listanimate
 		 * @module 8
@@ -252,8 +256,50 @@ window['MINI'] = (function() {
 		 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
 		 * @return the list
 		 */
-		list['animate'] = function (properties, duration, makeLinear, callback, delayMs) {
-			return animate(list, properties, duration, makeLinear, callback, delayMs);
+		list['animate'] = function (properties, durationMs, linearity, callback, delayMs) {
+			if (delayMs) {
+				window.setTimeout(function(){list['animate'](properties, durationMs, linearity, callback);}, delayMs);
+				return list;
+			}
+			durationMs = durationMs || 500;
+			linearity = Math.max(0, Math.min(1, linearity || 0));
+			var initState = []; // for each item contains property name -> startValue
+			for (var i = 0; i < list.length; i++) {
+				var p = {};
+				for (var name in properties)
+					if (/^@/.test(name))
+						p[name] = list[i].getAttribute(name.substring(1)) || 0;
+					else {
+						var components = getNameComponents(name)
+						var a = list[i];
+						for (var j = 0; j < components.length-1; j++) 
+							a = a[components[j]];
+						p[name] = a[components[components.length-1]] || 0;
+					}
+				initState.push(p);
+			}
+	
+			runAnimation(function(timePassedMs, stop) {
+				if (timePassedMs >= durationMs || timePassedMs < 0) {
+					list.set(properties);
+					stop();
+					if (callback) 
+						callback();
+				}
+				else
+					for (var i = 0; i < list.length; i++)
+						for (var name in initState[i]) {
+							var startValue = parseFloat(toString(initState[i][name]).replace(REMOVE_UNIT));
+							var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
+							var c = delta/(durationMs*durationMs)*timePassedMs*timePassedMs;
+							$(list[i]).set(name, 
+									(startValue + linearity * timePassedMs/durationMs * delta + 
+							 				(1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) + 
+							 				' ' +  properties[name].replace(/^-?[0-9. ]*/,''));
+						}
+						
+			});
+			return list;		
 		};
 		
 	    /**
@@ -289,7 +335,67 @@ window['MINI'] = (function() {
 	     * @return the list
 	     */
 		list['addEvent'] = function (name, handler) {
-			return addEvent(list, name, handler);
+	    	name = cleanEventName(name);
+
+	    	var nameUC = name.toUpperCase();
+	    	var onName = 'on'+name;
+	    	
+	    	for (var k = 0; k < list.length; k++) {
+	    		var el = list[k];
+	   	
+		    	var oldHandler = el[onName];
+		    	if (oldHandler && oldHandler.MINIeventHandlerList) // already a MINI event handler set?
+		    		oldHandler.MINIeventHandlerList.push(handler);
+				else {
+			    	var handlerList = [handler];
+			    	var newHandler = function(e) {
+			    		if (oldHandler)
+			    			oldHandler(e);
+			    		
+			        	e = e || window.event;
+			         	var evObj = { 
+			        			original: e, 
+			        			src: this,
+			        			keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
+			        			button: e.which || e.button,
+			        			rightClick: e.which ? (e.which == 3) : (e.button ? (e.button == 2) : false),
+			        			clientX: e.clientX,
+			        			clientY: e.clientY,
+			        			screenX: e.screenX,
+			        			screenY: e.screenY,
+			        			pageX: e.pageX,
+			        			pageY: e.pageY
+			        		};
+			         	
+			         	if (e.clientX || e.clientY){
+			        		var l = document.documentElement, b = document.body;
+			        		evObj.pageX = l.scrollLeft + b.scrollLeft + e.clientX;
+			        		evObj.pageY = l.scrollTop + b.scrollTop + e.clientY;
+			        	}
+			        	else if (e.detail || e.wheelDelta)
+			        		evObj.wheelDir = (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1;
+			    		
+			    		var keepBubbling = true;
+			    		var r;
+			    		for (var i = 0; i < handlerList.length; i++)
+			    			if ((r = handlerList[i](evObj)) != null) // must check null here
+			    				keepBubbling = keepBubbling && r;
+			    		
+			    		if (!keepBubbling) {
+			    			e.cancelBubble = true;
+			    			if (e.stopPropagation) 
+			    				e.stopPropagation();
+			    		}
+			    		return keepBubbling;
+			    	};
+			    	newHandler.MINIeventHandlerList = handlerList;
+			    	
+			    	el[onName] = newHandler;
+			    	if (el.captureEvents) 
+			    		el.captureEvents(Event[nameUC]);
+			    }
+	    	}
+		    return list;
 		};
 
 	    /**
@@ -304,7 +410,11 @@ window['MINI'] = (function() {
 	     * @return the list
 	     */
 		list['removeEvent'] = function (name, handler) {
-			return removeEvent(list, name, handler);
+	    	var oldHandler;
+	    	for (var i = 0; i < list.length; i++)
+	    		if ((oldHandler = list[i]['on'+cleanEventName(name)]) && oldHandler.MINIeventHandlerList) 
+	    			removeFromList(oldHandler.MINIeventHandlerList, handler);
+	        return list;
 		};
 		
 	    /**
@@ -798,7 +908,6 @@ window['MINI'] = (function() {
     	return name.toLowerCase().replace(/^on/, '');
     }
     
-
     // Two-level implementation for domready events
     var DOMREADY_CALLED = 0;
     var DOMREADY_HANDLER = [];
@@ -817,96 +926,11 @@ window['MINI'] = (function() {
     			DOMREADY_HANDLER[i]();
     }
     
-    // gets the DOM event object and creates MINI's
-    function getEventObject(eventArg, src) {
-    	var e = eventArg || window.event;
-     	var nev = { 
-    			original: e, 
-    			src: src,
-    			keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
-    			button: e.which || e.button,
-    			rightClick: e.which ? (e.which == 3) : (e.button ? (e.button == 2) : false),
-    			clientX: e.clientX,
-    			clientY: e.clientY,
-    			screenX: e.screenX,
-    			screenY: e.screenY,
-    			pageX: e.pageX,
-    			pageY: e.pageY
-    		};
-     	
-     	if (e.clientX || e.clientY){
-    		var l = document.documentElement, b = document.body;
-    		nev.pageX = l.scrollLeft + b.scrollLeft + e.clientX;
-    		nev.pageY = l.scrollTop + b.scrollTop + e.clientY;
-    	}
-    	else if (e.detail || e.wheelDelta)
-    		nev.wheelDir = (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1;
-     	return nev;
-    }
-    
-    function addEvent(list, name, handler) {
-    	name = cleanEventName(name);
-
-    	var nameUC = name.toUpperCase();
-    	var onName = 'on'+name;
-    	
-    	for (var k = 0; k < list.length; k++) {
-    		var el = list[k];
-   	
-	    	var oldHandler = el[onName];
-	    	if (oldHandler && oldHandler.MINIeventHandlerList) // already a MINI event handler set?
-	    		oldHandler.MINIeventHandlerList.push(handler);
-			else {
-		    	var handlerList = [handler];
-		    	var newHandler = function(e) {
-		    		if (oldHandler)
-		    			oldHandler(e);
-		
-		    		var evObj = getEventObject(e, this);
-		    		var keepBubbling = true;
-		    		var r;
-		    		for (var i = 0; i < handlerList.length; i++)
-		    			if ((r = handlerList[i](evObj)) != null) // must check null here
-		    				keepBubbling = keepBubbling && r;
-		    		
-		    		if (!keepBubbling) {
-		    			e.cancelBubble = true;
-		    			if (e.stopPropagation) 
-		    				e.stopPropagation();
-		    		}
-		    		return keepBubbling;
-		    	};
-		    	newHandler.MINIeventHandlerList = handlerList;
-		    	
-		    	el[onName] = newHandler;
-		    	if (el.captureEvents) 
-		    		el.captureEvents(Event[nameUC]);
-		    }
-    	}
-	    return list;
-    }
+  
 	/**
 	 * @stop
 	 */  
 		
-    
-    /**
-	 * @id removeevent
-	 * @module 5
-	 * @requires 
-	 * @public yes
-	 * @syntax MINI.removeEvent(element, name, handler)
-     * Removes the event handler. The call will be ignored if the given handler is not registered.
-     * @param name the name of the event (see addEvent)
-     * @param handler the handler to unregister, as given to addEvent()
-     */
-    function removeEvent(list, name, handler) {
-    	var oldHandler;
-    	for (var i = 0; i < list.length; i++)
-    		if ((oldHandler = list[i]['on'+cleanEventName(name)]) && oldHandler.MINIeventHandlerList) 
-    			removeFromList(oldHandler.MINIeventHandlerList, handler);
-        return list;
-    };
     
     /**
 	 * @id ready
@@ -1067,56 +1091,7 @@ window['MINI'] = (function() {
     };
     MINI['runAnimation'] = runAnimation;
     
-	/**
-	 @stop
-	 */
-	var REMOVE_UNIT = /[^0-9]+$/;
 
-	function animate(list, properties, durationMs, linearity, callback, delayMs) {
-		if (delayMs) {
-				window.setTimeout(function(){animate(list, properties, durationMs, linearity, callback);}, delayMs);
-				return list;
-		}
-		durationMs = durationMs || 500;
-		linearity = Math.max(0, Math.min(1, linearity || 0));
-		var initState = []; // for each item contains property name -> startValue
-		for (var i = 0; i < list.length; i++) {
-			var p = {};
-			for (var name in properties)
-				if (/^@/.test(name))
-					p[name] = list[i].getAttribute(name.substring(1)) || 0;
-				else {
-					var components = getNameComponents(name)
-					var a = list[i];
-					for (var j = 0; j < components.length-1; j++) 
-						a = a[components[j]];
-					p[name] = a[components[components.length-1]] || 0;
-				}
-			initState.push(p);
-		}
-
-		runAnimation(function(timePassedMs, stop) {
-			if (timePassedMs >= durationMs || timePassedMs < 0) {
-				$(list).set(properties);
-				stop();
-				if (callback) 
-					callback();
-			}
-			else
-				for (var i = 0; i < list.length; i++)
-					for (var name in initState[i]) {
-						var startValue = parseFloat(toString(initState[i][name]).replace(REMOVE_UNIT));
-						var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
-						var c = delta/(durationMs*durationMs)*timePassedMs*timePassedMs;
-						$(list[i]).set(name, 
-								(startValue + linearity * timePassedMs/durationMs * delta + 
-						 				(1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) + 
-						 				' ' +  properties[name].replace(/^-?[0-9. ]*/,''));
-					}
-					
-		});
-		return list;
-	}; 
 	/**
 	 @stop
 	 */
