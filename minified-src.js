@@ -66,27 +66,7 @@ window['MINI'] = (function() {
     //// 1. SELECTOR MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	
-	function set(list, name, value, undef) {
-		if (value === undef) {
-			for (var n in name) // property map given
-				if (name.hasOwnProperty(n)) 
-					set(list, n, name[n]);
-		}
-		else {
-			var components = (!/^@/.test(name)) && getNameComponents(name);
-			for (var i = 0, obj, j; i < list.length; i++) {
-				obj = list[i];
-		    	if (components) {
-					for (j = 0; j < components.length-1; j++)
-						obj = obj[components[j]];
-					obj[components[components.length-1]] = value;
-				}
-		    	else
-					obj.setAttribute(name.substring(1), value);
-			}
-		}
-		return list;
-	};
+
 
     function dollarRaw(selector, context) { 
 		if (!selector) 
@@ -187,7 +167,7 @@ window['MINI'] = (function() {
 				n[j].parentNode.removeChild(n[j]);
 	}	
     
-	function addElementListFuncs(list) {
+	function addElementListFuncs(list, undef) {
 		/**
 		 * @id listremove
 		 * @module 1
@@ -229,8 +209,26 @@ window['MINI'] = (function() {
 		 * @param properties a map containing names as keys and the values to set as map values
 		 * @return the list
 		 */
-		list['set'] = function(name, value) {
-			return set(list, name, value);
+		list['set'] = function (name, value) {
+			if (value === undef) {
+				for (var n in name) // property map given
+					if (name.hasOwnProperty(n)) 
+						list['set'](n, name[n]);
+			}
+			else {
+				var components = (!/^@/.test(name)) && getNameComponents(name);
+				for (var i = 0, obj, j; i < list.length; i++) {
+					obj = list[i];
+			    	if (components) {
+						for (j = 0; j < components.length-1; j++)
+							obj = obj[components[j]];
+						obj[components[components.length-1]] = value;
+					}
+			    	else
+						obj.setAttribute(name.substring(1), value);
+				}
+			}
+			return list;
 		};
 		
 		/**
@@ -1099,7 +1097,7 @@ window['MINI'] = (function() {
 
 		runAnimation(function(timePassedMs, stop) {
 			if (timePassedMs >= durationMs || timePassedMs < 0) {
-				set(list, properties);
+				$(list).set(properties);
 				stop();
 				if (callback) 
 					callback();
@@ -1110,7 +1108,7 @@ window['MINI'] = (function() {
 						var startValue = parseFloat(toString(initState[i][name]).replace(REMOVE_UNIT));
 						var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
 						var c = delta/(durationMs*durationMs)*timePassedMs*timePassedMs;
-						set([list[i]], name, 
+						$(list[i]).set(name, 
 								(startValue + linearity * timePassedMs/durationMs * delta + 
 						 				(1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) + 
 						 				' ' +  properties[name].replace(/^-?[0-9. ]*/,''));
