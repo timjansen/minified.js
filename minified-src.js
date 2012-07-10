@@ -23,8 +23,10 @@
 
 window['MINI'] = (function() {
 	var MINI = {};
-	
-    //// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	var backslashB = '\\b';
+
+	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  	function throwError(num) {
 		throw new Error('MINIError ' + num);
@@ -41,7 +43,7 @@ window['MINI'] = (function() {
     }
     
 
-	// helper for set and get
+	// helper for set and get; if starts with $, rewrite as CSS style
 	function getNameComponents(name) {
 		if (/^\$/.test(name))
 			name = name.replace(/^\$/, 'style.').replace(/([a-z])_/, '$1-');
@@ -52,16 +54,9 @@ window['MINI'] = (function() {
 	 * @stop set
 	 */    
 
-	function checkType(value, type) {
-		return value && Object.prototype.toString.call(value) == '[object '+type+']'
-	}
-	
-    function isArray(value) {
-        return checkType(value, 'Array');
-    };
-
 	function isList(value) {
-		return isArray(value) || checkType(value, 'NodeList');
+		var v = Object.prototype.toString.call(value);
+		return v == '[object Array]' || v == '[object NodeList]';
 	}
 	 
     function now() {
@@ -70,7 +65,6 @@ window['MINI'] = (function() {
     
     //// 1. SELECTOR MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	var backslashB = '\\b';
 	
 	function set(list, name, value, undef) {
 		if (value === undef) {
@@ -327,7 +321,7 @@ window['MINI'] = (function() {
 	     * @return an object containing pixel coordinates in two properties 'left' and 'top'
 	     */
 	    list['getPageCoordinates'] = function() {
-	    	return list[0] ? getBodyCoordsInternal(list[0], {left: 0, top: 0}) : null;
+	    	return list[0] && getBodyCoordsInternal(list[0], {left: 0, top: 0});
 	    };
 
 		 
@@ -552,7 +546,7 @@ window['MINI'] = (function() {
 				e.setAttribute(attrName, toString(a));
 			
 		function appendChildren(c) {
-			if (isArray(c))
+			if (isList(c))
 				for (var i = 0; i < c.length; i++)
 					appendChildren(c[i]);
 			else if (c != null) {  // must check null, as 0 is a valid parameter
@@ -759,16 +753,14 @@ window['MINI'] = (function() {
 			return NULL;
 		
 		var partial = [];
-		if (isArray(value)) {
+		if (isList(value)) {
 			for (i = 0; i < value.length; i ++)
 				partial.push(toJSON(value[i]));
 			return '[' + partial.join() + ']';
 		}
 		for (k in value) 
-			if (value.hasOwnProperty(k)) {
-				if (v = toJSON(value[k]) != null)
-					partial.push(quoteStringForJSON(k) + ':' + v);
-			}
+			if (value.hasOwnProperty(k) && ((v = toJSON(value[k])) != null))
+				partial.push(quoteStringForJSON(k) + ':' + v);
 		return '{' + partial.join() + '}';
     };
     
@@ -812,14 +804,14 @@ window['MINI'] = (function() {
     // Two-level implementation for domready events
     var DOMREADY_CALLED = 0;
     var DOMREADY_HANDLER = [];
-    if (document.addEventListener)
-    	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
     var DOMREADY_OLD_UNLOAD = window.onload;
     window.onload = function() {
       window.setTimeout(triggerDomReady, 0);
       if (DOMREADY_OLD_UNLOAD)
     	  DOMREADY_OLD_UNLOAD.call(this);
     }
+    if (document.addEventListener)
+    	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
     
     function triggerDomReady() {
     	if (!DOMREADY_CALLED++)
