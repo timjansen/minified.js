@@ -28,10 +28,18 @@ window['MINI'] = (function() {
 
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+    /**
+     * @id tostring
+     * @dependency yes
+     */
 	function toString(s) { // wrapper for Closure optimization
 		return String(s);
 	}
 	
+    /**
+     * @id removefromlist
+     * @dependency yes
+     */
     function removeFromList(list, element) {
 		for (var i = 0; i < list.length; i++)
 			if (list[i] === element) 
@@ -39,32 +47,41 @@ window['MINI'] = (function() {
     }
     
 
-	// helper for set and get; if starts with $, rewrite as CSS style
+    /**
+     * @id getnamecomponents
+     * @dependency yes
+     * helper for set and get; if starts with $, rewrite as CSS style
+     */
 	function getNameComponents(name) {
 		if (/^\$/.test(name))
 			name = 'style.' + name.substring(1).replace(/(\w)_/, '$1-');
 		return name.split('.');
 	}
 
-	
-	/**
-	 * @stop set
-	 */    
-
+    /**
+     * @id islist 
+     * @dependency yes
+     */
 	function isList(value) {
 		var v = Object.prototype.toString.call(value);
 		return v == '[object Array]' || v == '[object NodeList]';
 	}
 	 
+    /**
+     * @id now
+     * @dependency yes
+     */
     function now() {
     	return new Date().getTime();
     }
     
     //// 1. SELECTOR MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	
-
-
+    /**
+     * @id dollarraw
+     * @requires islist
+     * @dependency yes
+     */
     function dollarRaw(selector, context) { 
 		if (!selector) 
 		    return [];
@@ -152,7 +169,16 @@ window['MINI'] = (function() {
 		
 		return list;
 	}; 
+	
+	/**
+	 * @stop
+	 */
     
+    /**
+     * @id addelementlistfuncsstart
+     * @requires addelementlistfuncend
+     * @dependency yes
+     */
 	function addElementListFuncs(list, undef) {
 		/**
 		 * @id listremove
@@ -183,7 +209,7 @@ window['MINI'] = (function() {
 		/**
 		 * @id set
 		 * @module 1
-		 * @requires dollar
+		 * @requires dollar getnamecomponents
 		 * @configurable yes
 		 * @syntax MINI.$(selector).set(name, value)
 		 * @syntax MINI.$(selector).set(properties)
@@ -225,7 +251,7 @@ window['MINI'] = (function() {
 		/**
 		 * @id listanimate
 		 * @module 8
-		 * @requires runanimation dollar
+		 * @requires runanimation dollar getnamecomponents tostring
 		 * @configurable yes
 		 * @syntax MINI.$(selector).animate(properties)
 		 * @syntax MINI.$(selector).animate(properties, durationMs)
@@ -389,7 +415,7 @@ window['MINI'] = (function() {
 	    /**
 		 * @id listremoveevent
 		 * @module 5
-		 * @requires dollar
+		 * @requires dollar removefromlist
 		 * @configurable yes
 		 * @syntax MINI.removeEvent(element, name, handler)
 	     * Removes the event handler. The call will be ignored if the given handler is not registered.
@@ -431,7 +457,6 @@ window['MINI'] = (function() {
 	     * @id createclassnameregexp
 	     * @dependency yes
 	     */
-		 
 	    function createClassNameRegExp(className) {
 	        return new RegExp(backslashB + className + backslashB);
 	    }
@@ -517,16 +542,17 @@ window['MINI'] = (function() {
 	                li.className = className;
 	        return list;
 	    };
-		/**
-		 * @stop listtoggleclass
-		 */
+	    /**
+	     * @id addelementlistfuncsend
+	     * @dependency yes
+	     */
 		return list;
 	}
 	
 	/**
 	 * @id dollar
 	 * @module 1
-	 * @requires 
+	 * @requires dollarraw addelementlistfuncsstart
 	 * @configurable yes
 	 * @syntax MINI.$(selector)
 	 * @shortcut $(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
@@ -563,7 +589,7 @@ window['MINI'] = (function() {
     /**
 	 * @id el
 	 * @module 1
-	 * @requires 
+	 * @requires dollarraw
 	 * @configurable yes
 	 * @syntax MINI.el(selector)
 	 * @shortcut EL(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
@@ -587,7 +613,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id text
 	 * @module 2
-	 * @requires el
+	 * @requires el tostring
 	 * @configurable yes
 	 * @syntax MINI.text(text)
 	 * @syntax MINI.text(text, parent)
@@ -609,7 +635,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id element
 	 * @module 2
-	 * @requires el text
+	 * @requires el text islist tostring
 	 * @configurable yes
 	 * @syntax MINI.element(name)
 	 * @syntax MINI.element(name, attributes)
@@ -707,7 +733,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id request
 	 * @module 3
-	 * @requires 
+	 * @requires tostring
 	 * @configurable yes
 	 * @syntax MINI.request(method, url)
 	 * @syntax MINI.request(method, url, data)
@@ -806,6 +832,10 @@ window['MINI'] = (function() {
 	 * based on public domain implementation http://www.JSON.org/json2.js / http://www.JSON.org/js.html.
 	 * Simplified code, made variables local, removed all side-effects (especially new properties for String, Date and Number).
 	 */
+    /**
+	 * @id stringsubstitutions
+	 * @dependency
+     */
     var STRING_SUBSTITUTIONS = {    // table of character substitutions
             '\t': '\\t',
             '\r': '\\r',
@@ -813,6 +843,10 @@ window['MINI'] = (function() {
             '\\': '\\\\'
         };
     
+    /**
+	 * @id ucode
+	 * @dependency
+     */
     function ucode(a) {
     	return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
     }
@@ -820,7 +854,7 @@ window['MINI'] = (function() {
     /**
 	 * @id tojson
 	 * @module 4
-	 * @requires 
+	 * @requires islist tostring stringsubstitutions ucode
 	 * @configurable yes
 	 * @syntax MINI.toJSON(value)
      * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, date, boolean or null.
@@ -872,7 +906,7 @@ window['MINI'] = (function() {
     /**
 	 * @id parsejson
 	 * @module 4
-	 * @requires
+	 * @requires tostring ucode
 	 * @configurable yes
 	 * @syntax MINI.toJSON(value)
      * Parses a string containing JSON and returns the de-serialized object.
@@ -902,7 +936,7 @@ window['MINI'] = (function() {
     /**
 	 * @id ready
 	 * @module 5
-	 * @requires addevent
+	 * @requires 
 	 * @configurable yes
 	 * @syntax MINI.ready(handler)
      * Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).
@@ -946,7 +980,7 @@ window['MINI'] = (function() {
     /**
 	 * @id setcookie
 	 * @module 6
-	 * @requires
+	 * @requires now
 	 * @configurable yes
 	 * @syntax MINI.setCookie(name, value)
 	 * @syntax MINI.setCookie(name, value, dateOrDays)
@@ -1017,19 +1051,18 @@ window['MINI'] = (function() {
  	 */
  
 
-    
-   	/**
- 	 * @stop
- 	 */
-    
     //// 8. ANIMATION MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
+    /**
+     * @id animationhandlers
+     * @dependency
+     */
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currenetly active
 
 	/**
 	 * @id runanimation
 	 * @module 8
-	 * @requires el
+	 * @requires el now removefromlist animationhandlers
 	 * @configurable yes
 	 * @syntax MINI.runAnimation(paintCallback)
 	 * @syntax MINI.runAnimation(paintCallback, element)
