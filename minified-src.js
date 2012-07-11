@@ -29,7 +29,7 @@ window['MINI'] = (function() {
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  	function throwError(num) {
-		throw new Error('MINIError ' + num);
+		throw new Error('MINICode ' + num);
 	}
 	
 	function toString(s) { // wrapper for Closure optimization
@@ -289,9 +289,10 @@ window['MINI'] = (function() {
 							var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
 							var c = delta/(durationMs*durationMs)*timePassedMs*timePassedMs;
 							$(list[i]).set(name, 
-									(startValue + linearity * timePassedMs/durationMs * delta + 
-							 				(1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) + 
-							 				' ' +  properties[name].replace(/^-?[0-9. ]*/,''));
+									        (startValue + 
+											 linearity * timePassedMs/durationMs * delta +   // linear equation
+							 				 (1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) +  // bilinear equation
+							 				properties[name].replace(/^-?[0-9. ]+/, ' ')); // add unit
 						}
 						
 			});
