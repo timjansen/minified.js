@@ -46,10 +46,11 @@ window['MINI'] = (function() {
 	// helper for set and get; if starts with $, rewrite as CSS style
 	function getNameComponents(name) {
 		if (/^\$/.test(name))
-			name = name.replace(/^\$/, 'style.').replace(/([a-z])_/, '$1-');
+			name = 'style.' + name.substring(1).replace(/(?:\w)_/, '-');
 		return name.split('.');
 	}
 
+	
 	/**
 	 * @stop set
 	 */    
@@ -91,9 +92,9 @@ window['MINI'] = (function() {
 		function filterElements(list) {
 			if (!parent)
 				return list;
-			var r = []; 
+			var r = [], a; 
 			for (var i = 0; i < list.length; i++) {
-				var a = list[i];
+				a = list[i];
 				while (a) 
 					if (a.parentNode === parent) {
 						r.push(list[i]);
@@ -160,12 +161,6 @@ window['MINI'] = (function() {
 		
 		return list;
 	}; 
-	
-	function removeList(n) {
-		if (n)
-			for (var j = n.length-1; j >= 0; j--) // go backward - NodeList may shrink when elements are removed!
-				n[j].parentNode.removeChild(n[j]);
-	}	
     
 	function addElementListFuncs(list, undef) {
 		/**
@@ -177,7 +172,8 @@ window['MINI'] = (function() {
 		 * Removes all nodes of the list from the DOM tree.
 		 */
 		list['remove'] = function() {
-			removeList(list);
+			for (var j = list.length-1; j >= 0; j--) // go backward - NodeList may shrink when elements are removed!
+				list[j].parentNode.removeChild(list[j]);
 		};
 		/**
 		 * @id listremovechildren
@@ -190,7 +186,7 @@ window['MINI'] = (function() {
 		 */
 		list['removeChildren'] = function() {
 			for (var i = list.length-1; i >= 0; i--) // go backward
-				removeList(list[i].childNodes);
+				$(list[i].childNodes).remove();
 			return list;
 		};
 		/**
@@ -302,6 +298,7 @@ window['MINI'] = (function() {
 			return list;		
 		};
 		
+
 	    /**
 		 * @id listaddevent
 		 * @module 5
@@ -335,17 +332,16 @@ window['MINI'] = (function() {
 	     * @return the list
 	     */
 		list['addEvent'] = function (name, handler) {
-	    	name = cleanEventName(name);
-
-	    	var nameUC = name.toUpperCase();
-	    	var onName = 'on'+name;
+	    	var nameUC = name.replace(/^on/, '').toUpperCase();
+	    	var onName = 'on'+nameUC.toLowerCase();
+	    	var MINIeventHandlerList = 'MEHL';
 	    	
 	    	for (var k = 0; k < list.length; k++) {
 	    		var el = list[k];
 	   	
 		    	var oldHandler = el[onName];
-		    	if (oldHandler && oldHandler.MINIeventHandlerList) // already a MINI event handler set?
-		    		oldHandler.MINIeventHandlerList.push(handler);
+		    	if (oldHandler && oldHandler[MINIeventHandlerList]) // already a MINI event handler set?
+		    		oldHandler[MINIeventHandlerList].push(handler);
 				else {
 			    	var handlerList = [handler];
 			    	var newHandler = function(e) {
@@ -353,6 +349,7 @@ window['MINI'] = (function() {
 			    			oldHandler(e);
 			    		
 			        	e = e || window.event;
+			        	var l = document.documentElement, b = document.body;
 			         	var evObj = { 
 			        			original: e, 
 			        			src: this,
@@ -368,7 +365,6 @@ window['MINI'] = (function() {
 			        		};
 			         	
 			         	if (e.clientX || e.clientY){
-			        		var l = document.documentElement, b = document.body;
 			        		evObj.pageX = l.scrollLeft + b.scrollLeft + e.clientX;
 			        		evObj.pageY = l.scrollTop + b.scrollTop + e.clientY;
 			        	}
@@ -388,7 +384,7 @@ window['MINI'] = (function() {
 			    		}
 			    		return keepBubbling;
 			    	};
-			    	newHandler.MINIeventHandlerList = handlerList;
+			    	newHandler[MINIeventHandlerList] = handlerList;
 			    	
 			    	el[onName] = newHandler;
 			    	if (el.captureEvents) 
@@ -412,7 +408,7 @@ window['MINI'] = (function() {
 		list['removeEvent'] = function (name, handler) {
 	    	var oldHandler;
 	    	for (var i = 0; i < list.length; i++)
-	    		if ((oldHandler = list[i]['on'+cleanEventName(name)]) && oldHandler.MINIeventHandlerList) 
+	    		if ((oldHandler = list[i]['on'+name.toLowerCase().replace(/^on/, '')]) && oldHandler.MINIeventHandlerList) 
 	    			removeFromList(oldHandler.MINIeventHandlerList, handler);
 	        return list;
 		};
@@ -429,6 +425,13 @@ window['MINI'] = (function() {
 	     * @return an object containing pixel coordinates in two properties 'left' and 'top'
 	     */
 	    list['getPageCoordinates'] = function() {
+		    function getBodyCoordsInternal(elem, dest) {
+		   		dest.left += elem.offsetLeft;
+		    	dest.top += elem.offsetTop;
+		    	
+		    	var o = elem.offsetParent;
+		    	return o ? getBodyCoordsInternal(o, dest) : dest;
+		    }
 	    	return list[0] && getBodyCoordsInternal(list[0], {left: 0, top: 0});
 	    };
 
@@ -484,7 +487,7 @@ window['MINI'] = (function() {
 	     * @param className the name to add
 	     */
 	    list['addClass'] = function(className) {
-	        list.removeClass(className);
+	        list['removeClass'](className);
 	        for (var i = 0; i < list.length; i++)
 	            if (list[i].className)
 	                list[i].className += ' ' + className;
@@ -580,6 +583,29 @@ window['MINI'] = (function() {
 		
 	//// 2. ELEMENT MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	
+	/**
+	 * @id text
+	 * @module 2
+	 * @requires el
+	 * @public yes
+	 * @syntax MINI.text(text)
+	 * @syntax MINI.text(text, parent)
+	 * Creates a text node for insertion into the DOM. It can optionally be appended to the end of 
+	 * the specified element. Returns the text node.
+	 * @param txt the text to add
+	 * @param parent optional if set, the created text node will be added as last element of this DOM node. The DOM node can be speficied
+	 *                        in any way accepted by MINI.el().
+	 * @return the resulting DOM text node
+	 */
+	function text(txt, parent) {
+		var node = document.createTextNode(toString(txt)); 
+		if (parent)
+			EL(parent).appendChild(node);
+		return node;
+	};
+	MINI['text'] = text;
+	
 	/**
 	 * @id element
 	 * @module 2
@@ -644,14 +670,12 @@ window['MINI'] = (function() {
 	 * @return the resulting DOM HTMLElement
 	 */
 	MINI['element'] = function (name, attributes, children, parent) {
-		var doc = document;
-		var nu =  doc.documentElement.namespaceURI; // to check whether doc is XHTML
-		var e = nu ? doc.createElementNS(nu, name) : doc.createElement(name); 
-		var a;
+		var nu =  document.documentElement.namespaceURI; // to check whether doc is XHTML
+		var e = nu ? document.createElementNS(nu, name) : document.createElement(name); 
 		
 		for (var attrName in attributes) // works even if attributes is null or undef!?
-			if (attributes.hasOwnProperty(attrName) && ((a = attributes[attrName]) != null))  // null check required here
-				e.setAttribute(attrName, toString(a));
+			if (attributes.hasOwnProperty(attrName) && (attributes[attrName] != null))  // null check required here
+				e.setAttribute(attrName, toString(attributes[attrName]));
 			
 		function appendChildren(c) {
 			if (isList(c))
@@ -661,7 +685,7 @@ window['MINI'] = (function() {
 				if (c.nodeType) 
 					e.appendChild(c); 
 				else 
-					e.appendChild(doc.createTextNode(toString(c))); 
+					text(c, e);
 			}
 		}
 
@@ -671,27 +695,7 @@ window['MINI'] = (function() {
 			EL(parent).appendChild(e);
 		return e;
 	};
-	
-	/**
-	 * @id text
-	 * @module 2
-	 * @requires el
-	 * @public yes
-	 * @syntax MINI.text(text)
-	 * @syntax MINI.text(text, parent)
-	 * Creates a text node for insertion into the DOM. It can optionally be appended to the end of 
-	 * the specified element. Returns the text node.
-	 * @param text the text to add
-	 * @param parent optional if set, the created text node will be added as last element of this DOM node. The DOM node can be speficied
-	 *                        in any way accepted by MINI.el().
-	 * @return the resulting DOM text node
-	 */
-	MINI['text'] = function element(text, parent) {
-		var node = document.createTextNode(toString(text)); 
-		if (parent)
-			EL(parent).appendChild(node);
-		return node;
-	}
+
     /**
      * @stop
      */
@@ -723,7 +727,7 @@ window['MINI'] = (function() {
 	 *                  is the text sent by the server.
 	 *                  You can add an optional second argument, which will contain the XML sent by the server, if there was any.
 	 * @param onFailure optional this function will be called if the request failed. The first argument is the HTTP status (never 200; 0 if no HTTP request took place), 
-	 *                  the second a status text (or 'Exception', if the browser threw one) and the third the returned text, if there was 
+	 *                  the second a status text (or 'Err', if the browser threw one) and the third the returned text, if there was 
 	 *                  any (otherwise the text is null).
 	 * @param headers optional a map of HTTP headers to add to the request. Note that the you should use the proper capitalization of the
 	 *                header 'Content-Type', if you set it, because otherwise it may be overwritten.
@@ -756,13 +760,10 @@ window['MINI'] = (function() {
 			xhr.open(method, url, true, username, password);
 			
 			if (method == 'POST' && data != null) {
-				if (typeof data == 'string') {
-					body = data;
+				body = data;
+				if (typeof data == 'string')
 					contentType = 'text/plain; charset="UTF-8"';
-				}
-				else if (data.nodeType)
-					body = data;
-				else {
+				else if (!data.nodeType) {
 					body = encodeParams(data);
 					contentType = 'application/x-www-form-urlencoded';
 				}
@@ -775,14 +776,13 @@ window['MINI'] = (function() {
 					xhr.setRequestHeader(hdrName, headers[hdrName]);
 			
 			xhr.onreadystatechange = function() {
-				if (xhr.readyState == 4 && !callbackCalled) {
+				if (xhr.readyState == 4 && !callbackCalled++) {
 					if (xhr.status == 200) {
 						if (onSuccess)
 							onSuccess(xhr.responseText, xhr.responseXML);
 					}
 					else if (onFailure)
 						onFailure(xhr.status, xhr.statusText, xhr.responseText);
-					callbackCalled = 1;
 				}
 			};
 			
@@ -791,7 +791,7 @@ window['MINI'] = (function() {
 		}
 		catch (e) {
 			if (onFailure && !callbackCalled) 
-				onFailure(0, 'Exception', toString(e));
+				onFailure(0, 'Err', toString(e));
 		}
 	};
 	/**
@@ -817,10 +817,10 @@ window['MINI'] = (function() {
         };
     
 	function quoteStringForJSON(string) {
-    	var escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
-        return '"' + string.replace(escapable, function (a) {
-                return STRING_SUBSTITUTIONS[a] || '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-            }) + '"' ;
+        return '"' + string.replace(/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, 
+        		function (a) {
+                	return STRING_SUBSTITUTIONS[a] || '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+            	}) + '"' ;
 	}
 
 
@@ -904,33 +904,6 @@ window['MINI'] = (function() {
     
     //// 5. EVENT MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    function cleanEventName(name) {
-    	return name.toLowerCase().replace(/^on/, '');
-    }
-    
-    // Two-level implementation for domready events
-    var DOMREADY_CALLED = 0;
-    var DOMREADY_HANDLER = [];
-    var DOMREADY_OLD_UNLOAD = window.onload;
-    window.onload = function() {
-      window.setTimeout(triggerDomReady, 0);
-      if (DOMREADY_OLD_UNLOAD)
-    	  DOMREADY_OLD_UNLOAD.call(this);
-    }
-    if (document.addEventListener)
-    	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
-    
-    function triggerDomReady() {
-    	if (!DOMREADY_CALLED++)
-	    	for (var i = 0; i < DOMREADY_HANDLER.length; i++)
-    			DOMREADY_HANDLER[i]();
-    }
-    
-  
-	/**
-	 * @stop
-	 */  
-		
     
     /**
 	 * @id ready
@@ -948,6 +921,26 @@ window['MINI'] = (function() {
 		else
 			DOMREADY_HANDLER.push(handler);
     };
+    
+    // Two-level implementation for domready events
+    var DOMREADY_CALLED = 0;
+    var DOMREADY_HANDLER = [];
+    var DOMREADY_OLD_UNLOAD = window.onload;
+    function triggerDomReady() {
+    	var e;
+    	if (!DOMREADY_CALLED++)
+    		while (e = DOMREADY_HANDLER.shift())
+    			e();
+    }
+
+    window.onload = function() {
+      window.setTimeout(triggerDomReady, 0);
+      if (DOMREADY_OLD_UNLOAD)
+    	  DOMREADY_OLD_UNLOAD.call(this);
+    }
+    if (document.addEventListener)
+    	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
+    
     
     /**
      * @stop
@@ -1029,15 +1022,7 @@ window['MINI'] = (function() {
  	 * @stop
  	 */
  
-    //// 7. POSITION MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function getBodyCoordsInternal(elem, dest) {
-   		dest.left += elem.offsetLeft;
-    	dest.top += elem.offsetTop;
-    	
-    	var o = elem.offsetParent;
-    	return o ? getBodyCoordsInternal(o, dest) : dest;
-    }
     
    	/**
  	 * @stop
@@ -1075,7 +1060,7 @@ window['MINI'] = (function() {
 			var requestAnim = function(callback) {
 				window.setTimeout(function() {callback();}, 100/3); // 30 fps as fallback
 			};
-			for (var n in {r:1, webkitR:1, mozR:1, oR:1, msR:1})
+			for (var n in {'r':1, 'webkitR':1, 'mozR':1, 'oR':1, 'msR':1}) // quotes needed for Closure!
 				if (f = window[n+'equestAnimationFrame'])
 					requestAnim = f;
 		
