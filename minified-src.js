@@ -27,10 +27,6 @@ window['MINI'] = (function() {
 	var backslashB = '\\b';
 
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
- 	function throwError(num) {
-		throw new Error('MINICode ' + num);
-	}
 	
 	function toString(s) { // wrapper for Closure optimization
 		return String(s);
@@ -46,7 +42,7 @@ window['MINI'] = (function() {
 	// helper for set and get; if starts with $, rewrite as CSS style
 	function getNameComponents(name) {
 		if (/^\$/.test(name))
-			name = 'style.' + name.substring(1).replace(/(?:\w)_/, '-');
+			name = 'style.' + name.substring(1).replace(/(\w)_/, '$1-');
 		return name.split('.');
 	}
 
@@ -109,8 +105,6 @@ window['MINI'] = (function() {
 		    return filterElements([selector]); 
 		if (isList(selector))
 		    return filterElements(selector); 
-		if (typeof selector != 'string')
-		    throwError(3);
 
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1) {
 			var r = []; 
@@ -127,9 +121,6 @@ window['MINI'] = (function() {
 
 		if (/^#/.test(mainSelector = steps[0]))
 			return filterElements([document.getElementById(mainSelector.substring(1))]); 
-
-		if (/[ :]/.test(mainSelector)) 
-		    throwError(1); 
 
 		parent = parent || document.getElementsByTagName('html')[0];
 		
@@ -167,7 +158,7 @@ window['MINI'] = (function() {
 		 * @id listremove
 		 * @module 1
 		 * @requires dollar
-		 * @public no
+		 * @configurable yes
 		 * @syntax remove()
 		 * Removes all nodes of the list from the DOM tree.
 		 */
@@ -178,8 +169,8 @@ window['MINI'] = (function() {
 		/**
 		 * @id listremovechildren
 		 * @module 1
-		 * @requires dollar
-		 * @public no
+		 * @requires dollar listremove
+		 * @configurable yes
 		 * @syntax removeChildren()
 		 * Removes all child nodes from the list's elements, but does not remove the list nodes themselves.
 		 * @return the list
@@ -192,8 +183,8 @@ window['MINI'] = (function() {
 		/**
 		 * @id set
 		 * @module 1
-		 * @requires 
-		 * @public yes
+		 * @requires dollar
+		 * @configurable yes
 		 * @syntax MINI.$(selector).set(name, value)
 		 * @syntax MINI.$(selector).set(properties)
 		 * @shortcut $(selector).set(obj, properties) - Enabled by default, unless disabled with "Disable $ and EL" option
@@ -234,8 +225,8 @@ window['MINI'] = (function() {
 		/**
 		 * @id listanimate
 		 * @module 8
-		 * @requires runanimation
-		 * @public yes
+		 * @requires runanimation dollar
+		 * @configurable yes
 		 * @syntax MINI.$(selector).animate(properties)
 		 * @syntax MINI.$(selector).animate(properties, durationMs)
 		 * @syntax MINI.$(selector).animate(properties, durationMs, linearity)
@@ -303,8 +294,8 @@ window['MINI'] = (function() {
 	    /**
 		 * @id listaddevent
 		 * @module 5
-		 * @requires 
-		 * @public yes
+		 * @requires dollar
+		 * @configurable yes
 		 * @syntax MINI.$(selector).addEvent(el, name, handler)
 		 * @shortcut $(selector).addEvent(el, name, handler) - Enabled by default, unless disabled with "Disable $ and EL" option
 	     * Registers the given function as handler for the event with the given name. It is possible to register several
@@ -398,8 +389,8 @@ window['MINI'] = (function() {
 	    /**
 		 * @id listremoveevent
 		 * @module 5
-		 * @requires 
-		 * @public yes
+		 * @requires dollar
+		 * @configurable yes
 		 * @syntax MINI.removeEvent(element, name, handler)
 	     * Removes the event handler. The call will be ignored if the given handler is not registered.
 	     * @param name the name of the event (see addEvent)
@@ -417,8 +408,8 @@ window['MINI'] = (function() {
 	    /**
 		 * @id listgetpagecoordinates
 		 * @module 6
-		 * @requires
-		 * @public yes
+		 * @requires dollar
+		 * @configurable yes
 		 * @syntax MINI.$(selector).getPageCoordinates()
 		 * @shortcut $(selector).getPageCoordinates() - Enabled by default, unless disabled with "Disable $ and EL" option
 	     * Returns the page coordinates of the list's first element.
@@ -436,11 +427,19 @@ window['MINI'] = (function() {
 	    	return list[0] && getBodyCoordsInternal(list[0], {left: 0, top: 0});
 	    };
 
+	    /**
+	     * @id createclassnameregexp
+	     * @dependency yes
+	     */
 		 
 	    function createClassNameRegExp(className) {
 	        return new RegExp(backslashB + className + backslashB);
 	    }
 	    
+	    /**
+	     * @id removeclassregexp
+	     * @dependency yes
+	     */
 		function removeClassRegExp(el, reg) {
 			el.className = el.className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/, ' ');
 		}
@@ -448,8 +447,8 @@ window['MINI'] = (function() {
 	    /**
 	     * @id listhasclass
 	     * @module 1
-	     * @requires dollar
-	     * @public no
+	     * @requires dollar createclassnameregexp
+	     * @configurable yes
 	     * @syntax hasClass(className)
 	     * Checks whether any element in the list of nodes has a class with the given name. Returns the first node if found, or null if not found.
 	     * @param className the name to find 
@@ -465,8 +464,8 @@ window['MINI'] = (function() {
 	    /**
 	     * @id listremoveclass
 	     * @module 1
-	     * @requires dollar
-	     * @public no
+	     * @requires dollar createclassnameregexp removeclassregexp
+	     * @configurable yes
 	     * @syntax removeClass(className)
 	     * Removes the given class from all elements of the list.
 	     * @param className the name to remove
@@ -482,7 +481,7 @@ window['MINI'] = (function() {
 	     * @id listaddclass
 	     * @module 1
 	     * @requires dollar listremoveclass
-	     * @public no
+	     * @configurable yes
 	     * @syntax addClass(className)
 	     * Adds the given class name to all elements to the list.
 	     * @param className the name to add
@@ -500,8 +499,8 @@ window['MINI'] = (function() {
 	    /**
 	     * @id listtoggleclass
 	     * @module 1
-	     * @requires dollar
-	     * @public no
+	     * @requires dollar createclassnameregexp removeclassregexp
+	     * @configurable yes
 	     * @syntax toggleClass(className)
 	     * Checks for all elements of the list whether they have the given class. If yes, it will be removed. Otherwise it will be added.
 	     * @param className the name to toggle
@@ -528,7 +527,7 @@ window['MINI'] = (function() {
 	 * @id dollar
 	 * @module 1
 	 * @requires 
-	 * @public yes
+	 * @configurable yes
 	 * @syntax MINI.$(selector)
 	 * @shortcut $(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
 	 * Returns an array-like object containing all elements that fulfill the filter conditions. The returned object is guaranteed to
@@ -564,8 +563,8 @@ window['MINI'] = (function() {
     /**
 	 * @id el
 	 * @module 1
-	 * @requires dollar
-	 * @public yes
+	 * @requires 
+	 * @configurable yes
 	 * @syntax MINI.el(selector)
 	 * @shortcut EL(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
 	 * Returns an DOM object containing the first match of the given selector, or undefined if no match.
@@ -589,7 +588,7 @@ window['MINI'] = (function() {
 	 * @id text
 	 * @module 2
 	 * @requires el
-	 * @public yes
+	 * @configurable yes
 	 * @syntax MINI.text(text)
 	 * @syntax MINI.text(text, parent)
 	 * Creates a text node for insertion into the DOM. It can optionally be appended to the end of 
@@ -610,8 +609,8 @@ window['MINI'] = (function() {
 	/**
 	 * @id element
 	 * @module 2
-	 * @requires el
-	 * @public yes
+	 * @requires el text
+	 * @configurable yes
 	 * @syntax MINI.element(name)
 	 * @syntax MINI.element(name, attributes)
 	 * @syntax MINI.element(name, attributes, children)
@@ -709,7 +708,7 @@ window['MINI'] = (function() {
 	 * @id request
 	 * @module 3
 	 * @requires 
-	 * @public yes
+	 * @configurable yes
 	 * @syntax MINI.request(method, url)
 	 * @syntax MINI.request(method, url, data)
 	 * @syntax MINI.request(method, url, data, onSuccess)
@@ -808,28 +807,21 @@ window['MINI'] = (function() {
 	 * Simplified code, made variables local, removed all side-effects (especially new properties for String, Date and Number).
 	 */
     var STRING_SUBSTITUTIONS = {    // table of character substitutions
-            '\b': '\\b',
             '\t': '\\t',
-            '\n': '\\n',
-            '\f': '\\f',
             '\r': '\\r',
             '"' : '\\"',
             '\\': '\\\\'
         };
     
-	function quoteStringForJSON(string) {
-        return '"' + string.replace(/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, 
-        		function (a) {
-                	return STRING_SUBSTITUTIONS[a] || '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-            	}) + '"' ;
-	}
-
+    function ucode(a) {
+    	return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+    }
 
     /**
 	 * @id tojson
 	 * @module 4
 	 * @requires 
-	 * @public yes
+	 * @configurable yes
 	 * @syntax MINI.toJSON(value)
      * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, date, boolean or null.
      * If JSON.stringify is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
@@ -837,7 +829,7 @@ window['MINI'] = (function() {
      * @return the JSON string
      */
 	MINI['toJSON'] = (JSON && JSON.stringify) || function toJSON(value) {
-		var ctor, type, v, k, i, NULL='null';
+		var ctor, type, k, i;
 		if (value && typeof value == 'object') {
 			if ((ctor = value.constructor) == String || ctor == Number || ctor == Boolean)
 				value = toString(value); 
@@ -854,12 +846,16 @@ window['MINI'] = (function() {
 			}
 		}
 	
-		if ((type = typeof value) == 'string')
-			return quoteStringForJSON(value);
-		if (type == 'boolean' || type == NULL || type == 'number') // handle infinite numbers?
+		if ((type = typeof value) == 'string') {
+			return '"' + value.replace(/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u206f\ufeff-\uffff]/g, 
+				function (a) {
+					return STRING_SUBSTITUTIONS[a] || ucode(a);
+				}) + '"' ;
+		}
+		if (type == 'boolean' || type == 'number') // handle infinite numbers?
 			return toString(value);
 		if (!value)
-			return NULL;
+			return 'null';
 		
 		var partial = [];
 		if (isList(value)) {
@@ -868,8 +864,8 @@ window['MINI'] = (function() {
 			return '[' + partial.join() + ']';
 		}
 		for (k in value) 
-			if (value.hasOwnProperty(k) && ((v = toJSON(value[k])) != null))
-				partial.push(quoteStringForJSON(k) + ':' + v);
+			if (value.hasOwnProperty(k))
+				partial.push(toJSON(k) + ':' + toJSON(value[k]));
 		return '{' + partial.join() + '}';
     };
     
@@ -877,7 +873,7 @@ window['MINI'] = (function() {
 	 * @id parsejson
 	 * @module 4
 	 * @requires
-	 * @public yes
+	 * @configurable yes
 	 * @syntax MINI.toJSON(value)
      * Parses a string containing JSON and returns the de-serialized object.
      * If JSON.parse is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
@@ -885,10 +881,7 @@ window['MINI'] = (function() {
      * @return the resulting JavaScript object
      */
     MINI['parseJSON'] = (JSON && JSON.parse) || function (text) {
-    	text = toString(text).replace(/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, 
-    		function (a) {
-    			return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-    		});
+       	text = toString(text).replace(/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u206f\ufeff-\uffff]/g, ucode);
 
         if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
 				.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
@@ -896,7 +889,7 @@ window['MINI'] = (function() {
 				.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) 
         	return eval('(' + text + ')');
 
-        throwError(2);
+        return null;
     };
     /**
 	 * @stop
@@ -910,7 +903,7 @@ window['MINI'] = (function() {
 	 * @id ready
 	 * @module 5
 	 * @requires addevent
-	 * @public yes
+	 * @configurable yes
 	 * @syntax MINI.ready(handler)
      * Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).
      * On older browsers, it is the same as 'window.onload'. 
@@ -954,7 +947,7 @@ window['MINI'] = (function() {
 	 * @id setcookie
 	 * @module 6
 	 * @requires
-	 * @public yes
+	 * @configurable yes
 	 * @syntax MINI.setCookie(name, value)
 	 * @syntax MINI.setCookie(name, value, dateOrDays)
 	 * @syntax MINI.setCookie(name, value, dateOrDays, path)
@@ -990,7 +983,7 @@ window['MINI'] = (function() {
 	 * @id getcookie
 	 * @module 6
 	 * @requires
-	 * @public yes
+	 * @configurable yes
 	 * @syntax MINI.getCookie(name)
 	 * @syntax MINI.getCookie(name, dontUnescape)
      * Tries to find the cookie with the given name and returns it.
@@ -1010,7 +1003,7 @@ window['MINI'] = (function() {
 	 * @id deletecookie
 	 * @module 6
 	 * @requires
-	 * @public yes
+	 * @configurable yes
 	 * @syntax MINI.deleteCookie(name)
      * Deletes the cookie with the given name. If the cookie does not exist, it does nothing.
      * @param the cookie's name
@@ -1037,7 +1030,7 @@ window['MINI'] = (function() {
 	 * @id runanimation
 	 * @module 8
 	 * @requires el
-	 * @public yes
+	 * @configurable yes
 	 * @syntax MINI.runAnimation(paintCallback)
 	 * @syntax MINI.runAnimation(paintCallback, element)
 	 * Use this function to run an animation. The given callback is invoked as often as the browser is ready for a new animation frame.
@@ -1088,7 +1081,7 @@ window['MINI'] = (function() {
  * @id toplevelel
  * @module 1
  * @requires el 
- * @public yes
+ * @configurable yes
  * @syntax EL(selector)
  * Shortcut for MINI.el().
  * @param selector the selector (see MINI.el())
@@ -1099,7 +1092,7 @@ window['EL'] = MINI['el'];
  * @id topleveldollar
  * @module 1
  * @requires dollar
- * @public yes
+ * @configurable yes
  * @syntax $(selector)
  * Shortcut for MINI.$().
  * @param selector the selector (see MINI.$())
