@@ -373,7 +373,7 @@ window['MINI'] = (function() {
 			        			src: this,
 			        			keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
 			        			button: e.which || e.button,
-			        			rightClick: e.which ? (e.which == 3) : (e.button ? (e.button == 2) : false),
+			        			rightClick: e.which ? (e.which == 3) : (e.button == 2),
 			        			clientX: e.clientX,
 			        			clientY: e.clientY,
 			        			screenX: e.screenX,
@@ -442,16 +442,16 @@ window['MINI'] = (function() {
 	     * @param element the element
 	     * @return an object containing pixel coordinates in two properties 'left' and 'top'
 	     */
-	    list['getPageCoordinates'] = function() {
-		    function getBodyCoordsInternal(elem, dest) {
-		   		dest.left += elem.offsetLeft;
-		    	dest.top += elem.offsetTop;
-		    	
-		    	var o = elem.offsetParent;
-		    	return o ? getBodyCoordsInternal(o, dest) : dest;
-		    }
-	    	return list[0] && getBodyCoordsInternal(list[0], {left: 0, top: 0});
-	    };
+		list['getPageCoordinates'] = function() {
+				var elem = list[0];
+				var dest = {left: 0, top: 0};
+				while (elem) {
+					dest.left += elem.offsetLeft;
+					dest.top += elem.offsetTop;
+					elem = elem.offsetParent;
+				}
+				return dest;
+	     };
 
 	    /**
 	     * @id createclassnameregexp
