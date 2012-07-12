@@ -209,9 +209,9 @@ window['MINI'] = (function() {
 		 * @return the list
 		 */
 		list['removeChildren'] = function() {
-			for (var i = list.length-1; i >= 0; i--) // go backward
-				$(list[i].childNodes).remove();
-			return list;
+			return each(list, function(li) {
+				$(li.childNodes).remove();
+			});
 		};
 		/**
 		 * @id set
@@ -282,7 +282,7 @@ window['MINI'] = (function() {
 			var initState = []; // for each item contains property name -> startValue
 			each(list, function(li) {
 				var p = {};
-				for (var name in properties)
+				each(properties, function(name) {
 					if (/^@/.test(name))
 						p[name] = li.getAttribute(name.substring(1)) || 0;
 					else {
@@ -292,6 +292,7 @@ window['MINI'] = (function() {
 							a = a[components[j]];
 						p[name] = a[components[components.length-1]] || 0;
 					}
+				});
 				initState.push(p);
 			});
 	
@@ -389,8 +390,8 @@ window['MINI'] = (function() {
 			        	else if (e.detail || e.wheelDelta)
 			        		evObj.wheelDir = (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1;
 			    		
-			    		var keepBubbling = true, r;
-			    		each(handlerList, function(handler){
+			    		var keepBubbling = true;
+			    		each(handlerList, function(handler, r){
 			    			if ((r = handler(evObj)) != null) // must check null here
 			    				keepBubbling = keepBubbling && r;			    			
 			    		});
@@ -441,14 +442,14 @@ window['MINI'] = (function() {
 	     * @return an object containing pixel coordinates in two properties 'left' and 'top'
 	     */
 		list['getPageCoordinates'] = function() {
-				var elem = list[0];
-				var dest = {left: 0, top: 0};
-				while (elem) {
-					dest.left += elem.offsetLeft;
-					dest.top += elem.offsetTop;
-					elem = elem.offsetParent;
-				}
-				return dest;
+			var elem = list[0];
+			var dest = {left: 0, top: 0};
+			while (elem) {
+				dest.left += elem.offsetLeft;
+				dest.top += elem.offsetTop;
+				elem = elem.offsetParent;
+			}
+			return dest;
 	     };
 
 	    /**
@@ -703,7 +704,9 @@ window['MINI'] = (function() {
 			
 		function appendChildren(c) {
 			if (isList(c))
-				each(c, function(ci){appendChildren(ci);});
+				each(c, function(ci) {
+					appendChildren(ci);
+				});
 			else if (c != null) {  // must check null, as 0 is a valid parameter
 				if (c.nodeType) 
 					e.appendChild(c); 
@@ -764,11 +767,10 @@ window['MINI'] = (function() {
 	
 		// simple function to encode HTTP parameters
 		function encodeParams(params) {
-			var paramName, s = [];
-			each (params, function(paramName, paramValue) {
+			var s = [];
+			each(params, function(paramName, paramValue) {
 				s.push(splitter + encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : ''));
 			});
-					
 			return s.join('&');
 		}
 		
@@ -892,8 +894,8 @@ window['MINI'] = (function() {
 		var partial = [];
 		if (isList(value)) {
 			each(value, function(vi) { 
-				partial.push(toJSON(vi)); }
-			);
+				partial.push(toJSON(vi)); 
+			});
 			return '[' + partial.join() + ']';
 		}
 		each(value, function(k, n) {
@@ -956,8 +958,7 @@ window['MINI'] = (function() {
     function triggerDomReady() {
     	var e;
     	if (!DOMREADY_CALLED++)
-    		while (e = DOMREADY_HANDLER.shift())
-    			e();
+    		each(DOMREADY_HANDLER, function(e) {e();});
     }
 
     window.onload = function() {
