@@ -28,9 +28,19 @@ window['MINI'] = (function() {
 
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+	function isList(value) {
+		var v = Object.prototype.toString.call(value);
+		return v == '[object Array]' || v == '[object NodeList]';
+	}
 	function each(list, cb) {
-		for (var i = 0; i < list.length; i++)
-			cb(list[i]);
+		if (isList(list))
+			for (var i = 0; i < list.length; i++)
+				cb(list[i]);
+		else
+			for (var n in list)
+				if (list.hasOwnProperty(n))
+					cb(n, list[n]);
 		return list;
 	}
 	
@@ -65,15 +75,6 @@ window['MINI'] = (function() {
 	}
 
     /**
-     * @id islist 
-     * @dependency yes
-     */
-	function isList(value) {
-		var v = Object.prototype.toString.call(value);
-		return v == '[object Array]' || v == '[object NodeList]';
-	}
-	 
-    /**
      * @id now
      * @dependency yes
      */
@@ -85,7 +86,7 @@ window['MINI'] = (function() {
 
     /**
      * @id dollarraw
-     * @requires islist
+     * @requires 
      * @dependency yes
      */
     function dollarRaw(selector, context) { 
@@ -229,11 +230,8 @@ window['MINI'] = (function() {
 		 * @return the list
 		 */
 		list['set'] = function (name, value) {
-			if (value === undef) {
-				for (var n in name) // property map given
-					if (name.hasOwnProperty(n)) 
-						list['set'](n, name[n]);
-			}
+			if (value === undef) 
+				each(name, function(n,v) { list['set'](n, v); });
 			else {
 				var components = (!/^@/.test(name)) && getNameComponents(name);
 				each (list, components ? 
@@ -634,7 +632,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id element
 	 * @module 2
-	 * @requires el text islist tostring
+	 * @requires el text tostring
 	 * @configurable yes
 	 * @syntax MINI.element(name)
 	 * @syntax MINI.element(name, attributes)
@@ -698,9 +696,10 @@ window['MINI'] = (function() {
 		var nu =  document.documentElement.namespaceURI; // to check whether doc is XHTML
 		var e = nu ? document.createElementNS(nu, name) : document.createElement(name); 
 		
-		for (var attrName in attributes) // works even if attributes is null or undef!?
-			if (attributes.hasOwnProperty(attrName) && (attributes[attrName] != null))  // null check required here
-				e.setAttribute(attrName, toString(attributes[attrName]));
+		each(attributes, function(n, v) {
+			if (v != null)  // null check required here
+				e.setAttribute(n, toString(v));
+		});
 			
 		function appendChildren(c) {
 			if (isList(c))
@@ -766,9 +765,10 @@ window['MINI'] = (function() {
 		// simple function to encode HTTP parameters
 		function encodeParams(params) {
 			var paramName, s = [];
-			for (paramName in params)
-				if (params.hasOwnProperty(paramName))
-					s.push(splitter + encodeURIComponent(paramName) + ((params[paramName] != null) ?  '=' + encodeURIComponent(params[paramName]) : ''));
+			each (params, function(paramName, paramValue) {
+				s.push(splitter + encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : ''));
+			});
+					
 			return s.join('&');
 		}
 		
@@ -795,9 +795,9 @@ window['MINI'] = (function() {
 					xhr.setRequestHeader('Content-Type', contentType);
 			}
 			
-			for (hdrName in headers) // headers may be undefined. all JS engines should then do nothing (i hope)
-				if (headers.hasOwnProperty(hdrName))
-					xhr.setRequestHeader(hdrName, headers[hdrName]);
+			each(headers, function(hdrName, hdrValue) {
+				xhr.setRequestHeader(hdrName, hdrValue);
+			});
 			
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState == 4 && !callbackCalled++) {
@@ -852,7 +852,7 @@ window['MINI'] = (function() {
     /**
 	 * @id tojson
 	 * @module 4
-	 * @requires islist tostring stringsubstitutions ucode
+	 * @requires tostring stringsubstitutions ucode
 	 * @configurable yes
 	 * @syntax MINI.toJSON(value)
      * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, date, boolean or null.
@@ -861,7 +861,7 @@ window['MINI'] = (function() {
      * @return the JSON string
      */
 	MINI['toJSON'] = (JSON && JSON.stringify) || function toJSON(value) {
-		var ctor, type, k, i;
+		var ctor, type, i;
 		if (value && typeof value == 'object') {
 			if ((ctor = value.constructor) == String || ctor == Number || ctor == Boolean)
 				value = toString(value); 
@@ -891,12 +891,14 @@ window['MINI'] = (function() {
 		
 		var partial = [];
 		if (isList(value)) {
-			each(value, function(vi) { partial.push(toJSON(vi)); });
+			each(value, function(vi) { 
+				partial.push(toJSON(vi)); }
+			);
 			return '[' + partial.join() + ']';
 		}
-		for (k in value) 
-			if (value.hasOwnProperty(k))
-				partial.push(toJSON(k) + ':' + toJSON(value[k]));
+		each(value, function(k, n) {
+			partial.push(toJSON(k) + ':' + toJSON(n));
+		});
 		return '{' + partial.join() + '}';
     };
     
