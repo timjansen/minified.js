@@ -279,9 +279,9 @@ window['MINI'] = (function() {
 			}
 			durationMs = durationMs || 500;
 			linearity = Math.max(0, Math.min(1, linearity || 0));
-			var initState = []; // for each item contains property name -> startValue
+			var initState = []; // for each item contains a map property name -> startValue. The item is in $.
 			each(list, function(li) {
-				var p = {};
+				var p = {$:$(li)};
 				each(properties, function(name) {
 					if (/^@/.test(name))
 						p[name] = li.getAttribute(name.substring(1)) || 0;
@@ -304,17 +304,20 @@ window['MINI'] = (function() {
 						callback();
 				}
 				else
-					for (var i = 0; i < list.length; i++) 
-						for (var name in initState[i]) {
-							var startValue = parseFloat(toString(initState[i][name]).replace(REMOVE_UNIT));
-							var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
-							var c = delta/(durationMs*durationMs)*timePassedMs*timePassedMs;
-							$(list[i]).set(name, 
-									        (startValue + 
+					each(initState, function(isi) {
+						each(isi, function(name, value) {
+							if (name!='$') {
+								var startValue = parseFloat(toString(value).replace(REMOVE_UNIT));
+								var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
+								var c = delta/(durationMs*durationMs)*timePassedMs*timePassedMs;
+								isi.$.set(name, 
+										  (startValue + 
 											 linearity * timePassedMs/durationMs * delta +   // linear equation
-							 				 (1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) +  // bilinear equation
-							 				properties[name].replace(/^-?[0-9. ]+/, ' ')); // add unit
-						}
+								 			 (1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) +  // bilinear equation
+								 			properties[name].replace(/^-?[0-9. ]+/, ' ')); // add unit
+							}
+						});
+					});
 			});
 			return list;		
 		};
@@ -424,9 +427,9 @@ window['MINI'] = (function() {
 	     * @return the list
 	     */
 		list['removeEvent'] = function (name, handler) {
-	    	return each(list, function(oldHandler) {
-	    		if (oldHandler['on'+name.toLowerCase().replace(/^on/, '')] && oldHandler.MINIeventHandlerList) 
-	    			removeFromList(oldHandler.MINIeventHandlerList, handler);
+	    	return each(list, function(el) {
+	    		if (el['on'+name.toLowerCase().replace(/^on/, '')] && el.MINIeventHandlerList) 
+	    			removeFromList(el.MINIeventHandlerList, handler);
 	    	});
 		};
 		
@@ -1087,9 +1090,10 @@ window['MINI'] = (function() {
 			var requestAnim = function(callback) {
 				window.setTimeout(function() {callback();}, 100/3); // 30 fps as fallback
 			};
-			for (var n in {'r':1, 'webkitR':1, 'mozR':1, 'oR':1, 'msR':1}) // quotes needed for Closure!
+			each({'r':1, 'webkitR':1, 'mozR':1, 'oR':1, 'msR':1}, function(n) { // quotes needed for Closure!
 				if (f = window[n+'equestAnimationFrame'])
 					requestAnim = f;
+			});
 		
 			(function raFunc() {
 				var t = now();
