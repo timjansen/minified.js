@@ -360,7 +360,7 @@ window['MINI'] = (function() {
 	    	var onName = 'on'+nameUC.toLowerCase();
 	    	var MINIeventHandlerList = 'MEHL';
 	    	
-	    	return each(list, function(el){
+	    	return each(list, function(el) {
 	    		var oldHandler = el[onName];
 		    	if (oldHandler && oldHandler[MINIeventHandlerList]) // already a MINI event handler set?
 		    		oldHandler[MINIeventHandlerList].push(handler);
@@ -393,8 +393,8 @@ window['MINI'] = (function() {
 			        	else if (e.detail || e.wheelDelta)
 			        		evObj.wheelDir = (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1;
 			    		
-			    		var keepBubbling = true;
-			    		each(handlerList, function(handler, r){
+			    		var keepBubbling = true, r;
+			    		each(handlerList, function(handler){
 			    			if ((r = handler(evObj)) != null) // must check null here
 			    				keepBubbling = keepBubbling && r;			    			
 			    		});
