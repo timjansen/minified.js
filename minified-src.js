@@ -27,6 +27,12 @@ window['MINI'] = (function() {
 	var backslashB = '\\b';
 
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	function each(list, cb) {
+		for (var i = 0; i < list.length; i++)
+			cb(list[i]);
+		return list;
+	}
 	
     /**
      * @id tostring
@@ -91,12 +97,12 @@ window['MINI'] = (function() {
 
 		if (context = dollarRaw(context)) {
 			if (context.length > 1) {
-				var r = []; 
-				for (var i = 0; i < context.length; i++) {
-					var a = dollarRaw(selector, context[i]);
-					for (var j = 0; j < a.length; j++)
-						r.push(a[j]);
-				}
+				var r = [];
+				each(context, function(ci) {
+					each(dollarRaw(selector, ci), function(l) {
+						r.push(l);
+					});
+				});
 				return r; 
 			}
 			parent = context[0]; 
@@ -105,17 +111,16 @@ window['MINI'] = (function() {
 		function filterElements(list) {
 			if (!parent)
 				return list;
-			var r = [], a; 
-			for (var i = 0; i < list.length; i++) {
-				a = list[i];
+			var r = []; 
+			each(list, function(a) {
 				while (a) 
 					if (a.parentNode === parent) {
-						r.push(list[i]);
+						r.push(a);
 						break;
 					}
 					else
 						a = a.parentNode;
-			}
+			});
 			return r;
 		}
 		if (selector.nodeType || selector === window) 
@@ -125,11 +130,11 @@ window['MINI'] = (function() {
 
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1) {
 			var r = []; 
-			for (var i = 0; i < subSelectors.length; i++)  {
-				var a = dollarRaw(subSelectors[i], parent);
-				for (var j = 0; j < a.length; j++)
-					r.push(a[j]);
-			}
+			each(subSelectors, function(ssi) {
+				each(dollarRaw(ssi, parent), function(aj) {
+					r.push(aj);
+				});
+			});
 			return r; 
 		}
 
@@ -162,9 +167,10 @@ window['MINI'] = (function() {
 		if (regexpFilter) {
 			list = [];
 			var reg = new RegExp(backslashB +  regexpFilter + backslashB, 'i'); 
-			for (var i=0; i < elements.length; i++)
-				if(reg.test(elements[i][prop])) 
-					list.push(elements[i]); 
+			each(elements, function(l) {
+				if(reg.test(l[prop])) 
+					list.push(l); 
+			});
 		}
 		
 		return list;
@@ -230,16 +236,15 @@ window['MINI'] = (function() {
 			}
 			else {
 				var components = (!/^@/.test(name)) && getNameComponents(name);
-				for (var i = 0, obj, j; i < list.length; i++) {
-					obj = list[i];
-			    	if (components) {
+				each (list, components ? 
+					function(obj) {
 						for (j = 0; j < components.length-1; j++)
 							obj = obj[components[j]];
 						obj[components[components.length-1]] = value;
-					}
-			    	else
+					} :
+					function(obj) {
 						obj.setAttribute(name.substring(1), value);
-				}
+					});
 			}
 			return list;
 		};
@@ -277,20 +282,20 @@ window['MINI'] = (function() {
 			durationMs = durationMs || 500;
 			linearity = Math.max(0, Math.min(1, linearity || 0));
 			var initState = []; // for each item contains property name -> startValue
-			for (var i = 0; i < list.length; i++) {
+			each(list, function(li) {
 				var p = {};
 				for (var name in properties)
 					if (/^@/.test(name))
-						p[name] = list[i].getAttribute(name.substring(1)) || 0;
+						p[name] = li.getAttribute(name.substring(1)) || 0;
 					else {
 						var components = getNameComponents(name)
-						var a = list[i];
+						var a = li;
 						for (var j = 0; j < components.length-1; j++) 
 							a = a[components[j]];
 						p[name] = a[components[components.length-1]] || 0;
 					}
 				initState.push(p);
-			}
+			});
 	
 			runAnimation(function(timePassedMs, stop) {
 				if (timePassedMs >= durationMs || timePassedMs < 0) {
@@ -300,7 +305,7 @@ window['MINI'] = (function() {
 						callback();
 				}
 				else
-					for (var i = 0; i < list.length; i++)
+					for (var i = 0; i < list.length; i++) 
 						for (var name in initState[i]) {
 							var startValue = parseFloat(toString(initState[i][name]).replace(REMOVE_UNIT));
 							var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
@@ -311,7 +316,6 @@ window['MINI'] = (function() {
 							 				 (1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) +  // bilinear equation
 							 				properties[name].replace(/^-?[0-9. ]+/, ' ')); // add unit
 						}
-						
 			});
 			return list;		
 		};
@@ -354,10 +358,8 @@ window['MINI'] = (function() {
 	    	var onName = 'on'+nameUC.toLowerCase();
 	    	var MINIeventHandlerList = 'MEHL';
 	    	
-	    	for (var k = 0; k < list.length; k++) {
-	    		var el = list[k];
-	   	
-		    	var oldHandler = el[onName];
+	    	return each(list, function(el){
+	    		var oldHandler = el[onName];
 		    	if (oldHandler && oldHandler[MINIeventHandlerList]) // already a MINI event handler set?
 		    		oldHandler[MINIeventHandlerList].push(handler);
 				else {
@@ -389,11 +391,11 @@ window['MINI'] = (function() {
 			        	else if (e.detail || e.wheelDelta)
 			        		evObj.wheelDir = (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1;
 			    		
-			    		var keepBubbling = true;
-			    		var r;
-			    		for (var i = 0; i < handlerList.length; i++)
-			    			if ((r = handlerList[i](evObj)) != null) // must check null here
-			    				keepBubbling = keepBubbling && r;
+			    		var keepBubbling = true, r;
+			    		each(handlerList, function(handler){
+			    			if ((r = handler(evObj)) != null) // must check null here
+			    				keepBubbling = keepBubbling && r;			    			
+			    		});
 			    		
 			    		if (!keepBubbling) {
 			    			e.cancelBubble = true;
@@ -408,8 +410,7 @@ window['MINI'] = (function() {
 			    	if (el.captureEvents) 
 			    		el.captureEvents(Event[nameUC]);
 			    }
-	    	}
-		    return list;
+	    	});
 		};
 
 	    /**
@@ -424,11 +425,10 @@ window['MINI'] = (function() {
 	     * @return the list
 	     */
 		list['removeEvent'] = function (name, handler) {
-	    	var oldHandler;
-	    	for (var i = 0; i < list.length; i++)
-	    		if ((oldHandler = list[i]['on'+name.toLowerCase().replace(/^on/, '')]) && oldHandler.MINIeventHandlerList) 
+	    	return each(list, function(oldHandler) {
+	    		if (oldHandler['on'+name.toLowerCase().replace(/^on/, '')] && oldHandler.MINIeventHandlerList) 
 	    			removeFromList(oldHandler.MINIeventHandlerList, handler);
-	        return list;
+	    	});
 		};
 		
 	    /**
@@ -496,10 +496,10 @@ window['MINI'] = (function() {
 	     * @param className the name to remove
 	     */
 	    list['removeClass'] = function(className) {
-	        var reg = createClassNameRegExp(className); 
-	        for (var i = 0; i < list.length; i++)
-	            removeClassRegExp(list[i], reg);
-			return list;
+	        var reg = createClassNameRegExp(className);
+	        return each(list, function(li) {
+	        	removeClassRegExp(li, reg);
+	        });
 	    };
 
 	    /**
@@ -513,12 +513,12 @@ window['MINI'] = (function() {
 	     */
 	    list['addClass'] = function(className) {
 	        list['removeClass'](className);
-	        for (var i = 0; i < list.length; i++)
-	            if (list[i].className)
-	                list[i].className += ' ' + className;
+	        return each(list, function(li) {
+	            if (li.className)
+	                li.className += ' ' + className;
 	            else
-	                list[i].className = className;
-			return list;
+	                li.className = className;
+	        });
 	    };
 
 	    /**
@@ -532,15 +532,14 @@ window['MINI'] = (function() {
 	     */
 	    list['toggleClass'] = function(className) {
 	        var reg = createClassNameRegExp(className);
-	        var li;
-	        for (var i = 0; i < list.length; i++)
-	            if ((li = list[i]).className && reg.test(li.className))
+	        return each(list, function(li) {
+	            if (li.className && reg.test(li.className))
 	                removeClassRegExp(li, reg);
 	            else if (li.className)
 	                li.className += ' ' + className;
 	            else
 	                li.className = className;
-	        return list;
+	        });
 	    };
 	    /**
 	     * @id addelementlistfuncsend
@@ -705,8 +704,7 @@ window['MINI'] = (function() {
 			
 		function appendChildren(c) {
 			if (isList(c))
-				for (var i = 0; i < c.length; i++)
-					appendChildren(c[i]);
+				each(c, function(ci){appendChildren(ci);});
 			else if (c != null) {  // must check null, as 0 is a valid parameter
 				if (c.nodeType) 
 					e.appendChild(c); 
@@ -893,8 +891,7 @@ window['MINI'] = (function() {
 		
 		var partial = [];
 		if (isList(value)) {
-			for (i = 0; i < value.length; i ++)
-				partial.push(toJSON(value[i]));
+			each(value, function(vi) { partial.push(toJSON(vi)); });
 			return '[' + partial.join() + ']';
 		}
 		for (k in value) 
@@ -1093,8 +1090,9 @@ window['MINI'] = (function() {
 		
 			(function raFunc() {
 				var t = now();
-				for (var i = 0; i < ANIMATION_HANDLERS.length; i++) 
-				    ANIMATION_HANDLERS[i].c(Math.max(0, t - ANIMATION_HANDLERS[i].t), ANIMATION_HANDLERS[i].s); 
+				each(ANIMATION_HANDLERS, function(ahi) {
+					ahi.c(Math.max(0, t - ahi.t), ahi.s); 
+				});
 				if (ANIMATION_HANDLERS.length) // check len now, in case the callback invoked stopFunc() 
 				    requestAnim(raFunc, element); 
 			})(); 
