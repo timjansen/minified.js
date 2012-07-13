@@ -35,7 +35,7 @@ window['MINI'] = (function() {
 	}
 	function each(list, cb) {
 		if (isList(list))
-			for (var i = 0; i < list.length; i++)
+			for (var i = 0, len = list.length; i < len; i++)
 				cb(list[i]);
 		else
 			for (var n in list)
@@ -113,10 +113,11 @@ window['MINI'] = (function() {
 			if (!parent)
 				return list;
 			var r = []; 
-			each(list, function(a) {
+			each(list, function(node,a) {
+				a = node;
 				while (a) 
 					if (a.parentNode === parent) {
-						r.push(a);
+						r.push(node);
 						break;
 					}
 					else
@@ -187,6 +188,10 @@ window['MINI'] = (function() {
      * @dependency yes
      */
 	function addElementListFuncs(list, undef) {
+		function eachlist(cb) {
+			each(list,cb);
+		}
+		
 		/**
 		 * @id listremove
 		 * @module 1
@@ -209,7 +214,7 @@ window['MINI'] = (function() {
 		 * @return the list
 		 */
 		list['removeChildren'] = function() {
-			return each(list, function(li) {
+			return eachlist(function(li) {
 				$(li.childNodes).remove();
 			});
 		};
@@ -233,15 +238,16 @@ window['MINI'] = (function() {
 			if (value === undef) 
 				each(name, function(n,v) { list['set'](n, v); });
 			else {
-				var components = (!/^@/.test(name)) && getNameComponents(name);
-				each (list, components ? 
-					function(obj) {
-						for (j = 0; j < components.length-1; j++)
-							obj = obj[components[j]];
-						obj[components[components.length-1]] = value;
-					} :
+				var components = getNameComponents(name), len = components.length-1;
+				each (list, (/^@/.test(name)) ? 
 					function(obj) {
 						obj.setAttribute(name.substring(1), value);
+					}
+					:
+					function(obj, i) {
+						for (i = 0; i < len; i++)
+							obj = obj[components[i]];
+						obj[components[len]] = value;
 					});
 			}
 			return list;
@@ -272,149 +278,135 @@ window['MINI'] = (function() {
 		 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
 		 * @return the list
 		 */
-		list['animate'] = function (properties, durationMs, linearity, callback, delayMs) {
-			if (delayMs) {
-				window.setTimeout(function(){list['animate'](properties, durationMs, linearity, callback);}, delayMs);
-				return list;
-			}
-			durationMs = durationMs || 500;
-			linearity = Math.max(0, Math.min(1, linearity || 0));
-			var initState = []; // for each item contains a map property name -> startValue. The item is in $.
-			each(list, function(li) {
-				var p = {$:$(li)};
-				each(properties, function(name) {
-					if (/^@/.test(name))
-						p[name] = li.getAttribute(name.substring(1)) || 0;
-					else {
-						var components = getNameComponents(name)
-						var a = li;
-						for (var j = 0; j < components.length-1; j++) 
-							a = a[components[j]];
-						p[name] = a[components[components.length-1]] || 0;
-					}
-				});
-				initState.push(p);
-			});
-	
-			runAnimation(function(timePassedMs, stop) {
-				if (timePassedMs >= durationMs || timePassedMs < 0) {
-					list.set(properties);
-					stop();
-					if (callback) 
-						callback();
-				}
-				else
-					each(initState, function(isi) {
-						each(isi, function(name, value) {
-							if (name!='$') {
-								var startValue = parseFloat(toString(value).replace(REMOVE_UNIT));
-								var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
-								var c = delta/(durationMs*durationMs)*timePassedMs*timePassedMs;
-								isi.$.set(name, 
-										  (startValue + 
-											 linearity * timePassedMs/durationMs * delta +   // linear equation
-								 			 (1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) +  // bilinear equation
-								 			properties[name].replace(/^-?[0-9. ]+/, ' ')); // add unit
-							}
+		  list['animate'] = function (properties, durationMs, linearity, callback, delayMs) {
+				if (delayMs)
+					window.setTimeout(function(){list['animate'](properties, durationMs, linearity, callback);}, delayMs);
+				else {
+					durationMs = durationMs || 500;
+					linearity = Math.max(0, Math.min(1, linearity || 0));
+					var initState = []; // for each item contains a map property name -> startValue. The item is in $.
+					eachlist(function(li) {
+						var p = {'$':$(li)};
+						each(properties, function(name) {
+							var components = getNameComponents(name), len=components.length-1;
+							var a = li;
+							for (var j = 0; j < len; j++) 
+								a = a[components[j]];
+							p[name] = ((/^@/.test(name)) ? li.getAttribute(name.substring(1)) : a[components[len]]) || 0;
 						});
+						initState.push(p);
 					});
-			});
-			return list;		
-		};
+			
+					runAnimation(function(timePassedMs, stop) {
+						if (timePassedMs >= durationMs || timePassedMs < 0) {
+							list.set(properties);
+							stop();
+							if (callback) 
+								callback();
+						}
+						else
+							each(initState, function(isi) {
+								each(isi, function(name, value) {
+									if (name!='$') {
+										var startValue = parseFloat(toString(value).replace(REMOVE_UNIT));
+										var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
+										var c = delta/(durationMs*durationMs)*timePassedMs*timePassedMs;
+										isi.$.set(name, 
+												  (startValue + 
+													 linearity * timePassedMs/durationMs * delta +   // linear equation
+													 (1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) +  // bilinear equation
+													properties[name].replace(/^-?[0-9. ]+/, ' ')); // add unit
+									}
+								});
+							});
+					});
+				}
+				return list;		
+			};
+
 		
 
-	    /**
-		 * @id listaddevent
-		 * @module 5
-		 * @requires dollar
-		 * @configurable yes
-		 * @syntax MINI.$(selector).addEvent(el, name, handler)
-		 * @shortcut $(selector).addEvent(el, name, handler) - Enabled by default, unless disabled with "Disable $ and EL" option
-	     * Registers the given function as handler for the event with the given name. It is possible to register several
-	     * handlers for a single event.
-	     * 
-	     * All handlers get a event object as only argument (except 'domready' which has no argument). It has the following properties:
-	     * <ul><li><code>original</code> - the original event object, as either given to the event or obtained from 'window.event', to give to direct access to the event</li>
-	     * <li><code>src</code> - the source (HTML element) of the event</li>
-	     * <li><code>keyCode</code> - the key code, if it was a key press. See http://unixpapa.com/js/key.html and other tables.</li>
-	     * <li><code>button</code> - the mouse button pressed, for mouse events. Note that this is browser-dependent and <strong>not reliable</strong>. Better check rightClick.</li>
-	     * <li><code>rightClick</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
-	     * <li><code>clientX</code> - for mouse events, the mouse position in the browser window showing document (so 0/0 is always the top left of the browser's window showing, even if the user scrolled)</li>
-	     * <li><code>clientY</code> - see clientX</li>
-	     * <li><code>screenX</code> - for mouse events, the mouse position on the physical screen</li>
-	     * <li><code>screenY</code> - see screenX</li>
-	     * <li><code>pageX</code> - for mouse events, the mouse position on the page (so 0/0 is the top left of the page, but when the user scrolled down not the top of the browser window)</li>
-	     * <li><code>pageY</code> - see pageX</li>
-		 * <li><code>wheelDir</code> - for mouse wheel or scroll events, the direction (1 for up or -1 for down)</li>
-	     * </ul>
-	     * If the handler returns 'false', the event will not be propagated to other handlers.
-	     * 
-	     * @param name the name of the event. Case-insensitive. The 'on' prefix in front of the name is not needed (but would be understood),
-	     *             so write 'click' instead of 'onclick'.
-	     * @param handler the function to invoke when the event has been triggered. The handler gets an event object as
-	     *                parameter.
-	     * @return the list
-	     */
-		list['addEvent'] = function (name, handler) {
-	    	var nameUC = name.replace(/^on/, '').toUpperCase();
-	    	var onName = 'on'+nameUC.toLowerCase();
-	    	var MINIeventHandlerList = 'MEHL';
-	    	
-	    	return each(list, function(el) {
-	    		var oldHandler = el[onName];
-		    	if (oldHandler && oldHandler[MINIeventHandlerList]) // already a MINI event handler set?
-		    		oldHandler[MINIeventHandlerList].push(handler);
-				else {
-			    	var handlerList = [handler];
-			    	var newHandler = function(e) {
-			    		if (oldHandler)
-			    			oldHandler(e);
-			    		
-			        	e = e || window.event;
-			        	var l = document.documentElement, b = document.body;
-			         	var evObj = { 
-			        			original: e, 
-			        			src: this,
-			        			keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
-			        			button: e.which || e.button,
-			        			rightClick: e.which ? (e.which == 3) : (e.button == 2),
-			        			clientX: e.clientX,
-			        			clientY: e.clientY,
-			        			screenX: e.screenX,
-			        			screenY: e.screenY,
-			        			pageX: e.pageX,
-			        			pageY: e.pageY
-			        		};
-			         	
-			         	if (e.clientX || e.clientY){
-			        		evObj.pageX = l.scrollLeft + b.scrollLeft + e.clientX;
-			        		evObj.pageY = l.scrollTop + b.scrollTop + e.clientY;
-			        	}
-			        	else if (e.detail || e.wheelDelta)
-			        		evObj.wheelDir = (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1;
-			    		
-			    		var keepBubbling = true, r;
-			    		each(handlerList, function(handler){
-			    			if ((r = handler(evObj)) != null) // must check null here
-			    				keepBubbling = keepBubbling && r;			    			
-			    		});
-			    		
-			    		if (!keepBubbling) {
-			    			e.cancelBubble = true;
-			    			if (e.stopPropagation) 
-			    				e.stopPropagation();
-			    		}
-			    		return keepBubbling;
-			    	};
-			    	newHandler[MINIeventHandlerList] = handlerList;
-			    	
-			    	el[onName] = newHandler;
-			    	if (el.captureEvents) 
-			    		el.captureEvents(Event[nameUC]);
-			    }
-	    	});
-		};
+		    /**
+			 * @id listaddevent
+			 * @module 5
+			 * @requires dollar
+			 * @configurable yes
+			 * @syntax MINI.$(selector).addEvent(el, name, handler)
+			 * @shortcut $(selector).addEvent(el, name, handler) - Enabled by default, unless disabled with "Disable $ and EL" option
+		     * Registers the given function as handler for the event with the given name. It is possible to register several
+		     * handlers for a single event.
+		     * 
+		     * All handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
+		     * of the event (e.g. the button that has been clicked). The original event object the is object given to the event or obtained 
+		     * from 'window.event'. The compatibility event object has the following properties:
+		     * <ul>
+		     * <li><code>keyCode</code> - the key code, if it was a key press. Will return event.keyCode if set, otherwise event.which. This should work in practically all browsers. 
+		     *                                              See http://unixpapa.com/js/key.html for key code tables.</li>
+		     * <li><code>button</code> - the mouse button pressed, for mouse events. Note that the value is browser-dependent and <strong>not reliable</strong>. Better check rightClick.</li>
+		     * <li><code>rightClick</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
+		     * <li><code>wheelDir</code> - for mouse wheel or scroll events, the direction (1 for up or -1 for down)</li>
+		     * <li><code>pageX</code> - the page coordinate of the event
+		     * <li><code>pageY</code> - the page coordinate of the event
+		     * </ul>
+		     * If the handler returns 'false', the event will not be propagated to other handlers.
+		     * 
+		     * @param name the name of the event. Case-insensitive. The 'on' prefix in front of the name is not needed (but would be understood),
+		     *             so write 'click' instead of 'onclick'.
+		     * @param handler the function to invoke when the event has been triggered. The handler gets the original event object as
+		     *                first parameter and the compatibility object as second. 'this' is the element that caused the event.
+		     * @return the list
+		     */
+			list['addEvent'] = function (name, handler) {
+				var nameUC = name.replace(/^on/, '').toUpperCase();
+				var onName = 'on'+nameUC.toLowerCase();
+				var MINIeventHandlerList = 'MEHL';
+				
+				return eachlist(function(el) {
+					var oldHandler = el[onName];
+					if (oldHandler && oldHandler[MINIeventHandlerList]) // already a MINI event handler set?
+						oldHandler[MINIeventHandlerList].push(handler);
+					else {
+						var handlerList = [handler];
+						var newHandler = el[onName] = function(e) {
+							if (oldHandler)
+								oldHandler(e);
+							
+							e = e || window.event;
+							var stopBubbling;
+							var l = document.documentElement, b = document.body;
+							var evObj = { 
+									keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
+									button: e.which || e.button,
+									rightClick: e.which ? (e.which == 3) : (e.button == 2)
+								};
+							
+							if (e.clientX || e.clientY) {
+								evObj.pageX = l.scrollLeft + b.scrollLeft + e.clientX;
+								evObj.pageY = l.scrollTop + b.scrollTop + e.clientY;
+							}
+							if (e.detail || e.wheelDelta)
+								evObj.wheelDir = (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1;
+							
+							each(handlerList, function(handler) {
+								stopBubbling = (handler(e, evObj) === false) || stopBubbling; // 'this' must be set correctly for handler			    			
+							});
+							
+							if (stopBubbling) {
+								e.cancelBubble = true;
+								if (e.stopPropagation) 
+									e.stopPropagation();
+							}
+							return !stopBubbling;
+						};
+						newHandler[MINIeventHandlerList] = handlerList;
 
+						if (el.captureEvents) 
+							el.captureEvents(Event[nameUC]);
+					    }
+				});
+		};
+		
+		
 	    /**
 		 * @id listremoveevent
 		 * @module 5
@@ -427,7 +419,7 @@ window['MINI'] = (function() {
 	     * @return the list
 	     */
 		list['removeEvent'] = function (name, handler) {
-	    	return each(list, function(el) {
+	    	return eachlist(function(el) {
 	    		if (el['on'+name.toLowerCase().replace(/^on/, '')] && el.MINIeventHandlerList) 
 	    			removeFromList(el.MINIeventHandlerList, handler);
 	    	});
@@ -468,7 +460,7 @@ window['MINI'] = (function() {
 	     * @dependency yes
 	     */
 		function removeClassRegExp(el, reg) {
-			el.className = el.className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/, ' ');
+			return el.className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/g, ' ');
 		}
 	    
 	    /**
@@ -499,8 +491,8 @@ window['MINI'] = (function() {
 	     */
 	    list['removeClass'] = function(className) {
 	        var reg = createClassNameRegExp(className);
-	        return each(list, function(li) {
-	        	removeClassRegExp(li, reg);
+	        return eachlist(function(li) {
+	        	li.className = removeClassRegExp(li, reg);
 	        });
 	    };
 
@@ -515,7 +507,7 @@ window['MINI'] = (function() {
 	     */
 	    list['addClass'] = function(className) {
 	        list['removeClass'](className);
-	        return each(list, function(li) {
+	        return eachlist(function(li) {
 	            if (li.className)
 	                li.className += ' ' + className;
 	            else
@@ -534,13 +526,8 @@ window['MINI'] = (function() {
 	     */
 	    list['toggleClass'] = function(className) {
 	        var reg = createClassNameRegExp(className);
-	        return each(list, function(li) {
-	            if (li.className && reg.test(li.className))
-	                removeClassRegExp(li, reg);
-	            else if (li.className)
-	                li.className += ' ' + className;
-	            else
-	                li.className = className;
+	        return eachlist(function(li) {
+	        	li.className = li.className ? (reg.test(li.className) ? removeClassRegExp(li, reg) : (' ' + className)) : className;
 	        });
 	    };
 	    /**
@@ -701,8 +688,7 @@ window['MINI'] = (function() {
 		var e = nu ? document.createElementNS(nu, name) : document.createElement(name); 
 		
 		each(attributes, function(n, v) {
-			if (v != null)  // null check required here
-				e.setAttribute(n, toString(v));
+			e.setAttribute(n, toString(v));
 		});
 			
 		function appendChildren(c) {
@@ -766,7 +752,7 @@ window['MINI'] = (function() {
 	 */
 	MINI['request'] = function (method, url, data, onSuccess, onFailure, headers, username, password) {
 		method = method.toUpperCase();
-		var xhr, callbackCalled = 0, body, contentType, hdrName;
+		var xhr, callbackCalled = 0, body, contentType;
 	
 		// simple function to encode HTTP parameters
 		function encodeParams(params) {
@@ -842,6 +828,7 @@ window['MINI'] = (function() {
     var STRING_SUBSTITUTIONS = {    // table of character substitutions
             '\t': '\\t',
             '\r': '\\r',
+            '\n': '\\n',
             '"' : '\\"',
             '\\': '\\\\'
         };
@@ -926,8 +913,7 @@ window['MINI'] = (function() {
 				.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
 				.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) 
         	return eval('(' + text + ')');
-
-        return null;
+        // fall through if not valid
     };
     /**
 	 * @stop
@@ -948,27 +934,25 @@ window['MINI'] = (function() {
      * @param handler the function to be called when the HTML is ready
      */
     MINI['ready'] = function(handler) {
-		if (DOMREADY_CALLED) // if DOM ready, call immediately
-			window.setTimeout(handler, 0);
-		else
+		if (DOMREADY_HANDLER) // if DOM ready, call immediately
 			DOMREADY_HANDLER.push(handler);
+		else
+			window.setTimeout(handler, 0);
     };
     
     // Two-level implementation for domready events
-    var DOMREADY_CALLED = 0;
     var DOMREADY_HANDLER = [];
-    var DOMREADY_OLD_UNLOAD = window.onload;
+    var DOMREADY_OLD_ONLOAD = window.onload;
     function triggerDomReady() {
-    	var e;
-    	if (!DOMREADY_CALLED++)
-    		each(DOMREADY_HANDLER, function(e) {e();});
+    	each(DOMREADY_HANDLER, function(e) {e();});
+    	DOMREADY_HANDLER = null;
     }
 
     window.onload = function() {
-      window.setTimeout(triggerDomReady, 0);
-      if (DOMREADY_OLD_UNLOAD)
-    	  DOMREADY_OLD_UNLOAD.call(this);
-    }
+      triggerDomReady();
+      if (DOMREADY_OLD_ONLOAD)
+    	  DOMREADY_OLD_ONLOAD();
+    };
     if (document.addEventListener)
     	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
     
@@ -1061,6 +1045,12 @@ window['MINI'] = (function() {
      * @dependency
      */
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currenetly active
+	var REQUEST_ANIMATION_FRAME = function(callback) {
+		window.setTimeout(function() {callback();}, 100/3); // 30 fps as fallback
+	};
+	each(['msR', 'oR', 'webkitR', 'mozR', 'r'], function(n) { 
+		REQUEST_ANIMATION_FRAME = window[n+'equestAnimationFrame'] || REQUEST_ANIMATION_FRAME;
+	});
 
 	/**
 	 * @id runanimation
@@ -1086,22 +1076,12 @@ window['MINI'] = (function() {
         entry.s = stopFunc;
         
         if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
-			var f;
-			var requestAnim = function(callback) {
-				window.setTimeout(function() {callback();}, 100/3); // 30 fps as fallback
-			};
-			each({'r':1, 'webkitR':1, 'mozR':1, 'oR':1, 'msR':1}, function(n) { // quotes needed for Closure!
-				if (f = window[n+'equestAnimationFrame'])
-					requestAnim = f;
-			});
-		
 			(function raFunc() {
 				var t = now();
-				each(ANIMATION_HANDLERS, function(ahi) {
-					ahi.c(Math.max(0, t - ahi.t), ahi.s); 
-				});
+				for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // don't use each here, list may be modified during run!!
+					ANIMATION_HANDLERS[i].c(Math.max(0, t - ANIMATION_HANDLERS[i].t), ANIMATION_HANDLERS[i].s); 
 				if (ANIMATION_HANDLERS.length) // check len now, in case the callback invoked stopFunc() 
-				    requestAnim(raFunc, element); 
+					REQUEST_ANIMATION_FRAME(raFunc, element); 
 			})(); 
         } 
         return stopFunc; 
