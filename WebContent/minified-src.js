@@ -758,7 +758,7 @@ window['MINI'] = (function() {
 		// simple function to encode HTTP parameters
 		function encodeParams(data) {
 			if (typeof data == 'string' || data.nodeType)
-				return params;
+				return data;
 			var s = [];
 			function processParam(paramName, paramValue) {
 				if (isList(paramValue))
