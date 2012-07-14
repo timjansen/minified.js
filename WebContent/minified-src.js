@@ -736,8 +736,9 @@ window['MINI'] = (function() {
 	 * @param url the server URL to request. May be a relative URL (relative to the document) or an absolute URL. Note that unless you do something 
 	 *             fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only call URLs on the server your script originates from.
 	 * @param data optional data to send in the request, either as POST body or as URL parameters. It can be either a map of 
-	 *             parameters (all HTTP methods), a string ('post' only) or a DOM document ('post' only). 
-	 *             For other methods: a map of parameters for the request. If the method is 'post', it will be send as body.
+	 *             parameters (all HTTP methods), a string (all methods) or a DOM document ('post' only). If the method is 'post', it will be 
+	 *             sent as body, otherwise appended to the URL. In order to send several parameters with the same name, use an array of values
+	 *             in the map. Use null as value for a parameter without value.
 	 * @param onSuccess optional this function will be called when the request has been finished successfully and had the HTTP status 200. Its first argument 
 	 *                  is the text sent by the server.
 	 *                  You can add an optional second argument, which will contain the XML sent by the server, if there was any.
@@ -755,11 +756,17 @@ window['MINI'] = (function() {
 		var xhr, callbackCalled = 0, body, contentType;
 	
 		// simple function to encode HTTP parameters
-		function encodeParams(params) {
+		function encodeParams(data) {
+			if (typeof data == 'string' || data.nodeType)
+				return params;
 			var s = [];
-			each(params, function(paramName, paramValue) {
-				s.push(encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : ''));
-			});
+			function processParam(paramName, paramValue) {
+				if (isList(paramValue))
+					each(paramValue, function(v) {processParam(paramName, v);});
+				else
+					s.push(encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : ''));
+			}
+			each(data, processParam);
 			return s.join('&');
 		}
 		
@@ -775,13 +782,11 @@ window['MINI'] = (function() {
 			xhr.open(method, url, true, username, password);
 			
 			if (method == 'POST' && data != null) {
-				body = data;
+				body = encodeParams(data);
 				if (typeof data == 'string')
 					contentType = 'text/plain; charset="UTF-8"';
-				else if (!data.nodeType) {
-					body = encodeParams(data);
+				else if (!data.nodeType)
 					contentType = 'application/x-www-form-urlencoded';
-				}
 				if (contentType && !(headers && headers['Content-Type']))
 					xhr.setRequestHeader('Content-Type', contentType);
 			}
