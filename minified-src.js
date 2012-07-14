@@ -327,7 +327,6 @@ window['MINI'] = (function() {
 			};
 
 		
-
 		    /**
 			 * @id listaddevent
 			 * @module 5
@@ -405,12 +404,13 @@ window['MINI'] = (function() {
 	     */
 		list['removeEvent'] = function (name, handler) {
 			name = name.toLowerCase();
-    		// TODO: check whether handler['MEHL'] exists, throw exception
+			handler = handler['MEHL'];
+    		// TODO: check whether handler['MEHL'] exists, throw exception otherwise
 	    	return eachlist(function(el) {
 				if (el.addEventListener)
-					el.removeEventListener(name, handler['MEHL'], true); // W3C DOM
+					el.removeEventListener(name, handler, true); // W3C DOM
 				else 
-					el.detachEvent('on'+name, handler['MEHL']);  // IE < 9 version
+					el.detachEvent('on'+name, handler);  // IE < 9 version
 	    	});
 		};
 		
