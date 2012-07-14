@@ -381,8 +381,8 @@ window['MINI'] = (function() {
 							if (e.stopPropagation) // cancel bubble for W3C DOM
 								e.stopPropagation();
 							}
-					}
-					handler['MEHL']=newHandler; // MINIEventHandLer
+					};
+					handler['MEHL'] = newHandler; // MINIEventHandLer, for deleting the right function
 					if (el.addEventListener)
 						el.addEventListener(name, newHandler, true); // W3C DOM
 					else 
