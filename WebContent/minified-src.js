@@ -190,9 +190,20 @@ window['MINI'] = (function() {
      * @dependency yes
      */
 	function addElementListFuncs(list, undef) {
-		function eachlist(cb) {
-			return each(list,cb);
-		}
+		function eachlist(callback) {
+			return each(list, callback);
+		};
+		
+		/**
+		 * @id each
+		 * @module 1
+		 * @configurable yes
+		 * @syntax each(callback)
+		 * Invokes the given function once for each item in the list with the item as only parameter.
+		 * @param callback the callback to invoke.
+		 * @return the list
+		 */
+		list['each'] = eachlist;
 		
 		/**
 		 * @id listremove
@@ -520,7 +531,7 @@ window['MINI'] = (function() {
 	        });
 	    };
 	    /**
-	     * @id addelementlistfuncsend
+	     * @id addelementlistfuncend
 	     * @dependency yes
 	     */
 		return list;
@@ -747,7 +758,7 @@ window['MINI'] = (function() {
 		function encodeParams(params) {
 			var s = [];
 			each(params, function(paramName, paramValue) {
-				s.push(splitter + encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : ''));
+				s.push(encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : ''));
 			});
 			return s.join('&');
 		}

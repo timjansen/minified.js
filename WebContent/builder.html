@@ -1,0 +1,29 @@
+<html>
+	<head><title>Minified.js Builder</title>
+	
+	<style type="text/css">
+		body {font-family: sans-serif;}
+	</style> 
+	
+	<script type="text/javascript" src="libs/valentine.min.js"></script>
+	<script type="text/javascript" src="minified-src.js"></script>
+	<script type="text/javascript" src="builder-src.js"></script>
+	<script type="text/javascript">
+
+	MINI.ready(function() {
+		MINI.request('get', 'minified-src.js', null, function(src) {
+			var r = prepareSections(src);
+			MINI.text(r[0], '#config');
+			MINI.text(r[1], '#container');
+			closureCompile(r[1]);
+		});
+	});
+	</script>
+
+	</head>
+	<body>
+		<pre id="config"></pre>
+		<hr/>
+		<pre id="container"></pre>
+	</body>
+</html>
