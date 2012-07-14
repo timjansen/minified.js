@@ -1,0 +1,52 @@
+<html>
+	<head><title>Minified.js Event Example</title>
+	
+	<style type="text/css">
+		body {font-family: sans-serif;}
+	</style> 
+	
+	<script type="text/javascript" src="../minified-src.js"></script>
+	<script type="text/javascript">
+
+	function write(txt) {
+		MINI.element('div', {style: 'border-bottom: 1px dotted #ccc; margin: 6px; padding: 3px;'}, txt, '#container');
+		EL('#container').scrollTop = EL('#container').scrollHeight; 
+	}
+	
+	function writeMouseWheel(e, ec) {
+		write(e.type + " on <document>; direction=" + ec.wheelDir);
+	}
+	function writeMouseEvent(e, ec) {
+		write(e.type + ' on <' + this.tagName + " id='"+ this.getAttribute('id') +"'>; rightClick="+ec.rightClick+", button="+ec.button+", pageX/Y="+ec.pageX+"/"+ec.pageY);
+	}
+	function writeKeyEvent(e, ec) {
+		write(e.type + ' on <' + this.tagName + " id='"+ this.getAttribute('id') +"'>; char="+e.char+", keyCode="+ec.keyCode);
+	}
+	
+	MINI.ready(function() {
+		$('#div').addEvent('click', writeMouseEvent)
+                 .addEvent('mouseup', writeMouseEvent)
+                 .addEvent('mousedown', writeMouseEvent)
+				 .addEvent('DOMMouseScroll', writeMouseWheel)
+			     .addEvent('mousewheel', writeMouseWheel);
+
+		$('#input').addEvent('input', writeMouseEvent)
+                   .addEvent('keyup', writeMouseEvent)
+                   .addEvent('keypress', writeMouseEvent)
+                   .addEvent('keydown', writeMouseEvent);
+	});
+	</script>
+
+	</head>
+	<body>
+		<div style="border: 1px solid black; padding: 10px; width: 600px; height: 250px; position: relative; margin-bottom: 1em; ">
+			Use the two elements below to generate events:
+			<div id="div" style="background-color: #faa; position: absolute; left: 60px; top: 80px; width: 180px; height: 90px;"><div id="text" style="width: 100%; position: absolute; top: 35%; text-align: center;">Click Me</div></div>
+			<input id="input" style="background-color: #eee; position: absolute; left: 360px; top: 110px; width: 180px; align: center;" />
+		</div>
+		
+		Generated Events: 
+		<div id='container' style="margin-top: 0.3em; padding: 10px; border: 2px solid black; width: 900px; height: 400px; overflow: auto;">
+		</div>
+	</body>
+</html>

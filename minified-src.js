@@ -144,7 +144,9 @@ window['MINI'] = (function() {
 			return dollarRaw(steps.slice(1).join(' '), dollarRaw(steps[0], parent));
 
 		if (/^#/.test(mainSelector = steps[0]))
-			return filterElements([document.getElementById(mainSelector.substring(1))]); 
+			return (elements=document.getElementById(mainSelector.substring(1))) ? filterElements([elements]) : []; 
+
+		// TODO: check mainSelector for spaces, :, []; throw appropriate error msgs
 
 		parent = parent || document.getElementsByTagName('html')[0];
 		
@@ -189,7 +191,7 @@ window['MINI'] = (function() {
      */
 	function addElementListFuncs(list, undef) {
 		function eachlist(cb) {
-			each(list,cb);
+			return each(list,cb);
 		}
 		
 		/**
@@ -350,59 +352,42 @@ window['MINI'] = (function() {
 		     * </ul>
 		     * If the handler returns 'false', the event will not be propagated to other handlers.
 		     * 
-		     * @param name the name of the event. Case-insensitive. The 'on' prefix in front of the name is not needed (but would be understood),
-		     *             so write 'click' instead of 'onclick'.
+		     * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
 		     * @param handler the function to invoke when the event has been triggered. The handler gets the original event object as
 		     *                first parameter and the compatibility object as second. 'this' is the element that caused the event.
 		     * @return the list
 		     */
 			list['addEvent'] = function (name, handler) {
-				var nameUC = name.replace(/^on/, '').toUpperCase();
-				var onName = 'on'+nameUC.toLowerCase();
-				var MINIeventHandlerList = 'MEHL';
-				
+	    		// TODO: check whether name is 'on' prefixed, throw exception
 				return eachlist(function(el) {
-					var oldHandler = el[onName];
-					if (oldHandler && oldHandler[MINIeventHandlerList]) // already a MINI event handler set?
-						oldHandler[MINIeventHandlerList].push(handler);
-					else {
-						var handlerList = [handler];
-						var newHandler = el[onName] = function(e) {
-							if (oldHandler)
-								oldHandler(e);
-							
-							e = e || window.event;
-							var stopBubbling;
-							var l = document.documentElement, b = document.body;
-							var evObj = { 
-									keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
-									button: e.which || e.button,
-									rightClick: e.which ? (e.which == 3) : (e.button == 2)
-								};
-							
-							if (e.clientX || e.clientY) {
-								evObj.pageX = l.scrollLeft + b.scrollLeft + e.clientX;
-								evObj.pageY = l.scrollTop + b.scrollTop + e.clientY;
+					function newHandler(e) {
+						e = e || window.event;
+						var l = document.documentElement, b = document.body;
+						var evObj = { 
+								keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
+								button: e.which || e.button,
+								rightClick: e.which ? (e.which == 3) : (e.button == 2)
+							};
+						
+						if (e.clientX || e.clientY) {
+							evObj.pageX = l.scrollLeft + b.scrollLeft + e.clientX;
+							evObj.pageY = l.scrollTop + b.scrollTop + e.clientY;
+						}
+						if (e.detail || e.wheelDelta)
+							evObj.wheelDir = (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1;
+						
+						if (handler.call(e.target, e, evObj) === false) {
+							e.cancelBubble = true; // cancel bubble for IE
+							if (e.stopPropagation) // cancel bubble for W3C DOM
+								e.stopPropagation();
 							}
-							if (e.detail || e.wheelDelta)
-								evObj.wheelDir = (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1;
-							
-							each(handlerList, function(handler) {
-								stopBubbling = (handler(e, evObj) === false) || stopBubbling; // 'this' must be set correctly for handler			    			
-							});
-							
-							if (stopBubbling) {
-								e.cancelBubble = true;
-								if (e.stopPropagation) 
-									e.stopPropagation();
-							}
-							return !stopBubbling;
-						};
-						newHandler[MINIeventHandlerList] = handlerList;
-
-						if (el.captureEvents) 
-							el.captureEvents(Event[nameUC]);
-					    }
+					}
+					handler['MEHL']=newHandler; // MINIEventHandLer
+					if (el.addEventListener)
+						el.addEventListener(name, newHandler, true); // W3C DOM
+					else 
+						el.attachEvent('on'+name, newHandler);  // IE < 9 version
+						
 				});
 		};
 		
@@ -419,9 +404,13 @@ window['MINI'] = (function() {
 	     * @return the list
 	     */
 		list['removeEvent'] = function (name, handler) {
+			name = name.toLowerCase();
+    		// TODO: check whether handler['MEHL'] exists, throw exception
 	    	return eachlist(function(el) {
-	    		if (el['on'+name.toLowerCase().replace(/^on/, '')] && el.MINIeventHandlerList) 
-	    			removeFromList(el.MINIeventHandlerList, handler);
+				if (el.addEventListener)
+					el.removeEventListener(name, handler['MEHL'], true); // W3C DOM
+				else 
+					el.detachEvent('on'+name, handler['MEHL']);  // IE < 9 version
 	    	});
 		};
 		
@@ -903,7 +892,7 @@ window['MINI'] = (function() {
      * Parses a string containing JSON and returns the de-serialized object.
      * If JSON.parse is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
      * @param text the JSON string
-     * @return the resulting JavaScript object
+     * @return the resulting JavaScript object. Undefined if not valid.
      */
     MINI['parseJSON'] = (JSON && JSON.parse) || function (text) {
        	text = toString(text).replace(/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u206f\ufeff-\uffff]/g, ucode);
@@ -914,6 +903,7 @@ window['MINI'] = (function() {
 				.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) 
         	return eval('(' + text + ')');
         // fall through if not valid
+        // TODO: throw error message here
     };
     /**
 	 * @stop
