@@ -1094,7 +1094,7 @@ window['MINI'] = (function() {
 
 /**
  * @id toplevelel
- * @module 1
+ * @module 9
  * @requires el 
  * @configurable yes
  * @syntax EL(selector)
@@ -1105,7 +1105,7 @@ window['MINI'] = (function() {
 window['EL'] = MINI['el'];
 /**
  * @id topleveldollar
- * @module 1
+ * @module 9
  * @requires dollar
  * @configurable yes
  * @syntax $(selector)
