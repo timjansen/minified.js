@@ -753,44 +753,35 @@ window['MINI'] = (function() {
 	 */
 	MINI['request'] = function (method, url, data, onSuccess, onFailure, headers, username, password) {
 		method = method.toUpperCase();
-		var xhr, callbackCalled = 0, body, contentType;
-	
-		// simple function to encode HTTP parameters
-		function encodeParams(data) {
-			if (typeof data == 'string' || data.nodeType)
-				return data;
-			var s = [];
-			function processParam(paramName, paramValue) {
-				if (isList(paramValue))
-					each(paramValue, function(v) {processParam(paramName, v);});
-				else
-					s.push(encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : ''));
-			}
-			each(data, processParam);
-			return s.join('&');
-		}
-		
 		try {
-			if (!XMLHttpRequest)
-				xhr = new ActiveXObject("Msxml2.XMLHTTP.3.0");
-			else 
-				xhr = new XMLHttpRequest();
+			var xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0"), 
+				callbackCalled = 0, 
+				s = [],
+				body = data,
+				ContentType = 'Content-Type',
+				dataIsString = typeof data == 'string';
 			
-			if (method != 'POST' && data)
-				url += '?' + encodeParams(data);
+			if (data != null) {
+				headers = headers || {};
+				if (!dataIsString && !data.nodeType) { // if data is parameter map...
+					function processParam(paramName, paramValue) {
+						if (isList(paramValue))
+							each(paramValue, function(v) {processParam(paramName, v);});
+						else
+							s.push(encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : ''));
+					}
+					each(data, processParam);
+					body = s.join('&');
+				}
+				if (method != 'POST') {
+					url += '?' + body;
+					body = null;
+				}
+				else if (!data.nodeType && !headers[ContentType])
+					headers[ContentType] = dataIsString ?  'text/plain; charset="UTF-8"' : 'application/x-www-form-urlencoded';
+			}
 			
 			xhr.open(method, url, true, username, password);
-			
-			if (method == 'POST' && data != null) {
-				body = encodeParams(data);
-				if (typeof data == 'string')
-					contentType = 'text/plain; charset="UTF-8"';
-				else if (!data.nodeType)
-					contentType = 'application/x-www-form-urlencoded';
-				if (contentType && !(headers && headers['Content-Type']))
-					xhr.setRequestHeader('Content-Type', contentType);
-			}
-			
 			each(headers, function(hdrName, hdrValue) {
 				xhr.setRequestHeader(hdrName, hdrValue);
 			});
