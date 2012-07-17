@@ -52,7 +52,8 @@ function parseSourceSections(src) {
 			sections.push(currentSection);
 			currentSection = createSection();
 		}
-		currentSection.src += line + '\n';
+		else
+			currentSection.src += line + '\n';
 	});
 	sections.push(currentSection);
 
@@ -168,23 +169,12 @@ function closureCompile(src, cb) {
 			{
 				js_code: src,
 				output_format: 'json',
-				output_info: 'compiled_code',
+				output_info: ['compiled_code', 'statistics'],
 				output_file_name: 'minified.js'
 			}, 
 		function(txt) {
 				var j = MINI.parseJSON(txt);
-				console.log(j);
-				MINI.request('post', URL, 
-						{
-							js_code: src,
-							output_format: 'json',
-							output_info: 'statistics'
-						}, 
-					function(txt2) {
-							var j2 = MINI.parseJSON(txt2);
-							console.log(j2);
-							cb&&cb(j2);
-					}, onError);
+console.log(j);
 				cb&&cb(j);
 		}, onError);
 }
@@ -194,12 +184,48 @@ function prepareSections(src) {
 	var sectionMap = createSectionMap(sections);
 	completeRequirements(sections, sectionMap);
 	var enabledSections = createDefaultConfigurationMap(sections);
-enabledSections.text=0;
-enabledSections.element=0;
-enabledSections.parsejson=0;
-enabledSections.tojson=0;
-enabledSections.request=0;
-enabledSections.animate=0;
-	return [serializeEnabledSections(sections, enabledSections), compile(sections, sectionMap, enabledSections)];
+
+	return {sections: sections, sectionMap: sectionMap, enabledSections: enabledSections};
 }
+
+/// HTML / builder.html specific code ///////////////////
+
+var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'HTTP REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS'];
+
+function setUpConfigurationUI(s) {
+	for (var i = 1; i < MODULES.length; i++) {
+		var moduleCheck, div = MINI.element('div', {id: '#mod-'+i}, MINI.element('div', {'class': 'moduleDescriptor'}, [
+                moduleCheck = MINI.element('input', {type:'checkbox', checked: 'checked'}),
+                MINI.element('label', {'for': 'mod-'+i}, MODULES[i])     
+		]), '#sectionCheckboxes');
+		
+		$(moduleCheck).addEvent('change', function() {
+			var stat = this.checked;
+			$('#mod-'+i+' .secCheck').set('checked', stat);
+		});
+		
+		v.each(v.filter(s.sections, function(sec) { return sec.module == i && s.enabledSections[sec.id];}).sort(function(a,b) {
+			var ha = a.name || a.id, hb = b.name || b.id;
+			if (ha == hb)
+				return 0;
+			return ha > hb ? 1 : -1;
+		}), function(sec) {
+			MINI.element('div', {'class': 'sectionDescriptor'}, [
+				MINI.element('input', {'class': 'secCheck', type:'checkbox', id: 'sec-'+sec.id, checked: sec.configurable=='yes' ? 'checked' : null}),
+				MINI.element('label', {'for': 'sec-'+sec.id}, sec.name || sec.id),
+				MINI.element('br')
+			], div);
+		});
+	}
+}
+
+var srcData;
+
+MINI.ready(function() {
+	MINI.request('get', 'minified-src.js', null, function(src) {
+		srcData = prepareSections(src);
+		setUpConfigurationUI(srcData);
+	});
+});
+
 

@@ -17,16 +17,16 @@
 
 	MINI.ready(function() {
 		$('.styleCheckbox').addEvent('change', function(e) {
-			var className = {dottedCheckbox:'dotted', redCheckbox: 'red', greenCheckbox: 'green'}[e.src.id];
+			var className = {dottedCheckbox:'dotted', redCheckbox: 'red', greenCheckbox: 'green'}[this.id];
 
-			if (e.src.checked)
+			if (this.checked)
 				$(EL('#selector').value).addClass(className);
 			else
 				$(EL('#selector').value).removeClass(className);
 			
 			var allDivs = $('#container div');
 			for (var i = 0; i < allDivs.length; i++)
-				MINI.$('span', allDivs[i]).set('innerText', allDivs[i].className);
+				$('span', allDivs[i]).set('innerText', allDivs[i].className);
 		});
 		
 		$('#selector').addEvent('change', function(e) {

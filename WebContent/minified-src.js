@@ -22,12 +22,48 @@
 
 
 window['MINI'] = (function() {
-	var MINI = {};
-
+	/**
+	 * @id dollar
+	 * @module 1
+	 * @requires dollarraw addelementlistfuncsstart
+	 * @configurable yes
+	 * @name MINI()
+	 * @syntax MINI(selector)
+	 * @syntax MINI(selector, context)
+	 * @shortcut $(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
+	 * Returns an array-like object containing all elements that fulfill the filter conditions. The returned object is guaranteed to
+	 * have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
+	 * regular arrays (e.g. list[2] for the second elements). It also provides you with a number of convenience functions.
+	 * @param selector a simple, CSS-like selector for the elements. It supports '#id' (lookup by id), '.class' (lookup by class),
+	 *             'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
+	 *             You can also separate two (or more) selectors by space to find elements which are descendants of the previous selectors.
+     *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
+	 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
+	 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
+	 *             You can also use a DOM node as selector, it will be returned as a single-element list.  
+	 *             If you pass a list, the list will be returned.
+	 * @param context optional an optional selector, DOM node or list of DOM nodes which specifies one or more common root nodes for the selection
+	 * @return the array-like object containing the content specified by the selector. Please note that duplicates (e.g. created using the
+	 * *       comma-syntax or several context nodes) will not be removed. The array returned has several convenience functions listed below:
+	 * @function listremove
+	 * @function listremovechildren
+	 * @function listset
+	 * @function listanimate
+	 * @function listaddevent
+	 * @function listremoveevent
+	 * @function listhasclass
+	 * @function listaddclass
+	 * @function listremoveclass
+	 * @function listtoggleclass
+	 */
+	function MINI(selector, context) { 
+		return addElementListFuncs(dollarRaw(selector, context));
+	}
+	
 	var backslashB = '\\b';
 
+	
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 	function isList(value) {
 		var v = Object.prototype.toString.call(value);
@@ -198,6 +234,7 @@ window['MINI'] = (function() {
 		 * @id each
 		 * @module 1
 		 * @configurable yes
+		 * @name list.each()
 		 * @syntax each(callback)
 		 * Invokes the given function once for each item in the list with the item as only parameter.
 		 * @param callback the callback to invoke.
@@ -210,6 +247,7 @@ window['MINI'] = (function() {
 		 * @module 1
 		 * @requires dollar
 		 * @configurable yes
+		 * @name list.remove()
 		 * @syntax remove()
 		 * Removes all nodes of the list from the DOM tree.
 		 */
@@ -222,13 +260,14 @@ window['MINI'] = (function() {
 		 * @module 1
 		 * @requires dollar listremove
 		 * @configurable yes
+		 * @name list.removeChildren()
 		 * @syntax removeChildren()
 		 * Removes all child nodes from the list's elements, but does not remove the list nodes themselves.
 		 * @return the list
 		 */
 		list['removeChildren'] = function() {
 			return eachlist(function(li) {
-				$(li.childNodes).remove();
+				MINI(li.childNodes).remove();
 			});
 		};
 		/**
@@ -236,8 +275,9 @@ window['MINI'] = (function() {
 		 * @module 1
 		 * @requires dollar getnamecomponents
 		 * @configurable yes
-		 * @syntax MINI.$(selector).set(name, value)
-		 * @syntax MINI.$(selector).set(properties)
+		 * @name list.set()
+		 * @syntax MINI(selector).set(name, value)
+		 * @syntax MINI(selector).set(properties)
 		 * @shortcut $(selector).set(obj, properties) - Enabled by default, unless disabled with "Disable $ and EL" option
 		 * Modifies the list's DOM elements or objects by setting their properties and/or attributes.
 		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
@@ -252,7 +292,7 @@ window['MINI'] = (function() {
 				each(name, function(n,v) { list['set'](n, v); });
 			else {
 				var components = getNameComponents(name), len = components.length-1;
-				each (list, (/^@/.test(name)) ? 
+				eachlist((/^@/.test(name)) ? 
 					function(obj) {
 						obj.setAttribute(name.substring(1), value);
 					}
@@ -272,13 +312,14 @@ window['MINI'] = (function() {
 
 		/**
 		 * @id listanimate
-		 * @module 8
+		 * @module 7
 		 * @requires runanimation dollar getnamecomponents tostring
 		 * @configurable yes
-		 * @syntax MINI.$(selector).animate(properties)
-		 * @syntax MINI.$(selector).animate(properties, durationMs)
-		 * @syntax MINI.$(selector).animate(properties, durationMs, linearity)
-		 * @syntax MINI.$(selector).animate(properties, durationMs, linearity, callback)
+		 * @name list.animate()
+		 * @syntax MINI(selector).animate(properties)
+		 * @syntax MINI(selector).animate(properties, durationMs)
+		 * @syntax MINI(selector).animate(properties, durationMs, linearity)
+		 * @syntax MINI(selector).animate(properties, durationMs, linearity, callback)
 		 * @shortcut $(selector).animate(properties, durationMs, linearity, callback) - Enabled by default, unless disabled with "Disable $ and EL" option
 		 * Animates the objects or elements of the list by modifying their properties and attributes.
 		 * @param list a list of objects
@@ -299,7 +340,7 @@ window['MINI'] = (function() {
 					linearity = Math.max(0, Math.min(1, linearity || 0));
 					var initState = []; // for each item contains a map property name -> startValue. The item is in $.
 					eachlist(function(li) {
-						var p = {'$':$(li)};
+						var p = {'$':MINI(li)};
 						each(properties, function(name) {
 							var components = getNameComponents(name), len=components.length-1;
 							var a = li;
@@ -324,7 +365,7 @@ window['MINI'] = (function() {
 										var startValue = parseFloat(toString(value).replace(REMOVE_UNIT));
 										var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
 										var c = delta/(durationMs*durationMs)*timePassedMs*timePassedMs;
-										isi.$.set(name, 
+										isi['$'].set(name, 
 												  (startValue + 
 													 linearity * timePassedMs/durationMs * delta +   // linear equation
 													 (1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) +  // bilinear equation
@@ -343,7 +384,8 @@ window['MINI'] = (function() {
 			 * @module 5
 			 * @requires dollar
 			 * @configurable yes
-			 * @syntax MINI.$(selector).addEvent(el, name, handler)
+			 * @name list.addEvent()
+			 * @syntax MINI(selector).addEvent(el, name, handler)
 			 * @shortcut $(selector).addEvent(el, name, handler) - Enabled by default, unless disabled with "Disable $ and EL" option
 		     * Registers the given function as handler for the event with the given name. It is possible to register several
 		     * handlers for a single event.
@@ -407,6 +449,7 @@ window['MINI'] = (function() {
 		 * @module 5
 		 * @requires dollar removefromlist
 		 * @configurable yes
+		 * @name list.removeEvent()
 		 * @syntax MINI.removeEvent(element, name, handler)
 	     * Removes the event handler. The call will be ignored if the given handler is not registered.
 	     * @param name the name of the event (see addEvent)
@@ -427,10 +470,11 @@ window['MINI'] = (function() {
 		
 	    /**
 		 * @id listgetpagecoordinates
-		 * @module 6
+		 * @module 1
 		 * @requires dollar
 		 * @configurable yes
-		 * @syntax MINI.$(selector).getPageCoordinates()
+		 * @name list.getPageCoordinates()
+		 * @syntax MINI(selector).getPageCoordinates()
 		 * @shortcut $(selector).getPageCoordinates() - Enabled by default, unless disabled with "Disable $ and EL" option
 	     * Returns the page coordinates of the list's first element.
 	     * @param element the element
@@ -468,6 +512,7 @@ window['MINI'] = (function() {
 	     * @module 1
 	     * @requires dollar createclassnameregexp
 	     * @configurable yes
+		 * @name list.hasClass()
 	     * @syntax hasClass(className)
 	     * Checks whether any element in the list of nodes has a class with the given name. Returns the first node if found, or null if not found.
 	     * @param className the name to find 
@@ -478,6 +523,7 @@ window['MINI'] = (function() {
 	        for (var i = 0; i < list.length; i++)
 	        	if (reg.test(list[i].className||''))
 	           		return list[i];
+	        // fall through if no match!
 	    };
 
 	    /**
@@ -485,6 +531,7 @@ window['MINI'] = (function() {
 	     * @module 1
 	     * @requires dollar createclassnameregexp removeclassregexp
 	     * @configurable yes
+		 * @name list.removeClass()
 	     * @syntax removeClass(className)
 	     * Removes the given class from all elements of the list.
 	     * @param className the name to remove
@@ -501,6 +548,7 @@ window['MINI'] = (function() {
 	     * @module 1
 	     * @requires dollar listremoveclass
 	     * @configurable yes
+		 * @name list.addClass()
 	     * @syntax addClass(className)
 	     * Adds the given class name to all elements to the list.
 	     * @param className the name to add
@@ -520,6 +568,7 @@ window['MINI'] = (function() {
 	     * @module 1
 	     * @requires dollar createclassnameregexp removeclassregexp
 	     * @configurable yes
+		 * @name list.toggleClass()
 	     * @syntax toggleClass(className)
 	     * Checks for all elements of the list whether they have the given class. If yes, it will be removed. Otherwise it will be added.
 	     * @param className the name to toggle
@@ -537,52 +586,16 @@ window['MINI'] = (function() {
 		return list;
 	}
 	
-	/**
-	 * @id dollar
-	 * @module 1
-	 * @requires dollarraw addelementlistfuncsstart
-	 * @configurable yes
-	 * @syntax MINI.$(selector)
-	 * @shortcut $(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
-	 * Returns an array-like object containing all elements that fulfill the filter conditions. The returned object is guaranteed to
-	 * have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
-	 * regular arrays (e.g. list[2] for the second elements). It also provides you with a number of convenience functions.
-	 * @param selector a simple, CSS-like selector for the elements. It supports '#id' (lookup by id), '.class' (lookup by class),
-	 *             'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
-	 *             You can also separate two (or more) selectors by space to find elements which are descendants of the previous selectors.
-     *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
-	 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
-	 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
-	 *             You can also use a DOM node as selector, it will be returned as a single-element list.  
-	 *             If you pass a list, the list will be returned.
-	 * @param context optional an optional selector, DOM node or list of DOM nodes which specifies one or more common root nodes for the selection
-	 * @return the array-like object containing the content specified by the selector. Please note that duplicates (e.g. created using the
-	 * *       comma-syntax or several context nodes) will not be removed. The array returned has several convenience functions listed below:
-	 * @function listremove
-	 * @function listremovechildren
-	 * @function listset
-	 * @function listanimate
-	 * @function listaddevent
-	 * @function listremoveevent
-	 * @function listhasclass
-	 * @function listaddclass
-	 * @function listremoveclass
-	 * @function listtoggleclass
-	 */
-	function $(selector, context) { 
-		return addElementListFuncs(dollarRaw(selector, context));
-	}
-	MINI['$'] = $;
-
     /**
 	 * @id el
 	 * @module 1
 	 * @requires dollarraw
 	 * @configurable yes
+	 * @name EL()
 	 * @syntax MINI.el(selector)
 	 * @shortcut EL(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
 	 * Returns an DOM object containing the first match of the given selector, or undefined if no match.
-	 * @param selector a simple, CSS-like selector for the element. Uses the syntax described in MINI.$. The most common
+	 * @param selector a simple, CSS-like selector for the element. Uses the syntax described in MINI. The most common
 	 *                 parameter for this function is the id selector with the syntax "#id".
 	 * @return a DOM object of the first match, or undefined if the selector did not return at least one match
 	 */
@@ -603,6 +616,7 @@ window['MINI'] = (function() {
 	 * @module 2
 	 * @requires el tostring
 	 * @configurable yes
+	 * @name text()
 	 * @syntax MINI.text(text)
 	 * @syntax MINI.text(text, parent)
 	 * Creates a text node for insertion into the DOM. It can optionally be appended to the end of 
@@ -625,6 +639,7 @@ window['MINI'] = (function() {
 	 * @module 2
 	 * @requires el text tostring
 	 * @configurable yes
+	 * @name element()
 	 * @syntax MINI.element(name)
 	 * @syntax MINI.element(name, attributes)
 	 * @syntax MINI.element(name, attributes, children)
@@ -674,8 +689,14 @@ window['MINI'] = (function() {
 	 *  &lt;/form>
 	 * </pre>
 	 * 
+	 * @example Null attributes often come handy when you don't always need a particular attribute:
+	 * <pre>
+	 * var myInput = MINI.element('input', {id: 'myCheckbox', type: 'checkbox', checked: shouldBeChecked() ? 'checked' : null});
+	 * </pre>
+	 * 
 	 * @param name the element name (e.g. 'div'). 
 	 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
+	 *                   Tf the value is null, the attribute will not be created. 
 	 * @param children optional either a single child element or an array of child elements (which may also be arrays). Elements can be either 
 	 *                           DOM nodes, such as HTMLElements created by this function, strings (to create Text elements) or any other JavaScript objects, which will be converted to strings using toString()
 	 *                           and then be used as Text element.
@@ -688,7 +709,8 @@ window['MINI'] = (function() {
 		var e = nu ? document.createElementNS(nu, name) : document.createElement(name); 
 		
 		each(attributes, function(n, v) {
-			e.setAttribute(n, toString(v));
+			if (v!=null)
+				e.setAttribute(n, toString(v));
 		});
 			
 		function appendChildren(c) {
@@ -724,6 +746,7 @@ window['MINI'] = (function() {
 	 * @module 3
 	 * @requires tostring
 	 * @configurable yes
+	 * @name request()
 	 * @syntax MINI.request(method, url)
 	 * @syntax MINI.request(method, url, data)
 	 * @syntax MINI.request(method, url, data, onSuccess)
@@ -842,6 +865,7 @@ window['MINI'] = (function() {
 	 * @module 4
 	 * @requires tostring stringsubstitutions ucode
 	 * @configurable yes
+	 * @name toJSON()
 	 * @syntax MINI.toJSON(value)
      * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, date, boolean or null.
      * If JSON.stringify is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
@@ -895,7 +919,8 @@ window['MINI'] = (function() {
 	 * @module 4
 	 * @requires tostring ucode
 	 * @configurable yes
-	 * @syntax MINI.toJSON(value)
+	 * @name parseJSON()
+	 * @syntax MINI.parseJSON(text)
      * Parses a string containing JSON and returns the de-serialized object.
      * If JSON.parse is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
      * @param text the JSON string
@@ -925,6 +950,7 @@ window['MINI'] = (function() {
 	 * @module 5
 	 * @requires 
 	 * @configurable yes
+	 * @name ready()
 	 * @syntax MINI.ready(handler)
      * Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).
      * On older browsers, it is the same as 'window.onload'. 
@@ -966,6 +992,7 @@ window['MINI'] = (function() {
 	 * @module 6
 	 * @requires now
 	 * @configurable yes
+	 * @name setCookie()
 	 * @syntax MINI.setCookie(name, value)
 	 * @syntax MINI.setCookie(name, value, dateOrDays)
 	 * @syntax MINI.setCookie(name, value, dateOrDays, path)
@@ -1002,6 +1029,7 @@ window['MINI'] = (function() {
 	 * @module 6
 	 * @requires
 	 * @configurable yes
+	 * @name getCookie()
 	 * @syntax MINI.getCookie(name)
 	 * @syntax MINI.getCookie(name, dontUnescape)
      * Tries to find the cookie with the given name and returns it.
@@ -1022,6 +1050,7 @@ window['MINI'] = (function() {
 	 * @module 6
 	 * @requires
 	 * @configurable yes
+	 * @name deleteCookie()
 	 * @syntax MINI.deleteCookie(name)
      * Deletes the cookie with the given name. If the cookie does not exist, it does nothing.
      * @param the cookie's name
@@ -1051,9 +1080,10 @@ window['MINI'] = (function() {
 
 	/**
 	 * @id runanimation
-	 * @module 8
+	 * @module 7
 	 * @requires el now removefromlist animationhandlers
 	 * @configurable yes
+	 * @name runAnimation()
 	 * @syntax MINI.runAnimation(paintCallback)
 	 * @syntax MINI.runAnimation(paintCallback, element)
 	 * Use this function to run an animation. The given callback is invoked as often as the browser is ready for a new animation frame.
@@ -1094,9 +1124,10 @@ window['MINI'] = (function() {
 
 /**
  * @id toplevelel
- * @module 9
+ * @module 8
  * @requires el 
  * @configurable yes
+ * @name EL() (shortcut, instead of MINI.el() )
  * @syntax EL(selector)
  * Shortcut for MINI.el().
  * @param selector the selector (see MINI.el())
@@ -1105,15 +1136,16 @@ window['MINI'] = (function() {
 window['EL'] = MINI['el'];
 /**
  * @id topleveldollar
- * @module 9
+ * @module 8
  * @requires dollar
  * @configurable yes
+ * @name $() (shortcut, instead of MINI() )
  * @syntax $(selector)
- * Shortcut for MINI.$().
- * @param selector the selector (see MINI.$())
- * @return the result list (see MINI.$())
+ * Shortcut for MINI().
+ * @param selector the selector (see MINI())
+ * @return the result list (see MINI())
  */
-window['$'] = MINI['$'];
+window['$'] = MINI;
 /**
  * @stop 
  */

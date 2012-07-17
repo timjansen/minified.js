@@ -3,26 +3,26 @@
 	
 	<style type="text/css">
 		body {font-family: sans-serif;}
+		.moduleDescriptor {font-size: large; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em;}
+		.sectionDescriptor {margin-left: 1.5em;}
 	</style> 
 	
 	<script type="text/javascript" src="libs/valentine.min.js"></script>
 	<script type="text/javascript" src="minified-src.js"></script>
 	<script type="text/javascript" src="builder-src.js"></script>
-	<script type="text/javascript">
-
-	MINI.ready(function() {
-		MINI.request('get', 'minified-src.js', null, function(src) {
-			var r = prepareSections(src);
-			MINI.text(r[0], '#config');
-			MINI.text(r[1], '#container');
-			closureCompile(r[1]);
-		});
-	});
-	</script>
 
 	</head>
 	<body>
-		<pre id="config"></pre>
+		<form id="configurationForm">
+			<div id="sectionCheckboxes"></div>
+			<p>
+			<input id="compressionClosure" type="radio" name="compression" value="closure" checked="checked"/><label for="compressionClosure">Minify using Closure</label>
+			<input id="compressionSource" type="radio" name="compression" value="source"/><label for="compressionSource">Plain Source</label>
+			</p>
+			<p>
+			<button id="compile">Compile!</button>
+			</p>
+		</form>
 		<hr/>
 		<pre id="container"></pre>
 	</body>
