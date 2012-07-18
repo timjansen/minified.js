@@ -194,16 +194,16 @@ var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'HTTP REQUEST', 'JSON', 'EVEN
 
 function setUpConfigurationUI(s) {
 	for (var i = 1; i < MODULES.length; i++) {
-		var moduleCheck, div = MINI.element('div', {id: 'divMod-'+i}, MINI.element('div', {'class': 'moduleDescriptor'}, [
-                moduleCheck = MINI.element('input', {id: 'mod-'+i, type:'checkbox', checked: 'checked'}),
+		var moduleCheckBox, div = MINI.element('div', {id: 'divMod-'+i}, MINI.element('div', {'class': 'moduleDescriptor'}, [
+                moduleCheckBox = MINI.element('input', {id: 'mod-'+i, 'class': 'modCheck', type:'checkbox', checked: 'checked'}),
                 MINI.element('label', {'for': 'mod-'+i}, MODULES[i])     
 		]), '#sectionCheckboxes');
 		
-		$(moduleCheck).addEvent('change', function() {
-			var stat = this.checked;
-			$('#divMod-'+i+' .secCheck').set('checked', stat);
+		$(moduleCheckBox).addEvent('change', function() {
+			$('.secCheck', this.parentNode.parentNode).set('checked', this.checked);
 		});
 		
+		var sectionCheckBox;
 		v.each(v.filter(s.sections, function(sec) { return sec.module == i && s.enabledSections[sec.id];}).sort(function(a,b) {
 			var ha = a.name || a.id, hb = b.name || b.id;
 			if (ha == hb)
@@ -211,10 +211,19 @@ function setUpConfigurationUI(s) {
 			return ha > hb ? 1 : -1;
 		}), function(sec) {
 			MINI.element('div', {'class': 'sectionDescriptor'}, [
-				MINI.element('input', {'class': 'secCheck', type:'checkbox', id: 'sec-'+sec.id, checked: sec.configurable=='yes' ? 'checked' : null}),
+				sectionCheckBox = MINI.element('input', {'class': 'secCheck', type:'checkbox', id: 'sec-'+sec.id, checked: sec.configurable=='yes' ? 'checked' : null}),
 				MINI.element('label', {'for': 'sec-'+sec.id}, sec.name || sec.id),
 				MINI.element('br')
 			], div);
+			
+			$(sectionCheckBox).addEvent('change', function() {
+				var checkedSectionNum = 0;
+				$('.secCheck', this.parentNode.parentNode).each(function(node) {
+					if (node.checked)
+						checkedSectionNum++;
+				});
+				$('.modCheck', this.parentNode.parentNode).set('checked', checkedSectionNum > 0);
+			});
 		});
 	}
 }
