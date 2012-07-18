@@ -246,7 +246,7 @@ window['MINI'] = (function() {
 		 */
 		list['filter'] = function(filterFunc) {
 		    return addElementListFuncs(filter(list, filterFunc));
-		}
+		};
 		
 		/**
 		 * @id listremove
@@ -905,7 +905,7 @@ window['MINI'] = (function() {
      * @return the JSON string
      */
 	MINI['toJSON'] = (JSON && JSON.stringify) || function toJSON(value) {
-		var ctor, type, i;
+		var ctor, type;
 		if (value && typeof value == 'object') {
 			if ((ctor = value.constructor) == String || ctor == Number || ctor == Boolean)
 				value = toString(value); 
