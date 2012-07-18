@@ -101,9 +101,7 @@ window['MINI'] = (function() {
      * helper for set and get; if starts with $, rewrite as CSS style
      */
 	function getNameComponents(name) {
-		if (/^\$/.test(name))
-			name = 'style.' + name.substr(1).replace(/(\w)_/, '$1-');
-		return name.split('.');
+		return (/^\$/.test(name) ? 'style.' + name.substr(1).replace('_', '-') : name).split('.');
 	}
 
     /**
@@ -122,31 +120,33 @@ window['MINI'] = (function() {
      * @dependency yes
      */
     function dollarRaw(selector, context) { 
-		if (!selector) 
-		    return [];
-		var doc = document, parent;
-		var steps, dotPos, mainSelector, subSelectors, list;
-		var elements, regexpFilter, prop, className, elementName;
+		var doc = document, list = [];
+		var parent, steps, dotPos, mainSelector, subSelectors;
+		var elements, regexpFilter, prop, className, elementName, reg;
 
-		if ((context = dollarRaw(context)).length > 1) {
-			var r = [];
-			each(context, function(ci) {
-				each(dollarRaw(selector, ci), function(l) {
-					r.push(l);
+		if (!selector) 
+		    return list;
+
+		if (context != null) { // context set?
+			if ((context = dollarRaw(context)).length != 1) { // if not exactly one node, iterate through all and concat
+				each(context, function(ci) {
+					each(dollarRaw(selector, ci), function(l) {
+						list.push(l);
+					});
 				});
-			});
-			return r; 
+				return list; 
+			}
+			parent = context[0];
 		}
-		parent = context[0]; 
 		
-		function filterElements(list) {
+		function filterElements(retList) {
 			if (!parent)
-				return list;
-			return filter(list, function(node,a) {
+				return retList;
+			return filter(retList, function(node,a) {
 				a = node;
 				while (a) 
 					if (a.parentNode === parent)
-						return true;
+						return 1;
 					else
 						a = a.parentNode;
 				// fall through to return undef
@@ -158,13 +158,12 @@ window['MINI'] = (function() {
 		    return filterElements(selector); 
 
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1) {
-			var r = []; 
 			each(subSelectors, function(ssi) {
 				each(dollarRaw(ssi, parent), function(aj) {
-					r.push(aj);
+					list.push(aj);
 				});
 			});
-			return r; 
+			return list; 
 		}
 
 		if ((steps = selector.split(/\s+/)).length > 1)
@@ -194,17 +193,16 @@ window['MINI'] = (function() {
 			regexpFilter = className;
 			prop = 'className';
 		}
-		list = elements;
+		
 		if (regexpFilter) {
-			list = [];
-			var reg = new RegExp(backslashB +  regexpFilter + backslashB, 'i'); 
+			reg = new RegExp(backslashB +  regexpFilter + backslashB, 'i'); 
 			each(elements, function(l) {
 				if(reg.test(l[prop])) 
 					list.push(l); 
 			});
+			return list;
 		}
-		
-		return list;
+		return elements;
 	}; 
 	
 	/**
