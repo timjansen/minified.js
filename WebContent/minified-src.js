@@ -362,10 +362,9 @@ window['MINI'] = (function() {
 							for (var j = 0; j < len; j++) 
 								a = a[components[j]];
 							p.s[name] = ((/^@/.test(name)) ? li.getAttribute(name.substr(1)) : a[components[len]]) || 0;
-							if (/^[+-]=/.test(dest))
-								p.e[name] = toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.substr(2)) * (dest.charAt(0)=='-' ? -1 : 1) + findUnit(dest); 
-							else
-								p.e[name] = dest;
+							p.e[name] = /^[+-]=/.test(dest) ?
+								toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.substr(2)) * (dest.charAt(0)=='-' ? -1 : 1) + findUnit(dest) 
+								: dest;
 							// TODO: catch error cases, such as non-numeric values as start or stop
 						});
 						initState.push(p);
@@ -379,7 +378,7 @@ window['MINI'] = (function() {
 					}
 					function getColorComponent(colorCode, index) {
 						return (/^#/.test(colorCode)) ?
-							parseInt(colorCode.length == 7 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
+							parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
 							:
 							parseInt(colorCode.replace(/[^\d,]+/g, '').split(',')[index]);
 					}
@@ -396,10 +395,10 @@ window['MINI'] = (function() {
 						else
 							each(initState, function(isi) {
 								each(isi.s, function(name, start) {
-									var newValue= '#', end=isi.e[name];
-									if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'
+									var newValue= 'rgb(', end=isi.e[name];
+									if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
 										for (var i = 0; i < 3; i++) 
-											newValue += ('00' + Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i), timePassedMs)).toString(16)).slice(-2);
+											newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i), timePassedMs)) + (i < 2 ? ',' : ')');
 									}
 									else 
 										newValue = interpolate(toNumWithoutUnit(start), toNumWithoutUnit(end), timePassedMs) + findUnit(end);

@@ -10,11 +10,16 @@
 	var COLORS = ['#f00', '#00f', '#0f0', '#0ff'];
 	var BOXES = [{id: '#box1', pos: 0, colorPos: 0}, {id: '#box2', pos: 2, colorPos: 2}];
 	
-	function disableButtons(disabled) {
+	function disableButtons() {
 		$('button').set('disabled', true);
 	}
-	function enableButtons(disabled) {
+	function enableButtons() {
 		$('button').set('disabled', false);
+	}
+	
+	function moveControllable(props) {
+		disableButtons();
+		$('#controllableBox').animate(props, parseFloat(EL('#durationField').value), parseFloat(EL('#linearityField').value), enableButtons);		
 	}
 	
 	MINI.ready(function() {
@@ -26,21 +31,29 @@
 
 		$('#colorButton').addEvent('click', function() {
 			disableButtons();	
-			for (var i = 0; i < BOXES.length-1; i++) 
+			for (var i = 0; i < BOXES.length; i++) 
 				$(BOXES[i].id).animate({$background_color: COLORS[(++BOXES[i].colorPos)%COLORS.length]}, parseFloat(EL('#durationField').value), parseFloat(EL('#linearityField').value), enableButtons);
 		});
+		
+		$('#leftButton').addEvent('click', function() { moveControllable({$left: '-=50px'}); });
+		$('#upButton').addEvent('click', function() { moveControllable({$top: '-=50px'}); });
+		$('#downButton').addEvent('click', function() { moveControllable({$top: '+=50px'}); });
+		$('#rightButton').addEvent('click', function() { moveControllable({$left: '+=50px'}); });
+		$('#resetButton').addEvent('click', function() { moveControllable({$left: '175px', $top: '175px'}); });
 	});
 	</script>
 	
 	</head>
 	<body>
-		Duration (ms): <input id='durationField' value='1500'/><br/>
+		Duration (ms): <input id='durationField' value='1000'/><br/>
 		Smoothness (0=very smooth, 1=linear): <input id='linearityField' value='0.25'/><br/>
 		<button id="moveButton">Move!</button>
-		<button id="colorButton">Change Color!</button>
-		<div style="margin-top: 2em; border: 1px solid black; position: relative; width: 400px; height: 400px;">
+		<button id="colorButton">Change Color!</button><br/>
+		<p>Small box: <button id="leftButton">Left</button> <button id="upButton">Up</button> <button id="downButton">Down</button> <button id="rightButton">Right</button> <button id="resetButton">Reset</button></p>
+		<div style="margin-top: 2em; border: 1px solid black; position: relative; width: 400px; height: 400px; overflow: hidden;">
 			<div id="box1" style="background-color: #f00; position: absolute; top: 10px; left: 10px; width: 100px; height: 100px;"></div>
 			<div id="box2" style="background-color: #0f0; position: absolute; top: 280px; left: 280px; width: 100px; height: 100px;"></div>
+			<div id="controllableBox" style="background-color: #f0f; border: 3px solid black; position: absolute; top: 175px; left: 175px; width: 50px; height: 50px; z-index: 50;"></div>
 		</div>
 	</body>
 </html>
