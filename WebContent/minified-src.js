@@ -334,7 +334,7 @@ window['MINI'] = (function() {
 		 *                   for all elements of the list.
 		 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms;
 		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0.
-		 * @param callback optional if given, this function will be invoked without parameters when the animation finished
+		 * @param callback optional if given, this function will be invoked the list as parameter when the animation finished
 		 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
 		 * @return the list
 		 */
@@ -388,7 +388,7 @@ window['MINI'] = (function() {
 							});
 							stop();
 							if (callback) 
-								callback();
+								callback(list);
 						}
 						else
 							each(initState, function(isi) {
