@@ -194,14 +194,14 @@ var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'HTTP REQUEST', 'JSON', 'EVEN
 
 function setUpConfigurationUI(s) {
 	for (var i = 1; i < MODULES.length; i++) {
-		var moduleCheck, div = MINI.element('div', {id: '#mod-'+i}, MINI.element('div', {'class': 'moduleDescriptor'}, [
-                moduleCheck = MINI.element('input', {type:'checkbox', checked: 'checked'}),
+		var moduleCheck, div = MINI.element('div', {id: 'divMod-'+i}, MINI.element('div', {'class': 'moduleDescriptor'}, [
+                moduleCheck = MINI.element('input', {id: 'mod-'+i, type:'checkbox', checked: 'checked'}),
                 MINI.element('label', {'for': 'mod-'+i}, MODULES[i])     
 		]), '#sectionCheckboxes');
 		
 		$(moduleCheck).addEvent('change', function() {
 			var stat = this.checked;
-			$('#mod-'+i+' .secCheck').set('checked', stat);
+			$('#divMod-'+i+' .secCheck').set('checked', stat);
 		});
 		
 		v.each(v.filter(s.sections, function(sec) { return sec.module == i && s.enabledSections[sec.id];}).sort(function(a,b) {

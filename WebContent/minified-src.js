@@ -65,19 +65,26 @@ window['MINI'] = (function() {
 	
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	function isList(value) {
-		var v = Object.prototype.toString.call(value);
-		return v == '[object Array]' || v == '[object NodeList]';
+	function isList(v) {
+		return v && v.length != null && !v.substr;
 	}
 	function each(list, cb) {
 		if (isList(list))
 			for (var i = 0, len = list.length; i < len; i++)
-				cb(list[i]);
+				cb(list[i], i);
 		else
 			for (var n in list)
 				if (list.hasOwnProperty(n))
 					cb(n, list[n]);
 		return list;
+	}
+	function filter(list, filterFunc, r) {
+		r = []; 
+		each(list, function(node) {
+			if (filterFunc(node))
+				r.push(node);
+		});
+		return r;
 	}
 	
     /**
@@ -87,17 +94,6 @@ window['MINI'] = (function() {
 	function toString(s) { // wrapper for Closure optimization
 		return String(s);
 	}
-	
-    /**
-     * @id removefromlist
-     * @dependency yes
-     */
-    function removeFromList(list, element) {
-		for (var i = 0; i < list.length; i++)
-			if (list[i] === element) 
-				list.splice(i--, 1);
-    }
-    
 
     /**
      * @id getnamecomponents
@@ -106,7 +102,7 @@ window['MINI'] = (function() {
      */
 	function getNameComponents(name) {
 		if (/^\$/.test(name))
-			name = 'style.' + name.substring(1).replace(/(\w)_/, '$1-');
+			name = 'style.' + name.substr(1).replace(/(\w)_/, '$1-');
 		return name.split('.');
 	}
 
@@ -128,38 +124,33 @@ window['MINI'] = (function() {
     function dollarRaw(selector, context) { 
 		if (!selector) 
 		    return [];
-		var parent;
+		var doc = document, parent;
 		var steps, dotPos, mainSelector, subSelectors, list;
 		var elements, regexpFilter, prop, className, elementName;
 
-		if (context = dollarRaw(context)) {
-			if (context.length > 1) {
-				var r = [];
-				each(context, function(ci) {
-					each(dollarRaw(selector, ci), function(l) {
-						r.push(l);
-					});
+		if ((context = dollarRaw(context)).length > 1) {
+			var r = [];
+			each(context, function(ci) {
+				each(dollarRaw(selector, ci), function(l) {
+					r.push(l);
 				});
-				return r; 
-			}
-			parent = context[0]; 
+			});
+			return r; 
 		}
+		parent = context[0]; 
 		
 		function filterElements(list) {
 			if (!parent)
 				return list;
-			var r = []; 
-			each(list, function(node,a) {
+			return filter(list, function(node,a) {
 				a = node;
 				while (a) 
-					if (a.parentNode === parent) {
-						r.push(node);
-						break;
-					}
+					if (a.parentNode === parent)
+						return true;
 					else
 						a = a.parentNode;
+				// fall through to return undef
 			});
-			return r;
 		}
 		if (selector.nodeType || selector === window) 
 		    return filterElements([selector]); 
@@ -180,17 +171,17 @@ window['MINI'] = (function() {
 			return dollarRaw(steps.slice(1).join(' '), dollarRaw(steps[0], parent));
 
 		if (/^#/.test(mainSelector = steps[0]))
-			return (elements=document.getElementById(mainSelector.substring(1))) ? filterElements([elements]) : []; 
+			return (elements=doc.getElementById(mainSelector.substr(1))) ? filterElements([elements]) : []; 
 
 		// TODO: check mainSelector for spaces, :, []; throw appropriate error msgs
 
-		parent = parent || document.getElementsByTagName('html')[0];
+		parent = parent || doc;
 		
 		if ((dotPos = mainSelector.indexOf('.')) < 0)
 		    elementName = mainSelector;
 		else {
-			elementName = mainSelector.substring(0, dotPos);  // element name only set of dotPos > 0
-			className = mainSelector.substring(dotPos+1);     
+			elementName = mainSelector.substr(0, dotPos);  // element name only set of dotPos > 0
+			className = mainSelector.substr(dotPos+1);     
 		}
 	
 		if (className && parent.getElementsByClassName) { // not all browsers support getElementsByClassName
@@ -236,11 +227,26 @@ window['MINI'] = (function() {
 		 * @configurable yes
 		 * @name list.each()
 		 * @syntax each(callback)
-		 * Invokes the given function once for each item in the list with the item as only parameter.
+		 * Invokes the given function once for each item in the list with the item as first parameter and the zero-based index as second.
 		 * @param callback the callback to invoke.
 		 * @return the list
 		 */
 		list['each'] = eachlist;
+		
+		/**
+		 * @id filter
+		 * @module 1
+		 * @configurable yes
+		 * @name list.filter()
+		 * @syntax filter(filterFunc)
+		 * Creates a new list that contains only those items approved by the given function. The function is called once for each item. 
+		 * If it returns true, the item is in the returned list, otherwise it will be removed.
+		 * @param filterFunc the callback to invoke for each item with the item as only argument
+		 * @return the new list
+		 */
+		list['filter'] = function(filterFunc) {
+		    return addElementListFuncs(filter(list, filterFunc));
+		}
 		
 		/**
 		 * @id listremove
@@ -278,7 +284,8 @@ window['MINI'] = (function() {
 		 * @name list.set()
 		 * @syntax MINI(selector).set(name, value)
 		 * @syntax MINI(selector).set(properties)
-		 * @shortcut $(selector).set(obj, properties) - Enabled by default, unless disabled with "Disable $ and EL" option
+		 * @syntax MINI(selector).set(name, value, defaultFunction)
+		 * @syntax MINI(selector).set(properties, undefined, defaultFunction)
 		 * Modifies the list's DOM elements or objects by setting their properties and/or attributes.
 		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
 		 *                     If it contains one or more dots ('.'), the function will traverse the properties of those names.
@@ -287,28 +294,28 @@ window['MINI'] = (function() {
 		 * @param properties a map containing names as keys and the values to set as map values
 		 * @return the list
 		 */
-		list['set'] = function (name, value) {
+		list['set'] = function (name, value, defaultFunction) {
 			if (value === undef) 
-				each(name, function(n,v) { list['set'](n, v); });
+				each(name, function(n,v) { list['set'](n, v,defaultFunction); });
 			else {
-				var components = getNameComponents(name), len = components.length-1;
+				var components = getNameComponents(name), len = components.length-1, i;
+				var n = name.substring(1);
+				var f = typeof value == 'function' ? value : (defaultFunction || function(){ return value; });
 				eachlist((/^@/.test(name)) ? 
-					function(obj) {
-						obj.setAttribute(name.substring(1), value);
+					function(obj, c) {
+						obj.setAttribute(n, f(obj, obj.getAttribute(n), c, value));
 					}
 					:
-					function(obj, i) {
+					function(obj, c) {
 						for (i = 0; i < len; i++)
 							obj = obj[components[i]];
-						obj[components[len]] = value;
+						obj[components[len]] = f(obj, obj[components[len]], c, value);
 					});
 			}
 			return list;
 		};
-		/**
-		 @stop
-		 */
-		var REMOVE_UNIT = /[^0-9]+$/;
+		list['append'] = function (name, value) { return list['set'](name, value, function(obj, oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
+		list['prepend'] = function (name, value) { return list['set'](name, value, function(obj, oldValue, idx, newValue) { return newValue + toString(oldValue);});};
 
 		/**
 		 * @id listanimate
@@ -324,8 +331,9 @@ window['MINI'] = (function() {
 		 * Animates the objects or elements of the list by modifying their properties and attributes.
 		 * @param list a list of objects
 		 * @param properties a property map describing the end values of the corresponding properties. The names can use the
-		 *                   MINI.set syntax ('@' prefix for attributes, '$' for styles). Values must be either numbers or numbers with
-		 *                   units (e.g. "2 px"). Those properties will be set for all elements of the list.
+		 *                   MINI.set syntax ('@' prefix for attributes, '$' for styles). Values must be either numbers, numbers with
+		 *                   units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). The properties will be set 
+		 *                   for all elements of the list.
 		 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms;
 		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0.
 		 * @param callback optional if given, this function will be invoked without parameters when the animation finished
@@ -333,44 +341,69 @@ window['MINI'] = (function() {
 		 * @return the list
 		 */
 		  list['animate'] = function (properties, durationMs, linearity, callback, delayMs) {
+				function toNumWithoutUnit(v) {
+					return parseFloat(toString(v).replace(/[^0-9]+$/, ''));
+				}
+				function findUnit(v) {
+					return toString(v).replace(/^([+-]=)?-?[0-9. ]+\s*/, ' ');
+				}
 				if (delayMs)
 					window.setTimeout(function(){list['animate'](properties, durationMs, linearity, callback);}, delayMs);
 				else {
 					durationMs = durationMs || 500;
 					linearity = Math.max(0, Math.min(1, linearity || 0));
-					var initState = []; // for each item contains a map property name -> startValue. The item is in $.
+					var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
 					eachlist(function(li) {
-						var p = {'$':MINI(li)};
+						var p = {o:MINI(li), s:{}, e:{}, u:{}}; 
 						each(properties, function(name) {
+							var dest = properties[name];
 							var components = getNameComponents(name), len=components.length-1;
 							var a = li;
 							for (var j = 0; j < len; j++) 
 								a = a[components[j]];
-							p[name] = ((/^@/.test(name)) ? li.getAttribute(name.substring(1)) : a[components[len]]) || 0;
+							p.s[name] = ((/^@/.test(name)) ? li.getAttribute(name.substr(1)) : a[components[len]]) || 0;
+							if (/^[+-]=/.test(dest))
+								p.e[name] = toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.substr(2)) * (dest.charAt(0)=='-' ? -1 : 1) + findUnit(dest); 
+							else
+								p.e[name] = dest;
+							// TODO: catch error cases, such as non-numeric values as start or stop
 						});
 						initState.push(p);
 					});
-			
+
+					function interpolate(startValue, endValue, t) {
+						var c = (endValue - startValue)*t*t/(durationMs*durationMs);
+						return startValue + 
+						  linearity * t/durationMs * (endValue - startValue) +   // linear equation
+						  (1-linearity) * (3*c - 2*c*t/durationMs);              // bilinear equation
+					}
+					function getColorComponent(colorCode, index) {
+						return (/^#/.test(colorCode)) ?
+							parseInt(colorCode.length == 7 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
+							:
+							parseInt(colorCode.replace(/[^\d,]+/g, '').split(',')[index]);
+					}
+
 					runAnimation(function(timePassedMs, stop) {
 						if (timePassedMs >= durationMs || timePassedMs < 0) {
-							list.set(properties);
+							each(initState, function(isi) {
+								isi.o.set(isi.e);
+							});
 							stop();
 							if (callback) 
 								callback();
 						}
 						else
 							each(initState, function(isi) {
-								each(isi, function(name, value) {
-									if (name!='$') {
-										var startValue = parseFloat(toString(value).replace(REMOVE_UNIT));
-										var delta = parseFloat(toString(properties[name]).replace(REMOVE_UNIT)) - startValue;
-										var c = delta/(durationMs*durationMs)*timePassedMs*timePassedMs;
-										isi['$'].set(name, 
-												  (startValue + 
-													 linearity * timePassedMs/durationMs * delta +   // linear equation
-													 (1-linearity) * (3*c - 2*c/durationMs*timePassedMs)) +  // bilinear equation
-													properties[name].replace(/^-?[0-9. ]+/, ' ')); // add unit
+								each(isi.s, function(name, start) {
+									var newValue= '#', end=isi.e[name];
+									if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'
+										for (var i = 0; i < 3; i++) 
+											newValue += ('00' + Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i), timePassedMs)).toString(16)).slice(-2);
 									}
+									else 
+										newValue = interpolate(toNumWithoutUnit(start), toNumWithoutUnit(end), timePassedMs) + findUnit(end);
+									isi.o.set(name, newValue);
 								});
 							});
 					});
@@ -447,7 +480,7 @@ window['MINI'] = (function() {
 	    /**
 		 * @id listremoveevent
 		 * @module 5
-		 * @requires dollar removefromlist
+		 * @requires dollar
 		 * @configurable yes
 		 * @name list.removeEvent()
 		 * @syntax MINI.removeEvent(element, name, handler)
@@ -469,18 +502,18 @@ window['MINI'] = (function() {
 		};
 		
 	    /**
-		 * @id listgetpagecoordinates
+		 * @id listoffset
 		 * @module 1
 		 * @requires dollar
 		 * @configurable yes
-		 * @name list.getPageCoordinates()
-		 * @syntax MINI(selector).getPageCoordinates()
-		 * @shortcut $(selector).getPageCoordinates() - Enabled by default, unless disabled with "Disable $ and EL" option
+		 * @name list.offset()
+		 * @syntax MINI(selector).offset()
+		 * @shortcut $(selector).offset() - Enabled by default, unless disabled with "Disable $ and EL" option
 	     * Returns the page coordinates of the list's first element.
 	     * @param element the element
 	     * @return an object containing pixel coordinates in two properties 'left' and 'top'
 	     */
-		list['getPageCoordinates'] = function() {
+		list['offset'] = function() {
 			var elem = list[0];
 			var dest = {left: 0, top: 0};
 			while (elem) {
@@ -1081,7 +1114,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id runanimation
 	 * @module 7
-	 * @requires el now removefromlist animationhandlers
+	 * @requires el now animationhandlers
 	 * @configurable yes
 	 * @name runAnimation()
 	 * @syntax MINI.runAnimation(paintCallback)
@@ -1096,9 +1129,12 @@ window['MINI'] = (function() {
 	 */
     function runAnimation(paintCallback, element) { 
         element = EL(element);
-        var entry = {c: paintCallback, t: now()}; 
+        var entry = {c: paintCallback, t: now()};
+        var i;
         var stopFunc = function() {
-            removeFromList(ANIMATION_HANDLERS, entry); 
+    		for (i = 0; i < ANIMATION_HANDLERS.length; i++)
+    			if (ANIMATION_HANDLERS[i] === entry) 
+    				ANIMATION_HANDLERS.splice(i--, 1);
         }; 
         entry.s = stopFunc;
         
