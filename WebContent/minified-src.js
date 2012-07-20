@@ -222,6 +222,7 @@ window['MINI'] = (function() {
 		/**
 		 * @id each
 		 * @module 1
+		 * @requires dollar
 		 * @configurable yes
 		 * @name list.each()
 		 * @syntax each(callback)
@@ -234,6 +235,7 @@ window['MINI'] = (function() {
 		/**
 		 * @id filter
 		 * @module 1
+		 * @requires dollar
 		 * @configurable yes
 		 * @name list.filter()
 		 * @syntax filter(filterFunc)
@@ -477,7 +479,7 @@ window['MINI'] = (function() {
 	    /**
 		 * @id listremoveevent
 		 * @module 5
-		 * @requires dollar
+		 * @requires dollar listaddevent
 		 * @configurable yes
 		 * @name list.removeEvent()
 		 * @syntax MINI.removeEvent(element, name, handler)
@@ -726,10 +728,11 @@ window['MINI'] = (function() {
 	 * 
 	 * @param name the element name (e.g. 'div'). 
 	 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
-	 *                   Tf the value is null, the attribute will not be created. 
+	 *                   If the value is null, the attribute will not be created. 
 	 * @param children optional either a single child element or an array of child elements (which may also be arrays). Elements can be either 
 	 *                           DOM nodes, such as HTMLElements created by this function, strings (to create Text elements) or any other JavaScript objects, which will be converted to strings using toString()
-	 *                           and then be used as Text element.
+	 *                           and then be used as Text element. Null elements will be ignored. You can nest lists which will be automatically
+	 *                           flattened.
 	 * @param parent optional if set, the created element will be added as last element of this DOM node. The DOM node can be specified in any
 	 *                        way supported by Mini.el().
 	 * @return the resulting DOM HTMLElement
@@ -1111,7 +1114,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id runanimation
 	 * @module 7
-	 * @requires el now animationhandlers
+	 * @requires now animationhandlers
 	 * @configurable yes
 	 * @name runAnimation()
 	 * @syntax MINI.runAnimation(paintCallback)
@@ -1121,11 +1124,9 @@ window['MINI'] = (function() {
 	 * @param paintCallback a callback to invoke for painting. Parameters given to callback:
 	 *            timestamp - number of miliseconds since start
 	 *            stopFunc - call this method to stop the currently running animation
-	 * @param element optional if not null, the HTMLElement that contains the animation. Can be speficied in any way accepted by MINI.el.
 	 * @return a function that, when you invoke it, stops the currently running animation.
 	 */
-    function runAnimation(paintCallback, element) { 
-        element = EL(element);
+    function runAnimation(paintCallback) { 
         var entry = {c: paintCallback, t: now()};
         var i;
         var stopFunc = function() {
@@ -1141,7 +1142,7 @@ window['MINI'] = (function() {
 				for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // don't use each here, list may be modified during run!!
 					ANIMATION_HANDLERS[i].c(Math.max(0, t - ANIMATION_HANDLERS[i].t), ANIMATION_HANDLERS[i].s); 
 				if (ANIMATION_HANDLERS.length) // check len now, in case the callback invoked stopFunc() 
-					REQUEST_ANIMATION_FRAME(raFunc, element); 
+					REQUEST_ANIMATION_FRAME(raFunc); 
 			})(); 
         } 
         return stopFunc; 
@@ -1160,7 +1161,7 @@ window['MINI'] = (function() {
  * @module 8
  * @requires el 
  * @configurable yes
- * @name EL() (shortcut, instead of MINI.el() )
+ * @name EL() (shortcut for MINI.el() )
  * @syntax EL(selector)
  * Shortcut for MINI.el().
  * @param selector the selector (see MINI.el())
@@ -1172,7 +1173,7 @@ window['EL'] = MINI['el'];
  * @module 8
  * @requires dollar
  * @configurable yes
- * @name $() (shortcut, instead of MINI() )
+ * @name $() (shortcut for MINI() )
  * @syntax $(selector)
  * Shortcut for MINI().
  * @param selector the selector (see MINI())
