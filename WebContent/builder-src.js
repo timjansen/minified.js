@@ -12,6 +12,7 @@ function parseSourceSections(src) {
 			     src: '',
 			     desc: '',
 			     requires: {}, // contains ids->1
+			     requiredBy: {}, // contains ids->1
 			     syntax: [],
 			     params: [] // contains {name, desc, funcs} each; @return has '@return' as name
 			   };
@@ -28,11 +29,13 @@ function parseSourceSections(src) {
 			var tagmatch = l.match(/^@[a-z]+/);
 			if (tagmatch) { // comment tag found
 				var tag = tagmatch[0].substring(1);
-				var content = l.replace(/^@[a-z]+\s*/, '');
+				var content = v.trim(l.replace(/^@[a-z]+\s*/, ''));
 				if (tag == 'syntax')
 					currentSection.syntax.push(content);
-				else if (tag == 'requires' && content)
-					v.each(content.split(/\s+/), function(c) {	currentSection.requires[c] = 1; });
+				else if (tag == 'requires') {
+					if (content.length)
+						v.each(content.split(/\s+/), function(c) {	currentSection.requires[c] = 1; });
+				}
 				else if (tag == 'params')
 					currentSection.params.push({name: content.replace(/\s.*$/, ''), desc: content.replace(/^\S+\s+/, ''), funcs: []});
 				else if (tag == 'return')
@@ -44,8 +47,8 @@ function parseSourceSections(src) {
 			}
 			else if (currentSection.params.length) // in parameter
 				currentSection.params[currentSection.params.length-1][1] += '\n' + l;
-			else // main description
-				currentSection.desc += '\n' + l;
+			else if (v.trim(l).length)// main description
+				currentSection.desc += v.trim(l) + '\n';
 		}
 		else if (/^\s*\/\*\*/.test(line) && !/\*\/\s*$/.test(line)){ // start of comment ("/**" at start of line)
 			inComment = true;
@@ -73,20 +76,26 @@ function createSectionMap(sections) {
 function completeRequirements(sections, sectionMap) {
 	var addedReqs = 0;
 	v.each(sections, function(s) {
-		v.each(s.requires, function(req) {
-			var s2 = sectionMap[req];
+		v.each(s.requires, function(reqId) {
+			var s2 = sectionMap[reqId];
 			if (!s2)
-				throw Error("Unknown id in requirement: \"" + req + "\"");
-			v.each(s2.requires, function(req2) {
-				if (!s.requires[req2]) {
+				throw Error("Unknown id in requirement: \"" + reqId + "\"");
+			v.each(s2.requires, function(reqId2) {
+				if (!s.requires[reqId2]) {
 					addedReqs++;
-					s.requires[req2] = 1;
+					s.requires[reqId2] = 1;
 				}
 			});
 		});
 	});
 	if (addedReqs > 0)
 		completeRequirements(sections, sectionMap); // repeat until all requirements complete
+	else // completed: now start reverse search
+		v.each(sections, function(s) {
+			v.each(s.requires, function(t) { 
+				sectionMap[t].requiredBy[s.id] = 1;
+			});
+		});
 }
 
 // creates a map (id->1) of all enabled sections plus their dependencies
@@ -195,8 +204,8 @@ var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'HTTP REQUEST', 'JSON', 'EVEN
 function setUpConfigurationUI(s) {
 	for (var i = 1; i < MODULES.length; i++) {
 		var moduleCheckBox, div = MINI.element('div', {id: 'divMod-'+i}, MINI.element('div', {'class': 'moduleDescriptor'}, [
-                moduleCheckBox = MINI.element('input', {id: 'mod-'+i, 'class': 'modCheck', type:'checkbox', checked: 'checked'}),
-                MINI.element('label', {'for': 'mod-'+i}, MODULES[i])     
+			moduleCheckBox = MINI.element('input', {id: 'mod-'+i, 'class': 'modCheck', type:'checkbox', checked: 'checked'}),
+			MINI.element('label', {'for': 'mod-'+i}, MODULES[i])     
 		]), '#sectionCheckboxes');
 		
 		$(moduleCheckBox).addEvent('change', function() {
@@ -210,13 +219,42 @@ function setUpConfigurationUI(s) {
 				return 0;
 			return ha > hb ? 1 : -1;
 		}), function(sec) {
+			function createList(prefix, map) {
+				var MAX = 8;
+				var list = v.keys(map).filter(function(t){ return !!s.sectionMap[t].name;});
+				if (!list.length)
+					return null;
+				var idx = 0, txt=prefix;
+				v.each(list, function(r) {
+					if (idx++ < Math.min(list.length, MAX)) {
+						if (idx > 1) {
+							if (idx == Math.min(list.length, MAX))
+								txt += ' and ';
+							else 
+								txt += ', ';
+						}
+						
+						if (idx == MAX && list.length > MAX)
+							txt += 'more';
+						else
+							txt += s.sectionMap[r].name || s.sectionMap[r].id;
+					}
+				});
+				txt += '.';
+				return txt;
+			}
+		
+			var requiredBy = createList('Required by ', sec.requiredBy);
+			var requires = createList('Requires ', sec.requires);
+		
 			MINI.element('div', {'class': 'sectionDescriptor'}, [
 				sectionCheckBox = MINI.element('input', {'class': 'secCheck', type:'checkbox', id: 'sec-'+sec.id, checked: sec.configurable=='yes' ? 'checked' : null}),
 				MINI.element('label', {'for': 'sec-'+sec.id}, sec.name || sec.id),
-				MINI.element('br')
+				MINI.element('div', {'class': 'requirements'}, [requiredBy ? [requiredBy, MINI.element('br')] : null , requires])
 			], div);
 			
 			$(sectionCheckBox).addEvent('change', function() {
+console.log("section checkbox change", this);
 				var checkedSectionNum = 0;
 				$('.secCheck', this.parentNode.parentNode).each(function(node) {
 					if (node.checked)
