@@ -201,7 +201,31 @@ function prepareSections(src) {
 
 var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'HTTP REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS'];
 
-function setUpConfigurationUI(s) {
+function setUpConfigurationUI() {
+	function setModuleCheckboxes() {
+		// fix all module checkboxes
+		$('.modCheck').each(function(modCheck) {
+			var checkedSectionNum = 0;
+			$('.secCheck', modCheck.parentNode.parentNode).each(function(node) {
+				if (node.checked)
+					checkedSectionNum++;
+			});
+			modCheck.checked = checkedSectionNum > 0;
+		});
+	}
+	
+	function fulfillSectionDependencies(element) {
+		var sec = s.sectionMap[element.id.substr(4)];
+		if (element.checked)
+			v.each(sec.requires, function(rid) {
+				$('#sec-'+rid).set('checked', true);
+			});
+		else
+			v.each(sec.requiredBy, function(rid) {
+				$('#sec-'+rid).set('checked', false);
+			});
+	}
+	
 	for (var i = 1; i < MODULES.length; i++) {
 		var moduleCheckBox, div = MINI.element('div', {id: 'divMod-'+i}, MINI.element('div', {'class': 'moduleDescriptor'}, [
 			moduleCheckBox = MINI.element('input', {id: 'mod-'+i, 'class': 'modCheck', type:'checkbox', checked: 'checked'}),
@@ -209,7 +233,13 @@ function setUpConfigurationUI(s) {
 		]), '#sectionCheckboxes');
 		
 		$(moduleCheckBox).addEvent('change', function() {
-			$('.secCheck', this.parentNode.parentNode).set('checked', this.checked);
+			var b = this.checked;
+			$('.secCheck', this.parentNode.parentNode)
+			 .each(function(cb) {
+				 cb.checked = b;
+				 fulfillSectionDependencies(cb);
+			 });
+			setModuleCheckboxes();
 		});
 		
 		var sectionCheckBox;
@@ -254,13 +284,8 @@ function setUpConfigurationUI(s) {
 			], div);
 			
 			$(sectionCheckBox).addEvent('change', function() {
-console.log("section checkbox change", this);
-				var checkedSectionNum = 0;
-				$('.secCheck', this.parentNode.parentNode).each(function(node) {
-					if (node.checked)
-						checkedSectionNum++;
-				});
-				$('.modCheck', this.parentNode.parentNode).set('checked', checkedSectionNum > 0);
+				fulfillSectionDependencies(this);
+				setModuleCheckboxes();
 			});
 		});
 	}
