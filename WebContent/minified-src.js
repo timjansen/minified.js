@@ -623,7 +623,7 @@ window['MINI'] = (function() {
 	 * @module 1
 	 * @requires dollarraw
 	 * @configurable yes
-	 * @name EL()
+	 * @name MINI.el()
 	 * @syntax MINI.el(selector)
 	 * @shortcut EL(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
 	 * Returns an DOM object containing the first match of the given selector, or undefined if no match.
@@ -1105,7 +1105,7 @@ window['MINI'] = (function() {
      */
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currenetly active
 	var REQUEST_ANIMATION_FRAME = function(callback) {
-		window.setTimeout(function() {callback();}, 100/3); // 30 fps as fallback
+		window.setTimeout(function() {callback();}, 33); // 30 fps as fallback
 	};
 	each(['msR', 'oR', 'webkitR', 'mozR', 'r'], function(n) { 
 		REQUEST_ANIMATION_FRAME = window[n+'equestAnimationFrame'] || REQUEST_ANIMATION_FRAME;

@@ -6,6 +6,7 @@
 		.moduleDescriptor {font-size: large; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em;}
 		.sectionDescriptor {margin-left: 1.5em;}
 		.requirements {font-size: x-small; padding-left: 1.5em; margin-bottom: 0.5em;}
+		#resultDiv th {text-align: left; margin-right: 2em;'}
 	</style> 
 	
 	<script type="text/javascript" src="libs/valentine.min.js"></script>
@@ -25,6 +26,13 @@
 			</p>
 		</form>
 		<hr/>
-		<pre id="container"></pre>
+		<div id="resultDiv">Compilation finished.
+			<table>
+				<tr><th>Resulting size</th><td id="resultPlain"></td></tr>
+				<tr><th>Resulting size (gzip'd)</th><td id="resultGzipped"></td></tr>
+				<tr><th>Download</th><td><a id="resultLink" href="#">minified-custom.js</a></td></tr>
+			</table>
+			<textarea id="resultSrc" rows="12" cols="140"></textarea>
+		</div>
 	</body>
 </html>

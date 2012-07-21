@@ -179,11 +179,10 @@ function closureCompile(src, cb) {
 				js_code: src,
 				output_format: 'json',
 				output_info: ['compiled_code', 'statistics'],
-				output_file_name: 'minified.js'
+				output_file_name: 'minified-custom.js'
 			}, 
 		function(txt) {
 				var j = MINI.parseJSON(txt);
-console.log(j);
 				cb&&cb(j);
 		}, onError);
 }
@@ -201,7 +200,25 @@ function prepareSections(src) {
 
 var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'HTTP REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS'];
 
-function setUpConfigurationUI() {
+function setUpConfigurationUI(s) {
+	function compileClicked() {
+		EL('#compile').disabled = true;
+		var enabledSections = {};
+		$('.secCheck').each(function(cb) {
+			if (cb.checked)
+				enabledSections[cb.id.substr(4)] = 1;
+		});
+		
+		var src = compile(s.sections, s.sectionMap, enabledSections);
+		closureCompile(src, function(closureResult) {
+			EL('#compile').disabled = false;
+			EL('#resultSrc').value = closureResult.compiledCode;
+			EL('#resultPlain').innerText = (closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb';
+			EL('#resultGzipped').innerText = (closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb';
+			EL('#resultLink').setAttribute('href', 'http://closure-compiler.appspot.com' +closureResult.outputFilePath);
+		});
+	}
+	
 	function setModuleCheckboxes() {
 		// fix all module checkboxes
 		$('.modCheck').each(function(modCheck) {
@@ -225,6 +242,8 @@ function setUpConfigurationUI() {
 				$('#sec-'+rid).set('checked', false);
 			});
 	}
+	
+	$('#compile').addEvent('click', compileClicked);
 	
 	for (var i = 1; i < MODULES.length; i++) {
 		var moduleCheckBox, div = MINI.element('div', {id: 'divMod-'+i}, MINI.element('div', {'class': 'moduleDescriptor'}, [
