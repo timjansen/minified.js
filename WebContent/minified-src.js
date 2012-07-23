@@ -475,6 +475,7 @@ window['MINI'] = (function() {
 		     * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
 		     * @param handler the function to invoke when the event has been triggered. The handler gets the original event object as
 		     *                first parameter and the compatibility object as second. 'this' is the element that caused the event.
+		     *                If the handler returns false, all processing of the event will be stopped.
 		     * @return the list
 		     */
 			list['addEvent'] = function (name, handler) {
@@ -483,7 +484,6 @@ window['MINI'] = (function() {
 				return eachlist(function(el) {
 					function newHandler(e) {
 						e = e || window.event;
-						var preventDefault ='preventDefault', stopPropagation = 'stopPropagation';  
 						var l = document.documentElement, b = document.body;
 						var evObj = { 
 								keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
@@ -514,7 +514,6 @@ window['MINI'] = (function() {
 						el.addEventListener(name, newHandler, true); // W3C DOM
 					else 
 						el.attachEvent('on'+name, newHandler);  // IE < 9 version
-						
 				});
 		};
 		
@@ -532,9 +531,8 @@ window['MINI'] = (function() {
 	     * @return the list
 	     */
 		list['removeEvent'] = function (name, handler) {
-			// @cond debug if (!name || !name.toLowerCase) error("No name given or name not a string.");
+			// @cond debug if (!name || !name.substr) error("No name given or name not a string.");
 			// @cond debug if (!handler || !handler['MEHL']) error("No handler given or handler invalid.");
-			name = name.toLowerCase();
 			handler = handler['MEHL'];
 	    	return eachlist(function(el) {
 				if (el.addEventListener)
@@ -1187,7 +1185,7 @@ window['MINI'] = (function() {
         var entry = {c: paintCallback, t: now()};
         var i;
         var stopFunc = function() {
-    		for (i = 0; i < ANIMATION_HANDLERS.length; i++)
+    		for (i = 0; i < ANIMATION_HANDLERS.length; i++) // don't use each here, list may be modified during run!!
     			if (ANIMATION_HANDLERS[i] === entry) 
     				ANIMATION_HANDLERS.splice(i--, 1);
         }; 
