@@ -24,9 +24,11 @@ window['MINI'] = (function() {
 	/**
 	 * @id debug
 	 * @module 1
+	 * @configurable no
 	 * @name Debugging Support
 	 */
 	function error(msg) {
+		if (window.console) console.log(msg);
 		throw Exception("MINI debug error: " + msg);
 	}
 	
@@ -180,7 +182,9 @@ window['MINI'] = (function() {
 		if (/^#/.test(mainSelector = steps[0]))
 			return (elements=doc.getElementById(mainSelector.substr(1))) ? filterElements([elements]) : []; 
 
-		// TODO: check mainSelector for spaces, :, []; throw appropriate error msgs
+		// @cond debug if (/\s/.test(mainSelector)) error("Selector has invalid format, please check for whitespace.");
+		// @cond debug if (/[ :\[\]]/.test(mainSelector)) error("Only simple selectors with ids, classes and element names are allowed.");
+
 
 		parent = parent || doc;
 		
@@ -257,6 +261,21 @@ window['MINI'] = (function() {
 		};
 		
 		/**
+		 * @id find
+		 * @module 1
+		 * @requires dollar
+		 * @configurable yes
+		 * @name list.find()
+		 * @syntax find(selector)
+		 * Finds all children of the list's elements that match the given selector.
+		 * @param selector the selector to use (see MINI())
+		 * @return the new list containing matches
+		 */
+		list['find'] = function(selector) {
+		    return MINI(selector, list);
+		};
+		
+		/**
 		 * @id listremove
 		 * @module 1
 		 * @requires dollar
@@ -302,10 +321,12 @@ window['MINI'] = (function() {
 		 * @param properties a map containing names as keys and the values to set as map values
 		 * @return the list
 		 */
-		list['set'] = function (name, value, defaultFunction) {
+		function set(name, value, defaultFunction) {
+			// @cond if (name == null) error("First argument must be set!");
 			if (value === undef) 
 				each(name, function(n,v) { list['set'](n, v,defaultFunction); });
 			else {
+				// @cond if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 				var components = getNameComponents(name), len = components.length-1, i;
 				var n = name.substring(1);
 				var f = typeof value == 'function' ? value : (defaultFunction || function(){ return value; });
@@ -322,8 +343,9 @@ window['MINI'] = (function() {
 			}
 			return list;
 		};
-		list['append'] = function (name, value) { return list['set'](name, value, function(obj, oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
-		list['prepend'] = function (name, value) { return list['set'](name, value, function(obj, oldValue, idx, newValue) { return newValue + toString(oldValue);});};
+		list['set'] = set;
+		list['append'] = function (name, value) { return set(name, value, function(obj, oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
+		list['prepend'] = function (name, value) { return set(name, value, function(obj, oldValue, idx, newValue) { return newValue + toString(oldValue);});};
 
 		/**
 		 * @id listanimate
@@ -348,12 +370,15 @@ window['MINI'] = (function() {
 		 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
 		 * @return the list
 		 */
-		  list['animate'] = function (properties, durationMs, linearity, callback, delayMs) {
+		list['animate'] = function (properties, durationMs, linearity, callback, delayMs) {
+			  // @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
+			  // @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
+			  // @cond debug var colorRegexp = /^(rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|#\w{3}|#\w{6})\s*$/i;
 				function toNumWithoutUnit(v) {
 					return parseFloat(toString(v).replace(/[^0-9]+$/, ''));
 				}
 				function findUnit(v) {
-					return toString(v).replace(/^([+-]=)?-?[0-9. ]+\s*/, ' ');
+					return toString(v).replace(/^([+-]=)?-?[0-9. ]+\s*/, ' ').replace(/^ $/, '');
 				}
 				if (delayMs)
 					window.setTimeout(function(){list['animate'](properties, durationMs, linearity, callback);}, delayMs);
@@ -373,7 +398,10 @@ window['MINI'] = (function() {
 							p.e[name] = /^[+-]=/.test(dest) ?
 								toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.substr(2)) * (dest.charAt(0)=='-' ? -1 : 1) + findUnit(dest) 
 								: dest;
-							// TODO: catch error cases, such as non-numeric values as start or stop
+							// @cond debug if (!colorRegexp.test(dest) && isNan(toNumWithoutUnit(dest))) error('End value of "'+name+'" is neither color nor number: ' + toString(dest));
+							// @cond debug if (!colorRegexp.test(p.s[name]) && isNan(toNumWithoutUnit(p.s[name]))) error('Start value of "'+name+'" is neither color nor number: ' + toString(p.s[name]));
+							// @cond debug if (colorRegexp.test(dest) && !colorRegexp.test(p.s[name])) error('End value of "'+name+'" looks like a color, but start value does not: ' + toString(p.s[name]));
+							// @cond debug if (colorRegexp.test(p.s[name]) && !colorRegexp.test(dest)) error('Start value of "'+name+'" looks like a color, but end value does not: ' + toString(dest));
 						});
 						initState.push(p);
 					});
@@ -450,10 +478,12 @@ window['MINI'] = (function() {
 		     * @return the list
 		     */
 			list['addEvent'] = function (name, handler) {
-	    		// TODO: check whether name is 'on' prefixed, throw exception
+			    // @cond debug if (!(name && handler)) error("Both parameters to addEvent() are required!"); 
+			    // @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 				return eachlist(function(el) {
 					function newHandler(e) {
 						e = e || window.event;
+						var preventDefault ='preventDefault', stopPropagation = 'stopPropagation';  
 						var l = document.documentElement, b = document.body;
 						var evObj = { 
 								keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
@@ -468,11 +498,16 @@ window['MINI'] = (function() {
 						if (e.detail || e.wheelDelta)
 							evObj.wheelDir = (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1;
 						
+						// @cond debug try {
 						if (handler.call(e.target, e, evObj) === false) {
-							e.cancelBubble = true; // cancel bubble for IE
+							if (e.preventDefault) // W3C DOM2 event cancelling
+								e.preventDefault();
 							if (e.stopPropagation) // cancel bubble for W3C DOM
 								e.stopPropagation();
-							}
+							e.returnValue = false; // cancel for IE
+							e.cancelBubble = true; // cancel bubble for IE
+						}
+						// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 					};
 					handler['MEHL'] = newHandler; // MINIEventHandLer, for deleting the right function
 					if (el.addEventListener)
@@ -668,6 +703,7 @@ window['MINI'] = (function() {
 	 * @return the resulting DOM text node
 	 */
 	function text(txt, parent) {
+		// @cond debug if (!EL(parent)) error("The given parent has not been found.");
 		var node = document.createTextNode(toString(txt)); 
 		if (parent)
 			EL(parent).appendChild(node);
@@ -747,6 +783,9 @@ window['MINI'] = (function() {
 	 * @return the resulting DOM HTMLElement
 	 */
 	MINI['element'] = function (name, attributes, children, parent) {
+		// @cond debug if (!name) error("element() requires the element name as first argument.");
+		// @cond debug if (/:/.test(name)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
+		// @cond debug if (!EL(parent)) error("The given parent has not been found.");
 		var nu =  document.documentElement.namespaceURI; // to check whether doc is XHTML
 		var e = nu ? document.createElementNS(nu, name) : document.createElement(name); 
 		
@@ -817,7 +856,11 @@ window['MINI'] = (function() {
 	 * @return the XmlHTTPRequest object, after its send() method has been called. You may use this to gather additional information, such as the request's state.
 	 */
 	MINI['request'] = function (method, url, data, onSuccess, onFailure, headers, username, password) {
-		method = method.toUpperCase();
+		// @cond debug if (!method) error("request() requires a HTTP method as first argument.");
+		// @cond debug if (!url) error("request() requires a url as second argument.");
+		// @cond debug if (onSuccess && typeof onSuccess != 'function') error("request()'s fourth argument is optional, but if it is set, it must be a function.");
+		// @cond debug if (onFailure && typeof onFailure != 'function') error("request()'s fifth argument is optional, but if it is set, it must be a function.");
+		// @cond debug if (username && !password) error("If the user name is set (7th argument), you must also provide a password as 8th argument.");		method = method.toUpperCase();
 		try {
 			var xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0"), 
 				callbackCalled = 0, 
@@ -838,7 +881,7 @@ window['MINI'] = (function() {
 					each(data, processParam);
 					body = s.join('&');
 				}
-				if (method != 'POST') {
+				if (!/post/i.test(method)) {
 					url += '?' + body;
 					body = null;
 				}
@@ -999,7 +1042,8 @@ window['MINI'] = (function() {
      * @param handler the function to be called when the HTML is ready
      */
     MINI['ready'] = function(handler) {
-		if (DOMREADY_HANDLER) // if DOM ready, call immediately
+    	// @cond debug if (typeof handler != 'function') error("First argument must be a function");
+    	if (DOMREADY_HANDLER) // if DOM ready, call immediately
 			DOMREADY_HANDLER.push(handler);
 		else
 			window.setTimeout(handler, 0);
@@ -1060,6 +1104,8 @@ window['MINI'] = (function() {
      *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
      */
 	function setCookie(name, value, dateOrDays, path, domain, dontEscape) {
+		// @cond debug if (!name) error('Cookie name must be set!');
+		// @cond debug if (/=/.test(name)) error('Cookie name must not contain a "=".');
     	document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
     	    (dateOrDays ? ((dateOrDays instanceof Date) ? dateOrDays: new Date(now() + dateOrDays * 24 * 3600000)) : '') + 
     		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
@@ -1081,6 +1127,8 @@ window['MINI'] = (function() {
      * @return the value of the cookie, or null if not found. Depending on the dontUnescape parameter, it may be unescape or not.
      */
     MINI['getCookie'] = function(name, dontUnescape) {
+    	// @cond debug if (!name) error('Cookie name must be set!');
+    	// @cond debug if (/=/.test(name)) error('Cookie name must not contain a "=".');
     	var matcher = document.cookie.match('(^|;)\\s*' + 
     				  name.replace(/([$+*?\|.\\\[\]\(\)\{\}])/g, "\\$1") +  // save name
     				  '=([^;]*)(;|$)');

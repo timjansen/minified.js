@@ -4,7 +4,6 @@ var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'HTTP REQUEST', 'JSON', 'EVEN
 
 function setUpConfigurationUI(s) {
 	function compileClicked() {
-		EL('#compile').disabled = true;
 		var enabledSections = {};
 		$('.secCheck').each(function(cb) {
 			if (cb.checked)
@@ -12,13 +11,26 @@ function setUpConfigurationUI(s) {
 		});
 		
 		var src = compile(s.sections, s.sectionMap, enabledSections);
-		closureCompile(src, function(closureResult) {
-			EL('#compile').disabled = false;
-			EL('#resultSrc').value = closureResult.compiledCode;
-			EL('#resultPlain').innerText = (closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb';
-			EL('#resultGzipped').innerText = (closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb';
-			EL('#resultLink').setAttribute('href', 'http://closure-compiler.appspot.com' +closureResult.outputFilePath);
-		});
+		// TODO: add header
+		if (EL('#compressionClosure').checked) {
+			EL('#compile').disabled = true;
+			closureCompile(src, function(closureResult) {
+				if (closureResult) {
+					EL('#compile').disabled = false;
+					$('#gzipRow, #downloadRow').set({$display: 'table-row'});
+					EL('#resultSrc').value = closureResult.compiledCode;
+					EL('#resultPlain').innerText = (closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb';
+					EL('#resultGzipped').innerText = (closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb';
+					EL('#resultLink').setAttribute('href', 'http://closure-compiler.appspot.com' +closureResult.outputFilePath);
+				}
+			});
+		}
+		else  {
+			EL('#resultSrc').value = src;
+			EL('#resultPlain').innerText = (src.length/1024).toFixed(2) + 'kb';
+			$('#gzipRow, #downloadRow').set({$display: 'none'});
+		}
+		return false;
 	}
 	
 	function setModuleCheckboxes() {
@@ -112,12 +124,9 @@ function setUpConfigurationUI(s) {
 	}
 }
 
-var srcData;
-
 MINI.ready(function() {
 	MINI.request('get', SRC, null, function(src) {
-		srcData = prepareSections(src);
-		setUpConfigurationUI(srcData);
+		setUpConfigurationUI(prepareSections(src));
 	});
 });
 

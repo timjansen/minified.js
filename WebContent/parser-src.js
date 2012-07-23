@@ -7,7 +7,7 @@ function parseSourceSections(src) {
 	var sections = [];
 	function createSection() {
 		return { id: 'anon' + (nextAnonId++),
-			     src: '',
+			     src: [], // source as lines
 			     desc: '',
 			     requires: {}, // contains ids->1
 			     requiredBy: {}, // contains ids->1
@@ -54,7 +54,7 @@ function parseSourceSections(src) {
 			currentSection = createSection();
 		}
 		else
-			currentSection.src += line + '\n';
+			currentSection.src.push(line);
 	});
 	sections.push(currentSection);
 
@@ -122,12 +122,20 @@ function createDefaultConfigurationMap(sections) {
 
 // compiles the list of sections into a single string, given the map of enabled sections
 function compile(sections, sectionMap, enabledSections) {
+	var src = '';
 	var enabledSectionsWithDeps = calculateDependencies(sectionMap, enabledSections);
-	return v.filter(sections, function(s) {
+	v.each(v.filter(sections, function(s) {
 		return enabledSectionsWithDeps[s.id] || !(s.configurable || s.dependency); 
-	}).map(function(s){
-		return s.src;
-	}).join('\n');
+	}), function(s){
+		v.each(s.src, function(line) {
+			var m = line.match(/^(\s*)\/\/\s*@cond\s+(\w+)\s*(.*)$/);
+			if (m && enabledSections[m[2]])
+				src += m[1] + m[3] + '\n';
+			else
+				src += line + '\n';
+		});
+	});
+	return src;
 }
 
 // Serializes the configuration into a string
