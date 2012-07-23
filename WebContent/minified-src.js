@@ -20,8 +20,16 @@
 // ==/ClosureCompiler==
 
 
-
 window['MINI'] = (function() {
+	/**
+	 * @id debug
+	 * @module 1
+	 * @name Debugging Support
+	 */
+	function error(msg) {
+		throw Exception("MINI debug error: " + msg);
+	}
+	
 	/**
 	 * @id dollar
 	 * @module 1
@@ -489,9 +497,10 @@ window['MINI'] = (function() {
 	     * @return the list
 	     */
 		list['removeEvent'] = function (name, handler) {
+			// @cond debug if (!name || !name.toLowerCase) error("No name given or name not a string.");
+			// @cond debug if (!handler || !handler['MEHL']) error("No handler given or handler invalid.");
 			name = name.toLowerCase();
 			handler = handler['MEHL'];
-    		// TODO: check whether handler['MEHL'] exists, throw exception otherwise
 	    	return eachlist(function(el) {
 				if (el.addEventListener)
 					el.removeEventListener(name, handler, true); // W3C DOM
@@ -968,7 +977,7 @@ window['MINI'] = (function() {
 				.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) 
         	return eval('(' + text + ')');
         // fall through if not valid
-        // TODO: throw error message here
+        // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     };
     /**
 	 * @stop
@@ -1180,6 +1189,7 @@ window['EL'] = MINI['el'];
  * @return the result list (see MINI())
  */
 window['$'] = MINI;
+
 /**
  * @stop 
  */
