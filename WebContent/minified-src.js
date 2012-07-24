@@ -22,6 +22,12 @@
 
 window['MINI'] = (function() {
 	/**
+	 * @id iecompatibility
+	 * @module 1
+	 * @configurable yes
+	 * @name Backward-Compatibility for IE6/IE7 and similar browsers
+	 */
+	/**
 	 * @id debug
 	 * @module 1
 	 * @configurable no
@@ -31,7 +37,7 @@ window['MINI'] = (function() {
 		if (window.console) console.log(msg);
 		throw Exception("MINI debug error: " + msg);
 	}
-	
+
 	/**
 	 * @id dollar
 	 * @module 1
@@ -91,7 +97,7 @@ window['MINI'] = (function() {
 	function filter(list, filterFunc, r) {
 		r = []; 
 		each(list, function(node) {
-			if (filterFunc(node))
+			if (filterFunc&&filterFunc(node))
 				r.push(node);
 		});
 		return r;
@@ -167,6 +173,7 @@ window['MINI'] = (function() {
 		if (isList(selector))
 		    return filterElements(selector); 
 
+		// @condblock iecompatibility
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1) {
 			each(subSelectors, function(ssi) {
 				each(dollarRaw(ssi, parent), function(aj) {
@@ -184,7 +191,6 @@ window['MINI'] = (function() {
 
 		// @cond debug if (/\s/.test(mainSelector)) error("Selector has invalid format, please check for whitespace.");
 		// @cond debug if (/[ :\[\]]/.test(mainSelector)) error("Only simple selectors with ids, classes and element names are allowed.");
-
 
 		parent = parent || doc;
 		
@@ -215,7 +221,10 @@ window['MINI'] = (function() {
 			return list;
 		}
 		return elements;
-	}; 
+		// @condend
+		
+		// @cond !iecompatibility return (parent || doc).querySelectorAll(mainSelector);
+	};
 	
 	/**
 	 * @stop
@@ -253,8 +262,11 @@ window['MINI'] = (function() {
 		 * @syntax filter(filterFunc)
 		 * Creates a new list that contains only those items approved by the given function. The function is called once for each item. 
 		 * If it returns true, the item is in the returned list, otherwise it will be removed.
-		 * @param filterFunc the callback to invoke for each item with the item as only argument
-		 * @return the new list
+		 * This function also guarantees that the returned list is always based on an Array and thus can be used to convert a MINI()
+		 * list to array.
+		 * @param filterFunc optional the callback to invoke for each item with the item as only argument.  You can call this function
+		 *        without arguments to create a new array.
+		 * @return the new list, always guaranteed to be based on Array and a new object
 		 */
 		list['filter'] = function(filterFunc) {
 		    return addElementListFuncs(filter(list, filterFunc));
@@ -927,6 +939,7 @@ window['MINI'] = (function() {
 	 * @id stringsubstitutions
 	 * @dependency
      */
+	// @condblock iecompatibility
     var STRING_SUBSTITUTIONS = {    // table of character substitutions
             '\t': '\\t',
             '\r': '\\r',
@@ -934,14 +947,17 @@ window['MINI'] = (function() {
             '"' : '\\"',
             '\\': '\\\\'
         };
+    // @condend
     
     /**
 	 * @id ucode
 	 * @dependency
      */
+    // @condblock iecompatibility
     function ucode(a) {
     	return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
     }
+    // @condend
 
     /**
 	 * @id tojson
@@ -955,6 +971,7 @@ window['MINI'] = (function() {
      * @param value the value (map-like object, array, string, number, date, boolean or null)
      * @return the JSON string
      */
+    // @condblock iecompatibility
 	MINI['toJSON'] = (JSON && JSON.stringify) || function toJSON(value) {
 		var ctor, type;
 		if (value && typeof value == 'object') {
@@ -996,6 +1013,8 @@ window['MINI'] = (function() {
 		});
 		return '{' + partial.join() + '}';
     };
+    // @condend
+    // @cond !iecompatibility MINI['toJSON'] = (JSON && JSON.stringify);
     
     /**
 	 * @id parsejson
@@ -1009,6 +1028,7 @@ window['MINI'] = (function() {
      * @param text the JSON string
      * @return the resulting JavaScript object. Undefined if not valid.
      */
+    // @condblock iecompatibility
     MINI['parseJSON'] = (JSON && JSON.parse) || function (text) {
        	text = toString(text).replace(/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u206f\ufeff-\uffff]/g, ucode);
 
@@ -1020,6 +1040,8 @@ window['MINI'] = (function() {
         // fall through if not valid
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     };
+    // @condend
+    // @cond !iecompatibility MINI['parseJSON'] = JSON && JSON.parse;
     /**
 	 * @stop
 	 */  

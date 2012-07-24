@@ -53,8 +53,7 @@ function parseSourceSections(src) {
 			sections.push(currentSection);
 			currentSection = createSection();
 		}
-		else
-			currentSection.src.push(line);
+		currentSection.src.push(line);
 	});
 	sections.push(currentSection);
 
@@ -124,15 +123,29 @@ function createDefaultConfigurationMap(sections) {
 function compile(sections, sectionMap, enabledSections) {
 	var src = '';
 	var enabledSectionsWithDeps = calculateDependencies(sectionMap, enabledSections);
+	var condBlock = null;
+	var lastLineEmpty = true; // =true: don't allow empty lines at the beginning
 	v.each(v.filter(sections, function(s) {
 		return enabledSectionsWithDeps[s.id] || !(s.configurable || s.dependency); 
 	}), function(s){
 		v.each(s.src, function(line) {
-			var m = line.match(/^(\s*)\/\/\s*@cond\s+(\w+)\s*(.*)$/);
-			if (m && enabledSections[m[2]])
-				src += m[1] + m[3] + '\n';
-			else
-				src += line + '\n';
+			if (/^\s*$/.test(line)) { // empty line?
+				if (!lastLineEmpty)
+					src += '\n';
+				lastLineEmpty = true;
+			}
+			else {
+				var m = line.match(/^(\s*)\/\/\s*@(cond|condblock)\s+(\!?)(\w*)\s*(.*)$/);
+				if (m && m[2] == 'cond' && (!!enabledSections[m[4]] != (m[3] == '!')))
+					src += m[1] + m[5] + '\n';
+				else if (m && m[2] == 'condblock')
+					condBlock = (!!enabledSections[m[4]] != (m[3] == '!'));
+				else if (condBlock != null && /^\s*\/\/\s*@condend(\s|$)/.test(line))
+					condBlock = null;
+				else if (condBlock == null || condBlock)
+					src += line + '\n';
+				lastLineEmpty = false;
+			}
 		});
 	});
 	return src;
