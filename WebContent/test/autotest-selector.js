@@ -214,11 +214,39 @@ window.miniTests.push.apply(window.miniTests, [
 			containsAll(m, [document.getElementById("a_a"), document.getElementById("a_b"), document.getElementById("c_b")], true);
 		}
 	},
+
 	{
-		name: "MINI(element.class, context)",
+		name: "EL(unknown)",
+		exec: function(undef) {
+			check(EL("#dsfdfdf") === undef);
+		}
+	},
+	{
+		name: "EL(null)",
+		exec: function(undef) {
+			check(EL(null) === undef);
+		}
+	},
+	{
+		name: "EL(id)",
 		exec: function() {
-			var m = MINI("div.z", ".x,.n");
-			containsAll(m, [document.getElementById("a_a"), document.getElementById("a_b")], true);
+			check(EL("#container") === document.getElementById("container"));
+		}
+	},
+	{
+		name: "EL(div)",
+		exec: function() {
+			check(/^div$/i.test(EL("div").tagName));
+		}
+	},
+
+
+	{
+		name: "EL and $",
+		exec: function() {
+			check($ === MINI);
+			check(EL === MINI.el);
 		}
 	}
+
 ]);

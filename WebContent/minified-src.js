@@ -96,8 +96,8 @@ window['MINI'] = (function() {
 	}
 	function filter(list, filterFunc, r) {
 		r = []; 
-		each(list, function(node) {
-			if (filterFunc&&filterFunc(node))
+		each(list, function(node,index) {
+			if (!filterFunc||filterFunc(node,index))
 				r.push(node);
 		});
 		return r;
