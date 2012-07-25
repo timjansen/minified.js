@@ -108,7 +108,7 @@ window['MINI'] = (function() {
      * @dependency yes
      */
 	function toString(s) { // wrapper for Closure optimization
-		return String(s);
+		return String(s!=null?s:'');
 	}
 
     /**
