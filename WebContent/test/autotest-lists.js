@@ -255,5 +255,19 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(ar[0].b, "td");
 	 		check(ar[1].b, "td");
 		}
+	},
+	
+	{
+		name: "MINI().offset()",
+	 	exec: function() {
+	 		var r1 = MINI('#asdsd').offset();
+	 		check(r1.top, 0);
+	 		check(r1.left, 0);
+	 		var r2 = MINI('#results').offset();
+	 		check(r2.top > 0);
+	 		check(r2.left > 0);
+		}
 	}
+	
+
 ]);
