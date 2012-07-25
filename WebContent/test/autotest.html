@@ -1,0 +1,112 @@
+<html>
+	<head><title>Minified.js Auto Tests</title>
+
+	<style type="text/css">
+		body {font-family: sans-serif;}
+		#container, #container2 { display: none; }
+		.resultOk { color: #0f0; }
+		.resultFailed { font-weight: bold; color: #f00; }
+	</style> 
+
+	<script type="text/javascript" src="../minified-src.js"></script>
+	<script type="text/javascript">
+		function check(value, expected) {
+			var undefined;
+			if (expected === undefined) {
+				if (!value) {
+					if (window.console) console.log("Check for true failed, given:", value);
+					throw "Value '"+value+"' is not true";
+				}
+			}
+			else
+				if (value != expected) {
+					if (window.console) console.log("Check failed, given:", value, " expected:", expected);
+					throw "Value '"+value+"' is not '"+expected+"'";
+				}
+		}
+		
+		function contains(list, value, checkIdentity) {
+			for (var i = 0; i < list.length; i++)
+				if (list[i] === value || (!checkIdentity && list[i] == value))
+					return true;
+			throw "Can not find '"+value+"' in list";
+		}
+		
+		function containsAll(list, valueList, checkIdentity) {
+			check(list.length, valueList.length);
+			for (var i = 0; i < valueList.length; i++)
+				contains(list, valueList[i], checkIdentity);
+		}
+		
+		window.miniTests = [];
+					
+		var testNum = 0;
+		function runTest() {
+			var test = window.miniTests[testNum];
+			var success = true, msg;
+			try {
+				test.exec();
+			}
+			catch (e) {
+				success = false;
+				msg = ""+e;
+			}
+
+			if (success) 
+				MINI.element('div', {}, [test.name + ': ', MINI.element('span', {'class': 'resultOk'}, 'OK')], '#results');
+			else
+				MINI.element('div', {}, [test.name + ': ', MINI.element('span', {'class': 'resultFailed'}, 'Failed (' + msg + ')')], '#results');
+
+			if (++testNum < window.miniTests.length)
+				window.setTimeout(runTest, 1);
+		}
+		MINI.ready(function() { window.setTimeout(runTest, 1); });
+		
+	</script>
+	<script type="text/javascript" src="autotest-mini.js"></script>
+
+	</head>
+	<body>
+		<h1>Minified.js Unit Test</h1>
+		
+		<div id="results">&nbsp;
+		
+		</div>
+		
+		<hr/>
+		<div id="container">
+			<div id="a" class="x">
+				<p><b>div id="a" class="x"</b></p>
+				<div id="a_a" class="y z">
+					<p>div id="a_a" class="y z"</p>
+				</div>
+				<div id="a_b" class="m x z">
+					<p>div id="a_b" class="m x z"</p>
+				</div>
+			</div>
+
+			<div id="b" class="n">
+				<p><b>div id="b" class="n"</b></p>
+				<div id="b_a" class="x y">
+					<p>div id="b_a" class="x y"</p>
+				</div>
+				<div id="b_b" class="n x">
+					<p>div id="b_b" class="n x"</p>
+				</div>
+			</div>
+
+			<div id="c" class="m">
+				<p><b>div id="b" class="m"</b></p>
+				<div id="c_a" class="x y">
+					<p>div id="c_a" class="x y"</p>
+				</div>
+				<div id="c_b" class="m z">
+					<p>div id="c_b" class="m z"</p>
+				</div>
+			</div>
+		</div>
+		<div id="container2">
+		</div>
+	</body>
+</html>
+
