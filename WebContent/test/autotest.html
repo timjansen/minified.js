@@ -43,19 +43,40 @@
 		var testNum = 0;
 		function runTest() {
 			var test = window.miniTests[testNum];
+			var msgSpan;
+			MINI.element('div', {}, [test.name + ': ', msgSpan = MINI.element('span', {}, 'waiting..')], '#results');
+
+			var playgroundDiv;
+			if (test.async) // create playground div for async tests; they must not change anything else
+				playgroundDiv = MINI.element('div', null, null, '#playground');
+
+			var testFinished = false;
+			function setSuccess(s, msg) {
+				if (playgroundDiv) {
+					$(playgroundDiv).remove(); 
+					playgroundDiv = null;
+				}
+				if (!testFinished) {
+					$(msgSpan).set('@class', s ? 'resultOk' : 'resultFailed').removeChildren();
+					MINI.text(s ? 'OK' : 'Failed (' + msg + ')', msgSpan);
+					testFinished = true;
+				}
+			}
+			
 			var success = true, msg;
 			try {
-				test.exec();
+				test.exec(setSuccess, playgroundDiv);
 			}
 			catch (e) {
 				success = false;
 				msg = ""+e;
 			}
-
-			if (success) 
-				MINI.element('div', {}, [test.name + ': ', MINI.element('span', {'class': 'resultOk'}, 'OK')], '#results');
-			else
-				MINI.element('div', {}, [test.name + ': ', MINI.element('span', {'class': 'resultFailed'}, 'Failed (' + msg + ')')], '#results');
+			if (!success || !test.async)
+				setSuccess(success, msg);
+			
+			$('#container2').removeChildren();
+			if (test.async)
+				window.setTimeout(function() {setSuccess(false, 'timeout, waited ' + test.async + 'ms')}, test.async);
 
 			if (++testNum < window.miniTests.length)
 				window.setTimeout(runTest, 1);
@@ -63,9 +84,11 @@
 		MINI.ready(function() { window.setTimeout(runTest, 1); });
 		
 	</script>
+	<script type="text/javascript" src="autotest-element.js"></script>
 	<script type="text/javascript" src="autotest-selector.js"></script>
 	<script type="text/javascript" src="autotest-lists.js"></script>
 	<script type="text/javascript" src="autotest-class.js"></script>
+	<script type="text/javascript" src="autotest-async.js"></script>
 
 	</head>
 	<body>
@@ -108,6 +131,8 @@
 			</div>
 		</div>
 		<div id="container2">
+		</div>
+		<div id="playground">
 		</div>
 	</body>
 </html>
