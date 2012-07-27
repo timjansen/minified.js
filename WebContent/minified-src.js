@@ -662,7 +662,8 @@ window['MINI'] = (function() {
 	    list['toggleClass'] = function(className) {
 	        var reg = createClassNameRegExp(className);
 	        return eachlist(function(li) {
-	        	li.className = li.className ? (reg.test(li.className) ? removeClassRegExp(li, reg) : (' ' + className)) : className;
+	        	var cn = li.className;
+	        	li.className = cn ? (reg.test(cn) ? removeClassRegExp(li, reg) : (cn + ' ' + className)) : className;
 	        });
 	    };
 	    /**

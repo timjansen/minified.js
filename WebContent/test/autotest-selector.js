@@ -217,13 +217,15 @@ window.miniTests.push.apply(window.miniTests, [
 
 	{
 		name: "EL(unknown)",
-		exec: function(undef) {
+		exec: function() {
+			var undef;
 			check(EL("#dsfdfdf") === undef);
 		}
 	},
 	{
 		name: "EL(null)",
-		exec: function(undef) {
+		exec: function() {
+			var undef;
 			check(EL(null) === undef);
 		}
 	},
