@@ -1035,8 +1035,8 @@ window['MINI'] = (function() {
 
         if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
 				.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
-				.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-				.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) 
+						  .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+						  .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) 
         	return eval('(' + text + ')');
         // fall through if not valid
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
