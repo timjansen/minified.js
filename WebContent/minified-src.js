@@ -979,20 +979,18 @@ window['MINI'] = (function() {
     // @condblock iecompatibility
 	MINI['toJSON'] = (JSON && JSON.stringify) || function toJSON(value) {
 		var ctor, type;
-		if (value && typeof value == 'object') {
-			if ((ctor = value.constructor) == String || ctor == Number || ctor == Boolean)
-				value = toString(value); 
-			else if (ctor == Date) {
-				function f(n) {
-					return n < 10 ? '0' + n : n;
-				}
-				value = value.getUTCFullYear()   + '-' +
-				     f(value.getUTCMonth() + 1) + '-' +
-				     f(value.getUTCDate())      + 'T' +
-				     f(value.getUTCHours())     + ':' +
-				     f(value.getUTCMinutes())   + ':' +
-				     f(value.getUTCSeconds())   + 'Z';
+		if (value && (ctor = value.constructor) == String || ctor == Number || ctor == Boolean)
+			value = toString(value); 
+		if (ctor == Date) {
+			function f(n) {
+				return n < 10 ? '0' + n : n;
 			}
+			value = value.getUTCFullYear()   + '-' +
+			     f(value.getUTCMonth() + 1) + '-' +
+			     f(value.getUTCDate())      + 'T' +
+			     f(value.getUTCHours())     + ':' +
+			     f(value.getUTCMinutes())   + ':' +
+			     f(value.getUTCSeconds())   + 'Z';
 		}
 	
 		if ((type = typeof value) == 'string') {
