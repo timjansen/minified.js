@@ -395,7 +395,7 @@ window['MINI'] = (function() {
 				return parseFloat(toString(v).replace(/[^\d.-]/g, ''));
 			}
 			function replaceValue(originalValue, newNumber) {
-				return toString(originalValue).replace(/^[+-]=/, '').replace(/-?[\d.]+/, newNumber);
+				return toString(originalValue).replace(/-?[\d.]+/, newNumber);
 			}
 			if (delayMs)
 				window.setTimeout(function(){list['animate'](properties, durationMs, linearity, callback);}, delayMs);
@@ -413,7 +413,7 @@ window['MINI'] = (function() {
 							a = a[components[j]];
 						p.s[name] = ((/^@/.test(name)) ? li.getAttribute(name.substr(1)) : a[components[len]]) || 0;
 						p.e[name] = /^[+-]=/.test(dest) ?
-							replaceValue(dest, toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.replace(/\+?=/, ''))) 
+							replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.replace(/\+?=/, ''))) 
 							: dest;
 						// @cond debug if (!colorRegexp.test(dest) && isNan(toNumWithoutUnit(dest))) error('End value of "'+name+'" is neither color nor number: ' + toString(dest));
 						// @cond debug if (!colorRegexp.test(p.s[name]) && isNan(toNumWithoutUnit(p.s[name]))) error('Start value of "'+name+'" is neither color nor number: ' + toString(p.s[name]));
