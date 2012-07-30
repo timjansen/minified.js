@@ -1038,9 +1038,9 @@ window['MINI'] = (function() {
        	text = toString(text).replace(/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u206f\ufeff-\uffff]/g, ucode);
 
         if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
-				.test(text.replace(/\\(?:["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@')
-						  .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-						  .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) 
+				.test(text.replace(/\\(["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@')
+						  .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(\.\d*)?([eE][+\-]?\d+)?/g, ']')
+						  .replace(/(^|:|,)(\s*\[)+/g, ''))) 
         	return eval('(' + text + ')');
         // fall through if not valid
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
@@ -1210,7 +1210,7 @@ window['MINI'] = (function() {
 	 */
     function runAnimation(paintCallback) { 
         var entry = {c: paintCallback, t: now()};
-        var i;
+        var i, j;
         var stopFunc = function() {
     		for (i = 0; i < ANIMATION_HANDLERS.length; i++) // don't use each here, list may be modified during run!!
     			if (ANIMATION_HANDLERS[i] === entry) 
@@ -1220,9 +1220,8 @@ window['MINI'] = (function() {
         
         if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
 			(function raFunc() {
-				var t = now();
-				for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // don't use each here, list may be modified during run!!
-					ANIMATION_HANDLERS[i].c(Math.max(0, t - ANIMATION_HANDLERS[i].t), ANIMATION_HANDLERS[i].s); 
+				for (j = 0; j < ANIMATION_HANDLERS.length; j++) // don't use each here, list may be modified during run!!
+					ANIMATION_HANDLERS[j].c(Math.max(0, now() - ANIMATION_HANDLERS[j].t), ANIMATION_HANDLERS[j].s); 
 				if (ANIMATION_HANDLERS.length) // check len now, in case the callback invoked stopFunc() 
 					REQUEST_ANIMATION_FRAME(raFunc); 
 			})(); 
