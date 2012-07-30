@@ -164,11 +164,11 @@ window['MINI'] = (function() {
 				return retList;
 			return filter(retList, function(node,a) {
 				a = node;
-				while (a) 
+				while (a) {
 					if (a.parentNode === parent)
 						return 1;
-					else
-						a = a.parentNode;
+					a = a.parentNode;
+				}
 				// fall through to return undef
 			});
 		}
