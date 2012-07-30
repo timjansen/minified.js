@@ -413,7 +413,7 @@ window['MINI'] = (function() {
 							a = a[components[j]];
 						p.s[name] = ((/^@/.test(name)) ? li.getAttribute(name.substr(1)) : a[components[len]]) || 0;
 						p.e[name] = /^[+-]=/.test(dest) ?
-							replaceValue(dest, toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.substr(2)) * (dest.charAt(0)=='-' ? -1 : 1)) 
+							replaceValue(dest, toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.replace(/\+?=/, ''))) 
 							: dest;
 						// @cond debug if (!colorRegexp.test(dest) && isNan(toNumWithoutUnit(dest))) error('End value of "'+name+'" is neither color nor number: ' + toString(dest));
 						// @cond debug if (!colorRegexp.test(p.s[name]) && isNan(toNumWithoutUnit(p.s[name]))) error('Start value of "'+name+'" is neither color nor number: ' + toString(p.s[name]));
@@ -451,12 +451,12 @@ window['MINI'] = (function() {
 								if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
 									for (var i = 0; i < 3; i++) 
 										newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i))) + (i < 2 ? ',' : ')');
-									}
-									else 
-										newValue = replaceValue(end, interpolate(toNumWithoutUnit(start), toNumWithoutUnit(end)));
-									isi.o.set(name, newValue);
-								});
+								}
+								else 
+									newValue = replaceValue(end, interpolate(toNumWithoutUnit(start), toNumWithoutUnit(end)));
+								isi.o.set(name, newValue);
 							});
+						});
 					});
 				}
 				return list;		
