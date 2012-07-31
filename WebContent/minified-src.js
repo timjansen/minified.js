@@ -340,7 +340,7 @@ window['MINI'] = (function() {
 		function set(name, value, defaultFunction) {
 			// @cond if (name == null) error("First argument must be set!");
 			if (value === undef) 
-				each(name, function(n,v) { list['set'](n, v,defaultFunction); });
+				each(name, function(n,v) { list['set'](n, v, defaultFunction); });
 			else {
 				// @cond if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 				var components = getNameComponents(name), len = components.length-1, i;
@@ -664,10 +664,9 @@ window['MINI'] = (function() {
 	     * @param className the name to toggle
 	     */
 	    list['toggleClass'] = function(className) {
-	        var reg = createClassNameRegExp(className);
+	        var cn, reg = createClassNameRegExp(className);
 	        return eachlist(function(li) {
-	        	var cn = li.className;
-	        	li.className = cn ? (reg.test(cn) ? removeClassRegExp(li, reg) : (cn + ' ' + className)) : className;
+	        	li.className = (cn = li.className) ? (reg.test(cn) ? removeClassRegExp(li, reg) : (cn + ' ' + className)) : className;
 	        });
 	    };
 	    /**
@@ -701,43 +700,63 @@ window['MINI'] = (function() {
 		
 	//// 2. ELEMENT MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * @id putmethods
+     * @dependency yes
+     */
+	function put(refNode, addType, nodeToAdd, parent) {
+		if (refNode = EL(refNode)) {
+			parent = refNode.parentNode;
+			if (addType == 'before')
+				parent.insertBefore(nodeToAdd, refNode);
+			else if (addType == 'replace')
+				parent.replaceChild(nodeToAdd, refNode);
+			else if (addType == 'after') {
+				if (refNode = refNode.nextSibling)
+					parent.insertBefore(nodeToAdd, refNode);
+				else
+					parent.appendChild(nodeToAdd);
+			}
+			else
+				refNode.appendChild(nodeToAdd);
+		}
+		return nodeToAdd;
+	}
 	
 	/**
 	 * @id text
 	 * @module 2
-	 * @requires el tostring
+	 * @requires el tostring putmethods
 	 * @configurable yes
 	 * @name text()
 	 * @syntax MINI.text(text)
 	 * @syntax MINI.text(text, parent)
-	 * Creates a text node for insertion into the DOM. It can optionally be appended to the end of 
-	 * the specified element. Returns the text node.
+	 * Creates a text node for insertion into the DOM. It can optionally be added to the DOM. Returns the new text node.
 	 * @param txt the text to add
-	 * @param parent optional if set, the created text node will be added as last element of this DOM node. The DOM node can be speficied
-	 *                        in any way accepted by MINI.el().
+	 * @param refNode optional if set, the created text node to the DOM tree referenced by this node. The DOM node can be speficied
+	 *                        in any way accepted by MINI.el(). Unless you specify something else, the new node is a child of this node.
+	 * @param addType optional either 'before' to add the new node in front of the reference node, 'after' to put it after the reference,
+	 *                         'replace' to replace the reference or any other value or undefined to add it as a child of the reference.
 	 * @return the resulting DOM text node
 	 */
-	function text(txt, parent) {
+	function text(txt, refNode, addType) {
 		// @cond debug if (!EL(parent)) error("The given parent has not been found.");
-		var node = document.createTextNode(toString(txt)); 
-		if (parent)
-			EL(parent).appendChild(node);
-		return node;
+		return put(refNode, addType, document.createTextNode(toString(txt)));
 	};
 	MINI['text'] = text;
 	
 	/**
 	 * @id element
 	 * @module 2
-	 * @requires el text tostring
+	 * @requires el text tostring putmethods
 	 * @configurable yes
 	 * @name element()
 	 * @syntax MINI.element(name)
 	 * @syntax MINI.element(name, attributes)
 	 * @syntax MINI.element(name, attributes, children)
 	 * @syntax MINI.element(name, attributes, children, parent)
-	 * Creates an element for insertion into the DOM, optionally with attributes and children. It can optionally be appended to the end of 
-	 * the specified element. Returns a DOM HTMLElement. This function is namespace-aware and will create XHTML nodes if called in an
+	 * Creates an element for insertion into the DOM, optionally with attributes and children. It can optionally be added to DOM tree. 
+	 * Returns a DOM HTMLElement. This function is namespace-aware and will create XHTML nodes if called in an
 	 * XHTML document.
 	 * 
 	 * @example Creating a simple &lt;span> element with some text:
@@ -789,15 +808,13 @@ window['MINI'] = (function() {
 	 * @param name the element name (e.g. 'div'). 
 	 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
 	 *                   If the value is null, the attribute will not be created. 
-	 * @param children optional either a single child element or an array of child elements (which may also be arrays). Elements can be either 
-	 *                           DOM nodes, such as HTMLElements created by this function, strings (to create Text elements) or any other JavaScript objects, which will be converted to strings using toString()
-	 *                           and then be used as Text element. Null elements will be ignored. You can nest lists which will be automatically
-	 *                           flattened.
-	 * @param parent optional if set, the created element will be added as last element of this DOM node. The DOM node can be specified in any
-	 *                        way supported by Mini.el().
+	 * @param refNode optional if set, the created text node to the DOM tree referenced by this node. The DOM node can be speficied
+	 *                        in any way accepted by MINI.el(). Unless you specify something else, the new node is a child of this node.
+	 * @param addType optional either 'before' to add the new node in front of the reference node, 'after' to put it after the reference,
+	 *                         'replace' to replace the reference or any other value or undefined to add it as a child of the reference.
 	 * @return the resulting DOM HTMLElement
 	 */
-	MINI['element'] = function (name, attributes, children, parent) {
+	MINI['element'] = function (name, attributes, children, refNode, addType) {
 		// @cond debug if (!name) error("element() requires the element name as first argument.");
 		// @cond debug if (/:/.test(name)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
 		// @cond debug if (!EL(parent)) error("The given parent has not been found.");
@@ -823,10 +840,8 @@ window['MINI'] = (function() {
 		}
 
 		appendChildren(children);
-		
-		if (parent)
-			EL(parent).appendChild(e);
-		return e;
+
+		return put(refNode, addType, e);
 	};
 
     /**

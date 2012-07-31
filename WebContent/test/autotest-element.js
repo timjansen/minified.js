@@ -67,5 +67,54 @@ window.miniTests.push.apply(window.miniTests, [
 			check(t4.data, 'user');
 			check(t4.parentElement, s5, true);
 		}
+	},
+	{
+		name:'MINI.element / adding',
+		exec: function() {
+			var s = MINI.element('span', null, null, '#doesnotexist');
+			check(s.parentNode == null);
+			
+			s = MINI.element('span', null, null, '#container2');
+			check(s.parentNode, EL('#container2'), true);
+			check(EL('#container2').childNodes.length, 1);
+			
+			var s2 = MINI.element('span', null, null, '#container2');
+			check(s2.parentNode, EL('#container2', true));
+			check(EL('#container2').childNodes.length, 2);
+			check(EL('#container2').childNodes[0], s, true);
+			check(EL('#container2').childNodes[1], s2, true);
+			
+			var s3 = MINI.element('span', null, null, s, 'after');
+			check(s3.parentNode, EL('#container2', true));
+			check(EL('#container2').childNodes.length, 3);
+			check(EL('#container2').childNodes[0], s, true);
+			check(EL('#container2').childNodes[1], s3, true);
+			check(EL('#container2').childNodes[2], s2, true);
+			
+			var s4 = MINI.element('span', null, null, s2, 'after');
+			check(s4.parentNode, EL('#container2', true));
+			check(EL('#container2').childNodes.length, 4);
+			check(EL('#container2').childNodes[0], s, true);
+			check(EL('#container2').childNodes[1], s3, true);
+			check(EL('#container2').childNodes[2], s2, true);
+			check(EL('#container2').childNodes[3], s4, true);
+			
+			var s1 = MINI.element('span', null, null, s3, 'replace');
+			check(s1.parentNode, EL('#container2', true));
+			check(EL('#container2').childNodes.length, 4);
+			check(EL('#container2').childNodes[0], s, true);
+			check(EL('#container2').childNodes[1], s1, true);
+			check(EL('#container2').childNodes[2], s2, true);
+			check(EL('#container2').childNodes[3], s4, true);
+			
+			var s0 = MINI.element('span', null, null, s, 'before');
+			check(s0.parentNode, EL('#container2', true));
+			check(EL('#container2').childNodes.length, 5);
+			check(EL('#container2').childNodes[0], s0, true);
+			check(EL('#container2').childNodes[1], s, true);
+			check(EL('#container2').childNodes[2], s1, true);
+			check(EL('#container2').childNodes[3], s2, true);
+			check(EL('#container2').childNodes[4], s4, true);
+		}
 	}
 ]);
