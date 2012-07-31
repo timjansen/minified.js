@@ -344,17 +344,17 @@ window['MINI'] = (function() {
 			else {
 				// @cond if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 				var components = getNameComponents(name), len = components.length-1, i;
-				var n = name.substring(1);
-				var f = typeof value == 'function' ? value : (defaultFunction || function(){ return value; });
+				var n = name.substr(1);
+				var f = (typeof value == 'function') ? value : defaultFunction;
 				eachlist((/^@/.test(name)) ? 
 					function(obj, c) {
-						obj.setAttribute(n, f(obj, obj.getAttribute(n), c, value));
+						obj.setAttribute(n, f ? f(obj, obj.getAttribute(n), c, value) : value);
 					}
 					:
 					function(obj, c) {
 						for (i = 0; i < len; i++)
 							obj = obj[components[i]];
-						obj[components[len]] = f(obj, obj[components[len]], c, value);
+						obj[components[len]] = f ? f(obj, obj[components[len]], c, value) : value;
 					});
 			}
 			return list;
@@ -1111,7 +1111,7 @@ window['MINI'] = (function() {
      * 
      * @param name the name of the cookie. This should be ideally an alphanumeric name, as it will not be escaped by MINI and this
      *             guarantees compatibility with all systems.
-     *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax.
+     *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax. 
      * @param value the value of the cookie. All characters except alphanumeric and "*@-_+./" will be escaped using the 
      *              JavaScript escape() function and thus can be used, unless you set the optional dontEscape parameter.
      * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
@@ -1126,15 +1126,15 @@ window['MINI'] = (function() {
      *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
      *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
      */
-	function setCookie(name, value, dateOrDays, path, domain, dontEscape) {
+    function setCookie(name, value, dateOrDays, path, domain, dontEscape) {
 		// @cond debug if (!name) error('Cookie name must be set!');
-		// @cond debug if (/=/.test(name)) error('Cookie name must not contain a "=".');
+		// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
     	document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
-    	    (dateOrDays ? ((dateOrDays instanceof Date) ? dateOrDays: new Date(now() + dateOrDays * 24 * 3600000)) : '') + 
+    	    (dateOrDays ? (dateOrDays.getDay ? dateOrDays: new Date(now() + dateOrDays * 24 * 3600000)) : '') + 
     		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
     }
     MINI['setCookie'] = setCookie;
-
+    
     /**
 	 * @id getcookie
 	 * @module 6
@@ -1144,18 +1144,17 @@ window['MINI'] = (function() {
 	 * @syntax MINI.getCookie(name)
 	 * @syntax MINI.getCookie(name, dontUnescape)
      * Tries to find the cookie with the given name and returns it.
-     * @param name the name of the cookie. Must not contain "=".
+     * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
+     *             You may want to escape the name using encodeURIComponent() for all other characters.
      * @param dontUnescape optional if set and true, the value will be returned unescaped (use this only if the value has been encoded
      *                     in a special way, and not with the JavaScript encode() method)
      * @return the value of the cookie, or null if not found. Depending on the dontUnescape parameter, it may be unescape or not.
      */
     MINI['getCookie'] = function(name, dontUnescape) {
     	// @cond debug if (!name) error('Cookie name must be set!');
-    	// @cond debug if (/=/.test(name)) error('Cookie name must not contain a "=".');
-    	var matcher = document.cookie.match('(^|;)\\s*' + 
-    				  name.replace(/([$+*?\|.\\\[\]\(\)\{\}])/g, "\\$1") +  // save name
-    				  '=([^;]*)(;|$)');
-    	return matcher ? (dontUnescape ? matcher[2] : unescape(matcher[2])) : null;
+    	// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
+    	var regexp, match = (regexp = RegExp('(^|;) *'+name+'=([^;]*)').exec(document.cookie)) && regexp[2];
+    	return dontUnescape ? match : match && unescape(match);
     };
 
     /**
