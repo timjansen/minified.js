@@ -21,8 +21,8 @@
 				innerElem = MINI.element('b', null, text);
 			else // small
 				innerElem = MINI.element('span', {style: 'font-size: x-small;'}, text);
-				
-			MINI.element('div', {style: 'border: '+boxStyle+'; margin: 6px; padding: 3px;'}, innerElem, '#container');
+console.log(innerElem, innerElem.nodeType);
+			MINI.elementAdd('#container', 'div', {style: 'border: '+boxStyle+'; margin: 6px; padding: 3px;'}, innerElem);
 		});
 	});
 	</script>

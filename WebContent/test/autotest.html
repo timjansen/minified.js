@@ -44,11 +44,11 @@
 		function runTest() {
 			var test = window.miniTests[testNum];
 			var msgSpan;
-			MINI.element('div', {}, [test.name + ': ', msgSpan = MINI.element('span', {}, 'waiting..')], '#results');
+			MINI.elementAdd('#results', 'div', {}, [test.name + ': ', msgSpan = MINI.element('span', {}, 'waiting..')]);
 
 			var playgroundDiv;
 			if (test.async) // create playground div for async tests; they must not change anything else
-				playgroundDiv = MINI.element('div', null, null, '#playground');
+				playgroundDiv = MINI.elementAdd('#playground', 'div');
 
 			var testFinished = false;
 			function setSuccess(s, msg) {

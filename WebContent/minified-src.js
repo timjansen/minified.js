@@ -21,6 +21,10 @@
 
 
 window['MINI'] = (function() {
+	var backslashB = '\\b';
+	var undef;
+
+	
 	/**
 	 * @id iecompatibility
 	 * @module 1
@@ -80,13 +84,10 @@ window['MINI'] = (function() {
 		return addElementListFuncs(dollarRaw(selector, context));
 	}
 	
-	var backslashB = '\\b';
-
-	
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	function isList(v) {
-		return v && v.length != null && !v.substr;
+		return v && v.length != null && !v.substr && !v.data; // substr to test for string, data for Text node
 	}
 	function each(list, cb) {
 		if (isList(list))
@@ -239,7 +240,7 @@ window['MINI'] = (function() {
      * @requires addelementlistfuncend
      * @dependency yes
      */
-	function addElementListFuncs(list, undef) {
+	function addElementListFuncs(list) {
 		function eachlist(callback) {
 			return each(list, callback);
 		};
@@ -360,7 +361,27 @@ window['MINI'] = (function() {
 			return list;
 		};
 		list['set'] = set;
+		
+		/**
+		 * @id append
+		 * @module 1
+		 * @requires set
+		 * @configurable yes
+		 * @name append()
+		 * @syntax MINI(selector).append(name, value)
+		 * @syntax MINI(selector).append(properties)
+		 */
 		list['append'] = function (name, value) { return set(name, value, function(obj, oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
+
+		/**
+		 * @id prepend
+		 * @module 2
+		 * @requires set
+		 * @configurable yes
+		 * @name prepend()
+		 * @syntax MINI(selector).prepend(name, value)
+		 * @syntax MINI(selector).prepend(properties)
+		 */
 		list['prepend'] = function (name, value) { return set(name, value, function(obj, oldValue, idx, newValue) { return newValue + toString(oldValue);});};
 
 		/**
@@ -700,33 +721,10 @@ window['MINI'] = (function() {
 		
 	//// 2. ELEMENT MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * @id putmethods
-     * @dependency yes
-     */
-	function put(refNode, addType, nodeToAdd, parent) {
-		if (refNode = EL(refNode)) {
-			parent = refNode.parentNode;
-			if (addType == 'before')
-				parent.insertBefore(nodeToAdd, refNode);
-			else if (addType == 'replace')
-				parent.replaceChild(nodeToAdd, refNode);
-			else if (addType == 'after') {
-				if (refNode = refNode.nextSibling)
-					parent.insertBefore(nodeToAdd, refNode);
-				else
-					parent.appendChild(nodeToAdd);
-			}
-			else
-				refNode.appendChild(nodeToAdd);
-		}
-		return nodeToAdd;
-	}
-	
 	/**
 	 * @id text
 	 * @module 2
-	 * @requires el tostring putmethods
+	 * @requires el tostring
 	 * @configurable yes
 	 * @name text()
 	 * @syntax MINI.text(text)
@@ -739,16 +737,17 @@ window['MINI'] = (function() {
 	 *                         'replace' to replace the reference or any other value or undefined to add it as a child of the reference.
 	 * @return the resulting DOM text node
 	 */
-	function text(txt, refNode, addType) {
-		// @cond debug if (!EL(parent)) error("The given parent has not been found.");
-		return put(refNode, addType, document.createTextNode(toString(txt)));
+	function text(txt, parent) {
+		// @cond debug if (parent && !EL(parent)) error("The given parent has not been found.");
+		txt = document.createTextNode(toString(txt));
+		return (parent = EL(parent)) ? parent.appendChild(txt) : txt;
 	};
 	MINI['text'] = text;
-	
+
 	/**
 	 * @id element
 	 * @module 2
-	 * @requires el text tostring putmethods
+	 * @requires el text tostring
 	 * @configurable yes
 	 * @name element()
 	 * @syntax MINI.element(name)
@@ -769,7 +768,7 @@ window['MINI'] = (function() {
 	 * </pre>
 	 * @example Creating a &lt;span> element with style, some text, and append it to the element with the id 'greetingsDiv':
 	 * <pre>
-	 * var mySpan = MINI.element('span', {style: 'font-size: 100%;'}, 'Hello World', 'greetingsDiv'); 
+	 * var mySpan = MINI.element('span', {style: 'font-size: 100%;'}, 'Hello World'); 
 	 * </pre>
 	 * creates this:
 	 * <pre>
@@ -777,7 +776,7 @@ window['MINI'] = (function() {
 	 * </pre>
 	 * @example Creating a &lt;form> element with two text fields, labels and a submit button:
 	 * <pre>
-	 * var mySpan = MINI.element('form', {method: 'post'}, [
+	 * var myForm = MINI.element('form', {method: 'post'}, [
 	 *     MINI.element('label', {'for': 'nameInput'}, 'Name:'),
 	 *     MINI.element('input', {id: 'nameInput', type: 'input'}),
 	 *     MINI.element('br'),
@@ -805,27 +804,27 @@ window['MINI'] = (function() {
 	 * var myInput = MINI.element('input', {id: 'myCheckbox', type: 'checkbox', checked: shouldBeChecked() ? 'checked' : null});
 	 * </pre>
 	 * 
-	 * @param name the element name (e.g. 'div'). 
+	 * @param e the element name (e.g. 'div') or an HTML element 
 	 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
 	 *                   If the value is null, the attribute will not be created. 
-	 * @param refNode optional if set, the created text node to the DOM tree referenced by this node. The DOM node can be speficied
-	 *                        in any way accepted by MINI.el(). Unless you specify something else, the new node is a child of this node.
-	 * @param addType optional either 'before' to add the new node in front of the reference node, 'after' to put it after the reference,
-	 *                         'replace' to replace the reference or any other value or undefined to add it as a child of the reference.
+	 * @param children optional if set an element or a list of elements as children to add. Strings will be converted as text nodes. Lists can be 
+	 *                         nested and will then automatically be flattened. Null elements in lists will be ignored.
+	 *                         If the element e already existed and the argument is set, they replace the existing children. 
+	 *                         If the argument is not set, the original children will not be changed.
 	 * @return the resulting DOM HTMLElement
 	 */
-	MINI['element'] = function (name, attributes, children, refNode, addType) {
-		// @cond debug if (!name) error("element() requires the element name as first argument.");
-		// @cond debug if (/:/.test(name)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
-		// @cond debug if (!EL(parent)) error("The given parent has not been found.");
+	function element(e, attributes, children) {
+		// @cond debug if (!e) error("element() requires the element name or an element as first argument.");
+		// @cond debug if (!e.nodeType && /:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
+		// @cond debug if (parent && !EL(parent)) error("The given parent has not been found.");
 		var nu =  document.documentElement.namespaceURI; // to check whether doc is XHTML
-		var e = nu ? document.createElementNS(nu, name) : document.createElement(name); 
+		e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e); 
 		
 		each(attributes, function(n, v) {
 			if (v!=null)
 				e.setAttribute(n, toString(v));
 		});
-			
+		
 		function appendChildren(c) {
 			if (isList(c))
 				each(c, function(ci) {
@@ -839,16 +838,87 @@ window['MINI'] = (function() {
 			}
 		}
 
+		if (children != null) // must check null, as 0 is a valid parameter
+			MINI(e).removeChildren();
 		appendChildren(children);
-
-		return put(refNode, addType, e);
+		return e;
 	};
-
+	MINI['element'] = element;
+	
     /**
-     * @stop
+     * @id elementmods
+     * @dependency yes
      */
-    
-
+	each({
+		/**
+		 * @id elementadd
+		 * @module 2
+		 * @requires element elementmods
+		 * @configurable yes
+		 * @name elementAdd()
+		 * @syntax MINI.elementAdd(parent, name)
+		 * @syntax MINI.elementAdd(parent, name, attributes)
+		 * @syntax MINI.elementAdd(parent, name, attributes, children)
+		 */
+		Add: function (e, parent) {
+			parent.appendChild(e);
+		},
+		/**
+		 * @id elementafter
+		 * @module 2
+		 * @requires element elementmods
+		 * @configurable yes
+		 * @name elementAfter()
+		 * @syntax MINI.elementAfter(refNode, name)
+		 * @syntax MINI.elementAfter(refNode, name, attributes)
+		 * @syntax MINI.elementAfter(refNode, name, attributes, children)
+		 */
+		After: function (e, refNode, parentNode) {
+			if (refNode = refNode.nextSibling)
+				parentNode.insertBefore(e, refNode);
+			else
+				parentNode.appendChild(e);
+		},
+		/**
+		 * @id elementbefore
+		 * @module 2
+		 * @requires element elementmods
+		 * @configurable yes
+		 * @name elementBefore()
+		 * @syntax MINI.elementBefore(refNode, name)
+		 * @syntax MINI.elementBefore(refNode, name, attributes)
+		 * @syntax MINI.elementBefore(refNode, name, attributes, children)
+		 */
+		Before: function (e, refNode, parentNode) {
+			parentNode.insertBefore(e, refNode);
+		},
+		/**
+		 * @id elementreplace
+		 * @module 2
+		 * @requires element elementmods
+		 * @configurable yes
+		 * @name elementReplace()
+		 * @syntax MINI.elementReplace(oldNode, name)
+		 * @syntax MINI.elementReplace(oldNode, name, attributes)
+		 * @syntax MINI.elementReplace(oldNode, name, attributes, children)
+		 */
+		Replace: function (e, oldNode, parentNode) {
+			parentNode.replaceChild(e, oldNode);
+		}}, 
+	    /**
+	     * @stop
+	     */
+		// @condblock elementmods
+		function (name, func) {
+			MINI['element'+name] = function(refNode, e, attributes, b) {
+				// @cond debug if (!refNode) error("A valid node is required as first argument.");
+				// @cond debug if (!e || (!e.substr || !e.nodeType))) error("A valid element name or node is required as second argument.");
+				func(e = element(e, attributes, b), b = EL(refNode), b.parentNode);
+				return e;
+			};
+		});
+		// @condend
+		
 	
 	//// 3. HTTP REQUEST MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

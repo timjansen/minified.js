@@ -110,11 +110,11 @@ function setUpConfigurationUI(s) {
 			var requiredBy = createList('Required by ', sec.requiredBy);
 			var requires = createList('Requires ', sec.requires);
 		
-			MINI.element('div', {'class': 'sectionDescriptor'}, [
+			MINI.elementAdd(div, 'div', {'class': 'sectionDescriptor'}, [
 				sectionCheckBox = MINI.element('input', {'class': 'secCheck', type:'checkbox', id: 'sec-'+sec.id, checked: sec.configurable=='yes' ? 'checked' : null}),
 				MINI.element('label', {'for': 'sec-'+sec.id}, sec.name || sec.id),
 				MINI.element('div', {'class': 'requirements'}, [requiredBy ? [requiredBy, MINI.element('br')] : null , requires])
-			], div);
+			]);
 			
 			$(sectionCheckBox).addEvent('change', function() {
 				fulfillSectionDependencies(this);

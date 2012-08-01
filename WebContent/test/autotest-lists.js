@@ -59,7 +59,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name: "MINI().remove()",
 	 	exec: function() {
-	 		MINI.element('span', {id:'hello'}, 'hello', '#container2');
+	 		MINI.elementAdd('#container2', 'span', {id:'hello'}, 'hello');
 			MINI("#hello").remove();
 			check(MINI('#hello').length, 0);
 		}
@@ -74,7 +74,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name: "MINI().removeChildren()",
 	 	exec: function() {
-	 		MINI.element('span', {id:'hello'}, 'hello', '#container2');
+	 		MINI.elementAdd('#container2', 'span', {id:'hello'}, 'hello');
 			var l = MINI("#container2").removeChildren().length;
 			check(l, 1);
 			check(MINI('#hello').length, 0);
@@ -105,8 +105,8 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.style['a-b'], 2);
 	 		}
 	 		
-	 		MINI.element('span', {'id':'hello1', 'class':'hello'}, 'hello', '#container2');
-	 		MINI.element('span', {'id':'hello2', 'class':'hello'}, 'hello', '#container2');
+	 		MINI.elementAdd('#container2', 'span', {'id':'hello1', 'class':'hello'}, 'hello');
+	 		MINI.elementAdd('#container2', 'span', {'id':'hello2', 'class':'hello'}, 'hello');
 	 		MINI('#container2 span').set('@class', 'hi').set('@title', 'hello element');
 	 		check(document.getElementById('hello1').getAttribute('class'), 'hi');
 	 		check(document.getElementById('hello2').getAttribute('class'), 'hi');
@@ -136,8 +136,8 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.style['a-b'], 2);
 	 		}
 	 		
-	 		MINI.element('span', {'id':'hello1', 'class':'hello'}, 'hello', '#container2');
-	 		MINI.element('span', {'id':'hello2', 'class':'hello'}, 'hello', '#container2');
+	 		MINI.elementAdd('#container2', 'span', {'id':'hello1', 'class':'hello'}, 'hello');
+	 		MINI.elementAdd('#container2', 'span', {'id':'hello2', 'class':'hello'}, 'hello');
 	 		MINI('#container2 span').set({'@class': 'hi', '@title': 'hello element'});
 	 		check(document.getElementById('hello1').getAttribute('class'), 'hi');
 	 		check(document.getElementById('hello2').getAttribute('class'), 'hi');
