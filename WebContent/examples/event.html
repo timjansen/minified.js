@@ -9,7 +9,7 @@
 	<script type="text/javascript">
 
 	function write(txt) {
-		MINI.element('div', {style: 'border-bottom: 1px dotted #ccc; margin: 6px; padding: 3px;'}, txt, '#container');
+		MINI.elementAdd('#container', 'div', {style: 'border-bottom: 1px dotted #ccc; margin: 6px; padding: 3px;'}, txt);
 		EL('#container').scrollTop = EL('#container').scrollHeight; 
 	}
 	

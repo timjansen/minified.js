@@ -2,9 +2,9 @@ window.miniTests.push.apply(window.miniTests, [
    	{
 		name:'hasClass()',
 		exec: function() {
-			var s1 = MINI.element('div', {'class': 'a b c d e'}, [], '#container2');
+			var s1 = MINI.elementAdd('#container2', 'div', {'class': 'a b c d e'});
 			MINI.element('div', {'class': ''}, [], '#container2');
-			var s3 = MINI.element('div', {'class': 'a d f'}, [], '#container2');
+			var s3 = MINI.elementAdd('#container2', 'div', {'class': 'a d f'}, []);
 			var m = MINI('#container2 div');
 			check(m.hasClass('a'), s1, true);
 			check(m.hasClass('b'), s1, true);
@@ -18,7 +18,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'removeClass()',
 		exec: function() {
-			var s1 = MINI.element('div', {'class': 'a b c d e'}, [], '#container2');
+			var s1 = MINI.elementAdd('#container2', 'div', {'class': 'a b c d e'});
 			var m = MINI(s1);
 			m.removeClass('x');
 			check(s1.className, 'a b c d e');
@@ -39,8 +39,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'addClass()',
 		exec: function() {
-			var s1 = MINI.element('div', {}, [], '#container2');
-			var s2 = MINI.element('div', {'class':''}, [], '#container2');
+			var s1 = MINI.elementAdd('#container2', 'div');
+			var s2 = MINI.elementAdd('#container2', 'div', {'class':''});
 			var m = MINI([s1, s2]);
 			m.addClass('a');
 			check(s1.className, 'a');
@@ -65,8 +65,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'toggleClass()',
 		exec: function() {
-			var s1 = MINI.element('div', {'class': 'a b c'}, [], '#container2');
-			var s2 = MINI.element('div', {}, [], '#container2');
+			var s1 = MINI.elementAdd('#container2', 'div', {'class': 'a b c'});
+			var s2 = MINI.elementAdd('#container2', 'div');
 			var m = MINI('#container2 div');
 			m.toggleClass('a');
 			check(s1.className, 'b c');
