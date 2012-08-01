@@ -722,29 +722,6 @@ window['MINI'] = (function() {
 	//// 2. ELEMENT MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * @id text
-	 * @module 2
-	 * @requires el tostring
-	 * @configurable yes
-	 * @name text()
-	 * @syntax MINI.text(text)
-	 * @syntax MINI.text(text, parent)
-	 * Creates a text node for insertion into the DOM. It can optionally be added to the DOM. Returns the new text node.
-	 * @param txt the text to add
-	 * @param refNode optional if set, the created text node to the DOM tree referenced by this node. The DOM node can be speficied
-	 *                        in any way accepted by MINI.el(). Unless you specify something else, the new node is a child of this node.
-	 * @param addType optional either 'before' to add the new node in front of the reference node, 'after' to put it after the reference,
-	 *                         'replace' to replace the reference or any other value or undefined to add it as a child of the reference.
-	 * @return the resulting DOM text node
-	 */
-	function text(txt, parent) {
-		// @cond debug if (parent && !EL(parent)) error("The given parent has not been found.");
-		txt = document.createTextNode(toString(txt));
-		return (parent = EL(parent)) ? parent.appendChild(txt) : txt;
-	};
-	MINI['text'] = text;
-
-	/**
 	 * @id element
 	 * @module 2
 	 * @requires el text tostring
@@ -830,12 +807,8 @@ window['MINI'] = (function() {
 				each(c, function(ci) {
 					appendChildren(ci);
 				});
-			else if (c != null) {  // must check null, as 0 is a valid parameter
-				if (c.nodeType) 
-					e.appendChild(c); 
-				else 
-					text(c, e);
-			}
+			else if (c != null)   // must check null, as 0 is a valid parameter
+				e.appendChild(c.nodeType ? c : document.createTextNode(toString(c))); 
 		}
 
 		if (children != null) // must check null, as 0 is a valid parameter

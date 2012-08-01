@@ -1,22 +1,5 @@
 window.miniTests.push.apply(window.miniTests, [
 	{
-		name:'MINI.text()',
-		exec: function() {
-			var t = MINI.text('test');
-			check(t.nodeType, 3);
-			check(t.data, 'test');
-			check(t.parentElement, null);
-	
-			var t2 = MINI.text('toast', document.getElementById('container2'));
-			check(t2.nodeType, 3);
-			check(t2.data, 'toast');
-			check(t2.parentElement, document.getElementById('container2'), true);
-	
-			var t3 = MINI.text('tat', '#container2');
-			check(t3.parentElement, document.getElementById('container2'), true);
-		}
-	},
-	{
 		name:'MINI.element()',
 		exec: function() {
 			var s = MINI.element('span');
