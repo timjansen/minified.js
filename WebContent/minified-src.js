@@ -380,8 +380,8 @@ window['MINI'] = (function() {
 				var f = (typeof value == 'function') ? value : defaultFunction;
 				eachlist( 
 					function(obj, c) {
-						var lastName = components[len];
 						var isAttr = /^@/.test(lastName);
+						var lastName = components[len];
 						
 						for (var i = 0; i < len; i++)
 							obj = obj[components[i]];
