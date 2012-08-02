@@ -99,8 +99,8 @@ window['MINI'] = (function() {
 					cb(n, list[n]);
 		return list;
 	}
-	function filter(list, filterFunc, r) {
-		r = []; 
+	function filter(list, filterFunc) {
+		var r = []; 
 		each(list, function(node,index) {
 			if (!filterFunc||filterFunc(node,index))
 				r.push(node);
@@ -1037,6 +1037,7 @@ window['MINI'] = (function() {
     // @condblock iecompatibility
 	MINI['toJSON'] = (JSON && JSON.stringify) || function toJSON(value) {
 		var ctor, type;
+		var partial = [];
 		if (value && (ctor = value.constructor) == String || ctor == Number || ctor == Boolean)
 			value = toString(value); 
 		if (ctor == Date) {
@@ -1062,7 +1063,6 @@ window['MINI'] = (function() {
 		if (!value)
 			return 'null';
 		
-		var partial = [];
 		if (isList(value)) {
 			each(value, function(vi) { 
 				partial.push(toJSON(vi)); 
