@@ -57,8 +57,7 @@
 					playgroundDiv = null;
 				}
 				if (!testFinished) {
-					$(msgSpan).set('@class', s ? 'resultOk' : 'resultFailed').removeChildren();
-					MINI.text(s ? 'OK' : 'Failed (' + msg + ')', msgSpan);
+					MINI.element(msgSpan, {'class': s ? 'resultOk' : 'resultFailed'}, s ? 'OK' : 'Failed (' + msg + ')');
 					testFinished = true;
 				}
 			}

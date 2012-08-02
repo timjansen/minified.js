@@ -112,6 +112,11 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(document.getElementById('hello2').getAttribute('class'), 'hi');
 	 		check(document.getElementById('hello1').getAttribute('title'), 'hello element');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'hello element');
+	 			 		
+	 		var child;
+	 		var parent = MINI.element('div', {}, child = MINI.element('div'));
+	 		MINI(child).set('parentNode.@title', 'test');
+	 		check(parent.getAttribute('title'), 'test');
 		}
 	},
 	{
@@ -155,9 +160,8 @@ window.miniTests.push.apply(window.miniTests, [
 	 		var cnt = 0;
 	 		var ar = [{a:3}, {a:2}, {a:11}];
 
-	 		MINI(ar).set('a', 33, function(item, oldValue, index, newValue) {
+	 		MINI(ar).set('a', 33, function(oldValue, index, newValue) {
 	 			check(index, cnt++);
-	 			check(item === ar[index]);
 	 			check(oldValue, ar[index].a);
 	 			check(newValue, 33);
 	 			return oldValue + newValue;
@@ -168,9 +172,8 @@ window.miniTests.push.apply(window.miniTests, [
 
 
 	 		cnt = 0;
-	 		MINI(ar).set('a', function(item, oldValue, index) {
+	 		MINI(ar).set('a', function(oldValue, index) {
 	 			check(index, cnt++);
-	 			check(item === ar[index]);
 	 			check(oldValue, ar[index].a);
 	 			return oldValue + 1;
 	 		},  function(){});
@@ -180,9 +183,8 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(ar[2].a, 45);
 	 		
 	 		cnt = 0;
-	 		MINI(ar).set('a', function(item, oldValue, index) {
+	 		MINI(ar).set('a', function(oldValue, index) {
 	 			check(index, cnt++);
-	 			check(item === ar[index]);
 	 			check(oldValue, ar[index].a);
 	 			return oldValue + 12;
 	 		});
@@ -191,9 +193,8 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(ar[2].a, 57);
 	 		
 	 		cnt = 0;
-	 		MINI(ar).set({a: function(item, oldValue, index) {
+	 		MINI(ar).set({a: function(oldValue, index) {
 	 			check(index, cnt++);
-	 			check(item === ar[index]);
 	 			check(oldValue, ar[index].a);
 	 			return oldValue - 40;
 	 		}});
@@ -202,9 +203,8 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(ar[2].a, 17);
 	 		
 	 		cnt = 0;
-	 		MINI(ar).set({a: 2}, undef, function(item, oldValue, index, newValue) {
+	 		MINI(ar).set({a: 2}, undef, function(oldValue, index, newValue) {
 	 			check(index, cnt++);
-	 			check(item === ar[index]);
 	 			check(oldValue, ar[index].a);
 	 			check(newValue, 2);
 	 			return oldValue + newValue;

@@ -330,12 +330,44 @@ window['MINI'] = (function() {
 		 * @syntax MINI(selector).set(properties)
 		 * @syntax MINI(selector).set(name, value, defaultFunction)
 		 * @syntax MINI(selector).set(properties, undefined, defaultFunction)
-		 * Modifies the list's DOM elements or objects by setting their properties and/or attributes.
+		 * Modifies the list's DOM elements or objects by setting their properties and/or attributes. set() has also special support for 
+		 * setting an element's CSS style. You can either supply a single name and value to set only one property, or you
+		 * can provide a map of properties to set.
+		 * More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will
+		 * be set.
+		 * 
+		 * @example Unchecking checkboxes:
+		 * <pre>
+		 * $('input.checkbox').set('checked', false);
+		 * </pre>
+		 * 
+		 * @example Changing the text of the next sibling:
+		 * <pre>
+		 * $('input.checkbox').set('nextSibling.innerText', 'New Text');
+		 * </pre>
+		 * 
+		 * @example Changing styles:
+		 * <pre>
+		 * $('.bigText').set('$font-size', 'x-large');
+		 * </pre>
+		 * 
+		 * @example Changing attributes:
+		 * <pre>
+		 * $('a.someLinks').set('@href', 'http://www.example.com/');
+		 * </pre>
+		 * 
 		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
-		 *                     If it contains one or more dots ('.'), the function will traverse the properties of those names.
-		 *                     A hash ('#') prefix is a shortcut for 'style.' and will also replace all '_' with '-' in the name.
-		 * @param value the value to set
-		 * @param properties a map containing names as keys and the values to set as map values
+		 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
+		 *                     A dollar ('$') prefix is a shortcut for 'style.' and will also replace all '_' with '-' in the name.
+		 * @param value the value to set. If it is a function, the function will be invoked for each list element to evaluate the value. 
+		 * The function is called with with the old value as first argument and the index in the list as second.
+		 * The third value is the function itself.
+		 * @param properties a map containing names as keys and the values to set as map values. See above for the syntax.
+		 * @param defaultFunction optional if set and no function is provided as value, this function will be invoked for each list element 
+		 *                                 and property to determine the value. The function is called with with the old value as first 
+		 *                                 argument and the index in the list as second. The third value is the new value specified
+		 *                                 in the set() call.
+		 *                        
 		 * @return the list
 		 */
 		function set(name, value, defaultFunction) {
@@ -344,18 +376,20 @@ window['MINI'] = (function() {
 				each(name, function(n,v) { list['set'](n, v, defaultFunction); });
 			else {
 				// @cond if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
-				var components = getNameComponents(name), len = components.length-1, i;
-				var n = name.substr(1);
+				var components = getNameComponents(name), len = components.length-1;
 				var f = (typeof value == 'function') ? value : defaultFunction;
-				eachlist((/^@/.test(name)) ? 
+				eachlist( 
 					function(obj, c) {
-						obj.setAttribute(n, f ? f(obj, obj.getAttribute(n), c, value) : value);
-					}
-					:
-					function(obj, c) {
-						for (i = 0; i < len; i++)
+						var lastName = components[len];
+						var isAttr = /^@/.test(lastName);
+						
+						for (var i = 0; i < len; i++)
 							obj = obj[components[i]];
-						obj[components[len]] = f ? f(obj, obj[components[len]], c, value) : value;
+						
+						if (isAttr)
+							obj.setAttribute(lastName = lastName.substr(1), f ? f(obj.getAttribute(lastName), c, value) : value);
+						else
+							obj[lastName] = f ? f(obj[lastName], c, value) : value;
 					});
 			}
 			return list;
@@ -371,7 +405,7 @@ window['MINI'] = (function() {
 		 * @syntax MINI(selector).append(name, value)
 		 * @syntax MINI(selector).append(properties)
 		 */
-		list['append'] = function (name, value) { return set(name, value, function(obj, oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
+		list['append'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
 
 		/**
 		 * @id prepend
@@ -382,7 +416,7 @@ window['MINI'] = (function() {
 		 * @syntax MINI(selector).prepend(name, value)
 		 * @syntax MINI(selector).prepend(properties)
 		 */
-		list['prepend'] = function (name, value) { return set(name, value, function(obj, oldValue, idx, newValue) { return newValue + toString(oldValue);});};
+		list['prepend'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return newValue + toString(oldValue);});};
 
 		/**
 		 * @id listanimate
