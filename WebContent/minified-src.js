@@ -356,6 +356,32 @@ window['MINI'] = (function() {
 		 * $('a.someLinks').set('@href', 'http://www.example.com/');
 		 * </pre>
 		 * 
+		 * @example Changing attribute of the parent node:
+		 * <pre>
+		 * $('a.someLinks').set('parentNode.@title', 'Links');
+		 * </pre>
+		 * 
+		 * @example Using a map to change several properties:
+		 * <pre>
+		 * $('input.checkbox').set({checked: false,
+		 *                          'nextSibling.innerText': 'New Text',
+		 *                          'parentNode.@title': 'Check this'});
+		 * </pre>
+		 * 
+		 * @example When specifying CSS styles in maps, use underscores instead of dashes in the names to avoid quoting:
+		 * <pre>
+		 * $('.importantText').set({$font_size: 'x-large',
+		 *                          $color: 'black',
+		 *                          $background_color: 'red'});
+		 * </pre>
+		 * 
+		 * @example You can specify a function as value to modify a value instead of just setting it:
+		 * <pre>
+		 * $('h2').set('innerText', function(oldValue, index) { 
+		 * 		return 'Chapter ' + index + ': ' + oldValue.toUpperCase(); 
+		 * });
+		 * </pre>
+		 * 
 		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
 		 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
 		 *                     A dollar ('$') prefix is a shortcut for 'style.' and will also replace all '_' with '-' in the name.
@@ -366,8 +392,7 @@ window['MINI'] = (function() {
 		 * @param defaultFunction optional if set and no function is provided as value, this function will be invoked for each list element 
 		 *                                 and property to determine the value. The function is called with with the old value as first 
 		 *                                 argument and the index in the list as second. The third value is the new value specified
-		 *                                 in the set() call.
-		 *                        
+		 *                                 in the set() call.    
 		 * @return the list
 		 */
 		function set(name, value, defaultFunction) {
