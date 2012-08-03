@@ -23,23 +23,23 @@
 	}
 	
 	MINI.ready(function() {
-		$('#moveButton').addEvent('click', function() {
+		$('#moveButton').on('click', function() {
 			disableButtons();			
 			for (var i = 0; i < BOXES.length; i++) 
 				$(BOXES[i].id).animate(POSITIONS[(++BOXES[i].pos)%POSITIONS.length], parseFloat(EL('#durationField').value), parseFloat(EL('#linearityField').value), enableButtons);
 		});
 
-		$('#colorButton').addEvent('click', function() {
+		$('#colorButton').on('click', function() {
 			disableButtons();	
 			for (var i = 0; i < BOXES.length; i++) 
 				$(BOXES[i].id).animate({$background_color: COLORS[(++BOXES[i].colorPos)%COLORS.length]}, parseFloat(EL('#durationField').value), parseFloat(EL('#linearityField').value), enableButtons);
 		});
 		
-		$('#leftButton').addEvent('click', function() { moveControllable({$left: '-=50px'}); });
-		$('#upButton').addEvent('click', function() { moveControllable({$top: '-=50px'}); });
-		$('#downButton').addEvent('click', function() { moveControllable({$top: '+=50px'}); });
-		$('#rightButton').addEvent('click', function() { moveControllable({$left: '+=50px'}); });
-		$('#resetButton').addEvent('click', function() { moveControllable({$left: '175px', $top: '175px'}); });
+		$('#leftButton').on('click', function() { moveControllable({$left: '-=50px'}); });
+		$('#upButton').on('click', function() { moveControllable({$top: '-=50px'}); });
+		$('#downButton').on('click', function() { moveControllable({$top: '+=50px'}); });
+		$('#rightButton').on('click', function() { moveControllable({$left: '+=50px'}); });
+		$('#resetButton').on('click', function() { moveControllable({$left: '175px', $top: '175px'}); });
 	});
 	</script>
 	

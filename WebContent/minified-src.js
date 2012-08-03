@@ -73,8 +73,8 @@ window['MINI'] = (function() {
 	 * @function listappend
 	 * @function listprepend
 	 * @function listanimate
-	 * @function listaddevent
-	 * @function listremoveevent
+	 * @function liston
+	 * @function listoff
 	 * @function listhasclass
 	 * @function listaddclass
 	 * @function listremoveclass
@@ -402,17 +402,16 @@ window['MINI'] = (function() {
 			else {
 				// @cond if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 				var components = getNameComponents(name), len = components.length-1;
+				var lastName = components[len];
+				var isAttr = /^@/.test(lastName);
+				var lastName1 = lastName.substr(1);
 				var f = (typeof value == 'function') ? value : defaultFunction;
 				eachlist( 
 					function(obj, c) {
-						var isAttr = /^@/.test(lastName);
-						var lastName = components[len];
-						
 						for (var i = 0; i < len; i++)
 							obj = obj[components[i]];
-						
 						if (isAttr)
-							obj.setAttribute(lastName = lastName.substr(1), f ? f(obj.getAttribute(lastName), c, value) : value);
+							obj.setAttribute(lastName1, f ? f(obj.getAttribute(lastName1), c, value) : value);
 						else
 							obj[lastName] = f ? f(obj[lastName], c, value) : value;
 					});
@@ -487,11 +486,11 @@ window['MINI'] = (function() {
 					var p = {o:MINI(li), s:{}, e:{}, u:{}}; 
 					each(properties, function(name) {
 						var dest = properties[name];
-						var components = getNameComponents(name), len=components.length-1;
+						var components = getNameComponents(name), len=components.length-1, lastName = components[len];
 						var a = li;
 						for (var j = 0; j < len; j++) 
 							a = a[components[j]];
-						p.s[name] = ((/^@/.test(name)) ? li.getAttribute(name.substr(1)) : a[components[len]]) || 0;
+						p.s[name] = ((/^@/.test(lastName)) ? a.getAttribute(lastName.substr(1)) : a[lastName]) || 0;
 						p.e[name] = /^[+-]=/.test(dest) ?
 							replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.replace(/\+?=/, ''))) 
 							: dest;
@@ -544,13 +543,13 @@ window['MINI'] = (function() {
 
 		
 		    /**
-			 * @id listaddevent
+			 * @id liston
 			 * @module 5
 			 * @requires dollar
 			 * @configurable yes
-			 * @name list.addEvent()
-			 * @syntax MINI(selector).addEvent(el, name, handler)
-			 * @shortcut $(selector).addEvent(el, name, handler) - Enabled by default, unless disabled with "Disable $ and EL" option
+			 * @name list.on()
+			 * @syntax MINI(selector).on(el, name, handler)
+			 * @shortcut $(selector).on(el, name, handler) - Enabled by default, unless disabled with "Disable $ and EL" option
 		     * Registers the given function as handler for the event with the given name. It is possible to register several
 		     * handlers for a single event.
 		     * 
@@ -574,62 +573,56 @@ window['MINI'] = (function() {
 		     *                If the handler returns false, all processing of the event will be stopped.
 		     * @return the list
 		     */
-			list['addEvent'] = function (name, handler) {
-			    // @cond debug if (!(name && handler)) error("Both parameters to addEvent() are required!"); 
-			    // @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
-				return eachlist(function(el) {
-					function newHandler(e) {
-						e = e || window.event;
-						var l = document.documentElement, b = document.body;
-						var evObj = { 
-								keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
-								button: e.which || e.button,
-								rightClick: e.which ? (e.which == 3) : (e.button == 2)
-							};
-						
-						if (e.clientX || e.clientY) {
-							evObj.pageX = l.scrollLeft + b.scrollLeft + e.clientX;
-							evObj.pageY = l.scrollTop + b.scrollTop + e.clientY;
-						}
-						if (e.detail || e.wheelDelta)
-							evObj.wheelDir = (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1;
-						
-						// @cond debug try {
-						if (handler.call(e.target, e, evObj) === false) {
-							if (e.preventDefault) // W3C DOM2 event cancelling
-								e.preventDefault();
-							if (e.stopPropagation) // cancel bubble for W3C DOM
-								e.stopPropagation();
-							e.returnValue = false; // cancel for IE
-							e.cancelBubble = true; // cancel bubble for IE
-						}
-						// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
-					};
-					handler['MEHL'] = newHandler; // MINIEventHandLer, for deleting the right function
-					if (el.addEventListener)
-						el.addEventListener(name, newHandler, true); // W3C DOM
-					else 
-						el.attachEvent('on'+name, newHandler);  // IE < 9 version
-				});
-		};
-		
+			  list['on'] = function (name, handler) {
+				    // @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
+				    // @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
+					return eachlist(function(el) {
+						function newHandler(e) {
+							e = e || window.event;
+							var l = document.documentElement, b = document.body;
+							
+							// @cond debug try {
+							if (handler.call(e.target, e, { 
+									keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
+									button: e.which || e.button,
+									rightClick: e.which ? (e.which == 3) : (e.button == 2),
+									pageX: l.scrollLeft + b.scrollLeft + e.clientX,
+									pageY: l.scrollTop + b.scrollTop + e.clientY,
+									wheelDir: (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1
+								}) === false) {
+								if (e.preventDefault) // W3C DOM2 event cancelling
+									e.preventDefault();
+								if (e.stopPropagation) // cancel bubble for W3C DOM
+									e.stopPropagation();
+								e.returnValue = false; // cancel for IE
+								e.cancelBubble = true; // cancel bubble for IE
+							}
+							// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
+						};
+						handler['MINI'] = newHandler; // MINIEventHandLer, for deleting the right function
+						if (el.addEventListener)
+							el.addEventListener(name, newHandler, true); // W3C DOM
+						else 
+							el.attachEvent('on'+name, newHandler);  // IE < 9 version
+					});
+				};
 		
 	    /**
-		 * @id listremoveevent
+		 * @id listoff
 		 * @module 5
-		 * @requires dollar listaddevent
+		 * @requires dollar liston
 		 * @configurable yes
-		 * @name list.removeEvent()
-		 * @syntax MINI.removeEvent(element, name, handler)
+		 * @name list.off()
+		 * @syntax MINI.off(element, name, handler)
 	     * Removes the event handler. The call will be ignored if the given handler is not registered.
-	     * @param name the name of the event (see addEvent)
-	     * @param handler the handler to unregister, as given to addEvent()
+	     * @param name the name of the event (see on)
+	     * @param handler the handler to unregister, as given to on()
 	     * @return the list
 	     */
-		list['removeEvent'] = function (name, handler) {
+		list['off'] = function (name, handler) {
 			// @cond debug if (!name || !name.substr) error("No name given or name not a string.");
-			// @cond debug if (!handler || !handler['MEHL']) error("No handler given or handler invalid.");
-			handler = handler['MEHL'];
+			// @cond debug if (!handler || !handler['MINI']) error("No handler given or handler invalid.");
+			handler = handler['MINI'];
 	    	return eachlist(function(el) {
 				if (el.addEventListener)
 					el.removeEventListener(name, handler, true); // W3C DOM

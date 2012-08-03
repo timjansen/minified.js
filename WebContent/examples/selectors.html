@@ -28,14 +28,14 @@
 	}
 	
 	MINI.ready(function() {
-		$('#changeButton').addEvent('click', change);
-		$('#animateButton').addEvent('click', function() {
+		$('#changeButton').on('click', change);
+		$('#animateButton').on('click', function() {
 			if (timer == null)
 				timer = window.setInterval(animate, 1000);
 			$('#animateButton, #changeButton, select').set('disabled', true);
 			EL('#stopButton').disabled = false;
 		});
-		$('#stopButton').addEvent('click', function() {
+		$('#stopButton').on('click', function() {
 			if (timer != null)
 				window.clearInterval(timer);
 			timer = null;

@@ -24,16 +24,16 @@
 	}
 	
 	MINI.ready(function() {
-		$('#div').addEvent('click', writeMouseEvent)
-                 .addEvent('mouseup', writeMouseEvent)
-                 .addEvent('mousedown', writeMouseEvent)
-				 .addEvent('DOMMouseScroll', writeMouseWheel)
-			     .addEvent('mousewheel', writeMouseWheel);
+		$('#div').on('click', writeMouseEvent)
+                 .on('mouseup', writeMouseEvent)
+                 .on('mousedown', writeMouseEvent)
+				 .on('DOMMouseScroll', writeMouseWheel)
+			     .on('mousewheel', writeMouseWheel);
 
-		$('#input').addEvent('input', writeMouseEvent)
-                   .addEvent('keyup', writeMouseEvent)
-                   .addEvent('keypress', writeMouseEvent)
-                   .addEvent('keydown', writeMouseEvent);
+		$('#input').on('input', writeMouseEvent)
+                   .on('keyup', writeMouseEvent)
+                   .on('keypress', writeMouseEvent)
+                   .on('keydown', writeMouseEvent);
 	});
 	</script>
 

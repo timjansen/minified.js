@@ -16,7 +16,7 @@
 	<script type="text/javascript">
 
 	MINI.ready(function() {
-		$('.styleCheckbox').addEvent('change', function(e) {
+		$('.styleCheckbox').on('change', function(e) {
 			var className = {dottedCheckbox:'dotted', redCheckbox: 'red', greenCheckbox: 'green'}[this.id];
 
 			if (this.checked)
@@ -29,7 +29,7 @@
 				$('span', allDivs[i]).set('innerText', allDivs[i].className);
 		});
 		
-		$('#selector').addEvent('change', function(e) {
+		$('#selector').on('change', function(e) {
 			EL('#dottedCheckbox').checked = $(EL('#selector').value).hasClass('dotted');
 			EL('#redCheckbox').checked = $(EL('#selector').value).hasClass('red');
 			EL('#greenCheckbox').checked = $(EL('#selector').value).hasClass('green');

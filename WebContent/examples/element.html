@@ -9,7 +9,7 @@
 	<script type="text/javascript">
 
 	MINI.ready(function() {
-		$('#changeButton').addEvent('click', function() {
+		$('#changeButton').on('click', function() {
 			var boxStyle = EL('#boxSelect').value;
 			var textStyle = EL('#textSelect').value;
 			var text = EL('#text').value;
@@ -21,7 +21,6 @@
 				innerElem = MINI.element('b', null, text);
 			else // small
 				innerElem = MINI.element('span', {style: 'font-size: x-small;'}, text);
-console.log(innerElem, innerElem.nodeType);
 			MINI.elementAdd('#container', 'div', {style: 'border: '+boxStyle+'; margin: 6px; padding: 3px;'}, innerElem);
 		});
 	});

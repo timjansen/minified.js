@@ -112,7 +112,10 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(document.getElementById('hello2').getAttribute('class'), 'hi');
 	 		check(document.getElementById('hello1').getAttribute('title'), 'hello element');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'hello element');
-	 			 		
+	 		MINI.elementAdd('#hello2', 'b', {'id':'bello2'}, 'bello');
+	 		MINI('#bello2').set('parentNode.@title', 'huhu');
+	 		check(document.getElementById('hello2').getAttribute('title'), 'huhu');
+	 		
 	 		var child;
 	 		var parent = MINI.element('div', {}, child = MINI.element('div'));
 	 		MINI(child).set('parentNode.@title', 'test');
