@@ -12,6 +12,7 @@ function parseSourceSections(src) {
 			     requires: {}, // contains ids->1
 			     requiredBy: {}, // contains ids->1
 			     syntax: [],
+			     example: [],
 			     params: [] // contains {name, desc, funcs} each; @return has '@return' as name
 			   };
 	}
@@ -28,8 +29,8 @@ function parseSourceSections(src) {
 			if (tagmatch) { // comment tag found
 				var tag = tagmatch[0].substring(1);
 				var content = v.trim(l.replace(/^@[a-z]+\s*/, ''));
-				if (tag == 'syntax')
-					currentSection.syntax.push(content);
+				if (tag == 'syntax' || tag == 'example')
+					currentSection[tag].push(content);
 				else if (tag == 'requires') {
 					if (content.length)
 						v.each(content.split(/\s+/), function(c) {	currentSection.requires[c] = 1; });
@@ -136,10 +137,10 @@ function compile(sections, sectionMap, enabledSections) {
 			}
 			else {
 				var m = line.match(/^(\s*)\/\/\s*@(cond|condblock)\s+(\!?)(\w*)\s*(.*)$/);
-				if (m && m[2] == 'cond' && (!!enabledSections[m[4]] != (m[3] == '!')))
+				if (m && m[2] == 'cond' && (!!enabledSectionsWithDeps[m[4]] != (m[3] == '!')))
 					src += m[1] + m[5] + '\n';
 				else if (m && m[2] == 'condblock')
-					condBlock = (!!enabledSections[m[4]] != (m[3] == '!'));
+					condBlock = (!!enabledSectionsWithDeps[m[4]] != (m[3] == '!'));
 				else if (condBlock != null && /^\s*\/\/\s*@condend(\s|$)/.test(line))
 					condBlock = null;
 				else if (condBlock == null || condBlock)
@@ -200,7 +201,8 @@ function closureCompile(src, cb) {
 				js_code: src,
 				output_format: 'json',
 				output_info: ['compiled_code', 'statistics'],
-				output_file_name: 'minified-custom.js'
+				output_file_name: 'minified-custom.js',
+				compilation_level: 'ADVANCED_OPTIMIZATIONS'
 			}, 
 		function(txt) {
 				cb&&cb(MINI.parseJSON(txt));

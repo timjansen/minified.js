@@ -3,6 +3,7 @@ var SRC='minified-src.js';
 var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'HTTP REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS'];
 
 function setUpConfigurationUI(s) {
+	
 	function compileClicked() {
 		var enabledSections = {};
 		$('.secCheck').each(function(cb) {
@@ -57,15 +58,15 @@ function setUpConfigurationUI(s) {
 			});
 	}
 	
-	$('#compile').addEvent('click', compileClicked);
+	$('#compile').on('click', compileClicked);
 	
 	for (var i = 1; i < MODULES.length; i++) {
-		var moduleCheckBox, div = MINI.element('div', {id: 'divMod-'+i}, MINI.element('div', {'class': 'moduleDescriptor'}, [
+		var moduleCheckBox, div = MINI.elementAdd('#sectionCheckboxes', 'div', {id: 'divMod-'+i}, MINI.element('div', {'class': 'moduleDescriptor'}, [
 			moduleCheckBox = MINI.element('input', {id: 'mod-'+i, 'class': 'modCheck', type:'checkbox', checked: 'checked'}),
 			MINI.element('label', {'for': 'mod-'+i}, MODULES[i])     
-		]), '#sectionCheckboxes');
+		]));
 		
-		$(moduleCheckBox).addEvent('change', function() {
+		$(moduleCheckBox).on('change', function() {
 			var b = this.checked;
 			$('.secCheck', this.parentNode.parentNode)
 			 .each(function(cb) {
@@ -116,7 +117,7 @@ function setUpConfigurationUI(s) {
 				MINI.element('div', {'class': 'requirements'}, [requiredBy ? [requiredBy, MINI.element('br')] : null , requires])
 			]);
 			
-			$(sectionCheckBox).addEvent('change', function() {
+			$(sectionCheckBox).on('change', function() {
 				fulfillSectionDependencies(this);
 				setModuleCheckboxes();
 			});

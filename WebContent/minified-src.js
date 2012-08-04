@@ -433,7 +433,7 @@ window['MINI'] = (function() {
 
 		/**
 		 * @id prepend
-		 * @module 2
+		 * @module 1
 		 * @requires set
 		 * @configurable yes
 		 * @name prepend()
@@ -774,7 +774,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id element
 	 * @module 2
-	 * @requires el text tostring
+	 * @requires el tostring
 	 * @configurable yes
 	 * @name element()
 	 * @syntax MINI.element(name)
