@@ -559,7 +559,6 @@ window['MINI'] = (function() {
 		     * <ul>
 		     * <li><code>keyCode</code> - the key code, if it was a key press. Will return event.keyCode if set, otherwise event.which. This should work in practically all browsers. 
 		     *                                              See http://unixpapa.com/js/key.html for key code tables.</li>
-		     * <li><code>button</code> - the mouse button pressed, for mouse events. Note that the value is browser-dependent and <strong>not reliable</strong>. Better check rightClick.</li>
 		     * <li><code>rightClick</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
 		     * <li><code>wheelDir</code> - for mouse wheel or scroll events, the direction (1 for up or -1 for down)</li>
 		     * <li><code>pageX</code> - the page coordinate of the event
@@ -584,7 +583,6 @@ window['MINI'] = (function() {
 							// @cond debug try {
 							if (handler.call(e.target, e, { 
 									keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
-									button: e.which || e.button,
 									rightClick: e.which ? (e.which == 3) : (e.button == 2),
 									pageX: l.scrollLeft + b.scrollLeft + e.clientX,
 									pageY: l.scrollTop + b.scrollTop + e.clientY,
@@ -782,8 +780,7 @@ window['MINI'] = (function() {
 	 * @syntax MINI.element(name)
 	 * @syntax MINI.element(name, attributes)
 	 * @syntax MINI.element(name, attributes, children)
-	 * @syntax MINI.element(name, attributes, children, parent)
-	 * Creates an element for insertion into the DOM, optionally with attributes and children. It can optionally be added to DOM tree. 
+	 * Creates an element for insertion into the DOM, optionally with attributes and children. 
 	 * Returns a DOM HTMLElement. This function is namespace-aware and will create XHTML nodes if called in an
 	 * XHTML document.
 	 * 
@@ -845,7 +842,6 @@ window['MINI'] = (function() {
 	function element(e, attributes, children) {
 		// @cond debug if (!e) error("element() requires the element name or an element as first argument.");
 		// @cond debug if (!e.nodeType && /:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
-		// @cond debug if (parent && !EL(parent)) error("The given parent has not been found.");
 		var nu =  document.documentElement.namespaceURI; // to check whether doc is XHTML
 		e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e); 
 		
@@ -972,8 +968,8 @@ window['MINI'] = (function() {
 	 *                  is the text sent by the server.
 	 *                  You can add an optional second argument, which will contain the XML sent by the server, if there was any.
 	 * @param onFailure optional this function will be called if the request failed. The first argument is the HTTP status (never 200; 0 if no HTTP request took place), 
-	 *                  the second a status text (or 'Err', if the browser threw one) and the third the returned text, if there was 
-	 *                  any (otherwise the text is null).
+	 *                  the second a status text (or null, if the browser threw an exception) and the third the returned text, if there was 
+	 *                  any (the exception as string if the browser threw it).
 	 * @param headers optional a map of HTTP headers to add to the request. Note that the you should use the proper capitalization of the
 	 *                header 'Content-Type', if you set it, because otherwise it may be overwritten.
 	 * @param username optional username to be used for HTTP authentication, together with the password parameter
@@ -986,13 +982,12 @@ window['MINI'] = (function() {
 		// @cond debug if (onSuccess && typeof onSuccess != 'function') error("request()'s fourth argument is optional, but if it is set, it must be a function.");
 		// @cond debug if (onFailure && typeof onFailure != 'function') error("request()'s fifth argument is optional, but if it is set, it must be a function.");
 		// @cond debug if (username && !password) error("If the user name is set (7th argument), you must also provide a password as 8th argument.");		method = method.toUpperCase();
-		try {
-			var xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0"), 
-				callbackCalled = 0, 
-				s = [],
+		var xhr, s = [],
 				body = data,
 				ContentType = 'Content-Type',
-				dataIsString = typeof data == 'string';
+				dataIsString = typeof data == 'string', callbackCalled = 0;
+		try {
+			xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			
 			if (data != null) {
 				headers = headers || {};
@@ -1035,7 +1030,7 @@ window['MINI'] = (function() {
 		}
 		catch (e) {
 			if (onFailure && !callbackCalled) 
-				onFailure(0, 'Err', toString(e));
+				onFailure(0, null, toString(e));
 		}
 	};
 	/**
@@ -1083,6 +1078,18 @@ window['MINI'] = (function() {
 	 * @syntax MINI.toJSON(value)
      * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, date, boolean or null.
      * If JSON.stringify is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
+     * 
+     * The following types are supported by the built-in implementation:
+     * <ul>
+     *   <li>Objects (direct properties will be serialized)</li>
+     *   <li>Arrays</li>
+     *   <li>Strings</li>
+     *   <li>Numbers</li>
+     *   <li>Boolean</li>
+     *   <li>null</li>
+     * </ul>
+     * Any other types in your value, especially Dates, should be converted into Strings by you.
+     * 
      * @param value the value (map-like object, array, string, number, date, boolean or null)
      * @return the JSON string
      */
@@ -1092,18 +1099,7 @@ window['MINI'] = (function() {
 		var partial = [];
 		if (value && (ctor = value.constructor) == String || ctor == Number || ctor == Boolean)
 			value = toString(value); 
-		if (ctor == Date) {
-			function f(n) {
-				return n < 10 ? '0' + n : n;
-			}
-			value = value.getUTCFullYear()   + '-' +
-			     f(value.getUTCMonth() + 1) + '-' +
-			     f(value.getUTCDate())      + 'T' +
-			     f(value.getUTCHours())     + ':' +
-			     f(value.getUTCMinutes())   + ':' +
-			     f(value.getUTCSeconds())   + 'Z';
-		}
-	
+
 		if ((type = typeof value) == 'string') {
 			return '"' + value.replace(/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u206f\ufeff-\uffff]/g, 
 				function (a) {
