@@ -20,8 +20,8 @@ function setUpConfigurationUI(s) {
 					EL('#compile').disabled = false;
 					$('#gzipRow, #downloadRow').set({$display: 'table-row'});
 					EL('#resultSrc').value = closureResult.compiledCode;
-					EL('#resultPlain').innerText = (closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb';
-					EL('#resultGzipped').innerText = (closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb';
+					EL('#resultPlain').innerText = (closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedSize + ' bytes)' ;
+					EL('#resultGzipped').innerText = (closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedGzipSize + ' bytes)' ;
 					EL('#resultLink').setAttribute('href', 'http://closure-compiler.appspot.com' +closureResult.outputFilePath);
 				}
 			});

@@ -51,34 +51,110 @@ window['MINI'] = (function() {
 	 * @syntax MINI(selector)
 	 * @syntax MINI(selector, context)
 	 * @shortcut $(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
-	 * Returns an array-like object containing all elements that fulfill the filter conditions. The returned object is guaranteed to
-	 * have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
-	 * regular arrays (e.g. list[2] for the second elements). It also provides you with a number of convenience functions.
+	 * Uses a CSS-like selector to create an list containing all elements that fulfill the filter conditions. This is the most central function in Minified. The returned 
+	 * list has a number of functions to work with the list elements.
+	 *
+	 * The name of this function is MINI(), but by default Minified also creates an alias "$" for it, which should be more convenient and also familiar for most users.
+	 *
+	 * @example A simple selector to find an element by id.
+	 * <pre>
+	 * var l1 = $('#myElementId');
+	 * </pre>
+     * 	 
+	 * @example You can also pass a reference to an DOM node to the function to receive a list containing only this node:
+	 * <pre>
+	 * var l2 = $(document.getElementById('myElementId')); 
+	 * </pre>
+     * 	 
+	 * @example Lists will be copied:
+	 * <pre>
+	 * var l2 = $([elementA, elementB, elementC]); 
+	 * </pre>
+     * 	 
+	 * @example A simple selector to find all elements with the given class.
+	 * <pre>
+	 * var l3 = $('.myClass');
+	 * </pre>
+     * 	 
+	 * @example A selector to find all elements with the given name.
+	 * <pre>
+	 * var l4 = $('input'); // finds all input elements
+	 * </pre>
+     * 	 
+	 * @example A selector to find all elements with the given name and class.
+	 * <pre>
+	 * var l5 = $('input.myRadio'); // finds all input elements wit
+	 * </pre>
+     * 	 
+	 * @example A selector to find all elements that are descendants of the given element.
+	 * <pre>
+	 * var l6 = $('#myForm input'); // finds all input elements that are in the element with the id myForm
+	 * </pre>
+     * 	 
+	 * @example A selector to find all elements with one of the given classes:
+	 * <pre>
+	 * var l7 = $('.a, .b'); // finds all elements that have either the class a or class b
+	 * </pre>
+     * 	 
+	 * @example A selector that finds all elements that are descendants of the element myDivision, are inside a .myForm class and are input elements:
+	 * <pre>
+	 * var l8 = $('#myDivision .myForm input'); 
+	 * </pre>
+     * 	 
+	 * @example Using contexts to make it easier to specify ancestors:
+	 * <pre>
+	 * var l9 = $('.myRadio', '#formA, #formB, #formC');  // same as $('#formA .myRadio, #formB .myRadio, #formC .myRadio')
+	 * </pre>
+     * 	 
+	 * @example Using one of the list functions, set(), on the list, and set the element's text color. '$' at the beginning of the property name is short for 'style.' and thus
+	 *               sets a CSS value.
+	 * <pre>
+	 * $('#myElementId').set('$color', 'red');
+	 * </pre>
+     *
+	 * @example Most functions return the list you invoked them on, allowing you to chain them:
+	 * <pre>
+	 * $('#myForm .myRadio').addClass('uncheckedRadio')
+	 *                               .set('checked', true)
+	 *                               .on('click', function() {
+	 *                                     $(this).toggleClass('uncheckedRadio');
+	 *                                });
+	 * </pre>
+	 * 
 	 * @param selector a simple, CSS-like selector for the elements. It supports '#id' (lookup by id), '.class' (lookup by class),
 	 *             'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
 	 *             You can also separate two (or more) selectors by space to find elements which are descendants of the previous selectors.
-     *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
+	 *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
 	 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
 	 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
 	 *             You can also use a DOM node as selector, it will be returned as a single-element list.  
-	 *             If you pass a list, the list will be returned.
-	 * @param context optional an optional selector, DOM node or list of DOM nodes which specifies one or more common root nodes for the selection
-	 * @return the array-like object containing the content specified by the selector. Please note that duplicates (e.g. created using the
-	 * *       comma-syntax or several context nodes) will not be removed. The array returned has several convenience functions listed below:
-	 * @function listremove
-	 * @function listremovechildren
+	 *             If you pass a list, a shallow copy of the list will be returned.
+	 * @param context optional an optional selector, DOM node or list of DOM nodes which specifies one or more common ancestor nodes for the selection. 
+	 *             The returned list contains only descendants of the context nodes, all others will be filtered out. 
+	 * @return the array-like object containing the content specified by the selector. The returned object is guaranteed to
+	 *             have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
+	 *             regular arrays (e.g. list[2] for the second elements). Other Array functions are not guaranteed to be available, but you can use the filter()
+	 *             function to get a list that is guaranteed to extend Array.
+	 *             Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the selector was a list, 
+	 *             the existing order will be kept. If the selector was a simple selector, the elements are in document order. If you combined several selectors 
+	 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to a single list. This list will, 
+	 *             as a whole, not be in document order anymore. The array returned has several convenience functions listed below:
 	 * @function each
 	 * @function filter
+	 * @function find
 	 * @function listset
 	 * @function listappend
 	 * @function listprepend
 	 * @function listanimate
 	 * @function liston
 	 * @function listoff
+	 * @function listremove
+	 * @function listremovechildren
 	 * @function listhasclass
 	 * @function listaddclass
 	 * @function listremoveclass
 	 * @function listtoggleclass
+	 * @function listoffset
 	 */
 	function MINI(selector, context) { 
 		return addElementListFuncs(dollarRaw(selector, context));
@@ -245,17 +321,25 @@ window['MINI'] = (function() {
 			return each(list, callback);
 		};
 		
-		/**
-		 * @id each
-		 * @module 1
-		 * @requires dollar
-		 * @configurable yes
-		 * @name list.each()
-		 * @syntax each(callback)
-		 * Invokes the given function once for each item in the list with the item as first parameter and the zero-based index as second.
-		 * @param callback the callback to invoke.
-		 * @return the list
-		 */
+        /**
+         * @id each
+         * @module 1
+         * @requires dollar
+         * @configurable yes
+         * @name list.each()
+         * @syntax each(callback)
+         * Invokes the given function once for each item in the list with the item as first parameter and the zero-based index as second.
+         *
+         * @example This goes through all h2 elements of the class 'section' and changes their content:
+         * <pre>
+         * $('h2.section').each(function(item, index) {
+         *     item.innerText = 'Section ' + index + ': ' + item.innerText;
+         * });
+         * </pre>
+         *
+         * @param callback the callback function(item, index) to invoke.
+         * @return the list
+         */
 		list['each'] = eachlist;
 		
 		/**
@@ -269,9 +353,24 @@ window['MINI'] = (function() {
 		 * If it returns true, the item is in the returned list, otherwise it will be removed.
 		 * This function also guarantees that the returned list is always based on an Array and thus can be used to convert a MINI()
 		 * list to array.
-		 * @param filterFunc optional the callback to invoke for each item with the item as only argument.  You can call this function
-		 *        without arguments to create a new array.
-		 * @return the new list, always guaranteed to be based on Array and a new object
+		 *
+		 * @example Creates a list of all unchecked checkboxes.
+		 * <pre>
+		 * var list = $('input').filter(function(item) {
+		 *     return item.getAttribute('type') == 'checkbox' && item.checked;
+		 * });
+		 * </pre>
+		 * 
+		 * @example Converts a list to an Array-based list and uses the function Array.slice() to select only the second and third elements. Note that the Array returned by slice()
+		 *               is a new Array object and does not contain addClass(), so the new Array must be converted to a MINI list using $() first.
+		 * <pre>
+		 * $($('.myElement').filter().slice(1, 3)).addClass('secondOrThird'); 
+		 * </pre>
+		 *
+		 * @param filterFunc optional the callback function(item, index) to invoke for each item with the item as first argument and the 0-based index as second argument.  
+		 *        If the function returns false for an item, it is not included in the resulting list. If you omit the callback (or use null), filter() returns a new Array-based list that is a shallow copy
+		 *        of the original.
+		 * @return the new list, always guaranteed to be based on Array and always a new instance
 		 */
 		list['filter'] = function(filterFunc) {
 		    return addElementListFuncs(filter(list, filterFunc));
