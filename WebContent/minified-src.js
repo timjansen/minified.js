@@ -729,7 +729,7 @@ window['MINI'] = (function() {
 			};
 
 		
-		    /**
+			/**
 			 * @id liston
 			 * @module 5
 			 * @requires dollar
@@ -737,60 +737,84 @@ window['MINI'] = (function() {
 			 * @name list.on()
 			 * @syntax MINI(selector).on(el, name, handler)
 			 * @shortcut $(selector).on(el, name, handler) - Enabled by default, unless disabled with "Disable $ and $$" option
-		     * Registers the given function as handler for the event with the given name. It is possible to register several
-		     * handlers for a single event.
-		     * 
-		     * All handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
-		     * of the event (e.g. the button that has been clicked). The original event object the is object given to the event or obtained 
-		     * from 'window.event'. The compatibility event object has the following properties:
-		     * <ul>
-		     * <li><code>keyCode</code> - the key code, if it was a key press. Will return event.keyCode if set, otherwise event.which. This should work in practically all browsers. 
-		     *                                              See http://unixpapa.com/js/key.html for key code tables.</li>
-		     * <li><code>rightClick</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
-		     * <li><code>wheelDir</code> - for mouse wheel or scroll events, the direction (1 for up or -1 for down)</li>
-		     * <li><code>pageX</code> - the page coordinate of the event
-		     * <li><code>pageY</code> - the page coordinate of the event
-		     * </ul>
-		     * If the handler returns 'false', the event will not be propagated to other handlers.
-		     * 
-		     * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
-		     * @param handler the function to invoke when the event has been triggered. The handler gets the original event object as
-		     *                first parameter and the compatibility object as second. 'this' is the element that caused the event.
-		     *                If the handler returns false, all processing of the event will be stopped.
-		     * @return the list
-		     */
-			  list['on'] = function (name, handler) {
-				    // @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
-				    // @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
-					return eachlist(function(el) {
-						function newHandler(e) {
-							e = e || window.event;
-							var l = document.documentElement, b = document.body;
-							
-							// @cond debug try {
-							if (handler.call(e.target, e, { 
-									keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
-									rightClick: e.which ? (e.which == 3) : (e.button == 2),
-									pageX: l.scrollLeft + b.scrollLeft + e.clientX,
-									pageY: l.scrollTop + b.scrollTop + e.clientY,
-									wheelDir: (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1
-								}) === false) {
-								if (e.preventDefault) // W3C DOM2 event cancelling
-									e.preventDefault();
-								if (e.stopPropagation) // cancel bubble for W3C DOM
-									e.stopPropagation();
-								e.returnValue = false; // cancel for IE
-								e.cancelBubble = true; // cancel bubble for IE
-							}
-							// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
-						};
-						handler['MINI'] = newHandler; // MINIEventHandLer, for deleting the right function
-						if (el.addEventListener)
-							el.addEventListener(name, newHandler, true); // W3C DOM
-						else 
-							el.attachEvent('on'+name, newHandler);  // IE < 9 version
-					});
-				};
+			 * Registers the function as event handler for all items in the list.
+			 * 
+			 * All handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
+			 * of the event (e.g. the button that has been clicked). The original event object the is object given to the event or obtained 
+			 * from 'window.event'. The compatibility event object has the following properties:
+			 * <ul>
+			 * <li><code>keyCode</code> - the key code, if it was a key press. Will return event.keyCode if set, otherwise event.which. This should work in practically all browsers. 
+			 *                                              See http://unixpapa.com/js/key.html for key code tables.</li>
+			 * <li><code>rightClick</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
+			 * <li><code>wheelDir</code> - for mouse wheel or scroll events, the direction (1 for up or -1 for down)</li>
+			 * <li><code>pageX</code> - the page coordinate of the event
+			 * <li><code>pageY</code> - the page coordinate of the event
+			 * </ul>
+			 * Unless the handler returns 'true', the event will not be propagated to other handlers.
+			 * 
+			 * @example Adds a simple click handler to a button. Event objects are ignored.
+			 * <pre>
+			 * $('#myButton').on('click', function() {
+			 *    window.alert('Button clicked!');
+			 * });
+			 * </pre>
+			 *
+			 * @example Adds a handler to all divs that paints their background color to red when clicked.
+			 * <pre>
+			 * $('div').on('click', function() {
+			 *    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
+			 * });
+			 * </pre>
+			 *
+			 * @example Adds an handler for mousedown events to a canvas:
+			 * <pre>
+			 * var ctx = $$('#myCanvas').getContext('2d');                      // get a canvas context
+			 * $('#myCanvas').on('mousedown', function(evt, extraInfo) {  // add handler for mouse down events
+			 *     if (extraInfo.rightButton)                                            // right mouse button paints white, all other black
+			 *         ctx.fillStyle = "white";
+			 *     else
+			 *         ctx.fillStyle = "black";
+			 *     ctx.fillRect(evt.clientX, evt.clientY, 1, 1);                     // paints a pixel at the cursor position
+			 * });
+			 * </pre>
+			 *
+			 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
+			 * @param handler the function(event, extraEvent) to invoke when the event has been triggered. The handler gets the original event object as
+			 *                first parameter and the compatibility object as second. 'this' is the element that caused the event.
+			 *                Unless the handler returns true, all further processing of the event will be stopped.
+			 * @return the list
+			 */
+			list['on'] = function (name, handler) {
+				// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
+				// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
+				return eachlist(function(el) {
+					function newHandler(e) {
+						e = e || window.event;
+						var l = document.documentElement, b = document.body;
+						// @cond debug try {
+						if (!handler.call(e.target, e, { 
+								keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
+								rightClick: e.which ? (e.which == 3) : (e.button == 2),
+								pageX: l.scrollLeft + b.scrollLeft + e.clientX,
+								pageY: l.scrollTop + b.scrollTop + e.clientY,
+								wheelDir: (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1
+						})) {
+							if (e.preventDefault) // W3C DOM2 event cancelling
+								e.preventDefault();
+							if (e.stopPropagation) // cancel bubble for W3C DOM
+								e.stopPropagation();
+							e.returnValue = false; // cancel for IE
+							e.cancelBubble = true; // cancel bubble for IE
+						}
+						// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
+					};
+					handler['MINI'] = newHandler; // MINIEventHandLer, for deleting the right function
+					if (el.addEventListener)
+						el.addEventListener(name, newHandler, true); // W3C DOM
+					else 
+						el.attachEvent('on'+name, newHandler);  // IE < 9 version
+				});
+			};
 		
 	    /**
 		 * @id listoff
@@ -1475,20 +1499,45 @@ window['MINI'] = (function() {
 	});
 
 	/**
-	 * @id loop
-	 * @module 7
-	 * @requires now animationhandlers
-	 * @configurable yes
-	 * @name loop()
-	 * @syntax MINI.loop(paintCallback)
-	 * @syntax MINI.loop(paintCallback, element)
-	 * Use this function to run an animation. The given callback is invoked as often as the browser is ready for a new animation frame.
-	 * To stop a running animation, either invoke the function that is returned or the function given as second parameter to the callback.
-	 * @param paintCallback a callback to invoke for painting. Parameters given to callback:
-	 *            timestamp - number of miliseconds since start
-	 *            stopFunc - call this method to stop the currently running animation
-	 * @return a function that, when you invoke it, stops the currently running animation.
-	 */
+	* @id loop
+	* @module 7
+	* @requires now animationhandlers
+	* @configurable yes
+	* @name loop()
+	* @syntax MINI.loop(paintCallback)
+	* @syntax MINI.loop(paintCallback, element)
+	* Use this function to run an animation loop. In modern browser that support requestAnimationFrame, the given callback is invoked as often 
+	* as the browser is ready for a new animation frame. The frequency is determined by the browser and may vary depending on factors such as the time needed to render the current page.
+	* the screen's framerate and whether the page is currently shown to the user (page is the current tab, browser window not minimized etc). 
+	* In older browsers, the callback function will be invoked every 33 milliseconds.
+	* To stop a running animation loop, either invoke the function that is returned or the function given as second parameter to the callback.
+	*
+	* @example A animates a div by moving it in a circle.
+	* <pre>
+	*   var myDiv = $$('#myAnimatedDiv');
+	*   var rotationsPerMs = 1000;               // one rotation per second
+	*   var maxRadius = 100;
+	*   var d = 3000;                                 // duration in ms
+	*   MINI.loop(function(t, stopFunc) {
+	*     if (t > d) {                                   // time is up: call stopFunc()!
+	*       stopFunc();
+	*       return;
+	*     }
+	* 
+	*     var a = 2 * Math.PI * t / d;                          // angular position
+	*     var r = maxRadius*sin(t / d * Math.PI);           // radius changes from 0 to 1 back to 0 during the animatio
+	*     myDiv.style.left = (r * Math.cos(a) + ' px';
+	*     myDiv.style.top = (r * Math.sin(a) + ' px';
+	*   });
+	* </pre>
+	*
+	* @param paintCallback a callback function(timestamp, stopFunc) to invoke for painting. Parameters given to callback:
+	* <ul>
+	*            <li>timestamp - number of miliseconds since animation start</li>
+	*            <li>stopFunc - call this function() to stop the currently running animation</li>
+	* </ul>
+	* @return a function() that, when you invoke it, stops the currently running animation.
+	*/
     function loop(paintCallback) { 
         var entry = {c: paintCallback, t: now()};
         var i, j;
@@ -1527,6 +1576,10 @@ window['MINI'] = (function() {
  * @name $() (shortcut for MINI() )
  * @syntax $(selector)
  * Shortcut for MINI().
+ * @example MINI() and $() are interchangeable:
+ * <pre>
+ * $('.myClass').set('$display', 'none');
+ * </pre>
  * @param selector the selector (see MINI())
  * @return the result list (see MINI())
  */
@@ -1540,6 +1593,10 @@ window['$'] = MINI;
  * @name $$() (shortcut for MINI.$$() )
  * @syntax $$(selector)
  * Shortcut for MINI.$$().
+ * @example MINI.$$() and $$() are interchangeable:
+ * <pre>
+ * $$('#myCheckbox').checked = false;
+ * </pre>
  * @param selector the selector (see MINI.$$())
  * @return the resulting element (see MINI.$$())
  */
