@@ -32,7 +32,7 @@
 		$('#colorButton').on('click', function() {
 			disableButtons();	
 			for (var i = 0; i < BOXES.length; i++) 
-				$(BOXES[i].id).animate({$background_color: COLORS[(++BOXES[i].colorPos)%COLORS.length]}, parseFloat(EL('#durationField').value), parseFloat(EL('#linearityField').value), enableButtons);
+				$(BOXES[i].id).animate({$backgroundColor: COLORS[(++BOXES[i].colorPos)%COLORS.length]}, parseFloat(EL('#durationField').value), parseFloat(EL('#linearityField').value), enableButtons);
 		});
 		
 		$('#leftButton').on('click', function() { moveControllable({$left: '-=50px'}); });

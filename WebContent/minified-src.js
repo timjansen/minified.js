@@ -203,7 +203,7 @@ window['MINI'] = (function() {
      * helper for set and get; if starts with $, rewrite as CSS style
      */
 	function getNameComponents(name) {
-		return (/^\$/.test(name) ? 'style.' + name.substr(1).replace('_', '-') : name).split('.');
+		return name.replace(/^\$/, 'style.').split('.');
 	}
 
     /**
@@ -470,9 +470,9 @@ window['MINI'] = (function() {
 		 * 
 		 * @example When specifying CSS styles in maps, use underscores instead of dashes in the names to avoid quoting:
 		 * <pre>
-		 * $('.importantText').set({$font_size: 'x-large',
+		 * $('.importantText').set({$fontSize: 'x-large',
 		 *                          $color: 'black',
-		 *                          $background_color: 'red'});
+		 *                          $backgroundColor: 'red'});
 		 * </pre>
 		 * 
 		 * @example You can specify a function as value to modify a value instead of just setting it:
@@ -484,7 +484,7 @@ window['MINI'] = (function() {
 		 * 
 		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
 		 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
-		 *                     A dollar ('$') prefix is a shortcut for 'style.' and will also replace all '_' with '-' in the name.
+		 *                     A dollar ('$') prefix is a shortcut for 'style.'.
 		 * @param value the value to set. If it is a function, the function will be invoked for each list element to evaluate the value. 
 		 * The function is called with with the old value as first argument and the index in the list as second.
 		 * The third value is the function itself.
@@ -538,7 +538,7 @@ window['MINI'] = (function() {
 		 *
 		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
 		 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
-		 *                     A dollar ('$') prefix is a shortcut for 'style.' and will also replace all '_' with '-' in the name.
+		 *                     A dollar ('$') prefix is a shortcut for 'style.'.
 		 * @param value the value to append. It will be converted to a string before appending it. 
 		 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
 		 *                    return value will not be appended, but will overwrite the existing value.
@@ -564,7 +564,7 @@ window['MINI'] = (function() {
 		 *
 		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
 		 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
-		 *                     A dollar ('$') prefix is a shortcut for 'style.' and will also replace all '_' with '-' in the name.
+		 *                     A dollar ('$') prefix is a shortcut for 'style.'.
 		 * @param value the value to prepend. It will be converted to a string before prepending it. 
 		 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
 		 *                    return value will not be prepended, but will overwrite the existing value.
@@ -615,7 +615,7 @@ window['MINI'] = (function() {
 		 * 
 		 * @example Change the color of an element:
 		 * <pre>
-		 * $('#myBlushingDiv').animate({$background_color: '#ff0000'}, 1000);
+		 * $('#myBlushingDiv').animate({$backgroundColor: '#ff0000'}, 1000);
 		 * </pre>
 		 *
 		 * @example Chained animation using callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
