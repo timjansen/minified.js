@@ -216,38 +216,38 @@ window.miniTests.push.apply(window.miniTests, [
 	},
 
 	{
-		name: "EL(unknown)",
+		name: "$$(unknown)",
 		exec: function() {
 			var undef;
-			check(EL("#dsfdfdf") === undef);
+			check($$("#dsfdfdf") === undef);
 		}
 	},
 	{
-		name: "EL(null)",
+		name: "$$(null)",
 		exec: function() {
 			var undef;
-			check(EL(null) === undef);
+			check($$(null) === undef);
 		}
 	},
 	{
-		name: "EL(id)",
+		name: "$$(id)",
 		exec: function() {
-			check(EL("#container") === document.getElementById("container"));
+			check($$("#container") === document.getElementById("container"));
 		}
 	},
 	{
-		name: "EL(div)",
+		name: "$$(div)",
 		exec: function() {
-			check(/^div$/i.test(EL("div").tagName));
+			check(/^div$/i.test($$("div").tagName));
 		}
 	},
 
 
 	{
-		name: "EL and $",
+		name: "$$ and $",
 		exec: function() {
 			check($ === MINI);
-			check(EL === MINI.el);
+			check($$ === MINI.$$);
 		}
 	}
 

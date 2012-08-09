@@ -59,7 +59,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name: "MINI().remove()",
 	 	exec: function() {
-	 		MINI.elementAdd('#container2', 'span', {id:'hello'}, 'hello');
+	 		MINI.elAdd('#container2', 'span', {id:'hello'}, 'hello');
 			MINI("#hello").remove();
 			check(MINI('#hello').length, 0);
 		}
@@ -74,7 +74,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name: "MINI().removeChildren()",
 	 	exec: function() {
-	 		MINI.elementAdd('#container2', 'span', {id:'hello'}, 'hello');
+	 		MINI.elAdd('#container2', 'span', {id:'hello'}, 'hello');
 			var l = MINI("#container2").removeChildren().length;
 			check(l, 1);
 			check(MINI('#hello').length, 0);
@@ -105,19 +105,19 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.style['a-b'], 2);
 	 		}
 	 		
-	 		MINI.elementAdd('#container2', 'span', {'id':'hello1', 'class':'hello'}, 'hello');
-	 		MINI.elementAdd('#container2', 'span', {'id':'hello2', 'class':'hello'}, 'hello');
+	 		MINI.elAdd('#container2', 'span', {'id':'hello1', 'class':'hello'}, 'hello');
+	 		MINI.elAdd('#container2', 'span', {'id':'hello2', 'class':'hello'}, 'hello');
 	 		MINI('#container2 span').set('@class', 'hi').set('@title', 'hello element');
 	 		check(document.getElementById('hello1').getAttribute('class'), 'hi');
 	 		check(document.getElementById('hello2').getAttribute('class'), 'hi');
 	 		check(document.getElementById('hello1').getAttribute('title'), 'hello element');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'hello element');
-	 		MINI.elementAdd('#hello2', 'b', {'id':'bello2'}, 'bello');
+	 		MINI.elAdd('#hello2', 'b', {'id':'bello2'}, 'bello');
 	 		MINI('#bello2').set('parentNode.@title', 'huhu');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'huhu');
 	 		
 	 		var child;
-	 		var parent = MINI.element('div', {}, child = MINI.element('div'));
+	 		var parent = MINI.el('div', {}, child = MINI.el('div'));
 	 		MINI(child).set('parentNode.@title', 'test');
 	 		check(parent.getAttribute('title'), 'test');
 		}
@@ -144,8 +144,8 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.style['a-b'], 2);
 	 		}
 	 		
-	 		MINI.elementAdd('#container2', 'span', {'id':'hello1', 'class':'hello'}, 'hello');
-	 		MINI.elementAdd('#container2', 'span', {'id':'hello2', 'class':'hello'}, 'hello');
+	 		MINI.elAdd('#container2', 'span', {'id':'hello1', 'class':'hello'}, 'hello');
+	 		MINI.elAdd('#container2', 'span', {'id':'hello2', 'class':'hello'}, 'hello');
 	 		MINI('#container2 span').set({'@class': 'hi', '@title': 'hello element'});
 	 		check(document.getElementById('hello1').getAttribute('class'), 'hi');
 	 		check(document.getElementById('hello2').getAttribute('class'), 'hi');

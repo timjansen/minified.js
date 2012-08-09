@@ -44,11 +44,11 @@
 		function runTest() {
 			var test = window.miniTests[testNum];
 			var msgSpan;
-			MINI.elementAdd('#results', 'div', {}, [test.name + ': ', msgSpan = MINI.element('span', {}, 'waiting..')]);
+			MINI.elAdd('#results', 'div', {}, [test.name + ': ', msgSpan = MINI.el('span', {}, 'waiting..')]);
 
 			var playgroundDiv;
 			if (test.async) // create playground div for async tests; they must not change anything else
-				playgroundDiv = MINI.elementAdd('#playground', 'div');
+				playgroundDiv = MINI.elAdd('#playground', 'div');
 
 			var testFinished = false;
 			function setSuccess(s, msg) {
@@ -57,7 +57,7 @@
 					playgroundDiv = null;
 				}
 				if (!testFinished) {
-					MINI.element(msgSpan, {'class': s ? 'resultOk' : 'resultFailed'}, s ? 'OK' : 'Failed (' + msg + ')');
+					MINI.el(msgSpan, {'class': s ? 'resultOk' : 'resultFailed'}, s ? 'OK' : 'Failed (' + msg + ')');
 					testFinished = true;
 				}
 			}

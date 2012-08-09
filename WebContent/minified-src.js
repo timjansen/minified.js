@@ -31,16 +31,6 @@ window['MINI'] = (function() {
 	 * @configurable yes
 	 * @name Backward-Compatibility for IE6/IE7 and similar browsers
 	 */
-	/**
-	 * @id debug
-	 * @module 1
-	 * @configurable no
-	 * @name Debugging Support
-	 */
-	function error(msg) {
-		if (window.console) console.log(msg);
-		throw Exception("MINI debug error: " + msg);
-	}
 
 	/**
 	 * @id dollar
@@ -50,7 +40,7 @@ window['MINI'] = (function() {
 	 * @name MINI()
 	 * @syntax MINI(selector)
 	 * @syntax MINI(selector, context)
-	 * @shortcut $(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
+	 * @shortcut $(selector) - Enabled by default, unless disabled with "Disable $ and $$" option
 	 * Uses a CSS-like selector to create an list containing all elements that fulfill the filter conditions. This is the most central function in Minified. The returned 
 	 * list has a number of functions to work with the list elements.
 	 *
@@ -160,6 +150,21 @@ window['MINI'] = (function() {
 		return addElementListFuncs(dollarRaw(selector, context));
 	}
 	
+	/**
+	 * @id debug
+	 * @module 1
+	 * @configurable no
+	 * @name Debugging Support
+	 */
+	function error(msg) {
+		if (window.console) console.log(msg);
+		throw Exception("MINI debug error: " + msg);
+	}
+    // @cond debug MINI['debug'] = true;
+	
+    /**
+     * @stop
+     */
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	function isList(v) {
@@ -377,21 +382,6 @@ window['MINI'] = (function() {
 		};
 		
 		/**
-		 * @id find
-		 * @module 1
-		 * @requires dollar
-		 * @configurable yes
-		 * @name list.find()
-		 * @syntax find(selector)
-		 * Finds all children of the list's elements that match the given selector.
-		 * @param selector the selector to use (see MINI())
-		 * @return the new list containing matches
-		 */
-		list['find'] = function(selector) {
-		    return MINI(selector, list);
-		};
-		
-		/**
 		 * @id listremove
 		 * @module 1
 		 * @requires dollar
@@ -399,11 +389,17 @@ window['MINI'] = (function() {
 		 * @name list.remove()
 		 * @syntax remove()
 		 * Removes all nodes of the list from the DOM tree.
+		 * 
+		 * @example Removes the element with the id 'myContainer', including all children, from the DOM tree.
+		 * <pre>
+		 * $('#myContainer').remove(); 
+		 * </pre>
 		 */
 		list['remove'] = function() {
 			for (var j = list.length-1; j >= 0; j--) // go backward - NodeList may shrink when elements are removed!
 				list[j].parentNode.removeChild(list[j]);
 		};
+		
 		/**
 		 * @id listremovechildren
 		 * @module 1
@@ -412,6 +408,11 @@ window['MINI'] = (function() {
 		 * @name list.removeChildren()
 		 * @syntax removeChildren()
 		 * Removes all child nodes from the list's elements, but does not remove the list nodes themselves.
+		 *
+ 		 * @example Removes the content of the the element with the id 'myContainer', but not myContainer itself.
+		 * <pre>
+		 * $('#myContainer').removeChildren(); 
+		 * </pre>
 		 * @return the list
 		 */
 		list['removeChildren'] = function() {
@@ -527,6 +528,21 @@ window['MINI'] = (function() {
 		 * @name append()
 		 * @syntax MINI(selector).append(name, value)
 		 * @syntax MINI(selector).append(properties)
+		 * Appends strings to properties or attributes of list items. append() works mostly like set() and supports the same syntax for properties, but instead of
+		 * overwriting the old values, it reads the old value, converts it to a string and then appends the given value.
+		 * 
+		 * @example Add a link after each h2 headline:
+		 * <pre>
+		 * $('h2').append('outerHTML', '<a href="#toc">Table of Content</a>');
+		 * </pre>
+		 *
+		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
+		 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
+		 *                     A dollar ('$') prefix is a shortcut for 'style.' and will also replace all '_' with '-' in the name.
+		 * @param value the value to append. It will be converted to a string before appending it. 
+		 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
+		 *                    return value will not be appended, but will overwrite the existing value.
+		 * @param properties a map containing names as keys and the values to append as map values. See above for the syntax.
 		 */
 		list['append'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
 
@@ -538,21 +554,93 @@ window['MINI'] = (function() {
 		 * @name prepend()
 		 * @syntax MINI(selector).prepend(name, value)
 		 * @syntax MINI(selector).prepend(properties)
+		 * Prepends strings to properties or attributes of list items. prepend() works mostly like set() and supports the same syntax for properties, but instead of
+		 * overwriting the old values, it reads the old value, converts it to a string and then prepends the given value.
+		 * 
+		 * @example Put a horizontal ruler in front of each h2 headline:
+		 * <pre>
+		 * $('h2').prepend('outerHTML', '<hr />');
+		 * </pre>
+		 *
+		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
+		 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
+		 *                     A dollar ('$') prefix is a shortcut for 'style.' and will also replace all '_' with '-' in the name.
+		 * @param value the value to prepend. It will be converted to a string before prepending it. 
+		 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
+		 *                    return value will not be prepended, but will overwrite the existing value.
+		 * @param properties a map containing names as keys and the values to prepend as map values. See above for the syntax.
+
 		 */
 		list['prepend'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return newValue + toString(oldValue);});};
 
 		/**
 		 * @id listanimate
 		 * @module 7
-		 * @requires runanimation dollar getnamecomponents tostring
+		 * @requires loop dollar getnamecomponents tostring
 		 * @configurable yes
 		 * @name list.animate()
 		 * @syntax MINI(selector).animate(properties)
 		 * @syntax MINI(selector).animate(properties, durationMs)
 		 * @syntax MINI(selector).animate(properties, durationMs, linearity)
 		 * @syntax MINI(selector).animate(properties, durationMs, linearity, callback)
-		 * @shortcut $(selector).animate(properties, durationMs, linearity, callback) - Enabled by default, unless disabled with "Disable $ and EL" option
-		 * Animates the objects or elements of the list by modifying their properties and attributes.
+		 * @shortcut $(selector).animate(properties, durationMs, linearity, callback) - Enabled by default, unless disabled with "Disable $ and $$" option
+		 * Animates the items of the list by modifying their properties and attributes. animate() can work with numbers, strings that contain exactly one
+		 * number and which may also contain units or other text, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
+		 *
+		 * When you invoke the function, it will first read all old values from the object and extract their numbers and colors. These start values will be compared to 
+		 * the destination values that have been specified in the given properties. Then animate() will create a background task using MINI.loop() that will update the 
+		 * specified properties in frequent intervals so that they transition to their destination values.
+		 *
+		 * You can define the kind of transition using the 'linearity' parameter. If you omit it or pass 0, animate's default algorithm will cause a smooth transition
+		 * from the start value to the end value. If you pass 1, the transition will be linear, with a sudden start and end of the animation. Any value between 0 and 1 
+		 * is also allowed and will give you a transition that is 'somewhat smooth'. 
+		 *
+		 * If the start value of a property is a string containing a number, animate() will always ignore all the surrounding text and use the destination value as a template 
+		 * for the value to write. This can cause problems if you mix units in CSS. For example, if the start value is '10%' and you specify an end value of '20px', animate
+		 * will do an animation from '10px' to '20px'. It is not able to convert units. 
+		 *
+		 * animate() does not only support strings with units, but any string containing exactly one number. This allows you, among other things, with IE-specific CSS properties.
+		 * For example, you can transition from a start value 'alpha(opacity = 0)' to 'alpha(opacity = 100)'. 
+		 *
+		 * When you animate colors, animate() is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not 
+		 * use color names such as 'red'.
+		 *
+		 * To allow more complex animation, animate() allows you to add a callback which will be called when the animation has finished. You can also specify a delay
+		 * to create timelines.
+		 *
+		 * @example Move an element:
+		 * <pre>
+		 * $('#myMovingDiv').animate({$left: '50px', $top: '100px'}, 1000);
+		 * </pre>
+		 * 
+		 * @example Change the color of an element:
+		 * <pre>
+		 * $('#myBlushingDiv').animate({$background_color: '#ff0000'}, 1000);
+		 * </pre>
+		 *
+		 * @example Chained animation using callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
+		 * <pre>
+		 * $('#myMovingDiv').animate({$left: '200px', $top: '0px'}, 600, 0, function(list) {
+		 *         list.animate({$left: '200px', $top: '200px'}, 800, 0, function(list) {
+		 *                list.animate({$left: '100px', $top: '100px'}, 400);
+		 *         });
+		 * });
+		 * </pre>
+		 *
+		 * @example Does same as the previous example, but implemented using delays:
+		 * <pre>
+		 * $('#myMovingDiv').animate({$left: '200px', $top: '0px'}, 600)
+		 *                         .animate({$left: '200px', $top: '200px'}, 800, 0, null, 600)
+		 *                         .animate({$left: '100px', $top: '100px'}, 400), 0, null, 600+800);
+		 * </pre>
+		 *
+		 * @example Three block race to the position 500px with delayed start:
+		 * <pre>
+		 * $('#racingDiv1').animate({$left: '500px'}, 750, 0, null, 250); // waits 250ms, then needs 750ms
+		 * $('#racingDiv2').animate({$left: '500px'}, 900, 1);              // starts immediately, linear motion, then needs 900ms
+		 * $('#racingDiv3').animate({$left: '500px'}, 500, 0, null, 300); // waits 200ms, then needs 500ms
+		 * </pre>
+		 *
 		 * @param list a list of objects
 		 * @param properties a property map describing the end values of the corresponding properties. The names can use the
 		 *                   MINI.set syntax ('@' prefix for attributes, '$' for styles). Values must be either numbers, numbers with
@@ -560,7 +648,7 @@ window['MINI'] = (function() {
 		 *                   for all elements of the list.
 		 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms;
 		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0.
-		 * @param callback optional if given, this function will be invoked the list as parameter when the animation finished
+		 * @param callback optional if given, this function(list) will be invoked the list as parameter when the animation finished
 		 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
 		 * @return the list
 		 */
@@ -608,7 +696,7 @@ window['MINI'] = (function() {
 						parseInt(colorCode.replace(/[^\d,]+/g, '').split(',')[index]);
 				}
 			
-				runAnimation(function(timePassedMs, stop) {
+				loop(function(timePassedMs, stop) {
 					function interpolate(startValue, endValue) {
 						var d = endValue - startValue;
 						return startValue +  timePassedMs/durationMs * (linearity * d + (1-linearity) * timePassedMs/durationMs * (3*d - 2*d*timePassedMs/durationMs)); 
@@ -648,7 +736,7 @@ window['MINI'] = (function() {
 			 * @configurable yes
 			 * @name list.on()
 			 * @syntax MINI(selector).on(el, name, handler)
-			 * @shortcut $(selector).on(el, name, handler) - Enabled by default, unless disabled with "Disable $ and EL" option
+			 * @shortcut $(selector).on(el, name, handler) - Enabled by default, unless disabled with "Disable $ and $$" option
 		     * Registers the given function as handler for the event with the given name. It is possible to register several
 		     * handlers for a single event.
 		     * 
@@ -735,7 +823,7 @@ window['MINI'] = (function() {
 		 * @configurable yes
 		 * @name list.offset()
 		 * @syntax MINI(selector).offset()
-		 * @shortcut $(selector).offset() - Enabled by default, unless disabled with "Disable $ and EL" option
+		 * @shortcut $(selector).offset() - Enabled by default, unless disabled with "Disable $ and $$" option
 	     * Returns the page coordinates of the list's first element.
 	     * @param element the element
 	     * @return an object containing pixel coordinates in two properties 'left' and 'top'
@@ -847,22 +935,22 @@ window['MINI'] = (function() {
 	}
 	
     /**
-	 * @id el
+	 * @id dollardollar
 	 * @module 1
 	 * @requires dollarraw
 	 * @configurable yes
-	 * @name MINI.el()
-	 * @syntax MINI.el(selector)
-	 * @shortcut EL(selector) - Enabled by default, unless disabled with "Disable $ and EL" option
+	 * @name MINI.$$()
+	 * @syntax MINI.$$(selector)
+	 * @shortcut $$(selector) - Enabled by default, unless disabled with "Disable $ and $$" option
 	 * Returns an DOM object containing the first match of the given selector, or undefined if no match.
 	 * @param selector a simple, CSS-like selector for the element. Uses the syntax described in MINI. The most common
 	 *                 parameter for this function is the id selector with the syntax "#id".
 	 * @return a DOM object of the first match, or undefined if the selector did not return at least one match
 	 */
-    function EL(selector) {
+    function $$(selector) {
 		return dollarRaw(selector)[0];
 	}
-	MINI['el'] = EL;
+	MINI['$$'] = $$;
 
    /**
      * @stop
@@ -871,21 +959,21 @@ window['MINI'] = (function() {
 	//// 2. ELEMENT MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * @id element
+	 * @id el
 	 * @module 2
-	 * @requires el tostring
+	 * @requires dollardollar tostring
 	 * @configurable yes
-	 * @name element()
-	 * @syntax MINI.element(name)
-	 * @syntax MINI.element(name, attributes)
-	 * @syntax MINI.element(name, attributes, children)
+	 * @name el()
+	 * @syntax MINI.el(name)
+	 * @syntax MINI.el(name, attributes)
+	 * @syntax MINI.el(name, attributes, children)
 	 * Creates an element for insertion into the DOM, optionally with attributes and children. 
 	 * Returns a DOM HTMLElement. This function is namespace-aware and will create XHTML nodes if called in an
 	 * XHTML document.
 	 * 
 	 * @example Creating a simple &lt;span> element with some text:
 	 * <pre>
-	 * var mySpan = MINI.element('span', {}, 'Hello World'); 
+	 * var mySpan = MINI.el('span', {}, 'Hello World'); 
 	 * </pre>
 	 * creates this:
 	 * <pre>
@@ -893,7 +981,7 @@ window['MINI'] = (function() {
 	 * </pre>
 	 * @example Creating a &lt;span> element with style, some text, and append it to the element with the id 'greetingsDiv':
 	 * <pre>
-	 * var mySpan = MINI.element('span', {style: 'font-size: 100%;'}, 'Hello World'); 
+	 * var mySpan = MINI.el('span', {style: 'font-size: 100%;'}, 'Hello World'); 
 	 * </pre>
 	 * creates this:
 	 * <pre>
@@ -901,14 +989,14 @@ window['MINI'] = (function() {
 	 * </pre>
 	 * @example Creating a &lt;form> element with two text fields, labels and a submit button:
 	 * <pre>
-	 * var myForm = MINI.element('form', {method: 'post'}, [
-	 *     MINI.element('label', {'for': 'nameInput'}, 'Name:'),
-	 *     MINI.element('input', {id: 'nameInput', type: 'input'}),
-	 *     MINI.element('br'),
-	 *     MINI.element('label', {'for': 'ageInput'}, 'Age:'),
-	 *     MINI.element('input', {id: 'ageInput', type: 'input'}),
-	 *     MINI.element('br'),
-	 *     MINI.element('input', {type: 'submit, value: 'Join'})
+	 * var myForm = MINI.el('form', {method: 'post'}, [
+	 *     MINI.el('label', {'for': 'nameInput'}, 'Name:'),
+	 *     MINI.el('input', {id: 'nameInput', type: 'input'}),
+	 *     MINI.el('br'),
+	 *     MINI.el('label', {'for': 'ageInput'}, 'Age:'),
+	 *     MINI.el('input', {id: 'ageInput', type: 'input'}),
+	 *     MINI.el('br'),
+	 *     MINI.el('input', {type: 'submit, value: 'Join'})
 	 * ]); 
 	 * </pre>
 	 * results in (newlines and indentation added for readability):
@@ -926,7 +1014,7 @@ window['MINI'] = (function() {
 	 * 
 	 * @example Null attributes often come handy when you don't always need a particular attribute:
 	 * <pre>
-	 * var myInput = MINI.element('input', {id: 'myCheckbox', type: 'checkbox', checked: shouldBeChecked() ? 'checked' : null});
+	 * var myInput = MINI.el('input', {id: 'myCheckbox', type: 'checkbox', checked: shouldBeChecked() ? 'checked' : null});
 	 * </pre>
 	 * 
 	 * @param e the element name (e.g. 'div') or an HTML element 
@@ -938,15 +1026,15 @@ window['MINI'] = (function() {
 	 *                         If the argument is not set, the original children will not be changed.
 	 * @return the resulting DOM HTMLElement
 	 */
-	function element(e, attributes, children) {
-		// @cond debug if (!e) error("element() requires the element name or an element as first argument.");
+	function el(e, attributes, children) {
+		// @cond debug if (!e) error("el() requires the element name or an element as first argument.");
 		// @cond debug if (!e.nodeType && /:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
 		var nu =  document.documentElement.namespaceURI; // to check whether doc is XHTML
 		e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e); 
 		
 		each(attributes, function(n, v) {
 			if (v!=null)
-				e.setAttribute(n, toString(v));
+				e.setAttribute(n, v);
 		});
 		
 		function appendChildren(c) {
@@ -955,7 +1043,7 @@ window['MINI'] = (function() {
 					appendChildren(ci);
 				});
 			else if (c != null)   // must check null, as 0 is a valid parameter
-				e.appendChild(c.nodeType ? c : document.createTextNode(toString(c))); 
+				e.appendChild(c.nodeType ? c : document.createTextNode(c)); 
 		}
 
 		if (children != null) // must check null, as 0 is a valid parameter
@@ -963,35 +1051,35 @@ window['MINI'] = (function() {
 		appendChildren(children);
 		return e;
 	};
-	MINI['element'] = element;
+	MINI['el'] = el;
 	
     /**
-     * @id elementmods
+     * @id elmods
      * @dependency yes
      */
 	each({
 		/**
-		 * @id elementadd
+		 * @id eladd
 		 * @module 2
-		 * @requires element elementmods
+		 * @requires el elmods
 		 * @configurable yes
-		 * @name elementAdd()
-		 * @syntax MINI.elementAdd(parent, name)
-		 * @syntax MINI.elementAdd(parent, name, attributes)
-		 * @syntax MINI.elementAdd(parent, name, attributes, children)
+		 * @name elAdd()
+		 * @syntax MINI.elAdd(parent, name)
+		 * @syntax MINI.elAdd(parent, name, attributes)
+		 * @syntax MINI.elAdd(parent, name, attributes, children)
 		 */
 		Add: function (e, parent) {
 			parent.appendChild(e);
 		},
 		/**
-		 * @id elementafter
+		 * @id elafter
 		 * @module 2
-		 * @requires element elementmods
+		 * @requires el elmods
 		 * @configurable yes
-		 * @name elementAfter()
-		 * @syntax MINI.elementAfter(refNode, name)
-		 * @syntax MINI.elementAfter(refNode, name, attributes)
-		 * @syntax MINI.elementAfter(refNode, name, attributes, children)
+		 * @name elAfter()
+		 * @syntax MINI.elAfter(refNode, name)
+		 * @syntax MINI.elAfter(refNode, name, attributes)
+		 * @syntax MINI.elAfter(refNode, name, attributes, children)
 		 */
 		After: function (e, refNode, parentNode) {
 			if (refNode = refNode.nextSibling)
@@ -1000,27 +1088,27 @@ window['MINI'] = (function() {
 				parentNode.appendChild(e);
 		},
 		/**
-		 * @id elementbefore
+		 * @id elbefore
 		 * @module 2
-		 * @requires element elementmods
+		 * @requires el elmods
 		 * @configurable yes
-		 * @name elementBefore()
-		 * @syntax MINI.elementBefore(refNode, name)
-		 * @syntax MINI.elementBefore(refNode, name, attributes)
-		 * @syntax MINI.elementBefore(refNode, name, attributes, children)
+		 * @name elBefore()
+		 * @syntax MINI.elBefore(refNode, name)
+		 * @syntax MINI.elBefore(refNode, name, attributes)
+		 * @syntax MINI.elBefore(refNode, name, attributes, children)
 		 */
 		Before: function (e, refNode, parentNode) {
 			parentNode.insertBefore(e, refNode);
 		},
 		/**
-		 * @id elementreplace
+		 * @id elreplace
 		 * @module 2
-		 * @requires element elementmods
+		 * @requires el elmods
 		 * @configurable yes
-		 * @name elementReplace()
-		 * @syntax MINI.elementReplace(oldNode, name)
-		 * @syntax MINI.elementReplace(oldNode, name, attributes)
-		 * @syntax MINI.elementReplace(oldNode, name, attributes, children)
+		 * @name elReplace()
+		 * @syntax MINI.elReplace(oldNode, name)
+		 * @syntax MINI.elReplace(oldNode, name, attributes)
+		 * @syntax MINI.elReplace(oldNode, name, attributes, children)
 		 */
 		Replace: function (e, oldNode, parentNode) {
 			parentNode.replaceChild(e, oldNode);
@@ -1028,12 +1116,12 @@ window['MINI'] = (function() {
 	    /**
 	     * @stop
 	     */
-		// @condblock elementmods
+		// @condblock elmods
 		function (name, func) {
-			MINI['element'+name] = function(refNode, e, attributes, b) {
+			MINI['el'+name] = function(refNode, e, attributes, b) {
 				// @cond debug if (!refNode) error("A valid node is required as first argument.");
 				// @cond debug if (!e || (!e.substr || !e.nodeType))) error("A valid element name or node is required as second argument.");
-				func(e = element(e, attributes, b), b = EL(refNode), b.parentNode);
+				func(e = el(e, attributes, b), b = $$(refNode), b.parentNode);
 				return e;
 			};
 		});
@@ -1144,34 +1232,28 @@ window['MINI'] = (function() {
 	 * based on public domain implementation http://www.JSON.org/json2.js / http://www.JSON.org/js.html.
 	 * Simplified code, made variables local, removed all side-effects (especially new properties for String, Date and Number).
 	 */
-    /**
-	 * @id stringsubstitutions
-	 * @dependency
-     */
-	// @condblock iecompatibility
-    var STRING_SUBSTITUTIONS = {    // table of character substitutions
-            '\t': '\\t',
-            '\r': '\\r',
-            '\n': '\\n',
-            '"' : '\\"',
-            '\\': '\\\\'
-        };
-    // @condend
     
     /**
 	 * @id ucode
 	 * @dependency
      */
     // @condblock iecompatibility
+	var STRING_SUBSTITUTIONS = {    // table of character substitutions
+            '\t': '\\t',
+            '\r': '\\r',
+            '\n': '\\n',
+            '"' : '\\"',
+            '\\': '\\\\'
+        };
     function ucode(a) {
-    	return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+        return STRING_SUBSTITUTIONS[a] ||  ('\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4));
     }
     // @condend
 
     /**
 	 * @id tojson
 	 * @module 4
-	 * @requires tostring stringsubstitutions ucode
+	 * @requires tostring ucode
 	 * @configurable yes
 	 * @name toJSON()
 	 * @syntax MINI.toJSON(value)
@@ -1199,12 +1281,9 @@ window['MINI'] = (function() {
 		if (value && (ctor = value.constructor) == String || ctor == Number || ctor == Boolean)
 			value = toString(value); 
 
-		if ((type = typeof value) == 'string') {
-			return '"' + value.replace(/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u206f\ufeff-\uffff]/g, 
-				function (a) {
-					return STRING_SUBSTITUTIONS[a] || ucode(a);
-				}) + '"' ;
-		}
+		if ((type = typeof value) == 'string') 
+			return '"' + value.replace(/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\uffff]/g, ucode) + '"' ;
+
 		if (type == 'boolean' || type == 'number') // handle infinite numbers?
 			return toString(value);
 		if (!value)
@@ -1238,7 +1317,7 @@ window['MINI'] = (function() {
      */
     // @condblock iecompatibility
     MINI['parseJSON'] = (JSON && JSON.parse) || function (text) {
-       	text = toString(text).replace(/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u206f\ufeff-\uffff]/g, ucode);
+    	text = toString(text).replace(/[\u0000\u00ad\u0600-\uffff]/g, ucode);
 
         if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
 				.test(text.replace(/\\(["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@')
@@ -1396,13 +1475,13 @@ window['MINI'] = (function() {
 	});
 
 	/**
-	 * @id runanimation
+	 * @id loop
 	 * @module 7
 	 * @requires now animationhandlers
 	 * @configurable yes
-	 * @name runAnimation()
-	 * @syntax MINI.runAnimation(paintCallback)
-	 * @syntax MINI.runAnimation(paintCallback, element)
+	 * @name loop()
+	 * @syntax MINI.loop(paintCallback)
+	 * @syntax MINI.loop(paintCallback, element)
 	 * Use this function to run an animation. The given callback is invoked as often as the browser is ready for a new animation frame.
 	 * To stop a running animation, either invoke the function that is returned or the function given as second parameter to the callback.
 	 * @param paintCallback a callback to invoke for painting. Parameters given to callback:
@@ -1410,7 +1489,7 @@ window['MINI'] = (function() {
 	 *            stopFunc - call this method to stop the currently running animation
 	 * @return a function that, when you invoke it, stops the currently running animation.
 	 */
-    function runAnimation(paintCallback) { 
+    function loop(paintCallback) { 
         var entry = {c: paintCallback, t: now()};
         var i, j;
         var stopFunc = function() {
@@ -1430,7 +1509,7 @@ window['MINI'] = (function() {
         } 
         return stopFunc; 
     };
-    MINI['runAnimation'] = runAnimation;
+    MINI['loop'] = loop;
     
 
 	/**
@@ -1439,18 +1518,7 @@ window['MINI'] = (function() {
 	return MINI;
 })();
 
-/**
- * @id toplevelel
- * @module 8
- * @requires el 
- * @configurable yes
- * @name EL() (shortcut for MINI.el() )
- * @syntax EL(selector)
- * Shortcut for MINI.el().
- * @param selector the selector (see MINI.el())
- * @return the result element (see MINI.el())
- */
-window['EL'] = MINI['el'];
+
 /**
  * @id topleveldollar
  * @module 8
@@ -1463,6 +1531,19 @@ window['EL'] = MINI['el'];
  * @return the result list (see MINI())
  */
 window['$'] = MINI;
+
+/**
+ * @id topleveldollardollar
+ * @module 8
+ * @requires dollardollar 
+ * @configurable yes
+ * @name $$() (shortcut for MINI.$$() )
+ * @syntax $$(selector)
+ * Shortcut for MINI.$$().
+ * @param selector the selector (see MINI.$$())
+ * @return the resulting element (see MINI.$$())
+ */
+window['$$'] = $['$$'];
 
 /**
  * @stop 
