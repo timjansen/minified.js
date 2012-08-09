@@ -91,7 +91,7 @@ window.miniTests.push.apply(window.miniTests, [
 	 		var o = [{a:3, b: 'hello', style: {}, y: {v: 2, w: {}}}, {style: {}, x: {}, y: {w: {}}}];
 	 		MINI(o).set('a', 33).set('b', 'greetings').set('c', 132).set('d', {a:1})
 	 		 .set('y.v', 23).set('y.w.a', 'xx')
-	 		 .set('$color', '#abc').set('$a_b', 2);
+	 		 .set('$color', '#abc').set('$ab', 2);
 	 		
 	 		for (var i = 0; i < o.length; i++) {
 	 			var b = o[i];
@@ -102,7 +102,7 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.y.v, 23);
 	 			check(b.y.w.a, 'xx');
 	 			check(b.style.color, '#abc');
-	 			check(b.style['a-b'], 2);
+	 			check(b.style['ab'], 2);
 	 		}
 	 		
 	 		MINI.elAdd('#container2', 'span', {'id':'hello1', 'class':'hello'}, 'hello');
@@ -130,7 +130,7 @@ window.miniTests.push.apply(window.miniTests, [
 	 		var o = [{a:3, b: 'hello', style: {}, y: {v: 2, w: {}}}, {a:2, b: 'hi', style: {}, x: {}, y: {w: {}}}];
 	 		MINI(o).set({a: 33, b: 'greetings', c: 132, d: {a:1},
 	 			'y.v': 23, 'y.w.a': 'xx',
-	 			$color: '#abc', $a_b: 2});
+	 			$color: '#abc', $ab: 2});
 	 		
 	 		for (var i = 0; i < o.length; i++) {
 	 			var b = o[i];
@@ -141,7 +141,7 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.y.v, 23);
 	 			check(b.y.w.a, 'xx');
 	 			check(b.style.color, '#abc');
-	 			check(b.style['a-b'], 2);
+	 			check(b.style['ab'], 2);
 	 		}
 	 		
 	 		MINI.elAdd('#container2', 'span', {'id':'hello1', 'class':'hello'}, 'hello');
