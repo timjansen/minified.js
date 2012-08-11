@@ -10,18 +10,21 @@
 
 	<script type="text/javascript" src="../minified-src.js"></script>
 	<script type="text/javascript">
+		function fail(text) {
+			throw text;
+		}
 		function check(value, expected) {
 			var undefined;
 			if (expected === undefined) {
 				if (!value) {
 					if (window.console) console.log("Check for true failed, given:", value);
-					throw "Value '"+value+"' is not true";
+					fail("Value '"+value+"' is not true");
 				}
 			}
 			else
 				if (value != expected) {
 					if (window.console) console.log("Check failed, given:", value, " expected:", expected);
-					throw "Value '"+value+"' is not '"+expected+"'";
+					fail("Value '"+value+"' is not '"+expected+"'");
 				}
 		}
 		

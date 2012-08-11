@@ -270,6 +270,31 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(r2.top > 0);
 	 		check(r2.left > 0);
 		}
+	},
+	
+	{
+		name: "set() name check exception (debug)",
+		exec: function() {
+			if (MINI.debug) {
+				try {
+					MINI('#container2').set();
+					fail("set name check did not work.");
+				}
+				catch (e) {}
+			}
+		}
+	},
+	{
+		name: "set() 2nd arg exception (debug)",
+		exec: function() {
+			if (MINI.debug) {
+				try {
+					MINI('#container2').set({a:1}, "foobar");
+					fail("2nd arg check did not work.");
+				}
+				catch (e) {}
+			}
+		}
 	}
 	
 

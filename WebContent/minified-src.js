@@ -40,7 +40,7 @@ window['MINI'] = (function() {
 	 * @name MINI()
 	 * @syntax MINI(selector)
 	 * @syntax MINI(selector, context)
-	 * @shortcut $(selector) - Enabled by default, unless disabled with "Disable $ and $$" option
+	 * @shortcut $(selector) - Enabled by default, but can be disabled in the builder.
 	 * Uses a CSS-like selector to create an list containing all elements that fulfill the filter conditions. This is the most central function in Minified. The returned 
 	 * list has a number of functions to work with the list elements.
 	 *
@@ -129,22 +129,6 @@ window['MINI'] = (function() {
 	 *             the existing order will be kept. If the selector was a simple selector, the elements are in document order. If you combined several selectors 
 	 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to a single list. This list will, 
 	 *             as a whole, not be in document order anymore. The array returned has several convenience functions listed below:
-	 * @function each
-	 * @function filter
-	 * @function find
-	 * @function listset
-	 * @function listappend
-	 * @function listprepend
-	 * @function listanimate
-	 * @function liston
-	 * @function listoff
-	 * @function listremove
-	 * @function listremovechildren
-	 * @function listhasclass
-	 * @function listaddclass
-	 * @function listremoveclass
-	 * @function listtoggleclass
-	 * @function listoffset
 	 */
 	function MINI(selector, context) { 
 		return addElementListFuncs(dollarRaw(selector, context));
@@ -583,7 +567,7 @@ window['MINI'] = (function() {
 		 * @syntax MINI(selector).animate(properties, durationMs)
 		 * @syntax MINI(selector).animate(properties, durationMs, linearity)
 		 * @syntax MINI(selector).animate(properties, durationMs, linearity, callback)
-		 * @shortcut $(selector).animate(properties, durationMs, linearity, callback) - Enabled by default, unless disabled with "Disable $ and $$" option
+		 * @shortcut $(selector).animate(properties, durationMs, linearity, callback) - Enabled by default, but can be disabled in the builder.
 		 * Animates the items of the list by modifying their properties and attributes. animate() can work with numbers, strings that contain exactly one
 		 * number and which may also contain units or other text, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
 		 *
@@ -736,7 +720,7 @@ window['MINI'] = (function() {
 			 * @configurable yes
 			 * @name list.on()
 			 * @syntax MINI(selector).on(el, name, handler)
-			 * @shortcut $(selector).on(el, name, handler) - Enabled by default, unless disabled with "Disable $ and $$" option
+			 * @shortcut $(selector).on(el, name, handler) - Enabled by default, but can be disabled in the builder.
 			 * Registers the function as event handler for all items in the list.
 			 * 
 			 * All handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
@@ -781,7 +765,9 @@ window['MINI'] = (function() {
 			 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
 			 * @param handler the function(event, extraEvent) to invoke when the event has been triggered. The handler gets the original event object as
 			 *                first parameter and the compatibility object as second. 'this' is the element that caused the event.
-			 *                Unless the handler returns true, all further processing of the event will be stopped.
+			 *                Unless the handler returns true, all further processing of the event will be stopped. 
+			 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
+			 *                is added to the handler in a property called 'MINI'.
 			 * @return the list
 			 */
 			list['on'] = function (name, handler) {
@@ -808,7 +794,7 @@ window['MINI'] = (function() {
 						}
 						// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 					};
-					handler['MINI'] = newHandler; // MINIEventHandLer, for deleting the right function
+					handler['MINI'] = handler['MINI'] || newHandler;
 					if (el.addEventListener)
 						el.addEventListener(name, newHandler, true); // W3C DOM
 					else 
@@ -816,16 +802,30 @@ window['MINI'] = (function() {
 				});
 			};
 		
-	    /**
+		/**
 		 * @id listoff
 		 * @module 5
 		 * @requires dollar liston
 		 * @configurable yes
 		 * @name list.off()
 		 * @syntax MINI.off(element, name, handler)
-	     * Removes the event handler. The call will be ignored if the given handler is not registered.
-	     * @param name the name of the event (see on)
-	     * @param handler the handler to unregister, as given to on()
+		 * Removes the event handler. The call will be ignored if the given handler has not registered using on().
+		 * 
+		 * @example Adds a handler to an element
+		 * <pre>
+		 * function myEventHandler() {
+		 *    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
+		 * }
+		 * $('#myElement').on('click', myEventHandler);     // add event handler
+		 *
+		 * window.setInterval(function() {                      // after 5s, remove event handler
+		 *    $('#myElement').off('click', myEventHandler);
+		 * }, 5000);
+		 * </pre>
+		 * 
+		 * @param name the name of the event (see on)
+		 * @param handler the handler to unregister, as given to on(). It must be a handler that has previously been registered using
+		 *                on().
 	     * @return the list
 	     */
 		list['off'] = function (name, handler) {
@@ -840,7 +840,7 @@ window['MINI'] = (function() {
 	    	});
 		};
 		
-	    /**
+		/**
 		 * @id listoffset
 		 * @module 1
 		 * @requires dollar
@@ -848,10 +848,18 @@ window['MINI'] = (function() {
 		 * @name list.offset()
 		 * @syntax MINI(selector).offset()
 		 * @shortcut $(selector).offset() - Enabled by default, unless disabled with "Disable $ and $$" option
-	     * Returns the page coordinates of the list's first element.
-	     * @param element the element
-	     * @return an object containing pixel coordinates in two properties 'left' and 'top'
-	     */
+		 * Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, with 0/0 being the upper left corner, independent of the user's
+		 * current view (which depends on the user's current scroll position and zoom level).
+		 *
+		 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
+		 * <pre>
+		 * var pos = $('#myElement').offset();
+		 * $('#resultElement').set('innerText', '#myElement's position is left=' + pos.left + ' top=' + pos.top);
+		 * </pre>
+		 *
+		 * @param element the element whose coordinates should be determined
+		 * @return an object containing pixel coordinates in two properties 'left' and 'top'
+		 */
 		list['offset'] = function() {
 			var elem = list[0];
 			var dest = {left: 0, top: 0};
@@ -879,17 +887,24 @@ window['MINI'] = (function() {
 			return el.className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/g, ' ');
 		}
 	    
-	    /**
-	     * @id listhasclass
-	     * @module 1
-	     * @requires dollar createclassnameregexp
-	     * @configurable yes
+		/**
+		 * @id listhasclass
+		 * @module 1
+		 * @requires dollar createclassnameregexp
+		 * @configurable yes
 		 * @name list.hasClass()
-	     * @syntax hasClass(className)
-	     * Checks whether any element in the list of nodes has a class with the given name. Returns the first node if found, or null if not found.
-	     * @param className the name to find 
-	     * @return the first element found with the class name, or null if not found
-	     */
+		 * @syntax hasClass(className)
+		 * Checks whether any element in the list of nodes has a class with the given name. Returns the first node if found, or undefined if not found.
+		 *
+		 * @example Checks whether the element 'myElement' the class 'myClass'. If yes, it sets the text color to red.
+		 * <pre>
+		 * if($('#myElement').hasClass('myClass'))
+		 *     $('#myElement').set('$color', 'red');
+		 * </pre>
+		 *
+		 * @param className the name to find 
+		 * @return the first element found with the class name, or undefined if not found
+		 */
 	    list['hasClass'] = function(className) {
 	        var reg = createClassNameRegExp(className); 
 	        for (var i = 0; i < list.length; i++)
@@ -965,7 +980,7 @@ window['MINI'] = (function() {
 	 * @configurable yes
 	 * @name MINI.$$()
 	 * @syntax MINI.$$(selector)
-	 * @shortcut $$(selector) - Enabled by default, unless disabled with "Disable $ and $$" option
+	 * @shortcut $$(selector) - Enabled by default, but can be disabled in the builder.
 	 * Returns an DOM object containing the first match of the given selector, or undefined if no match.
 	 * @param selector a simple, CSS-like selector for the element. Uses the syntax described in MINI. The most common
 	 *                 parameter for this function is the id selector with the syntax "#id".
