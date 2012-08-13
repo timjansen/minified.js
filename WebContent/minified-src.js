@@ -19,7 +19,10 @@
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
-
+// @condblock topleveldollar
+window['$'] =
+// @condend
+	
 window['MINI'] = (function() {
 	var backslashB = '\\b';
 	var undef;
@@ -172,7 +175,13 @@ window['MINI'] = (function() {
 		});
 		return r;
 	}
-	
+    /**
+     * @id isstring
+     * @dependency yes
+     */
+	function isString(s) {
+		return typeof s == 'string';
+	}
     /**
      * @id tostring
      * @dependency yes
@@ -322,7 +331,7 @@ window['MINI'] = (function() {
          * @example This goes through all h2 elements of the class 'section' and changes their content:
          * <pre>
          * $('h2.section').each(function(item, index) {
-         *     item.innerText = 'Section ' + index + ': ' + item.innerText;
+         *     item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
          * });
          * </pre>
          *
@@ -427,7 +436,7 @@ window['MINI'] = (function() {
 		 * 
 		 * @example Changing the text of the next sibling:
 		 * <pre>
-		 * $('input.checkbox').set('nextSibling.innerText', 'New Text');
+		 * $('input.checkbox').set('nextSibling.innerHTML', 'New Text');
 		 * </pre>
 		 * 
 		 * @example Changing styles:
@@ -448,7 +457,7 @@ window['MINI'] = (function() {
 		 * @example Using a map to change several properties:
 		 * <pre>
 		 * $('input.checkbox').set({checked: false,
-		 *                          'nextSibling.innerText': 'New Text',
+		 *                          'nextSibling.innerHTML': 'New Text',
 		 *                          'parentNode.@title': 'Check this'});
 		 * </pre>
 		 * 
@@ -461,7 +470,7 @@ window['MINI'] = (function() {
 		 * 
 		 * @example You can specify a function as value to modify a value instead of just setting it:
 		 * <pre>
-		 * $('h2').set('innerText', function(oldValue, index) { 
+		 * $('h2').set('innerHTML', function(oldValue, index) { 
 		 * 		return 'Chapter ' + index + ': ' + oldValue.toUpperCase(); 
 		 * });
 		 * </pre>
@@ -854,7 +863,7 @@ window['MINI'] = (function() {
 		 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
 		 * <pre>
 		 * var pos = $('#myElement').offset();
-		 * $('#resultElement').set('innerText', '#myElement's position is left=' + pos.left + ' top=' + pos.top);
+		 * $('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.left + ' top=' + pos.top);
 		 * </pre>
 		 *
 		 * @param element the element whose coordinates should be determined
@@ -1035,9 +1044,10 @@ window['MINI'] = (function() {
 	 * @name el()
 	 * @syntax MINI.el(name)
 	 * @syntax MINI.el(name, attributes)
+	 * @syntax MINI.el(name, children)
 	 * @syntax MINI.el(name, attributes, children)
 	 * Creates an element for insertion into the DOM, optionally with attributes and children, and returns the DOM HTMLElement.
-	 * Can also be used to set attributes or children of an existing element. See elAdd() and other element functions to
+	 * Can also be used to set attributes or children of an existing element. See elAppend() and other element functions to
 	 * insert the new element directly into the DOM tree.
 	 * 
 	 * The function is namespace-aware and will create XHTML nodes if called in an XHTML document.
@@ -1106,6 +1116,10 @@ window['MINI'] = (function() {
 	function el(e, attributes, children) {
 		// @cond debug if (!e) error("el() requires the element name or an element as first argument.");
 		// @cond debug if (!e.nodeType && /:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
+		if (isString(attributes) || isList(attributes) || (attributes && attributes.nodeType)) {
+			children = attributes;
+			attributes = null;
+		}
 		var nu =  document.documentElement.namespaceURI; // to check whether doc is XHTML
 		e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e); 
 		
@@ -1136,26 +1150,27 @@ window['MINI'] = (function() {
      */
 	each({
 		/**
-		 * @id eladd
+		 * @id elappend
 		 * @module 2
 		 * @requires el elmods
 		 * @configurable yes
-		 * @name elAdd()
-		 * @syntax MINI.elAdd(parent, e)
-		 * @syntax MINI.elAdd(parent, e, attributes)
-		 * @syntax MINI.elAdd(parent, e, attributes, children)
+		 * @name elAppend()
+		 * @syntax MINI.elAppend(parent, e)
+		 * @syntax MINI.elAppend(parent, e, attributes)
+		 * @syntax MINI.elAppend(parent, e, children)
+		 * @syntax MINI.elAppend(parent, e, attributes, children)
 		 * 
-		 * Adds a HTML element as child to the given parent. As HTML element you can either specify an existing element, or specify the name
+		 * Appends a HTML element as child to the given parent. As HTML element you can either specify an existing element, or specify the name
 		 * of a new HTML element to create. Additionally you can specify attributes to add to the HTML element and children to set.
 		 * 
 		 * @example Create a new div, append it to the body element:
 		 * <pre>
-		 * MINI.elAdd("html", "div", {"class": "popup"}, "This is my popup.");
+		 * MINI.elAppend("html", "div", {"class": "popup"}, "This is my popup.");
 		 * </pre>
 		 * 
 		 * @example Create a new div with a list of children, append it to the element "textDiv":
 		 * <pre>
-		 * MINI.elAdd("#textDiv", "p", null, ["This text can be ", MINI.el("b", null, "bold"), " and ", MINI.el("i", null, "italic"), "."];
+		 * MINI.elAppend("#textDiv", "p", ["This text can be ", MINI.el("b", null, "bold"), " and ", MINI.el("i", null, "italic"), "."];
 		 * </pre>
 		 * 
 		 * @param parent the parent to add the child to. Any syntax allowed for $$ can be used here. You may specify an element, a selector or element list.
@@ -1168,7 +1183,7 @@ window['MINI'] = (function() {
 		 *                         If the element e already existed and the argument is set, they replace the existing children. 
 		 *                         If the argument is not set, the original children will not be changed.
 		 */
-		Add: function (e, parent) {
+		Append: function (e, parent) {
 			parent.appendChild(e);
 		},
 		/**
@@ -1179,6 +1194,7 @@ window['MINI'] = (function() {
 		 * @name elAfter()
 		 * @syntax MINI.elAfter(refNode, e)
 		 * @syntax MINI.elAfter(refNode, e, attributes)
+		 * @syntax MINI.elAfter(refNode, e, children)
 		 * @syntax MINI.elAfter(refNode, e, attributes, children)
 		 * 
 		 * Adds a HTML element as a new sibling after the given reference element. 
@@ -1187,7 +1203,7 @@ window['MINI'] = (function() {
 		 * 
 		 * @example Create a new paragraph, append it after the "myElement" element:
 		 * <pre>
-		 * MINI.elAdd("#myElement", "p", {"class": "myPara"}, "This is my new paragraph.");
+		 * MINI.elAppend("#myElement", "p", {"class": "myPara"}, "This is my new paragraph.");
 		 * </pre>
 		 * 
 		 * @param refNode the sibling in fron of the new element. Any syntax allowed for $$ can be used here. You may specify an element, a selector or element list.
@@ -1214,6 +1230,7 @@ window['MINI'] = (function() {
 		 * @name elBefore()
 		 * @syntax MINI.elBefore(refNode, e)
 		 * @syntax MINI.elBefore(refNode, e, attributes)
+		 * @syntax MINI.elBefore(refNode, e, children)
 		 * @syntax MINI.elBefore(refNode, e, attributes, children)
 		 * 
 		 * Adds a HTML element as a new sibling before the given reference element. 
@@ -1239,6 +1256,42 @@ window['MINI'] = (function() {
 			parentNode.insertBefore(e, refNode);
 		},
 		/**
+		 * @id elprepend
+		 * @module 2
+		 * @requires el elmods
+		 * @configurable yes
+		 * @name elPrepend()
+		 * @syntax MINI.elPrepend(parent, e)
+		 * @syntax MINI.elPrepend(parent, e, attributes)
+		 * @syntax MINI.elPrepend(parent, e, children)
+		 * @syntax MINI.elPrepend(parent, e, attributes, children)
+		 * 
+		 * Adds a HTML element as a first child of the given parent. 
+		 * As HTML element you can either specify an existing element, or specify the name of a new HTML element to create. 
+		 * Additionally you can specify attributes to add to the HTML element and children to set.
+		 * 
+		 * @example Create a new paragraph and add it as the first child of the element with id "myElement":
+		 * <pre>
+		 * MINI.elPrepend("#myElement", "p", {"class": "myPara"}, "This is my new paragraph.");
+		 * </pre>
+		 * 
+		 * @param parent the parent node to add the element to. Any syntax allowed for $$ can be used here. You may specify an element, a selector or element list.
+		 *               If the selector returns several matches, the first will be used.              
+		 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify 
+		 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
+		 *                   If the value is null, the attribute will not be created. 
+		 * @param children optional  an element or a list of elements as children to add. Strings will be converted as text nodes. Lists can be 
+		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored.
+		 *                         If the element e already existed and the argument is set, they replace the existing children. 
+		 *                         If the argument is not set, the original children will not be changed.
+		 */
+		Prepend: function (e, parent, n) {
+			if (n = parent.firstChild)
+				parent.insertBefore(e, n);
+			else
+				parent.appendChild(e);
+		},
+		/**
 		 * @id elreplace
 		 * @module 2
 		 * @requires el elmods
@@ -1246,6 +1299,7 @@ window['MINI'] = (function() {
 		 * @name elReplace()
 		 * @syntax MINI.elReplace(oldNode, name)
 		 * @syntax MINI.elReplace(oldNode, name, attributes)
+		 * @syntax MINI.elReplace(oldNode, name, children)
 		 * @syntax MINI.elReplace(oldNode, name, attributes, children)
 		 * 
 		 * Replaces the given node with a HTML element. 
@@ -1288,40 +1342,71 @@ window['MINI'] = (function() {
 	//// 3. HTTP REQUEST MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * @id request
-	 * @module 3
-	 * @requires tostring
-	 * @configurable yes
-	 * @name request()
-	 * @syntax MINI.request(method, url)
-	 * @syntax MINI.request(method, url, data)
-	 * @syntax MINI.request(method, url, data, onSuccess)
-	 * @syntax MINI.request(method, url, data, onSuccess, onFailure)
-	 * @syntax MINI.request(method, url, data, onSuccess, onFailure, headers)
-	 * @syntax MINI.request(method, url, data, onSuccess, onFailure, headers, username, password)
-	 * Initiates a HTTP request (using XmlHTTPRequest) to the given URL. When the request finished, either the onSuccess or the onFailure function
-	 * will be invoked.
-	 * 
-	 * 
-	 * @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data on the server, and 'get' to only request data). Not case sensitive.
-	 * @param url the server URL to request. May be a relative URL (relative to the document) or an absolute URL. Note that unless you do something 
-	 *             fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only call URLs on the server your script originates from.
-	 * @param data optional data to send in the request, either as POST body or as URL parameters. It can be either a map of 
-	 *             parameters (all HTTP methods), a string (all methods) or a DOM document ('post' only). If the method is 'post', it will be 
-	 *             sent as body, otherwise appended to the URL. In order to send several parameters with the same name, use an array of values
-	 *             in the map. Use null as value for a parameter without value.
-	 * @param onSuccess optional this function will be called when the request has been finished successfully and had the HTTP status 200. Its first argument 
-	 *                  is the text sent by the server.
-	 *                  You can add an optional second argument, which will contain the XML sent by the server, if there was any.
-	 * @param onFailure optional this function will be called if the request failed. The first argument is the HTTP status (never 200; 0 if no HTTP request took place), 
-	 *                  the second a status text (or null, if the browser threw an exception) and the third the returned text, if there was 
-	 *                  any (the exception as string if the browser threw it).
-	 * @param headers optional a map of HTTP headers to add to the request. Note that the you should use the proper capitalization of the
-	 *                header 'Content-Type', if you set it, because otherwise it may be overwritten.
-	 * @param username optional username to be used for HTTP authentication, together with the password parameter
-	 * @param password optional password for HTTP authentication
-	 * @return the XmlHTTPRequest object, after its send() method has been called. You may use this to gather additional information, such as the request's state.
-	 */
+	* @id request
+	* @module 3
+	* @requires tostring isstring
+	* @configurable yes
+	* @name request()
+	* @syntax MINI.request(method, url)
+	* @syntax MINI.request(method, url, data)
+	* @syntax MINI.request(method, url, data, onSuccess)
+	* @syntax MINI.request(method, url, data, onSuccess, onFailure)
+	* @syntax MINI.request(method, url, data, onSuccess, onFailure, headers)
+	* @syntax MINI.request(method, url, data, onSuccess, onFailure, headers, username, password)
+	* Initiates a HTTP request (using XmlHTTPRequest) to the given URL. When the request finished, either the onSuccess or the onFailure function
+	* will be invoked.
+	* 
+	* @example Invoke a REST web service and parse the resulting document using JSON:
+	* <pre>
+	* MINI.request('get', 'http://service.example.com/weather', {zipcode: 90210}, function(txt) {
+	*     var json = MINI.parseJSON(txt);
+	*     MINI.el('#weatherResult', 'Today's forecast is is: ' + json.today.forecast);
+	* }, function() {
+	*     MINI.el('#weatherResult', 'The weather service was not available.');
+	* });
+	* </pre>
+	* 
+	* @example Send a JSON object to a REST web service:
+	* <pre>
+	* var myRequest = {         // create a request object that can be serialized via JSON
+	*      request: 'register',
+	*      entries: [
+	* {name: 'Joe',
+	*      	job: 'Plumber'
+	* }]};
+	* 
+	* function failureHandler() {
+	*   MINI.el('#registrationResult', 'Registration failed');
+	* }
+	*
+	* MINI.request('post', 'http://service.example.com/directory', 
+	*     MINI.toJSON(myRequest), function(txt) {
+	*       if (txt == 'OK')
+	*            MINI.el('#registrationResult', 'Registration succeeded');
+	*       else
+	*            failureHandler();
+	* }, failureHandler);
+	* </pre>
+	* 
+	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data on the server, and 'get' to only request data). Not case sensitive.
+	* @param url the server URL to request. May be a relative URL (relative to the document) or an absolute URL. Note that unless you do something 
+	*             fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only call URLs on the server your script originates from.
+	* @param data optional data to send in the request, either as POST body or as URL parameters. It can be either a map of 
+	*             parameters (all HTTP methods), a string (all methods) or a DOM document ('post' only). If the method is 'post', it will be 
+	*             sent as body, otherwise appended to the URL. In order to send several parameters with the same name, use an array of values
+	*             in the map. Use null as value for a parameter without value.
+	* @param onSuccess optional this function will be called when the request has been finished successfully and had the HTTP status 200. Its first argument 
+	*                  is the text sent by the server.
+	*                  You can add an optional second argument, which will contain the XML sent by the server, if there was any.
+	* @param onFailure optional this function will be called if the request failed. The first argument is the HTTP status (never 200; 0 if no HTTP request took place), 
+	*                  the second a status text (or null, if the browser threw an exception) and the third the returned text, if there was 
+	*                  any (the exception as string if the browser threw it).
+	* @param headers optional a map of HTTP headers to add to the request. Note that the you should use the proper capitalization of the
+	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.
+	* @param username optional username to be used for HTTP authentication, together with the password parameter
+	* @param password optional password for HTTP authentication
+	* @return the XmlHTTPRequest object, after its send() method has been called. You may use this to gather additional information, such as the request's state.
+	*/
 	MINI['request'] = function (method, url, data, onSuccess, onFailure, headers, username, password) {
 		// @cond debug if (!method) error("request() requires a HTTP method as first argument.");
 		// @cond debug if (!url) error("request() requires a url as second argument.");
@@ -1331,7 +1416,7 @@ window['MINI'] = (function() {
 		var xhr, s = [],
 				body = data,
 				ContentType = 'Content-Type',
-				dataIsString = typeof data == 'string', callbackCalled = 0;
+				dataIsString = isString(data), callbackCalled = 0;
 		try {
 			xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			
@@ -1412,7 +1497,7 @@ window['MINI'] = (function() {
     /**
 	 * @id tojson
 	 * @module 4
-	 * @requires tostring ucode
+	 * @requires tostring ucode isstring
 	 * @configurable yes
 	 * @name toJSON()
 	 * @syntax MINI.toJSON(value)
@@ -1440,8 +1525,8 @@ window['MINI'] = (function() {
 		if (value && (ctor = value.constructor) == String || ctor == Number || ctor == Boolean)
 			value = toString(value); 
 
-		if ((type = typeof value) == 'string') 
-			return '"' + value.replace(/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\uffff]/g, ucode) + '"' ;
+		if (isString(type = typeof value)) 
+			return '"' + value.replace(/[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
 
 		if (type == 'boolean' || type == 'number') // handle infinite numbers?
 			return toString(value);
@@ -1496,17 +1581,25 @@ window['MINI'] = (function() {
     //// 5. EVENT MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     
-    /**
-	 * @id ready
-	 * @module 5
-	 * @requires 
-	 * @configurable yes
-	 * @name ready()
-	 * @syntax MINI.ready(handler)
-     * Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).
-     * On older browsers, it is the same as 'window.onload'. 
-     * @param handler the function to be called when the HTML is ready
-     */
+	/**
+    * @id ready
+    * @module 5
+    * @requires 
+    * @configurable yes
+    * @name ready()
+    * @syntax MINI.ready(handler)
+    * Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).
+    * On older browsers, it is the same as 'window.onload'. 
+    *
+    * @example Register an handler that sets some text in an element:
+    * <pre>
+    * MINI.ready(function() {
+    *   $$('#someElement').innerHTML = 'ready() called';
+    * });
+    * </pre>
+    *
+    * @param handler the function to be called when the HTML is ready
+    */
     MINI['ready'] = function(handler) {
     	// @cond debug if (typeof handler != 'function') error("First argument must be a function");
     	if (DOMREADY_HANDLER) // if DOM ready, call immediately
@@ -1539,18 +1632,26 @@ window['MINI'] = (function() {
     
     //// 6. COOKIE MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    /**
-	 * @id setcookie
-	 * @module 6
-	 * @requires now
-	 * @configurable yes
-	 * @name setCookie()
-	 * @syntax MINI.setCookie(name, value)
-	 * @syntax MINI.setCookie(name, value, dateOrDays)
-	 * @syntax MINI.setCookie(name, value, dateOrDays, path)
-	 * @syntax MINI.setCookie(name, value, dateOrDays, path, domain)
+	/**
+     * @id setcookie
+     * @module 6
+     * @requires now
+     * @configurable yes
+     * @name setCookie()
+     * @syntax MINI.setCookie(name, value)
+     * @syntax MINI.setCookie(name, value, dateOrDays)
+     * @syntax MINI.setCookie(name, value, dateOrDays, path)
+     * @syntax MINI.setCookie(name, value, dateOrDays, path, domain)
      * Creates a cookie with the given name and value, optional expiration date, path and domain. If there is an an existing cookie
      * of the same name, will be overwritten with the new value and settings.
+     *
+     * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
+     * <pre>
+     * var visits = MINI.getCookie('numberOfVisits');
+     * MINI.setCookie('numberOfVisits', 
+     *                      visits ? (parseInt(visits) + 1) : 1,         // if cookie not set, start with 1
+     *                      365);                                              // store for 365 days
+     * </pre>
      * 
      * @param name the name of the cookie. This should be ideally an alphanumeric name, as it will not be escaped by MINI and this
      *             guarantees compatibility with all systems.
@@ -1579,14 +1680,24 @@ window['MINI'] = (function() {
     MINI['setCookie'] = setCookie;
     
     /**
-	 * @id getcookie
-	 * @module 6
-	 * @requires
-	 * @configurable yes
-	 * @name getCookie()
-	 * @syntax MINI.getCookie(name)
-	 * @syntax MINI.getCookie(name, dontUnescape)
+     * @id getcookie
+     * @module 6
+     * @requires
+     * @configurable yes
+     * @name getCookie()
+     * @syntax MINI.getCookie(name)
+     * @syntax MINI.getCookie(name, dontUnescape)
      * Tries to find the cookie with the given name and returns it.
+     *
+     * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
+     * <pre>
+     * var visits = MINI.getCookie('numberOfVisits');
+     * if (!visits)    // check whether cookie set. Null if not
+     *     $('#myCounter').set('innerHML', 'Your first visit.');
+     * else
+     *     $('#myCounter').set('innerHTML', 'Visit No ' + visits);
+     * </pre>
+     *  
      * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
      *             You may want to escape the name using encodeURIComponent() for all other characters.
      * @param dontUnescape optional if set and true, the value will be returned unescaped (use this only if the value has been encoded
@@ -1601,13 +1712,19 @@ window['MINI'] = (function() {
     };
 
     /**
-	 * @id deletecookie
-	 * @module 6
-	 * @requires
-	 * @configurable yes
-	 * @name deleteCookie()
-	 * @syntax MINI.deleteCookie(name)
+     * @id deletecookie
+     * @module 6
+     * @requires
+     * @configurable yes
+     * @name deleteCookie()
+     * @syntax MINI.deleteCookie(name)
      * Deletes the cookie with the given name. If the cookie does not exist, it does nothing.
+     *
+     * @example Deletes the cookie "numberOfVisits":
+     * <pre>
+     * MINI.deleteCookie('numberOfVisits');
+     * </pre>
+     *
      * @param the cookie's name
      */
     MINI['deleteCookie'] = function(name) {
@@ -1718,7 +1835,7 @@ window['MINI'] = (function() {
  * @param selector the selector (see MINI())
  * @return the result list (see MINI())
  */
-window['$'] = MINI;
+
 
 /**
  * @id topleveldollardollar

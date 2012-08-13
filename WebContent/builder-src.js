@@ -20,15 +20,15 @@ function setUpConfigurationUI(s) {
 					$$('#compile').disabled = false;
 					$('#gzipRow, #downloadRow').set({$display: 'table-row'});
 					$$('#resultSrc').value = closureResult.compiledCode;
-					$$('#resultPlain').innerText = (closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedSize + ' bytes)' ;
-					$$('#resultGzipped').innerText = (closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedGzipSize + ' bytes)' ;
+					$$('#resultPlain').innerHTML = (closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedSize + ' bytes)' ;
+					$$('#resultGzipped').innerHTML = (closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedGzipSize + ' bytes)' ;
 					$$('#resultLink').setAttribute('href', 'http://closure-compiler.appspot.com' +closureResult.outputFilePath);
 				}
 			});
 		}
 		else  {
 			$$('#resultSrc').value = src;
-			$$('#resultPlain').innerText = (src.length/1024).toFixed(2) + 'kb';
+			$$('#resultPlain').innerHTML = (src.length/1024).toFixed(2) + 'kb';
 			$('#gzipRow, #downloadRow').set({$display: 'none'});
 		}
 		return false;
@@ -61,7 +61,7 @@ function setUpConfigurationUI(s) {
 	$('#compile').on('click', compileClicked);
 	
 	for (var i = 1; i < MODULES.length; i++) {
-		var moduleCheckBox, div = MINI.elAdd('#sectionCheckboxes', 'div', {id: 'divMod-'+i}, MINI.el('div', {'class': 'moduleDescriptor'}, [
+		var moduleCheckBox, div = MINI.elAppend('#sectionCheckboxes', 'div', {id: 'divMod-'+i}, MINI.el('div', {'class': 'moduleDescriptor'}, [
 			moduleCheckBox = MINI.el('input', {id: 'mod-'+i, 'class': 'modCheck', type:'checkbox', checked: 'checked'}),
 			MINI.el('label', {'for': 'mod-'+i}, MODULES[i])     
 		]));
@@ -111,7 +111,7 @@ function setUpConfigurationUI(s) {
 			var requiredBy = createList('Required by ', sec.requiredBy);
 			var requires = createList('Requires ', sec.requires);
 		
-			MINI.elAdd(div, 'div', {'class': 'sectionDescriptor'}, [
+			MINI.elAppend(div, 'div', {'class': 'sectionDescriptor'}, [
 				sectionCheckBox = MINI.el('input', {'class': 'secCheck', type:'checkbox', id: 'sec-'+sec.id, checked: sec.configurable=='yes' ? 'checked' : null}),
 				MINI.el('label', {'for': 'sec-'+sec.id}, sec.name || sec.id),
 				MINI.el('div', {'class': 'requirements'}, [requiredBy ? [requiredBy, MINI.el('br')] : null , requires])
