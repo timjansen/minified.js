@@ -175,6 +175,17 @@ window['MINI'] = (function() {
 		});
 		return r;
 	}
+	function collect(list, collectFunc, result) {
+		result = result || [];
+		each(list, function(item, index, r) {
+			if (isList(r = collectFunc(item, index)))
+				each(r, function(rr) { result.push(rr); });
+			else if (r != null)
+				result.push(r);
+		});
+		return result;
+	}
+
     /**
      * @id isstring
      * @dependency yes
@@ -373,6 +384,62 @@ window['MINI'] = (function() {
 		list['filter'] = function(filterFunc) {
 		    return addElementListFuncs(filter(list, filterFunc));
 		};
+		
+		/** 
+         * @id collect 
+         * @module 1 
+         * @requires dollar 
+         * @configurable yes 
+         * @name list.collect() 
+         * @syntax collect(collectFunc) 
+         * @syntax collect(collectFunc, resultList) 
+         * Creates a new list from the current list with the help of the given callback function. 
+         * The callback is invoked once for each element of the current 
+         * list. The callback results will be appended either to the given resultList, or to 
+         * a new array. The callback can return 
+         * <ul> 
+         * <li>An array or another list-like object whose elements will be appended to the result array as single elements.</li> 
+         * <li>A regular object which will be appended to the list</li> 
+         * <li>null (or undefined), which means that no object will be added to the list. 
+         * If you need to add null or modified to the result list, put it into a single-element array.</li> 
+         * </ul> 
+         * 
+         * @example Goes through input elements. If they are text inputs, their value will be added to the list: 
+         * <pre> 
+         * var texts = $('input').collect(function(input) { 
+         * if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') // text is default, so check for null 
+         *     return input.value; 
+         * else 
+         *     return null; // ignore 
+         * }); 
+         * </pre> 
+         * 
+         * @example Creates a list of all children of the selected list. 
+         * <pre> 
+         * var childList = $('.mySections').collect(function(node) { 
+         * return node.childNodes; // adds a while list of nodes 
+         * }); 
+         * </pre> 
+         * 
+         * @example Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case: 
+         * <pre> 
+         * var elements = $('input.myTexts').collect(function(item) { 
+         *     return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()]; 
+         * }); 
+         * </pre> 
+         * 
+         * @param collectFunc the callback function(item, index) to invoke for each item with the item as first argument and the 
+         * 0-based index as second argument. 
+         * If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls 
+         * will be ignored and not added. 
+         * @param resultList optional if given, an array to append the elements to. collect() will use push() to add them. 
+         * If omitted, a new array-based list will be created. 
+         * @return the new list. If resultList has been omitted, the result is guaranteed to be based 
+         * on Array and always a new instance 
+         */ 
+         list['collect'] = function(collectFunc, resultList) { 
+        	 return addElementListFuncs(collect(list, collectFunc, resultList)); 
+         };
 		
 		/**
 		 * @id listremove
@@ -1494,35 +1561,40 @@ window['MINI'] = (function() {
     }
     // @condend
 
-    /**
-	 * @id tojson
-	 * @module 4
-	 * @requires tostring ucode isstring
-	 * @configurable yes
-	 * @name toJSON()
-	 * @syntax MINI.toJSON(value)
-     * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, date, boolean or null.
-     * If JSON.stringify is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
-     * 
-     * The following types are supported by the built-in implementation:
-     * <ul>
-     *   <li>Objects (direct properties will be serialized)</li>
-     *   <li>Arrays</li>
-     *   <li>Strings</li>
-     *   <li>Numbers</li>
-     *   <li>Boolean</li>
-     *   <li>null</li>
-     * </ul>
-     * Any other types in your value, especially Dates, should be converted into Strings by you.
-     * 
-     * @param value the value (map-like object, array, string, number, date, boolean or null)
-     * @return the JSON string
-     */
+	/**
+    * @id tojson
+    * @module 4
+    * @requires tostring ucode isstring
+    * @configurable yes
+    * @name toJSON()
+    * @syntax MINI.toJSON(value)
+    * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, date, boolean or null.
+    * If JSON.stringify is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
+    * 
+    * The following types are supported by the built-in implementation:
+    * <ul>
+    *   <li>Objects (direct properties will be serialized)</li>
+    *   <li>Arrays</li>
+    *   <li>Strings</li>
+    *   <li>Numbers</li>
+    *   <li>Boolean</li>
+    *   <li>null</li>
+    * </ul>
+    * Any other types in your value, especially Dates, should be converted into Strings by you.
+    *
+    * @example Convert an object into a JSON object:
+    * <pre>
+    * var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
+    * var jsonString = MINI.toJSON(myObj);
+    * </pre>
+    * 
+    * @param value the value (map-like object, array, string, number, date, boolean or null)
+    * @return the JSON string
+    */
     // @condblock iecompatibility
-	MINI['toJSON'] = (JSON && JSON.stringify) || function toJSON(value) {
+    MINI['toJSON'] = (JSON && JSON.stringify) || function toJSON(value) {
 		var ctor, type;
-		var partial = [];
-		if (value && (ctor = value.constructor) == String || ctor == Number || ctor == Boolean)
+		if (value && ((ctor = value.constructor) == String || ctor == Number || ctor == Boolean))
 			value = toString(value); 
 
 		if (isString(type = typeof value)) 
@@ -1533,32 +1605,32 @@ window['MINI'] = (function() {
 		if (!value)
 			return 'null';
 		
-		if (isList(value)) {
-			each(value, function(vi) { 
-				partial.push(toJSON(vi)); 
-			});
-			return '[' + partial.join() + ']';
-		}
-		each(value, function(k, n) {
-			partial.push(toJSON(k) + ':' + toJSON(n));
-		});
-		return '{' + partial.join() + '}';
-    };
+		if (isList(value)) 
+			return '[' + collect(value, function(vi) { return toJSON(vi); }).join() + ']';
+		return '{' + collect(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
+	};
     // @condend
     // @cond !iecompatibility MINI['toJSON'] = (JSON && JSON.stringify);
     
-    /**
-	 * @id parsejson
-	 * @module 4
-	 * @requires tostring ucode
-	 * @configurable yes
-	 * @name parseJSON()
-	 * @syntax MINI.parseJSON(text)
-     * Parses a string containing JSON and returns the de-serialized object.
-     * If JSON.parse is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
-     * @param text the JSON string
-     * @return the resulting JavaScript object. Undefined if not valid.
-     */
+	/**
+	* @id parsejson
+	* @module 4
+	* @requires tostring ucode
+	* @configurable yes
+	* @name parseJSON()
+	* @syntax MINI.parseJSON(text)
+	* Parses a string containing JSON and returns the de-serialized object.
+	* If JSON.parse is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
+	*
+	* @example Parsing a JSON string:
+	* <pre>
+	* var jsonString = "{name: 'Fruits', roles: ['apple', 'banana', 'orange']}";
+	* var myObj = MINI.parseJSON(jsonString);
+	* </pre>
+	*
+	* @param text the JSON string
+	* @return the resulting JavaScript object. Undefined if not valid.
+	*/
     // @condblock iecompatibility
     MINI['parseJSON'] = (JSON && JSON.parse) || function (text) {
     	text = toString(text).replace(/[\u0000\u00ad\u0600-\uffff]/g, ucode);
