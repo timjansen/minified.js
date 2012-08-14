@@ -157,6 +157,9 @@ window['MINI'] = (function() {
 	function isList(v) {
 		return v && v.length != null && !v.substr && !v.data; // substr to test for string, data for Text node
 	}
+	function isString(s) {
+		return typeof s == 'string';
+	}
 	function each(list, cb) {
 		if (isList(list))
 			for (var i = 0, len = list.length; i < len; i++)
@@ -187,18 +190,11 @@ window['MINI'] = (function() {
 	}
 
     /**
-     * @id isstring
-     * @dependency yes
-     */
-	function isString(s) {
-		return typeof s == 'string';
-	}
-    /**
      * @id tostring
      * @dependency yes
      */
 	function toString(s) { // wrapper for Closure optimization
-		return String(s!=null?s:'');
+		return String(s!=null ? s : '');
 	}
 
     /**
@@ -748,22 +744,22 @@ window['MINI'] = (function() {
 					});
 					initState.push(p);
 				});
-			
-				function getColorComponent(colorCode, index) {
-					return (/^#/.test(colorCode)) ?
-						parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
-						:
-						parseInt(colorCode.replace(/[^\d,]+/g, '').split(',')[index]);
-				}
-			
+						
 				loop(function(timePassedMs, stop) {
+					function getColorComponent(colorCode, index) {
+						return (/^#/.test(colorCode)) ?
+							parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
+							:
+							parseInt(colorCode.replace(/[^\d,]+/g, '').split(',')[index]);
+					}
+
 					function interpolate(startValue, endValue) {
 						var d = endValue - startValue;
 						return startValue +  timePassedMs/durationMs * (linearity * d + (1-linearity) * timePassedMs/durationMs * (3*d - 2*d*timePassedMs/durationMs)); 
 					}
 					
 					if (timePassedMs >= durationMs || timePassedMs < 0) {
-						each(initState, function(isi) {
+						each(initState, function(isi) { // set destination values
 							isi.o.set(isi.e);
 						});
 						stop();
@@ -852,11 +848,11 @@ window['MINI'] = (function() {
 				return eachlist(function(el) {
 					function newHandler(e) {
 						e = e || window.event;
-						var l = document.documentElement, b = document.body;
+						var l = document.documentElement, b = document.body, which = e.which;
 						// @cond debug try {
 						if (!handler.call(e.target, e, { 
-								keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
-								rightClick: e.which ? (e.which == 3) : (e.button == 2),
+								keyCode: e.keyCode || which, // http://unixpapa.com/js/key.html
+								rightClick: which ? (which == 3) : (e.button == 2),
 								pageX: l.scrollLeft + b.scrollLeft + e.clientX,
 								pageY: l.scrollTop + b.scrollTop + e.clientY,
 								wheelDir: (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1
@@ -1004,7 +1000,7 @@ window['MINI'] = (function() {
 	     * </pre>
 	     * @param className the name to remove
 	     */
-	    list['removeClass'] = function(className) {
+	    list['removeClass'] = function removeClass(className) {
 	        var reg = createClassNameRegExp(className);
 	        return eachlist(function(li) {
 	        	li.className = removeClassRegExp(li, reg);
@@ -1411,7 +1407,7 @@ window['MINI'] = (function() {
 	/**
 	* @id request
 	* @module 3
-	* @requires tostring isstring
+	* @requires tostring 
 	* @configurable yes
 	* @name request()
 	* @syntax MINI.request(method, url)
@@ -1483,13 +1479,13 @@ window['MINI'] = (function() {
 		var xhr, s = [],
 				body = data,
 				ContentType = 'Content-Type',
-				dataIsString = isString(data), callbackCalled = 0;
+				callbackCalled = 0;
 		try {
 			xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			
 			if (data != null) {
 				headers = headers || {};
-				if (!dataIsString && !data.nodeType) { // if data is parameter map...
+				if (!isString(data) && !data.nodeType) { // if data is parameter map...
 					function processParam(paramName, paramValue) {
 						if (isList(paramValue))
 							each(paramValue, function(v) {processParam(paramName, v);});
@@ -1504,7 +1500,7 @@ window['MINI'] = (function() {
 					body = null;
 				}
 				else if (!data.nodeType && !headers[ContentType])
-					headers[ContentType] = dataIsString ?  'text/plain; charset="UTF-8"' : 'application/x-www-form-urlencoded';
+					headers[ContentType] = isString(data) ?  'text/plain; charset="UTF-8"' : 'application/x-www-form-urlencoded';
 			}
 			
 			xhr.open(method, url, true, username, password);
@@ -1564,7 +1560,7 @@ window['MINI'] = (function() {
 	/**
     * @id tojson
     * @module 4
-    * @requires tostring ucode isstring
+    * @requires tostring ucode 
     * @configurable yes
     * @name toJSON()
     * @syntax MINI.toJSON(value)
@@ -1906,7 +1902,7 @@ window['MINI'] = (function() {
  * @param selector the selector (see MINI())
  * @return the result list (see MINI())
  */
-// code moved to top
+// implementation moved to top
 
 /**
  * @id topleveldollardollar
