@@ -38,7 +38,7 @@ If you need them, <a href="http://microjs.com">microjs.com</a> is a great place 
 <tr><td>Events</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>DOMReady</td><td>yes</td><td>yes</td><td>yes</td> <td>yes</td></tr>
 <tr><td>Animation (numeric)</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
-<tr><td>Animation (color)</td><td>yes</td> <td>no</td> <td>yes (using CSS transitions only)</td></tr>
+<tr><td>Animation (color)</td><td>yes</td> <td>no</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
 <tr><td>Ajax</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>JSON</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>Cookies</td><td>yes</td> <td>no</td> <td>yes</td> <td>no</td></tr>
