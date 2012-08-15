@@ -154,11 +154,11 @@ window['MINI'] = (function() {
      */
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	function isList(v) {
-		return v && v.length != null && !v.substr && !v.data; // substr to test for string, data for Text node
-	}
 	function isString(s) {
 		return typeof s == 'string';
+	}
+	function isList(v) {
+		return v && v.length != null && !isString(v) && !v.data; // substr to test for string, data for Text node
 	}
 	function each(list, cb) {
 		if (isList(list))
@@ -180,11 +180,11 @@ window['MINI'] = (function() {
 	}
 	function collect(list, collectFunc, result) {
 		result = result || [];
-		each(list, function(item, index, r) {
-			if (isList(r = collectFunc(item, index)))
-				each(r, function(rr) { result.push(rr); });
-			else if (r != null)
-				result.push(r);
+		each(list, function(item, index) {
+			if (isList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
+				each(item, function(rr) { result.push(rr); });
+			else if (list != item)
+				result.push(item);
 		});
 		return result;
 	}
@@ -554,20 +554,18 @@ window['MINI'] = (function() {
 		function set(name, value, defaultFunction) {
 			// @cond if (name == null) error("First argument must be set!");
 			if (value === undef) 
-				each(name, function(n,v) { list['set'](n, v, defaultFunction); });
+				each(name, function(n,v) { set(n, v, defaultFunction); });
 			else {
 				// @cond if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 				var components = getNameComponents(name), len = components.length-1;
-				var lastName = components[len];
-				var isAttr = /^@/.test(lastName);
-				var lastName1 = lastName.substr(1);
+				var lastName = components[len].replace(/^@/, '');
 				var f = (typeof value == 'function') ? value : defaultFunction;
 				eachlist( 
 					function(obj, c) {
 						for (var i = 0; i < len; i++)
 							obj = obj[components[i]];
-						if (isAttr)
-							obj.setAttribute(lastName1, f ? f(obj.getAttribute(lastName1), c, value) : value);
+						if (lastName != components[len])
+							obj.setAttribute(lastName, f ? f(obj.getAttribute(lastName), c, value) : value);
 						else
 							obj[lastName] = f ? f(obj[lastName], c, value) : value;
 					});
@@ -729,11 +727,13 @@ window['MINI'] = (function() {
 					var p = {o:MINI(li), s:{}, e:{}, u:{}}; 
 					each(properties, function(name) {
 						var dest = properties[name];
-						var components = getNameComponents(name), len=components.length-1, lastName = components[len];
+						var components = getNameComponents(name);
+						var len = components.length-1;
+						var lastName = components[len].replace(/^@/, '');
 						var a = li;
 						for (var j = 0; j < len; j++) 
 							a = a[components[j]];
-						p.s[name] = ((/^@/.test(lastName)) ? a.getAttribute(lastName.substr(1)) : a[lastName]) || 0;
+						p.s[name] = ((lastName != components[len]) ? a.getAttribute(lastName) : a[lastName]) || 0;
 						p.e[name] = /^[+-]=/.test(dest) ?
 							replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.replace(/\+?=/, ''))) 
 							: dest;
@@ -1056,9 +1056,10 @@ window['MINI'] = (function() {
 	     * @param className the name to toggle
 	     */
 	    list['toggleClass'] = function(className) {
-	        var cn, reg = createClassNameRegExp(className);
+	        var reg = createClassNameRegExp(className);
 	        return eachlist(function(li) {
-	        	li.className = (cn = li.className) ? (reg.test(cn) ? removeClassRegExp(li, reg) : (cn + ' ' + className)) : className;
+			var cn = li.className;
+	        	li.className = cn ? (reg.test(cn) ? removeClassRegExp(li, reg) : (cn + ' ' + className)) : className;
 	        });
 	    };
 	    /**
@@ -1191,18 +1192,16 @@ window['MINI'] = (function() {
 				e.setAttribute(n, v);
 		});
 		
-		function appendChildren(c) {
-			if (isList(c))
-				each(c, function(ci) {
-					appendChildren(ci);
-				});
-			else if (c != null)   // must check null, as 0 is a valid parameter
-				e.appendChild(c.nodeType ? c : document.createTextNode(c)); 
-		}
-
 		if (children != null) // must check null, as 0 is a valid parameter
 			MINI(e).removeChildren();
-		appendChildren(children);
+
+		(function appendChildren(c) {
+			if (isList(c))
+				each(c, appendChildren);
+			else if (c != null)   // must check null, as 0 is a valid parameter
+				e.appendChild(c.nodeType ? c : document.createTextNode(c)); 
+		})(children);
+		
 		return e;
 	};
 	MINI['el'] = el;
@@ -1486,13 +1485,12 @@ window['MINI'] = (function() {
 			if (data != null) {
 				headers = headers || {};
 				if (!isString(data) && !data.nodeType) { // if data is parameter map...
-					function processParam(paramName, paramValue) {
+					each(data, function processParam(paramName, paramValue) {
 						if (isList(paramValue))
 							each(paramValue, function(v) {processParam(paramName, v);});
 						else
 							s.push(encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : ''));
-					}
-					each(data, processParam);
+					});
 					body = s.join('&');
 				}
 				if (!/post/i.test(method)) {
