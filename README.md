@@ -34,7 +34,7 @@ If you need them, <a href="http://microjs.com">microjs.com</a> is a great place 
 <tr><td>Element Class Changes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>Element Dimension</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>Element Creation</td><td>yes</td> <td>no</td> <td>yes</td> <td>no</td></tr>
-<tr><td>DOM Manipulation</td><td>yes</td> <td>yes</td> <td></td> <td>yes</td></tr>
+<tr><td>DOM Manipulation</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>Events</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>DOMReady</td><td>yes</td><td>yes</td><td>yes</td> <td>yes</td></tr>
 <tr><td>Animation (numeric)</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
