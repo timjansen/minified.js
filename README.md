@@ -14,10 +14,11 @@ everything that you don't need to reduce its size even more.
 Size Comparison
 -----------------
 <table>
-<tr><th>Name</th><th>Source Code</th><th>Minified</th><th>Minified and GZip'd</th></tr>
-<tr><td>minified.js</td><td>45kb</td><td>7.5kb</td><td>3.3kb</td></tr>
-<tr><td>jQuery 1.8.0</td><td>252kb</td><td>90kb</td><td>32kb</td></tr>
-<tr><td>MooTools Core NoCompat 1.4.5</td><td>148kb</td><td>88kb</td><td>29kb</td></tr>
+<tr><th>Name</th><th>Minified Size</th><th>Minified and GZip'd</th></tr>
+<tr><td>minified.js</td><td>7.5kb</td><td>3.3kb</td></tr>
+<tr><td>jQuery 1.8.0</td><td>90kb</td><td>32kb</td></tr>
+<tr><td>MooTools Core NoCompat 1.4.5</td><td>88kb</td><td>29kb</td></tr>
+<tr><td>Zepto.js 1.0rc1</td><td>23kb</td><td>9.2kb</td></tr>
 </table>
 
 Feature Comparison
@@ -26,23 +27,24 @@ The goal of minified.js is to provide everything you need on an HTML page to int
 Specifically, it does not include a class framework, helper for JavaScript core types or similar things. 
 If you need them, <a href="http://microjs.com">microjs.com</a> is a great place to find them.
 <table>
-<tr><th>Feature</th><th>minified.js</th><th>jQuery</th><th>MooTools</th></tr>
-<tr><td>CSS Selector</td><td>yes (limited)</td><td>yes (CSS3)</td><td>yes (CSS3)</td></tr>
-<tr><td>CSS Style Changes</td><td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>Element Class Changes</td><td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>Element Dimension</td><td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>Element Creation</td><td>yes</td> <td>no</td> <td>yes</td></tr>
-<tr><td>DOM Manipulation</td><td>yes</td> <td>yes</td> <td></td></tr>
-<tr><td>Events</td><td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>DOMReady</td><td>yes</td><td>yes</td><td>yes</td></tr>
-<tr><td>Animation (numeric)</td><td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>Animation (color)</td><td>yes</td> <td>no</td> <td>yes</td></tr>
-<tr><td>Ajax</td><td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>JSON</td><td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>Cookies</td><td>yes</td> <td>no</td> <td>yes</td></tr>
-<tr><td>Array Helpers (Iteration)</td> <td>no</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>Class/Extensions</td> <td>no</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>Components Selectable</td> <td>yes (modules and functions)</td> <td>no</td> <td>yes (modules)</td></tr>
+<tr><th>Feature</th><th>minified.js</th><th>jQuery</th><th>MooTools</th><th>Zepto.js</th></tr>
+<tr><td>CSS Selector</td><td>yes (limited)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3)</td></tr>
+<tr><td>CSS Style Changes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><td>Element Class Changes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><td>Element Dimension</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><td>Element Creation</td><td>yes</td> <td>no</td> <td>yes</td> <td>no</td></tr>
+<tr><td>DOM Manipulation</td><td>yes</td> <td>yes</td> <td></td> <td>yes</td></tr>
+<tr><td>Events</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><td>DOMReady</td><td>yes</td><td>yes</td><td>yes</td> <td>yes</td></tr>
+<tr><td>Animation (numeric)</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
+<tr><td>Animation (color)</td><td>yes</td> <td>no</td> <td>yes (using CSS transitions only)</td></tr>
+<tr><td>Ajax</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><td>JSON</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><td>Cookies</td><td>yes</td> <td>no</td> <td>yes</td> <td>no</td></tr>
+<tr><td>Array Helpers (Iteration)</td> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><td>Class/Extensions</td> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><td>Online Builder</td> <td>yes (modules and functions)</td> <td>no</td> <td>yes (modules)</td> <td>no</td></tr>
+<tr><td>Internet Explorer compatible</td> <td>yes</td> <td>yes</td> <td>yes</td> <td>no</td></tr>
 </table>
 
 
