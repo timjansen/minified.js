@@ -645,6 +645,9 @@ window['MINI'] = (function() {
 		 * the destination values that have been specified in the given properties. Then animate() will create a background task using MINI.loop() that will update the 
 		 * specified properties in frequent intervals so that they transition to their destination values.
 		 *
+		 * The start values will be read using the elements' style properties. Therefore it is important that you either set the start values directly in the elements'
+		 * style attribute, or set them yourself before you start the animation. Styles inherited from CSS definitions will not provide correct start values!
+		 *
 		 * You can define the kind of transition using the 'linearity' parameter. If you omit it or pass 0, animate's default algorithm will cause a smooth transition
 		 * from the start value to the end value. If you pass 1, the transition will be linear, with a sudden start and end of the animation. Any value between 0 and 1 
 		 * is also allowed and will give you a transition that is 'somewhat smooth'. 
@@ -662,19 +665,23 @@ window['MINI'] = (function() {
 		 * To allow more complex animation, animate() allows you to add a callback which will be called when the animation has finished. You can also specify a delay
 		 * to create timelines.
 		 *
-		 * @example Move an element:
+		 * @example Move an element. Note that you need to set the initial value for styles, unless they have been explicitly set
+		 * for the HTML element using the style attribute before or you set it earlier with an earlier set() or animate() invocation.
 		 * <pre>
-		 * $('#myMovingDiv').animate({$left: '50px', $top: '100px'}, 1000);
+		 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})                // start values
+		 *                  .animate({$left: '50px', $top: '100px'}, 1000);  // animation
 		 * </pre>
 		 * 
 		 * @example Change the color of an element:
 		 * <pre>
-		 * $('#myBlushingDiv').animate({$backgroundColor: '#ff0000'}, 1000);
+		 * $('#myBlushingDiv').set({$backgroundColor: '#000000'})
+		 *                    .animate({$backgroundColor: '#ff0000'}, 1000);
 		 * </pre>
 		 *
 		 * @example Chained animation using callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
 		 * <pre>
-		 * $('#myMovingDiv').animate({$left: '200px', $top: '0px'}, 600, 0, function(list) {
+		 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})
+		 *                  .animate({$left: '200px', $top: '0px'}, 600, 0, function(list) {
 		 *         list.animate({$left: '200px', $top: '200px'}, 800, 0, function(list) {
 		 *                list.animate({$left: '100px', $top: '100px'}, 400);
 		 *         });
@@ -683,16 +690,17 @@ window['MINI'] = (function() {
 		 *
 		 * @example Does same as the previous example, but implemented using delays:
 		 * <pre>
-		 * $('#myMovingDiv').animate({$left: '200px', $top: '0px'}, 600)
-		 *                         .animate({$left: '200px', $top: '200px'}, 800, 0, null, 600)
-		 *                         .animate({$left: '100px', $top: '100px'}, 400), 0, null, 600+800);
+		 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})
+		 *                  .animate({$left: '200px', $top: '0px'}, 600)
+		 *                  .animate({$left: '200px', $top: '200px'}, 800, 0, null, 600)
+		 *                  .animate({$left: '100px', $top: '100px'}, 400), 0, null, 600+800);
 		 * </pre>
 		 *
 		 * @example Three block race to the position 500px with delayed start:
 		 * <pre>
-		 * $('#racingDiv1').animate({$left: '500px'}, 750, 0, null, 250); // waits 250ms, then needs 750ms
-		 * $('#racingDiv2').animate({$left: '500px'}, 900, 1);              // starts immediately, linear motion, then needs 900ms
-		 * $('#racingDiv3').animate({$left: '500px'}, 500, 0, null, 300); // waits 200ms, then needs 500ms
+		 * $('#racingDiv1').set({$left: '0px'}).animate({$left: '500px'}, 750, 0, null, 250); // waits 250ms, then needs 750ms
+		 * $('#racingDiv2').set({$left: '0px'}).animate({$left: '500px'}, 900, 1);            // starts immediately, linear motion, then needs 900ms
+		 * $('#racingDiv3').set({$left: '0px'}).animate({$left: '500px'}, 500, 0, null, 300); // waits 200ms, then needs 500ms
 		 * </pre>
 		 *
 		 * @param list a list of objects
