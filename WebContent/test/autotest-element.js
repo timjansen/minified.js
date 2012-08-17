@@ -107,7 +107,7 @@ window.miniTests.push.apply(window.miniTests, [
 			check($$('#container2').childNodes[3], s2, true);
 			check($$('#container2').childNodes[4], s4, true);
 			
-			$('#container2').removeChildren();
+			$('#container2').empty();
 			var t0 = MINI.elPrepend('#container2', 'span', "t0");
 			check($$('#container2').childNodes.length, 1);
 			check($$('#container2').childNodes[0], t0, true);

@@ -66,16 +66,16 @@ window.miniTests.push.apply(window.miniTests, [
 	},
 	
 	{
-		name: "MINI().removeChildren(none)",
+		name: "MINI().empty(none)",
 	 	exec: function() {
-			MINI("#container2").removeChildren();
+			MINI("#container2").empty();
 		}
 	},
 	{
-		name: "MINI().removeChildren()",
+		name: "MINI().empty()",
 	 	exec: function() {
 	 		MINI.elAppend('#container2', 'span', {id:'hello'}, 'hello');
-			var l = MINI("#container2").removeChildren().length;
+			var l = MINI("#container2").empty().length;
 			check(l, 1);
 			check(MINI('#hello').length, 0);
 			check(MINI('#container2').length, 1);

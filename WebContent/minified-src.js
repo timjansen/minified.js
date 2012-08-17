@@ -457,21 +457,21 @@ window['MINI'] = (function() {
 		};
 		
 		/**
-		 * @id listremovechildren
+		 * @id listempty
 		 * @module 1
 		 * @requires dollar listremove
 		 * @configurable yes
-		 * @name list.removeChildren()
-		 * @syntax removeChildren()
+		 * @name list.empty()
+		 * @syntax empty()
 		 * Removes all child nodes from the list's elements, but does not remove the list nodes themselves.
 		 *
  		 * @example Removes the content of the the element with the id 'myContainer', but not myContainer itself.
 		 * <pre>
-		 * $('#myContainer').removeChildren(); 
+		 * $('#myContainer').empty(); 
 		 * </pre>
 		 * @return the list
 		 */
-		list['removeChildren'] = function() {
+		list['empty'] = function() {
 			return eachlist(function(li) {
 				MINI(li.childNodes).remove();
 			});
@@ -1193,7 +1193,7 @@ window['MINI'] = (function() {
 		});
 		
 		if (children != null) // must check null, as 0 is a valid parameter
-			MINI(e).removeChildren();
+			MINI(e).empty();
 
 		(function appendChildren(c) {
 			if (isList(c))

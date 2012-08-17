@@ -76,7 +76,7 @@
 			if (!success || !test.async)
 				setSuccess(success, msg);
 			
-			$('#container2').removeChildren();
+			$('#container2').empty();
 			if (test.async)
 				window.setTimeout(function() {setSuccess(false, 'timeout, waited ' + test.async + 'ms')}, test.async);
 
