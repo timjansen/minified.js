@@ -17,8 +17,8 @@ window.miniTests.push.apply(window.miniTests, [
 	 	exec: function() {
 			var m = MINI("#a, #b, #c").filter();
 			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c")], true);
-			check(m.push);
-			check(m instanceof Array);
+			check(m.raw.push);
+			check(m.raw instanceof Array);
 		}
 	},
 	{

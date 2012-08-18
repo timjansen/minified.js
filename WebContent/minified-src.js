@@ -27,14 +27,29 @@ window['MINI'] = (function() {
 	var backslashB = '\\b';
 	var undef;
 
+	/**
+	 * @id ie8compatibility
+	 * @module 1
+	 * @configurable yes
+	 * @name Backward-Compatibility for IE8 and similar browsers
+	 */
+	var oldIE = (document.all && !document.addEventListener); // IE8 and older
+	function translateAttribute(name) {
+		return (oldIE && name == 'class') ? 'className' : name;
+	}
+	/**
+	 * @stop
+	 */
+	// @cond !ie8compatibility function translateAttribute(name) {return name; }
 	
 	/**
-	 * @id iecompatibility
+	 * @id ie6compatibility
+	 * @requires ie8compatibility
 	 * @module 1
 	 * @configurable yes
 	 * @name Backward-Compatibility for IE6/IE7 and similar browsers
 	 */
-
+	
 	/**
 	 * @id dollar
 	 * @module 1
@@ -134,7 +149,7 @@ window['MINI'] = (function() {
 	 *             as a whole, not be in document order anymore. The array returned has several convenience functions listed below:
 	 */
 	function MINI(selector, context) { 
-		return addElementListFuncs(dollarRaw(selector, context));
+		return new M(dollarRaw(selector, context));
 	}
 	
 	/**
@@ -259,7 +274,7 @@ window['MINI'] = (function() {
 		if (isList(selector))
 		    return filterElements(selector); 
 
-		// @condblock iecompatibility
+		// @condblock ie6compatibility
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1) {
 			each(subSelectors, function(ssi) {
 				each(dollarRaw(ssi, parent), function(aj) {
@@ -309,7 +324,7 @@ window['MINI'] = (function() {
 		return elements;
 		// @condend
 		
-		// @cond !iecompatibility return (parent || doc).querySelectorAll(mainSelector);
+		// @cond !ie6compatibility return (parent || doc).querySelectorAll(mainSelector);
 	};
 	
 	/**
@@ -321,10 +336,51 @@ window['MINI'] = (function() {
      * @requires addelementlistfuncend
      * @dependency yes
      */
-	function addElementListFuncs(list) {
+	function M(list) {
+		var self = this;
+		var len = self['length'] = list.length;
+		for (var i = 0; i < len; i++)
+			self[i] = list[i];
+
 		function eachlist(callback) {
-			return each(list, callback);
+			each(list, callback); // use list, as a real Array may be faster
+			return self;
 		};
+		
+		
+		/**
+		 * @id listraw
+		 * @module 1
+		 * @requires dollar
+		 * @configurable yes
+		 * @name list.raw
+		 * @syntax raw
+		 * Returns the creation object of this list, either an Array or a NodeList. 
+		 * This is mostly useful after calling filter(), as only then it is guaranteed to be an Array.
+		 * @example
+		 * <pre>
+		 * $($('.myElement').filter().raw.slice(1, 3)).addClass('secondOrThird'); 
+		 * </pre>
+		 */
+		self['raw'] = list;
+		
+		/**
+		 * @id listlength
+		 * @module 1
+		 * @requires dollar
+		 * @name list.length
+		 * @syntax length
+		 * Contains the number of elements in the list.
+		 * 
+		 * @example
+		 * <pre>
+		 * var list = $('input');
+		 * var myValues = {};
+		 * for (var i = 0; i < list.length; i++)
+		 *    myValues[list[i].name] = list[i].value;
+		 * </pre>
+		 */
+		// empty, always defined above
 		
         /**
          * @id each
@@ -345,7 +401,7 @@ window['MINI'] = (function() {
          * @param callback the callback function(item, index) to invoke.
          * @return the list
          */
-		list['each'] = eachlist;
+		self['each'] = eachlist;
 		
 		/**
 		 * @id filter
@@ -356,8 +412,8 @@ window['MINI'] = (function() {
 		 * @syntax filter(filterFunc)
 		 * Creates a new list that contains only those items approved by the given function. The function is called once for each item. 
 		 * If it returns true, the item is in the returned list, otherwise it will be removed.
-		 * This function also guarantees that the returned list is always based on an Array and thus can be used to convert a MINI()
-		 * list to array.
+		 * This function also guarantees that the returned list is always based on an Array and thus its raw property has access to all
+		 * Array functions.
 		 *
 		 * @example Creates a list of all unchecked checkboxes.
 		 * <pre>
@@ -369,7 +425,7 @@ window['MINI'] = (function() {
 		 * @example Converts a list to an Array-based list and uses the function Array.slice() to select only the second and third elements. Note that the Array returned by slice()
 		 *               is a new Array object and does not contain addClass(), so the new Array must be converted to a MINI list using $() first.
 		 * <pre>
-		 * $($('.myElement').filter().slice(1, 3)).addClass('secondOrThird'); 
+		 * $($('.myElement').filter().raw.slice(1, 3)).addClass('secondOrThird'); 
 		 * </pre>
 		 *
 		 * @param filterFunc optional the callback function(item, index) to invoke for each item with the item as first argument and the 0-based index as second argument.  
@@ -377,8 +433,8 @@ window['MINI'] = (function() {
 		 *        of the original.
 		 * @return the new list, always guaranteed to be based on Array and always a new instance
 		 */
-		list['filter'] = function(filterFunc) {
-		    return addElementListFuncs(filter(list, filterFunc));
+		self['filter'] = function(filterFunc) {
+		    return new M(filter(list, filterFunc));
 		};
 		
 		/** 
@@ -433,7 +489,7 @@ window['MINI'] = (function() {
          * @return the new list. If resultList has been omitted, the result is guaranteed to be based 
          * on Array and always a new instance 
          */ 
-         list['collect'] = function(collectFunc, resultList) { 
+		self['collect'] = function(collectFunc, resultList) { 
         	 return addElementListFuncs(collect(list, collectFunc, resultList)); 
          };
 		
@@ -451,8 +507,8 @@ window['MINI'] = (function() {
 		 * $('#myContainer').remove(); 
 		 * </pre>
 		 */
-		list['remove'] = function() {
-			for (var j = list.length-1; j >= 0; j--) // go backward - NodeList may shrink when elements are removed!
+         self['remove'] = function() {
+			for (var j = len-1; j >= 0; j--) // go backward - NodeList may shrink when elements are removed!
 				list[j].parentNode.removeChild(list[j]);
 		};
 		
@@ -471,7 +527,7 @@ window['MINI'] = (function() {
 		 * </pre>
 		 * @return the list
 		 */
-		list['empty'] = function() {
+		self['empty'] = function() {
 			return eachlist(function(li) {
 				MINI(li.childNodes).remove();
 			});
@@ -486,6 +542,7 @@ window['MINI'] = (function() {
 		 * @syntax MINI(selector).set(properties)
 		 * @syntax MINI(selector).set(name, value, defaultFunction)
 		 * @syntax MINI(selector).set(properties, undefined, defaultFunction)
+		 * @syntax MINI(selector).set(properties, undefined, defaultFunction, defaultPrefix)
 		 * Modifies the list's DOM elements or objects by setting their properties and/or attributes. set() has also special support for 
 		 * setting an element's CSS style. You can either supply a single name and value to set only one property, or you
 		 * can provide a map of properties to set.
@@ -544,35 +601,45 @@ window['MINI'] = (function() {
 		 * @param value the value to set. If it is a function, the function will be invoked for each list element to evaluate the value. 
 		 * The function is called with with the old value as first argument and the index in the list as second.
 		 * The third value is the function itself.
+		 * If value is null and name was prefixed with '@' or '$', then the value will not be set.
 		 * @param properties a map containing names as keys and the values to set as map values. See above for the syntax.
 		 * @param defaultFunction optional if set and no function is provided as value, this function will be invoked for each list element 
 		 *                                 and property to determine the value. The function is called with with the old value as first 
 		 *                                 argument and the index in the list as second. The third value is the new value specified
-		 *                                 in the set() call.    
+		 *                                 in the set() call.
+		 * @prefix optional if name does not already start with '@' or '$', this string will be prepended. This is mostly useful to turn a map of 
+		 *                  attributes or styles into a map of set()-compatible attribute or style changes. To do this, pass '$' or '@' here.
 		 * @return the list
 		 */
-		function set(name, value, defaultFunction) {
+		function set(name, value, defaultFunction, defaultPrefix) {
 			// @cond if (name == null) error("First argument must be set!");
 			if (value === undef) 
-				each(name, function(n,v) { set(n, v, defaultFunction); });
+				each(name, function(n,v) { set(n, v, defaultFunction, defaultPrefix); });
 			else {
 				// @cond if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
+				if (defaultPrefix && /^[^$@]/.test(name))
+					name = defaultPrefix + name;
+				var isPrefixed = /^[$@]/.test(name);
 				var components = getNameComponents(name), len = components.length-1;
 				var lastName = components[len].replace(/^@/, '');
 				var f = (typeof value == 'function') ? value : defaultFunction;
+				var isProperty = lastName == components[len];
 				eachlist( 
 					function(obj, c) {
 						for (var i = 0; i < len; i++)
 							obj = obj[components[i]];
-						if (lastName != components[len])
-							obj.setAttribute(lastName, f ? f(obj.getAttribute(lastName), c, value) : value);
-						else
-							obj[lastName] = f ? f(obj[lastName], c, value) : value;
+						var newValue =  f ? f(isProperty ? obj[lastName] : obj.getAttribute(translateAttribute(lastName)), c, value) : value;
+						if (newValue != null || !isPrefixed) {
+							if (isProperty)
+								obj[lastName] = newValue;
+							else
+								obj.setAttribute(translateAttribute(lastName), newValue);
+						}
 					});
 			}
-			return list;
+			return self;
 		};
-		list['set'] = set;
+		self['set'] = set;
 		
 		/**
 		 * @id append
@@ -598,7 +665,7 @@ window['MINI'] = (function() {
 		 *                    return value will not be appended, but will overwrite the existing value.
 		 * @param properties a map containing names as keys and the values to append as map values. See above for the syntax.
 		 */
-		list['append'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
+		self['append'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
 
 		/**
 		 * @id prepend
@@ -625,7 +692,7 @@ window['MINI'] = (function() {
 		 * @param properties a map containing names as keys and the values to prepend as map values. See above for the syntax.
 
 		 */
-		list['prepend'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return newValue + toString(oldValue);});};
+		self['prepend'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return newValue + toString(oldValue);});};
 
 		/**
 		 * @id listanimate
@@ -714,7 +781,7 @@ window['MINI'] = (function() {
 		 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
 		 * @return the list
 		 */
-		list['animate'] = function (properties, durationMs, linearity, callback, delayMs) {
+		self['animate'] = function (properties, durationMs, linearity, callback, delayMs) {
 			// @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
 			// @cond debug if (linearity < 0 || linearity > 1) error('Third parameter must be at least 0 and not larger than 1.');
 			// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
@@ -726,7 +793,7 @@ window['MINI'] = (function() {
 				return toString(originalValue).replace(/-?[\d.]+/, newNumber);
 			}
 			if (delayMs)
-				window.setTimeout(function(){list['animate'](properties, durationMs, linearity, callback);}, delayMs);
+				window.setTimeout(function(){self['animate'](properties, durationMs, linearity, callback);}, delayMs);
 			else {
 				durationMs = durationMs || 500;
 				linearity = linearity || 0;
@@ -789,7 +856,7 @@ window['MINI'] = (function() {
 						});
 					});
 				}
-				return list;		
+				return self;		
 			};
 
 		
@@ -850,7 +917,7 @@ window['MINI'] = (function() {
 			 *                is added to the handler in a property called 'MINI'.
 			 * @return the list
 			 */
-			list['on'] = function (name, handler) {
+			self['on'] = function (name, handler) {
 				// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 				// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 				return eachlist(function(el) {
@@ -908,7 +975,7 @@ window['MINI'] = (function() {
 		 *                on().
 	     * @return the list
 	     */
-		list['off'] = function (name, handler) {
+		self['off'] = function (name, handler) {
 			// @cond debug if (!name || !name.substr) error("No name given or name not a string.");
 			// @cond debug if (!handler || !handler['MINI']) error("No handler given or handler invalid.");
 			handler = handler['MINI'];
@@ -940,7 +1007,7 @@ window['MINI'] = (function() {
 		 * @param element the element whose coordinates should be determined
 		 * @return an object containing pixel coordinates in two properties 'left' and 'top'
 		 */
-		list['offset'] = function() {
+		self['offset'] = function() {
 			var elem = list[0];
 			var dest = {left: 0, top: 0};
 			while (elem) {
@@ -985,9 +1052,9 @@ window['MINI'] = (function() {
 		 * @param className the name to find 
 		 * @return the first element found with the class name, or undefined if not found
 		 */
-	    list['hasClass'] = function(className) {
+		self['hasClass'] = function(className) {
 	        var reg = createClassNameRegExp(className); 
-	        for (var i = 0; i < list.length; i++)
+	        for (var i = 0; i < len; i++)
 	        	if (reg.test(list[i].className||''))
 	           		return list[i];
 	        // fall through if no match!
@@ -1008,7 +1075,7 @@ window['MINI'] = (function() {
 	     * </pre>
 	     * @param className the name to remove
 	     */
-	    list['removeClass'] = function removeClass(className) {
+	    self['removeClass'] = function removeClass(className) {
 	        var reg = createClassNameRegExp(className);
 	        return eachlist(function(li) {
 	        	li.className = removeClassRegExp(li, reg);
@@ -1037,8 +1104,8 @@ window['MINI'] = (function() {
 	     * 
 	     * @param className the name to add
 	     */
-	    list['addClass'] = function(className) {
-	        list['removeClass'](className);
+	    self['addClass'] = function(className) {
+	        self['removeClass'](className);
 	        return eachlist(function(li) {
 	            if (li.className)
 	                li.className += ' ' + className;
@@ -1063,10 +1130,10 @@ window['MINI'] = (function() {
 	     * 
 	     * @param className the name to toggle
 	     */
-	    list['toggleClass'] = function(className) {
+	    self['toggleClass'] = function(className) {
 	        var reg = createClassNameRegExp(className);
 	        return eachlist(function(li) {
-			var cn = li.className;
+	        	var cn = li.className;
 	        	li.className = cn ? (reg.test(cn) ? removeClassRegExp(li, reg) : (cn + ' ' + className)) : className;
 	        });
 	    };
@@ -1074,7 +1141,6 @@ window['MINI'] = (function() {
 	     * @id addelementlistfuncend
 	     * @dependency yes
 	     */
-		return list;
 	}
 	
     /**
@@ -1111,7 +1177,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id el
 	 * @module 2
-	 * @requires dollardollar tostring
+	 * @requires dollardollar tostring set
 	 * @configurable yes
 	 * @name el()
 	 * @syntax MINI.el(name)
@@ -1134,11 +1200,11 @@ window['MINI'] = (function() {
 	 * </pre>
 	 * @example Creating a &lt;span> element with style, some text, and append it to the element with the id 'greetingsDiv':
 	 * <pre>
-	 * var mySpan = MINI.el('span', {style: 'font-size: 100%;'}, 'Hello World'); 
+	 * var mySpan = MINI.el('span', {title: 'Greetings'}, 'Hello World'); 
 	 * </pre>
 	 * creates this:
 	 * <pre>
-	 *  &lt;span style="font-size: 100%;">Hello World&lt;/span> 
+	 *  &lt;span title="Greetings">Hello World&lt;/span> 
 	 * </pre>
 	 * @example Creating a &lt;form> element with two text fields, labels and a submit button:
 	 * <pre>
@@ -1170,15 +1236,21 @@ window['MINI'] = (function() {
 	 * var myInput = MINI.el('input', {id: 'myCheckbox', type: 'checkbox', checked: shouldBeChecked() ? 'checked' : null});
 	 * </pre>
 	 * 
+	 * @example You can set styles directly using a $ prefix for the name:
+	 * <pre>
+	 * var myStylesSpan = MINI.el('span', {$color: "red", $fontWeight: "bold"}, "I'm styled");
+	 * </pre>
+	 * 
 	 * @example Modify an existing element by specifying it instead of the name. Attributes will be added,
 	 *          if children are specified the old ones will be replaced.
 	 * <pre>
-	 * MINI.el(myOldSpan, {style: "color: red"}, "The new text");
+	 * MINI.el(myOldSpan, {title:'Some text', $color: "red"}, "The new text");
 	 * </pre>
 	 * 
 	 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify 
 	 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
 	 *                   If the value is null, the attribute will not be created. 
+	 *                   You can also set styles here with a '$' prefix. Internally set() is being invoked to set attributes, just with '@' as default prefix.
 	 * @param children optional  an element or a list of elements as children to add. Strings will be converted as text nodes. Lists can be 
 	 *                         nested and will then automatically be flattened. Null elements in lists will be ignored.
 	 *                         If the element e already existed and the argument is set, they replace the existing children. 
@@ -1193,15 +1265,10 @@ window['MINI'] = (function() {
 			attributes = null;
 		}
 		var nu =  document.documentElement.namespaceURI; // to check whether doc is XHTML
-		e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e); 
-		
-		each(attributes, function(n, v) {
-			if (v!=null)
-				e.setAttribute(n, v);
-		});
+		var list = MINI(e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e)).set(attributes, undef, undef, '@');
 		
 		if (children != null) // must check null, as 0 is a valid parameter
-			MINI(e).empty();
+			list.empty();
 
 		(function appendChildren(c) {
 			if (isList(c))
@@ -1550,7 +1617,7 @@ window['MINI'] = (function() {
 	 * @id ucode
 	 * @dependency
      */
-    // @condblock iecompatibility
+    // @condblock ie6compatibility
 	var STRING_SUBSTITUTIONS = {    // table of character substitutions
             '\t': '\\t',
             '\r': '\\r',
@@ -1593,8 +1660,8 @@ window['MINI'] = (function() {
     * @param value the value (map-like object, array, string, number, date, boolean or null)
     * @return the JSON string
     */
-    // @condblock iecompatibility
-    MINI['toJSON'] = (JSON && JSON.stringify) || function toJSON(value) {
+    // @condblock ie6compatibility
+    MINI['toJSON'] = (window.JSON && JSON.stringify) || function toJSON(value) {
 		var ctor, type;
 		if (value && ((ctor = value.constructor) == String || ctor == Number || ctor == Boolean))
 			value = toString(value); 
@@ -1612,7 +1679,7 @@ window['MINI'] = (function() {
 		return '{' + collect(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
 	};
     // @condend
-    // @cond !iecompatibility MINI['toJSON'] = (JSON && JSON.stringify);
+    // @cond !ie6compatibility MINI['toJSON'] = (JSON && JSON.stringify);
     
 	/**
 	* @id parsejson
@@ -1633,8 +1700,8 @@ window['MINI'] = (function() {
 	* @param text the JSON string
 	* @return the resulting JavaScript object. Undefined if not valid.
 	*/
-    // @condblock iecompatibility
-    MINI['parseJSON'] = (JSON && JSON.parse) || function (text) {
+    // @condblock ie6compatibility
+    MINI['parseJSON'] = (window.JSON && JSON.parse) || function (text) {
     	text = toString(text).replace(/[\u0000\u00ad\u0600-\uffff]/g, ucode);
 
         if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
@@ -1646,7 +1713,7 @@ window['MINI'] = (function() {
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     };
     // @condend
-    // @cond !iecompatibility MINI['parseJSON'] = JSON && JSON.parse;
+    // @cond !ie6compatibility MINI['parseJSON'] = JSON && JSON.parse;
     /**
 	 * @stop
 	 */  

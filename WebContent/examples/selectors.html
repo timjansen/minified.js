@@ -13,10 +13,10 @@
 	<script type="text/javascript">
 
 	function change() {
-		$(EL('#selector').value).set('$background_color', EL('#color').value);
+		$($$('#selector').value).set('$background_color', $$('#color').value);
 	}
 	function randomize(select) {
-		select = EL(select);
+		select = $$(select);
 		select.selectedIndex = Math.floor(Math.random() * select.length);
 	}
 
@@ -33,14 +33,14 @@
 			if (timer == null)
 				timer = window.setInterval(animate, 1000);
 			$('#animateButton, #changeButton, select').set('disabled', true);
-			EL('#stopButton').disabled = false;
+			$$('#stopButton').disabled = false;
 		});
 		$('#stopButton').on('click', function() {
 			if (timer != null)
 				window.clearInterval(timer);
 			timer = null;
 			$('#animateButton, #changeButton, select').set('disabled', false);
-			EL('#stopButton').disabled = true;
+			$$('#stopButton').disabled = true;
 		});
 	});
 	</script>

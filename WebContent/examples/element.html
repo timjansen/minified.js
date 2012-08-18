@@ -10,18 +10,18 @@
 
 	MINI.ready(function() {
 		$('#changeButton').on('click', function() {
-			var boxStyle = EL('#boxSelect').value;
-			var textStyle = EL('#textSelect').value;
-			var text = EL('#text').value;
+			var boxStyle = $$('#boxSelect').value;
+			var textStyle = $$('#textSelect').value;
+			var text = $$('#text').value;
 			
 			var innerElem;
 			if (textStyle == 'none')
 				innerElem = MINI.text(text);
 			else if (textStyle == 'bold')
-				innerElem = MINI.element('b', null, text);
+				innerElem = MINI.el('b', null, text);
 			else // small
-				innerElem = MINI.element('span', {style: 'font-size: x-small;'}, text);
-			MINI.elementAdd('#container', 'div', {style: 'border: '+boxStyle+'; margin: 6px; padding: 3px;'}, innerElem);
+				innerElem = MINI.el('span', {style: 'font-size: x-small;'}, text);
+			MINI.elAppend('#container', 'div', {style: 'border: '+boxStyle+'; margin: 6px; padding: 3px;'}, innerElem);
 		});
 	});
 	</script>
