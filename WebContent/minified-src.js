@@ -32,6 +32,7 @@ window['MINI'] = (function() {
 	 * @module 1
 	 * @configurable yes
 	 * @name Backward-Compatibility for IE8 and similar browsers
+	 * Turning off IE8 compatibility gives you a slightly smaller library, but no improved functionality.
 	 */
 	var oldIE = (document.all && !document.addEventListener); // IE8 and older
 	function translateAttribute(name) {
@@ -41,13 +42,22 @@ window['MINI'] = (function() {
 	 * @stop
 	 */
 	// @cond !ie8compatibility function translateAttribute(name) {return name; }
-	
 	/**
-	 * @id ie6compatibility
+	 * @id ie7compatibility
 	 * @requires ie8compatibility
 	 * @module 1
 	 * @configurable yes
-	 * @name Backward-Compatibility for IE6/IE7 and similar browsers
+	 * @name Backward-Compatibility for IE7 and similar browsers
+	 * The difference between IE7 and IE8 compatibility that IE7 provide neither native selector support (querySelectorAll) and native JSON.
+	 * Disabling IE6 and IE7 will not only make Minified smaller, but give you full CSS selectors and complete JSON support. 
+	 */
+	/**
+	 * @id ie6compatibility
+	 * @requires ie7compatibility 
+	 * @module 1
+	 * @configurable yes
+	 * @name Backward-Compatibility for IE6 and similar browsers
+	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6.
 	 */
 	
 	/**
@@ -274,7 +284,7 @@ window['MINI'] = (function() {
 		if (isList(selector))
 		    return filterElements(selector); 
 
-		// @condblock ie6compatibility
+		// @condblock ie7compatibility
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1) {
 			each(subSelectors, function(ssi) {
 				each(dollarRaw(ssi, parent), function(aj) {
@@ -324,7 +334,7 @@ window['MINI'] = (function() {
 		return elements;
 		// @condend
 		
-		// @cond !ie6compatibility return (parent || doc).querySelectorAll(mainSelector);
+		// @cond !ie7compatibility return (parent || doc).querySelectorAll(mainSelector);
 	};
 	
 	/**
@@ -601,25 +611,20 @@ window['MINI'] = (function() {
 		 * @param value the value to set. If it is a function, the function will be invoked for each list element to evaluate the value. 
 		 * The function is called with with the old value as first argument and the index in the list as second.
 		 * The third value is the function itself.
-		 * If value is null and name was prefixed with '@' or '$', then the value will not be set.
+		 * If value is null and name specified an attribute, the value will be ignored.
 		 * @param properties a map containing names as keys and the values to set as map values. See above for the syntax.
 		 * @param defaultFunction optional if set and no function is provided as value, this function will be invoked for each list element 
 		 *                                 and property to determine the value. The function is called with with the old value as first 
 		 *                                 argument and the index in the list as second. The third value is the new value specified
 		 *                                 in the set() call.
-		 * @prefix optional if name does not already start with '@' or '$', this string will be prepended. This is mostly useful to turn a map of 
-		 *                  attributes or styles into a map of set()-compatible attribute or style changes. To do this, pass '$' or '@' here.
 		 * @return the list
 		 */
-		function set(name, value, defaultFunction, defaultPrefix) {
+		function set(name, value, defaultFunction) {
 			// @cond if (name == null) error("First argument must be set!");
 			if (value === undef) 
-				each(name, function(n,v) { set(n, v, defaultFunction, defaultPrefix); });
+				each(name, function(n,v) { set(n, v, defaultFunction); });
 			else {
 				// @cond if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
-				if (defaultPrefix && /^[^$@]/.test(name))
-					name = defaultPrefix + name;
-				var isPrefixed = /^[$@]/.test(name);
 				var components = getNameComponents(name), len = components.length-1;
 				var lastName = components[len].replace(/^@/, '');
 				var f = (typeof value == 'function') ? value : defaultFunction;
@@ -629,12 +634,10 @@ window['MINI'] = (function() {
 						for (var i = 0; i < len; i++)
 							obj = obj[components[i]];
 						var newValue =  f ? f(isProperty ? obj[lastName] : obj.getAttribute(translateAttribute(lastName)), c, value) : value;
-						if (newValue != null || !isPrefixed) {
-							if (isProperty)
-								obj[lastName] = newValue;
-							else
-								obj.setAttribute(translateAttribute(lastName), newValue);
-						}
+						if (isProperty)
+							obj[lastName] = newValue;
+						else if (newValue != null)
+							obj.setAttribute(translateAttribute(lastName), newValue);
 					});
 			}
 			return self;
@@ -1200,7 +1203,7 @@ window['MINI'] = (function() {
 	 * </pre>
 	 * @example Creating a &lt;span> element with style, some text, and append it to the element with the id 'greetingsDiv':
 	 * <pre>
-	 * var mySpan = MINI.el('span', {title: 'Greetings'}, 'Hello World'); 
+	 * var mySpan = MINI.el('span', {'@title'@: 'Greetings'}, 'Hello World'); 
 	 * </pre>
 	 * creates this:
 	 * <pre>
@@ -1208,14 +1211,14 @@ window['MINI'] = (function() {
 	 * </pre>
 	 * @example Creating a &lt;form> element with two text fields, labels and a submit button:
 	 * <pre>
-	 * var myForm = MINI.el('form', {method: 'post'}, [
-	 *     MINI.el('label', {'for': 'nameInput'}, 'Name:'),
-	 *     MINI.el('input', {id: 'nameInput', type: 'input'}),
+	 * var myForm = MINI.el('form', {'@method': 'post'}, [
+	 *     MINI.el('label', {'@for': 'nameInput'}, 'Name:'),
+	 *     MINI.el('input', {'@id': 'nameInput', '@type': 'input'}),
 	 *     MINI.el('br'),
-	 *     MINI.el('label', {'for': 'ageInput'}, 'Age:'),
-	 *     MINI.el('input', {id: 'ageInput', type: 'input'}),
+	 *     MINI.el('label', {'@for': 'ageInput'}, 'Age:'),
+	 *     MINI.el('input', {'@id': 'ageInput', '@type': 'input'}),
 	 *     MINI.el('br'),
-	 *     MINI.el('input', {type: 'submit, value: 'Join'})
+	 *     MINI.el('input', {'@type': 'submit, '@value': 'Join'})
 	 * ]); 
 	 * </pre>
 	 * results in (newlines and indentation added for readability):
@@ -1233,7 +1236,7 @@ window['MINI'] = (function() {
 	 * 
 	 * @example Null attributes often come handy when you don't always need a particular attribute:
 	 * <pre>
-	 * var myInput = MINI.el('input', {id: 'myCheckbox', type: 'checkbox', checked: shouldBeChecked() ? 'checked' : null});
+	 * var myInput = MINI.el('input', {'@id': 'myCheckbox', '@type': 'checkbox', '@checked': shouldBeChecked() ? 'checked' : null});
 	 * </pre>
 	 * 
 	 * @example You can set styles directly using a $ prefix for the name:
@@ -1244,13 +1247,13 @@ window['MINI'] = (function() {
 	 * @example Modify an existing element by specifying it instead of the name. Attributes will be added,
 	 *          if children are specified the old ones will be replaced.
 	 * <pre>
-	 * MINI.el(myOldSpan, {title:'Some text', $color: "red"}, "The new text");
+	 * MINI.el(myOldSpan, {'@title':'Some text', $color: "red"}, "The new text");
 	 * </pre>
 	 * 
 	 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify 
-	 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
-	 *                   If the value is null, the attribute will not be created. 
-	 *                   You can also set styles here with a '$' prefix. Internally set() is being invoked to set attributes, just with '@' as default prefix.
+	 * @param attributes optional an object which contains a map of attributes and other values. The syntax is exactly like set(): Attribute values are prefixed with '@',
+	 *                   CSS styles with '$' and regular properties can be set without prefix.
+	 *                   If the attribute value is null, the attribute will omitted (styles and properties can be set to null). 
 	 * @param children optional  an element or a list of elements as children to add. Strings will be converted as text nodes. Lists can be 
 	 *                         nested and will then automatically be flattened. Null elements in lists will be ignored.
 	 *                         If the element e already existed and the argument is set, they replace the existing children. 
@@ -1265,7 +1268,7 @@ window['MINI'] = (function() {
 			attributes = null;
 		}
 		var nu =  document.documentElement.namespaceURI; // to check whether doc is XHTML
-		var list = MINI(e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e)).set(attributes, undef, undef, '@');
+		var list = MINI(e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e)).set(attributes);
 		
 		if (children != null) // must check null, as 0 is a valid parameter
 			list.empty();
@@ -1555,8 +1558,10 @@ window['MINI'] = (function() {
 				ContentType = 'Content-Type',
 				callbackCalled = 0;
 		try {
-			xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
-			
+			//@condblock ie6compatibility
+			xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
+			//@condend
+			// @cond !ie6compatibility xhr = new XMLHttpRequest();
 			if (data != null) {
 				headers = headers || {};
 				if (!isString(data) && !data.nodeType) { // if data is parameter map...
@@ -1580,7 +1585,7 @@ window['MINI'] = (function() {
 			each(headers, function(hdrName, hdrValue) {
 				xhr.setRequestHeader(hdrName, hdrValue);
 			});
-			
+
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState == 4 && !callbackCalled++) {
 					if (xhr.status == 200) {
@@ -1617,7 +1622,7 @@ window['MINI'] = (function() {
 	 * @id ucode
 	 * @dependency
      */
-    // @condblock ie6compatibility
+    // @condblock ie7compatibility
 	var STRING_SUBSTITUTIONS = {    // table of character substitutions
             '\t': '\\t',
             '\r': '\\r',
@@ -1660,26 +1665,22 @@ window['MINI'] = (function() {
     * @param value the value (map-like object, array, string, number, date, boolean or null)
     * @return the JSON string
     */
-    // @condblock ie6compatibility
+    // @condblock ie7compatibility
     MINI['toJSON'] = (window.JSON && JSON.stringify) || function toJSON(value) {
-		var ctor, type;
-		if (value && ((ctor = value.constructor) == String || ctor == Number || ctor == Boolean))
-			value = toString(value); 
+		var ctor = value && value.constructor;
 
-		if (isString(type = typeof value)) 
+		if (isString(value) || ctor == String)
 			return '"' + value.replace(/[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
-
-		if (type == 'boolean' || type == 'number') // handle infinite numbers?
-			return toString(value);
-		if (!value)
-			return 'null';
-		
 		if (isList(value)) 
 			return '[' + collect(value, function(vi) { return toJSON(vi); }).join() + ']';
-		return '{' + collect(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
+		if (typeof value == 'object' && ctor != Number && ctor != Boolean)
+			return '{' + collect(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
+		if (value == null)
+			return 'null';
+		return toString(value);
 	};
     // @condend
-    // @cond !ie6compatibility MINI['toJSON'] = (JSON && JSON.stringify);
+    // @cond !ie7compatibility MINI['toJSON'] = (JSON && JSON.stringify);
     
 	/**
 	* @id parsejson
@@ -1700,7 +1701,7 @@ window['MINI'] = (function() {
 	* @param text the JSON string
 	* @return the resulting JavaScript object. Undefined if not valid.
 	*/
-    // @condblock ie6compatibility
+    // @condblock ie7compatibility
     MINI['parseJSON'] = (window.JSON && JSON.parse) || function (text) {
     	text = toString(text).replace(/[\u0000\u00ad\u0600-\uffff]/g, ucode);
 
@@ -1713,7 +1714,7 @@ window['MINI'] = (function() {
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     };
     // @condend
-    // @cond !ie6compatibility MINI['parseJSON'] = JSON && JSON.parse;
+    // @cond !ie7compatibility MINI['parseJSON'] = JSON && JSON.parse;
     /**
 	 * @stop
 	 */  

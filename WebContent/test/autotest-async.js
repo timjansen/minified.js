@@ -13,7 +13,7 @@ window.miniTests.push.apply(window.miniTests, [
 		name:'animate()',
 		async: 1000,
 		exec: function(setSuccess, playground) {
-			var s = MINI.elAppend(playground, 'span', {'title': '0', style: 'margin-top: 20px; background-color: #000;'});
+			var s = MINI.elAppend(playground, 'span', {'@title': 0, $marginTop: '20px', $backgroundColor: '#000'});
 			$(s).animate({'@title': 50, $marginTop: '2px', $backgroundColor: '#ff0'}, 300, 0, function() {
 				checkFunc(setSuccess, function() {
 					check(s.getAttribute('title'), 50);
@@ -31,7 +31,7 @@ window.miniTests.push.apply(window.miniTests, [
 		name:'MINI.request()',
 		async: 1000,
 		exec: function(setSuccess, playground) {
-			var s = MINI.request('get', 'test.txt', null, function(txt) {
+			var s = MINI.request('get', '/minified.js/test/test.txt', null, function(txt) {
 				checkFunc(setSuccess, function() {
 					check(txt.indexOf('Used for testing MINI.request.') > 0);
 				});

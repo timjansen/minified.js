@@ -60,7 +60,7 @@
 					playgroundDiv = null;
 				}
 				if (!testFinished) {
-					MINI.el(msgSpan, {'class': s ? 'resultOk' : 'resultFailed'}, s ? 'OK' : 'Failed (' + msg + ')');
+					MINI.el(msgSpan, {'@class': s ? 'resultOk' : 'resultFailed'}, s ? 'OK' : 'Failed (' + msg + ')');
 					testFinished = true;
 				}
 			}

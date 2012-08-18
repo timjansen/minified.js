@@ -59,7 +59,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name: "MINI().remove()",
 	 	exec: function() {
-	 		MINI.elAppend('#container2', 'span', {id:'hello'}, 'hello');
+	 		MINI.elAppend('#container2', 'span', {'@id':'hello'}, 'hello');
 			MINI("#hello").remove();
 			check(MINI('#hello').length, 0);
 		}
@@ -74,7 +74,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name: "MINI().empty()",
 	 	exec: function() {
-	 		MINI.elAppend('#container2', 'span', {id:'hello'}, 'hello');
+	 		MINI.elAppend('#container2', 'span', {'@id':'hello'}, 'hello');
 			var l = MINI("#container2").empty().length;
 			check(l, 1);
 			check(MINI('#hello').length, 0);
@@ -105,14 +105,14 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.style['ab'], 2);
 	 		}
 	 		
-	 		MINI.elAppend('#container2', 'span', {'id':'hello1', 'class':'hello'}, 'hello');
-	 		MINI.elAppend('#container2', 'span', {'id':'hello2', 'class':'hello'}, 'hello');
+	 		MINI.elAppend('#container2', 'span', {'@id':'hello1', '@class':'hello'}, 'hello');
+	 		MINI.elAppend('#container2', 'span', {'@id':'hello2', '@class':'hello'}, 'hello');
 	 		MINI('#container2 span').set('@class', 'hi').set('@title', 'hello element');
-	 		check(document.getElementById('hello1').getAttribute('class'), 'hi');
-	 		check(document.getElementById('hello2').getAttribute('class'), 'hi');
+	 		check(document.getElementById('hello1').getAttribute('class') == 'hi' || document.getElementById('hello1').getAttribute('className') == 'hi');
+	 		check(document.getElementById('hello2').getAttribute('class') == 'hi' || document.getElementById('hello2').getAttribute('className') == 'hi');
 	 		check(document.getElementById('hello1').getAttribute('title'), 'hello element');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'hello element');
-	 		MINI.elAppend('#hello2', 'b', {'id':'bello2'}, 'bello');
+	 		MINI.elAppend('#hello2', 'b', {'@id':'bello2'}, 'bello');
 	 		MINI('#bello2').set('parentNode.@title', 'huhu');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'huhu');
 	 		
@@ -144,11 +144,11 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.style['ab'], 2);
 	 		}
 	 		
-	 		MINI.elAppend('#container2', 'span', {'id':'hello1', 'class':'hello'}, 'hello');
-	 		MINI.elAppend('#container2', 'span', {'id':'hello2', 'class':'hello'}, 'hello');
+	 		MINI.elAppend('#container2', 'span', {'@id':'hello1', '@class':'hello'}, 'hello');
+	 		MINI.elAppend('#container2', 'span', {'@id':'hello2', '@class':'hello'}, 'hello');
 	 		MINI('#container2 span').set({'@class': 'hi', '@title': 'hello element'});
-	 		check(document.getElementById('hello1').getAttribute('class'), 'hi');
-	 		check(document.getElementById('hello2').getAttribute('class'), 'hi');
+	 		check(document.getElementById('hello1').getAttribute('class') == 'hi' || document.getElementById('hello1').getAttribute('className') == 'hi');
+	 		check(document.getElementById('hello2').getAttribute('class') == 'hi' || document.getElementById('hello2').getAttribute('className') == 'hi');
 	 		check(document.getElementById('hello1').getAttribute('title'), 'hello element');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'hello element');
 		}

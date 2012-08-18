@@ -18,10 +18,10 @@
 			if (textStyle == 'none')
 				innerElem = MINI.text(text);
 			else if (textStyle == 'bold')
-				innerElem = MINI.el('b', null, text);
+				innerElem = MINI.el('b', text);
 			else // small
-				innerElem = MINI.el('span', {style: 'font-size: x-small;'}, text);
-			MINI.elAppend('#container', 'div', {style: 'border: '+boxStyle+'; margin: 6px; padding: 3px;'}, innerElem);
+				innerElem = MINI.el('span', {$fontSize: 'x-small'}, text);
+			MINI.elAppend('#container', 'div', {$border: boxStyle, $margin, '6px', $padding: '3px;'}, innerElem);
 		});
 	});
 	</script>
