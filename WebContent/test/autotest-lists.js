@@ -274,26 +274,16 @@ window.miniTests.push.apply(window.miniTests, [
 	
 	{
 		name: "set() name check exception (debug)",
+		debugFailure: "set name check did not work.",
 		exec: function() {
-			if (MINI.debug) {
-				try {
-					MINI('#container2').set();
-					fail("set name check did not work.");
-				}
-				catch (e) {}
-			}
+			MINI('#container2').set();
 		}
 	},
 	{
 		name: "set() 2nd arg exception (debug)",
+		debugFailure: "2nd arg check did not work.",
 		exec: function() {
-			if (MINI.debug) {
-				try {
-					MINI('#container2').set({a:1}, "foobar");
-					fail("2nd arg check did not work.");
-				}
-				catch (e) {}
-			}
+			MINI('#container2').set({a:1}, "foobar");
 		}
 	}
 	

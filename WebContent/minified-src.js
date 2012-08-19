@@ -48,7 +48,7 @@ window['MINI'] = (function() {
 	 * @module 1
 	 * @configurable yes
 	 * @name Backward-Compatibility for IE7 and similar browsers
-	 * The difference between IE7 and IE8 compatibility that IE7 provide neither native selector support (querySelectorAll) and native JSON.
+	 * The difference between IE7 and IE8 compatibility that IE7 provides neither native selector support (querySelectorAll) nor native JSON.
 	 * Disabling IE6 and IE7 will not only make Minified smaller, but give you full CSS selectors and complete JSON support. 
 	 */
 	/**
@@ -57,7 +57,8 @@ window['MINI'] = (function() {
 	 * @module 1
 	 * @configurable yes
 	 * @name Backward-Compatibility for IE6 and similar browsers
-	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6.
+	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6 which makes the library a tiny 
+	 * little bit larger.
 	 */
 	
 	/**

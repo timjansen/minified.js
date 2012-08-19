@@ -48,7 +48,7 @@
 			var test = window.miniTests[testNum];
 			var msgSpan;
 			MINI.elAppend('#results', 'div', {}, [test.name + ': ', msgSpan = MINI.el('span', 'waiting..')]);
-
+			
 			var playgroundDiv;
 			if (test.async) // create playground div for async tests; they must not change anything else
 				playgroundDiv = MINI.elAppend('#playground', 'div');
@@ -65,21 +65,36 @@
 				}
 			}
 			
-			var success = true, msg;
-			try {
-				test.exec(setSuccess, playgroundDiv);
+			if (!test.debugFailure) {
+				var success = true, msg;
+				try {
+					test.exec(setSuccess, playgroundDiv);
+				}
+				catch (e) {
+					success = false;
+					msg = ""+e;
+				}
+				if (!success || !test.async)
+					setSuccess(success, msg);
+				
+				if (test.async)
+					window.setTimeout(function() {setSuccess(false, 'timeout, waited ' + test.async + 'ms')}, test.async);
 			}
-			catch (e) {
-				success = false;
-				msg = ""+e;
+			else if (MINI.debug) {
+				var success = false;
+				try {
+					test.exec(setSuccess, playgroundDiv);
+				}
+				catch (e) {
+					success = true;
+				}
+				if (!success)
+					setSuccess(success, test.debugFailure);
 			}
-			if (!success || !test.async)
-				setSuccess(success, msg);
+			else 
+				MINI.el(msgSpan, 'not executable');
 			
 			$('#container2').empty();
-			if (test.async)
-				window.setTimeout(function() {setSuccess(false, 'timeout, waited ' + test.async + 'ms')}, test.async);
-
 			if (++testNum < window.miniTests.length)
 				window.setTimeout(runTest, 1);
 		}

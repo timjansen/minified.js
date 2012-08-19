@@ -253,26 +253,16 @@ window.miniTests.push.apply(window.miniTests, [
 	
 	{
 		name: "MINI() whitespace exception (debug)",
+		debugFailure: "Whitespace check did not work.",
 		exec: function() {
-			if (MINI.debug) {
-				try {
-					MINI(' div.n');
-					fail("Whitespace check did not work.");
-				}
-				catch (e) {}
-			}
+			MINI(' div.n');
 		}
 	},
 	{
 		name: "MINI() pseudo class exception (debug)",
+		debugFailure: "pseudo check did not work.",
 		exec: function() {
-			if (MINI.debug) {
-				try {
-					MINI('a:visited');
-					fail("pseudo check did not work.");
-				}
-				catch (e) {}
-			}
+			MINI('a:visited');
 		}
 	}
 
