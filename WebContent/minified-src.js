@@ -1474,7 +1474,7 @@ window['MINI'] = (function() {
 			MINI['el'+name] = function(refNode, e, attributes, b) {
 				// @cond debug if (!refNode) error("A valid node is required as first argument.");
 				// @cond debug if (!e || (!e.substr || !e.nodeType))) error("A valid element name or node is required as second argument.");
-				func(e = el(e, attributes, b), b = $$(refNode), b.parentNode);
+				func(e = el(e, attributes, b), b = $$(refNode), b&&b.parentNode);
 				return e;
 			};
 		});
