@@ -26,7 +26,6 @@ window['$'] =
 window['MINI'] = (function() {
 	var backslashB = '\\b';
 	var undef;
-
 	/**
 	 * @id ie8compatibility
 	 * @module 1
@@ -34,14 +33,6 @@ window['MINI'] = (function() {
 	 * @name Backward-Compatibility for IE8 and similar browsers
 	 * Turning off IE8 compatibility gives you a slightly smaller library, but no improved functionality.
 	 */
-	var oldIE = (document.all && !document.addEventListener); // IE8 and older
-	function translateAttribute(name) {
-		return (oldIE && name == 'class') ? 'className' : name;
-	}
-	/**
-	 * @stop
-	 */
-	// @cond !ie8compatibility function translateAttribute(name) {return name; }
 	/**
 	 * @id ie7compatibility
 	 * @requires ie8compatibility
@@ -51,6 +42,16 @@ window['MINI'] = (function() {
 	 * The difference between IE7 and IE8 compatibility that IE7 provides neither native selector support (querySelectorAll) nor native JSON.
 	 * Disabling IE6 and IE7 will not only make Minified smaller, but give you full CSS selectors and complete JSON support. 
 	 */
+    // @condblock ucode
+	var STRING_SUBSTITUTIONS = {    // table of character substitutions
+            '\t': '\\t',
+            '\r': '\\r',
+            '\n': '\\n',
+            '"' : '\\"',
+            '\\': '\\\\'
+        };
+    // @condend
+
 	/**
 	 * @id ie6compatibility
 	 * @requires ie7compatibility 
@@ -621,24 +622,26 @@ window['MINI'] = (function() {
 		 * @return the list
 		 */
 		function set(name, value, defaultFunction) {
-			// @cond if (name == null) error("First argument must be set!");
+			// @cond debug if (name == null) error("First argument must be set!");
 			if (value === undef) 
 				each(name, function(n,v) { set(n, v, defaultFunction); });
 			else {
-				// @cond if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
+				// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 				var components = getNameComponents(name), len = components.length-1;
-				var lastName = components[len].replace(/^@/, '');
+				// @condblock ie8compatibility
+				var lastName = (document.all && !document.addEventListener && components[len] == '@class') ? 'className' : components[len].replace(/^@/, '');
+				// @condend
+				// @cond !ie8compatibility var lastName = components[len].replace(/^@/, '');
 				var f = (typeof value == 'function') ? value : defaultFunction;
-				var isProperty = lastName == components[len];
 				eachlist( 
 					function(obj, c) {
 						for (var i = 0; i < len; i++)
 							obj = obj[components[i]];
-						var newValue =  f ? f(isProperty ? obj[lastName] : obj.getAttribute(translateAttribute(lastName)), c, value) : value;
-						if (isProperty)
+						var newValue = f ? f(lastName == components[len] ? obj[lastName] : obj.getAttribute(lastName), c, value) : value;
+						if (lastName == components[len])
 							obj[lastName] = newValue;
-						else if (newValue != null)
-							obj.setAttribute(translateAttribute(lastName), newValue);
+						else if (newValue != null)  
+							obj.setAttribute(lastName, newValue);
 					});
 			}
 			return self;
@@ -925,13 +928,13 @@ window['MINI'] = (function() {
 				// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 				// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 				return eachlist(function(el) {
-					function newHandler(e) {
+					handler['MINI'] = handler['MINI'] || function(e) {
 						e = e || window.event;
-						var l = document.documentElement, b = document.body, which = e.which;
+						var l = document.documentElement, b = document.body;
 						// @cond debug try {
 						if (!handler.call(e.target, e, { 
-								keyCode: e.keyCode || which, // http://unixpapa.com/js/key.html
-								rightClick: which ? (which == 3) : (e.button == 2),
+								keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
+								rightClick: e.which ? (e.which == 3) : (e.button == 2),
 								pageX: l.scrollLeft + b.scrollLeft + e.clientX,
 								pageY: l.scrollTop + b.scrollTop + e.clientY,
 								wheelDir: (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1
@@ -945,14 +948,13 @@ window['MINI'] = (function() {
 						}
 						// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 					};
-					handler['MINI'] = handler['MINI'] || newHandler;
 					if (el.addEventListener)
-						el.addEventListener(name, newHandler, true); // W3C DOM
+						el.addEventListener(name, handler['MINI'], true); // W3C DOM
 					else 
-						el.attachEvent('on'+name, newHandler);  // IE < 9 version
+						el.attachEvent('on'+name, handler['MINI']);  // IE < 9 version
 				});
 			};
-		
+			
 		/**
 		 * @id listoff
 		 * @module 5
@@ -982,13 +984,12 @@ window['MINI'] = (function() {
 		self['off'] = function (name, handler) {
 			// @cond debug if (!name || !name.substr) error("No name given or name not a string.");
 			// @cond debug if (!handler || !handler['MINI']) error("No handler given or handler invalid.");
-			handler = handler['MINI'];
-	    	return eachlist(function(el) {
+		   	return eachlist(function(el) {
 				if (el.addEventListener)
-					el.removeEventListener(name, handler, true); // W3C DOM
+					el.removeEventListener(name, handler['MINI'], true); // W3C DOM
 				else 
-					el.detachEvent('on'+name, handler);  // IE < 9 version
-	    	});
+					el.detachEvent('on'+name, handler['MINI']);  // IE < 9 version
+		   	});
 		};
 		
 		/**
@@ -1624,13 +1625,6 @@ window['MINI'] = (function() {
 	 * @dependency
      */
     // @condblock ie7compatibility
-	var STRING_SUBSTITUTIONS = {    // table of character substitutions
-            '\t': '\\t',
-            '\r': '\\r',
-            '\n': '\\n',
-            '"' : '\\"',
-            '\\': '\\\\'
-        };
     function ucode(a) {
         return STRING_SUBSTITUTIONS[a] ||  ('\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4));
     }
@@ -1681,7 +1675,7 @@ window['MINI'] = (function() {
 		return toString(value);
 	};
     // @condend
-    // @cond !ie7compatibility MINI['toJSON'] = (JSON && JSON.stringify);
+    // @cond !ie7compatibility MINI['toJSON'] = (window.JSON && JSON.stringify);
     
 	/**
 	* @id parsejson
