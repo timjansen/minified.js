@@ -367,7 +367,7 @@ window['MINI'] = (function() {
 		 * @configurable yes
 		 * @name list.raw
 		 * @syntax raw
-		 * Returns the creation object of this list, either an Array or a NodeList. 
+		 * Returns the creation object of this list, either an Array, a NodeList or another MINI list. 
 		 * This is mostly useful after calling filter(), as only then it is guaranteed to be an Array.
 		 * @example
 		 * <pre>
