@@ -117,7 +117,7 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(document.getElementById('hello2').getAttribute('title'), 'huhu');
 	 		
 	 		var child;
-	 		var parent = MINI.el('div', {}, child = MINI.el('div'));
+	 		var parent = MINI.el('div', {}, child = MINI.el('div'))[0];
 	 		MINI(child).set('parentNode.@title', 'test');
 	 		check(parent.getAttribute('title'), 'test');
 		}

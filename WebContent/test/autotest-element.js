@@ -2,13 +2,17 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI.el() / simple',
 		exec: function() {
-			var s = MINI.el('span');
+			var sl = MINI.el('span');
+			check(sl.length, 1);
+			var s = sl[0];
 			check(s.nodeType, 1);
 			check(/^span$/i.test(s.tagName));
 			check(s.childNodes.length, 0);
 			check(s.parentElement, null);
 			
-			var s2 = MINI.elAppend(document.getElementById('container2'), 'span', {'@title': 'mytitle'});
+			var sl2 = MINI.elAppend(document.getElementById('container2'), 'span', {'@title': 'mytitle'});
+			check(sl2.length, 1);
+			var s2 = sl2[0];
 			check(s2.nodeType, 1);
 			check(/^span$/i.test(s2.tagName));
 			check(s2.getAttribute('title'), 'mytitle');
@@ -19,7 +23,9 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI.el() / full',
 		exec: function() {
-			var s3 = MINI.elAppend('#container2', 'div', {'@title': '5', '@class': 'a b', $marginTop: '2px'}, 'hello');
+			var sl3 = MINI.elAppend('#container2', 'div', {'@title': '5', '@class': 'a b', $marginTop: '2px'}, 'hello');
+			check(sl3.length, 1);
+			var s3 = sl3[0];
 			check(s3.nodeType, 1);
 			check(/^div$/i.test(s3.tagName));
 			check(s3.getAttribute('title'), '5');
@@ -36,7 +42,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI.el() / complex',
 		exec: function() {
-			var s4 = MINI.elAppend('#container2', 'div', ['hello' , MINI.el('b', null, 'user'), '!']);
+			var sl4 = MINI.elAppend('#container2', 'div', ['hello' , MINI.el('b', null, 'user'), '!']);
+			var s4 = sl4[0];
 			check(s4.nodeType, 1);
 			check(/^div$/i.test(s4.tagName));
 			check(s4.parentNode, document.getElementById('container2'), true);
@@ -63,8 +70,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI.el() / existing',
 		exec: function() {
-			var u0 = MINI.el('div', {'@title': 'foo'}, 'text');
-			var u = MINI.el(u0, {'@title':'bar'}, 'othertext');
+			var ul0 = MINI.el('div', {'@title': 'foo'}, 'text');
+			var u = MINI.el(ul0, {'@title':'bar'}, 'othertext')[0];
 			check(u.childNodes.length, 1);
 			check(u.childNodes[0].nodeType, 3);
 			check(u.childNodes[0].data, 'othertext');
@@ -74,24 +81,24 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI.el / adding',
 		exec: function() {
-			var s = MINI.elAppend('#container2', 'span');
+			var s = MINI.elAppend('#container2', 'span')[0];
 			check(s.parentNode, $$('#container2'), true);
 			check($$('#container2').childNodes.length, 1);
 			
-			var s2 = MINI.elAppend('#container2', 'span');
+			var s2 = MINI.elAppend('#container2', 'span')[0];
 			check(s2.parentNode, $$('#container2', true));
 			check($$('#container2').childNodes.length, 2);
 			check($$('#container2').childNodes[0], s, true);
 			check($$('#container2').childNodes[1], s2, true);
 			
-			var s3 = MINI.elAfter(s, 'span');
+			var s3 = MINI.elAfter(s, 'span')[0];
 			check(s3.parentNode, $$('#container2', true));
 			check($$('#container2').childNodes.length, 3);
 			check($$('#container2').childNodes[0], s, true);
 			check($$('#container2').childNodes[1], s3, true);
 			check($$('#container2').childNodes[2], s2, true);
 			
-			var s4 = MINI.elAfter(s2, 'span');
+			var s4 = MINI.elAfter(s2, 'span')[0];
 			check(s4.parentNode, $$('#container2', true));
 			check($$('#container2').childNodes.length, 4);
 			check($$('#container2').childNodes[0], s, true);
@@ -99,7 +106,7 @@ window.miniTests.push.apply(window.miniTests, [
 			check($$('#container2').childNodes[2], s2, true);
 			check($$('#container2').childNodes[3], s4, true);
 			
-			var s1 = MINI.elReplace(s3, 'span');
+			var s1 = MINI.elReplace(s3, 'span')[0];
 			check(s1.parentNode, $$('#container2', true));
 			check($$('#container2').childNodes.length, 4);
 			check($$('#container2').childNodes[0], s, true);
@@ -107,7 +114,7 @@ window.miniTests.push.apply(window.miniTests, [
 			check($$('#container2').childNodes[2], s2, true);
 			check($$('#container2').childNodes[3], s4, true);
 			
-			var s0 = MINI.elBefore(s, 'span');
+			var s0 = MINI.elBefore(s, 'span')[0];
 			check(s0.parentNode, $$('#container2', true));
 			check($$('#container2').childNodes.length, 5);
 			check($$('#container2').childNodes[0], s0, true);
@@ -117,10 +124,10 @@ window.miniTests.push.apply(window.miniTests, [
 			check($$('#container2').childNodes[4], s4, true);
 			
 			$('#container2').empty();
-			var t0 = MINI.elPrepend('#container2', 'span', "t0");
+			var t0 = MINI.elPrepend('#container2', 'span', "t0")[0];
 			check($$('#container2').childNodes.length, 1);
 			check($$('#container2').childNodes[0], t0, true);
-			var t1 = MINI.elPrepend('#container2', 'div', "t1");
+			var t1 = MINI.elPrepend('#container2', 'div', "t1")[0];
 			check($$('#container2').childNodes.length, 2);
 			check($$('#container2').childNodes[0], t1, true);
 			check($$('#container2').childNodes[1], t0, true);

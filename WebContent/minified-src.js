@@ -1211,6 +1211,13 @@ window['MINI'] = (function() {
 	 * <pre>
 	 *  &lt;span title="Greetings">Hello World&lt;/span> 
 	 * </pre>
+	 * 
+	 * @example The function always returns a MINI list with a single element. You can directly use it, for example,
+	 *          to add an event handler.
+	 * <pre>
+	 * var myDiv = MINI.el('div', {}, 'Hello World');
+	 * myDiv.on('click', function() { window.alert('Clicked!'); }); 
+	 * </pre>
 	 * @example Creating a &lt;form> element with two text fields, labels and a submit button:
 	 * <pre>
 	 * var myForm = MINI.el('form', {'@method': 'post'}, [
@@ -1252,7 +1259,7 @@ window['MINI'] = (function() {
 	 * MINI.el(myOldSpan, {'@title':'Some text', $color: "red"}, "The new text");
 	 * </pre>
 	 * 
-	 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify 
+	 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify. If it is a list, the first first element will be taken 
 	 * @param attributes optional an object which contains a map of attributes and other values. The syntax is exactly like set(): Attribute values are prefixed with '@',
 	 *                   CSS styles with '$' and regular properties can be set without prefix.
 	 *                   If the attribute value is null, the attribute will omitted (styles and properties can be set to null). 
@@ -1260,15 +1267,17 @@ window['MINI'] = (function() {
 	 *                         nested and will then automatically be flattened. Null elements in lists will be ignored.
 	 *                         If the element e already existed and the argument is set, they replace the existing children. 
 	 *                         If the argument is not set, the original children will not be changed.
-	 * @return the DOM HTMLElement that has been created or modified
+	 * @return a list containing the DOM HTMLElement that has been created or modified as only element
 	 */
 	function el(e, attributes, children) {
 		// @cond debug if (!e) error("el() requires the element name or an element as first argument.");
+		// @cond debug if (isList(e) && e.length == 0) error("el() requires a non-empty list as first element.");
 		// @cond debug if (!e.nodeType && /:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
 		if (isString(attributes) || isList(attributes) || (attributes && attributes.nodeType)) {
 			children = attributes;
 			attributes = null;
 		}
+		if (isList(e)) e = e[0];
 		var nu =  document.documentElement.namespaceURI; // to check whether doc is XHTML
 		var list = MINI(e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e)).set(attributes);
 		
@@ -1282,7 +1291,7 @@ window['MINI'] = (function() {
 				e.appendChild(c.nodeType ? c : document.createTextNode(c)); 
 		})(children);
 		
-		return e;
+		return list;
 	};
 	MINI['el'] = el;
 	
@@ -1307,7 +1316,7 @@ window['MINI'] = (function() {
 		 * 
 		 * @example Create a new div, append it to the body element:
 		 * <pre>
-		 * MINI.elAppend("html", "div", {"class": "popup"}, "This is my popup.");
+		 * MINI.elAppend("html", "div", {"@class": "popup"}, "This is my popup.");
 		 * </pre>
 		 * 
 		 * @example Create a new div with a list of children, append it to the element "textDiv":
@@ -1317,13 +1326,14 @@ window['MINI'] = (function() {
 		 * 
 		 * @param parent the parent to add the child to. Any syntax allowed for $$ can be used here. You may specify an element, a selector or element list.
 		 *               If the selector returns several matches, the first will be used.              
-		 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify 
+		 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify. If it is a list, the first first element will be taken 
 		 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
 		 *                   If the value is null, the attribute will not be created. 
 		 * @param children optional  an element or a list of elements as children to add. Strings will be converted as text nodes. Lists can be 
 		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored.
 		 *                         If the element e already existed and the argument is set, they replace the existing children. 
 		 *                         If the argument is not set, the original children will not be changed.
+		 * @return a list containing the DOM HTMLElement that has been appended as only element
 		 */
 		Append: function (e, parent) {
 			parent.appendChild(e);
@@ -1345,18 +1355,19 @@ window['MINI'] = (function() {
 		 * 
 		 * @example Create a new paragraph, append it after the "myElement" element:
 		 * <pre>
-		 * MINI.elAppend("#myElement", "p", {"class": "myPara"}, "This is my new paragraph.");
+		 * MINI.elAppend("#myElement", "p", {"@class": "myPara"}, "This is my new paragraph.");
 		 * </pre>
 		 * 
 		 * @param refNode the sibling in fron of the new element. Any syntax allowed for $$ can be used here. You may specify an element, a selector or element list.
 		 *               If the selector returns several matches, the first will be used.              
-		 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify 
+		 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify. If it is a list, the first first element will be taken 
 		 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
 		 *                   If the value is null, the attribute will not be created. 
 		 * @param children optional  an element or a list of elements as children to add. Strings will be converted as text nodes. Lists can be 
 		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored.
 		 *                         If the element e already existed and the argument is set, they replace the existing children. 
 		 *                         If the argument is not set, the original children will not be changed.
+		 * @return a list containing the DOM HTMLElement that has been added as only element
 		 */
 		After: function (e, refNode, parentNode) {
 			if (refNode = refNode.nextSibling)
@@ -1381,18 +1392,19 @@ window['MINI'] = (function() {
 		 * 
 		 * @example Create a new paragraph, put it in front of the "myElement" element:
 		 * <pre>
-		 * MINI.elBefore("#myElement", "p", {"class": "myPara"}, "This is my new paragraph.");
+		 * MINI.elBefore("#myElement", "p", {"@class": "myPara"}, "This is my new paragraph.");
 		 * </pre>
 		 * 
 		 * @param refNode the sibling behind of the new element. Any syntax allowed for $$ can be used here. You may specify an element, a selector or element list.
 		 *               If the selector returns several matches, the first will be used.              
-		 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify 
+		 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify. If it is a list, the first first element will be taken 
 		 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
 		 *                   If the value is null, the attribute will not be created. 
 		 * @param children optional  an element or a list of elements as children to add. Strings will be converted as text nodes. Lists can be 
 		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored.
 		 *                         If the element e already existed and the argument is set, they replace the existing children. 
 		 *                         If the argument is not set, the original children will not be changed.
+		 * @return a list containing the DOM HTMLElement that has been added as only element
 		 */
 		Before: function (e, refNode, parentNode) {
 			parentNode.insertBefore(e, refNode);
@@ -1414,18 +1426,19 @@ window['MINI'] = (function() {
 		 * 
 		 * @example Create a new paragraph and add it as the first child of the element with id "myElement":
 		 * <pre>
-		 * MINI.elPrepend("#myElement", "p", {"class": "myPara"}, "This is my new paragraph.");
+		 * MINI.elPrepend("#myElement", "p", {"@class": "myPara"}, "This is my new paragraph.");
 		 * </pre>
 		 * 
 		 * @param parent the parent node to add the element to. Any syntax allowed for $$ can be used here. You may specify an element, a selector or element list.
 		 *               If the selector returns several matches, the first will be used.              
-		 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify 
+		 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify. If it is a list, the first first element will be taken 
 		 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
 		 *                   If the value is null, the attribute will not be created. 
 		 * @param children optional  an element or a list of elements as children to add. Strings will be converted as text nodes. Lists can be 
 		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored.
 		 *                         If the element e already existed and the argument is set, they replace the existing children. 
 		 *                         If the argument is not set, the original children will not be changed.
+		 * @return a list containing the DOM HTMLElement that has been added as only element
 		 */
 		Prepend: function (e, parent, n) {
 			if (n = parent.firstChild)
@@ -1450,18 +1463,19 @@ window['MINI'] = (function() {
 		 * 
 		 * @example Create a new paragraph to replace the "myElement" element:
 		 * <pre>
-		 * MINI.elReplace("#myElement", "p", {"class": "myPara"}, "This is my new paragraph.");
+		 * MINI.elReplace("#myElement", "p", {"@class": "myPara"}, "This is my new paragraph.");
 		 * </pre>
 		 * 
 		 * @param oldNode the node to replace. Any syntax allowed for $$ can be used. You may specify an element, a selector or element list.
 		 *               If the selector returns several matches, the first will be used.              
-		 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify 
+		 * @param e the element name to create (e.g. 'div') or an existing HTML element to modify. If it is a list, the first first element will be taken 
 		 * @param attributes optional a map of attributes. The name is the attribute name, the value the attribute value. E.g. name is 'href' and value is 'http://www.google.com'.
 		 *                   If the value is null, the attribute will not be created. 
 		 * @param children optional  an element or a list of elements as children to add. Strings will be converted as text nodes. Lists can be 
 		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored.
 		 *                         If the element e already existed and the argument is set, they replace the existing children. 
 		 *                         If the argument is not set, the original children will not be changed.
+		 * @return a list containing the DOM HTMLElement that has been added as only element
 		 */
 		Replace: function (e, oldNode, parentNode) {
 			parentNode.replaceChild(e, oldNode);
@@ -1474,8 +1488,8 @@ window['MINI'] = (function() {
 			MINI['el'+name] = function(refNode, e, attributes, b) {
 				// @cond debug if (!refNode) error("A valid node is required as first argument.");
 				// @cond debug if (!e || (!e.substr || !e.nodeType))) error("A valid element name or node is required as second argument.");
-				func(e = el(e, attributes, b), b = $$(refNode), b&&b.parentNode);
-				return e;
+				func((e = el(e, attributes, b))[0], b = $$(refNode), b&&b.parentNode);
+				return MINI(e);
 			};
 		});
 		// @condend

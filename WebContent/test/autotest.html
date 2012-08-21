@@ -51,7 +51,7 @@
 			
 			var playgroundDiv;
 			if (test.async) // create playground div for async tests; they must not change anything else
-				playgroundDiv = MINI.elAppend('#playground', 'div');
+				playgroundDiv = MINI.elAppend('#playground', 'div')[0];
 
 			var testFinished = false;
 			function setSuccess(s, msg) {
