@@ -28,7 +28,7 @@ window.miniTests.push.apply(window.miniTests, [
 			var expect, error;
 			var s = MINI.elAppend(p, 'div', {$width: '30px', $height: '10px'})[0];
 			var s2 = MINI.elAppend(p, 'div', {$width: '30px', $height: '10px'})[0];
-			('div', p).on('click', handler = function(e, xe) {
+			$('div', p).on('click', handler = function(e, xe) {
 				callNum++;
 				if (this != expect)
 					error = 'Did not get called on expected event';
@@ -56,7 +56,7 @@ window.miniTests.push.apply(window.miniTests, [
 			var expect = null, error = null;
 			var s = MINI.elAppend(p, 'div', {$width: '30px', $height: '10px'})[0];
 			var s2 = MINI.elAppend(p, 'div', {$width: '30px', $height: '10px'})[0];
-			('div', p).on('click', handler = function(e, xe) {
+			$('div', p).on('click', handler = function(e, xe) {
 				callNum++;
 				if (this != expect)
 					error = 'Did not get called on expected event';
