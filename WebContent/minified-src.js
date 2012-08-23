@@ -738,7 +738,7 @@ window['MINI'] = (function() {
 		 * to several nodes, you need to pass a callback function(element, index) as children. It will be invoked for each element to return the new content of the element.
 		 * The callback may return either a string for a text node, a simple HTML element or a list containing both. 
 		 *
-		 * Call this without arguments to just remove all children from a node.
+		 * Call fill() without arguments to remove all children from a node.
 		 *
 		 * @param text a text to set as text node of the list elements
 		 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
@@ -762,7 +762,7 @@ window['MINI'] = (function() {
 			return addGeneric(children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
 		};
 		self['replace'] = function (children) {
-			return addGeneric(children, function(newNode, refNode) { refNode.parentNode.replaceNode(newNode, refNode); });
+			return addGeneric(children, function(newNode, refNode) { refNode.parentNode.replaceChild(newNode, refNode); });
 		};
 
 		
