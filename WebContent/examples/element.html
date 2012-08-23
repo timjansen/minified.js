@@ -21,7 +21,7 @@
 				innerElem = MINI.el('b', text);
 			else // small
 				innerElem = MINI.el('span', {$fontSize: 'x-small'}, text);
-			MINI.elAppend('#container', 'div', {$border: boxStyle, $margin, '6px', $padding: '3px;'}, innerElem);
+			$(#container').add(EE('div', {$border: boxStyle, $margin, '6px', $padding: '3px;'}, innerElem));
 		});
 	});
 	</script>

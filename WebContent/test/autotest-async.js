@@ -13,7 +13,8 @@ window.miniTests.push.apply(window.miniTests, [
 		name:'animate()',
 		async: 1000,
 		exec: function(setSuccess, playground) {
-			var s = MINI.elAppend(playground, 'span', {'@title': 0, $marginTop: '20px', $backgroundColor: '#000'})[0];
+			var s;
+			$(playground).add(s = MINI.el('span', {'@title': 0, $marginTop: '20px', $backgroundColor: '#000'})[0]);
 			$(s).animate({'@title': 50, $marginTop: '2px', $backgroundColor: '#ff0'}, 300, 0, function() {
 				checkFunc(setSuccess, function() {
 					check(s.getAttribute('title'), 50);

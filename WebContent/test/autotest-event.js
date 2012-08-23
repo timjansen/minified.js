@@ -26,8 +26,9 @@ window.miniTests.push.apply(window.miniTests, [
 			var handler;
 			var callNum = 0;
 			var expect, error;
-			var s = MINI.elAppend(p, 'div', {$width: '30px', $height: '10px'})[0];
-			var s2 = MINI.elAppend(p, 'div', {$width: '30px', $height: '10px'})[0];
+			var s, s2;
+			p.add(s = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
+			p.add(s2 = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
 			$('div', p).on('click', handler = function(e, xe) {
 				callNum++;
 				if (this != expect)
@@ -54,8 +55,9 @@ window.miniTests.push.apply(window.miniTests, [
 			var handler;
 			var callNum = 0;
 			var expect = null, error = null;
-			var s = MINI.elAppend(p, 'div', {$width: '30px', $height: '10px'})[0];
-			var s2 = MINI.elAppend(p, 'div', {$width: '30px', $height: '10px'})[0];
+			var s, s2;
+			p.add(s = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
+			p.add(s2 = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
 			$('div', p).on('click', handler = function(e, xe) {
 				callNum++;
 				if (this != expect)

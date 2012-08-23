@@ -61,10 +61,10 @@ function setUpConfigurationUI(s) {
 	$('#compile').on('click', compileClicked);
 	
 	for (var i = 1; i < MODULES.length; i++) {
-		var moduleCheckBox, div = MINI.elAppend('#sectionCheckboxes', 'div', {'@id': 'divMod-'+i}, MINI.el('div', {'@class': 'moduleDescriptor'}, [
+		var moduleCheckBox, div = $('#sectionCheckboxes').add(MINI.el('div', {'@id': 'divMod-'+i}, MINI.el('div', {'@class': 'moduleDescriptor'}, [
 			moduleCheckBox = MINI.el('input', {'@id': 'mod-'+i, '@class': 'modCheck', '@type':'checkbox', checked: 'checked'}),
 			MINI.el('label', {'@for': 'mod-'+i}, MODULES[i])     
-		]));
+		])));
 		
 		$(moduleCheckBox).on('change', function() {
 			var b = this.checked;
@@ -111,11 +111,11 @@ function setUpConfigurationUI(s) {
 			var requiredBy = createList('Required by ', sec.requiredBy);
 			var requires = createList('Requires ', sec.requires);
 		
-			MINI.elAppend(div, 'div', {'class': 'sectionDescriptor'}, [
+			div.add(MINI.el('div', {'class': 'sectionDescriptor'}, [
 				sectionCheckBox = MINI.el('input', {'@class': 'secCheck', '@type': 'checkbox', '@id': 'sec-'+sec.id, checked: sec.configurable=='yes' ? 'checked' : null}),
 				MINI.el('label', {'@for': 'sec-'+sec.id}, sec.name || sec.id),
 				MINI.el('div', {'@class': 'requirements'}, [requiredBy ? [requiredBy, MINI.el('br')] : null , requires])
-			]);
+			]));
 			
 			$(sectionCheckBox).on('change', function() {
 				fulfillSectionDependencies(this);

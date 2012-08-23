@@ -2,23 +2,24 @@ window.miniTests.push.apply(window.miniTests, [
    	{
 		name:'hasClass()',
 		exec: function() {
-			var s1 = MINI.elAppend('#container2', 'div', {'@class': 'a b c d e'})[0];
-			MINI.el('div', {'@class': ''}, [], '#container2');
-			var s3 = MINI.elAppend('#container2', 'div', {'@class': 'a d f'}, [])[0];
+			var s1, s3;
+			$('#container2').add(s1 = MINI.el('div', {'@class': 'a b c d e'}))
+					.add(MINI.el('div', {'@class': ''}, []))
+					.add(s3 = MINI.el('div', {'@class': 'a d f'}, []));
 			var m = MINI('#container2 div');
-			check(m.hasClass('a'), s1, true);
-			check(m.hasClass('b'), s1, true);
-			check(m.hasClass('c'), s1, true);
-			check(m.hasClass('d'), s1, true);
-			check(m.hasClass('e'), s1, true);
-			check(m.hasClass('f'), s3, true);
+			check(m.hasClass('a'), s1[0], true);
+			check(m.hasClass('b'), s1[0], true);
+			check(m.hasClass('c'), s1[0], true);
+			check(m.hasClass('d'), s1[0], true);
+			check(m.hasClass('e'), s1[0], true);
+			check(m.hasClass('f'), s3[0], true);
 			check(!m.hasClass('x'));
 		}
 	},
 	{
 		name:'removeClass()',
 		exec: function() {
-			var s1 = MINI.elAppend('#container2', 'div', {'@class': 'a b c d e'})[0];
+			var s1 = MINI.el('div', {'@class': 'a b c d e'})[0];
 			var m = MINI(s1);
 			m.removeClass('x');
 			check(s1.className, 'a b c d e');
@@ -39,8 +40,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'addClass()',
 		exec: function() {
-			var s1 = MINI.elAppend('#container2', 'div')[0];
-			var s2 = MINI.elAppend('#container2', 'div', {'@class':''})[0];
+			var s1 = MINI.el('div')[0];
+			var s2 = MINI.el('div', {'@class':''})[0];
 			var m = MINI([s1, s2]);
 			m.addClass('a');
 			check(s1.className, 'a');
@@ -65,9 +66,9 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'toggleClass()',
 		exec: function() {
-			var s1 = MINI.elAppend('#container2', 'div', {'@class': 'a b c'})[0];
-			var s2 = MINI.elAppend('#container2', 'div')[0];
-			var m = MINI('#container2 div');
+			var s1 = MINI.el('div', {'@class': 'a b c'})[0];
+			var s2 = MINI.el('div')[0];
+			var m = MINI([s1, s2]);
 			m.toggleClass('a');
 			check(s1.className, 'b c');
 			check(s2.className, 'a');
