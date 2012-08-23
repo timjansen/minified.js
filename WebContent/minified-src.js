@@ -702,8 +702,7 @@ window['MINI'] = (function() {
 		 *              an HTML element or a list containing strings and/or HTML elements.
 		 * @return the current list
 		 */
-		function addGeneric(children, addFunction) {
-			addFunction = addFunction || function (newNode, refNode) { refNode.appendChild(newNode);};
+		var addGeneric = self['add'] = function (children, addFunction) {
 			return eachlist(function(e, index) {
 				var lastAdded;
 				function appendChildren(c) {
@@ -713,15 +712,16 @@ window['MINI'] = (function() {
 						var n = c.nodeType ? c : document.createTextNode(c);
 						if (lastAdded)
 							lastAdded.parentNode.insertBefore(n, lastAdded.nextSibling);
-						else
+						else if (addFunction)
 							addFunction(n, e); 
+						else
+							e.appendChild(n);
 						lastAdded = n;
 					}
-				};
+				}
 				appendChildren(typeof children == 'function' ? children(e, index) : (isString(children) || children != null && children.isNaN || !index ? children : null));
 			});
-		}
-		self['add'] = addGeneric;
+		};
 		
 		/**
 		 * @id listfill
@@ -751,6 +751,7 @@ window['MINI'] = (function() {
 			eachlist(function(e) { MINI(e.childNodes).remove(); });
 			return addGeneric(children);
 		};
+
 		self['addBefore'] = function (children) {
 			return addGeneric(children, function(newNode, refNode) { refNode.parentNode.insertBefore(newNode, refNode); });
 		};
@@ -1338,13 +1339,9 @@ window['MINI'] = (function() {
 	MINI['el'] = function el(e, attributes, children) { 
 		// @cond debug if (!e) error("el() requires the element name."); 
 		// @cond debug if (/:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
-		if (isList(attributes) || typeof attributes != 'object') { // list check because MINI's M is an object
-			children = attributes;
-			attributes = null;
-		}
-		var nu = document.documentElement.namespaceURI; // to check whether doc is XHTML 
-		return MINI(e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e)) .set(attributes).add(children); 
-		
+		var nu = document.documentElement.namespaceURI; // to check whether doc is XHTML
+		var list = MINI(e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e));
+		return  (isList(attributes) || typeof attributes != 'object') ? list.add(attributes) : list.set(attributes).add(children); 
 	};
 		
 	
