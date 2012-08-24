@@ -180,5 +180,27 @@ window.miniTests.push.apply(window.miniTests, [
 			check(sl[0].childNodes.length, 4);
 			check(/^br$/i.test(sl[0].childNodes[3].tagName));
 		}
+	},
+	{
+		name:'MINI().fill() / multi',
+		exec: function() {
+			var sl = MINI([MINI.el('span'), MINI.el('span'), MINI.el('span')]);
+			sl.fill('foo');
+			check(sl[0].childNodes.length, 1);
+			check(sl[1].childNodes.length, 1);
+			check(sl[2].childNodes.length, 1);
+			sl.fill(MINI.el('br'));
+			check(sl[0].childNodes.length, 1);
+			check(sl[1].childNodes.length, 0);
+			check(sl[2].childNodes.length, 0);
+			sl.fill([MINI.el('br'), 'bar']);
+			check(sl[0].childNodes.length, 2);
+			check(sl[1].childNodes.length, 0);
+			check(sl[2].childNodes.length, 0);
+			sl.fill(function() { return [MINI.el('br'), 'bar']; });
+			check(sl[0].childNodes.length, 2);
+			check(sl[1].childNodes.length, 2);
+			check(sl[2].childNodes.length, 2);
+		}
 	}
 ]);

@@ -283,8 +283,15 @@ window['MINI'] = (function() {
 		}
 		if (selector.nodeType || selector === window) 
 		    return filterElements([selector]); 
-		if (isList(selector))
-		    return filterElements(selector); 
+		if (isList(selector)) {
+			(function flattenList(l) {
+				if (isList(l))
+					each(l, flattenList);
+				else
+					list.push(l);
+			})(selector);
+		    return filterElements(list);
+		}
 
 		// @condblock ie7compatibility
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1) {
@@ -651,6 +658,7 @@ window['MINI'] = (function() {
 		 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
 		 *                    return value will not be appended, but will overwrite the existing value.
 		 * @param properties a map containing names as keys and the values to append as map values. See above for the syntax.
+		 * @return the list
 		 */
 		self['append'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
 
@@ -677,7 +685,7 @@ window['MINI'] = (function() {
 		 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
 		 *                    return value will not be prepended, but will overwrite the existing value.
 		 * @param properties a map containing names as keys and the values to prepend as map values. See above for the syntax.
-
+		 * @return the list
 		 */
 		self['prepend'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return newValue + toString(oldValue);});};
 
@@ -692,9 +700,30 @@ window['MINI'] = (function() {
 		 * @syntax MINI(selector).add(callbackFunction)
 		 * @syntax MINI(selector).add(elementContent)
 		 * Adds the given node(s) as content to the list elements as additional nodes. If a text has been given, it will be added as text node to all elements.
-		 * If you pass an element or a list, it will be added, but <strong>only to the first element of the list</strong>. In order to add elements
+		 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
 		 * to several nodes, you need to pass a callback function(element, index) as children. It will be invoked for each element to return the new content of the element.
 		 * The callback may return either a string for a text node, a simple HTML element or a list containing both. 
+		 *
+		 * @example Adds a text to the given element:
+		 * <pre>
+		 * $('#comments').add('Some additional text.');
+		 * </pre>
+		 *
+		 * @example Adds an element:
+		 * <pre>
+		 * $('#myList').add(EE('li', 'My extra point');
+		 * </pre>
+		 *
+		 * @example Use a list to add several elements at once:
+		 * <pre>
+		 * $('#comments').add([EE('br'), 'Some text', EE('span', {'@class': 'highlight'}, 'Some highlighted text')]);
+		 * </pre>
+		 *
+		 * @example If you need to add an element or a list to more than one element, you need to provide a factory function:
+		 * <pre>
+		 * $('.chapter').add(function(e, index) { return EE('div', 'Scroll down for the next chapter.'); });
+		 * </pre>
+		 *
 		 * @param text a text to add as text node of the list elements
 		 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
 		 *              an HTML element or a list containing strings and/or HTML elements.
@@ -705,7 +734,7 @@ window['MINI'] = (function() {
 		var addGeneric = self['add'] = function (children, addFunction) {
 			return eachlist(function(e, index) {
 				var lastAdded;
-				function appendChildren(c) {
+				(function appendChildren(c) {
 					if (isList(c))
 						each(c, appendChildren);
 					else if (c != null) {   // must check null, as 0 is a valid parameter 
@@ -718,10 +747,10 @@ window['MINI'] = (function() {
 							e.appendChild(n);
 						lastAdded = n;
 					}
-				}
-				appendChildren(typeof children == 'function' ? children(e, index) : (isString(children) || children != null && children.isNaN || !index ? children : null));
+				})(typeof children == 'function' ? children(e, index) : (children == null || children.nodeType || isList(children)) && index ? null : children);
 			});
 		};
+
 		
 		/**
 		 * @id listfill
@@ -734,17 +763,49 @@ window['MINI'] = (function() {
 		 * @syntax MINI(selector).fill(callbackFunction)
 		 * @syntax MINI(selector).fill(elementContent)
 		 * Sets the content of the list elements, replacing old content. If a text has been given, it will be added as text node to all elements.
-		 * If you pass an element or a list, it will be added, but <strong>only to the first element of the list</strong>. In order to add elements
+		 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
 		 * to several nodes, you need to pass a callback function(element, index) as children. It will be invoked for each element to return the new content of the element.
 		 * The callback may return either a string for a text node, a simple HTML element or a list containing both. 
 		 *
 		 * Call fill() without arguments to remove all children from a node.
+		 * 
+		 * @example Use fill() with a simple string to replace the element's content with some text.
+		 * <pre>
+		 * $('#status').fill('Please Wait..');
+		 * </pre>
+		 *
+		 * @example Pass an element to replace the old content with that. Note that an element can only be added to the first match:
+		 * <pre>
+		 * $('#status').fill(EE('span', {'@class': 'bold'}));
+		 * </pre>
+		 *
+		 * @example You can also pass a list of elements and texts:
+		 * <pre>
+		 * $('#status').fill(['Here', EE('br'), 'are', EE('br'), 'four', EE('br'), 'lines.]);
+		 * </pre>
+		 *
+		 * @example Or a complete structure built using EE:
+		 * <pre>
+		 * $('#myListContainer').fill([EE('h2', 'My List'), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]);
+		 * </pre>
+		 *
+		 * @example If you need to add your list to more than one element, you must add a factory function that re-creates
+		 *              the list for every instance:
+		 * <pre>
+		 * $('.listContainers').fill(function(e, index) { return [EE('h2', 'List Number '+index), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]});
+		 * </pre>
+		 *
+		 * @example fill() without arguments deletes the content of the list elements:
+		 * <pre>
+		 * $('.listContainers').fill();
+		 * </pre>
 		 *
 		 * @param text a text to set as text node of the list elements
-		 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements.
+		 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+		 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
 		 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements.
+		 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
+		 *              this list's first match.
 		 * @return the current list
 		 */
 		self['fill'] = function (children) {
@@ -1336,7 +1397,7 @@ window['MINI'] = (function() {
 	 *                         The syntax is exactly like fill().
 	 * @return a list containing the DOM HTMLElement that has been created or modified as only element
 	 */
-	MINI['el'] = function el(e, attributes, children) { 
+	MINI['el'] = function(e, attributes, children) {
 		// @cond debug if (!e) error("el() requires the element name."); 
 		// @cond debug if (/:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
 		var nu = document.documentElement.namespaceURI; // to check whether doc is XHTML
