@@ -692,26 +692,51 @@ window['MINI'] = (function() {
 		
 		/**
 		 * @id listadd
-		 * @module 1
-		 * @requires el
+		 * @module 2
+		 * @requires dollar
 		 * @configurable yes
 		 * @name list.add()
 		 * @syntax MINI(selector).add(text)
 		 * @syntax MINI(selector).add(callbackFunction)
 		 * @syntax MINI(selector).add(elementContent)
-		 * Adds the given node(s) as content to the list elements as additional nodes. If a text has been given, it will be added as text node to all elements.
+		 * Adds the given node(s) as content to the list elements as additional nodes. If a string has been given, it will be added as text node to all elements.
 		 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
-		 * to several nodes, you need to pass a callback function(element, index) as children. It will be invoked for each element to return the new content of the element.
-		 * The callback may return either a string for a text node, a simple HTML element or a list containing both. 
+		 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
+		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
 		 *
-		 * @example Adds a text to the given element:
+		 * 
+		 *
+		 * @example Using the following HTML:
+		 * <pre>
+		 * &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
+		 * </pre> 
+		 * Add a text to the given 'comment' div:
 		 * <pre>
 		 * $('#comments').add('Some additional text.');
 		 * </pre>
+		 * This results in:
+		 * <pre>
+		 * &lt;div id="comments">Here is some text.&lt;br/>&lt;Some additional text./div>
+		 * </pre> 
 		 *
-		 * @example Adds an element:
+		 * @example Using the following HTML: 
+		 * <pre>
+		 * &lt;ul id="myList">
+		 *   &lt;li>First list entry&lt;/li>
+		 *   &lt;li>Second list entry&lt;/li>
+		 * &lt;/ul>
+		 * </pre>
+		 * The following Javascript adds an element to the list:
 		 * <pre>
 		 * $('#myList').add(EE('li', 'My extra point');
+		 * </pre>
+		 * This results in
+		 * <pre>
+		 * &lt;ul id="myList">
+		 *   &lt;li>First list entry&lt;/li>
+		 *   &lt;li>Second list entry&lt;/li>
+		 *   &lt;li>My extra point&lt;/li>
+		 * &lt;/ul>
 		 * </pre>
 		 *
 		 * @example Use a list to add several elements at once:
@@ -754,30 +779,42 @@ window['MINI'] = (function() {
 		
 		/**
 		 * @id listfill
-		 * @module 1
-		 * @requires el
+		 * @module 2
+		 * @requires dollar
 		 * @configurable yes
 		 * @name list.fill()
 		 * @syntax MINI(selector).fill()
 		 * @syntax MINI(selector).fill(text)
 		 * @syntax MINI(selector).fill(callbackFunction)
 		 * @syntax MINI(selector).fill(elementContent)
-		 * Sets the content of the list elements, replacing old content. If a text has been given, it will be added as text node to all elements.
+		 * Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node to all elements.
 		 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
-		 * to several nodes, you need to pass a callback function(element, index) as children. It will be invoked for each element to return the new content of the element.
-		 * The callback may return either a string for a text node, a simple HTML element or a list containing both. 
+		 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
+		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
 		 *
 		 * Call fill() without arguments to remove all children from a node.
 		 * 
-		 * @example Use fill() with a simple string to replace the element's content with some text.
+		 * @example Using the following HTML:
+		 * <pre>
+		 * &lt;div id="status">Done&lt;/div>
+		 * </pre> 
+		 * fill() with a simple string replaces the element's content with the text:
 		 * <pre>
 		 * $('#status').fill('Please Wait..');
 		 * </pre>
+		 * Results in:
+		 * <pre>
+		 * &lt;div id="status">Please Wait..&lt;/div>
+		 * </pre> 
 		 *
 		 * @example Pass an element to replace the old content with that. Note that an element can only be added to the first match:
 		 * <pre>
-		 * $('#status').fill(EE('span', {'@class': 'bold'}));
+		 * $('#status').fill(EE('span', {'@class': 'bold'}, 'Please Wait...'));
 		 * </pre>
+		 * With the previous example's HTML, this would create this:
+		 * <pre>
+		 * &lt;div id="status">&lt;span class='bold'>Please Wait..&lt;/span>&lt;/div>
+		 * </pre> 
 		 *
 		 * @example You can also pass a list of elements and texts:
 		 * <pre>
@@ -813,15 +850,295 @@ window['MINI'] = (function() {
 			return addGeneric(children);
 		};
 
+		/**
+		 * @id listaddbefore
+		 * @module 2
+		 * @requires dollar
+		 * @configurable yes
+		 * @name list.addBefore()
+		 * @syntax MINI(selector).addBefore(text)
+		 * @syntax MINI(selector).addBefore(callbackFunction)
+		 * @syntax MINI(selector).addBefore(elementContent)
+		 * Inserts the given text or element(s) as sibling in front of each element of this list. If a string has been given, it will be added as text node.
+		 * If you pass an element or a list, it will be inserted <strong>only in front of the first element of the list</strong>. In order to add elements
+		 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
+		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+		 *
+		 * @example Using the following HTML:
+		 * <pre>
+		 * &lt;div>
+		 *   <div id="mainText">Here is some text</div>
+		 * &lt;/div>
+		 * </pre>  
+		 * addBefore() adds text in front of the selected list items.
+		 * <pre>
+		 * $('#mainText').addBefore('COMMENT');
+		 * </pre>
+		 * This results in:
+		 * <pre>
+		 * &lt;div>
+		 *   COMMENT
+		 *   <div id="mainText">Here is some text</div>
+		 * &lt;/div>
+		 * </pre>  
+		 *
+		 * @example You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
+		 * <pre>
+		 * $('#mainText').addBefore(EE('span', {'@class': 'important'}, 'WARNING'));
+		 * </pre>
+		 * With the previous example's HTML, this would create this:
+		 * <pre>
+		 * &lt;div>
+		 *   &lt;span class="important">WARNING&lt;/span>
+		 *   <div id="mainText">Here is some text</div>
+		 * &lt;/div>
+		 * </pre> 
+		 *
+		 * @example Lists of elements and nodes are possible as well. Like nodes, it will only be added to the first list item.
+		 * <pre>
+		 * $('#status').addBefore([EE('hr'), 'WARNING']);
+		 * </pre>
+		 *
+		 * @example If you need to add your list to more than one list item, you must add a factory function that re-creates
+		 *              the list for every instance:
+		 * <pre>
+		 * $('.textSnippets').addBefore(function(e, index) { return [EE('hr'), 'WARNING']; });
+		 * </pre>
+		 *
+		 * @param text a text to insert as text node in front of the list elements
+		 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+		 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
+		 * @param elementContent content to insert in front of <strong>the first element</strong> of the list. The content can be a string for a text node,
+		 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
+		 *              this list's first match.
+		 * @return the current list
+		 */
 		self['addBefore'] = function (children) {
 			return addGeneric(children, function(newNode, refNode) { refNode.parentNode.insertBefore(newNode, refNode); });
 		};
+		
+		/**
+		 * @id listaddafter
+		 * @module 2
+		 * @requires dollar
+		 * @configurable yes
+		 * @name list.addAfter()
+		 * @syntax MINI(selector).addAfter(text)
+		 * @syntax MINI(selector).addAfter(callbackFunction)
+		 * @syntax MINI(selector).addAfter(elementContent)
+		 * Inserts the given text or element(s) as sibling after each element of this list. If a string has been given, it will be added as text node.
+		 * If you pass an element or a list, it will be inserted <strong>only after of the first element of the list</strong>. In order to add elements
+		 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
+		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+		 *
+		 * @example Using the following HTML:
+		 * <pre>
+		 * &lt;div>
+		 *   <div id="mainText">Here is some text</div>
+		 * &lt;/div>
+		 * </pre>   
+		 * Use addAfter() with a simple string to add a text node.
+		 * <pre>
+		 * $('#mainText').addAfter('Disclaimer: bla bla bla');
+		 * </pre>
+		 * This results in the following HTML:
+		 * <pre>
+		 * &lt;div>
+		 *   <div id="mainText">Here is some text</div>
+		 *   Disclaimer: bla bla bla
+		 * &lt;/div>
+		 * </pre>   
+		 *
+		 * @example You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
+		 * <pre>
+		 * $('#mainText').addAfter(EE('span', {'@class': 'disclaimer'}, 'Disclaimer: bla bla bla'));
+		 * </pre>
+		 * With the previous example's HTML, this would create this:
+		 * <pre>
+		 * &lt;div>
+		 *   <div id="mainText">Disclaimer: bla bla bla</div>
+		 *   &lt;span class="disclaimer">WARNING&lt;/span>
+		 * &lt;/div>
+		 * </pre> 
+		 *
+		 * @example Lists of elements and nodes are possible as well. Like nodes, it will only be added to the first list item.
+		 * <pre>
+		 * $('#status').addAfter([EE('hr'), 'Disclaimer']);
+		 * </pre>
+		 *
+		 * @example If you need to add your list to more than one list item, you must add a factory function that re-creates
+		 *              the list for every instance:
+		 * <pre>
+		 * $('.textSnippets').addAfter(function(e, index) { return [EE('hr'), 'Disclaimer']; });
+		 * </pre>
+		 *
+		 * @param text a text to insert as sibling text node after of the list elements
+		 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+		 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
+		 * @param elementContent content to insert <strong>only after the first element</strong> of the list. The content can be a string for a text node,
+		 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
+		 *              this list's first match.
+		 * @return the current list
+		 */
 		self['addAfter'] = function (children) {
 			return addGeneric(children, function(newNode, refNode) { refNode.parentNode.insertBefore(newNode, refNode.nextSibling); });
 		};
+		
+		/**
+		 * @id listaddfront
+		 * @module 2
+		 * @requires dollar
+		 * @configurable yes
+		 * @name list.addFront()
+		 * @syntax MINI(selector).addFront(text)
+		 * @syntax MINI(selector).addFront(callbackFunction)
+		 * @syntax MINI(selector).addFront(elementContent)
+		 * Adds the given node(s) as content to the list elements as additional nodes. Unlike add(), the new nodes will be the first children of the list items.
+		 * If a string has been given, it will be added as text node to all elements.
+		 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
+		 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
+		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+		 *
+		 * @example Using the following HTML:
+		 * <pre>
+		 * &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
+		 * </pre> 
+		 * Add a text to the given 'comment' div:
+		 * <pre>
+		 * $('#comments').addFront('Some additional text. ');
+		 * </pre>
+		 * This results in:
+		 * <pre>
+		 * &lt;div id="comments">Some additional text.Here is some text.&lt;br/>&lt;/div>
+		 * </pre> 
+		 *
+		 * @example Using the following HTML: 
+		 * <pre>
+		 * &lt;ul id="myList">
+		 *   &lt;li>First list entry&lt;/li>
+		 *   &lt;li>Second list entry&lt;/li>
+		 * &lt;/ul>
+		 * </pre>
+		 * The following Javascript adds an element to the list:
+		 * <pre>
+		 * $('#myList').addFront(EE('li', 'My extra point'));
+		 * </pre>
+		 * This results in
+		 * <pre>
+		 * &lt;ul id="myList">
+		 *   &lt;li>My extra point&lt;/li>
+		 *   &lt;li>First list entry&lt;/li>
+		 *   &lt;li>Second list entry&lt;/li>
+		 * &lt;/ul>
+		 * </pre>
+		 *
+		 * @example Use a list to add several elements at once:
+		 * <pre>
+		 * $('#comments').addFront([EE('br'), 'Some text', EE('span', {'@class': 'highlight'}, 'Some highlighted text')]);
+		 * </pre>
+		 *
+		 * @example If you need to add an element or a list to more than one element, you need to provide a factory function:
+		 * <pre>
+		 * $('.chapter').addFront(function(e, index) { return EE('div', 'Scroll down for the next chapter.'); });
+		 * </pre>
+		 *
+		 * @param text a text to add as text node of the list elements
+		 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+		 *              an HTML element or a list containing strings and/or HTML elements.
+		 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
+		 *              an HTML element or a list containing strings and/or HTML elements.
+		 * @return the current list
+		 */
 		self['addFront'] = function (children) {
 			return addGeneric(children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
 		};
+		
+		/**
+		 * @id listreplace
+		 * @module 2
+		 * @requires dollar
+		 * @configurable yes
+		 * @name list.replace()
+		 * @syntax MINI(selector).replace(text)
+		 * @syntax MINI(selector).replace(callbackFunction)
+		 * @syntax MINI(selector).replace(elementContent)
+		 * Replaces the list items with the the given node(s) in the DOM tree. 
+		 * If a string has been given, each list item will be replaced with a new text node containing the string.
+		 * If you pass an element or a list, it will replace <strong>only the first element of the list</strong>. In order to replace 
+		 * several list items with content more complex than a string, you need to pass a factory function(element, index) thats creates new instances for each item. 
+		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+		 *
+		 * @example Using the following HTML:
+		 * <pre>
+		 * &lt;div id="comments">
+		 *    &lt;div id="commentOne">My old comment.&lt;/div>
+		 * &lt;/div>
+		 * </pre> 
+		 * Replaces the div 'commentOne':
+		 * <pre>
+		 * $('#commentOne').replace('Some new comment.');
+		 * </pre>
+		 * This results in:
+		 * <pre>
+		 * &lt;div id="comments">
+		 *    Some new comment.
+		 * &lt;/div>
+		 * </pre> 
+		 * Please note that not only the text has changed, but the whole &lt;div> has been replaced. If you only want to replace the element's text content
+		 * you should use fill() instead of replace().
+		 *
+		 * @example Using the following HTML: 
+		 * <pre>
+		 * &lt;ul id="myList">
+		 *   &lt;li>First list entry&lt;/li>
+		 *   &lt;li>Second list entry&lt;/li>
+		 * &lt;/ul>
+		 * </pre>
+		 * The following JavaScript will replace <strong>only the first &lt;li> element</strong>:
+		 * <pre>
+		 * $('#myList li').replace(EE('li', 'My extra point'));
+		 * </pre>
+		 * This results in
+		 * <pre>
+		 * &lt;ul id="myList">
+		 *   &lt;li>My extra point&lt;/li>
+		 *   &lt;li>Second list entry&lt;/li>
+		 * &lt;/ul>
+		 * </pre>
+		 *
+		 * @example If you need replace several elements at once, you need to provide a factory function
+		 * <pre>
+		 * $('#myList li').replace(function(e, index) { return EE('li', 'My extra point'); });
+		 * </pre>
+		 * With the previous HTML would result in:
+		 * <pre>
+		 * &lt;ul id="myList">
+		 *   &lt;li>My extra point&lt;/li>
+		 *   &lt;li>My extra point&lt;/li>
+		 * &lt;/ul>
+		 * </pre>
+		 *
+		 * @example Use a list to add several elements at once:
+		 * <pre>
+		 * $('#myList li').replace(function(e, index) { return [EE('li', 'Extra point 1'), EE('li', 'Extra point 2')]; });
+		 * </pre>
+		 * Now every original &lt;li> element is replaced with two elements:
+		 * <pre>
+		 * &lt;ul id="myList">
+		 *   &lt;li>Extra point 1&lt;/li>
+		 *   &lt;li>Extra point 2&lt;/li>
+		 *   &lt;li>Extra point 1&lt;/li>
+		 *   &lt;li>Extra point 2&lt;/li>
+		 * &lt;/ul>
+		 * </pre>
+		 *
+		 * @param text a text for the text nodes that replace the list elements
+		 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+		 *              an HTML element or a list containing strings and/or HTML elements.
+		 * @param elementContent content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
+		 *              an HTML element or a list containing strings and/or HTML elements.
+		 * @return the current list
+		 */
 		self['replace'] = function (children) {
 			return addGeneric(children, function(newNode, refNode) { refNode.parentNode.replaceChild(newNode, refNode); });
 		};
