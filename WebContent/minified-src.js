@@ -29,7 +29,7 @@ window['MINI'] = (function() {
 
 	/**
 	 * @id ie7compatibility
-	 * @module 1
+	 * @module 9
 	 * @configurable yes
 	 * @name Backward-Compatibility for IE7 and similar browsers
 	 * The difference between IE7 and IE8 compatibility that IE7 provides neither native selector support (querySelectorAll) nor native JSON.
@@ -48,7 +48,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id ie6compatibility
 	 * @requires ie7compatibility 
-	 * @module 1
+	 * @module 9
 	 * @configurable yes
 	 * @name Backward-Compatibility for IE6 and similar browsers
 	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6 which makes the library a tiny 
@@ -159,7 +159,7 @@ window['MINI'] = (function() {
 	
 	/**
 	 * @id debug
-	 * @module 1
+	 * @module 8
 	 * @configurable no
 	 * @name Debugging Support
 	 */

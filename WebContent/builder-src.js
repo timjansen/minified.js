@@ -1,6 +1,6 @@
 var SRC='minified-src.js';
 
-var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'HTTP REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS'];
+var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'HTTP REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS', 'OPTIONS'];
 
 function setUpConfigurationUI(s) {
 	
@@ -61,7 +61,7 @@ function setUpConfigurationUI(s) {
 	$('#compile').on('click', compileClicked);
 	
 	for (var i = 1; i < MODULES.length; i++) {
-		var moduleCheckBox, div = $('#sectionCheckboxes').add(MINI.el('div', {'@id': 'divMod-'+i}, MINI.el('div', {'className': 'moduleDescriptor'}, [
+		var moduleCheckBox, div, topDiv = $('#sectionCheckboxes').add(div = MINI.el('div', {'@id': 'divMod-'+i}, MINI.el('div', {'className': 'moduleDescriptor'}, [
 			moduleCheckBox = MINI.el('input', {'@id': 'mod-'+i, 'className': 'modCheck', '@type':'checkbox', checked: 'checked'}),
 			MINI.el('label', {'@for': 'mod-'+i}, MODULES[i])     
 		])));
@@ -74,6 +74,7 @@ function setUpConfigurationUI(s) {
 				 fulfillSectionDependencies(cb);
 			 });
 			setModuleCheckboxes();
+			return true;
 		});
 		
 		var sectionCheckBox;
@@ -120,6 +121,7 @@ function setUpConfigurationUI(s) {
 			$(sectionCheckBox).on('change', function() {
 				fulfillSectionDependencies(this);
 				setModuleCheckboxes();
+				return true;
 			});
 		});
 	}
