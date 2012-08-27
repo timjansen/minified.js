@@ -22,7 +22,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI.el() / full',
 		exec: function() {
-			var sl3 = MINI.el('div', {'@title': '5', '@class': 'a b', $marginTop: '2px'}, 'hello');
+			var sl3 = MINI.el('div', {'@title': '5', 'className': 'a b', $marginTop: '2px'}, 'hello');
 			check(sl3.length, 1);
 			var s3 = sl3[0];
 			check(s3.nodeType, 1);

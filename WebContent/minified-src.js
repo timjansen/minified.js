@@ -26,16 +26,9 @@ window['$'] =
 window['MINI'] = (function() {
 	var backslashB = '\\b';
 	var undef;
-	/**
-	 * @id ie8compatibility
-	 * @module 1
-	 * @configurable yes
-	 * @name Backward-Compatibility for IE8 and similar browsers
-	 * Turning off IE8 compatibility gives you a slightly smaller library, but no improved functionality.
-	 */
+
 	/**
 	 * @id ie7compatibility
-	 * @requires ie8compatibility
 	 * @module 1
 	 * @configurable yes
 	 * @name Backward-Compatibility for IE7 and similar browsers
@@ -597,6 +590,9 @@ window['MINI'] = (function() {
 		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
 		 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
 		 *                     A dollar ('$') prefix is a shortcut for 'style.'.
+		 *                     In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
+		 *                     set the property 'className' instead of '@class' and set styles using the '$' syntax.
+		 * 
 		 * @param value the value to set. If it is a function, the function will be invoked for each list element to evaluate the value. 
 		 * The function is called with with the old value as first argument and the index in the list as second.
 		 * The third value is the function itself.
@@ -615,10 +611,7 @@ window['MINI'] = (function() {
 			else {
 				// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 				var components = getNameComponents(name), len = components.length-1;
-				// @condblock ie8compatibility
-				var lastName = (document.all && !document.addEventListener && components[len] == '@class') ? 'className' : components[len].replace(/^@/, '');
-				// @condend
-				// @cond !ie8compatibility var lastName = components[len].replace(/^@/, '');
+				var lastName = components[len].replace(/^@/, '');
 				var f = (typeof value == 'function') ? value : defaultFunction;
 				eachlist( 
 					function(obj, c) {
@@ -741,7 +734,7 @@ window['MINI'] = (function() {
 		 *
 		 * @example Use a list to add several elements at once:
 		 * <pre>
-		 * $('#comments').add([EE('br'), 'Some text', EE('span', {'@class': 'highlight'}, 'Some highlighted text')]);
+		 * $('#comments').add([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
 		 * </pre>
 		 *
 		 * @example If you need to add an element or a list to more than one element, you need to provide a factory function:
@@ -809,7 +802,7 @@ window['MINI'] = (function() {
 		 *
 		 * @example Pass an element to replace the old content with that. Note that an element can only be added to the first match:
 		 * <pre>
-		 * $('#status').fill(EE('span', {'@class': 'bold'}, 'Please Wait...'));
+		 * $('#status').fill(EE('span', {'className': 'bold'}, 'Please Wait...'));
 		 * </pre>
 		 * With the previous example's HTML, this would create this:
 		 * <pre>
@@ -884,7 +877,7 @@ window['MINI'] = (function() {
 		 *
 		 * @example You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
 		 * <pre>
-		 * $('#mainText').addBefore(EE('span', {'@class': 'important'}, 'WARNING'));
+		 * $('#mainText').addBefore(EE('span', {'className': 'important'}, 'WARNING'));
 		 * </pre>
 		 * With the previous example's HTML, this would create this:
 		 * <pre>
@@ -951,7 +944,7 @@ window['MINI'] = (function() {
 		 *
 		 * @example You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
 		 * <pre>
-		 * $('#mainText').addAfter(EE('span', {'@class': 'disclaimer'}, 'Disclaimer: bla bla bla'));
+		 * $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
 		 * </pre>
 		 * With the previous example's HTML, this would create this:
 		 * <pre>
@@ -1034,7 +1027,7 @@ window['MINI'] = (function() {
 		 *
 		 * @example Use a list to add several elements at once:
 		 * <pre>
-		 * $('#comments').addFront([EE('br'), 'Some text', EE('span', {'@class': 'highlight'}, 'Some highlighted text')]);
+		 * $('#comments').addFront([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
 		 * </pre>
 		 *
 		 * @example If you need to add an element or a list to more than one element, you need to provide a factory function:
@@ -1106,7 +1099,7 @@ window['MINI'] = (function() {
 		 * &lt;/ul>
 		 * </pre>
 		 *
-		 * @example If you need replace several elements at once, you need to provide a factory function
+		 * @example If you need to replace several elements at once, you need to provide a factory function
 		 * <pre>
 		 * $('#myList li').replace(function(e, index) { return EE('li', 'My extra point'); });
 		 * </pre>
@@ -1650,7 +1643,7 @@ window['MINI'] = (function() {
 	 * </pre>
 	 * @example Creating a &lt;span> element with style, some text, and append it to the element with the id 'greetingsDiv':
 	 * <pre>
-	 * $('greetingsDiv').add(EE('span', {'@title'@: 'Greetings'}, 'Hello World')); 
+	 * $('greetingsDiv').add(EE('span', {'@title': 'Greetings'}, 'Hello World')); 
 	 * </pre>
 	 * creates this:
 	 * <pre>
@@ -1709,6 +1702,8 @@ window['MINI'] = (function() {
 	 * @param attributes optional an object which contains a map of attributes and other values. The syntax is exactly like set(): Attribute values are prefixed with '@',
 	 *                   CSS styles with '$' and regular properties can be set without prefix.
 	 *                   If the attribute value is null, the attribute will omitted (styles and properties can be set to null). 
+	 *                   In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
+	 *                   set the property 'className' instead of '@class' and set styles using the '$' syntax.
 	 * @param children optional  an element or a list of elements to add as children. Strings will be converted as text nodes. Lists can be 
 	 *                         nested and will then automatically be flattened. Null elements in lists will be ignored. 
 	 *                         The syntax is exactly like fill().
@@ -2123,9 +2118,9 @@ window['MINI'] = (function() {
      */
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currenetly active
 	var REQUEST_ANIMATION_FRAME = function(callback) {
-		window.setTimeout(function() {callback();}, 33); // 30 fps as fallback
+		window.setTimeout(callback, 33); // 30 fps as fallback
 	};
-	each(['msR', 'oR', 'webkitR', 'mozR', 'r'], function(n) { 
+	each(['msR', 'webkitR', 'mozR', 'r'], function(n) { 
 		REQUEST_ANIMATION_FRAME = window[n+'equestAnimationFrame'] || REQUEST_ANIMATION_FRAME;
 	});
 
