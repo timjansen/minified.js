@@ -12,14 +12,14 @@ function setUpConfigurationUI(s) {
 		});
 		
 		var src = compile(s.sections, s.sectionMap, enabledSections);
-		// TODO: add header
+		var header = serializeEnabledSections(s.sections, enabledSections);
 		if ($$('#compressionClosure').checked) {
 			$$('#compile').disabled = true;
 			closureCompile(src, function(closureResult) {
 				if (closureResult) {
 					$$('#compile').disabled = false;
 					$('#gzipRow, #downloadRow').set({$display: 'table-row'});
-					$$('#resultSrc').value = closureResult.compiledCode;
+					$$('#resultSrc').value = header + closureResult.compiledCode;
 					$$('#resultPlain').innerHTML = (closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedSize + ' bytes)' ;
 					$$('#resultGzipped').innerHTML = (closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedGzipSize + ' bytes)' ;
 					$$('#resultLink').setAttribute('href', 'http://closure-compiler.appspot.com' +closureResult.outputFilePath);
@@ -27,7 +27,7 @@ function setUpConfigurationUI(s) {
 			});
 		}
 		else  {
-			$$('#resultSrc').value = src;
+			$$('#resultSrc').value = header + src;
 			$$('#resultPlain').innerHTML = (src.length/1024).toFixed(2) + 'kb';
 			$('#gzipRow, #downloadRow').set({$display: 'none'});
 		}

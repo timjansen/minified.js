@@ -152,41 +152,6 @@ function compile(sections, sectionMap, enabledSections) {
 	return src;
 }
 
-// Serializes the configuration into a string
-function serializeEnabledSections(sections, enabledSections) {
-	var configurableSections = v.filter(sections, function(s) { return s.configurable; });
-	var enabledSectionList = v.keys(enabledSections).filter(function(s) { return enabledSections[s];});
-
-	var head, listedIds = [];
-	if (enabledSectionList.length == configurableSections.length) {
-		head = '// All sections';
-		listedIds = [];
-	}
-	else if (enabledSectionList.length > configurableSections.length/2) {
-		head = '// All sections except ';
-		listedIds = v.filter(configurableSections, function(s) { return !enabledSections[s.id]; }).map(function(s) { return s.id; });
-	}
-	else {
-		head = '// Only sections ';
-		listedIds = enabledSectionList;
-	}
-	
-	var txt = "// minified.js config start -- use this comment to re-create your build configuration\n" + head;
-	var charsToBreak = 50;
-	v.each(listedIds.sort(), function(id) {
-		if (charsToBreak < id.length) {
-			charsToBreak = 70;
-			txt += '\n// ' + id;
-		}
-		else {
-			txt += id + ', ';
-			charsToBreak -= id.length + 2;
-		}
-	});
-	txt = txt.replace(/,\s*$/, '.'); // remove last comma with period
-	txt += "\n// minified.js config end\n";
-	return txt;
-}
 
 // submits the given source code (src) to the Closure online compiler. When finished, will invoke given callback cb with JSON result. 
 // On error, it passes null to the callback.
@@ -219,3 +184,39 @@ function prepareSections(src) {
 
 	return {sections: sections, sectionMap: sectionMap, enabledSections: enabledSections};
 }
+
+//Serializes the configuration into a string
+function serializeEnabledSections(sections, enabledSections) {
+	var configurableSections = v.filter(sections, function(s) { return s.configurable; });
+	var enabledSectionList = v.keys(enabledSections).filter(function(s) { return enabledSections[s];});
+
+	var head, listedIds = [];
+	if (enabledSectionList.length == configurableSections.length) {
+		head = '// - All sections';
+		listedIds = [];
+	}
+	else if (enabledSectionList.length > configurableSections.length/2) {
+		head = '// - All sections except ';
+		listedIds = v.filter(configurableSections, function(s) { return !enabledSections[s.id]; }).map(function(s) { return s.id; });
+	}
+	else {
+		head = '// - Only sections ';
+		listedIds = enabledSectionList;
+	}
+	
+	var txt = "// minified.js config start -- use this comment to re-create your build configuration\n" + head;
+	var charsToBreak = 50;
+	v.each(listedIds.sort(), function(id) {
+		if (charsToBreak < id.length) {
+			charsToBreak = 70;
+			txt += '\n// ' + id + ', ';
+		}
+		else {
+			txt += id + ', ';
+			charsToBreak -= id.length + 2;
+		}
+	});
+	txt = txt.replace(/,\s*$/, '.\n'); // remove last comma with period
+	return txt;
+}
+
