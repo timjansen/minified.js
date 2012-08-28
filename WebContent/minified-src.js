@@ -1739,9 +1739,9 @@ window['MINI'] = (function() {
 	* <pre>
 	* MINI.request('get', 'http://service.example.com/weather', {zipcode: 90210}, function(txt) {
 	*     var json = MINI.parseJSON(txt);
-	*     MINI.el('#weatherResult', 'Today's forecast is is: ' + json.today.forecast);
+	*     $('#weatherResult').fill('Today's forecast is is: ' + json.today.forecast);
 	* }, function() {
-	*     MINI.el('#weatherResult', 'The weather service was not available.');
+	*     $('#weatherResult').fill('The weather service was not available.');
 	* });
 	* </pre>
 	* 
@@ -1755,13 +1755,13 @@ window['MINI'] = (function() {
 	* }]};
 	* 
 	* function failureHandler() {
-	*   MINI.el('#registrationResult', 'Registration failed');
+	*   $('#registrationResult').fill('Registration failed');
 	* }
 	*
 	* MINI.request('post', 'http://service.example.com/directory', 
 	*     MINI.toJSON(myRequest), function(txt) {
 	*       if (txt == 'OK')
-	*            MINI.el('#registrationResult', 'Registration succeeded');
+	*            $('#registrationResult').fill('Registration succeeded');
 	*       else
 	*            failureHandler();
 	* }, failureHandler);
@@ -2213,7 +2213,7 @@ window['MINI'] = (function() {
 /**
  * @id topleveldollardollar
  * @module 8
- * @requires dollardollar 
+ * @requires dollardollar topleveldollar
  * @configurable yes
  * @name $$() (shortcut for MINI.$$() )
  * @syntax $$(selector)
@@ -2230,7 +2230,7 @@ window['$$'] = $['$$'];
 /**
  * @id toplevelee
  * @module 8
- * @requires el
+ * @requires el topleveldollar
  * @configurable yes
  * @name EE() (shortcut for MINI.el() )
  * @syntax EE(selector)
