@@ -111,14 +111,15 @@ function calculateDependencies(sectionMap, enabledSections) {
 }
 
 //creates a map of all configurable sections by id
-function createDefaultConfigurationMap(sections) {
+function createDefaultConfigurationMap(sections, includeDisabled) {
 	var m = {};
 	v.each(sections, function(section) {
-		if (section.configurable && section.configurable != 'disabled')
+		if (section.configurable && (section.configurable != 'disabled' || includeDisabled))
 			m[section.id] = 1;
 	});
 	return m;
 }
+
 
 // compiles the list of sections into a single string, given the map of enabled sections
 function compile(sections, sectionMap, enabledSections) {
@@ -185,6 +186,14 @@ function prepareSections(src) {
 	return {sections: sections, sectionMap: sectionMap, enabledSections: enabledSections};
 }
 
+// -- config serialization / deserialization --------------
+
+var CONFIG_START = 'minified.js config start --';
+var CONFIG_COMMENT = '// - ';
+var CONFIG_ALL = 'All sections';
+var CONFIG_ALL_EXCEPT = 'All sections except';
+var CONFIG_ONLY = 'Only sections';
+
 //Serializes the configuration into a string
 function serializeEnabledSections(sections, enabledSections) {
 	var configurableSections = v.filter(sections, function(s) { return s.configurable; });
@@ -192,24 +201,24 @@ function serializeEnabledSections(sections, enabledSections) {
 
 	var head, listedIds = [];
 	if (enabledSectionList.length == configurableSections.length) {
-		head = '// - All sections';
+		head = CONFIG_COMMENT + CONFIG_ALL;
 		listedIds = [];
 	}
 	else if (enabledSectionList.length > configurableSections.length/2) {
-		head = '// - All sections except ';
+		head = CONFIG_COMMENT + CONFIG_ALL_EXCEPT;
 		listedIds = v.filter(configurableSections, function(s) { return !enabledSections[s.id]; }).map(function(s) { return s.id; });
 	}
 	else {
-		head = '// - Only sections ';
+		head = CONFIG_COMMENT + CONFIG_ONLY;
 		listedIds = enabledSectionList;
 	}
 	
-	var txt = "// minified.js config start -- use this comment to re-create your build configuration\n" + head;
+	var txt = "// " + CONFIG_START + " use this comment to re-create your build configuration\n" + head;
 	var charsToBreak = 50;
 	v.each(listedIds.sort(), function(id) {
 		if (charsToBreak < id.length) {
 			charsToBreak = 70;
-			txt += '\n// ' + id + ', ';
+			txt += '\n// - ' + id + ', ';
 		}
 		else {
 			txt += id + ', ';
@@ -220,3 +229,54 @@ function serializeEnabledSections(sections, enabledSections) {
 	return txt;
 }
 
+// finds a serialized configuration in the given source, returns a map id->1 of all enabled sections. Null if no config found.
+function deserializeEnabledSections(sections, src) {
+	function makeRegExp(s) {
+		return new RegExp('^'+s.replace(' ', '\\s+'));
+	}
+	var startRegexp = makeRegexp(CONFIG_START);
+	var allRegexp = makeRegexp(CONFIG_ALL + '\\s*\\.');
+	var allExceptRegexp = makeRegexp(CONFIG_ALL_EXCEPT + '\\s*');
+	var onlyRegexp = makeRegexp(CONFIG_ONLY  + '\\s*');
+	var configCmtRegexp = makeRegexp(CONFIG_COMMENT);
+	
+	var lines = src.split('\n');
+	for (var i = 0; i < lines.length; i++) { 
+		var line = lines[i];
+		if (/^\s*\/\/s*/.test(line)) {
+			var cmt = line.replace(/^\s*\/\/s*/, '');
+			if (startRegexp.test(cmt) && i+1 < lines.length) {
+				var s = '';
+				for (var j = i+1; j < lines.length; j++)
+					if (configCmtRegexp.test(lines[j])) {
+						s += lines[j].replace(configCmtRegexp, '');
+						if (/\s*\.\s*$/.test(lines[j]))
+							break;
+					}
+					else
+						break;
+				
+				if (allRegexp.test(s))
+					return createDefaultConfigurationMap(sections, true);
+				s = s.replace(/\s*\.\s*$/,'');
+				if (allExceptRegexp.test(s)) {
+					var r = createDefaultConfigurationMap(sections, true);
+					v.each(s.replace(allExceptRegexp, '').split(/\s*,\s*/), function(section) {
+						delete r[section];
+					});
+					return r;
+				}
+				if (onlyRegexp.test(s)) {
+					var r = {};
+					v.each(s.replace(onlyRegexp, '').split(/\s*,\s*/), function(section) {
+						r[section] = 1;
+					});
+					return r;
+				}
+			}
+		}
+		
+	}
+	
+	return null;
+}
