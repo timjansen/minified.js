@@ -54,6 +54,77 @@ window['MINI'] = (function() {
 	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6 which makes the library a tiny 
 	 * little bit larger.
 	 */
+
+	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	function isType(s,o) {
+		return typeof s == o;
+	}
+	function isString(s) {
+		return isType(s, 'string');
+	}
+	function isFunction(f) {
+		return isType(f, 'function');
+	}
+	function isObject(f) {
+		return isType(f, 'object');
+	}
+	function isList(v) {
+		return v && v.length != null && !isString(v) && !v.data; // substr to test for string, data for Text node
+	}
+	function each(list, cb) {
+		if (isList(list))
+			for (var i = 0, len = list.length; i < len; i++)
+				cb(list[i], i);
+		else
+			for (var n in list)
+				if (list.hasOwnProperty(n))
+					cb(n, list[n]);
+		return list;
+	}
+	function filter(list, filterFunc) {
+		var r = []; 
+		each(list, function(node,index) {
+			if (!filterFunc||filterFunc(node,index))
+				r.push(node);
+		});
+		return r;
+	}
+	function collect(list, collectFunc, result) {
+		result = result || [];
+		each(list, function(item, index) {
+			if (isList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
+				each(item, function(rr) { result.push(rr); });
+			else if (list != item)
+				result.push(item);
+		});
+		return result;
+	}
+
+    /**
+     * @id tostring
+     * @dependency yes
+     */
+	function toString(s) { // wrapper for Closure optimization
+		return String(s!=null ? s : '');
+	}
+
+    /**
+     * @id getnamecomponents
+     * @dependency yes
+     * helper for set and get; if starts with $, rewrite as CSS style
+     */
+	function getNameComponents(name) {
+		return name.replace(/^\$/, 'style.').split('.');
+	}
+
+    /**
+     * @id now
+     * @dependency yes
+     */
+    function now() {
+    	return new Date().getTime();
+    }
 	
 	/**
 	 * @id dollar
@@ -63,9 +134,12 @@ window['MINI'] = (function() {
 	 * @name MINI()
 	 * @syntax MINI(selector)
 	 * @syntax MINI(selector, context)
+	 * @syntax MINI(function)
 	 * @shortcut $(selector) - Enabled by default, but can be disabled in the builder.
 	 * Uses a CSS-like selector to create an list containing all elements that fulfill the filter conditions. This is the most central function in Minified. The returned 
 	 * list has a number of functions to work with the list elements.
+	 *
+	 * As a special shortcut, if you pass a function to MINI(), it will be registered using MINI.ready() to be executed when the DOM model is complete.
 	 *
 	 * The name of this function is MINI(), but by default Minified also creates an alias "$" for it, which should be more convenient and also familiar for most users.
 	 *
@@ -134,6 +208,13 @@ window['MINI'] = (function() {
 	 *                                });
 	 * </pre>
 	 * 
+	 * @example Using $() as a MINI.ready() shortcut:
+	 * <pre>
+	 * $(function() {
+	 *   // work with the DOM tree
+	 * });
+	 * </pre>
+	 * 
 	 * @param selector a simple, CSS-like selector for the elements. It supports '#id' (lookup by id), '.class' (lookup by class),
 	 *             'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
 	 *             You can also separate two (or more) selectors by space to find elements which are descendants of the previous selectors.
@@ -142,6 +223,7 @@ window['MINI'] = (function() {
 	 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
 	 *             You can also use a DOM node as selector, it will be returned as a single-element list.  
 	 *             If you pass a list, a shallow copy of the list will be returned.
+	 *             If you pass a function, it will be registered using MINI.ready().
 	 * @param context optional an optional selector, DOM node or list of DOM nodes which specifies one or more common ancestor nodes for the selection. 
 	 *             The returned list contains only descendants of the context nodes, all others will be filtered out. 
 	 * @return the array-like object containing the content specified by the selector. The returned object is guaranteed to
@@ -154,7 +236,7 @@ window['MINI'] = (function() {
 	 *             as a whole, not be in document order anymore. The array returned has several convenience functions listed below:
 	 */
 	function MINI(selector, context) { 
-		return new M(dollarRaw(selector, context));
+		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context));
 	}
 	
 	/**
@@ -172,67 +254,7 @@ window['MINI'] = (function() {
     /**
      * @stop
      */
-	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	function isString(s) {
-		return typeof s == 'string';
-	}
-	function isList(v) {
-		return v && v.length != null && !isString(v) && !v.data; // substr to test for string, data for Text node
-	}
-	function each(list, cb) {
-		if (isList(list))
-			for (var i = 0, len = list.length; i < len; i++)
-				cb(list[i], i);
-		else
-			for (var n in list)
-				if (list.hasOwnProperty(n))
-					cb(n, list[n]);
-		return list;
-	}
-	function filter(list, filterFunc) {
-		var r = []; 
-		each(list, function(node,index) {
-			if (!filterFunc||filterFunc(node,index))
-				r.push(node);
-		});
-		return r;
-	}
-	function collect(list, collectFunc, result) {
-		result = result || [];
-		each(list, function(item, index) {
-			if (isList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
-				each(item, function(rr) { result.push(rr); });
-			else if (list != item)
-				result.push(item);
-		});
-		return result;
-	}
-
-    /**
-     * @id tostring
-     * @dependency yes
-     */
-	function toString(s) { // wrapper for Closure optimization
-		return String(s!=null ? s : '');
-	}
-
-    /**
-     * @id getnamecomponents
-     * @dependency yes
-     * helper for set and get; if starts with $, rewrite as CSS style
-     */
-	function getNameComponents(name) {
-		return name.replace(/^\$/, 'style.').split('.');
-	}
-
-    /**
-     * @id now
-     * @dependency yes
-     */
-    function now() {
-    	return new Date().getTime();
-    }
     
     //// 1. SELECTOR MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -612,7 +634,7 @@ window['MINI'] = (function() {
 				// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 				var components = getNameComponents(name), len = components.length-1;
 				var lastName = components[len].replace(/^@/, '');
-				var f = (typeof value == 'function') ? value : defaultFunction;
+				var f = isFunction(value) ? value : defaultFunction;
 				eachlist( 
 					function(obj, c) {
 						for (var i = 0; i < len; i++)
@@ -765,7 +787,7 @@ window['MINI'] = (function() {
 							e.appendChild(n);
 						lastAdded = n;
 					}
-				})(typeof children == 'function' ? children(e, index) : (children == null || children.nodeType || isList(children)) && index ? null : children);
+				})(isFunction(children) ? children(e, index) : (children == null || children.nodeType || isList(children)) && index ? null : children);
 			});
 		};
 
@@ -1714,7 +1736,7 @@ window['MINI'] = (function() {
 		// @cond debug if (/:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
 		var nu = document.documentElement.namespaceURI; // to check whether doc is XHTML
 		var list = MINI(e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e));
-		return  (isList(attributes) || typeof attributes != 'object') ? list.add(attributes) : list.set(attributes).add(children); 
+		return  (isList(attributes) || !isObject(attributes)) ? list.add(attributes) : list.set(attributes).add(children); 
 	};
 		
 	
@@ -1905,7 +1927,7 @@ window['MINI'] = (function() {
 			return '"' + value.replace(/[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
 		if (isList(value)) 
 			return '[' + collect(value, function(vi) { return toJSON(vi); }).join() + ']';
-		if (typeof value == 'object' && ctor != Number && ctor != Boolean)
+		if (isObject(value) && ctor != Number && ctor != Boolean)
 			return '{' + collect(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
 		if (value == null)
 			return 'null';
@@ -1974,13 +1996,14 @@ window['MINI'] = (function() {
     *
     * @param handler the function to be called when the HTML is ready
     */
-    MINI['ready'] = function(handler) {
+    function ready(handler) {
     	// @cond debug if (typeof handler != 'function') error("First argument must be a function");
     	if (DOMREADY_HANDLER) // if DOM ready, call immediately
 			DOMREADY_HANDLER.push(handler);
 		else
 			window.setTimeout(handler, 0);
     };
+    MINI['ready'] = ready;
     
     // Two-level implementation for domready events
     var DOMREADY_HANDLER = [];

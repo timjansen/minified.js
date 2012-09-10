@@ -191,8 +191,8 @@ function prepareSections(src) {
 var CONFIG_START = 'minified.js config start --';
 var CONFIG_COMMENT = '// - ';
 var CONFIG_ALL = 'All sections';
-var CONFIG_ALL_EXCEPT = 'All sections except';
-var CONFIG_ONLY = 'Only sections';
+var CONFIG_ALL_EXCEPT = 'All sections except ';
+var CONFIG_ONLY = 'Only sections ';
 
 //Serializes the configuration into a string
 function serializeEnabledSections(sections, enabledSections) {
