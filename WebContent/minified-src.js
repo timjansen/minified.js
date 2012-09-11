@@ -1261,12 +1261,12 @@ window['MINI'] = (function() {
 			return toString(originalValue).replace(/-?[\d.]+/, newNumber);
 		}
 		var self = this;
+		var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
 		if (delayMs)
 			window.setTimeout(function(){self['animate'](properties, durationMs, linearity, callback);}, delayMs);
 		else {
 			durationMs = durationMs || 500;
 			linearity = linearity || 0;
-			var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
 			
 			self.each(function(li) {
 				var p = {o:MINI(li), s:{}, e:{}, u:{}}; 
