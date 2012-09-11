@@ -1627,10 +1627,9 @@ window['MINI'] = (function() {
 	 *                 parameter for this function is the id selector with the syntax "#id".
 	 * @return a DOM object of the first match, or undefined if the selector did not return at least one match
 	 */
-    function $$(selector) {
+    MINI['$$'] = function(selector) {
 		return dollarRaw(selector)[0];
-	}
-	MINI['$$'] = $$;
+	};
 
    /**
      * @stop
