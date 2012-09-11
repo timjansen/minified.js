@@ -1734,8 +1734,9 @@ window['MINI'] = (function() {
 	MINI['el'] = function(e, attributes, children) {
 		// @cond debug if (!e) error("el() requires the element name."); 
 		// @cond debug if (/:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
-		var nu = document.documentElement.namespaceURI; // to check whether doc is XHTML
-		var list = MINI(e = e.nodeType ? e : nu ? document.createElementNS(nu, e) : document.createElement(e));
+		var doc = document;
+		var nu = doc.documentElement.namespaceURI; // to check whether doc is XHTML
+		var list = MINI(e = e.nodeType ? e : nu ? doc.createElementNS(nu, e) : doc.createElement(e));
 		return  (isList(attributes) || !isObject(attributes)) ? list.add(attributes) : list.set(attributes).add(children); 
 	};
 		
