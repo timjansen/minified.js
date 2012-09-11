@@ -130,7 +130,6 @@ window['MINI'] = (function() {
 	 * @id dollar
 	 * @module 1
 	 * @requires dollarraw addelementlistfuncsstart
-	 * @configurable yes
 	 * @name MINI()
 	 * @syntax MINI(selector)
 	 * @syntax MINI(selector, context)
@@ -371,22 +370,14 @@ window['MINI'] = (function() {
      * @dependency yes
      */
 	function M(list) {
-		var self = this;
-		var len = self['length'] = list.length;
+		var len = this['length'] = list.length;
 		for (var i = 0; i < len; i++)
-			self[i] = list[i];
-
-		function eachlist(callback) {
-			each(list, callback); // use list, as a real Array may be faster
-			return self;
-		};
-		
+			this[i] = list[i];
 		
 		/**
 		 * @id listraw
 		 * @module 1
 		 * @requires dollar
-		 * @configurable yes
 		 * @name list.raw
 		 * @syntax raw
 		 * Returns the creation object of this list, either an Array, a NodeList or another MINI list. 
@@ -396,7 +387,7 @@ window['MINI'] = (function() {
 		 * $($('.myElement').filter().raw.slice(1, 3)).addClass('secondOrThird'); 
 		 * </pre>
 		 */
-		self['raw'] = list;
+		this['raw'] = list;
 		
 		/**
 		 * @id listlength
@@ -416,1196 +407,1206 @@ window['MINI'] = (function() {
 		 */
 		// empty, always defined above
 		
-        /**
-         * @id each
-         * @module 1
-         * @requires dollar
-         * @configurable yes
-         * @name list.each()
-         * @syntax each(callback)
-         * Invokes the given function once for each item in the list with the item as first parameter and the zero-based index as second.
-         *
-         * @example This goes through all h2 elements of the class 'section' and changes their content:
-         * <pre>
-         * $('h2.section').each(function(item, index) {
-         *     item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
-         * });
-         * </pre>
-         *
-         * @param callback the callback function(item, index) to invoke.
-         * @return the list
-         */
-		self['each'] = eachlist;
-		
-		/**
-		 * @id filter
-		 * @module 1
-		 * @requires dollar
-		 * @configurable yes
-		 * @name list.filter()
-		 * @syntax filter(filterFunc)
-		 * Creates a new list that contains only those items approved by the given function. The function is called once for each item. 
-		 * If it returns true, the item is in the returned list, otherwise it will be removed.
-		 * This function also guarantees that the returned list is always based on an Array and thus its raw property has access to all
-		 * Array functions.
-		 *
-		 * @example Creates a list of all unchecked checkboxes.
-		 * <pre>
-		 * var list = $('input').filter(function(item) {
-		 *     return item.getAttribute('type') == 'checkbox' && item.checked;
-		 * });
-		 * </pre>
-		 * 
-		 * @example Converts a list to an Array-based list and uses the function Array.slice() to select only the second and third elements. Note that the Array returned by slice()
-		 *               is a new Array object and does not contain addClass(), so the new Array must be converted to a MINI list using $() first.
-		 * <pre>
-		 * $($('.myElement').filter().raw.slice(1, 3)).addClass('secondOrThird'); 
-		 * </pre>
-		 *
-		 * @param filterFunc optional the callback function(item, index) to invoke for each item with the item as first argument and the 0-based index as second argument.  
-		 *        If the function returns false for an item, it is not included in the resulting list. If you omit the callback (or use null), filter() returns a new Array-based list that is a shallow copy
-		 *        of the original.
-		 * @return the new list, always guaranteed to be based on Array and always a new instance
-		 */
-		self['filter'] = function(filterFunc) {
-		    return new M(filter(list, filterFunc));
-		};
-		
-		/** 
-         * @id collect 
-         * @module 1 
-         * @requires dollar 
-         * @configurable yes 
-         * @name list.collect() 
-         * @syntax collect(collectFunc) 
-         * @syntax collect(collectFunc, resultList) 
-         * Creates a new list from the current list with the help of the given callback function. 
-         * The callback is invoked once for each element of the current 
-         * list. The callback results will be appended either to the given resultList, or to 
-         * a new array. The callback can return 
-         * <ul> 
-         * <li>An array or another list-like object whose elements will be appended to the result array as single elements.</li> 
-         * <li>A regular object which will be appended to the list</li> 
-         * <li>null (or undefined), which means that no object will be added to the list. 
-         * If you need to add null or modified to the result list, put it into a single-element array.</li> 
-         * </ul> 
-         * 
-         * @example Goes through input elements. If they are text inputs, their value will be added to the list: 
-         * <pre> 
-         * var texts = $('input').collect(function(input) { 
-         * if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') // text is default, so check for null 
-         *     return input.value; 
-         * else 
-         *     return null; // ignore 
-         * }); 
-         * </pre> 
-         * 
-         * @example Creates a list of all children of the selected list. 
-         * <pre> 
-         * var childList = $('.mySections').collect(function(node) { 
-         * return node.childNodes; // adds a while list of nodes 
-         * }); 
-         * </pre> 
-         * 
-         * @example Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case: 
-         * <pre> 
-         * var elements = $('input.myTexts').collect(function(item) { 
-         *     return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()]; 
-         * }); 
-         * </pre> 
-         * 
-         * @param collectFunc the callback function(item, index) to invoke for each item with the item as first argument and the 
-         * 0-based index as second argument. 
-         * If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls 
-         * will be ignored and not added. 
-         * @param resultList optional if given, an array to append the elements to. collect() will use push() to add them. 
-         * If omitted, a new array-based list will be created. 
-         * @return the new list. If resultList has been omitted, the result is guaranteed to be based 
-         * on Array and always a new instance 
-         */ 
-		self['collect'] = function(collectFunc, resultList) { 
-        	 return addElementListFuncs(collect(list, collectFunc, resultList)); 
-         };
-		
-		/**
-		 * @id listremove
-		 * @module 1
-		 * @requires dollar
-		 * @configurable yes
-		 * @name list.remove()
-		 * @syntax remove()
-		 * Removes all nodes of the list from the DOM tree.
-		 * 
-		 * @example Removes the element with the id 'myContainer', including all children, from the DOM tree.
-		 * <pre>
-		 * $('#myContainer').remove(); 
-		 * </pre>
-		 */
-         self['remove'] = function() {
-			for (var j = len-1; j >= 0; j--) // go backward - NodeList may shrink when elements are removed!
-				list[j].parentNode.removeChild(list[j]);
-		};
-		
-		/**
-		 * @id set
-		 * @module 1
-		 * @requires dollar getnamecomponents
-		 * @configurable yes
-		 * @name list.set()
-		 * @syntax MINI(selector).set(name, value)
-		 * @syntax MINI(selector).set(properties)
-		 * @syntax MINI(selector).set(name, value, defaultFunction)
-		 * @syntax MINI(selector).set(properties, undefined, defaultFunction)
-		 * @syntax MINI(selector).set(properties, undefined, defaultFunction, defaultPrefix)
-		 * Modifies the list's DOM elements or objects by setting their properties and/or attributes. set() has also special support for 
-		 * setting an element's CSS style. You can either supply a single name and value to set only one property, or you
-		 * can provide a map of properties to set.
-		 * More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will
-		 * be set.
-		 * 
-		 * @example Unchecking checkboxes:
-		 * <pre>
-		 * $('input.checkbox').set('checked', false);
-		 * </pre>
-		 * 
-		 * @example Changing the text of the next sibling:
-		 * <pre>
-		 * $('input.checkbox').set('nextSibling.innerHTML', 'New Text');
-		 * </pre>
-		 * 
-		 * @example Changing styles:
-		 * <pre>
-		 * $('.bigText').set('$font-size', 'x-large');
-		 * </pre>
-		 * 
-		 * @example Changing attributes:
-		 * <pre>
-		 * $('a.someLinks').set('@href', 'http://www.example.com/');
-		 * </pre>
-		 * 
-		 * @example Changing attribute of the parent node:
-		 * <pre>
-		 * $('a.someLinks').set('parentNode.@title', 'Links');
-		 * </pre>
-		 * 
-		 * @example Using a map to change several properties:
-		 * <pre>
-		 * $('input.checkbox').set({checked: false,
-		 *                          'nextSibling.innerHTML': 'New Text',
-		 *                          'parentNode.@title': 'Check this'});
-		 * </pre>
-		 * 
-		 * @example When specifying CSS styles in maps, use underscores instead of dashes in the names to avoid quoting:
-		 * <pre>
-		 * $('.importantText').set({$fontSize: 'x-large',
-		 *                          $color: 'black',
-		 *                          $backgroundColor: 'red'});
-		 * </pre>
-		 * 
-		 * @example You can specify a function as value to modify a value instead of just setting it:
-		 * <pre>
-		 * $('h2').set('innerHTML', function(oldValue, index) { 
-		 * 		return 'Chapter ' + index + ': ' + oldValue.toUpperCase(); 
-		 * });
-		 * </pre>
-		 * 
-		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
-		 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
-		 *                     A dollar ('$') prefix is a shortcut for 'style.'.
-		 *                     In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
-		 *                     set the property 'className' instead of '@class' and set styles using the '$' syntax.
-		 * 
-		 * @param value the value to set. If it is a function, the function will be invoked for each list element to evaluate the value. 
-		 * The function is called with with the old value as first argument and the index in the list as second.
-		 * The third value is the function itself.
-		 * If value is null and name specified an attribute, the value will be ignored.
-		 * @param properties a map containing names as keys and the values to set as map values. See above for the syntax.
-		 * @param defaultFunction optional if set and no function is provided as value, this function will be invoked for each list element 
-		 *                                 and property to determine the value. The function is called with with the old value as first 
-		 *                                 argument and the index in the list as second. The third value is the new value specified
-		 *                                 in the set() call.
-		 * @return the list
-		 */
-		function set(name, value, defaultFunction) {
-			// @cond debug if (name == null) error("First argument must be set!");
-			if (value === undef) 
-				each(name, function(n,v) { set(n, v, defaultFunction); });
-			else {
-				// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
-				var components = getNameComponents(name), len = components.length-1;
-				var lastName = components[len].replace(/^@/, '');
-				var f = isFunction(value) ? value : defaultFunction;
-				eachlist( 
-					function(obj, c) {
-						for (var i = 0; i < len; i++)
-							obj = obj[components[i]];
-						var newValue = f ? f(lastName == components[len] ? obj[lastName] : obj.getAttribute(lastName), c, value) : value;
-						if (lastName == components[len])
-							obj[lastName] = newValue;
-						else if (newValue != null)  
-							obj.setAttribute(lastName, newValue);
-					});
-			}
-			return self;
-		};
-		self['set'] = set;
-		
-		/**
-		 * @id append
-		 * @module 1
-		 * @requires set
-		 * @configurable yes
-		 * @name append()
-		 * @syntax MINI(selector).append(name, value)
-		 * @syntax MINI(selector).append(properties)
-		 * Appends strings to properties or attributes of list items. append() works mostly like set() and supports the same syntax for properties, but instead of
-		 * overwriting the old values, it reads the old value, converts it to a string and then appends the given value.
-		 * 
-		 * @example Add a link after each h2 headline:
-		 * <pre>
-		 * $('h2').append('outerHTML', '<a href="#toc">Table of Content</a>');
-		 * </pre>
-		 *
-		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
-		 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
-		 *                     A dollar ('$') prefix is a shortcut for 'style.'.
-		 * @param value the value to append. It will be converted to a string before appending it. 
-		 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
-		 *                    return value will not be appended, but will overwrite the existing value.
-		 * @param properties a map containing names as keys and the values to append as map values. See above for the syntax.
-		 * @return the list
-		 */
-		self['append'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
 
-		/**
-		 * @id prepend
-		 * @module 1
-		 * @requires set
-		 * @configurable yes
-		 * @name prepend()
-		 * @syntax MINI(selector).prepend(name, value)
-		 * @syntax MINI(selector).prepend(properties)
-		 * Prepends strings to properties or attributes of list items. prepend() works mostly like set() and supports the same syntax for properties, but instead of
-		 * overwriting the old values, it reads the old value, converts it to a string and then prepends the given value.
-		 * 
-		 * @example Put a horizontal ruler in front of each h2 headline:
-		 * <pre>
-		 * $('h2').prepend('outerHTML', '<hr />');
-		 * </pre>
-		 *
-		 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
-		 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
-		 *                     A dollar ('$') prefix is a shortcut for 'style.'.
-		 * @param value the value to prepend. It will be converted to a string before prepending it. 
-		 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
-		 *                    return value will not be prepended, but will overwrite the existing value.
-		 * @param properties a map containing names as keys and the values to prepend as map values. See above for the syntax.
-		 * @return the list
-		 */
-		self['prepend'] = function (name, value) { return set(name, value, function(oldValue, idx, newValue) { return newValue + toString(oldValue);});};
-
-		
-		/**
-		 * @id listadd
-		 * @module 2
-		 * @requires dollar
-		 * @configurable yes
-		 * @name list.add()
-		 * @syntax MINI(selector).add(text)
-		 * @syntax MINI(selector).add(callbackFunction)
-		 * @syntax MINI(selector).add(elementContent)
-		 * Adds the given node(s) as content to the list elements as additional nodes. If a string has been given, it will be added as text node to all elements.
-		 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
-		 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
-		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
-		 *
-		 * 
-		 *
-		 * @example Using the following HTML:
-		 * <pre>
-		 * &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
-		 * </pre> 
-		 * Add a text to the given 'comment' div:
-		 * <pre>
-		 * $('#comments').add('Some additional text.');
-		 * </pre>
-		 * This results in:
-		 * <pre>
-		 * &lt;div id="comments">Here is some text.&lt;br/>&lt;Some additional text./div>
-		 * </pre> 
-		 *
-		 * @example Using the following HTML: 
-		 * <pre>
-		 * &lt;ul id="myList">
-		 *   &lt;li>First list entry&lt;/li>
-		 *   &lt;li>Second list entry&lt;/li>
-		 * &lt;/ul>
-		 * </pre>
-		 * The following Javascript adds an element to the list:
-		 * <pre>
-		 * $('#myList').add(EE('li', 'My extra point');
-		 * </pre>
-		 * This results in
-		 * <pre>
-		 * &lt;ul id="myList">
-		 *   &lt;li>First list entry&lt;/li>
-		 *   &lt;li>Second list entry&lt;/li>
-		 *   &lt;li>My extra point&lt;/li>
-		 * &lt;/ul>
-		 * </pre>
-		 *
-		 * @example Use a list to add several elements at once:
-		 * <pre>
-		 * $('#comments').add([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
-		 * </pre>
-		 *
-		 * @example If you need to add an element or a list to more than one element, you need to provide a factory function:
-		 * <pre>
-		 * $('.chapter').add(function(e, index) { return EE('div', 'Scroll down for the next chapter.'); });
-		 * </pre>
-		 *
-		 * @param text a text to add as text node of the list elements
-		 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements.
-		 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements.
-		 * @return the current list
-		 */
-		var addGeneric = self['add'] = function (children, addFunction) {
-			return eachlist(function(e, index) {
-				var lastAdded;
-				(function appendChildren(c) {
-					if (isList(c))
-						each(c, appendChildren);
-					else if (c != null) {   // must check null, as 0 is a valid parameter 
-						var n = c.nodeType ? c : document.createTextNode(c);
-						if (lastAdded)
-							lastAdded.parentNode.insertBefore(n, lastAdded.nextSibling);
-						else if (addFunction)
-							addFunction(n, e); 
-						else
-							e.appendChild(n);
-						lastAdded = n;
-					}
-				})(isFunction(children) ? children(e, index) : (children == null || children.nodeType || isList(children)) && index ? null : children);
-			});
-		};
-
-		
-		/**
-		 * @id listfill
-		 * @module 2
-		 * @requires dollar
-		 * @configurable yes
-		 * @name list.fill()
-		 * @syntax MINI(selector).fill()
-		 * @syntax MINI(selector).fill(text)
-		 * @syntax MINI(selector).fill(callbackFunction)
-		 * @syntax MINI(selector).fill(elementContent)
-		 * Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node to all elements.
-		 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
-		 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
-		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
-		 *
-		 * Call fill() without arguments to remove all children from a node.
-		 * 
-		 * @example Using the following HTML:
-		 * <pre>
-		 * &lt;div id="status">Done&lt;/div>
-		 * </pre> 
-		 * fill() with a simple string replaces the element's content with the text:
-		 * <pre>
-		 * $('#status').fill('Please Wait..');
-		 * </pre>
-		 * Results in:
-		 * <pre>
-		 * &lt;div id="status">Please Wait..&lt;/div>
-		 * </pre> 
-		 *
-		 * @example Pass an element to replace the old content with that. Note that an element can only be added to the first match:
-		 * <pre>
-		 * $('#status').fill(EE('span', {'className': 'bold'}, 'Please Wait...'));
-		 * </pre>
-		 * With the previous example's HTML, this would create this:
-		 * <pre>
-		 * &lt;div id="status">&lt;span class='bold'>Please Wait..&lt;/span>&lt;/div>
-		 * </pre> 
-		 *
-		 * @example You can also pass a list of elements and texts:
-		 * <pre>
-		 * $('#status').fill(['Here', EE('br'), 'are', EE('br'), 'four', EE('br'), 'lines.]);
-		 * </pre>
-		 *
-		 * @example Or a complete structure built using EE:
-		 * <pre>
-		 * $('#myListContainer').fill([EE('h2', 'My List'), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]);
-		 * </pre>
-		 *
-		 * @example If you need to add your list to more than one element, you must add a factory function that re-creates
-		 *              the list for every instance:
-		 * <pre>
-		 * $('.listContainers').fill(function(e, index) { return [EE('h2', 'List Number '+index), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]});
-		 * </pre>
-		 *
-		 * @example fill() without arguments deletes the content of the list elements:
-		 * <pre>
-		 * $('.listContainers').fill();
-		 * </pre>
-		 *
-		 * @param text a text to set as text node of the list elements
-		 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
-		 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
-		 *              this list's first match.
-		 * @return the current list
-		 */
-		self['fill'] = function (children) {
-			eachlist(function(e) { MINI(e.childNodes).remove(); });
-			return addGeneric(children);
-		};
-
-		/**
-		 * @id listaddbefore
-		 * @module 2
-		 * @requires dollar
-		 * @configurable yes
-		 * @name list.addBefore()
-		 * @syntax MINI(selector).addBefore(text)
-		 * @syntax MINI(selector).addBefore(callbackFunction)
-		 * @syntax MINI(selector).addBefore(elementContent)
-		 * Inserts the given text or element(s) as sibling in front of each element of this list. If a string has been given, it will be added as text node.
-		 * If you pass an element or a list, it will be inserted <strong>only in front of the first element of the list</strong>. In order to add elements
-		 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
-		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
-		 *
-		 * @example Using the following HTML:
-		 * <pre>
-		 * &lt;div>
-		 *   <div id="mainText">Here is some text</div>
-		 * &lt;/div>
-		 * </pre>  
-		 * addBefore() adds text in front of the selected list items.
-		 * <pre>
-		 * $('#mainText').addBefore('COMMENT');
-		 * </pre>
-		 * This results in:
-		 * <pre>
-		 * &lt;div>
-		 *   COMMENT
-		 *   <div id="mainText">Here is some text</div>
-		 * &lt;/div>
-		 * </pre>  
-		 *
-		 * @example You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
-		 * <pre>
-		 * $('#mainText').addBefore(EE('span', {'className': 'important'}, 'WARNING'));
-		 * </pre>
-		 * With the previous example's HTML, this would create this:
-		 * <pre>
-		 * &lt;div>
-		 *   &lt;span class="important">WARNING&lt;/span>
-		 *   <div id="mainText">Here is some text</div>
-		 * &lt;/div>
-		 * </pre> 
-		 *
-		 * @example Lists of elements and nodes are possible as well. Like nodes, it will only be added to the first list item.
-		 * <pre>
-		 * $('#status').addBefore([EE('hr'), 'WARNING']);
-		 * </pre>
-		 *
-		 * @example If you need to add your list to more than one list item, you must add a factory function that re-creates
-		 *              the list for every instance:
-		 * <pre>
-		 * $('.textSnippets').addBefore(function(e, index) { return [EE('hr'), 'WARNING']; });
-		 * </pre>
-		 *
-		 * @param text a text to insert as text node in front of the list elements
-		 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
-		 * @param elementContent content to insert in front of <strong>the first element</strong> of the list. The content can be a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
-		 *              this list's first match.
-		 * @return the current list
-		 */
-		self['addBefore'] = function (children) {
-			return addGeneric(children, function(newNode, refNode) { refNode.parentNode.insertBefore(newNode, refNode); });
-		};
-		
-		/**
-		 * @id listaddafter
-		 * @module 2
-		 * @requires dollar
-		 * @configurable yes
-		 * @name list.addAfter()
-		 * @syntax MINI(selector).addAfter(text)
-		 * @syntax MINI(selector).addAfter(callbackFunction)
-		 * @syntax MINI(selector).addAfter(elementContent)
-		 * Inserts the given text or element(s) as sibling after each element of this list. If a string has been given, it will be added as text node.
-		 * If you pass an element or a list, it will be inserted <strong>only after of the first element of the list</strong>. In order to add elements
-		 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
-		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
-		 *
-		 * @example Using the following HTML:
-		 * <pre>
-		 * &lt;div>
-		 *   <div id="mainText">Here is some text</div>
-		 * &lt;/div>
-		 * </pre>   
-		 * Use addAfter() with a simple string to add a text node.
-		 * <pre>
-		 * $('#mainText').addAfter('Disclaimer: bla bla bla');
-		 * </pre>
-		 * This results in the following HTML:
-		 * <pre>
-		 * &lt;div>
-		 *   <div id="mainText">Here is some text</div>
-		 *   Disclaimer: bla bla bla
-		 * &lt;/div>
-		 * </pre>   
-		 *
-		 * @example You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
-		 * <pre>
-		 * $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
-		 * </pre>
-		 * With the previous example's HTML, this would create this:
-		 * <pre>
-		 * &lt;div>
-		 *   <div id="mainText">Disclaimer: bla bla bla</div>
-		 *   &lt;span class="disclaimer">WARNING&lt;/span>
-		 * &lt;/div>
-		 * </pre> 
-		 *
-		 * @example Lists of elements and nodes are possible as well. Like nodes, it will only be added to the first list item.
-		 * <pre>
-		 * $('#status').addAfter([EE('hr'), 'Disclaimer']);
-		 * </pre>
-		 *
-		 * @example If you need to add your list to more than one list item, you must add a factory function that re-creates
-		 *              the list for every instance:
-		 * <pre>
-		 * $('.textSnippets').addAfter(function(e, index) { return [EE('hr'), 'Disclaimer']; });
-		 * </pre>
-		 *
-		 * @param text a text to insert as sibling text node after of the list elements
-		 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
-		 * @param elementContent content to insert <strong>only after the first element</strong> of the list. The content can be a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
-		 *              this list's first match.
-		 * @return the current list
-		 */
-		self['addAfter'] = function (children) {
-			return addGeneric(children, function(newNode, refNode) { refNode.parentNode.insertBefore(newNode, refNode.nextSibling); });
-		};
-		
-		/**
-		 * @id listaddfront
-		 * @module 2
-		 * @requires dollar
-		 * @configurable yes
-		 * @name list.addFront()
-		 * @syntax MINI(selector).addFront(text)
-		 * @syntax MINI(selector).addFront(callbackFunction)
-		 * @syntax MINI(selector).addFront(elementContent)
-		 * Adds the given node(s) as content to the list elements as additional nodes. Unlike add(), the new nodes will be the first children of the list items.
-		 * If a string has been given, it will be added as text node to all elements.
-		 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
-		 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
-		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
-		 *
-		 * @example Using the following HTML:
-		 * <pre>
-		 * &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
-		 * </pre> 
-		 * Add a text to the given 'comment' div:
-		 * <pre>
-		 * $('#comments').addFront('Some additional text. ');
-		 * </pre>
-		 * This results in:
-		 * <pre>
-		 * &lt;div id="comments">Some additional text.Here is some text.&lt;br/>&lt;/div>
-		 * </pre> 
-		 *
-		 * @example Using the following HTML: 
-		 * <pre>
-		 * &lt;ul id="myList">
-		 *   &lt;li>First list entry&lt;/li>
-		 *   &lt;li>Second list entry&lt;/li>
-		 * &lt;/ul>
-		 * </pre>
-		 * The following Javascript adds an element to the list:
-		 * <pre>
-		 * $('#myList').addFront(EE('li', 'My extra point'));
-		 * </pre>
-		 * This results in
-		 * <pre>
-		 * &lt;ul id="myList">
-		 *   &lt;li>My extra point&lt;/li>
-		 *   &lt;li>First list entry&lt;/li>
-		 *   &lt;li>Second list entry&lt;/li>
-		 * &lt;/ul>
-		 * </pre>
-		 *
-		 * @example Use a list to add several elements at once:
-		 * <pre>
-		 * $('#comments').addFront([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
-		 * </pre>
-		 *
-		 * @example If you need to add an element or a list to more than one element, you need to provide a factory function:
-		 * <pre>
-		 * $('.chapter').addFront(function(e, index) { return EE('div', 'Scroll down for the next chapter.'); });
-		 * </pre>
-		 *
-		 * @param text a text to add as text node of the list elements
-		 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements.
-		 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements.
-		 * @return the current list
-		 */
-		self['addFront'] = function (children) {
-			return addGeneric(children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
-		};
-		
-		/**
-		 * @id listreplace
-		 * @module 2
-		 * @requires dollar
-		 * @configurable yes
-		 * @name list.replace()
-		 * @syntax MINI(selector).replace(text)
-		 * @syntax MINI(selector).replace(callbackFunction)
-		 * @syntax MINI(selector).replace(elementContent)
-		 * Replaces the list items with the the given node(s) in the DOM tree. 
-		 * If a string has been given, each list item will be replaced with a new text node containing the string.
-		 * If you pass an element or a list, it will replace <strong>only the first element of the list</strong>. In order to replace 
-		 * several list items with content more complex than a string, you need to pass a factory function(element, index) thats creates new instances for each item. 
-		 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
-		 *
-		 * @example Using the following HTML:
-		 * <pre>
-		 * &lt;div id="comments">
-		 *    &lt;div id="commentOne">My old comment.&lt;/div>
-		 * &lt;/div>
-		 * </pre> 
-		 * Replaces the div 'commentOne':
-		 * <pre>
-		 * $('#commentOne').replace('Some new comment.');
-		 * </pre>
-		 * This results in:
-		 * <pre>
-		 * &lt;div id="comments">
-		 *    Some new comment.
-		 * &lt;/div>
-		 * </pre> 
-		 * Please note that not only the text has changed, but the whole &lt;div> has been replaced. If you only want to replace the element's text content
-		 * you should use fill() instead of replace().
-		 *
-		 * @example Using the following HTML: 
-		 * <pre>
-		 * &lt;ul id="myList">
-		 *   &lt;li>First list entry&lt;/li>
-		 *   &lt;li>Second list entry&lt;/li>
-		 * &lt;/ul>
-		 * </pre>
-		 * The following JavaScript will replace <strong>only the first &lt;li> element</strong>:
-		 * <pre>
-		 * $('#myList li').replace(EE('li', 'My extra point'));
-		 * </pre>
-		 * This results in
-		 * <pre>
-		 * &lt;ul id="myList">
-		 *   &lt;li>My extra point&lt;/li>
-		 *   &lt;li>Second list entry&lt;/li>
-		 * &lt;/ul>
-		 * </pre>
-		 *
-		 * @example If you need to replace several elements at once, you need to provide a factory function
-		 * <pre>
-		 * $('#myList li').replace(function(e, index) { return EE('li', 'My extra point'); });
-		 * </pre>
-		 * With the previous HTML would result in:
-		 * <pre>
-		 * &lt;ul id="myList">
-		 *   &lt;li>My extra point&lt;/li>
-		 *   &lt;li>My extra point&lt;/li>
-		 * &lt;/ul>
-		 * </pre>
-		 *
-		 * @example Use a list to add several elements at once:
-		 * <pre>
-		 * $('#myList li').replace(function(e, index) { return [EE('li', 'Extra point 1'), EE('li', 'Extra point 2')]; });
-		 * </pre>
-		 * Now every original &lt;li> element is replaced with two elements:
-		 * <pre>
-		 * &lt;ul id="myList">
-		 *   &lt;li>Extra point 1&lt;/li>
-		 *   &lt;li>Extra point 2&lt;/li>
-		 *   &lt;li>Extra point 1&lt;/li>
-		 *   &lt;li>Extra point 2&lt;/li>
-		 * &lt;/ul>
-		 * </pre>
-		 *
-		 * @param text a text for the text nodes that replace the list elements
-		 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements.
-		 * @param elementContent content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
-		 *              an HTML element or a list containing strings and/or HTML elements.
-		 * @return the current list
-		 */
-		self['replace'] = function (children) {
-			return addGeneric(children, function(newNode, refNode) { refNode.parentNode.replaceChild(newNode, refNode); });
-		};
-
-		
-		/**
-		 * @id listanimate
-		 * @module 7
-		 * @requires loop dollar getnamecomponents tostring
-		 * @configurable yes
-		 * @name list.animate()
-		 * @syntax MINI(selector).animate(properties)
-		 * @syntax MINI(selector).animate(properties, durationMs)
-		 * @syntax MINI(selector).animate(properties, durationMs, linearity)
-		 * @syntax MINI(selector).animate(properties, durationMs, linearity, callback)
-		 * @shortcut $(selector).animate(properties, durationMs, linearity, callback) - Enabled by default, but can be disabled in the builder.
-		 * Animates the items of the list by modifying their properties and attributes. animate() can work with numbers, strings that contain exactly one
-		 * number and which may also contain units or other text, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
-		 *
-		 * When you invoke the function, it will first read all old values from the object and extract their numbers and colors. These start values will be compared to 
-		 * the destination values that have been specified in the given properties. Then animate() will create a background task using MINI.loop() that will update the 
-		 * specified properties in frequent intervals so that they transition to their destination values.
-		 *
-		 * The start values will be read using the elements' style properties. Therefore it is important that you either set the start values directly in the elements'
-		 * style attribute, or set them yourself before you start the animation. Styles inherited from CSS definitions will not provide correct start values!
-		 *
-		 * You can define the kind of transition using the 'linearity' parameter. If you omit it or pass 0, animate's default algorithm will cause a smooth transition
-		 * from the start value to the end value. If you pass 1, the transition will be linear, with a sudden start and end of the animation. Any value between 0 and 1 
-		 * is also allowed and will give you a transition that is 'somewhat smooth'. 
-		 *
-		 * If the start value of a property is a string containing a number, animate() will always ignore all the surrounding text and use the destination value as a template 
-		 * for the value to write. This can cause problems if you mix units in CSS. For example, if the start value is '10%' and you specify an end value of '20px', animate
-		 * will do an animation from '10px' to '20px'. It is not able to convert units. 
-		 *
-		 * animate() does not only support strings with units, but any string containing exactly one number. This allows you, among other things, with IE-specific CSS properties.
-		 * For example, you can transition from a start value 'alpha(opacity = 0)' to 'alpha(opacity = 100)'. 
-		 *
-		 * When you animate colors, animate() is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not 
-		 * use color names such as 'red'.
-		 *
-		 * To allow more complex animation, animate() allows you to add a callback which will be called when the animation has finished. You can also specify a delay
-		 * to create timelines.
-		 *
-		 * @example Move an element. Note that you need to set the initial value for styles, unless they have been explicitly set
-		 * for the HTML element using the style attribute before or you set it earlier with an earlier set() or animate() invocation.
-		 * <pre>
-		 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})                // start values
-		 *                  .animate({$left: '50px', $top: '100px'}, 1000);  // animation
-		 * </pre>
-		 * 
-		 * @example Change the color of an element:
-		 * <pre>
-		 * $('#myBlushingDiv').set({$backgroundColor: '#000000'})
-		 *                    .animate({$backgroundColor: '#ff0000'}, 1000);
-		 * </pre>
-		 *
-		 * @example Chained animation using callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
-		 * <pre>
-		 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})
-		 *                  .animate({$left: '200px', $top: '0px'}, 600, 0, function(list) {
-		 *         list.animate({$left: '200px', $top: '200px'}, 800, 0, function(list) {
-		 *                list.animate({$left: '100px', $top: '100px'}, 400);
-		 *         });
-		 * });
-		 * </pre>
-		 *
-		 * @example Does same as the previous example, but implemented using delays:
-		 * <pre>
-		 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})
-		 *                  .animate({$left: '200px', $top: '0px'}, 600)
-		 *                  .animate({$left: '200px', $top: '200px'}, 800, 0, null, 600)
-		 *                  .animate({$left: '100px', $top: '100px'}, 400), 0, null, 600+800);
-		 * </pre>
-		 *
-		 * @example Three block race to the position 500px with delayed start:
-		 * <pre>
-		 * $('#racingDiv1').set({$left: '0px'}).animate({$left: '500px'}, 750, 0, null, 250); // waits 250ms, then needs 750ms
-		 * $('#racingDiv2').set({$left: '0px'}).animate({$left: '500px'}, 900, 1);            // starts immediately, linear motion, then needs 900ms
-		 * $('#racingDiv3').set({$left: '0px'}).animate({$left: '500px'}, 500, 0, null, 300); // waits 200ms, then needs 500ms
-		 * </pre>
-		 *
-		 * @param list a list of objects
-		 * @param properties a property map describing the end values of the corresponding properties. The names can use the
-		 *                   MINI.set syntax ('@' prefix for attributes, '$' for styles). Values must be either numbers, numbers with
-		 *                   units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). The properties will be set 
-		 *                   for all elements of the list.
-		 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms;
-		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0.
-		 * @param callback optional if given, this function(list) will be invoked the list as parameter when the animation finished
-		 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
-		 * @return the list
-		 */
-		self['animate'] = function (properties, durationMs, linearity, callback, delayMs) {
-			// @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
-			// @cond debug if (linearity < 0 || linearity > 1) error('Third parameter must be at least 0 and not larger than 1.');
-			// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
-			// @cond debug var colorRegexp = /^(rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|#\w{3}|#\w{6})\s*$/i;
-			function toNumWithoutUnit(v) {
-				return parseFloat(toString(v).replace(/[^\d.-]/g, ''));
-			}
-			function replaceValue(originalValue, newNumber) {
-				return toString(originalValue).replace(/-?[\d.]+/, newNumber);
-			}
-			if (delayMs)
-				window.setTimeout(function(){self['animate'](properties, durationMs, linearity, callback);}, delayMs);
-			else {
-				durationMs = durationMs || 500;
-				linearity = linearity || 0;
-				var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
-				eachlist(function(li) {
-					var p = {o:MINI(li), s:{}, e:{}, u:{}}; 
-					each(properties, function(name) {
-						var dest = properties[name];
-						var components = getNameComponents(name);
-						var len = components.length-1;
-						var lastName = components[len].replace(/^@/, '');
-						var a = li;
-						for (var j = 0; j < len; j++) 
-							a = a[components[j]];
-						p.s[name] = ((lastName != components[len]) ? a.getAttribute(lastName) : a[lastName]) || 0;
-						p.e[name] = /^[+-]=/.test(dest) ?
-							replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.replace(/\+?=/, ''))) 
-							: dest;
-						// @cond debug if (!colorRegexp.test(dest) && isNan(toNumWithoutUnit(dest))) error('End value of "'+name+'" is neither color nor number: ' + toString(dest));
-						// @cond debug if (!colorRegexp.test(p.s[name]) && isNan(toNumWithoutUnit(p.s[name]))) error('Start value of "'+name+'" is neither color nor number: ' + toString(p.s[name]));
-						// @cond debug if (colorRegexp.test(dest) && !colorRegexp.test(p.s[name])) error('End value of "'+name+'" looks like a color, but start value does not: ' + toString(p.s[name]));
-						// @cond debug if (colorRegexp.test(p.s[name]) && !colorRegexp.test(dest)) error('Start value of "'+name+'" looks like a color, but end value does not: ' + toString(dest));
-					});
-					initState.push(p);
-				});
-						
-				loop(function(timePassedMs, stop) {
-					function getColorComponent(colorCode, index) {
-						return (/^#/.test(colorCode)) ?
-							parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
-							:
-							parseInt(colorCode.replace(/[^\d,]+/g, '').split(',')[index]);
-					}
-
-					function interpolate(startValue, endValue) {
-						var d = endValue - startValue;
-						return startValue +  timePassedMs/durationMs * (linearity * d + (1-linearity) * timePassedMs/durationMs * (3*d - 2*d*timePassedMs/durationMs)); 
-					}
-					
-					if (timePassedMs >= durationMs || timePassedMs < 0) {
-						each(initState, function(isi) { // set destination values
-							isi.o.set(isi.e);
-						});
-						stop();
-						if (callback) 
-							callback(list);
-					}
-					else
-						each(initState, function(isi) {
-							each(isi.s, function(name, start) {
-								var newValue= 'rgb(', end=isi.e[name];
-								if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
-									for (var i = 0; i < 3; i++) 
-										newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i))) + (i < 2 ? ',' : ')');
-								}
-								else 
-									newValue = replaceValue(end, interpolate(toNumWithoutUnit(start), toNumWithoutUnit(end)));
-								isi.o.set(name, newValue);
-							});
-						});
-					});
-				}
-				return self;		
-			};
-
-		
-			/**
-			 * @id liston
-			 * @module 5
-			 * @requires dollar
-			 * @configurable yes
-			 * @name list.on()
-			 * @syntax MINI(selector).on(el, name, handler)
-			 * @shortcut $(selector).on(el, name, handler) - Enabled by default, but can be disabled in the builder.
-			 * Registers the function as event handler for all items in the list.
-			 * 
-			 * All handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
-			 * of the event (e.g. the button that has been clicked). The original event object the is object given to the event or obtained 
-			 * from 'window.event'. The compatibility event object has the following properties:
-			 * <ul>
-			 * <li><code>keyCode</code> - the key code, if it was a key press. Will return event.keyCode if set, otherwise event.which. This should work in practically all browsers. 
-			 *                                              See http://unixpapa.com/js/key.html for key code tables.</li>
-			 * <li><code>rightClick</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
-			 * <li><code>wheelDir</code> - for mouse wheel or scroll events, the direction (1 for up or -1 for down)</li>
-			 * <li><code>pageX</code> - the page coordinate of the event
-			 * <li><code>pageY</code> - the page coordinate of the event
-			 * </ul>
-			 * Unless the handler returns 'true', the event will not be propagated to other handlers.
-			 * 
-			 * @example Adds a simple click handler to a button. Event objects are ignored.
-			 * <pre>
-			 * $('#myButton').on('click', function() {
-			 *    window.alert('Button clicked!');
-			 * });
-			 * </pre>
-			 *
-			 * @example Adds a handler to all divs that paints their background color to red when clicked.
-			 * <pre>
-			 * $('div').on('click', function() {
-			 *    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
-			 * });
-			 * </pre>
-			 *
-			 * @example Adds an handler for mousedown events to a canvas:
-			 * <pre>
-			 * var ctx = $$('#myCanvas').getContext('2d');                      // get a canvas context
-			 * $('#myCanvas').on('mousedown', function(evt, extraInfo) {  // add handler for mouse down events
-			 *     if (extraInfo.rightButton)                                            // right mouse button paints white, all other black
-			 *         ctx.fillStyle = "white";
-			 *     else
-			 *         ctx.fillStyle = "black";
-			 *     ctx.fillRect(evt.clientX, evt.clientY, 1, 1);                     // paints a pixel at the cursor position
-			 * });
-			 * </pre>
-			 *
-			 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
-			 * @param handler the function(event, extraEvent) to invoke when the event has been triggered. The handler gets the original event object as
-			 *                first parameter and the compatibility object as second. 'this' is the element that caused the event.
-			 *                Unless the handler returns true, all further processing of the event will be stopped. 
-			 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
-			 *                is added to the handler in a property called 'MINI'.
-			 * @return the list
-			 */
-			self['on'] = function (name, handler) {
-				// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
-				// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
-				return eachlist(function(el) {
-					handler['MINI'] = handler['MINI'] || function(e) {
-						e = e || window.event;
-						var l = document.documentElement, b = document.body;
-						// @cond debug try {
-						if (!handler.call(e.target, e, { 
-								keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
-								rightClick: e.which ? (e.which == 3) : (e.button == 2),
-								pageX: l.scrollLeft + b.scrollLeft + e.clientX,
-								pageY: l.scrollTop + b.scrollTop + e.clientY,
-								wheelDir: (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1
-						})) {
-							if (e.preventDefault) // W3C DOM2 event cancelling
-								e.preventDefault();
-							if (e.stopPropagation) // cancel bubble for W3C DOM
-								e.stopPropagation();
-							e.returnValue = false; // cancel for IE
-							e.cancelBubble = true; // cancel bubble for IE
-						}
-						// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
-					};
-					if (el.addEventListener)
-						el.addEventListener(name, handler['MINI'], true); // W3C DOM
-					else 
-						el.attachEvent('on'+name, handler['MINI']);  // IE < 9 version
-				});
-			};
-			
-		/**
-		 * @id listoff
-		 * @module 5
-		 * @requires dollar liston
-		 * @configurable yes
-		 * @name list.off()
-		 * @syntax MINI.off(element, name, handler)
-		 * Removes the event handler. The call will be ignored if the given handler has not registered using on().
-		 * 
-		 * @example Adds a handler to an element
-		 * <pre>
-		 * function myEventHandler() {
-		 *    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
-		 * }
-		 * $('#myElement').on('click', myEventHandler);     // add event handler
-		 *
-		 * window.setInterval(function() {                      // after 5s, remove event handler
-		 *    $('#myElement').off('click', myEventHandler);
-		 * }, 5000);
-		 * </pre>
-		 * 
-		 * @param name the name of the event (see on)
-		 * @param handler the handler to unregister, as given to on(). It must be a handler that has previously been registered using
-		 *                on().
-	     * @return the list
-	     */
-		self['off'] = function (name, handler) {
-			// @cond debug if (!name || !name.substr) error("No name given or name not a string.");
-			// @cond debug if (!handler || !handler['MINI']) error("No handler given or handler invalid.");
-		   	return eachlist(function(el) {
-				if (el.addEventListener)
-					el.removeEventListener(name, handler['MINI'], true); // W3C DOM
-				else 
-					el.detachEvent('on'+name, handler['MINI']);  // IE < 9 version
-		   	});
-		};
-		
-		/**
-		 * @id listoffset
-		 * @module 1
-		 * @requires dollar
-		 * @configurable yes
-		 * @name list.offset()
-		 * @syntax MINI(selector).offset()
-		 * @shortcut $(selector).offset() - Enabled by default, unless disabled with "Disable $ and $$" option
-		 * Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, with 0/0 being the upper left corner, independent of the user's
-		 * current view (which depends on the user's current scroll position and zoom level).
-		 *
-		 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
-		 * <pre>
-		 * var pos = $('#myElement').offset();
-		 * $('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.left + ' top=' + pos.top);
-		 * </pre>
-		 *
-		 * @param element the element whose coordinates should be determined
-		 * @return an object containing pixel coordinates in two properties 'left' and 'top'
-		 */
-		self['offset'] = function() {
-			var elem = list[0];
-			var dest = {left: 0, top: 0};
-			while (elem) {
-				dest.left += elem.offsetLeft;
-				dest.top += elem.offsetTop;
-				elem = elem.offsetParent;
-			}
-			return dest;
-	     };
-
-	    /**
-	     * @id createclassnameregexp
-	     * @dependency yes
-	     */
-	    function createClassNameRegExp(className) {
-	        return new RegExp(backslashB + className + backslashB);
-	    }
-	    
-	    /**
-	     * @id removeclassregexp
-	     * @dependency yes
-	     */
-		function removeClassRegExp(el, reg) {
-			return el.className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/g, ' ');
-		}
-	    
-		/**
-		 * @id listhasclass
-		 * @module 1
-		 * @requires dollar createclassnameregexp
-		 * @configurable yes
-		 * @name list.hasClass()
-		 * @syntax hasClass(className)
-		 * Checks whether any element in the list of nodes has a class with the given name. Returns the first node if found, or undefined if not found.
-		 *
-		 * @example Checks whether the element 'myElement' the class 'myClass'. If yes, it sets the text color to red.
-		 * <pre>
-		 * if($('#myElement').hasClass('myClass'))
-		 *     $('#myElement').set('$color', 'red');
-		 * </pre>
-		 *
-		 * @param className the name to find 
-		 * @return the first element found with the class name, or undefined if not found
-		 */
-		self['hasClass'] = function(className) {
-	        var reg = createClassNameRegExp(className); 
-	        for (var i = 0; i < len; i++)
-	        	if (reg.test(list[i].className||''))
-	           		return list[i];
-	        // fall through if no match!
-	    };
-
-	    /**
-	     * @id listremoveclass
-	     * @module 1
-	     * @requires dollar createclassnameregexp removeclassregexp
-	     * @configurable yes
-		 * @name list.removeClass()
-	     * @syntax removeClass(className)
-	     * Removes the given class from all elements of the list. Elements that do not have the class will be ignored.
-	     * 
-	     * @example Remove the class 'myClass' from all divs that have the class 'sector':
-	     * <pre>
-	     * $('div.sector').removeClass('myClass');
-	     * </pre>
-	     * @param className the name to remove
-	     */
-	    self['removeClass'] = function removeClass(className) {
-	        var reg = createClassNameRegExp(className);
-	        return eachlist(function(li) {
-	        	li.className = removeClassRegExp(li, reg);
-	        });
-	    };
-
-	    /**
-	     * @id listaddclass
-	     * @module 1
-	     * @requires dollar listremoveclass
-	     * @configurable yes
-		 * @name list.addClass()
-	     * @syntax addClass(className)
-	     * Adds the given class name to all elements to the list. If the element already had that class, it will be removed and then
-	     * added again so that the new class is always the last.
-	     * 
-	     * @example Add the class 'myClass' to all divs that have the class 'sector':
-	     * <pre>
-	     * $('div.sector').addClass('myClass');
-	     * </pre>
-	     * 
-	     * @example Combine addClass() with removeClass() to replace a class:
-	     * <pre>
-	     * $('#myLabel').removeClass('highlighted').addClass('selectable');
-	     * </pre>
-	     * 
-	     * @param className the name to add
-	     */
-	    self['addClass'] = function(className) {
-	        self['removeClass'](className);
-	        return eachlist(function(li) {
-	            if (li.className)
-	                li.className += ' ' + className;
-	            else
-	                li.className = className;
-	        });
-	    };
-
-	    /**
-	     * @id listtoggleclass
-	     * @module 1
-	     * @requires dollar createclassnameregexp removeclassregexp
-	     * @configurable yes
-		 * @name list.toggleClass()
-	     * @syntax toggleClass(className)
-	     * Checks for all elements of the list whether they have the given class. If yes, it will be removed. Otherwise it will be added.
-	     * 
-	     * @example Toggle the class 'myClass' in 'someElement':
-	     * <pre>
-	     * $('#someElement').toggleClass('selected');
-	     * </pre>
-	     * 
-	     * @param className the name to toggle
-	     */
-	    self['toggleClass'] = function(className) {
-	        var reg = createClassNameRegExp(className);
-	        return eachlist(function(li) {
-	        	var cn = li.className;
-	        	li.className = cn ? (reg.test(cn) ? removeClassRegExp(li, reg) : (cn + ' ' + className)) : className;
-	        });
-	    };
 	    /**
 	     * @id addelementlistfuncend
 	     * @dependency yes
 	     */
 	}
+	var proto = M.prototype;
 	
+    /**
+     * @id each
+     * @module 1
+     * @requires dollar
+     * @configurable yes
+     * @name list.each()
+     * @syntax each(callback)
+     * Invokes the given function once for each item in the list with the item as first parameter and the zero-based index as second.
+     *
+     * @example This goes through all h2 elements of the class 'section' and changes their content:
+     * <pre>
+     * $('h2.section').each(function(item, index) {
+     *     item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
+     * });
+     * </pre>
+     *
+     * @param callback the callback function(item, index) to invoke.
+     * @return the list
+     */
+	proto['each'] = function (callback) {
+		each(this.raw, callback); // use list, as a real Array may be faster
+		return this;
+	};
+	
+	/**
+	 * @id filter
+	 * @module 1
+	 * @requires dollar
+	 * @configurable yes
+	 * @name list.filter()
+	 * @syntax filter(filterFunc)
+	 * Creates a new list that contains only those items approved by the given function. The function is called once for each item. 
+	 * If it returns true, the item is in the returned list, otherwise it will be removed.
+	 * This function also guarantees that the returned list is always based on an Array and thus its raw property has access to all
+	 * Array functions.
+	 *
+	 * @example Creates a list of all unchecked checkboxes.
+	 * <pre>
+	 * var list = $('input').filter(function(item) {
+	 *     return item.getAttribute('type') == 'checkbox' && item.checked;
+	 * });
+	 * </pre>
+	 * 
+	 * @example Converts a list to an Array-based list and uses the function Array.slice() to select only the second and third elements. Note that the Array returned by slice()
+	 *               is a new Array object and does not contain addClass(), so the new Array must be converted to a MINI list using $() first.
+	 * <pre>
+	 * $($('.myElement').filter().raw.slice(1, 3)).addClass('secondOrThird'); 
+	 * </pre>
+	 *
+	 * @param filterFunc optional the callback function(item, index) to invoke for each item with the item as first argument and the 0-based index as second argument.  
+	 *        If the function returns false for an item, it is not included in the resulting list. If you omit the callback (or use null), filter() returns a new Array-based list that is a shallow copy
+	 *        of the original.
+	 * @return the new list, always guaranteed to be based on Array and always a new instance
+	 */
+	proto['filter'] = function(filterFunc) {
+	    return new M(filter(this.raw, filterFunc));
+	};
+	
+	/** 
+     * @id collect 
+     * @module 1 
+     * @requires dollar 
+     * @configurable yes 
+     * @name list.collect() 
+     * @syntax collect(collectFunc) 
+     * @syntax collect(collectFunc, resultList) 
+     * Creates a new list from the current list with the help of the given callback function. 
+     * The callback is invoked once for each element of the current 
+     * list. The callback results will be appended either to the given resultList, or to 
+     * a new array. The callback can return 
+     * <ul> 
+     * <li>An array or another list-like object whose elements will be appended to the result array as single elements.</li> 
+     * <li>A regular object which will be appended to the list</li> 
+     * <li>null (or undefined), which means that no object will be added to the list. 
+     * If you need to add null or modified to the result list, put it into a single-element array.</li> 
+     * </ul> 
+     * 
+     * @example Goes through input elements. If they are text inputs, their value will be added to the list: 
+     * <pre> 
+     * var texts = $('input').collect(function(input) { 
+     * if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') // text is default, so check for null 
+     *     return input.value; 
+     * else 
+     *     return null; // ignore 
+     * }); 
+     * </pre> 
+     * 
+     * @example Creates a list of all children of the selected list. 
+     * <pre> 
+     * var childList = $('.mySections').collect(function(node) { 
+     * return node.childNodes; // adds a while list of nodes 
+     * }); 
+     * </pre> 
+     * 
+     * @example Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case: 
+     * <pre> 
+     * var elements = $('input.myTexts').collect(function(item) { 
+     *     return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()]; 
+     * }); 
+     * </pre> 
+     * 
+     * @param collectFunc the callback function(item, index) to invoke for each item with the item as first argument and the 
+     * 0-based index as second argument. 
+     * If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls 
+     * will be ignored and not added. 
+     * @param resultList optional if given, an array to append the elements to. collect() will use push() to add them. 
+     * If omitted, a new array-based list will be created. 
+     * @return the new list. If resultList has been omitted, the result is guaranteed to be based 
+     * on Array and always a new instance 
+     */ 
+	proto['collect'] = function(collectFunc, resultList) { 
+    	 return new M(collect(this.raw, collectFunc, resultList)); 
+     };
+	
+	/**
+	 * @id listremove
+	 * @module 1
+	 * @requires dollar
+	 * @configurable yes
+	 * @name list.remove()
+	 * @syntax remove()
+	 * Removes all nodes of the list from the DOM tree.
+	 * 
+	 * @example Removes the element with the id 'myContainer', including all children, from the DOM tree.
+	 * <pre>
+	 * $('#myContainer').remove(); 
+	 * </pre>
+	 */
+     proto['remove'] = function() {
+    	var list = this.raw;
+		for (var j = list.length-1; j >= 0; j--) // go backward - NodeList may shrink when elements are removed!
+			this.raw[j].parentNode.removeChild(this.raw[j]);
+	};
+	
+	/**
+	 * @id set
+	 * @module 1
+	 * @requires dollar getnamecomponents
+	 * @configurable yes
+	 * @name list.set()
+	 * @syntax MINI(selector).set(name, value)
+	 * @syntax MINI(selector).set(properties)
+	 * @syntax MINI(selector).set(name, value, defaultFunction)
+	 * @syntax MINI(selector).set(properties, undefined, defaultFunction)
+	 * @syntax MINI(selector).set(properties, undefined, defaultFunction, defaultPrefix)
+	 * Modifies the list's DOM elements or objects by setting their properties and/or attributes. set() has also special support for 
+	 * setting an element's CSS style. You can either supply a single name and value to set only one property, or you
+	 * can provide a map of properties to set.
+	 * More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will
+	 * be set.
+	 * 
+	 * @example Unchecking checkboxes:
+	 * <pre>
+	 * $('input.checkbox').set('checked', false);
+	 * </pre>
+	 * 
+	 * @example Changing the text of the next sibling:
+	 * <pre>
+	 * $('input.checkbox').set('nextSibling.innerHTML', 'New Text');
+	 * </pre>
+	 * 
+	 * @example Changing styles:
+	 * <pre>
+	 * $('.bigText').set('$font-size', 'x-large');
+	 * </pre>
+	 * 
+	 * @example Changing attributes:
+	 * <pre>
+	 * $('a.someLinks').set('@href', 'http://www.example.com/');
+	 * </pre>
+	 * 
+	 * @example Changing attribute of the parent node:
+	 * <pre>
+	 * $('a.someLinks').set('parentNode.@title', 'Links');
+	 * </pre>
+	 * 
+	 * @example Using a map to change several properties:
+	 * <pre>
+	 * $('input.checkbox').set({checked: false,
+	 *                          'nextSibling.innerHTML': 'New Text',
+	 *                          'parentNode.@title': 'Check this'});
+	 * </pre>
+	 * 
+	 * @example When specifying CSS styles in maps, use underscores instead of dashes in the names to avoid quoting:
+	 * <pre>
+	 * $('.importantText').set({$fontSize: 'x-large',
+	 *                          $color: 'black',
+	 *                          $backgroundColor: 'red'});
+	 * </pre>
+	 * 
+	 * @example You can specify a function as value to modify a value instead of just setting it:
+	 * <pre>
+	 * $('h2').set('innerHTML', function(oldValue, index) { 
+	 * 		return 'Chapter ' + index + ': ' + oldValue.toUpperCase(); 
+	 * });
+	 * </pre>
+	 * 
+	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
+	 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
+	 *                     A dollar ('$') prefix is a shortcut for 'style.'.
+	 *                     In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
+	 *                     set the property 'className' instead of '@class' and set styles using the '$' syntax.
+	 * 
+	 * @param value the value to set. If it is a function, the function will be invoked for each list element to evaluate the value. 
+	 * The function is called with with the old value as first argument and the index in the list as second.
+	 * The third value is the function itself.
+	 * If value is null and name specified an attribute, the value will be ignored.
+	 * @param properties a map containing names as keys and the values to set as map values. See above for the syntax.
+	 * @param defaultFunction optional if set and no function is provided as value, this function will be invoked for each list element 
+	 *                                 and property to determine the value. The function is called with with the old value as first 
+	 *                                 argument and the index in the list as second. The third value is the new value specified
+	 *                                 in the set() call.
+	 * @return the list
+	 */
+	proto['set'] = function (name, value, defaultFunction) {
+		var self = this;
+		// @cond debug if (name == null) error("First argument must be set!");
+		if (value === undef) 
+			each(name, function(n,v) { self.set(n, v, defaultFunction); });
+		else {
+			// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
+			var components = getNameComponents(name), len = components.length-1;
+			var lastName = components[len].replace(/^@/, '');
+			var f = isFunction(value) ? value : defaultFunction;
+			self.each( 
+				function(obj, c) {
+					for (var i = 0; i < len; i++)
+						obj = obj[components[i]];
+					var newValue = f ? f(lastName == components[len] ? obj[lastName] : obj.getAttribute(lastName), c, value) : value;
+					if (lastName == components[len])
+						obj[lastName] = newValue;
+					else if (newValue != null)  
+						obj.setAttribute(lastName, newValue);
+				});
+		}
+		return self;
+	};
+	
+	/**
+	 * @id append
+	 * @module 1
+	 * @requires set
+	 * @configurable yes
+	 * @name append()
+	 * @syntax MINI(selector).append(name, value)
+	 * @syntax MINI(selector).append(properties)
+	 * Appends strings to properties or attributes of list items. append() works mostly like set() and supports the same syntax for properties, but instead of
+	 * overwriting the old values, it reads the old value, converts it to a string and then appends the given value.
+	 * 
+	 * @example Add a link after each h2 headline:
+	 * <pre>
+	 * $('h2').append('outerHTML', '<a href="#toc">Table of Content</a>');
+	 * </pre>
+	 *
+	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
+	 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
+	 *                     A dollar ('$') prefix is a shortcut for 'style.'.
+	 * @param value the value to append. It will be converted to a string before appending it. 
+	 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
+	 *                    return value will not be appended, but will overwrite the existing value.
+	 * @param properties a map containing names as keys and the values to append as map values. See above for the syntax.
+	 * @return the list
+	 */
+	proto['append'] = function (name, value) { return this.set(name, value, function(oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
+
+	/**
+	 * @id prepend
+	 * @module 1
+	 * @requires set
+	 * @configurable yes
+	 * @name prepend()
+	 * @syntax MINI(selector).prepend(name, value)
+	 * @syntax MINI(selector).prepend(properties)
+	 * Prepends strings to properties or attributes of list items. prepend() works mostly like set() and supports the same syntax for properties, but instead of
+	 * overwriting the old values, it reads the old value, converts it to a string and then prepends the given value.
+	 * 
+	 * @example Put a horizontal ruler in front of each h2 headline:
+	 * <pre>
+	 * $('h2').prepend('outerHTML', '<hr />');
+	 * </pre>
+	 *
+	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
+	 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
+	 *                     A dollar ('$') prefix is a shortcut for 'style.'.
+	 * @param value the value to prepend. It will be converted to a string before prepending it. 
+	 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
+	 *                    return value will not be prepended, but will overwrite the existing value.
+	 * @param properties a map containing names as keys and the values to prepend as map values. See above for the syntax.
+	 * @return the list
+	 */
+	proto['prepend'] = function (name, value) { return this.set(name, value, function(oldValue, idx, newValue) { return newValue + toString(oldValue);});};
+
+	
+	/**
+	 * @id listadd
+	 * @module 2
+	 * @requires dollar
+	 * @configurable yes
+	 * @name list.add()
+	 * @syntax MINI(selector).add(text)
+	 * @syntax MINI(selector).add(callbackFunction)
+	 * @syntax MINI(selector).add(elementContent)
+	 * Adds the given node(s) as content to the list elements as additional nodes. If a string has been given, it will be added as text node to all elements.
+	 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
+	 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
+	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 *
+	 * 
+	 *
+	 * @example Using the following HTML:
+	 * <pre>
+	 * &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
+	 * </pre> 
+	 * Add a text to the given 'comment' div:
+	 * <pre>
+	 * $('#comments').add('Some additional text.');
+	 * </pre>
+	 * This results in:
+	 * <pre>
+	 * &lt;div id="comments">Here is some text.&lt;br/>&lt;Some additional text./div>
+	 * </pre> 
+	 *
+	 * @example Using the following HTML: 
+	 * <pre>
+	 * &lt;ul id="myList">
+	 *   &lt;li>First list entry&lt;/li>
+	 *   &lt;li>Second list entry&lt;/li>
+	 * &lt;/ul>
+	 * </pre>
+	 * The following Javascript adds an element to the list:
+	 * <pre>
+	 * $('#myList').add(EE('li', 'My extra point');
+	 * </pre>
+	 * This results in
+	 * <pre>
+	 * &lt;ul id="myList">
+	 *   &lt;li>First list entry&lt;/li>
+	 *   &lt;li>Second list entry&lt;/li>
+	 *   &lt;li>My extra point&lt;/li>
+	 * &lt;/ul>
+	 * </pre>
+	 *
+	 * @example Use a list to add several elements at once:
+	 * <pre>
+	 * $('#comments').add([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
+	 * </pre>
+	 *
+	 * @example If you need to add an element or a list to more than one element, you need to provide a factory function:
+	 * <pre>
+	 * $('.chapter').add(function(e, index) { return EE('div', 'Scroll down for the next chapter.'); });
+	 * </pre>
+	 *
+	 * @param text a text to add as text node of the list elements
+	 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements.
+	 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements.
+	 * @return the current list
+	 */
+	proto['add'] = function (children, addFunction) {
+		return this.each(function(e, index) {
+			var lastAdded;
+			(function appendChildren(c) {
+				if (isList(c))
+					each(c, appendChildren);
+				else if (c != null) {   // must check null, as 0 is a valid parameter 
+					var n = c.nodeType ? c : document.createTextNode(c);
+					if (lastAdded)
+						lastAdded.parentNode.insertBefore(n, lastAdded.nextSibling);
+					else if (addFunction)
+						addFunction(n, e); 
+					else
+						e.appendChild(n);
+					lastAdded = n;
+				}
+			})(isFunction(children) ? children(e, index) : (children == null || children.nodeType || isList(children)) && index ? null : children);
+		});
+	};
+
+	
+	/**
+	 * @id listfill
+	 * @module 2
+	 * @requires dollar
+	 * @configurable yes
+	 * @name list.fill()
+	 * @syntax MINI(selector).fill()
+	 * @syntax MINI(selector).fill(text)
+	 * @syntax MINI(selector).fill(callbackFunction)
+	 * @syntax MINI(selector).fill(elementContent)
+	 * Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node to all elements.
+	 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
+	 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
+	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 *
+	 * Call fill() without arguments to remove all children from a node.
+	 * 
+	 * @example Using the following HTML:
+	 * <pre>
+	 * &lt;div id="status">Done&lt;/div>
+	 * </pre> 
+	 * fill() with a simple string replaces the element's content with the text:
+	 * <pre>
+	 * $('#status').fill('Please Wait..');
+	 * </pre>
+	 * Results in:
+	 * <pre>
+	 * &lt;div id="status">Please Wait..&lt;/div>
+	 * </pre> 
+	 *
+	 * @example Pass an element to replace the old content with that. Note that an element can only be added to the first match:
+	 * <pre>
+	 * $('#status').fill(EE('span', {'className': 'bold'}, 'Please Wait...'));
+	 * </pre>
+	 * With the previous example's HTML, this would create this:
+	 * <pre>
+	 * &lt;div id="status">&lt;span class='bold'>Please Wait..&lt;/span>&lt;/div>
+	 * </pre> 
+	 *
+	 * @example You can also pass a list of elements and texts:
+	 * <pre>
+	 * $('#status').fill(['Here', EE('br'), 'are', EE('br'), 'four', EE('br'), 'lines.]);
+	 * </pre>
+	 *
+	 * @example Or a complete structure built using EE:
+	 * <pre>
+	 * $('#myListContainer').fill([EE('h2', 'My List'), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]);
+	 * </pre>
+	 *
+	 * @example If you need to add your list to more than one element, you must add a factory function that re-creates
+	 *              the list for every instance:
+	 * <pre>
+	 * $('.listContainers').fill(function(e, index) { return [EE('h2', 'List Number '+index), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]});
+	 * </pre>
+	 *
+	 * @example fill() without arguments deletes the content of the list elements:
+	 * <pre>
+	 * $('.listContainers').fill();
+	 * </pre>
+	 *
+	 * @param text a text to set as text node of the list elements
+	 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
+	 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
+	 *              this list's first match.
+	 * @return the current list
+	 */
+	proto['fill'] = function (children) {
+		this.each(function(e) { MINI(e.childNodes).remove(); });
+		return this.add(children);
+	};
+
+	/**
+	 * @id listaddbefore
+	 * @module 2
+	 * @requires dollar
+	 * @configurable yes
+	 * @name list.addBefore()
+	 * @syntax MINI(selector).addBefore(text)
+	 * @syntax MINI(selector).addBefore(callbackFunction)
+	 * @syntax MINI(selector).addBefore(elementContent)
+	 * Inserts the given text or element(s) as sibling in front of each element of this list. If a string has been given, it will be added as text node.
+	 * If you pass an element or a list, it will be inserted <strong>only in front of the first element of the list</strong>. In order to add elements
+	 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
+	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 *
+	 * @example Using the following HTML:
+	 * <pre>
+	 * &lt;div>
+	 *   <div id="mainText">Here is some text</div>
+	 * &lt;/div>
+	 * </pre>  
+	 * addBefore() adds text in front of the selected list items.
+	 * <pre>
+	 * $('#mainText').addBefore('COMMENT');
+	 * </pre>
+	 * This results in:
+	 * <pre>
+	 * &lt;div>
+	 *   COMMENT
+	 *   <div id="mainText">Here is some text</div>
+	 * &lt;/div>
+	 * </pre>  
+	 *
+	 * @example You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
+	 * <pre>
+	 * $('#mainText').addBefore(EE('span', {'className': 'important'}, 'WARNING'));
+	 * </pre>
+	 * With the previous example's HTML, this would create this:
+	 * <pre>
+	 * &lt;div>
+	 *   &lt;span class="important">WARNING&lt;/span>
+	 *   <div id="mainText">Here is some text</div>
+	 * &lt;/div>
+	 * </pre> 
+	 *
+	 * @example Lists of elements and nodes are possible as well. Like nodes, it will only be added to the first list item.
+	 * <pre>
+	 * $('#status').addBefore([EE('hr'), 'WARNING']);
+	 * </pre>
+	 *
+	 * @example If you need to add your list to more than one list item, you must add a factory function that re-creates
+	 *              the list for every instance:
+	 * <pre>
+	 * $('.textSnippets').addBefore(function(e, index) { return [EE('hr'), 'WARNING']; });
+	 * </pre>
+	 *
+	 * @param text a text to insert as text node in front of the list elements
+	 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
+	 * @param elementContent content to insert in front of <strong>the first element</strong> of the list. The content can be a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
+	 *              this list's first match.
+	 * @return the current list
+	 */
+	proto['addBefore'] = function (children) {
+		return this.add(children, function(newNode, refNode) { refNode.parentNode.insertBefore(newNode, refNode); });
+	};
+	
+	/**
+	 * @id listaddafter
+	 * @module 2
+	 * @requires dollar
+	 * @configurable yes
+	 * @name list.addAfter()
+	 * @syntax MINI(selector).addAfter(text)
+	 * @syntax MINI(selector).addAfter(callbackFunction)
+	 * @syntax MINI(selector).addAfter(elementContent)
+	 * Inserts the given text or element(s) as sibling after each element of this list. If a string has been given, it will be added as text node.
+	 * If you pass an element or a list, it will be inserted <strong>only after of the first element of the list</strong>. In order to add elements
+	 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
+	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 *
+	 * @example Using the following HTML:
+	 * <pre>
+	 * &lt;div>
+	 *   <div id="mainText">Here is some text</div>
+	 * &lt;/div>
+	 * </pre>   
+	 * Use addAfter() with a simple string to add a text node.
+	 * <pre>
+	 * $('#mainText').addAfter('Disclaimer: bla bla bla');
+	 * </pre>
+	 * This results in the following HTML:
+	 * <pre>
+	 * &lt;div>
+	 *   <div id="mainText">Here is some text</div>
+	 *   Disclaimer: bla bla bla
+	 * &lt;/div>
+	 * </pre>   
+	 *
+	 * @example You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
+	 * <pre>
+	 * $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
+	 * </pre>
+	 * With the previous example's HTML, this would create this:
+	 * <pre>
+	 * &lt;div>
+	 *   <div id="mainText">Disclaimer: bla bla bla</div>
+	 *   &lt;span class="disclaimer">WARNING&lt;/span>
+	 * &lt;/div>
+	 * </pre> 
+	 *
+	 * @example Lists of elements and nodes are possible as well. Like nodes, it will only be added to the first list item.
+	 * <pre>
+	 * $('#status').addAfter([EE('hr'), 'Disclaimer']);
+	 * </pre>
+	 *
+	 * @example If you need to add your list to more than one list item, you must add a factory function that re-creates
+	 *              the list for every instance:
+	 * <pre>
+	 * $('.textSnippets').addAfter(function(e, index) { return [EE('hr'), 'Disclaimer']; });
+	 * </pre>
+	 *
+	 * @param text a text to insert as sibling text node after of the list elements
+	 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
+	 * @param elementContent content to insert <strong>only after the first element</strong> of the list. The content can be a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
+	 *              this list's first match.
+	 * @return the current list
+	 */
+	proto['addAfter'] = function (children) {
+		return this.add(children, function(newNode, refNode) { refNode.parentNode.insertBefore(newNode, refNode.nextSibling); });
+	};
+	
+	/**
+	 * @id listaddfront
+	 * @module 2
+	 * @requires dollar
+	 * @configurable yes
+	 * @name list.addFront()
+	 * @syntax MINI(selector).addFront(text)
+	 * @syntax MINI(selector).addFront(callbackFunction)
+	 * @syntax MINI(selector).addFront(elementContent)
+	 * Adds the given node(s) as content to the list elements as additional nodes. Unlike add(), the new nodes will be the first children of the list items.
+	 * If a string has been given, it will be added as text node to all elements.
+	 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
+	 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
+	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 *
+	 * @example Using the following HTML:
+	 * <pre>
+	 * &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
+	 * </pre> 
+	 * Add a text to the given 'comment' div:
+	 * <pre>
+	 * $('#comments').addFront('Some additional text. ');
+	 * </pre>
+	 * This results in:
+	 * <pre>
+	 * &lt;div id="comments">Some additional text.Here is some text.&lt;br/>&lt;/div>
+	 * </pre> 
+	 *
+	 * @example Using the following HTML: 
+	 * <pre>
+	 * &lt;ul id="myList">
+	 *   &lt;li>First list entry&lt;/li>
+	 *   &lt;li>Second list entry&lt;/li>
+	 * &lt;/ul>
+	 * </pre>
+	 * The following Javascript adds an element to the list:
+	 * <pre>
+	 * $('#myList').addFront(EE('li', 'My extra point'));
+	 * </pre>
+	 * This results in
+	 * <pre>
+	 * &lt;ul id="myList">
+	 *   &lt;li>My extra point&lt;/li>
+	 *   &lt;li>First list entry&lt;/li>
+	 *   &lt;li>Second list entry&lt;/li>
+	 * &lt;/ul>
+	 * </pre>
+	 *
+	 * @example Use a list to add several elements at once:
+	 * <pre>
+	 * $('#comments').addFront([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
+	 * </pre>
+	 *
+	 * @example If you need to add an element or a list to more than one element, you need to provide a factory function:
+	 * <pre>
+	 * $('.chapter').addFront(function(e, index) { return EE('div', 'Scroll down for the next chapter.'); });
+	 * </pre>
+	 *
+	 * @param text a text to add as text node of the list elements
+	 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements.
+	 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements.
+	 * @return the current list
+	 */
+	proto['addFront'] = function (children) {
+		return this.add(children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
+	};
+	
+	/**
+	 * @id listreplace
+	 * @module 2
+	 * @requires dollar
+	 * @configurable yes
+	 * @name list.replace()
+	 * @syntax MINI(selector).replace(text)
+	 * @syntax MINI(selector).replace(callbackFunction)
+	 * @syntax MINI(selector).replace(elementContent)
+	 * Replaces the list items with the the given node(s) in the DOM tree. 
+	 * If a string has been given, each list item will be replaced with a new text node containing the string.
+	 * If you pass an element or a list, it will replace <strong>only the first element of the list</strong>. In order to replace 
+	 * several list items with content more complex than a string, you need to pass a factory function(element, index) thats creates new instances for each item. 
+	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 *
+	 * @example Using the following HTML:
+	 * <pre>
+	 * &lt;div id="comments">
+	 *    &lt;div id="commentOne">My old comment.&lt;/div>
+	 * &lt;/div>
+	 * </pre> 
+	 * Replaces the div 'commentOne':
+	 * <pre>
+	 * $('#commentOne').replace('Some new comment.');
+	 * </pre>
+	 * This results in:
+	 * <pre>
+	 * &lt;div id="comments">
+	 *    Some new comment.
+	 * &lt;/div>
+	 * </pre> 
+	 * Please note that not only the text has changed, but the whole &lt;div> has been replaced. If you only want to replace the element's text content
+	 * you should use fill() instead of replace().
+	 *
+	 * @example Using the following HTML: 
+	 * <pre>
+	 * &lt;ul id="myList">
+	 *   &lt;li>First list entry&lt;/li>
+	 *   &lt;li>Second list entry&lt;/li>
+	 * &lt;/ul>
+	 * </pre>
+	 * The following JavaScript will replace <strong>only the first &lt;li> element</strong>:
+	 * <pre>
+	 * $('#myList li').replace(EE('li', 'My extra point'));
+	 * </pre>
+	 * This results in
+	 * <pre>
+	 * &lt;ul id="myList">
+	 *   &lt;li>My extra point&lt;/li>
+	 *   &lt;li>Second list entry&lt;/li>
+	 * &lt;/ul>
+	 * </pre>
+	 *
+	 * @example If you need to replace several elements at once, you need to provide a factory function
+	 * <pre>
+	 * $('#myList li').replace(function(e, index) { return EE('li', 'My extra point'); });
+	 * </pre>
+	 * With the previous HTML would result in:
+	 * <pre>
+	 * &lt;ul id="myList">
+	 *   &lt;li>My extra point&lt;/li>
+	 *   &lt;li>My extra point&lt;/li>
+	 * &lt;/ul>
+	 * </pre>
+	 *
+	 * @example Use a list to add several elements at once:
+	 * <pre>
+	 * $('#myList li').replace(function(e, index) { return [EE('li', 'Extra point 1'), EE('li', 'Extra point 2')]; });
+	 * </pre>
+	 * Now every original &lt;li> element is replaced with two elements:
+	 * <pre>
+	 * &lt;ul id="myList">
+	 *   &lt;li>Extra point 1&lt;/li>
+	 *   &lt;li>Extra point 2&lt;/li>
+	 *   &lt;li>Extra point 1&lt;/li>
+	 *   &lt;li>Extra point 2&lt;/li>
+	 * &lt;/ul>
+	 * </pre>
+	 *
+	 * @param text a text for the text nodes that replace the list elements
+	 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements.
+	 * @param elementContent content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
+	 *              an HTML element or a list containing strings and/or HTML elements.
+	 * @return the current list
+	 */
+	proto['replace'] = function (children) {
+		return this.add(children, function(newNode, refNode) { refNode.parentNode.replaceChild(newNode, refNode); });
+	};
+
+	
+	/**
+	 * @id listanimate
+	 * @module 7
+	 * @requires loop dollar getnamecomponents tostring
+	 * @configurable yes
+	 * @name list.animate()
+	 * @syntax MINI(selector).animate(properties)
+	 * @syntax MINI(selector).animate(properties, durationMs)
+	 * @syntax MINI(selector).animate(properties, durationMs, linearity)
+	 * @syntax MINI(selector).animate(properties, durationMs, linearity, callback)
+	 * @shortcut $(selector).animate(properties, durationMs, linearity, callback) - Enabled by default, but can be disabled in the builder.
+	 * Animates the items of the list by modifying their properties and attributes. animate() can work with numbers, strings that contain exactly one
+	 * number and which may also contain units or other text, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
+	 *
+	 * When you invoke the function, it will first read all old values from the object and extract their numbers and colors. These start values will be compared to 
+	 * the destination values that have been specified in the given properties. Then animate() will create a background task using MINI.loop() that will update the 
+	 * specified properties in frequent intervals so that they transition to their destination values.
+	 *
+	 * The start values will be read using the elements' style properties. Therefore it is important that you either set the start values directly in the elements'
+	 * style attribute, or set them yourself before you start the animation. Styles inherited from CSS definitions will not provide correct start values!
+	 *
+	 * You can define the kind of transition using the 'linearity' parameter. If you omit it or pass 0, animate's default algorithm will cause a smooth transition
+	 * from the start value to the end value. If you pass 1, the transition will be linear, with a sudden start and end of the animation. Any value between 0 and 1 
+	 * is also allowed and will give you a transition that is 'somewhat smooth'. 
+	 *
+	 * If the start value of a property is a string containing a number, animate() will always ignore all the surrounding text and use the destination value as a template 
+	 * for the value to write. This can cause problems if you mix units in CSS. For example, if the start value is '10%' and you specify an end value of '20px', animate
+	 * will do an animation from '10px' to '20px'. It is not able to convert units. 
+	 *
+	 * animate() does not only support strings with units, but any string containing exactly one number. This allows you, among other things, with IE-specific CSS properties.
+	 * For example, you can transition from a start value 'alpha(opacity = 0)' to 'alpha(opacity = 100)'. 
+	 *
+	 * When you animate colors, animate() is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not 
+	 * use color names such as 'red'.
+	 *
+	 * To allow more complex animation, animate() allows you to add a callback which will be called when the animation has finished. You can also specify a delay
+	 * to create timelines.
+	 *
+	 * @example Move an element. Note that you need to set the initial value for styles, unless they have been explicitly set
+	 * for the HTML element using the style attribute before or you set it earlier with an earlier set() or animate() invocation.
+	 * <pre>
+	 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})                // start values
+	 *                  .animate({$left: '50px', $top: '100px'}, 1000);  // animation
+	 * </pre>
+	 * 
+	 * @example Change the color of an element:
+	 * <pre>
+	 * $('#myBlushingDiv').set({$backgroundColor: '#000000'})
+	 *                    .animate({$backgroundColor: '#ff0000'}, 1000);
+	 * </pre>
+	 *
+	 * @example Chained animation using callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
+	 * <pre>
+	 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})
+	 *                  .animate({$left: '200px', $top: '0px'}, 600, 0, function(list) {
+	 *         list.animate({$left: '200px', $top: '200px'}, 800, 0, function(list) {
+	 *                list.animate({$left: '100px', $top: '100px'}, 400);
+	 *         });
+	 * });
+	 * </pre>
+	 *
+	 * @example Does same as the previous example, but implemented using delays:
+	 * <pre>
+	 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})
+	 *                  .animate({$left: '200px', $top: '0px'}, 600)
+	 *                  .animate({$left: '200px', $top: '200px'}, 800, 0, null, 600)
+	 *                  .animate({$left: '100px', $top: '100px'}, 400), 0, null, 600+800);
+	 * </pre>
+	 *
+	 * @example Three block race to the position 500px with delayed start:
+	 * <pre>
+	 * $('#racingDiv1').set({$left: '0px'}).animate({$left: '500px'}, 750, 0, null, 250); // waits 250ms, then needs 750ms
+	 * $('#racingDiv2').set({$left: '0px'}).animate({$left: '500px'}, 900, 1);            // starts immediately, linear motion, then needs 900ms
+	 * $('#racingDiv3').set({$left: '0px'}).animate({$left: '500px'}, 500, 0, null, 300); // waits 200ms, then needs 500ms
+	 * </pre>
+	 *
+	 * @param list a list of objects
+	 * @param properties a property map describing the end values of the corresponding properties. The names can use the
+	 *                   MINI.set syntax ('@' prefix for attributes, '$' for styles). Values must be either numbers, numbers with
+	 *                   units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). The properties will be set 
+	 *                   for all elements of the list.
+	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms;
+	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0.
+	 * @param callback optional if given, this function(list) will be invoked the list as parameter when the animation finished
+	 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
+	 * @return the list
+	 */
+	proto['animate'] = function (properties, durationMs, linearity, callback, delayMs) {
+		// @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
+		// @cond debug if (linearity < 0 || linearity > 1) error('Third parameter must be at least 0 and not larger than 1.');
+		// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
+		// @cond debug var colorRegexp = /^(rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|#\w{3}|#\w{6})\s*$/i;
+		function toNumWithoutUnit(v) {
+			return parseFloat(toString(v).replace(/[^\d.-]/g, ''));
+		}
+		function replaceValue(originalValue, newNumber) {
+			return toString(originalValue).replace(/-?[\d.]+/, newNumber);
+		}
+		var self = this;
+		if (delayMs)
+			window.setTimeout(function(){self['animate'](properties, durationMs, linearity, callback);}, delayMs);
+		else {
+			durationMs = durationMs || 500;
+			linearity = linearity || 0;
+			var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
+			
+			self.each(function(li) {
+				var p = {o:MINI(li), s:{}, e:{}, u:{}}; 
+				each(properties, function(name) {
+					var dest = properties[name];
+					var components = getNameComponents(name);
+					var len = components.length-1;
+					var lastName = components[len].replace(/^@/, '');
+					var a = li;
+					for (var j = 0; j < len; j++) 
+						a = a[components[j]];
+					p.s[name] = ((lastName != components[len]) ? a.getAttribute(lastName) : a[lastName]) || 0;
+					p.e[name] = /^[+-]=/.test(dest) ?
+						replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.replace(/\+?=/, ''))) 
+						: dest;
+					// @cond debug if (!colorRegexp.test(dest) && isNan(toNumWithoutUnit(dest))) error('End value of "'+name+'" is neither color nor number: ' + toString(dest));
+					// @cond debug if (!colorRegexp.test(p.s[name]) && isNan(toNumWithoutUnit(p.s[name]))) error('Start value of "'+name+'" is neither color nor number: ' + toString(p.s[name]));
+					// @cond debug if (colorRegexp.test(dest) && !colorRegexp.test(p.s[name])) error('End value of "'+name+'" looks like a color, but start value does not: ' + toString(p.s[name]));
+					// @cond debug if (colorRegexp.test(p.s[name]) && !colorRegexp.test(dest)) error('Start value of "'+name+'" looks like a color, but end value does not: ' + toString(dest));
+				});
+				initState.push(p);
+			});
+					
+			loop(function(timePassedMs, stop) {
+				function getColorComponent(colorCode, index) {
+					return (/^#/.test(colorCode)) ?
+						parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
+						:
+						parseInt(colorCode.replace(/[^\d,]+/g, '').split(',')[index]);
+				}
+
+				function interpolate(startValue, endValue) {
+					var d = endValue - startValue;
+					return startValue +  timePassedMs/durationMs * (linearity * d + (1-linearity) * timePassedMs/durationMs * (3*d - 2*d*timePassedMs/durationMs)); 
+				}
+				
+				if (timePassedMs >= durationMs || timePassedMs < 0) {
+					each(initState, function(isi) { // set destination values
+						isi.o.set(isi.e);
+					});
+					stop();
+					if (callback) 
+						callback(self.raw);
+				}
+				else
+					each(initState, function(isi) {
+						each(isi.s, function(name, start) {
+							var newValue= 'rgb(', end=isi.e[name];
+							if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
+								for (var i = 0; i < 3; i++) 
+									newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i))) + (i < 2 ? ',' : ')');
+							}
+							else 
+								newValue = replaceValue(end, interpolate(toNumWithoutUnit(start), toNumWithoutUnit(end)));
+							isi.o.set(name, newValue);
+						});
+					});
+				});
+			}
+			return self;		
+		};
+
+	
+		/**
+		 * @id liston
+		 * @module 5
+		 * @requires dollar
+		 * @configurable yes
+		 * @name list.on()
+		 * @syntax MINI(selector).on(el, name, handler)
+		 * @shortcut $(selector).on(el, name, handler) - Enabled by default, but can be disabled in the builder.
+		 * Registers the function as event handler for all items in the list.
+		 * 
+		 * All handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
+		 * of the event (e.g. the button that has been clicked). The original event object the is object given to the event or obtained 
+		 * from 'window.event'. The compatibility event object has the following properties:
+		 * <ul>
+		 * <li><code>keyCode</code> - the key code, if it was a key press. Will return event.keyCode if set, otherwise event.which. This should work in practically all browsers. 
+		 *                                              See http://unixpapa.com/js/key.html for key code tables.</li>
+		 * <li><code>rightClick</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
+		 * <li><code>wheelDir</code> - for mouse wheel or scroll events, the direction (1 for up or -1 for down)</li>
+		 * <li><code>pageX</code> - the page coordinate of the event
+		 * <li><code>pageY</code> - the page coordinate of the event
+		 * </ul>
+		 * Unless the handler returns 'true', the event will not be propagated to other handlers.
+		 * 
+		 * @example Adds a simple click handler to a button. Event objects are ignored.
+		 * <pre>
+		 * $('#myButton').on('click', function() {
+		 *    window.alert('Button clicked!');
+		 * });
+		 * </pre>
+		 *
+		 * @example Adds a handler to all divs that paints their background color to red when clicked.
+		 * <pre>
+		 * $('div').on('click', function() {
+		 *    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
+		 * });
+		 * </pre>
+		 *
+		 * @example Adds an handler for mousedown events to a canvas:
+		 * <pre>
+		 * var ctx = $$('#myCanvas').getContext('2d');                      // get a canvas context
+		 * $('#myCanvas').on('mousedown', function(evt, extraInfo) {  // add handler for mouse down events
+		 *     if (extraInfo.rightButton)                                            // right mouse button paints white, all other black
+		 *         ctx.fillStyle = "white";
+		 *     else
+		 *         ctx.fillStyle = "black";
+		 *     ctx.fillRect(evt.clientX, evt.clientY, 1, 1);                     // paints a pixel at the cursor position
+		 * });
+		 * </pre>
+		 *
+		 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
+		 * @param handler the function(event, extraEvent) to invoke when the event has been triggered. The handler gets the original event object as
+		 *                first parameter and the compatibility object as second. 'this' is the element that caused the event.
+		 *                Unless the handler returns true, all further processing of the event will be stopped. 
+		 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
+		 *                is added to the handler in a property called 'MINI'.
+		 * @return the list
+		 */
+		proto['on'] = function (name, handler) {
+			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
+			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
+			return this.each(function(el) {
+				handler['MINI'] = handler['MINI'] || function(e) {
+					e = e || window.event;
+					var l = document.documentElement, b = document.body;
+					// @cond debug try {
+					if (!handler.call(e.target, e, { 
+							keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
+							rightClick: e.which ? (e.which == 3) : (e.button == 2),
+							pageX: l.scrollLeft + b.scrollLeft + e.clientX,
+							pageY: l.scrollTop + b.scrollTop + e.clientY,
+							wheelDir: (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1
+					})) {
+						if (e.preventDefault) // W3C DOM2 event cancelling
+							e.preventDefault();
+						if (e.stopPropagation) // cancel bubble for W3C DOM
+							e.stopPropagation();
+						e.returnValue = false; // cancel for IE
+						e.cancelBubble = true; // cancel bubble for IE
+					}
+					// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
+				};
+				if (el.addEventListener)
+					el.addEventListener(name, handler['MINI'], true); // W3C DOM
+				else 
+					el.attachEvent('on'+name, handler['MINI']);  // IE < 9 version
+			});
+		};
+		
+	/**
+	 * @id listoff
+	 * @module 5
+	 * @requires dollar liston
+	 * @configurable yes
+	 * @name list.off()
+	 * @syntax MINI.off(element, name, handler)
+	 * Removes the event handler. The call will be ignored if the given handler has not registered using on().
+	 * 
+	 * @example Adds a handler to an element
+	 * <pre>
+	 * function myEventHandler() {
+	 *    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
+	 * }
+	 * $('#myElement').on('click', myEventHandler);     // add event handler
+	 *
+	 * window.setInterval(function() {                      // after 5s, remove event handler
+	 *    $('#myElement').off('click', myEventHandler);
+	 * }, 5000);
+	 * </pre>
+	 * 
+	 * @param name the name of the event (see on)
+	 * @param handler the handler to unregister, as given to on(). It must be a handler that has previously been registered using
+	 *                on().
+     * @return the list
+     */
+	proto['off'] = function (name, handler) {
+		// @cond debug if (!name || !name.substr) error("No name given or name not a string.");
+		// @cond debug if (!handler || !handler['MINI']) error("No handler given or handler invalid.");
+	   	return this.each(function(el) {
+			if (el.addEventListener)
+				el.removeEventListener(name, handler['MINI'], true); // W3C DOM
+			else 
+				el.detachEvent('on'+name, handler['MINI']);  // IE < 9 version
+	   	});
+	};
+	
+	/**
+	 * @id listoffset
+	 * @module 1
+	 * @requires dollar
+	 * @configurable yes
+	 * @name list.offset()
+	 * @syntax MINI(selector).offset()
+	 * @shortcut $(selector).offset() - Enabled by default, unless disabled with "Disable $ and $$" option
+	 * Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, with 0/0 being the upper left corner, independent of the user's
+	 * current view (which depends on the user's current scroll position and zoom level).
+	 *
+	 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
+	 * <pre>
+	 * var pos = $('#myElement').offset();
+	 * $('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.left + ' top=' + pos.top);
+	 * </pre>
+	 *
+	 * @param element the element whose coordinates should be determined
+	 * @return an object containing pixel coordinates in two properties 'left' and 'top'
+	 */
+	proto['offset'] = function() {
+		var elem = this.raw[0];
+		var dest = {left: 0, top: 0};
+		while (elem) {
+			dest.left += elem.offsetLeft;
+			dest.top += elem.offsetTop;
+			elem = elem.offsetParent;
+		}
+		return dest;
+     };
+
+    /**
+     * @id createclassnameregexp
+     * @dependency yes
+     */
+    function createClassNameRegExp(className) {
+        return new RegExp(backslashB + className + backslashB);
+    }
+    
+    /**
+     * @id removeclassregexp
+     * @dependency yes
+     */
+	function removeClassRegExp(el, reg) {
+		return el.className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/g, ' ');
+	}
+    
+	/**
+	 * @id listhasclass
+	 * @module 1
+	 * @requires dollar createclassnameregexp
+	 * @configurable yes
+	 * @name list.hasClass()
+	 * @syntax hasClass(className)
+	 * Checks whether any element in the list of nodes has a class with the given name. Returns the first node if found, or undefined if not found.
+	 *
+	 * @example Checks whether the element 'myElement' the class 'myClass'. If yes, it sets the text color to red.
+	 * <pre>
+	 * if($('#myElement').hasClass('myClass'))
+	 *     $('#myElement').set('$color', 'red');
+	 * </pre>
+	 *
+	 * @param className the name to find 
+	 * @return the first element found with the class name, or undefined if not found
+	 */
+	proto['hasClass'] = function(className) {
+		var list = this.raw;
+        var reg = createClassNameRegExp(className); 
+        for (var i = 0; i < list.length; i++)
+        	if (reg.test(list[i].className||''))
+           		return list[i];
+        // fall through if no match!
+    };
+
+    /**
+     * @id listremoveclass
+     * @module 1
+     * @requires dollar createclassnameregexp removeclassregexp
+     * @configurable yes
+	 * @name list.removeClass()
+     * @syntax removeClass(className)
+     * Removes the given class from all elements of the list. Elements that do not have the class will be ignored.
+     * 
+     * @example Remove the class 'myClass' from all divs that have the class 'sector':
+     * <pre>
+     * $('div.sector').removeClass('myClass');
+     * </pre>
+     * @param className the name to remove
+     */
+    proto['removeClass'] = function removeClass(className) {
+        var reg = createClassNameRegExp(className);
+        return this.each(function(li) {
+        	li.className = removeClassRegExp(li, reg);
+        });
+    };
+
+    /**
+     * @id listaddclass
+     * @module 1
+     * @requires dollar listremoveclass
+     * @configurable yes
+	 * @name list.addClass()
+     * @syntax addClass(className)
+     * Adds the given class name to all elements to the list. If the element already had that class, it will be removed and then
+     * added again so that the new class is always the last.
+     * 
+     * @example Add the class 'myClass' to all divs that have the class 'sector':
+     * <pre>
+     * $('div.sector').addClass('myClass');
+     * </pre>
+     * 
+     * @example Combine addClass() with removeClass() to replace a class:
+     * <pre>
+     * $('#myLabel').removeClass('highlighted').addClass('selectable');
+     * </pre>
+     * 
+     * @param className the name to add
+     */
+    proto['addClass'] = function(className) {
+        this['removeClass'](className);
+        return this.each(function(li) {
+            if (li.className)
+                li.className += ' ' + className;
+            else
+                li.className = className;
+        });
+    };
+
+    /**
+     * @id listtoggleclass
+     * @module 1
+     * @requires dollar createclassnameregexp removeclassregexp
+     * @configurable yes
+	 * @name list.toggleClass()
+     * @syntax toggleClass(className)
+     * Checks for all elements of the list whether they have the given class. If yes, it will be removed. Otherwise it will be added.
+     * 
+     * @example Toggle the class 'myClass' in 'someElement':
+     * <pre>
+     * $('#someElement').toggleClass('selected');
+     * </pre>
+     * 
+     * @param className the name to toggle
+     */
+    proto['toggleClass'] = function(className) {
+        var reg = createClassNameRegExp(className);
+        return this.each(function(li) {
+        	var cn = li.className;
+        	li.className = cn ? (reg.test(cn) ? removeClassRegExp(li, reg) : (cn + ' ' + className)) : className;
+        });
+    };
+    
     /**
 	 * @id dollardollar
 	 * @module 1
