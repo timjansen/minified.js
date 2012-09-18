@@ -235,7 +235,10 @@ window['MINI'] = (function() {
 	 *             as a whole, not be in document order anymore. The array returned has several convenience functions listed below:
 	 */
 	function MINI(selector, context) { 
+		// @condblock ready
 		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context));
+		// @condend
+		// @cond ready return new M(dollarRaw(selector, context));
 	}
 	
 	/**
