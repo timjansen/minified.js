@@ -13,8 +13,8 @@
 
 		var colorToggle = $('#box1').toggle({$backgroundColor: '#f00'}, {$backgroundColor: '#00f'}, 500);
 		$('#colorButton').on('click', colorToggle);
-		$('#redButton').on('click', function() {colorToggle(false);});
-		$('#blueButton').on('click', function() {colorToggle(true);});
+		$('#redButton').on('click', colorToggle, [false]);
+		$('#blueButton').on('click', colorToggle, [true]);
 	});
 	</script>
 	

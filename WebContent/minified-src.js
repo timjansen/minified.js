@@ -552,10 +552,12 @@ window['MINI'] = (function() {
 			this.raw[j].parentNode.removeChild(this.raw[j]);
 	};
 	
+    
+
 	/**
 	 * @id set
 	 * @module 1
-	 * @requires dollar getnamecomponents
+	 * @requires dollar getnamecomponents 
 	 * @configurable yes
 	 * @name list.set()
 	 * @syntax MINI(selector).set(name, value)
@@ -639,19 +641,34 @@ window['MINI'] = (function() {
 			each(name, function(n,v) { self.set(n, v, defaultFunction); });
 		else {
 			// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
-			var components = getNameComponents(name), len = components.length-1;
-			var lastName = components[len].replace(/^@/, '');
-			var f = isFunction(value) ? value : defaultFunction;
-			self.each( 
-				function(obj, c) {
-					for (var i = 0; i < len; i++)
-						obj = obj[components[i]];
-					var newValue = f ? f(lastName == components[len] ? obj[lastName] : obj.getAttribute(lastName), c, value) : value;
-					if (lastName == components[len])
-						obj[lastName] = newValue;
-					else if (newValue != null)  
-						obj.setAttribute(lastName, newValue);
+			if (name == '$')
+				self.each(function(obj) {
+					var className = obj.className || '';
+					each(value.split(/\s+/), function(clzz) {
+						var cName = clzz.replace(/^[+-]/, '');
+						var reg = new RegExp(backslashB + cName + backslashB);
+						var contains = reg.test(className);
+						className = className.replace(reg, '');
+						if (/^\+/.test(clzz) || (cName==clzz && !contains)) // for + and toggle-add
+							className += ' ' + cName;
+					});
+					obj.className = className.replace(/^\s+|\s+$|\s+(?=\s)/g, '');
 				});
+			else {
+				var components = getNameComponents(name), len = components.length-1;
+				var lastName = components[len].replace(/^@/, '');
+				var f = isFunction(value) ? value : defaultFunction;
+				self.each( 
+					function(obj, c) {
+						for (var i = 0; i < len; i++)
+							obj = obj[components[i]];
+						var newValue = f ? f(lastName == components[len] ? obj[lastName] : obj.getAttribute(lastName), c, value) : value;
+						if (lastName == components[len])
+							obj[lastName] = newValue;
+						else if (newValue != null)  
+							obj.setAttribute(lastName, newValue);
+				});
+			}
 		}
 		return self;
 	};
@@ -1397,21 +1414,21 @@ window['MINI'] = (function() {
 			
 			var self = this['set'](state1);
 			var animState = {};
-			var state;
+			var state, d;
 
 			return function(newState) {
-				var d = durationMs;
-				var s = (state = (newState === true || newState === false) ? newState : !state) ? state2 : state1;
-				
-				if (animState['time'] != null) { // stop running animation if there is one 
-					animState.stop();
-					d = animState['time'];
+				if (newState === true || newState === false) {
+					if (newState == state) 
+						{console.log('abort');return;}
+					state = newState;
 				}
-				
-				if (d)
-					self['animate'](s, d, linearity, null, null, animState);
 				else
-					self['set'](s);
+					state = !state;
+
+				if (d = (animState['time'] != null) ? (animState.stop() || animState['time']) : durationMs)
+					self['animate'](state ? state2 : state1, d, linearity, null, null, animState);
+				else
+					self['set'](state ? state2 : state1);
 			};
 		};
 
@@ -1466,14 +1483,16 @@ window['MINI'] = (function() {
 		 * </pre>
 		 *
 		 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
-		 * @param handler the function(event, extraEvent) to invoke when the event has been triggered. The handler gets the original event object as
-		 *                first parameter and the compatibility object as second. 'this' is the element that caused the event.
+		 * @param handler the function(event, extraEvent) to invoke when the event has been triggered. If no arguments have been given, 
+		 *                the handler gets the original event object as first parameter and the compatibility object as second. 
+		 *                'this' is always the element that caused the event.
 		 *                Unless the handler returns true, all further processing of the event will be stopped. 
 		 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
 		 *                is added to the handler in a property called 'MINI'.
+		 * @param args an array of arguments to pass to the handler function
 		 * @return the list
 		 */
-		proto['on'] = function (name, handler) {
+		proto['on'] = function (name, handler, args) {
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return this.each(function(el) {
@@ -1481,13 +1500,13 @@ window['MINI'] = (function() {
 					e = e || window.event;
 					var l = document.documentElement, b = document.body;
 					// @cond debug try {
-					if (!handler.call(e.target, e, { 
+					if (!handler.apply(e.target, args || [e, { 
 							keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
 							rightClick: e.which ? (e.which == 3) : (e.button == 2),
 							pageX: l.scrollLeft + b.scrollLeft + e.clientX,
 							pageY: l.scrollTop + b.scrollTop + e.clientY,
 							wheelDir: (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1
-					})) {
+					}])) {
 						if (e.preventDefault) // W3C DOM2 event cancelling
 							e.preventDefault();
 						if (e.stopPropagation) // cancel bubble for W3C DOM
@@ -1572,127 +1591,6 @@ window['MINI'] = (function() {
 		return dest;
      };
 
-    /**
-     * @id createclassnameregexp
-     * @dependency yes
-     */
-    function createClassNameRegExp(className) {
-        return new RegExp(backslashB + className + backslashB);
-    }
-    
-    /**
-     * @id removeclassregexp
-     * @dependency yes
-     */
-	function removeClassRegExp(el, reg) {
-		return el.className.replace(reg, '').replace(/^\s+|\s+$/g, '').replace(/\s\s+/g, ' ');
-	}
-    
-	/**
-	 * @id listhasclass
-	 * @module 1
-	 * @requires dollar createclassnameregexp
-	 * @configurable yes
-	 * @name list.hasClass()
-	 * @syntax hasClass(className)
-	 * Checks whether any element in the list of nodes has a class with the given name. Returns the first node if found, or undefined if not found.
-	 *
-	 * @example Checks whether the element 'myElement' the class 'myClass'. If yes, it sets the text color to red.
-	 * <pre>
-	 * if($('#myElement').hasClass('myClass'))
-	 *     $('#myElement').set('$color', 'red');
-	 * </pre>
-	 *
-	 * @param className the name to find 
-	 * @return the first element found with the class name, or undefined if not found
-	 */
-	proto['hasClass'] = function(className) {
-		var list = this.raw;
-        var reg = createClassNameRegExp(className); 
-        for (var i = 0; i < list.length; i++)
-        	if (reg.test(list[i].className||''))
-           		return list[i];
-        // fall through if no match!
-    };
-
-    /**
-     * @id listremoveclass
-     * @module 1
-     * @requires dollar createclassnameregexp removeclassregexp
-     * @configurable yes
-	 * @name list.removeClass()
-     * @syntax removeClass(className)
-     * Removes the given class from all elements of the list. Elements that do not have the class will be ignored.
-     * 
-     * @example Remove the class 'myClass' from all divs that have the class 'sector':
-     * <pre>
-     * $('div.sector').removeClass('myClass');
-     * </pre>
-     * @param className the name to remove
-     */
-    proto['removeClass'] = function removeClass(className) {
-        var reg = createClassNameRegExp(className);
-        return this.each(function(li) {
-        	li.className = removeClassRegExp(li, reg);
-        });
-    };
-
-    /**
-     * @id listaddclass
-     * @module 1
-     * @requires dollar listremoveclass
-     * @configurable yes
-	 * @name list.addClass()
-     * @syntax addClass(className)
-     * Adds the given class name to all elements to the list. If the element already had that class, it will be removed and then
-     * added again so that the new class is always the last.
-     * 
-     * @example Add the class 'myClass' to all divs that have the class 'sector':
-     * <pre>
-     * $('div.sector').addClass('myClass');
-     * </pre>
-     * 
-     * @example Combine addClass() with removeClass() to replace a class:
-     * <pre>
-     * $('#myLabel').removeClass('highlighted').addClass('selectable');
-     * </pre>
-     * 
-     * @param className the name to add
-     */
-    proto['addClass'] = function(className) {
-        this['removeClass'](className);
-        return this.each(function(li) {
-            if (li.className)
-                li.className += ' ' + className;
-            else
-                li.className = className;
-        });
-    };
-
-    /**
-     * @id listtoggleclass
-     * @module 1
-     * @requires dollar createclassnameregexp removeclassregexp
-     * @configurable yes
-	 * @name list.toggleClass()
-     * @syntax toggleClass(className)
-     * Checks for all elements of the list whether they have the given class. If yes, it will be removed. Otherwise it will be added.
-     * 
-     * @example Toggle the class 'myClass' in 'someElement':
-     * <pre>
-     * $('#someElement').toggleClass('selected');
-     * </pre>
-     * 
-     * @param className the name to toggle
-     */
-    proto['toggleClass'] = function(className) {
-        var reg = createClassNameRegExp(className);
-        return this.each(function(li) {
-        	var cn = li.className;
-        	li.className = cn ? (reg.test(cn) ? removeClassRegExp(li, reg) : (cn + ' ' + className)) : className;
-        });
-    };
-    
     /**
 	 * @id dollardollar
 	 * @module 1

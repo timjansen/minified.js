@@ -20,9 +20,9 @@
 			var className = {dottedCheckbox:'dotted', redCheckbox: 'red', greenCheckbox: 'green'}[this.id];
 
 			if (this.checked)
-				$($$('#selector').value).addClass(className);
+				$($$('#selector').value).set('$', '+'+className);
 			else
-				$($$('#selector').value).removeClass(className);
+				$($$('#selector').value).set('$', '-'+className);
 			
 			var allDivs = $('#container div');
 			for (var i = 0; i < allDivs.length; i++)
@@ -30,9 +30,9 @@
 		});
 		
 		$('#selector').on('change', function(e) {
-			$$('#dottedCheckbox').checked = $($$('#selector').value).hasClass('dotted');
-			$$('#redCheckbox').checked = $($$('#selector').value).hasClass('red');
-			$$('#greenCheckbox').checked = $($$('#selector').value).hasClass('green');
+			$$('#dottedCheckbox').checked = /dotted/.test($$($$('#selector').value).className);
+			$$('#redCheckbox').checked = /red/.test($$($$('#selector').value).className);
+			$$('#greenCheckbox').checked = /green/.test($$($$('#selector').value).className);
 		});
 	});
 	</script>
