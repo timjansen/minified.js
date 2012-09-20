@@ -1241,18 +1241,21 @@ window['MINI'] = (function() {
 	 * $('#racingDiv3').set({$left: '0px'}).animate({$left: '500px'}, 500, 0, null, 300); // waits 200ms, then needs 500ms
 	 * </pre>
 	 *
-	 * @param list a list of objects
 	 * @param properties a property map describing the end values of the corresponding properties. The names can use the
-	 *                   MINI.set syntax ('@' prefix for attributes, '$' for styles). Values must be either numbers, numbers with
+	 *                   set() syntax ('@' prefix for attributes, '$' for styles). Values must be either numbers, numbers with
 	 *                   units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). The properties will be set 
 	 *                   for all elements of the list.
-	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms;
+	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0.
 	 * @param callback optional if given, this function(list) will be invoked the list as parameter when the animation finished
-	 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0;
+	 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0.
+	 * @param state optional if set, the animation will write information about is state in this object. As soon as the animation starts (after the delay),
+	 *                       it will write a MINI.loop() stop() function in the property state.stop and set state.time to the milliseconds that have
+	 *                       passed from the start until the last invocation of the animation loop, describing the progress of the animation.
+	 *                       If the animation finished, it will write null to state.time. state.stop will remain unmodified after the animation end. 
 	 * @return the list
 	 */
-	proto['animate'] = function (properties, durationMs, linearity, callback, delayMs) {
+	proto['animate'] = function (properties, durationMs, linearity, callback, delayMs, state) {
 		// @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
 		// @cond debug if (linearity < 0 || linearity > 1) error('Third parameter must be at least 0 and not larger than 1.');
 		// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
@@ -1270,6 +1273,7 @@ window['MINI'] = (function() {
 		else {
 			durationMs = durationMs || 500;
 			linearity = linearity || 0;
+			state = state || {};
 			
 			self.each(function(li) {
 				var p = {o:MINI(li), s:{}, e:{}, u:{}}; 
@@ -1293,7 +1297,8 @@ window['MINI'] = (function() {
 				initState.push(p);
 			});
 					
-			loop(function(timePassedMs, stop) {
+			state['time'] = 0;
+			state['stop'] = loop(function(timePassedMs, stop) { 
 				function getColorComponent(colorCode, index) {
 					return (/^#/.test(colorCode)) ?
 						parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
@@ -1305,14 +1310,16 @@ window['MINI'] = (function() {
 					var d = endValue - startValue;
 					return startValue +  timePassedMs/durationMs * (linearity * d + (1-linearity) * timePassedMs/durationMs * (3*d - 2*d*timePassedMs/durationMs)); 
 				}
-				
+
+				state['time'] = timePassedMs;
 				if (timePassedMs >= durationMs || timePassedMs < 0) {
 					each(initState, function(isi) { // set destination values
 						isi.o.set(isi.e);
 					});
 					stop();
+					state['time'] = null;
 					if (callback) 
-						callback(self.raw);
+						callback(self);
 				}
 				else
 					each(initState, function(isi) {
@@ -1330,6 +1337,82 @@ window['MINI'] = (function() {
 				});
 			}
 			return self;		
+		};
+		
+		/**
+		 * @id listtoggle
+		 * @module 7
+		 * @requires listanimate
+		 * @configurable yes
+		 * @name list.toggle()
+		 * @syntax MINI(selector).toggle(state1, state2)
+		 * @syntax MINI(selector).toggle(state1, state2, durationMs)
+		 * @syntax MINI(selector).toggle(state1, state2, durationMs, linearity)
+		 * @shortcut $(selector).toggle(state1, state2, durationMs, linearity) - Enabled by default, but can be disabled in the builder.
+		 * 
+		 * Creates a function that switches between the two given states for the list. The states use set() syntax. 
+		 *
+ 	     * If no duration is given, the returned function changes the state immediately using set(). If a duration has been passed, the returned function
+ 	     * uses animate() to change the state. If the returned function is invoked while an animation is running, it interrupts the animation and returns
+ 	     * to the other state.
+		 *
+		 * @example Creates a toggle function that changes the background color of the page.
+		 * <pre>
+		 * var light = $('body').set({$backgroundColor: #000}, {$backgroundColor: #fff});
+		 * light();      // toggles state to second state
+		 * light(false); // sets first state (background color to #000).
+		 * light(true);  // sets second state (background color to #fff).
+		 * light();      // toggles state to first state
+		 * </pre>
+		 * 
+		 * @example Takes the previous function, but adds it as onclick event handler that toggles the color.
+		 * <pre>
+		 * var light = $('body').set({$backgroundColor: #000}, {$backgroundColor: #fff});
+		 * $('#mySwitch').on('click', light);
+		 * </pre>
+		 *
+		 * @example Using an animated transition by passing a duration:
+		 * <pre>
+		 * var dimmer = $('body').set({$backgroundColor: #000}, {$backgroundColor: #fff}, 500);
+		 * $('#mySwitch').on('click', dimmer);
+		 * </pre>
+		 *
+		 * @param state1 a property map describing the initial state of the properties. The properties will automatically be set when the
+		 *                   toggle() function is created. The property names use the set() syntax ('@' prefix for attributes, '$' for styles). 
+		 *                   For animation, values must be either numbers, numbers with
+		 *                   units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). The properties will be set 
+		 *                   for all elements of the list.
+		 * @param state2 a property map describing the second state of the properties. Uses set() syntax, like the other state. 
+		 * @param durationMs optional if set, the duration of the animation in milliseconds. By default, there is no animation and the set will be changed
+		 *                   immediately.
+		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0. Ignored if duration is 0.
+		 * @return a function(newState) that will change from the first to the second state and vice versa. If the argument is a boolean
+		 *         false or true, the first or second state will be set. If the argument is not boolean or the function is called without
+		 *         arguments, the function toggles between both states. 
+		 */
+		proto['toggle'] = function (state1, state2, durationMs, linearity) {
+			// @cond debug if (!state1 || typeof state1 == 'string') error('First parameter must be a map of properties (e.g. "{$top: 0, $left: 0}") ');
+			// @cond debug if (!state2 || typeof state2 == 'string') error('Second parameter must be a map of properties (e.g. "{$top: 0, $left: 0}") ');
+			// @cond debug if (linearity < 0 || linearity > 1) error('Fourth parameter must be at least 0 and not larger than 1.');
+			
+			var self = this['set'](state1);
+			var animState = {};
+			var state;
+
+			return function(newState) {
+				var d = durationMs;
+				var s = (state = (newState === true || newState === false) ? newState : !state) ? state2 : state1;
+				
+				if (animState['time'] != null) { // stop running animation if there is one 
+					animState.stop();
+					d = animState['time'];
+				}
+				
+				if (d)
+					self['animate'](s, d, linearity, null, null, animState);
+				else
+					self['set'](s);
+			};
 		};
 
 	

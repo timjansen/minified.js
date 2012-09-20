@@ -1,0 +1,32 @@
+<html>
+	<head><title>Minified.js Toggle Example</title>
+	
+	<style type="text/css">
+		body {font-family: sans-serif;}
+	</style> 
+	<script type="text/javascript" src="../minified-src.js"></script>
+	<script type="text/javascript">
+
+	
+	$(function() {
+		$('#moveButton').on('click', $('#box1').toggle({$left: '10px', $top: '10px'}, {$left: '280px', $top: '280px'}, 750));
+
+		var colorToggle = $('#box1').toggle({$backgroundColor: '#f00'}, {$backgroundColor: '#00f'}, 500);
+		$('#colorButton').on('click', colorToggle);
+		$('#redButton').on('click', function() {colorToggle(false);});
+		$('#blueButton').on('click', function() {colorToggle(true);});
+	});
+	</script>
+	
+	</head>
+	<body>
+
+		<button id="moveButton">Move!</button><br/>
+		<button id="colorButton">Change Color!</button>
+		<button id="redButton">Red</button>
+		<button id="blueButton">Blue</button>
+		<div style="margin-top: 2em; border: 1px solid black; position: relative; width: 400px; height: 400px; overflow: hidden;">
+			<div id="box1" style="background-color: #f00; position: absolute; top: 10px; left: 10px; width: 100px; height: 100px;"></div>
+		</div>
+	</body>
+</html>
