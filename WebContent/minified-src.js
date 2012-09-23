@@ -1289,12 +1289,13 @@ window['MINI'] = (function() {
 	 *                   units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). The properties will be set 
 	 *                   for all elements of the list.
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
-	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0.
+	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.
 	 * @param callback optional if given, this function(list) will be invoked the list as parameter when the animation finished
 	 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0.
 	 * @param state optional if set, the animation will write information about is state in this object. As soon as the animation starts (after the delay),
 	 *                       it will write a MINI.loop() stop() function in the property state.stop and set state.time to the milliseconds that have
-	 *                       passed from the start until the last invocation of the animation loop, describing the progress of the animation.
+	 *                       passed from the start until the last invocation of the animation loop, describing the progress of the animation. When the function
+	 *                       has a delay, state.time will return 0 during the delay.
 	 *                       If the animation finished, it will write null to state.time. state.stop will remain unmodified after the animation end. 
 	 * @return the list
 	 */
@@ -1311,8 +1312,11 @@ window['MINI'] = (function() {
 		}
 		var self = this;
 		var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
-		if (delayMs)
-			window.setTimeout(function(){self['animate'](properties, durationMs, linearity, callback);}, delayMs);
+		state['time'] = 0;
+		if (delayMs) {
+			var id = window.setTimeout(function(){self['animate'](properties, durationMs, linearity, callback, 0, state);}, delayMs);
+			state['stop'] = function() { window.clearTimeout(id); };
+		}
 		else {
 			durationMs = durationMs || 500;
 			linearity = linearity || 0;
@@ -1340,7 +1344,6 @@ window['MINI'] = (function() {
 				initState.push(p);
 			});
 					
-			state['time'] = 0;
 			state['stop'] = loop(function(timePassedMs, stop) { 
 				function getColorComponent(colorCode, index) {
 					return (/^#/.test(colorCode)) ?
@@ -1434,12 +1437,13 @@ window['MINI'] = (function() {
 		 * @param state2 a property map describing the second state of the properties. Uses set() syntax, like the other state. 
 		 * @param durationMs optional if set, the duration of the animation in milliseconds. By default, there is no animation and the set will be changed
 		 *                   immediately.
-		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something between. Default: 0. Ignored if duration is 0.
+		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.
+		 * @param delayMs optional defines an optional delay before the animation starts. Default: 0. Ignored if durationMs is 0.
 		 * @return a function(newState) that will change from the first to the second state and vice versa. If the argument is a boolean
 		 *         false or true, the first or second state will be set. If the argument is not boolean or the function is called without
 		 *         arguments, the function toggles between both states. 
 		 */
-		proto['toggle'] = function (state1, state2, durationMs, linearity) {
+		proto['toggle'] = function (state1, state2, durationMs, linearity, delayMs) {
 			// @cond debug if (!state1 || typeof state1 == 'string') error('First parameter must be a map of properties (e.g. "{$top: 0, $left: 0}") ');
 			// @cond debug if (!state2 || typeof state2 == 'string') error('Second parameter must be a map of properties (e.g. "{$top: 0, $left: 0}") ');
 			// @cond debug if (linearity < 0 || linearity > 1) error('Fourth parameter must be at least 0 and not larger than 1.');
@@ -1451,14 +1455,14 @@ window['MINI'] = (function() {
 			return function(newState) {
 				if (newState === true || newState === false) {
 					if (newState == state) 
-						{console.log('abort');return;}
+						return;
 					state = newState;
 				}
 				else
 					state = !state;
 
-				if (d = (animState['time'] != null) ? (animState.stop() || animState['time']) : durationMs)
-					self['animate'](state ? state2 : state1, d, linearity, null, null, animState);
+				if (d = (animState['stop'] != null) ? (animState['stop']() || animState['time']) : durationMs)
+					self['animate'](state ? state2 : state1, d, linearity, null, delayMs, animState);
 				else
 					self['set'](state ? state2 : state1);
 			};
