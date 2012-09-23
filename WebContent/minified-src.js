@@ -100,6 +100,9 @@ window['MINI'] = (function() {
 		});
 		return result;
 	}
+	function replace(s, regexp, sub) {
+		return s.replace(regexp, sub||'');
+	}
 
     /**
      * @id tostring
@@ -115,7 +118,7 @@ window['MINI'] = (function() {
      * helper for set and get; if starts with $, rewrite as CSS style
      */
 	function getNameComponents(name) {
-		return name.replace(/^\$/, 'style.').split('.');
+		return replace(name, /^\$/, 'style.').split('.');
 	}
 
     /**
@@ -203,7 +206,7 @@ window['MINI'] = (function() {
 	 * $('#myForm .myRadio').addClass('uncheckedRadio')
 	 *                               .set('checked', true)
 	 *                               .on('click', function() {
-	 *                                     $(this).toggleClass('uncheckedRadio');
+	 *                                     $(this).set({@: 'uncheckedRadio');
 	 *                                });
 	 * </pre>
 	 * 
@@ -566,7 +569,7 @@ window['MINI'] = (function() {
 	 * @syntax MINI(selector).set(properties, undefined, defaultFunction)
 	 * @syntax MINI(selector).set(properties, undefined, defaultFunction, defaultPrefix)
 	 * Modifies the list's DOM elements or objects by setting their properties and/or attributes. set() has also special support for 
-	 * setting an element's CSS style. You can either supply a single name and value to set only one property, or you
+	 * setting an element's CSS style and CSS classes. You can either supply a single name and value to set only one property, or you
 	 * can provide a map of properties to set.
 	 * More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will
 	 * be set.
@@ -581,16 +584,36 @@ window['MINI'] = (function() {
 	 * $('input.checkbox').set('nextSibling.innerHTML', 'New Text');
 	 * </pre>
 	 * 
-	 * @example Changing styles:
-	 * <pre>
-	 * $('.bigText').set('$font-size', 'x-large');
-	 * </pre>
-	 * 
 	 * @example Changing attributes:
 	 * <pre>
 	 * $('a.someLinks').set('@href', 'http://www.example.com/');
 	 * </pre>
 	 * 
+	 * @example Changing styles:
+	 * <pre>
+	 * $('.bigText').set('$font-size', 'x-large');
+	 * </pre>
+	 * 
+	 * @example Adding two CSS classes:
+	 * <pre>
+	 * $('.myElem').set('$', '+myClass +otherClass');
+	 * </pre>
+	 *  
+	 * @example Removing a CSS class:
+	 * <pre>
+	 * $('.myElem').set('$', '-myClass');
+	 * </pre>
+	 *  
+	 * @example Toggling a CSS class:
+	 * <pre>
+	 * $('.myElem').set('$', 'on');
+	 * </pre>
+	 * 	 *  
+	 * @example Changing several CSS classes at once:
+	 * <pre>
+	 * $('.myElem').set('$', '-oldClass +newClass flipFlop');
+	 * </pre>
+	 *  
 	 * @example Changing attribute of the parent node:
 	 * <pre>
 	 * $('a.someLinks').set('parentNode.@title', 'Links');
@@ -603,11 +626,12 @@ window['MINI'] = (function() {
 	 *                          'parentNode.@title': 'Check this'});
 	 * </pre>
 	 * 
-	 * @example When specifying CSS styles in maps, use underscores instead of dashes in the names to avoid quoting:
+	 * @example Changing CSS with a map:
 	 * <pre>
 	 * $('.importantText').set({$fontSize: 'x-large',
 	 *                          $color: 'black',
-	 *                          $backgroundColor: 'red'});
+	 *                          $backgroundColor: 'red',
+	 *                          $: '+selected -default'});
 	 * </pre>
 	 * 
 	 * @example You can specify a function as value to modify a value instead of just setting it:
@@ -619,14 +643,16 @@ window['MINI'] = (function() {
 	 * 
 	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
 	 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
-	 *                     A dollar ('$') prefix is a shortcut for 'style.'.
+	 *                     A dollar ('$') prefix is a shortcut for 'style.'. A dollar ('$') as name modifies CSS classes.
 	 *                     In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
-	 *                     set the property 'className' instead of '@class' and set styles using the '$' syntax.
+	 *                     you should use the '$' syntax.
 	 * 
 	 * @param value the value to set. If it is a function, the function will be invoked for each list element to evaluate the value. 
 	 * The function is called with with the old value as first argument and the index in the list as second.
 	 * The third value is the function itself.
 	 * If value is null and name specified an attribute, the value will be ignored.
+	 * If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefix with a '+' the class will be added,
+	 * with a '+' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.
 	 * @param properties a map containing names as keys and the values to set as map values. See above for the syntax.
 	 * @param defaultFunction optional if set and no function is provided as value, this function will be invoked for each list element 
 	 *                                 and property to determine the value. The function is called with with the old value as first 
@@ -645,18 +671,18 @@ window['MINI'] = (function() {
 				self.each(function(obj) {
 					var className = obj.className || '';
 					each(value.split(/\s+/), function(clzz) {
-						var cName = clzz.replace(/^[+-]/, '');
+						var cName = replace(clzz, /^[+-]/);
 						var reg = new RegExp(backslashB + cName + backslashB);
 						var contains = reg.test(className);
-						className = className.replace(reg, '');
+						className = replace(className, reg);
 						if (/^\+/.test(clzz) || (cName==clzz && !contains)) // for + and toggle-add
 							className += ' ' + cName;
 					});
-					obj.className = className.replace(/^\s+|\s+$|\s+(?=\s)/g, '');
+					obj.className = replace(className, /^\s+|\s+$|\s+(?=\s)/g);
 				});
 			else {
 				var components = getNameComponents(name), len = components.length-1;
-				var lastName = components[len].replace(/^@/, '');
+				var lastName = replace(components[len], /^@/);
 				var f = isFunction(value) ? value : defaultFunction;
 				self.each( 
 					function(obj, c) {
@@ -1278,10 +1304,10 @@ window['MINI'] = (function() {
 		// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
 		// @cond debug var colorRegexp = /^(rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|#\w{3}|#\w{6})\s*$/i;
 		function toNumWithoutUnit(v) {
-			return parseFloat(toString(v).replace(/[^\d.-]/g, ''));
+			return parseFloat(replace(toString(v), /[^\d.-]/g));
 		}
 		function replaceValue(originalValue, newNumber) {
-			return toString(originalValue).replace(/-?[\d.]+/, newNumber);
+			return replace(toString(originalValue), /-?[\d.]+/, newNumber);
 		}
 		var self = this;
 		var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
@@ -1298,13 +1324,13 @@ window['MINI'] = (function() {
 					var dest = properties[name];
 					var components = getNameComponents(name);
 					var len = components.length-1;
-					var lastName = components[len].replace(/^@/, '');
+					var lastName = replace(components[len], /^@/);
 					var a = li;
 					for (var j = 0; j < len; j++) 
 						a = a[components[j]];
 					p.s[name] = ((lastName != components[len]) ? a.getAttribute(lastName) : a[lastName]) || 0;
 					p.e[name] = /^[+-]=/.test(dest) ?
-						replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(dest.replace(/\+?=/, ''))) 
+						replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(replace(dest, /\+?=/))) 
 						: dest;
 					// @cond debug if (!colorRegexp.test(dest) && isNan(toNumWithoutUnit(dest))) error('End value of "'+name+'" is neither color nor number: ' + toString(dest));
 					// @cond debug if (!colorRegexp.test(p.s[name]) && isNan(toNumWithoutUnit(p.s[name]))) error('Start value of "'+name+'" is neither color nor number: ' + toString(p.s[name]));
@@ -1320,7 +1346,7 @@ window['MINI'] = (function() {
 					return (/^#/.test(colorCode)) ?
 						parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
 						:
-						parseInt(colorCode.replace(/[^\d,]+/g, '').split(',')[index]);
+						parseInt(replace(colorCode, /[^\d,]+/g).split(',')[index]);
 				}
 
 				function interpolate(startValue, endValue) {
@@ -1384,16 +1410,22 @@ window['MINI'] = (function() {
 		 * 
 		 * @example Takes the previous function, but adds it as onclick event handler that toggles the color.
 		 * <pre>
-		 * var light = $('body').set({$backgroundColor: #000}, {$backgroundColor: #fff});
+		 * var light = $('body').toggle({$backgroundColor: #000}, {$backgroundColor: #fff});
 		 * $('#mySwitch').on('click', light);
 		 * </pre>
 		 *
 		 * @example Using an animated transition by passing a duration:
 		 * <pre>
-		 * var dimmer = $('body').set({$backgroundColor: #000}, {$backgroundColor: #fff}, 500);
+		 * var dimmer = $('body').toggle({$backgroundColor: #000}, {$backgroundColor: #fff}, 500);
 		 * $('#mySwitch').on('click', dimmer);
 		 * </pre>
 		 *
+		 * @example To toggle CSS classes specify both states:
+		 * <pre>
+		 * var t = $('#myElement').toggle({$: '-myClass'}, {$: '+myClass'});
+		 * $('#myController').on('click', t);
+		 * </pre>
+		 * 
 		 * @param state1 a property map describing the initial state of the properties. The properties will automatically be set when the
 		 *                   toggle() function is created. The property names use the set() syntax ('@' prefix for attributes, '$' for styles). 
 		 *                   For animation, values must be either numbers, numbers with
@@ -1432,6 +1464,85 @@ window['MINI'] = (function() {
 			};
 		};
 
+		/**
+		 * @id listwire
+		 * @module 7
+		 * @requires listtoggle liston
+		 * @configurable yes
+		 * @name list.wire()
+		 * @syntax MINI(selector).wire(events, toggles)
+		 * @shortcut $(selector).wire(events, toggles) - Enabled by default, but can be disabled in the builder.
+		 * 
+		 * Sets up events that will trigger the given toggles.
+		 *
+ 	     * The first arguments sets up which kind of events will trigger the toggles in what way. There are two ways to specify the events:
+ 	     * <ul>
+ 	     * <li>A simple string in the form "eventtype +eventtype -eventtype" adds the space-separated event handlers for each list member. Non-prefixed
+ 	     *     event types toggle. If prefixed with + or -, they will put the toggles in the first or second state.
+ 	     * <li>A map allows you to add events to more than one element. They map key specifies the selector to find the element. The map value specifies the
+ 	     *     events in the form described above.
+ 	     * </ul>
+ 	     * 
+ 	     * The second argument describes the toggles that are controlled by the events. If you pass a simple toggle function or a list of toggle function,
+ 	     * they will be simply called. You can also specify an array of parameters to the toggle() function to create new toggles for each list member.
+ 	     * The most powerful form of argument is a map containing selectors as first and toggle() arrays as values. This will set up new toggles for each
+ 	     * list member.
+ 	     * 
+ 	     * The selectors given in the event and toggle maps are always executed in the context of the current list elements, unless they start with a '#'. In
+ 	     * the latter case, they will be executes in the document context. If you pass a 0 (or any other value evaluating to false), the value applies to the list
+ 	     * member itself.
+		 *
+		 * @example Wires the list members to change the text color of the element 'colorChanger' on click:
+		 * <pre>
+		 * var tog = $('#colorChanger').toggle({$color: 'red'}, {$color: 'blue'});
+		 * $('.clicky').wire('click', tog);
+		 * </pre>
+		 * 
+		 * @example Wires the list members to change their own text color on click:
+		 * <pre>
+		 * $('.clicky').wire('click', [{$color: 'red'}, {$color: 'blue'}]);
+		 * </pre>
+		 * 
+		 * @example Wires the list members to change their own text color to blue on mouseover and red otherwise:
+		 * <pre>
+		 * $('.mouseovers').wire('-mouseout +mouseover', [{$color: 'red'}, {$color: 'blue'}]);
+		 * </pre>
+		 * 
+		 * @example Same mouse over effect as in the previous example, but wires element '#allBlueButton' to change the color of all elements to blue on click:
+		 * <pre>
+		 * $('.mouseovers').wire({'': '-mouseout +mouseover', '#allBlueButton': '+click'} 
+		 *                   [{$color: 'red'}, {$color: 'blue'}]);
+		 * </pre>
+		 * 
+		 * @example Wires a dropdown menu.
+		 * <pre>
+		 * $('.dropdown').wire({'.head': 'click', '.closeButton': '-click'} , [{$: '-shown'}, {$: '+shown'}]);
+		 * </pre>
+		 * 
+		 * @param events 
+		 * @param toggles
+		 * @return the list
+		 */
+	    proto['wire'] = function(events, toggles) {
+	    	return this.each(function(li) {
+	    		function select(selector) {
+	    			return $(selector||li, (selector && !/^#/.test(selector))?li:undef);
+	    		}
+	    		function toggleFunc(selector, args) { 
+	    			return proto['toggle'].apply(select(selector), args); 
+	    		}
+	    		var toggleList = isFunction(toggles) ? [toggles] :
+	    			isList(toggles) ? (isFunction(toggles[0]) ? toggles : [toggleFunc(0, toggles)]) :
+	    			collect(toggles, toggleFunc);
+	    		
+	    		each(isString(events) ? {0:events} : events, function(selector, eventSpec) {
+	    			each(eventSpec.split(/\s+/), function(event) {
+	    				var e = replace(event, /^[+-]/);
+	    				select(selector).on(e, function(v) {each(toggleList, function(toggle) {toggle(v);});}, [/^\+/.test(event) || (event==e && undef)]);
+	    			});
+	    		});
+	    	});
+	    };
 	
 		/**
 		 * @id liston
@@ -1909,7 +2020,7 @@ window['MINI'] = (function() {
 		var ctor = value && value.constructor;
 
 		if (isString(value) || ctor == String)
-			return '"' + value.replace(/[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
+			return '"' + replace(value, /[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
 		if (isList(value)) 
 			return '[' + collect(value, function(vi) { return toJSON(vi); }).join() + ']';
 		if (isObject(value) && ctor != Number && ctor != Boolean)
@@ -1942,12 +2053,12 @@ window['MINI'] = (function() {
 	*/
     // @condblock ie7compatibility
     MINI['parseJSON'] = (window.JSON && JSON.parse) || function (text) {
-    	text = toString(text).replace(/[\u0000\u00ad\u0600-\uffff]/g, ucode);
+    	text = replace(toString(text), /[\u0000\u00ad\u0600-\uffff]/g, ucode);
 
         if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
-				.test(text.replace(/\\(["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@')
-						  .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(\.\d*)?([eE][+\-]?\d+)?/g, ']')
-						  .replace(/(^|:|,)(\s*\[)+/g, ''))) 
+				.test(replace(replace(replace(text, /\\(["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@'), 
+						    		  /"[^"\\\n\r]*"|true|false|null|-?\d+(\.\d*)?([eE][+\-]?\d+)?/g, ']'),
+						     /(^|:|,)(\s*\[)+/g))) 
         	return eval('(' + text + ')');
         // fall through if not valid
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
