@@ -569,6 +569,7 @@ window['MINI'] = (function() {
 	 * @name list.set()
 	 * @syntax MINI(selector).set(name, value)
 	 * @syntax MINI(selector).set(properties)
+	 * @syntax MINI(selector).set(cssClasses)
 	 * @syntax MINI(selector).set(name, value, defaultFunction)
 	 * @syntax MINI(selector).set(properties, undefined, defaultFunction)
 	 * @syntax MINI(selector).set(properties, undefined, defaultFunction, defaultPrefix)
@@ -598,24 +599,19 @@ window['MINI'] = (function() {
 	 * $('.bigText').set('$font-size', 'x-large');
 	 * </pre>
 	 * 
-	 * @example Adding two CSS classes:
+	 * @example Adding and removing CSS classes:
 	 * <pre>
-	 * $('.myElem').set('$', '+myClass +otherClass');
-	 * </pre>
-	 *  
-	 * @example Removing a CSS class:
-	 * <pre>
-	 * $('.myElem').set('$', '-myClass');
+	 * $('.myElem').set('$', '+myClass -otherClass');
 	 * </pre>
 	 *  
 	 * @example Toggling a CSS class:
 	 * <pre>
 	 * $('.myElem').set('$', 'on');
 	 * </pre>
-	 * 	 *  
-	 * @example Changing several CSS classes at once:
+	 * 
+	 * @example Shortcut for CSS manipulation (omit the name - $ is the default name):
 	 * <pre>
-	 * $('.myElem').set('$', '-oldClass +newClass flipFlop');
+	 * $('.myElem').set('+myClass -otherClass on');
 	 * </pre>
 	 *  
 	 * @example Changing attribute of the parent node:
@@ -658,6 +654,8 @@ window['MINI'] = (function() {
 	 * If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefix with a '+' the class will be added,
 	 * with a '+' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.
 	 * @param properties a map containing names as keys and the values to set as map values. See above for the syntax.
+	 * @param cssClasses if set() is invoked with a string as single argument, the name "$" (CSS classes) is taken by default and the argument is the
+	 *                   value. See value above for CSS syntax.
 	 * @param defaultFunction optional if set and no function is provided as value, this function will be invoked for each list element 
 	 *                                 and property to determine the value. The function is called with with the old value as first 
 	 *                                 argument and the index in the list as second. The third value is the new value specified
@@ -667,9 +665,7 @@ window['MINI'] = (function() {
 	proto['set'] = function (name, value, defaultFunction) {
 		var self = this;
 		// @cond debug if (name == null) error("First argument must be set!");
-		if (value === undef) 
-			each(name, function(n,v) { self.set(n, v, defaultFunction); });
-		else {
+		if (value !== undef) {
 			// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 			if (name == '$')
 				self.each(function(obj) {
@@ -700,6 +696,10 @@ window['MINI'] = (function() {
 				});
 			}
 		}
+		else if (isString(name))
+			self.set('$', name);
+		else
+			each(name, function(n,v) { self.set(n, v, defaultFunction); });
 		return self;
 	};
 	
@@ -1317,12 +1317,12 @@ window['MINI'] = (function() {
 		var self = this;
 		var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
 		var delayStop, loopStop;
+		state = state || {};
 		state['time'] = 0;
 		state['stop'] = function() { if (delayStop) delayStop(); if (loopStop) loopStop(); };
 		delayStop = delay(delayMs, function() {
 			durationMs = durationMs || 500;
 			linearity = linearity || 0;
-			state = state || {};
 			
 			self.each(function(li) {
 				var p = {o:MINI(li), s:{}, e:{}, u:{}}; 
@@ -1459,10 +1459,8 @@ window['MINI'] = (function() {
 			var state, stop;
 
 			if (isString(state1))
-				return self['toggle']({$: replace(state1, /\b(?=\w)/g, '-')}, {$: replace(state1, /\b(?=\w)/g, '+')});			
+				return self['toggle'](replace(state1, /\b(?=\w)/g, '-'), replace(state1, /\b(?=\w)/g, '+'));			
 
-			// @cond debug if (!state1 || typeof state1 == 'string') error('First parameter must be a map of properties (e.g. "{$top: 0, $left: 0}") ');
-			// @cond debug if (!state2 || typeof state2 == 'string') error('Second parameter must be a map of properties (e.g. "{$top: 0, $left: 0}") ');
 			// @cond debug if (linearity < 0 || linearity > 1) error('Fourth parameter must be at least 0 and not larger than 1.');
 
 			self['set'](state1);
