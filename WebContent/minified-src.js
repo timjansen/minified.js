@@ -70,7 +70,7 @@ window['MINI'] = (function() {
 		return isType(f, 'object');
 	}
 	function isList(v) {
-		return v && v.length != null && !isString(v) && !v.data; // substr to test for string, data for Text node
+		return v && v.length != null && !isString(v) && !v.data && !isFunction(v); // data to test for Text node
 	}
 	function each(list, cb) {
 		if (isList(list))
@@ -95,13 +95,17 @@ window['MINI'] = (function() {
 		each(list, function(item, index) {
 			if (isList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
 				each(item, function(rr) { result.push(rr); });
-			else if (list != item)
+			else if (item != null)
 				result.push(item);
 		});
 		return result;
 	}
 	function replace(s, regexp, sub) {
 		return s.replace(regexp, sub||'');
+	}
+	function delay(delayMs, f) {
+		var id = delayMs ? window.setTimeout(f, delayMs) : f();
+ 		return function() { if(delayMs) window.clearTimeout(id); };
 	}
 
     /**
@@ -1312,12 +1316,10 @@ window['MINI'] = (function() {
 		}
 		var self = this;
 		var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
+		var delayStop, loopStop;
 		state['time'] = 0;
-		if (delayMs) {
-			var id = window.setTimeout(function(){self['animate'](properties, durationMs, linearity, callback, 0, state);}, delayMs);
-			state['stop'] = function() { window.clearTimeout(id); };
-		}
-		else {
+		state['stop'] = function() { if (delayStop) delayStop(); if (loopStop) loopStop(); };
+		delayStop = delay(delayMs, function() {
 			durationMs = durationMs || 500;
 			linearity = linearity || 0;
 			state = state || {};
@@ -1344,7 +1346,7 @@ window['MINI'] = (function() {
 				initState.push(p);
 			});
 					
-			state['stop'] = loop(function(timePassedMs, stop) { 
+			loopStop = loop(function(timePassedMs, stop) { 
 				function getColorComponent(colorCode, index) {
 					return (/^#/.test(colorCode)) ?
 						parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
@@ -1381,7 +1383,7 @@ window['MINI'] = (function() {
 						});
 					});
 				});
-			}
+			});
 			return self;		
 		};
 		
@@ -1391,6 +1393,7 @@ window['MINI'] = (function() {
 		 * @requires listanimate
 		 * @configurable yes
 		 * @name list.toggle()
+		 * @syntax MINI(selector).toggle(cssClasses)
 		 * @syntax MINI(selector).toggle(state1, state2)
 		 * @syntax MINI(selector).toggle(state1, state2, durationMs)
 		 * @syntax MINI(selector).toggle(state1, state2, durationMs, linearity)
@@ -1425,10 +1428,17 @@ window['MINI'] = (function() {
 		 *
 		 * @example To toggle CSS classes specify both states:
 		 * <pre>
-		 * var t = $('#myElement').toggle({$: '-myClass'}, {$: '+myClass'});
+		 * var t = $('#myElement').toggle({$: '-myClass1 -myClass2'}, {$: '+myClass1 +myClass2'});
 		 * $('#myController').on('click', t);
 		 * </pre>
+		 *
+		 * @example There is a shortcut for toggling CSS classes. Just list them unprefixed, space-separated in a string:
+		 * <pre>
+		 * var t = $('#myElement').toggle('myClass1 myClass2');
+		 * </pre>
 		 * 
+		 * @param cssClasses a string containing space-separated CSS class names that will be toggled. For the initial state, the classes will be
+		 *                   removed. For the second state, the classes will be added.
 		 * @param state1 a property map describing the initial state of the properties. The properties will automatically be set when the
 		 *                   toggle() function is created. The property names use the set() syntax ('@' prefix for attributes, '$' for styles). 
 		 *                   For animation, values must be either numbers, numbers with
@@ -1443,15 +1453,19 @@ window['MINI'] = (function() {
 		 *         false or true, the first or second state will be set. If the argument is not boolean or the function is called without
 		 *         arguments, the function toggles between both states. 
 		 */
-		proto['toggle'] = function (state1, state2, durationMs, linearity, delayMs) {
+		proto['toggle'] = function(state1, state2, durationMs, linearity, delayMs) {
+			var self = this;
+			var animState = {};
+			var state, stop;
+
+			if (isString(state1))
+				return self['toggle']({$: replace(state1, /\b(?=\w)/g, '-')}, {$: replace(state1, /\b(?=\w)/g, '+')});			
+
 			// @cond debug if (!state1 || typeof state1 == 'string') error('First parameter must be a map of properties (e.g. "{$top: 0, $left: 0}") ');
 			// @cond debug if (!state2 || typeof state2 == 'string') error('Second parameter must be a map of properties (e.g. "{$top: 0, $left: 0}") ');
 			// @cond debug if (linearity < 0 || linearity > 1) error('Fourth parameter must be at least 0 and not larger than 1.');
-			
-			var self = this['set'](state1);
-			var animState = {};
-			var state, d;
 
+			self['set'](state1);
 			return function(newState) {
 				if (newState === true || newState === false) {
 					if (newState == state) 
@@ -1461,10 +1475,13 @@ window['MINI'] = (function() {
 				else
 					state = !state;
 
-				if (d = (animState['stop'] != null) ? (animState['stop']() || animState['time']) : durationMs)
-					self['animate'](state ? state2 : state1, d, linearity, null, delayMs, animState);
-				else
-					self['set'](state ? state2 : state1);
+				if (durationMs) 
+					self['animate'](state ? state2 : state1, animState['stop'] != null ? (animState['stop']() || animState['time']) : durationMs, linearity, null, delayMs, animState);
+				else {
+					if (stop) 
+						stop();
+					stop = delay(delayMs, function() {self['set'](state ? state2 : state1); stop=null ;});
+				}
 			};
 		};
 
@@ -1533,16 +1550,16 @@ window['MINI'] = (function() {
 	    			return $(selector||li, (selector && !/^#/.test(selector))?li:undef);
 	    		}
 	    		function toggleFunc(selector, args) { 
-	    			return proto['toggle'].apply(select(selector), args); 
+	    			return isFunction(args) ? [toggles] :
+						isString(args) ? select(selector)['toggle'](args) :
+						isList(args) ? (isFunction(args[0]) ? args : [proto['toggle'].apply(select(selector), args)]) :
+						collect(args, toggleFunc);
 	    		}
-	    		var toggleList = isFunction(toggles) ? [toggles] :
-	    			isList(toggles) ? (isFunction(toggles[0]) ? toggles : [toggleFunc(0, toggles)]) :
-	    			collect(toggles, toggleFunc);
+	    		var e, toggleList = toggleFunc(null, toggles);
 	    		
-	    		each(isString(events) ? {0:events} : events, function(selector, eventSpec) {
+	    		each(isString(events) ? {'':events} : events, function(selector, eventSpec) {
 	    			each(eventSpec.split(/\s+/), function(event) {
-	    				var e = replace(event, /^[+-]/);
-	    				select(selector).on(e, function(v) {each(toggleList, function(toggle) {toggle(v);});}, [/^\+/.test(event) || (event==e && undef)]);
+	    				select(selector).on(e = replace(event, /^[+-]/), function(v) {each(toggleList, function(toggle) {toggle(v);});}, [/^\+/.test(event) || (event==e && undef)]);
 	    			});
 	    		});
 	    	});
@@ -2101,7 +2118,7 @@ window['MINI'] = (function() {
     	if (DOMREADY_HANDLER) // if DOM ready, call immediately
 			DOMREADY_HANDLER.push(handler);
 		else
-			window.setTimeout(handler, 0);
+			delay(1, handler);
     };
     MINI['ready'] = ready;
     
@@ -2241,7 +2258,7 @@ window['MINI'] = (function() {
      */
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currenetly active
 	var REQUEST_ANIMATION_FRAME = function(callback) {
-		window.setTimeout(callback, 33); // 30 fps as fallback
+		delay(33, callback); // 30 fps as fallback
 	};
 	each(['msR', 'webkitR', 'mozR', 'r'], function(n) { 
 		REQUEST_ANIMATION_FRAME = window[n+'equestAnimationFrame'] || REQUEST_ANIMATION_FRAME;

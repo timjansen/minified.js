@@ -1,5 +1,5 @@
 <html>
-	<head><title>Minified.js Toggle Example</title>
+	<head><title>Minified.js Wire Example</title>
 	
 	<style type="text/css">
 		body {font-family: sans-serif;}
@@ -20,14 +20,15 @@
 
 	
 	$(function() {
-		$('#moveButton').on('click', $('#box1').toggle({$left: '10px', $top: '10px'}, {$left: '280px', $top: '280px'}, 750));
+		$('#box1').wire({'#moveButton':'click'}, [{$left: '10px', $top: '10px'}, {$left: '280px', $top: '280px'}, 750]);
 
 		var colorToggle = $('#box1').toggle({$backgroundColor: '#f00'}, {$backgroundColor: '#00f'}, 500);
-		$('#colorButton').on('click', colorToggle);
-		$('#redButton').on('click', colorToggle, [false]);
-		$('#blueButton').on('click', colorToggle, [true]);
+		$('#colorButton').wire('click', colorToggle);
+		$('#redButton').wire('-click', colorToggle);
+		$('#blueButton').wire('+click', colorToggle);
 		
-		$('#borderButton').on('click', $('#cnt').toggle("thickBorder"));
+		$('#borderButton').wire('click', {'#cnt': 'thickBorder', '#box1': 'thickBorder'});
+		$('button').wire({'#buttonButton':'click'}, [{$color: '', $backgroundColor: ''}, {$color: 'red', $backgroundColor: 'blue'}]);
 	});
 	</script>
 	
@@ -39,6 +40,7 @@
 		<button id="redButton">Red</button>
 		<button id="blueButton">Blue</button><br/>
 		<button id="borderButton">Change Border!</button>
+		<button id="buttonButton">Change Buttons!</button>
 		<div id="cnt">
 			<div id="box1" style="background-color: #f00; position: absolute; top: 10px; left: 10px; width: 100px; height: 100px;"></div>
 		</div>
