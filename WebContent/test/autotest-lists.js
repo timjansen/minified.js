@@ -90,7 +90,6 @@ window.miniTests.push.apply(window.miniTests, [
 	 		
 	 		var o = [{a:3, b: 'hello', style: {}, y: {v: 2, w: {}}}, {style: {}, x: {}, y: {w: {}}}];
 	 		MINI(o).set('a', 33).set('b', 'greetings').set('c', 132).set('d', {a:1})
-	 		 .set('y.v', 23).set('y.w.a', 'xx')
 	 		 .set('$color', '#abc').set('$ab', 2);
 	 		
 	 		for (var i = 0; i < o.length; i++) {
@@ -99,8 +98,6 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.b, 'greetings');
 	 			check(b.c, 132);
 	 			check(b.d.a, 1);
-	 			check(b.y.v, 23);
-	 			check(b.y.w.a, 'xx');
 	 			check(b.style.color, '#abc');
 	 			check(b.style['ab'], 2);
 	 		}
@@ -113,13 +110,6 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(document.getElementById('hello1').getAttribute('title'), 'hello element');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'hello element');
 	 		MINI('#hello2').add(MINI.el('b', {'@id':'bello2'}, 'bello'));
-	 		MINI('#bello2').set('parentNode.@title', 'huhu');
-	 		check(document.getElementById('hello2').getAttribute('title'), 'huhu');
-	 		
-	 		var child;
-	 		var parent = MINI.el('div', {}, child = MINI.el('div'))[0];
-	 		MINI(child).set('parentNode.@title', 'test');
-	 		check(parent.getAttribute('title'), 'test');
 		}
 	},
 	{
@@ -129,7 +119,6 @@ window.miniTests.push.apply(window.miniTests, [
 	 		
 	 		var o = [{a:3, b: 'hello', style: {}, y: {v: 2, w: {}}}, {a:2, b: 'hi', style: {}, x: {}, y: {w: {}}}];
 	 		MINI(o).set({a: 33, b: 'greetings', c: 132, d: {a:1},
-	 			'y.v': 23, 'y.w.a': 'xx',
 	 			$color: '#abc', $ab: 2});
 	 		
 	 		for (var i = 0; i < o.length; i++) {
@@ -138,8 +127,6 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.b, 'greetings');
 	 			check(b.c, 132);
 	 			check(b.d.a, 1);
-	 			check(b.y.v, 23);
-	 			check(b.y.w.a, 'xx');
 	 			check(b.style.color, '#abc');
 	 			check(b.style['ab'], 2);
 	 		}
@@ -155,7 +142,7 @@ window.miniTests.push.apply(window.miniTests, [
 	},
 
 	{
-		name: "MINI().set(function)",
+		name: "MINI().set(name, function)",
 	 	exec: function() {
 	 		var undef;
 	 		MINI().set('f', 1); // test empty set

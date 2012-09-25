@@ -10,13 +10,13 @@ window.miniTests.push.apply(window.miniTests, [
 			check(s1.className, 'b c d e');
 			m.set('$', '-e');
 			check(s1.className, 'b c d');
-			m.set('$', '-c');
+			m.set('-c');
 			check(s1.className, 'b d');
-			m.set('$', '-b');
+			m.set('-b');
 			check(s1.className, 'd');
-			m.set('$', '-d');
+			m.set('-d');
 			check(s1.className, '');
-			m.set('$', '-c');
+			m.set('-c');
 			check(s1.className, '');
 		}
 	},
@@ -32,16 +32,16 @@ window.miniTests.push.apply(window.miniTests, [
 			m.set('$', '+a');
 			check(s1.className, 'a');
 			check(s2.className, 'a');
-			m.set('$', '+b');
+			m.set({$: '+b'});
 			check(s1.className, 'a b');
 			check(s2.className, 'a b');
-			m.set('$', '+a');
+			m.set('+a');
 			check(s1.className, 'b a');
 			check(s2.className, 'b a');
-			m.set('$', '+b');
+			m.set('+b');
 			check(s1.className, 'a b');
 			check(s2.className, 'a b');
-			m.set('$', '+c');
+			m.set('+c');
 			check(s1.className, 'a b c');
 			check(s2.className, 'a b c');
 		}
@@ -61,10 +61,10 @@ window.miniTests.push.apply(window.miniTests, [
 			m.set('$', 'c');
 			check(s1.className, '');
 			check(s2.className, 'a b c');
-			m.set('$', 'x');
+			m.set('x');
 			check(s1.className, 'x');
 			check(s2.className, 'a b c x');
-			m.set('$', 'x');
+			m.set('x');
 			check(s1.className, '');
 			check(s2.className, 'a b c');
 		}
@@ -78,13 +78,13 @@ window.miniTests.push.apply(window.miniTests, [
 			m.set('$', 'a b c');
 			check(s1.className, '');
 			check(s2.className, 'a b c');
-			m.set('$', 'a d');
+			m.set({$: 'a d'});
 			check(s1.className, 'a d');
 			check(s2.className, 'b c d');
-			m.set('$', 'a +d');
+			m.set('a +d');
 			check(s1.className, 'd');
 			check(s2.className, 'b c a d');
-			m.set('$', 'a +d -c');
+			m.set('a +d -c');
 			check(s1.className, 'a d');
 			check(s2.className, 'b d');
 		}

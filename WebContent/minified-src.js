@@ -117,15 +117,6 @@ window['MINI'] = (function() {
 	}
 
     /**
-     * @id getnamecomponents
-     * @dependency yes
-     * helper for set and get; if starts with $, rewrite as CSS style
-     */
-	function getNameComponents(name) {
-		return replace(name, /^\$/, 'style.').split('.');
-	}
-
-    /**
      * @id now
      * @dependency yes
      */
@@ -564,7 +555,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id set
 	 * @module 1
-	 * @requires dollar getnamecomponents 
+	 * @requires dollar 
 	 * @configurable yes
 	 * @name list.set()
 	 * @syntax MINI(selector).set(name, value)
@@ -681,18 +672,16 @@ window['MINI'] = (function() {
 					obj.className = replace(className, /^\s+|\s+$|\s+(?=\s)/g);
 				});
 			else {
-				var components = getNameComponents(name), len = components.length-1;
-				var lastName = replace(components[len], /^@/);
 				var f = isFunction(value) ? value : defaultFunction;
+				var nameClean = replace(name, /^[@$]/), isAttr = /^@/.test(name);
 				self.each( 
 					function(obj, c) {
-						for (var i = 0; i < len; i++)
-							obj = obj[components[i]];
-						var newValue = f ? f(lastName == components[len] ? obj[lastName] : obj.getAttribute(lastName), c, value) : value;
-						if (lastName == components[len])
-							obj[lastName] = newValue;
+						obj = /^\$/.test(name) ? obj.style : obj;
+						var newValue = f ? f(isAttr ? obj.getAttribute(nameClean) : obj[nameClean], c, value) : value;
+						if (!isAttr)
+							obj[nameClean] = newValue;
 						else if (newValue != null)  
-							obj.setAttribute(lastName, newValue);
+							obj.setAttribute(nameClean, newValue);
 				});
 			}
 		}
@@ -1215,7 +1204,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id listanimate
 	 * @module 7
-	 * @requires loop dollar getnamecomponents tostring
+	 * @requires loop dollar tostring
 	 * @configurable yes
 	 * @name list.animate()
 	 * @syntax MINI(selector).animate(properties)
@@ -1325,16 +1314,11 @@ window['MINI'] = (function() {
 			linearity = linearity || 0;
 			
 			self.each(function(li) {
-				var p = {o:MINI(li), s:{}, e:{}, u:{}}; 
+				var p = {o:MINI(li), s:{}, e:{}}; 
 				each(properties, function(name) {
 					var dest = properties[name];
-					var components = getNameComponents(name);
-					var len = components.length-1;
-					var lastName = replace(components[len], /^@/);
-					var a = li;
-					for (var j = 0; j < len; j++) 
-						a = a[components[j]];
-					p.s[name] = ((lastName != components[len]) ? a.getAttribute(lastName) : a[lastName]) || 0;
+					var nameClean = replace(name, /^[@$]/);
+					p.s[name] = /^@/.test(name)? li.getAttribute(nameClean) : (/^\$/.test(name) ? li.style : li)[nameClean] || 0;
 					p.e[name] = /^[+-]=/.test(dest) ?
 						replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(replace(dest, /\+?=/))) 
 						: dest;
