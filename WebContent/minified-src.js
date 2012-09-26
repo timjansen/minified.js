@@ -26,9 +26,20 @@ window['$'] =
 window['MINI'] = (function() {
 	var backslashB = '\\b';
 	var undef;
-
+	
+	/**
+	 * @id ie8compatibility
+	 * @requires ie7compatibility 
+	 * @module 9
+	 * @configurable yes
+	 * @name Backward-Compatibility for IE8 and similar browsers
+	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8.
+	 */
+	 var IS_PRE_IE9 = !!document.all && ![].map;
+	 
 	/**
 	 * @id ie7compatibility
+	 * @requires ie8compatibility 
 	 * @module 9
 	 * @configurable yes
 	 * @name Backward-Compatibility for IE7 and similar browsers
@@ -53,6 +64,10 @@ window['MINI'] = (function() {
 	 * @name Backward-Compatibility for IE6 and similar browsers
 	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6 which makes the library a tiny 
 	 * little bit larger.
+	 */
+
+	/**
+	 * @stop
 	 */
 
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +116,7 @@ window['MINI'] = (function() {
 		return result;
 	}
 	function replace(s, regexp, sub) {
-		return s.replace(regexp, sub||'');
+		return toString(s).replace(regexp, sub||'');
 	}
 	function delay(delayMs, f) {
 		var id = delayMs ? window.setTimeout(f, delayMs) : f();
@@ -654,10 +669,26 @@ window['MINI'] = (function() {
 	 * @return the list
 	 */
 	proto['set'] = function (name, value, defaultFunction) {
-		var self = this;
+		var self = this, n, v;
 		// @cond debug if (name == null) error("First argument must be set!");
 		if (value !== undef) {
 			// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
+			
+			if (name == '$$fade') {
+				v = parseFloat(value);
+				// @condblock ie8compatibility 
+				if (IS_PRE_IE9)
+					self.set({$filter: 'alpha(opacity = '+Math.round(100*value)+')'});
+				else
+				// @condend
+					self.set({$opacity: v});
+
+				if (value > 0)
+					self.set({$visibility: 'visible', $display: function(oldValue) { return oldValue == 'none' ? 'block' : oldValue; }});
+				else 
+					self.set({$visibility: 'hidden'});
+			}
+			
 			if (name == '$')
 				self.each(function(obj) {
 					var className = obj.className || '';
@@ -1298,10 +1329,10 @@ window['MINI'] = (function() {
 		// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
 		// @cond debug var colorRegexp = /^(rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|#\w{3}|#\w{6})\s*$/i;
 		function toNumWithoutUnit(v) {
-			return parseFloat(replace(toString(v), /[^\d.-]/g));
+			return parseFloat(replace(v, /[^\d.-]/g));
 		}
 		function replaceValue(originalValue, newNumber) {
-			return replace(toString(originalValue), /-?[\d.]+/, newNumber);
+			return replace(originalValue, /-?[\d.]+/, newNumber);
 		}
 		var self = this;
 		var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
@@ -1313,23 +1344,37 @@ window['MINI'] = (function() {
 			durationMs = durationMs || 500;
 			linearity = linearity || 0;
 			
+			// find start values
 			self.each(function(li) {
 				var p = {o:MINI(li), s:{}, e:{}}; 
 				each(properties, function(name) {
-					var dest = properties[name];
+					var listyle = li.style, start, dest = properties[name];
 					var nameClean = replace(name, /^[@$]/);
-					p.s[name] = /^@/.test(name)? li.getAttribute(nameClean) : (/^\$/.test(name) ? li.style : li)[nameClean] || 0;
+					if (name == '$$fade') {
+						start = isNaN(start = (listyle.visibility == 'hidden' || listyle.display == 'none') ? 0 :
+					// @condblock ie8compatibility
+							          IS_PRE_IE9 ? toNumWithoutUnit(listyle.filter)/100 :
+					// @condend
+							          parseFloat(listyle.opacity) 
+							         ) ? 1 : start;
+console.log(name, start, dest, isNaN(listyle.opacity), listyle.opacity);
+					}
+					else {
+						start = /^@/.test(name)? li.getAttribute(nameClean) : (/^\$/.test(name) ? listyle : li)[nameClean] || 0;
+						// @cond debug if (!colorRegexp.test(dest) && isNan(toNumWithoutUnit(dest))) error('End value of "'+name+'" is neither color nor number: ' + toString(dest));
+						// @cond debug if (!colorRegexp.test(p.s[name]) && isNan(toNumWithoutUnit(p.s[name]))) error('Start value of "'+name+'" is neither color nor number: ' + toString(p.s[name]));
+						// @cond debug if (colorRegexp.test(dest) && !colorRegexp.test(p.s[name])) error('End value of "'+name+'" looks like a color, but start value does not: ' + toString(p.s[name]));
+						// @cond debug if (colorRegexp.test(p.s[name]) && !colorRegexp.test(dest)) error('Start value of "'+name+'" looks like a color, but end value does not: ' + toString(dest));
+					}
+					p.s[name] = start;
 					p.e[name] = /^[+-]=/.test(dest) ?
-						replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(replace(dest, /\+?=/))) 
-						: dest;
-					// @cond debug if (!colorRegexp.test(dest) && isNan(toNumWithoutUnit(dest))) error('End value of "'+name+'" is neither color nor number: ' + toString(dest));
-					// @cond debug if (!colorRegexp.test(p.s[name]) && isNan(toNumWithoutUnit(p.s[name]))) error('Start value of "'+name+'" is neither color nor number: ' + toString(p.s[name]));
-					// @cond debug if (colorRegexp.test(dest) && !colorRegexp.test(p.s[name])) error('End value of "'+name+'" looks like a color, but start value does not: ' + toString(p.s[name]));
-					// @cond debug if (colorRegexp.test(p.s[name]) && !colorRegexp.test(dest)) error('Start value of "'+name+'" looks like a color, but end value does not: ' + toString(dest));
+							replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(replace(dest, /\+?=/))) 
+							: dest;
 				});
 				initState.push(p);
 			});
 					
+			// start animation
 			loopStop = loop(function(timePassedMs, stop) { 
 				function getColorComponent(colorCode, index) {
 					return (/^#/.test(colorCode)) ?
@@ -2056,7 +2101,7 @@ window['MINI'] = (function() {
 	*/
     // @condblock ie7compatibility
     MINI['parseJSON'] = (window.JSON && JSON.parse) || function (text) {
-    	text = replace(toString(text), /[\u0000\u00ad\u0600-\uffff]/g, ucode);
+    	text = replace(text, /[\u0000\u00ad\u0600-\uffff]/g, ucode);
 
         if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
 				.test(replace(replace(replace(text, /\\(["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@'), 
