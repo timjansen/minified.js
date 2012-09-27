@@ -705,9 +705,8 @@ window['MINI'] = (function() {
 			// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 			
 			if (name == '$$fade' || name == '$$slide') {
-				v = toNumWithoutUnit(value);
-				
-				self.set(
+				self.set({$visibility: (v = toNumWithoutUnit(value)) > 0 ? 'visible' : 'hidden', $display: 'block'})
+					.set(
 					(name == '$$fade')  ? (
 					// @condblock ie8compatibility 
 					 IS_PRE_IE9 ? {$filter: 'alpha(opacity = '+Math.round(100*v)+')'} :
@@ -717,7 +716,7 @@ window['MINI'] = (function() {
 					{$height: /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight(element))  + 'px';},
 					    $overflow: 'hidden'}
 					);
-				self.set({$visibility: v > 0 ? 'visible' : 'hidden', $display: 'block'});
+					
 			}
 			else if (name == '$')
 				self.each(function(obj) {
