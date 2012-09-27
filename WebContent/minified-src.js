@@ -600,9 +600,8 @@ window['MINI'] = (function() {
 	 * @syntax MINI(selector).set(name, value, defaultFunction)
 	 * @syntax MINI(selector).set(properties, undefined, defaultFunction)
 	 * @syntax MINI(selector).set(properties, undefined, defaultFunction, defaultPrefix)
-	 * Modifies the list's DOM elements or objects by setting their properties and/or attributes. set() has also special support for 
-	 * setting an element's CSS style and CSS classes. You can either supply a single name and value to set only one property, or you
-	 * can provide a map of properties to set.
+	 * Modifies the list's DOM elements or objects by setting their properties, attributes, CSS style and/or CSS classes. You can either supply a 
+	 * single name and value to set only one property, or you can provide a map of properties to set.
 	 * More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will
 	 * be set.
 	 * 
@@ -640,10 +639,15 @@ window['MINI'] = (function() {
 	 * <pre>
 	 * $('.myElem').set('+myClass -otherClass on');
 	 * </pre>
-	 *  
-	 * @example Changing attribute of the parent node:
+	 * 	 
+	 * @example Making an element transparent:
 	 * <pre>
-	 * $('a.someLinks').set('parentNode.@title', 'Links');
+	 * $('.seeThrough').set('$$fade', 0.5);
+	 * </pre>
+	 * 	  
+	 * @example Making an element visible. Note that $$fade will set the element's display style to 'block' and visibility style to 'visible'.
+	 * <pre>
+	 * $('.myElem').set('$$fade', 1);
 	 * </pre>
 	 * 
 	 * @example Using a map to change several properties:
@@ -669,10 +673,15 @@ window['MINI'] = (function() {
 	 * </pre>
 	 * 
 	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
-	 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
-	 *                     A dollar ('$') prefix is a shortcut for 'style.'. A dollar ('$') as name modifies CSS classes.
-	 *                     In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
-	 *                     you should use the '$' syntax.
+	 *             A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
+	 *             The special name '$$fade' expects a value between 0 and 1 and sets the opacity of the element in a browser-independent way. 
+	 *             The special name '$$slide' expects a value between 0 and 1 that defines how much of the element is visible. The rest will
+	 *             be cut up at its buttom. It can be used in animations to slide in or out an element. 
+	 *             Both '$$fade' and '$$slide' will automatically control the element's 'visibility' and 'display' styles. If the value is 0,
+	 *             the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to 
+	 *             'visible' and the display style to 'block'. Both special names only work with block elements.
+	 *             In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
+	 *             use the '$' syntax.
 	 * 
 	 * @param value the value to set. If it is a function, the function(oldValue, index, obj) will be invoked for each list element to evaluate the value. 
 	 * The function is called with with the old value as first argument and the index in the list as second.
@@ -1264,7 +1273,7 @@ window['MINI'] = (function() {
 	 * @syntax MINI(selector).animate(properties, durationMs, linearity)
 	 * @syntax MINI(selector).animate(properties, durationMs, linearity, callback)
 	 * @shortcut $(selector).animate(properties, durationMs, linearity, callback) - Enabled by default, but can be disabled in the builder.
-	 * Animates the items of the list by modifying their properties and attributes. animate() can work with numbers, strings that contain exactly one
+	 * Animates the items of the list by modifying their properties, CSS styles and attributes. animate() can work with numbers, strings that contain exactly one
 	 * number and which may also contain units or other text, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
 	 *
 	 * When you invoke the function, it will first read all old values from the object and extract their numbers and colors. These start values will be compared to 
@@ -1303,6 +1312,16 @@ window['MINI'] = (function() {
 	 * $('#myBlushingDiv').set({$backgroundColor: '#000000'})
 	 *                    .animate({$backgroundColor: '#ff0000'}, 1000);
 	 * </pre>
+	 * 
+	 * @example Fade-out effect. Note that $$fade does not require an initial value, it will automatically determine the element's initial visibility.
+	 * <pre>
+	 * $('#myFadingDiv').animate({$$fade: 0}, 1000);
+	 * </pre>
+	 * 
+ 	 * @example Slide-in effect. Note that $$slide does not require an initial value, it will automatically determine the element's initial visibility.
+	 * <pre>
+	 * $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
+	 * </pre>
 	 *
 	 * @example Chained animation using callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
 	 * <pre>
@@ -1330,9 +1349,9 @@ window['MINI'] = (function() {
 	 * </pre>
 	 *
 	 * @param properties a property map describing the end values of the corresponding properties. The names can use the
-	 *                   set() syntax ('@' prefix for attributes, '$' for styles). Values must be either numbers, numbers with
-	 *                   units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). The properties will be set 
-	 *                   for all elements of the list.
+	 *                   set() syntax ('@' prefix for attributes, '$' for styles, '$$fade' for fading and '$$slide' for slide effects). 
+	 *                   Values must be either numbers, numbers with units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). 
+	 *                   The properties will be set for all elements of the list.
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.
 	 * @param callback optional if given, this function(list) will be invoked the list as parameter when the animation finished
