@@ -122,11 +122,32 @@ window['MINI'] = (function() {
 		var id = delayMs ? window.setTimeout(f, delayMs) : f();
  		return function() { if(delayMs) window.clearTimeout(id); };
 	}
+	function toNumWithoutUnit(v) {
+		return parseFloat(replace(v, /[^\d.-]/g));
+	}
+	
+	function getNaturalHeight(element) {
+		var elstyle = element.style;
+		var oldStyles = {$position: elstyle.position, $visibility: elstyle.visibility, $display: elstyle.display};
+		$(element).set({$position: 'absolute', $visibility: 'hidden', $display: 'block', $height: null});
+		var h = element.offsetHeight;
+		$(element).set(oldStyles);
+		return h;
+	}
 
-    /**
-     * @id tostring
-     * @dependency yes
-     */
+	// careful: only works with simple names (no camel case / hypens)
+	function getEffectiveStyle(element, name) {
+		var s = element.style[name], getComputedStyle = window.getComputedStyle;
+		if (s != null)
+			return s;
+		// @condblock ie8compatibility 
+		else if (!getComputedStyle)
+			return element.currentStyle[name];
+		// @condend
+		else 
+			return getComputedStyle(element).getPropertyValue(name);
+	}
+
 	function toString(s) { // wrapper for Closure optimization
 		return String(s!=null ? s : '');
 	}
@@ -653,9 +674,9 @@ window['MINI'] = (function() {
 	 *                     In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
 	 *                     you should use the '$' syntax.
 	 * 
-	 * @param value the value to set. If it is a function, the function will be invoked for each list element to evaluate the value. 
+	 * @param value the value to set. If it is a function, the function(oldValue, index, obj) will be invoked for each list element to evaluate the value. 
 	 * The function is called with with the old value as first argument and the index in the list as second.
-	 * The third value is the function itself.
+	 * The third value is the object being modified.
 	 * If value is null and name specified an attribute, the value will be ignored.
 	 * If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefix with a '+' the class will be added,
 	 * with a '+' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.
@@ -669,27 +690,27 @@ window['MINI'] = (function() {
 	 * @return the list
 	 */
 	proto['set'] = function (name, value, defaultFunction) {
-		var self = this, n, v;
+		var self = this, v;
 		// @cond debug if (name == null) error("First argument must be set!");
 		if (value !== undef) {
 			// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 			
-			if (name == '$$fade') {
-				v = parseFloat(value);
-				// @condblock ie8compatibility 
-				if (IS_PRE_IE9)
-					self.set({$filter: 'alpha(opacity = '+Math.round(100*value)+')'});
-				else
-				// @condend
-					self.set({$opacity: v});
-
-				if (value > 0)
-					self.set({$visibility: 'visible', $display: function(oldValue) { return oldValue == 'none' ? 'block' : oldValue; }});
-				else 
-					self.set({$visibility: 'hidden'});
+			if (name == '$$fade' || name == '$$slide') {
+				v = toNumWithoutUnit(value);
+				
+				self.set(
+					(name == '$$fade')  ? (
+					// @condblock ie8compatibility 
+					 IS_PRE_IE9 ? {$filter: 'alpha(opacity = '+Math.round(100*v)+')'} :
+					// @condend
+						{$opacity: v})
+					:
+					{$height: /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight(element))  + 'px';},
+					    $overflow: 'hidden'}
+					);
+				self.set({$visibility: v > 0 ? 'visible' : 'hidden', $display: 'block'});
 			}
-			
-			if (name == '$')
+			else if (name == '$')
 				self.each(function(obj) {
 					var className = obj.className || '';
 					each(value.split(/\s+/), function(clzz) {
@@ -707,12 +728,12 @@ window['MINI'] = (function() {
 				var nameClean = replace(name, /^[@$]/), isAttr = /^@/.test(name);
 				self.each( 
 					function(obj, c) {
-						obj = /^\$/.test(name) ? obj.style : obj;
-						var newValue = f ? f(isAttr ? obj.getAttribute(nameClean) : obj[nameClean], c, value) : value;
+						var newObj = /^\$/.test(name) ? obj.style : obj;
+						var newValue = f ? f(isAttr ? newObj.getAttribute(nameClean) : newObj[nameClean], c, obj, value) : value;
 						if (!isAttr)
-							obj[nameClean] = newValue;
+							newObj[nameClean] = newValue;
 						else if (newValue != null)  
-							obj.setAttribute(nameClean, newValue);
+							newObj.setAttribute(nameClean, newValue);
 				});
 			}
 		}
@@ -748,7 +769,7 @@ window['MINI'] = (function() {
 	 * @param properties a map containing names as keys and the values to append as map values. See above for the syntax.
 	 * @return the list
 	 */
-	proto['append'] = function (name, value) { return this.set(name, value, function(oldValue, idx, newValue) { return toString(oldValue) + newValue;});};
+	proto['append'] = function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return toString(oldValue) + newValue;});};
 
 	/**
 	 * @id prepend
@@ -775,7 +796,7 @@ window['MINI'] = (function() {
 	 * @param properties a map containing names as keys and the values to prepend as map values. See above for the syntax.
 	 * @return the list
 	 */
-	proto['prepend'] = function (name, value) { return this.set(name, value, function(oldValue, idx, newValue) { return newValue + toString(oldValue);});};
+	proto['prepend'] = function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return newValue + toString(oldValue);});};
 
 	
 	/**
@@ -1235,7 +1256,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id listanimate
 	 * @module 7
-	 * @requires loop dollar tostring
+	 * @requires loop dollar 
 	 * @configurable yes
 	 * @name list.animate()
 	 * @syntax MINI(selector).animate(properties)
@@ -1328,9 +1349,6 @@ window['MINI'] = (function() {
 		// @cond debug if (linearity < 0 || linearity > 1) error('Third parameter must be at least 0 and not larger than 1.');
 		// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
 		// @cond debug var colorRegexp = /^(rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|#\w{3}|#\w{6})\s*$/i;
-		function toNumWithoutUnit(v) {
-			return parseFloat(replace(v, /[^\d.-]/g));
-		}
 		function replaceValue(originalValue, newNumber) {
 			return replace(originalValue, /-?[\d.]+/, newNumber);
 		}
@@ -1348,16 +1366,20 @@ window['MINI'] = (function() {
 			self.each(function(li) {
 				var p = {o:MINI(li), s:{}, e:{}}; 
 				each(properties, function(name) {
-					var listyle = li.style, start, dest = properties[name];
+					var start, dest = properties[name], listyle = li.style;
 					var nameClean = replace(name, /^[@$]/);
+					var isHidden = getEffectiveStyle(li, 'visibility') == 'hidden' || getEffectiveStyle(li, 'display') == 'none';
 					if (name == '$$fade') {
-						start = isNaN(start = (listyle.visibility == 'hidden' || listyle.display == 'none') ? 0 :
+						start = isNaN(start = isHidden ? 0 :
 					// @condblock ie8compatibility
 							          IS_PRE_IE9 ? toNumWithoutUnit(listyle.filter)/100 :
 					// @condend
 							          parseFloat(listyle.opacity) 
 							         ) ? 1 : start;
-console.log(name, start, dest, isNaN(listyle.opacity), listyle.opacity);
+					}
+					else if (name == '$$slide') {
+						start = (isHidden ? 0 : li.offsetHeight) + 'px';
+						dest = dest*getNaturalHeight(li) + 'px';
 					}
 					else {
 						start = /^@/.test(name)? li.getAttribute(nameClean) : (/^\$/.test(name) ? listyle : li)[nameClean] || 0;
@@ -1783,7 +1805,7 @@ console.log(name, start, dest, isNaN(listyle.opacity), listyle.opacity);
 	/**
 	 * @id el
 	 * @module 2
-	 * @requires dollardollar tostring set
+	 * @requires dollardollar set
 	 * @configurable yes
 	 * @name el()
 	 * @syntax MINI.el(name)
@@ -1889,7 +1911,6 @@ console.log(name, start, dest, isNaN(listyle.opacity), listyle.opacity);
 	/**
 	* @id request
 	* @module 3
-	* @requires tostring 
 	* @configurable yes
 	* @name request()
 	* @syntax MINI.request(method, url)
@@ -2036,7 +2057,7 @@ console.log(name, start, dest, isNaN(listyle.opacity), listyle.opacity);
 	/**
     * @id tojson
     * @module 4
-    * @requires tostring ucode 
+    * @requires ucode 
     * @configurable yes
     * @name toJSON()
     * @syntax MINI.toJSON(value)
@@ -2083,7 +2104,7 @@ console.log(name, start, dest, isNaN(listyle.opacity), listyle.opacity);
 	/**
 	* @id parsejson
 	* @module 4
-	* @requires tostring ucode
+	* @requires ucode
 	* @configurable yes
 	* @name parseJSON()
 	* @syntax MINI.parseJSON(text)

@@ -150,9 +150,10 @@ window.miniTests.push.apply(window.miniTests, [
 	 		var cnt = 0;
 	 		var ar = [{a:3}, {a:2}, {a:11}];
 
-	 		MINI(ar).set('a', 33, function(oldValue, index, newValue) {
+	 		MINI(ar).set('a', 33, function(oldValue, index, obj, newValue) {
 	 			check(index, cnt++);
 	 			check(oldValue, ar[index].a);
+	 			check(ar[index] === obj);
 	 			check(newValue, 33);
 	 			return oldValue + newValue;
 	 		});
@@ -193,7 +194,7 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(ar[2].a, 17);
 	 		
 	 		cnt = 0;
-	 		MINI(ar).set({a: 2}, undef, function(oldValue, index, newValue) {
+	 		MINI(ar).set({a: 2}, undef, function(oldValue, index, obj, newValue) {
 	 			check(index, cnt++);
 	 			check(oldValue, ar[index].a);
 	 			check(newValue, 2);
