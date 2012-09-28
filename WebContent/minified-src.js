@@ -581,9 +581,7 @@ window['MINI'] = (function() {
 	 * </pre>
 	 */
      proto['remove'] = function() {
-    	var list = this.raw;
-		for (var j = list.length-1; j >= 0; j--) // go backward - NodeList may shrink when elements are removed!
-			this.raw[j].parentNode.removeChild(this.raw[j]);
+    	this.each(function(obj) {obj.parentNode.removeChild(obj);});
 	};
 	
     
@@ -1684,27 +1682,28 @@ window['MINI'] = (function() {
 		 *                Unless the handler returns true, all further processing of the event will be stopped. 
 		 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
 		 *                is added to the handler in a property called '_M'.
-		 * @param args an array of arguments to pass to the handler function
+		 * @param args optional if set an array of arguments to pass to the handler function instead of the event objects
+		 * @param fThis an optional value for 'this' in the handler, as alternative to the event target
 		 * @return the list
 		 */
-		proto['on'] = function (name, handler, args) {
+		proto['on'] = function (name, handler, args, fThis) {
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return this.each(function(el) {
 				handler['_M'] = handler['_M'] || function(e) {
-					e = e || window.event;
 					var l = document.documentElement, b = document.body;
+					e = e || window.event;
 					// @cond debug try {
-					if (!handler.apply(e.target, args || [e, { 
+					if (!handler.apply(fThis || e.target, args || [e, { 
 							'key': e.keyCode || e.which, // http://unixpapa.com/js/key.html
 							'right': e.which ? (e.which == 3) : (e.button == 2),
 							'pageX': l.scrollLeft + b.scrollLeft + e.clientX,
 							'pageY': l.scrollTop + b.scrollTop + e.clientY
 					}])) {
-						if (e.preventDefault) // W3C DOM2 event cancelling
+						if (e.stopPropagation) {// W3C DOM3 event cancelling available?
 							e.preventDefault();
-						if (e.stopPropagation) // cancel bubble for W3C DOM
 							e.stopPropagation();
+						}
 						e.returnValue = false; // cancel for IE
 						e.cancelBubble = true; // cancel bubble for IE
 					}
@@ -1775,7 +1774,7 @@ window['MINI'] = (function() {
 	 * @return an object containing pixel coordinates in two properties 'left' and 'top'
 	 */
 	proto['offset'] = function() {
-		var elem = this.raw[0];
+		var elem = this[0];
 		var dest = {left: 0, top: 0};
 		while (elem) {
 			dest.left += elem.offsetLeft;
