@@ -1523,17 +1523,13 @@ window['MINI'] = (function() {
 		 *         arguments, the function toggles between both states. 
 		 */
 		proto['toggle'] = function(state1, state2, durationMs, linearity, delayMs) {
-			var self = this;
 			var animState = {};
-			var state, stop;
+			var state, stop, regexg = /\b(?=\w)/g, self = this;
 
-			if (isString(state1))
-				return self['toggle'](replace(state1, /\b(?=\w)/g, '-'), replace(state1, /\b(?=\w)/g, '+'));			
-
-			// @cond debug if (linearity < 0 || linearity > 1) error('Fourth parameter must be at least 0 and not larger than 1.');
-
-			self['set'](state1);
-			return function(newState) {
+			return isString(state1) ?
+				self.toggle(replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
+				self.set(state1) && 
+			    function(newState) {
 				if (newState === true || newState === false) {
 					if (newState == state) 
 						return;
@@ -1543,11 +1539,11 @@ window['MINI'] = (function() {
 					state = !state;
 
 				if (durationMs) 
-					self['animate'](state ? state2 : state1, animState['stop'] != null ? (animState['stop']() || animState['time']) : durationMs, linearity, null, delayMs, animState);
+					self.animate(state ? state2 : state1, animState.stop != null ? (animState.stop() || animState.time) : durationMs, linearity, null, delayMs, animState);
 				else {
 					if (stop) 
 						stop();
-					stop = delay(delayMs, function() {self['set'](state ? state2 : state1); stop=null ;});
+					stop = delay(delayMs, function() { self.set(state ? state2 : state1); stop=null; });
 				}
 			};
 		};
