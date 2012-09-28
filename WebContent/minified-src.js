@@ -1524,28 +1524,29 @@ window['MINI'] = (function() {
 		 */
 		proto['toggle'] = function(state1, state2, durationMs, linearity, delayMs) {
 			var animState = {};
-			var state, stop, regexg = /\b(?=\w)/g, self = this;
+			var state, stop, regexg = /\b(?=\w)/g;
+			var self = this;
 
 			return isString(state1) ?
 				self.toggle(replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
 				self.set(state1) && 
 			    function(newState) {
-				if (newState === true || newState === false) {
-					if (newState == state) 
-						return;
-					state = newState;
-				}
-				else
-					state = !state;
-
-				if (durationMs) 
-					self.animate(state ? state2 : state1, animState.stop != null ? (animState.stop() || animState.time) : durationMs, linearity, null, delayMs, animState);
-				else {
-					if (stop) 
-						stop();
-					stop = delay(delayMs, function() { self.set(state ? state2 : state1); stop=null; });
-				}
-			};
+					if (newState === true || newState === false) {
+						if (newState == state) 
+							return;
+						state = newState;
+					}
+					else
+						state = !state;
+	
+					if (durationMs) 
+						self.animate(state ? state2 : state1, animState.stop ? (animState.stop() || animState.time) : durationMs, linearity, null, delayMs, animState);
+					else {
+						if (stop) 
+							stop();
+						stop = delay(delayMs, function() { self.set(state ? state2 : state1); stop=null; });
+					}
+				};
 		};
 
 		/**
