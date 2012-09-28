@@ -24,7 +24,7 @@ window['$'] =
 // @condend
 	
 window['MINI'] = (function() {
-	var backslashB = '\\b';
+	var BACKSLASHB = '\\b';
 	var undef;
 	
 	/**
@@ -384,7 +384,7 @@ window['MINI'] = (function() {
 		}
 		
 		if (regexpFilter) {
-			reg = new RegExp(backslashB +  regexpFilter + backslashB, 'i'); 
+			reg = new RegExp(BACKSLASHB +  regexpFilter + BACKSLASHB, 'i'); 
 			each(elements, function(l) {
 				if(reg.test(l[prop])) 
 					list.push(l); 
@@ -723,7 +723,7 @@ window['MINI'] = (function() {
 					var className = obj.className || '';
 					each(value.split(/\s+/), function(clzz) {
 						var cName = replace(clzz, /^[+-]/);
-						var reg = new RegExp(backslashB + cName + backslashB);
+						var reg = new RegExp(BACKSLASHB + cName + BACKSLASHB);
 						var contains = reg.test(className);
 						className = replace(className, reg);
 						if (/^\+/.test(clzz) || (cName==clzz && !contains)) // for + and toggle-add
@@ -1643,10 +1643,9 @@ window['MINI'] = (function() {
 		 * of the event (e.g. the button that has been clicked). The original event object the is object given to the event or obtained 
 		 * from 'window.event'. The compatibility event object has the following properties:
 		 * <ul>
-		 * <li><code>keyCode</code> - the key code, if it was a key press. Will return event.keyCode if set, otherwise event.which. This should work in practically all browsers. 
+		 * <li><code>key</code> - the key code, if it was a key press. Will return event.keyCode if set, otherwise event.which. This should work in practically all browsers. 
 		 *                                              See http://unixpapa.com/js/key.html for key code tables.</li>
-		 * <li><code>rightClick</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
-		 * <li><code>wheelDir</code> - for mouse wheel or scroll events, the direction (1 for up or -1 for down)</li>
+		 * <li><code>right</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
 		 * <li><code>pageX</code> - the page coordinate of the event
 		 * <li><code>pageY</code> - the page coordinate of the event
 		 * </ul>
@@ -1669,12 +1668,12 @@ window['MINI'] = (function() {
 		 * @example Adds an handler for mousedown events to a canvas:
 		 * <pre>
 		 * var ctx = $$('#myCanvas').getContext('2d');                      // get a canvas context
-		 * $('#myCanvas').on('mousedown', function(evt, extraInfo) {  // add handler for mouse down events
-		 *     if (extraInfo.rightButton)                                            // right mouse button paints white, all other black
+		 * $('#myCanvas').on('mousedown', function(evt, extraInfo) {        // add handler for mouse down events
+		 *     if (extraInfo.right)                                         // right mouse button paints white, all other black
 		 *         ctx.fillStyle = "white";
 		 *     else
 		 *         ctx.fillStyle = "black";
-		 *     ctx.fillRect(evt.clientX, evt.clientY, 1, 1);                     // paints a pixel at the cursor position
+		 *     ctx.fillRect(evt.clientX, evt.clientY, 1, 1);                // paints a pixel at the cursor position
 		 * });
 		 * </pre>
 		 *
@@ -1684,7 +1683,7 @@ window['MINI'] = (function() {
 		 *                'this' is always the element that caused the event.
 		 *                Unless the handler returns true, all further processing of the event will be stopped. 
 		 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
-		 *                is added to the handler in a property called 'MINI'.
+		 *                is added to the handler in a property called '_M'.
 		 * @param args an array of arguments to pass to the handler function
 		 * @return the list
 		 */
@@ -1692,16 +1691,15 @@ window['MINI'] = (function() {
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return this.each(function(el) {
-				handler['MINI'] = handler['MINI'] || function(e) {
+				handler['_M'] = handler['_M'] || function(e) {
 					e = e || window.event;
 					var l = document.documentElement, b = document.body;
 					// @cond debug try {
 					if (!handler.apply(e.target, args || [e, { 
-							keyCode: e.keyCode || e.which, // http://unixpapa.com/js/key.html
-							rightClick: e.which ? (e.which == 3) : (e.button == 2),
-							pageX: l.scrollLeft + b.scrollLeft + e.clientX,
-							pageY: l.scrollTop + b.scrollTop + e.clientY,
-							wheelDir: (e.detail < 0 || e.wheelDelta > 0) ? 1 : -1
+							'key': e.keyCode || e.which, // http://unixpapa.com/js/key.html
+							'right': e.which ? (e.which == 3) : (e.button == 2),
+							'pageX': l.scrollLeft + b.scrollLeft + e.clientX,
+							'pageY': l.scrollTop + b.scrollTop + e.clientY
 					}])) {
 						if (e.preventDefault) // W3C DOM2 event cancelling
 							e.preventDefault();
@@ -1713,9 +1711,9 @@ window['MINI'] = (function() {
 					// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 				};
 				if (el.addEventListener)
-					el.addEventListener(name, handler['MINI'], true); // W3C DOM
+					el.addEventListener(name, handler['_M'], true); // W3C DOM
 				else 
-					el.attachEvent('on'+name, handler['MINI']);  // IE < 9 version
+					el.attachEvent('on'+name, handler['_M']);  // IE < 9 version
 			});
 		};
 		
@@ -1750,9 +1748,9 @@ window['MINI'] = (function() {
 		// @cond debug if (!handler || !handler['MINI']) error("No handler given or handler invalid.");
 	   	return this.each(function(el) {
 			if (el.addEventListener)
-				el.removeEventListener(name, handler['MINI'], true); // W3C DOM
+				el.removeEventListener(name, handler['_M'], true); // W3C DOM
 			else 
-				el.detachEvent('on'+name, handler['MINI']);  // IE < 9 version
+				el.detachEvent('on'+name, handler['_M']);  // IE < 9 version
 	   	});
 	};
 	
