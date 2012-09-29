@@ -164,7 +164,7 @@ window['MINI'] = (function() {
 	 * @id dollar
 	 * @module 1
 	 * @requires dollarraw addelementlistfuncsstart
-	 * @name MINI()
+	 * @dependency yes
 	 * @syntax MINI(selector)
 	 * @syntax MINI(selector, context)
 	 * @syntax MINI(function)
@@ -277,7 +277,7 @@ window['MINI'] = (function() {
 	
 	/**
 	 * @id debug
-	 * @module 8
+	 * @module 9
 	 * @configurable no
 	 * @name Debugging Support
 	 */
@@ -569,7 +569,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id listremove
 	 * @module 1
-	 * @requires dollar
+	 * @requires dollar each
 	 * @configurable yes
 	 * @name list.remove()
 	 * @syntax remove()
@@ -589,7 +589,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id set
 	 * @module 1
-	 * @requires dollar 
+	 * @requires dollar each
 	 * @configurable yes
 	 * @name list.set()
 	 * @syntax MINI(selector).set(name, value)
@@ -808,7 +808,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id listadd
 	 * @module 2
-	 * @requires dollar
+	 * @requires dollar each
 	 * @configurable yes
 	 * @name list.add()
 	 * @syntax MINI(selector).add(text)
@@ -895,7 +895,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id listfill
 	 * @module 2
-	 * @requires dollar
+	 * @requires dollar each
 	 * @configurable yes
 	 * @name list.fill()
 	 * @syntax MINI(selector).fill()
@@ -1262,7 +1262,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id listanimate
 	 * @module 7
-	 * @requires loop dollar 
+	 * @requires loop dollar each set
 	 * @configurable yes
 	 * @name list.animate()
 	 * @syntax MINI(selector).animate(properties)
@@ -1457,7 +1457,7 @@ window['MINI'] = (function() {
 		/**
 		 * @id listtoggle
 		 * @module 7
-		 * @requires listanimate
+		 * @requires listanimate set
 		 * @configurable yes
 		 * @name list.toggle()
 		 * @syntax MINI(selector).toggle(cssClasses)
@@ -1550,7 +1550,7 @@ window['MINI'] = (function() {
 		/**
 		 * @id listwire
 		 * @module 7
-		 * @requires listtoggle liston
+		 * @requires listtoggle liston each set
 		 * @configurable yes
 		 * @name list.wire()
 		 * @syntax MINI(selector).wire(events, toggles)
@@ -1630,7 +1630,7 @@ window['MINI'] = (function() {
 		/**
 		 * @id liston
 		 * @module 5
-		 * @requires dollar
+		 * @requires dollar each
 		 * @configurable yes
 		 * @name list.on()
 		 * @syntax MINI(selector).on(el, name, handler)
@@ -1700,12 +1700,16 @@ window['MINI'] = (function() {
 							'pageX': l.scrollLeft + b.scrollLeft + e.clientX,
 							'pageY': l.scrollTop + b.scrollTop + e.clientY
 					}])) {
+						// @condblock ie8compatibility 
 						if (e.stopPropagation) {// W3C DOM3 event cancelling available?
+						// @condend
 							e.preventDefault();
 							e.stopPropagation();
+						// @condblock ie8compatibility 
 						}
 						e.returnValue = false; // cancel for IE
 						e.cancelBubble = true; // cancel bubble for IE
+						// @condend
 					}
 					// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 				};
@@ -1719,7 +1723,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id listoff
 	 * @module 5
-	 * @requires dollar liston
+	 * @requires dollar liston each
 	 * @configurable yes
 	 * @name list.off()
 	 * @syntax MINI.off(element, name, handler)
@@ -1775,7 +1779,7 @@ window['MINI'] = (function() {
 	 */
 	proto['offset'] = function() {
 		var elem = this[0];
-		var dest = {left: 0, top: 0};
+		var dest = {'left': 0, 'top': 0};
 		while (elem) {
 			dest.left += elem.offsetLeft;
 			dest.top += elem.offsetTop;

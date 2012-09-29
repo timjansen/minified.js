@@ -125,7 +125,7 @@ function createDefaultConfigurationMap(sections, includeDisabled) {
 function compile(sections, sectionMap, enabledSections) {
 	var src = '';
 	var enabledSectionsWithDeps = calculateDependencies(sectionMap, enabledSections);
-	var condBlock = null;
+	var condBlock = [];
 	var lastLineEmpty = true; // =true: don't allow empty lines at the beginning
 	v.each(v.filter(sections, function(s) {
 		return enabledSectionsWithDeps[s.id] || !(s.configurable || s.dependency); 
@@ -141,10 +141,10 @@ function compile(sections, sectionMap, enabledSections) {
 				if (m && m[2] == 'cond' && (!!enabledSectionsWithDeps[m[4]] != (m[3] == '!')))
 					src += m[1] + m[5] + '\n';
 				else if (m && m[2] == 'condblock')
-					condBlock = (!!enabledSectionsWithDeps[m[4]] != (m[3] == '!'));
-				else if (condBlock != null && /^\s*\/\/\s*@condend(\s|$)/.test(line))
-					condBlock = null;
-				else if (condBlock == null || condBlock)
+					condBlock.unshift(!!enabledSectionsWithDeps[m[4]] != (m[3] == '!'));
+				else if (condBlock.length && /^\s*\/\/\s*@condend(\s|$)/.test(line))
+					condBlock.shift();
+				else if (condBlock.length == 0 || condBlock[0])
 					src += line + '\n';
 				lastLineEmpty = false;
 			}
