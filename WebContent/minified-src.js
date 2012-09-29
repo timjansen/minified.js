@@ -1620,10 +1620,12 @@ window['MINI'] = (function() {
 		 * @configurable yes
 		 * @name list.on()
 		 * @syntax MINI(selector).on(el, name, handler)
+		 * @syntax MINI(selector).on(el, name, handler, args)
+		 * @syntax MINI(selector).on(el, name, handler, args, fThis)
 		 * @shortcut $(selector).on(el, name, handler) - Enabled by default, but can be disabled in the builder.
 		 * Registers the function as event handler for all items in the list.
 		 * 
-		 * All handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
+		 * By default, handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
 		 * of the event (e.g. the button that has been clicked). The original event object the is object given to the event or obtained 
 		 * from 'window.event'. The compatibility event object has the following properties:
 		 * <ul>
@@ -1634,6 +1636,9 @@ window['MINI'] = (function() {
 		 * <li><code>pageY</code> - the page coordinate of the event
 		 * </ul>
 		 * Unless the handler returns 'true', the event will not be propagated to other handlers.
+		 * 
+		 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the event handler. When you pass arguments, the
+		 * handler's return value is always ignored and the event will always be cancelled.
 		 * 
 		 * @example Adds a simple click handler to a button. Event objects are ignored.
 		 * <pre>
@@ -1685,7 +1690,7 @@ window['MINI'] = (function() {
 							'right': e.which ? (e.which == 3) : (e.button == 2),
 							'pageX': l.scrollLeft + b.scrollLeft + e.clientX,
 							'pageY': l.scrollTop + b.scrollTop + e.clientY
-					}])) {
+					}]) && !args) {
 						// @condblock ie8compatibility 
 						if (e.stopPropagation) {// W3C DOM3 event cancelling available?
 						// @condend
@@ -1699,10 +1704,14 @@ window['MINI'] = (function() {
 					}
 					// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 				};
+				// @condblock ie8compatibility 
 				if (el.addEventListener)
+				// @condend
 					el.addEventListener(name, handler['_M'], true); // W3C DOM
+				// @condblock ie8compatibility 
 				else 
 					el.attachEvent('on'+name, handler['_M']);  // IE < 9 version
+				// @condend
 			});
 		};
 		
@@ -1736,10 +1745,14 @@ window['MINI'] = (function() {
 		// @cond debug if (!name || !name.substr) error("No name given or name not a string.");
 		// @cond debug if (!handler || !handler['MINI']) error("No handler given or handler invalid.");
 	   	return this.each(function(el) {
+			// @condblock ie8compatibility 
 			if (el.addEventListener)
+				// @condend
 				el.removeEventListener(name, handler['_M'], true); // W3C DOM
+			// @condblock ie8compatibility 
 			else 
 				el.detachEvent('on'+name, handler['_M']);  // IE < 9 version
+			// @condend
 	   	});
 	};
 	
