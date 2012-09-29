@@ -367,7 +367,6 @@ window['MINI'] = (function() {
 
 		elementName = (dotPos = mainSelector.match(/([^.]*)\.?([^.]*)/))[1];
 		className = dotPos[2];
-
 		elements = (useGEbC = parent.getElementsByClassName && className) ? parent.getElementsByClassName(className) : parent.getElementsByTagName(elementName || '*'); 
 
 		if (regexpFilter = useGEbC ? elementName : className) {
@@ -1600,8 +1599,8 @@ window['MINI'] = (function() {
 	    		}
 	    		function toggleFunc(selector, args) { 
 	    			return isFunction(args) ? [toggles] :
-						isString(args) ? select(selector)['toggle'](args) :
-						isList(args) ? (isFunction(args[0]) ? args : [proto['toggle'].apply(select(selector), args)]) :
+						isString(args) ? select(selector).toggle(args) :
+						isList(args) ? (isFunction(args[0]) ? args : [proto.toggle.apply(select(selector), args)]) :
 						collect(args, toggleFunc);
 	    		}
 	    		var e, toggleList = toggleFunc(null, toggles);
@@ -2279,7 +2278,7 @@ window['MINI'] = (function() {
     /**
      * @id deletecookie
      * @module 6
-     * @requires
+     * @requires setcookie
      * @configurable yes
      * @name deleteCookie()
      * @syntax MINI.deleteCookie(name)
@@ -2358,7 +2357,7 @@ window['MINI'] = (function() {
     function loop(paintCallback) { 
         var entry = {c: paintCallback, t: now()};
         var stopFunc = function() {
-    		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // don't use each here, list may be modified during run!!
+    		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // don't use each() here, list may be modified during run!!
     			if (ANIMATION_HANDLERS[i] === entry) 
     				ANIMATION_HANDLERS.splice(i--, 1);
         }; 
