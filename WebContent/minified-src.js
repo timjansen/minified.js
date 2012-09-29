@@ -302,7 +302,7 @@ window['MINI'] = (function() {
     function dollarRaw(selector, context) { 
 		var doc = document, list = [];
 		var parent, steps, dotPos, mainSelector, subSelectors;
-		var elements, regexpFilter, prop, className, elementName, reg;
+		var elements, regexpFilter, useGEbC, className, elementName, reg;
 
 		if (!selector) 
 		    return list;
@@ -364,29 +364,16 @@ window['MINI'] = (function() {
 		// @cond debug if (/[ :\[\]]/.test(mainSelector)) error("Only simple selectors with ids, classes and element names are allowed.");
 
 		parent = parent || doc;
-		
-		if ((dotPos = mainSelector.indexOf('.')) < 0)
-		    elementName = mainSelector;
-		else {
-			elementName = mainSelector.substr(0, dotPos);  // element name only set of dotPos > 0
-			className = mainSelector.substr(dotPos+1);     
-		}
-	
-		if (className && parent.getElementsByClassName) { // not all browsers support getElementsByClassName
-			elements = parent.getElementsByClassName(className); 
-			regexpFilter = elementName;
-			prop = 'nodeName';
-		} 
-		else { // also fallback for getElementsByClassName (slow!)
-			elements = parent.getElementsByTagName(elementName || '*'); 
-			regexpFilter = className;
-			prop = 'className';
-		}
-		
-		if (regexpFilter) {
+
+		elementName = (dotPos = mainSelector.match(/([^.]*)\.?([^.]*)/))[1];
+		className = dotPos[2];
+
+		elements = (useGEbC = parent.getElementsByClassName && className) ? parent.getElementsByClassName(className) : parent.getElementsByTagName(elementName || '*'); 
+
+		if (regexpFilter = useGEbC ? elementName : className) {
 			reg = new RegExp(BACKSLASHB +  regexpFilter + BACKSLASHB, 'i'); 
 			each(elements, function(l) {
-				if(reg.test(l[prop])) 
+				if(reg.test(l[useGEbC ? 'nodeName' : 'className'])) 
 					list.push(l); 
 			});
 			return list;
