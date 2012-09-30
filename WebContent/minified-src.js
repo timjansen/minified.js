@@ -72,6 +72,9 @@ window['MINI'] = (function() {
 
 	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	function toString(s) { // wrapper for Closure optimization
+		return String(s!=null ? s : '');
+	}
 	function isType(s,o) {
 		return typeof s == o;
 	}
@@ -86,6 +89,9 @@ window['MINI'] = (function() {
 	}
 	function isList(v) {
 		return v && v.length != null && !isString(v) && !v.data && !isFunction(v); // data to test for Text node
+	}
+	function isNode(n) {
+		return n.nodeType;
 	}
 	function each(list, cb) {
 		if (isList(list))
@@ -135,7 +141,7 @@ window['MINI'] = (function() {
 		return h;
 	}
 
-	// careful: only works with simple names (no camel case / hypens)
+	// careful: only works with simple names (no camel case / hyphens)
 	function getEffectiveStyle(element, name) {
 		var s = element.style[name], getComputedStyle = window.getComputedStyle;
 		if (s != null)
@@ -148,14 +154,6 @@ window['MINI'] = (function() {
 			return getComputedStyle(element).getPropertyValue(name);
 	}
 
-	function toString(s) { // wrapper for Closure optimization
-		return String(s!=null ? s : '');
-	}
-
-    /**
-     * @id now
-     * @dependency yes
-     */
     function now() {
     	return new Date().getTime();
     }
@@ -332,7 +330,7 @@ window['MINI'] = (function() {
 				// fall through to return undef
 			});
 		}
-		if (selector.nodeType || selector === window) 
+		if (isNode(selector)  || selector === window) 
 		    return filterElements([selector]); 
 		if (isList(selector)) {
 			(function flattenList(l) {
@@ -700,7 +698,6 @@ window['MINI'] = (function() {
 					{$height: /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight(element))  + 'px';},
 					    $overflow: 'hidden'}
 					);
-					
 			}
 			else if (name == '$')
 				self.each(function(obj) {
@@ -713,7 +710,7 @@ window['MINI'] = (function() {
 						if (/^\+/.test(clzz) || (cName==clzz && !contains)) // for + and toggle-add
 							className += ' ' + cName;
 					});
-					obj.className = replace(className, /^\s+|\s+$|\s+(?=\s)/g);
+					obj.className = replace(className, /^\s+|\s+(?=\s|$)/g);
 				});
 			else {
 				var f = isFunction(value) ? value : defaultFunction;
@@ -864,7 +861,7 @@ window['MINI'] = (function() {
 				if (isList(c))
 					each(c, appendChildren);
 				else if (c != null) {   // must check null, as 0 is a valid parameter 
-					var n = c.nodeType ? c : document.createTextNode(c);
+					var n = isNode(c) ? c : document.createTextNode(c);
 					if (lastAdded)
 						lastAdded.parentNode.insertBefore(n, lastAdded.nextSibling);
 					else if (addFunction)
@@ -873,7 +870,7 @@ window['MINI'] = (function() {
 						e.appendChild(n);
 					lastAdded = n;
 				}
-			})(isFunction(children) ? children(e, index) : (children == null || children.nodeType || isList(children)) && index ? null : children);
+			})(isFunction(children) ? children(e, index) : (children == null || isNode(children) || isList(children)) && index ? null : children);
 		});
 	};
 
@@ -1246,7 +1243,7 @@ window['MINI'] = (function() {
 
 	
 	/**
-	 * @id listanimate
+	 * @id animate
 	 * @module 7
 	 * @requires loop dollar each set
 	 * @configurable yes
@@ -1418,7 +1415,7 @@ window['MINI'] = (function() {
 						isi.o.set(isi.e);
 					});
 					stop();
-					state['time'] = null;
+					state['time'] = state['stop'] = null;
 					if (callback) 
 						callback(self);
 				}
@@ -1441,9 +1438,9 @@ window['MINI'] = (function() {
 		};
 		
 		/**
-		 * @id listtoggle
+		 * @id toggle
 		 * @module 7
-		 * @requires listanimate set
+		 * @requires animate set
 		 * @configurable yes
 		 * @name list.toggle()
 		 * @syntax MINI(selector).toggle(cssClasses)
@@ -1502,41 +1499,39 @@ window['MINI'] = (function() {
 		 *                   immediately.
 		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.
 		 * @param delayMs optional defines an optional delay before the animation starts. Default: 0. Ignored if durationMs is 0.
-		 * @return a function(newState) that will change from the first to the second state and vice versa. If the argument is a boolean
-		 *         false or true, the first or second state will be set. If the argument is not boolean or the function is called without
-		 *         arguments, the function toggles between both states. 
+		 * @return a function(newState) that will change from the first to the second state and vice versa if called without argument or with
+		 *         newState set to null. If the argument is a boolean false or true, the first or second state will be set respectively. 
+		 *         If the argument is not boolean or the function is called without arguments, the function toggles between both states. 
 		 */
 		proto['toggle'] = function(state1, state2, durationMs, linearity, delayMs) {
 			var animState = {};
-			var state, stop, regexg = /\b(?=\w)/g;
+			var state = false, stop, regexg = /\b(?=\w)/g;
 			var self = this;
 
 			return isString(state1) ?
 				self.toggle(replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
 				self.set(state1) && 
 			    function(newState) {
-					if (newState === true || newState === false) {
-						if (newState == state) 
-							return;
-						state = newState;
-					}
-					else
-						state = !state;
+					if (newState === state) 
+						return;
+					state = isType(newState, 'boolean') ? newState : !state;
 	
-					if (durationMs) 
-						self.animate(state ? state2 : state1, animState.stop ? (animState.stop() || animState.time) : durationMs, linearity, null, delayMs, animState);
-					else {
-						if (stop) 
-							stop();
-						stop = delay(delayMs, function() { self.set(state ? state2 : state1); stop=null; });
-					}
+					if (stop) 
+						stop();
+					stop = delay(delayMs, function() {
+						if (durationMs) 
+							self.animate(state ? state2 : state1, animState.stop ? (animState.stop() || animState.time) : durationMs, linearity, null, 0, animState);
+						else
+							self.set(state ? state2 : state1); 
+						stop=null; 
+					});
 				};
 		};
 
 		/**
-		 * @id listwire
+		 * @id wire
 		 * @module 7
-		 * @requires listtoggle liston each set
+		 * @requires toggle liston each set
 		 * @configurable yes
 		 * @name list.wire()
 		 * @syntax MINI(selector).wire(events, toggles)
@@ -1916,7 +1911,7 @@ window['MINI'] = (function() {
 		// @cond debug if (/:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
 		var doc = document;
 		var nu = doc.documentElement.namespaceURI; // to check whether doc is XHTML
-		var list = MINI(e = e.nodeType ? e : nu ? doc.createElementNS(nu, e) : doc.createElement(e));
+		var list = MINI(e = isNode(e) ? e : nu ? doc.createElementNS(nu, e) : doc.createElement(e));
 		return  (isList(attributes) || !isObject(attributes)) ? list.add(attributes) : list.set(attributes).add(children); 
 	};
 		
@@ -2005,7 +2000,7 @@ window['MINI'] = (function() {
 			// @cond !ie6compatibility xhr = new XMLHttpRequest();
 			if (data != null) {
 				headers = headers || {};
-				if (!isString(data) && !data.nodeType) { // if data is parameter map...
+				if (!isString(data) && !isNode(data)) { // if data is parameter map...
 					each(data, function processParam(paramName, paramValue) {
 						if (isList(paramValue))
 							each(paramValue, function(v) {processParam(paramName, v);});
@@ -2018,7 +2013,7 @@ window['MINI'] = (function() {
 					url += '?' + body;
 					body = null;
 				}
-				else if (!data.nodeType && !headers[ContentType])
+				else if (!isNode(data) && !headers[ContentType])
 					headers[ContentType] = isString(data) ?  'text/plain; charset="UTF-8"' : 'application/x-www-form-urlencoded';
 			}
 			
@@ -2212,7 +2207,6 @@ window['MINI'] = (function() {
 	/**
      * @id setcookie
      * @module 6
-     * @requires now
      * @configurable yes
      * @name setCookie()
      * @syntax MINI.setCookie(name, value)
@@ -2330,7 +2324,7 @@ window['MINI'] = (function() {
 	/**
 	* @id loop
 	* @module 7
-	* @requires now animationhandlers
+	* @requires animationhandlers
 	* @configurable yes
 	* @name loop()
 	* @syntax MINI.loop(paintCallback)
