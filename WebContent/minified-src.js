@@ -112,6 +112,7 @@ window['MINI'] = (function() {
 		return r;
 	}
 	function collect(list, collectFunc, result) {
+		collectFunc = collectFunc || function(l){return l;};
 		result = result || [];
 		each(list, function(item, index) {
 			if (isList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
@@ -298,22 +299,16 @@ window['MINI'] = (function() {
      * @dependency yes
      */
     function dollarRaw(selector, context) { 
-		var doc = document, list = [];
+		var doc = document;
 		var parent, steps, dotPos, mainSelector, subSelectors;
 		var elements, regexpFilter, useGEbC, className, elementName, reg;
 
 		if (!selector) 
-		    return list;
+		    return [];
 
 		if (context != null) { // context set?
-			if ((context = dollarRaw(context)).length != 1) { // if not exactly one node, iterate through all and concat
-				each(context, function(ci) {
-					each(dollarRaw(selector, ci), function(l) {
-						list.push(l);
-					});
-				});
-				return list; 
-			}
+			if ((context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
+				return collect(context, function(ci) { return dollarRaw(selector, ci);});
 			parent = context[0];
 		}
 		
@@ -324,7 +319,7 @@ window['MINI'] = (function() {
 				a = node;
 				while (a) {
 					if (a.parentNode === parent)
-						return 1;
+						return true;
 					a = a.parentNode;
 				}
 				// fall through to return undef
@@ -333,17 +328,11 @@ window['MINI'] = (function() {
 		if (isNode(selector)  || selector === window) 
 		    return filterElements([selector]); 
 		if (isList(selector))
-		    return filterElements(collect(selector, function(l){return l;})); // flatten list before filtering
+		    return filterElements(collect(selector)); // flatten list before filtering
 
 		// @condblock ie7compatibility
-		if ((subSelectors = selector.split(/\s*,\s*/)).length>1) {
-			each(subSelectors, function(ssi) {
-				each(dollarRaw(ssi, parent), function(aj) {
-					list.push(aj);
-				});
-			});
-			return list; 
-		}
+		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
+			return collect(subSelectors, function(ssi) { return dollarRaw(ssi, parent);});
 
 		if ((steps = selector.split(/\s+/)).length > 1)
 			return dollarRaw(steps.slice(1).join(' '), dollarRaw(steps[0], parent));
@@ -362,11 +351,7 @@ window['MINI'] = (function() {
 
 		if (regexpFilter = useGEbC ? elementName : className) {
 			reg = new RegExp(BACKSLASHB +  regexpFilter + BACKSLASHB, 'i'); 
-			each(elements, function(l) {
-				if(reg.test(l[useGEbC ? 'nodeName' : 'className'])) 
-					list.push(l); 
-			});
-			return list;
+			return filter(elements, function(l) {return reg.test(l[useGEbC ? 'nodeName' : 'className']);});
 		}
 		return elements;
 		// @condend
