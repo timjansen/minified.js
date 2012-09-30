@@ -112,7 +112,6 @@ window['MINI'] = (function() {
 		return r;
 	}
 	function collect(list, collectFunc, result) {
-		collectFunc = collectFunc || function(l){return l;};
 		result = result || [];
 		each(list, function(item, index) {
 			if (isList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
@@ -315,8 +314,8 @@ window['MINI'] = (function() {
 		function filterElements(retList) {
 			if (!parent)
 				return retList;
-			return filter(retList, function(node,a) {
-				a = node;
+			return filter(retList, function(node) {
+				var a = node;
 				while (a) {
 					if (a.parentNode === parent)
 						return true;
@@ -328,7 +327,7 @@ window['MINI'] = (function() {
 		if (isNode(selector)  || selector === window) 
 		    return filterElements([selector]); 
 		if (isList(selector))
-		    return filterElements(collect(selector)); // flatten list before filtering
+		    return filterElements(collect(selector, function(l){return l;})); // flatten list before filtering
 
 		// @condblock ie7compatibility
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
