@@ -332,15 +332,8 @@ window['MINI'] = (function() {
 		}
 		if (isNode(selector)  || selector === window) 
 		    return filterElements([selector]); 
-		if (isList(selector)) {
-			(function flattenList(l) {
-				if (isList(l))
-					each(l, flattenList);
-				else
-					list.push(l);
-			})(selector);
-		    return filterElements(list);
-		}
+		if (isList(selector))
+		    return filterElements(collect(selector, function(l){return l;})); // flatten list before filtering
 
 		// @condblock ie7compatibility
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1) {
