@@ -161,7 +161,7 @@ window['MINI'] = (function() {
 	/**
 	 * @id dollar
 	 * @module 1
-	 * @requires dollarraw addelementlistfuncsstart
+	 * @requires dollarraw addelementlistfuncsstart ready
 	 * @dependency yes
 	 * @syntax MINI(selector)
 	 * @syntax MINI(selector, context)
@@ -1373,7 +1373,7 @@ window['MINI'] = (function() {
 			});
 					
 			// start animation
-			loopStop = loop(function(timePassedMs, stop) { 
+			loopStop = MINI.loop(function(timePassedMs, stop) { 
 				function getColorComponent(colorCode, index) {
 					return (/^#/.test(colorCode)) ?
 						parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
@@ -2216,14 +2216,13 @@ window['MINI'] = (function() {
      *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
      *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
      */
-    function setCookie(name, value, dateOrDays, path, domain, dontEscape) {
+    MINI['setCookie'] = function setCookie(name, value, dateOrDays, path, domain, dontEscape) {
 		// @cond debug if (!name) error('Cookie name must be set!');
 		// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
     	document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
     	    (dateOrDays ? (dateOrDays.getDay ? dateOrDays: new Date(now() + dateOrDays * 24 * 3600000)) : '') + 
     		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
-    }
-    MINI['setCookie'] = setCookie;
+    };
     
     /**
      * @id getcookie
@@ -2274,7 +2273,7 @@ window['MINI'] = (function() {
      * @param the cookie's name
      */
     MINI['deleteCookie'] = function(name) {
-    	setCookie(name, '', -1);
+    	MINI.setCookie(name, '', -1);
     };
  
  	/**
@@ -2336,7 +2335,7 @@ window['MINI'] = (function() {
 	* </ul>
 	* @return a function() that, when you invoke it, stops the currently running animation.
 	*/
-    function loop(paintCallback) { 
+	MINI['loop'] = function(paintCallback) { 
         var entry = {c: paintCallback, t: now()};
         var stopFunc = function() {
     		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // can't use each() or filter() here, list may be modified during run!!
@@ -2353,7 +2352,6 @@ window['MINI'] = (function() {
         } 
         return stopFunc; 
     };
-    MINI['loop'] = loop;
     
 
 	/**
