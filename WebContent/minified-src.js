@@ -87,11 +87,11 @@ window['MINI'] = (function() {
 	function isObject(f) {
 		return isType(f, 'object');
 	}
-	function isList(v) {
-		return v && v.length != null && !isString(v) && !v.data && !isFunction(v); // data to test for Text node
-	}
 	function isNode(n) {
 		return n.nodeType;
+	}
+	function isList(v) {
+		return v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
 	}
 	function each(list, cb) {
 		if (isList(list))
