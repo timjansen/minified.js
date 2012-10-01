@@ -2339,7 +2339,7 @@ window['MINI'] = (function() {
     function loop(paintCallback) { 
         var entry = {c: paintCallback, t: now()};
         var stopFunc = function() {
-    		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // don't use each() here, list may be modified during run!!
+    		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // can't use each() or filter() here, list may be modified during run!!
     			if (ANIMATION_HANDLERS[i] === entry) 
     				ANIMATION_HANDLERS.splice(i--, 1);
         }; 
@@ -2347,9 +2347,7 @@ window['MINI'] = (function() {
         
         if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
 			(function raFunc() {
-				for (var j = 0; j < ANIMATION_HANDLERS.length; j++) // don't use each here, list may be modified during run!!
-					ANIMATION_HANDLERS[j].c(Math.max(0, now() - ANIMATION_HANDLERS[j].t), ANIMATION_HANDLERS[j].s); 
-				if (ANIMATION_HANDLERS.length) // check len now, in case the callback invoked stopFunc() 
+				if (each(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, now() - a.t), a.s);}).length) // check len after run, in case the callback invoked stopFunc() 
 					REQUEST_ANIMATION_FRAME(raFunc); 
 			})(); 
         } 
