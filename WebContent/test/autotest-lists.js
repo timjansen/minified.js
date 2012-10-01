@@ -252,11 +252,11 @@ window.miniTests.push.apply(window.miniTests, [
 		name: "MINI().offset()",
 	 	exec: function() {
 	 		var r1 = MINI('#asdsd').offset();
-	 		check(r1.top, 0);
-	 		check(r1.left, 0);
+	 		check(r1.x, 0);
+	 		check(r1.y, 0);
 	 		var r2 = MINI('#results').offset();
-	 		check(r2.top > 0);
-	 		check(r2.left > 0);
+	 		check(r2.x > 0);
+	 		check(r2.y > 0);
 		}
 	},
 	
