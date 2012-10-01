@@ -668,7 +668,7 @@ window['MINI'] = (function() {
 					.set(
 					(name == '$$fade')  ? (
 					// @condblock ie8compatibility 
-					 IS_PRE_IE9 ? {$filter: 'alpha(opacity = '+Math.round(100*v)+')'} :
+					 IS_PRE_IE9 ? {$filter: 'alpha(opacity = '+(100*v)+')', $zoom: 1} :
 					// @condend
 						{$opacity: v})
 					:
@@ -2109,12 +2109,11 @@ window['MINI'] = (function() {
 	*/
     // @condblock ie7compatibility
     MINI['parseJSON'] = (window.JSON && JSON.parse) || function (text) {
-    	text = replace(text, /[\u0000\u00ad\u0600-\uffff]/g, ucode);
-
         if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
-				.test(replace(replace(replace(text, /\\(["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@'), 
-						    		  /"[^"\\\n\r]*"|true|false|null|-?\d+(\.\d*)?([eE][+\-]?\d+)?/g, ']'),
-						     /(^|:|,)(\s*\[)+/g))) 
+				.test(replace(replace(replace(text = replace(text, /[\u0000\u00ad\u0600-\uffff]/g, ucode), 
+								/\\(["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@'), 
+						    	/"[^"\\\n\r]*"|true|false|null|-?\d+(\.\d*)?([eE][+\-]?\d+)?/g, ']'),
+						    	/(^|:|,)(\s*\[)+/g))) 
         	return eval('(' + text + ')');
         // fall through if not valid
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
