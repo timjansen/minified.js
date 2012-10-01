@@ -1742,18 +1742,18 @@ window['MINI'] = (function() {
 	 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
 	 * <pre>
 	 * var pos = $('#myElement').offset();
-	 * $('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.left + ' top=' + pos.top);
+	 * $('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.x + ' top=' + pos.y);
 	 * </pre>
 	 *
 	 * @param element the element whose coordinates should be determined
-	 * @return an object containing pixel coordinates in two properties 'left' and 'top'
+	 * @return an object containing pixel coordinates in two properties 'x' and 'y'
 	 */
 	proto['offset'] = function() {
 		var elem = this[0];
-		var dest = {'left': 0, 'top': 0};
+		var dest = {'x': 0, 'y': 0};
 		while (elem) {
-			dest.left += elem.offsetLeft;
-			dest.top += elem.offsetTop;
+			dest.x += elem.offsetLeft;
+			dest.y += elem.offsetTop;
 			elem = elem.offsetParent;
 		}
 		return dest;
@@ -1886,9 +1886,8 @@ window['MINI'] = (function() {
 	MINI['el'] = function(e, attributes, children) {
 		// @cond debug if (!e) error("el() requires the element name."); 
 		// @cond debug if (/:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
-		var doc = document;
-		var nu = doc.documentElement.namespaceURI; // to check whether doc is XHTML
-		var list = MINI(e = isNode(e) ? e : nu ? doc.createElementNS(nu, e) : doc.createElement(e));
+		var nu = document.documentElement.namespaceURI; // to check whether doc is XHTML
+		var list = MINI(e = isNode(e) ? e : nu ? document.createElementNS(nu, e) : document.createElement(e));
 		return  (isList(attributes) || !isObject(attributes)) ? list.add(attributes) : list.set(attributes).add(children); 
 	};
 		
