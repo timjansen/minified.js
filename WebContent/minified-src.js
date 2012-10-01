@@ -95,7 +95,7 @@ window['MINI'] = (function() {
 	}
 	function each(list, cb) {
 		if (isList(list))
-			for (var i = 0, len = list.length; i < len; i++)
+			for (var i = 0; i < list.length; i++)
 				cb(list[i], i);
 		else
 			for (var n in list)
