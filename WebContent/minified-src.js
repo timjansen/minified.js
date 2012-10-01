@@ -157,11 +157,22 @@ window['MINI'] = (function() {
     function now() {
     	return new Date().getTime();
     }
-	
+
+    /**
+	 * @id ucode
+	 * @dependency
+     */
+    // @condblock ie7compatibility
+    function ucode(a) {
+        return STRING_SUBSTITUTIONS[a] ||  ('\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4));
+    }
+    // @condend
+
+    
 	/**
 	 * @id dollar
 	 * @module 1
-	 * @requires dollarraw addelementlistfuncsstart ready
+	 * @requires dollarraw addelementlistfuncsstart
 	 * @dependency yes
 	 * @syntax MINI(selector)
 	 * @syntax MINI(selector, context)
@@ -2030,15 +2041,6 @@ window['MINI'] = (function() {
 	 * Simplified code, made variables local, removed all side-effects (especially new properties for String, Date and Number).
 	 */
     
-    /**
-	 * @id ucode
-	 * @dependency
-     */
-    // @condblock ie7compatibility
-    function ucode(a) {
-        return STRING_SUBSTITUTIONS[a] ||  ('\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4));
-    }
-    // @condend
 
 	/**
     * @id tojson
