@@ -85,7 +85,13 @@ window['MINI'] = (function() {
 	 * little bit larger.
 	 */
 
-
+	/**
+	 * @id fadeslide
+	 * @requires animate set 
+	 * @module 7
+	 * @configurable yes
+	 * @name Support for $$fade and $$slide
+	 */
 	/**
 	 * @stop
 	 */
@@ -708,6 +714,7 @@ window['MINI'] = (function() {
 		if (value !== undef) {
 			// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 			
+			// @condblock fadeslide
 			if (name == '$$fade' || name == '$$slide') {
 				self.set({$visibility: (v = toNumWithoutUnit(value)) > 0 ? 'visible' : 'hidden', $display: 'block'})
 					.set(
@@ -721,7 +728,9 @@ window['MINI'] = (function() {
 					    $overflow: 'hidden'}
 					);
 			}
-			else if (name == '$')
+			else
+			// @condend
+			if (name == '$')
 				self.each(function(obj) {
 					var className = obj.className || '';
 					each(value.split(/\s+/), function(clzz) {
@@ -1388,6 +1397,7 @@ window['MINI'] = (function() {
 				each(properties, function(name) {
 					var start, dest = properties[name], listyle = li.style;
 					var nameClean = replace(name, /^[@$]/);
+					// @condblock fadeslide
 					var isHidden = getEffectiveStyle(li, 'visibility') == 'hidden' || getEffectiveStyle(li, 'display') == 'none';
 					if (name == '$$fade') {
 						start = isNaN(start = isHidden ? 0 :
@@ -1402,12 +1412,15 @@ window['MINI'] = (function() {
 						dest = dest*getNaturalHeight(li) + 'px';
 					}
 					else {
+						// @condend
 						start = /^@/.test(name)? li.getAttribute(nameClean) : (/^\$/.test(name) ? listyle : li)[nameClean] || 0;
 						// @cond debug if (!colorRegexp.test(dest) && isNan(toNumWithoutUnit(dest))) error('End value of "'+name+'" is neither color nor number: ' + toString(dest));
 						// @cond debug if (!colorRegexp.test(p.s[name]) && isNan(toNumWithoutUnit(p.s[name]))) error('Start value of "'+name+'" is neither color nor number: ' + toString(p.s[name]));
 						// @cond debug if (colorRegexp.test(dest) && !colorRegexp.test(p.s[name])) error('End value of "'+name+'" looks like a color, but start value does not: ' + toString(p.s[name]));
 						// @cond debug if (colorRegexp.test(p.s[name]) && !colorRegexp.test(dest)) error('Start value of "'+name+'" looks like a color, but end value does not: ' + toString(dest));
+					// @condblock fadeslide
 					}
+					// @condend
 					p.s[name] = start;
 					p.e[name] = /^[+-]=/.test(dest) ?
 							replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(replace(dest, /\+?=/))) 
