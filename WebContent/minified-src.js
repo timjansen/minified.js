@@ -24,8 +24,27 @@ window['$'] =
 // @condend
 	
 window['MINI'] = (function() {
+	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	var BACKSLASHB = '\\b';
 	var undef;
+	
+    /**
+	 * @id ready_vars
+	 * @dependency
+     */
+    var DOMREADY_HANDLER = [];
+    var DOMREADY_OLD_ONLOAD = window.onload;
+
+    /**
+     * @id animation_vars
+     * @dependency
+     */
+	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currenetly active
+	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return window[n+'equestAnimationFrame']; })[0] || function(callback) {
+		delay(33, callback); // 30 fps as fallback
+	};
+	
 	
 	/**
 	 * @id ie8compatibility
@@ -66,11 +85,12 @@ window['MINI'] = (function() {
 	 * little bit larger.
 	 */
 
+
 	/**
 	 * @stop
 	 */
 
-	//// 0. COMMON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	function toString(s) { // wrapper for Closure optimization
 		return String(s!=null ? s : '');
@@ -158,6 +178,20 @@ window['MINI'] = (function() {
     	return new Date().getTime();
     }
 
+    // for ready()
+    function triggerDomReady() {
+    	each(DOMREADY_HANDLER, function(e) {e();});
+    	DOMREADY_HANDLER = null;
+    }
+    
+    function ready(handler) {
+    	// @cond debug if (typeof handler != 'function') error("First argument must be a function");
+    	if (DOMREADY_HANDLER) // if DOM ready, call immediately
+			DOMREADY_HANDLER.push(handler);
+		else
+			delay(1, handler);
+    }
+    
     /**
 	 * @id ucode
 	 * @dependency
@@ -301,8 +335,6 @@ window['MINI'] = (function() {
      */
 
     
-    //// 1. SELECTOR MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * @id dollarraw
      * @requires 
@@ -422,6 +454,9 @@ window['MINI'] = (function() {
 	     * @dependency yes
 	     */
 	}
+	
+	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	var proto = M.prototype;
 	
     /**
@@ -1769,6 +1804,12 @@ window['MINI'] = (function() {
 		}
 		return dest;
      };
+     
+     /**
+      * @stop
+      */
+
+ 	//// MINI FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
 	 * @id dollardollar
@@ -1794,12 +1835,7 @@ window['MINI'] = (function() {
 		return dollarRaw(selector)[0];
 	};
 
-   /**
-     * @stop
-     */
 		
-	//// 2. ELEMENT MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	/**
 	 * @id el
 	 * @module 2
@@ -1902,8 +1938,6 @@ window['MINI'] = (function() {
 		return  (isList(attributes) || !isObject(attributes)) ? list.add(attributes) : list.set(attributes).add(children); 
 	};
 		
-	
-	//// 3. HTTP REQUEST MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	* @id request
@@ -2028,13 +2062,8 @@ window['MINI'] = (function() {
 				onFailure(0, null, toString(e));
 		}
 	};
-	/**
-	 * @stop
-	 */  
 	
 	
-	//// 4. JSON MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	/*
 	 * JSON Module. Uses browser built-ins or json.org implementation if available. Otherwise its own implementation,
 	 * based on public domain implementation http://www.JSON.org/json2.js / http://www.JSON.org/js.html.
@@ -2126,13 +2155,10 @@ window['MINI'] = (function() {
 	 */  
     
     
-    //// 5. EVENT MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    
 	/**
     * @id ready
     * @module 5
-    * @requires 
+    * @requires ready_vars ready_init
     * @configurable yes
     * @name ready()
     * @syntax MINI.ready(handler)
@@ -2148,39 +2174,9 @@ window['MINI'] = (function() {
     *
     * @param handler the function to be called when the HTML is ready
     */
-    function ready(handler) {
-    	// @cond debug if (typeof handler != 'function') error("First argument must be a function");
-    	if (DOMREADY_HANDLER) // if DOM ready, call immediately
-			DOMREADY_HANDLER.push(handler);
-		else
-			delay(1, handler);
-    };
     MINI['ready'] = ready;
-    
-    // Two-level implementation for domready events
-    var DOMREADY_HANDLER = [];
-    var DOMREADY_OLD_ONLOAD = window.onload;
-    function triggerDomReady() {
-    	each(DOMREADY_HANDLER, function(e) {e();});
-    	DOMREADY_HANDLER = null;
-    }
 
-    window.onload = function() {
-      triggerDomReady();
-      if (DOMREADY_OLD_ONLOAD)
-    	  DOMREADY_OLD_ONLOAD();
-    };
-    if (document.addEventListener)
-    	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
-    
-    
-    /**
-     * @stop
-     */
-    
-    
-    //// 6. COOKIE MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+   
 	/**
      * @id setcookie
      * @module 6
@@ -2281,26 +2277,12 @@ window['MINI'] = (function() {
  	/**
  	 * @stop
  	 */
- 
 
-    //// 8. ANIMATION MODULE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    /**
-     * @id animationhandlers
-     * @dependency
-     */
-	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currenetly active
-	var REQUEST_ANIMATION_FRAME = function(callback) {
-		delay(33, callback); // 30 fps as fallback
-	};
-	each(['msR', 'webkitR', 'mozR', 'r'], function(n) { 
-		REQUEST_ANIMATION_FRAME = window[n+'equestAnimationFrame'] || REQUEST_ANIMATION_FRAME;
-	});
 
 	/**
 	* @id loop
 	* @module 7
-	* @requires animationhandlers
+	* @requires animation_vars 
 	* @configurable yes
 	* @name loop()
 	* @syntax MINI.loop(paintCallback)
@@ -2354,7 +2336,21 @@ window['MINI'] = (function() {
         } 
         return stopFunc; 
     };
+
+	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
+    /**
+	 * @id ready_init
+	 * @dependency
+     */
+    window.onload = function() {
+        triggerDomReady();
+        if (DOMREADY_OLD_ONLOAD)
+      	  DOMREADY_OLD_ONLOAD();
+      };
+      if (document.addEventListener)
+      	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
+      
 
 	/**
 	 @stop
