@@ -457,8 +457,7 @@ window['MINI'] = (function() {
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	var proto = M.prototype;
-	
+	each({
     /**
      * @id each
      * @module 1
@@ -478,10 +477,10 @@ window['MINI'] = (function() {
      * @param callback the callback function(item, index) to invoke.
      * @return the list
      */
-	proto['each'] = function (callback) {
+	each: function (callback) {
 		each(this.raw, callback); // use list, as a real Array may be faster
 		return this;
-	};
+	},
 	
 	/**
 	 * @id filter
@@ -513,9 +512,9 @@ window['MINI'] = (function() {
 	 *        of the original.
 	 * @return the new list, always guaranteed to be based on Array and always a new instance
 	 */
-	proto['filter'] = function(filterFunc) {
+	filter: function(filterFunc) {
 	    return new M(filter(this.raw, filterFunc));
-	};
+	},
 	
 	/** 
      * @id collect 
@@ -569,9 +568,9 @@ window['MINI'] = (function() {
      * @return the new list. If resultList has been omitted, the result is guaranteed to be based 
      * on Array and always a new instance 
      */ 
-	proto['collect'] = function(collectFunc, resultList) { 
+	collect: function(collectFunc, resultList) { 
     	 return new M(collect(this.raw, collectFunc, resultList)); 
-     };
+     },
 	
 	/**
 	 * @id listremove
@@ -587,9 +586,9 @@ window['MINI'] = (function() {
 	 * $('#myContainer').remove(); 
 	 * </pre>
 	 */
-     proto['remove'] = function() {
+     remove: function() {
     	this.each(function(obj) {obj.parentNode.removeChild(obj);});
-	};
+     },
 	
     
 
@@ -703,7 +702,7 @@ window['MINI'] = (function() {
 	 *                                 in the set() call.
 	 * @return the list
 	 */
-	proto['set'] = function (name, value, defaultFunction) {
+     set: function (name, value, defaultFunction) {
 		var self = this, v;
 		// @cond debug if (name == null) error("First argument must be set!");
 		if (value !== undef) {
@@ -754,7 +753,7 @@ window['MINI'] = (function() {
 		else
 			each(name, function(n,v) { self.set(n, v, defaultFunction); });
 		return self;
-	};
+	},
 	
 	/**
 	 * @id append
@@ -781,7 +780,7 @@ window['MINI'] = (function() {
 	 * @param properties a map containing names as keys and the values to append as map values. See above for the syntax.
 	 * @return the list
 	 */
-	proto['append'] = function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return toString(oldValue) + newValue;});};
+	append: function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return toString(oldValue) + newValue;});},
 
 	/**
 	 * @id prepend
@@ -808,7 +807,7 @@ window['MINI'] = (function() {
 	 * @param properties a map containing names as keys and the values to prepend as map values. See above for the syntax.
 	 * @return the list
 	 */
-	proto['prepend'] = function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return newValue + toString(oldValue);});};
+	prepend: function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return newValue + toString(oldValue);});},
 
 	
 	/**
@@ -825,7 +824,6 @@ window['MINI'] = (function() {
 	 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
 	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
 	 *
-	 * 
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -877,7 +875,7 @@ window['MINI'] = (function() {
 	 *              an HTML element or a list containing strings and/or HTML elements.
 	 * @return the current list
 	 */
-	proto['add'] = function (children, addFunction) {
+	add: function (children, addFunction) {
 		return this.each(function(e, index) {
 			var lastAdded;
 			(function appendChildren(c) {
@@ -895,7 +893,7 @@ window['MINI'] = (function() {
 				}
 			})(isFunction(children) ? children(e, index) : (children == null || isNode(children) || isList(children)) && index ? null : children);
 		});
-	};
+	},
 
 	
 	/**
@@ -966,10 +964,10 @@ window['MINI'] = (function() {
 	 *              this list's first match.
 	 * @return the current list
 	 */
-	proto['fill'] = function (children) {
+	fill: function (children) {
 		this.each(function(e) { MINI(e.childNodes).remove(); });
 		return this.add(children);
-	};
+	},
 
 	/**
 	 * @id listaddbefore
@@ -1034,9 +1032,9 @@ window['MINI'] = (function() {
 	 *              this list's first match.
 	 * @return the current list
 	 */
-	proto['addBefore'] = function (children) {
+	addBefore: function (children) {
 		return this.add(children, function(newNode, refNode) { refNode.parentNode.insertBefore(newNode, refNode); });
-	};
+	},
 	
 	/**
 	 * @id listaddafter
@@ -1101,9 +1099,9 @@ window['MINI'] = (function() {
 	 *              this list's first match.
 	 * @return the current list
 	 */
-	proto['addAfter'] = function (children) {
+	addAfter: function (children) {
 		return this.add(children, function(newNode, refNode) { refNode.parentNode.insertBefore(newNode, refNode.nextSibling); });
-	};
+	},
 	
 	/**
 	 * @id listaddfront
@@ -1170,9 +1168,9 @@ window['MINI'] = (function() {
 	 *              an HTML element or a list containing strings and/or HTML elements.
 	 * @return the current list
 	 */
-	proto['addFront'] = function (children) {
+	addFront: function (children) {
 		return this.add(children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
-	};
+	},
 	
 	/**
 	 * @id listreplace
@@ -1260,9 +1258,9 @@ window['MINI'] = (function() {
 	 *              an HTML element or a list containing strings and/or HTML elements.
 	 * @return the current list
 	 */
-	proto['replace'] = function (children) {
+	replace: function (children) {
 		return this.add(children, function(newNode, refNode) { refNode.parentNode.replaceChild(newNode, refNode); });
-	};
+	},
 
 	
 	/**
@@ -1366,7 +1364,7 @@ window['MINI'] = (function() {
 	 *                       If the animation finished, it will write null to state.time. state.stop will remain unmodified after the animation end. 
 	 * @return the list
 	 */
-	proto['animate'] = function (properties, durationMs, linearity, callback, delayMs, state) {
+	animate: function (properties, durationMs, linearity, callback, delayMs, state) {
 		// @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
 		// @cond debug if (linearity < 0 || linearity > 1) error('Third parameter must be at least 0 and not larger than 1.');
 		// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
@@ -1458,7 +1456,7 @@ window['MINI'] = (function() {
 				});
 			});
 			return self;		
-		};
+		},
 		
 		/**
 		 * @id toggle
@@ -1526,7 +1524,7 @@ window['MINI'] = (function() {
 		 *         newState set to null. If the argument is a boolean false or true, the first or second state will be set respectively. 
 		 *         If the argument is not boolean or the function is called without arguments, the function toggles between both states. 
 		 */
-		proto['toggle'] = function(state1, state2, durationMs, linearity, delayMs) {
+		toggle: function(state1, state2, durationMs, linearity, delayMs) {
 			var animState = {};
 			var state = false, stop, regexg = /\b(?=\w)/g;
 			var self = this;
@@ -1549,7 +1547,7 @@ window['MINI'] = (function() {
 						stop=null; 
 					});
 				};
-		};
+		},
 
 		/**
 		 * @id wire
@@ -1610,7 +1608,7 @@ window['MINI'] = (function() {
 		 * @param toggles
 		 * @return the list
 		 */
-	    proto['wire'] = function(events, toggles) {
+	    wire: function(events, toggles) {
 	    	return this.each(function(li) {
 	    		function select(selector) {
 	    			return $(selector||li, (selector && !/^#/.test(selector))?li:undef);
@@ -1629,7 +1627,7 @@ window['MINI'] = (function() {
 	    			});
 	    		});
 	    	});
-	    };
+	    },
 	
 		/**
 		 * @id liston
@@ -1695,7 +1693,7 @@ window['MINI'] = (function() {
 		 * @param fThis an optional value for 'this' in the handler, as alternative to the event target
 		 * @return the list
 		 */
-		proto['on'] = function (name, handler, args, fThis) {
+		on: function (name, handler, args, fThis) {
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return this.each(function(el) {
@@ -1731,7 +1729,7 @@ window['MINI'] = (function() {
 					el.attachEvent('on'+name, handler['_M']);  // IE < 9 version
 				// @condend
 			});
-		};
+		},
 		
 	/**
 	 * @id listoff
@@ -1759,7 +1757,7 @@ window['MINI'] = (function() {
 	 *                on().
      * @return the list
      */
-	proto['off'] = function (name, handler) {
+	off: function (name, handler) {
 		// @cond debug if (!name || !name.substr) error("No name given or name not a string.");
 		// @cond debug if (!handler || !handler['MINI']) error("No handler given or handler invalid.");
 	   	return this.each(function(el) {
@@ -1772,7 +1770,7 @@ window['MINI'] = (function() {
 				el.detachEvent('on'+name, handler['_M']);  // IE < 9 version
 			// @condend
 	   	});
-	};
+	},
 	
 	/**
 	 * @id listoffset
@@ -1794,7 +1792,7 @@ window['MINI'] = (function() {
 	 * @param element the element whose coordinates should be determined
 	 * @return an object containing pixel coordinates in two properties 'x' and 'y'
 	 */
-	proto['offset'] = function() {
+	offset: function() {
 		var elem = this[0];
 		var dest = {'x': 0, 'y': 0};
 		while (elem) {
@@ -1803,7 +1801,8 @@ window['MINI'] = (function() {
 			elem = elem.offsetParent;
 		}
 		return dest;
-     };
+     }
+	}, function(n, v) {M.prototype[n]=v;});
      
      /**
       * @stop
