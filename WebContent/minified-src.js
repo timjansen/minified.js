@@ -1785,6 +1785,45 @@ window['MINI'] = (function() {
 	   	});
 	},
 	
+    /**
+	 * @id serialize
+	 * @module 3
+	 * @requires each
+	 * @configurable yes
+	 * @name list.serialize()
+	 * @syntax MINI().serialize()
+	 * @syntax MINI().serialize(dataMap)
+	 * Creates a name/value map from the given form. serialize() looks at the list's form elements and writes each element's name into the map,
+	 * using the element name as key and the element's value as value. If there is more than one value with the same name, the map will contain an array
+	 * of values. Form element without value will be written with 'null' as value. Form elements without name will be ignored.
+	 *
+	 * Serialize() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
+	 * elements will be serialized.
+	 *
+	 * @example Select the checkbox 'myCheckbox':
+	 * <pre>
+	 * $$('#myCheckbox').selected = true;
+	 * </pre>
+	 * 
+	 * @param dataMap optional 
+	 * @return a DOM object of the first match, or undefined if the selector did not return at least one match
+	 */
+	serialize: function(data) {
+		data = data || {};
+		this.each(function(el) {
+			var n = el.name, v = toString(el.value), t = el.tagName, y = el.type, o=data[n];
+			if (/form/i.test(t))
+				MINI(el.elements).serialize(data);
+			else if (n && (!/kbox|dio/i.test(y) || el.checked)) { // short for checkbox, radio
+					if (isList(o))
+						o.push(v);
+					else
+						data[n] = (o == null) ? v : [o, v];
+			}
+		});
+		return data;
+	},
+	
 	/**
 	 * @id listoffset
 	 * @module 1
