@@ -15,8 +15,8 @@ Size Comparison
 -----------------
 <table>
 <tr><th>Name</th><th>Minified Size</th><th>Minified and GZip'd</th></tr>
-<tr><td>minified.js (standard)</td><td>8.7kb</td><td>3.9kb</td></tr>
-<tr><td>minified.js (no IE6/7/8 compatibility)</td><td>7.3kb</td><td>3.2kb</td></tr>
+<tr><td>minified.js (standard)</td><td>8.8kb</td><td>3.98kb</td></tr>
+<tr><td>minified.js (no IE6/7/8 compatibility)</td><td>7.4kb</td><td>3.3kb</td></tr>
 <tr><td>jQuery 1.8.2</td><td>91kb</td><td>32.7kb</td></tr>
 <tr><td>MooTools Core NoCompat 1.4.5</td><td>88kb</td><td>29kb</td></tr>
 <tr><td>Zepto.js 1.0rc1</td><td>23kb</td><td>8.4kb</td></tr>
@@ -32,16 +32,17 @@ If you need them, <a href="http://microjs.com">microjs.com</a> is a great place 
 <tr><td>CSS Selector</td><td>yes (limited)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3)</td></tr>
 <tr><td>CSS Style Changes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>CSS Class Changes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>Element Dimension</td><td>yes</td> <td>yes (HTML-strings only)</td> <td>yes</td> <td>yes (HTML-strings only)</td></tr>
-<tr><td>Element Creation</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><td>Element Creation</td><td>yes</td> <td>yes (HTML-strings only)</td> <td>yes</td> <td>yes (HTML-strings only)</td></tr>
 <tr><td>DOM Manipulation</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>Wiring</td><td>yes</td> <td>no</td> <td>no</td> <td>no</td></tr>
 <tr><td>Animation (numeric)</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
 <tr><td>Animation (color)</td><td>yes</td> <td>no</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
+<tr><td>Animation (slide)</td><td>yes</td> <td>no</td> <td>no (not in Core)</td> <td>no</td></tr>
 <tr><td>Events</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>DOMReady</td><td>yes</td><td>yes</td><td>yes</td> <td>yes</td></tr>
 <tr><td>Ajax/XHR</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>JSON</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><td>Form Serialization</td><td>yes</td> <td>yes</td> <td>no</td> <td>yes</td></tr>
 <tr><td>Cookies</td><td>yes</td> <td>no</td> <td>yes</td> <td>no</td></tr>
 <tr><td>Array Helpers (Iteration)</td> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>Class Framework</td> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>

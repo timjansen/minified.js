@@ -1799,14 +1799,22 @@ window['MINI'] = (function() {
 	 *
 	 * Serialize() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
 	 * elements will be serialized.
+	 * 
+	 * The map format returned by serialize() is exactly the format used by request().
 	 *
-	 * @example Select the checkbox 'myCheckbox':
+	 * @example Serialize a form and send it as request parameters:
 	 * <pre>
-	 * $$('#myCheckbox').selected = true;
+	 * MINI.request('get', '/exampleService', $('#myForm').serialize(), resultHandler);
 	 * </pre>
 	 * 
-	 * @param dataMap optional 
-	 * @return a DOM object of the first match, or undefined if the selector did not return at least one match
+	 * @example Serialize only some selected input fields:
+	 * <pre>
+	 * var data = $('#myText, input.myRadios').serialize();
+	 * </pre>
+	 * 
+	 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
+	 * @return a map containing name->value pairs as strings. If there is more than one value with the same name,
+	 *         map value is an array of strings
 	 */
 	serialize: function(data) {
 		data = data || {};
