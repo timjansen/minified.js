@@ -1810,6 +1810,7 @@ window['MINI'] = (function() {
 
  	//// MINI FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	each({
     /**
 	 * @id dollardollar
 	 * @module 1
@@ -1830,9 +1831,9 @@ window['MINI'] = (function() {
 	 *                 parameter for this function is the id selector with the syntax "#id".
 	 * @return a DOM object of the first match, or undefined if the selector did not return at least one match
 	 */
-    MINI['$$'] = function(selector) {
+    $$: function(selector) {
 		return dollarRaw(selector)[0];
-	};
+	},
 
 		
 	/**
@@ -1929,13 +1930,13 @@ window['MINI'] = (function() {
 	 *                         The syntax is exactly like fill().
 	 * @return a list containing the DOM HTMLElement that has been created or modified as only element
 	 */
-	MINI['el'] = function(e, attributes, children) {
+	el: function(e, attributes, children) {
 		// @cond debug if (!e) error("el() requires the element name."); 
 		// @cond debug if (/:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
 		var nu = document.documentElement.namespaceURI; // to check whether doc is XHTML
 		var list = MINI(e = isNode(e) ? e : nu ? document.createElementNS(nu, e) : document.createElement(e));
 		return  (isList(attributes) || !isObject(attributes)) ? list.add(attributes) : list.set(attributes).add(children); 
-	};
+	},
 		
 	
 	/**
@@ -2003,7 +2004,7 @@ window['MINI'] = (function() {
 	* @param password optional password for HTTP authentication
 	* @return the XmlHTTPRequest object, after its send() method has been called. You may use this to gather additional information, such as the request's state.
 	*/
-	MINI['request'] = function (method, url, data, onSuccess, onFailure, headers, username, password) {
+	request: function (method, url, data, onSuccess, onFailure, headers, username, password) {
 		// @cond debug if (!method) error("request() requires a HTTP method as first argument.");
 		// @cond debug if (!url) error("request() requires a url as second argument.");
 		// @cond debug if (onSuccess && typeof onSuccess != 'function') error("request()'s fourth argument is optional, but if it is set, it must be a function.");
@@ -2060,7 +2061,7 @@ window['MINI'] = (function() {
 			if (onFailure && !callbackCalled) 
 				onFailure(0, null, toString(e));
 		}
-	};
+	},
 	
 	
 	/*
@@ -2101,7 +2102,7 @@ window['MINI'] = (function() {
     * @return the JSON string
     */
     // @condblock ie7compatibility
-    MINI['toJSON'] = (window.JSON && JSON.stringify) || function toJSON(value) {
+    toJSON: (window.JSON && JSON.stringify) || function toJSON(value) {
 		var ctor = value && value.constructor;
 
 		if (isString(value) || ctor == String)
@@ -2113,9 +2114,9 @@ window['MINI'] = (function() {
 		if (value == null)
 			return 'null';
 		return toString(value);
-	};
+	},
     // @condend
-    // @cond !ie7compatibility MINI['toJSON'] = (window.JSON && JSON.stringify);
+    // @cond !ie7compatibility toJSON: (window.JSON && JSON.stringify),
     
 	/**
 	* @id parsejson
@@ -2137,7 +2138,7 @@ window['MINI'] = (function() {
 	* @return the resulting JavaScript object. Undefined if not valid.
 	*/
     // @condblock ie7compatibility
-    MINI['parseJSON'] = (window.JSON && JSON.parse) || function (text) {
+    parseJSON: (window.JSON && JSON.parse) || function (text) {
         if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
 				.test(replace(replace(replace(text = replace(text, /[\u0000\u00ad\u0600-\uffff]/g, ucode), 
 								/\\(["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@'), 
@@ -2146,9 +2147,9 @@ window['MINI'] = (function() {
         	return eval('(' + text + ')');
         // fall through if not valid
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
-    };
+    },
     // @condend
-    // @cond !ie7compatibility MINI['parseJSON'] = JSON && JSON.parse;
+    // @cond !ie7compatibility parseJSON: JSON && JSON.parse,
     /**
 	 * @stop
 	 */  
@@ -2173,7 +2174,7 @@ window['MINI'] = (function() {
     *
     * @param handler the function to be called when the HTML is ready
     */
-    MINI['ready'] = ready;
+    ready: ready,
 
    
 	/**
@@ -2213,13 +2214,13 @@ window['MINI'] = (function() {
      *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
      *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
      */
-    MINI['setCookie'] = function setCookie(name, value, dateOrDays, path, domain, dontEscape) {
+    setCookie: function setCookie(name, value, dateOrDays, path, domain, dontEscape) {
 		// @cond debug if (!name) error('Cookie name must be set!');
 		// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
     	document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
     	    (dateOrDays ? (dateOrDays.getDay ? dateOrDays: new Date(now() + dateOrDays * 24 * 3600000)) : '') + 
     		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
-    };
+    },
     
     /**
      * @id getcookie
@@ -2246,12 +2247,12 @@ window['MINI'] = (function() {
      *                     in a special way, and not with the JavaScript encode() method)
      * @return the value of the cookie, or null if not found. Depending on the dontUnescape parameter, it may be unescape or not.
      */
-    MINI['getCookie'] = function(name, dontUnescape) {
+    getCookie: function(name, dontUnescape) {
     	// @cond debug if (!name) error('Cookie name must be set!');
     	// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
     	var regexp, match = (regexp = RegExp('(^|;) *'+name+'=([^;]*)').exec(document.cookie)) && regexp[2];
     	return dontUnescape ? match : match && unescape(match);
-    };
+    },
 
     /**
      * @id deletecookie
@@ -2269,9 +2270,9 @@ window['MINI'] = (function() {
      *
      * @param the cookie's name
      */
-    MINI['deleteCookie'] = function(name) {
+    deleteCookie: function(name) {
     	MINI.setCookie(name, '', -1);
-    };
+    },
  
  	/**
  	 * @stop
@@ -2318,7 +2319,7 @@ window['MINI'] = (function() {
 	* </ul>
 	* @return a function() that, when you invoke it, stops the currently running animation.
 	*/
-	MINI['loop'] = function(paintCallback) { 
+	loop: function(paintCallback) { 
         var entry = {c: paintCallback, t: now()};
         var stopFunc = function() {
     		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // can't use each() or filter() here, list may be modified during run!!
@@ -2334,7 +2335,8 @@ window['MINI'] = (function() {
 			})(); 
         } 
         return stopFunc; 
-    };
+    }
+	}, function(n, v) {MINI[n]=v;});
 
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
