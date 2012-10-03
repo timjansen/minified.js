@@ -1542,7 +1542,7 @@ window['MINI'] = (function() {
 			var state = false, stop, regexg = /\b(?=\w)/g;
 			var self = this;
 
-			return isString(state1) ?
+			return isString(state1) && !state2 ?
 				self.toggle(replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
 				self.set(state1) && 
 			    function(newState) {
