@@ -65,7 +65,7 @@
 				}
 			}
 			
-			if (!test.debugFailure) {
+			if (!test.debugFailure) { // regular, non-debug test
 				var success = true, msg;
 				try {
 					test.exec(setSuccess, playgroundDiv);
@@ -80,7 +80,7 @@
 				if (test.async)
 					window.setTimeout(function() {setSuccess(false, 'timeout, waited ' + test.async + 'ms')}, test.async);
 			}
-			else if (MINI.debug) {
+			else if (MINI.debug) { // only test if debug available
 				var success = false;
 				try {
 					test.exec(setSuccess, playgroundDiv);
@@ -107,6 +107,7 @@
 	<script type="text/javascript" src="autotest-class.js"></script>
 	<script type="text/javascript" src="autotest-json.js"></script>
 	<script type="text/javascript" src="autotest-cookies.js"></script>
+	<script type="text/javascript" src="autotest-forms.js"></script>
 	<script type="text/javascript" src="autotest-async.js"></script>
 	<script type="text/javascript" src="autotest-event.js"></script>
 

@@ -1801,6 +1801,9 @@ window['MINI'] = (function() {
 	 * elements will be serialized.
 	 * 
 	 * The map format returned by serialize() is exactly the format used by request().
+	 * 
+	 * Please note that when you include an input element more than once, for example by having the input itself and its form in the list, the
+	 * value will be included twice in the list.
 	 *
 	 * @example Serialize a form and send it as request parameters:
 	 * <pre>
