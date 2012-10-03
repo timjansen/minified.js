@@ -10,8 +10,26 @@
 
 /*
  * When you read this code, please keep in mind that it is optimized to produce small and gzip'able code
- * after being minimized using Closure (http://closure-compiler.appspot.com). Run-time performance and readability
+ * after being minimized with Closure (http://closure-compiler.appspot.com). Run-time performance and readability
  * should be acceptable, but are not a primary concern.
+ *
+ * 
+ * Various comment annotations control the builder in parser-src.js / builder-src.js. This file should always work without the builder,
+ * but only the builder allows you to remove functions.
+ * 
+ * Here's a short summary of that the non-documenting tags mean.
+ * 
+ * Multi-Line Comments:
+ * - @id marks the beginning of an optional block. It ends with the next @id block, or the next @stop comment.
+ * - @requires defines the ids that the current block depends on. They will always be available.
+ * - @configurable the block can be selected in the GUI. If the value is 'yes', it is a enabled by default.
+ * - @dependency if set, the block is only used as a dependency
+ * 
+ * Single-Line Comments
+ * - @cond id defines that the code following after the id will be included if the block id is enabled 
+ * - @cond !id include the following line only if the block id is disabled
+ * - @condblock id will include all following lines if id is enabled until the next @condend. @condblocks can be nested.
+ * - @condend ends a @condblock 
  */
 
 // ==ClosureCompiler==
@@ -40,7 +58,7 @@ window['MINI'] = (function() {
      * @id animation_vars
      * @dependency
      */
-	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currenetly active
+	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currently active
 	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return window[n+'equestAnimationFrame']; })[0] || function(callback) {
 		delay(33, callback); // 30 fps as fallback
 	};
@@ -336,11 +354,7 @@ window['MINI'] = (function() {
 	}
     // @cond debug MINI['debug'] = true;
 	
-    /**
-     * @stop
-     */
-
-    
+  
     /**
      * @id dollarraw
      * @requires 
@@ -407,9 +421,6 @@ window['MINI'] = (function() {
 		// @cond !ie7compatibility return (parent || doc).querySelectorAll(mainSelector);
 	};
 	
-	/**
-	 * @stop
-	 */
     
     /**
      * @id addelementlistfuncsstart
@@ -1865,11 +1876,11 @@ window['MINI'] = (function() {
 		}
 		return dest;
      }
+ 	/**
+ 	 * @stop
+ 	 */
 	}, function(n, v) {M.prototype[n]=v;});
      
-     /**
-      * @stop
-      */
 
  	//// MINI FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2213,10 +2224,6 @@ window['MINI'] = (function() {
     },
     // @condend
     // @cond !ie7compatibility parseJSON: JSON && JSON.parse,
-    /**
-	 * @stop
-	 */  
-    
     
 	/**
     * @id ready
@@ -2337,11 +2344,6 @@ window['MINI'] = (function() {
     	MINI.setCookie(name, '', -1);
     },
  
- 	/**
- 	 * @stop
- 	 */
-
-
 	/**
 	* @id loop
 	* @module 7
@@ -2399,6 +2401,10 @@ window['MINI'] = (function() {
         } 
         return stopFunc; 
     }
+ 	/**
+ 	 * @stop
+ 	 */
+
 	}, function(n, v) {MINI[n]=v;});
 
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2408,13 +2414,12 @@ window['MINI'] = (function() {
 	 * @dependency
      */
     window.onload = function() {
-        triggerDomReady();
+    	triggerDomReady();
         if (DOMREADY_OLD_ONLOAD)
-      	  DOMREADY_OLD_ONLOAD();
-      };
-      if (document.addEventListener)
-      	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
-      
+        	DOMREADY_OLD_ONLOAD();
+    };
+    if (document.addEventListener)
+    	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
 
 	/**
 	 @stop
