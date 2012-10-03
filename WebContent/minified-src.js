@@ -1,5 +1,5 @@
 /*
- * Minified.js - All that you for your web application, less than 4kb
+ * Minified.js - Complete library for JavaScript interaction in less than 4kb
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  *
@@ -339,7 +339,7 @@ window['MINI'] = (function() {
 		// @condblock ready
 		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context));
 		// @condend
-		// @cond ready return new M(dollarRaw(selector, context));
+		// @cond !ready return new M(dollarRaw(selector, context));
 	}
 	
 	/**
