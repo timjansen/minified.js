@@ -494,7 +494,7 @@ window['MINI'] = (function() {
      * @param callback the callback function(item, index) to invoke.
      * @return the list
      */
-	each: function (callback) {
+	'each': function (callback) {
 		each(this.raw, callback); // use list, as a real Array may be faster
 		return this;
 	},
@@ -529,7 +529,7 @@ window['MINI'] = (function() {
 	 *        of the original.
 	 * @return the new list, always guaranteed to be based on Array and always a new instance
 	 */
-	filter: function(filterFunc) {
+	'filter': function(filterFunc) {
 	    return new M(filter(this.raw, filterFunc));
 	},
 	
@@ -585,7 +585,7 @@ window['MINI'] = (function() {
      * @return the new list. If resultList has been omitted, the result is guaranteed to be based 
      * on Array and always a new instance 
      */ 
-	collect: function(collectFunc, resultList) { 
+	'collect': function(collectFunc, resultList) { 
     	 return new M(collect(this.raw, collectFunc, resultList)); 
      },
 	
@@ -603,7 +603,7 @@ window['MINI'] = (function() {
 	 * $('#myContainer').remove(); 
 	 * </pre>
 	 */
-     remove: function() {
+     'remove': function() {
     	this.each(function(obj) {obj.parentNode.removeChild(obj);});
      },
 	
@@ -719,7 +719,7 @@ window['MINI'] = (function() {
 	 *                                 in the set() call.
 	 * @return the list
 	 */
-     set: function (name, value, defaultFunction) {
+     'set': function (name, value, defaultFunction) {
 		var self = this, v;
 		// @cond debug if (name == null) error("First argument must be set!");
 		if (value !== undef) {
@@ -800,7 +800,7 @@ window['MINI'] = (function() {
 	 * @param properties a map containing names as keys and the values to append as map values. See above for the syntax.
 	 * @return the list
 	 */
-	append: function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return toString(oldValue) + newValue;});},
+	'append': function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return toString(oldValue) + newValue;});},
 
 	/**
 	 * @id prepend
@@ -827,7 +827,7 @@ window['MINI'] = (function() {
 	 * @param properties a map containing names as keys and the values to prepend as map values. See above for the syntax.
 	 * @return the list
 	 */
-	prepend: function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return newValue + toString(oldValue);});},
+	'prepend': function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return newValue + toString(oldValue);});},
 
 	
 	/**
@@ -895,7 +895,7 @@ window['MINI'] = (function() {
 	 *              an HTML element or a list containing strings and/or HTML elements.
 	 * @return the current list
 	 */
-	add: function (children, addFunction) {
+	'add': function (children, addFunction) {
 		return this.each(function(e, index) {
 			var lastAdded;
 			(function appendChildren(c) {
@@ -906,7 +906,7 @@ window['MINI'] = (function() {
 					if (lastAdded)
 						lastAdded.parentNode.insertBefore(n, lastAdded.nextSibling);
 					else if (addFunction)
-						addFunction(n, e); 
+						addFunction(n, e, e.parentNode); 
 					else
 						e.appendChild(n);
 					lastAdded = n;
@@ -984,9 +984,8 @@ window['MINI'] = (function() {
 	 *              this list's first match.
 	 * @return the current list
 	 */
-	fill: function (children) {
-		this.each(function(e) { MINI(e.childNodes).remove(); });
-		return this.add(children);
+	'fill': function (children) {
+		return this.each(function(e) { MINI(e.childNodes).remove(); }).add(children);
 	},
 
 	/**
@@ -1052,8 +1051,8 @@ window['MINI'] = (function() {
 	 *              this list's first match.
 	 * @return the current list
 	 */
-	addBefore: function (children) {
-		return this.add(children, function(newNode, refNode) { refNode.parentNode.insertBefore(newNode, refNode); });
+	'addBefore': function (children) {
+		return this.add(children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode); });
 	},
 	
 	/**
@@ -1119,8 +1118,8 @@ window['MINI'] = (function() {
 	 *              this list's first match.
 	 * @return the current list
 	 */
-	addAfter: function (children) {
-		return this.add(children, function(newNode, refNode) { refNode.parentNode.insertBefore(newNode, refNode.nextSibling); });
+	'addAfter': function (children) {
+		return this.add(children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode.nextSibling); });
 	},
 	
 	/**
@@ -1188,7 +1187,7 @@ window['MINI'] = (function() {
 	 *              an HTML element or a list containing strings and/or HTML elements.
 	 * @return the current list
 	 */
-	addFront: function (children) {
+	'addFront': function (children) {
 		return this.add(children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
 	},
 	
@@ -1278,8 +1277,8 @@ window['MINI'] = (function() {
 	 *              an HTML element or a list containing strings and/or HTML elements.
 	 * @return the current list
 	 */
-	replace: function (children) {
-		return this.add(children, function(newNode, refNode) { refNode.parentNode.replaceChild(newNode, refNode); });
+	'replace': function (children) {
+		return this.add(children, function(newNode, refNode, parent) { parent.replaceChild(newNode, refNode); });
 	},
 
 	
@@ -1384,7 +1383,7 @@ window['MINI'] = (function() {
 	 *                       If the animation finished, it will write null to state.time. state.stop will remain unmodified after the animation end. 
 	 * @return the list
 	 */
-	animate: function (properties, durationMs, linearity, callback, delayMs, state) {
+	'animate': function (properties, durationMs, linearity, callback, delayMs, state) {
 		// @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
 		// @cond debug if (linearity < 0 || linearity > 1) error('Third parameter must be at least 0 and not larger than 1.');
 		// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
@@ -1548,7 +1547,7 @@ window['MINI'] = (function() {
 		 *         newState set to null. If the argument is a boolean false or true, the first or second state will be set respectively. 
 		 *         If the argument is not boolean or the function is called without arguments, the function toggles between both states. 
 		 */
-		toggle: function(state1, state2, durationMs, linearity, delayMs) {
+		'toggle': function(state1, state2, durationMs, linearity, delayMs) {
 			var animState = {};
 			var state = false, stop, regexg = /\b(?=\w)/g;
 			var self = this;
@@ -1632,7 +1631,7 @@ window['MINI'] = (function() {
 		 * @param toggles
 		 * @return the list
 		 */
-	    wire: function(events, toggles) {
+	    'wire': function(events, toggles) {
 	    	return this.each(function(li) {
 	    		function select(selector) {
 	    			return $(selector||li, (selector && !/^#/.test(selector))?li:undef);
@@ -1717,7 +1716,7 @@ window['MINI'] = (function() {
 		 * @param fThis an optional value for 'this' in the handler, as alternative to the event target
 		 * @return the list
 		 */
-		on: function (name, handler, args, fThis) {
+		'on': function (name, handler, args, fThis) {
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return this.each(function(el) {
@@ -1781,7 +1780,7 @@ window['MINI'] = (function() {
 	 *                on().
      * @return the list
      */
-	off: function (name, handler) {
+	'off': function (name, handler) {
 		// @cond debug if (!name || !name.substr) error("No name given or name not a string.");
 		// @cond debug if (!handler || !handler['MINI']) error("No handler given or handler invalid.");
 	   	return this.each(function(el) {
@@ -1830,7 +1829,7 @@ window['MINI'] = (function() {
 	 * @return a map containing name->value pairs as strings. If there is more than one value with the same name,
 	 *         map value is an array of strings
 	 */
-	serialize: function(data) {
+	'serialize': function(data) {
 		data = data || {};
 		this.each(function(el) {
 			var n = el.name, v = toString(el.value), t = el.tagName, y = el.type, o=data[n];
@@ -1866,7 +1865,7 @@ window['MINI'] = (function() {
 	 * @param element the element whose coordinates should be determined
 	 * @return an object containing pixel coordinates in two properties 'x' and 'y'
 	 */
-	offset: function() {
+	'offset': function() {
 		var elem = this[0];
 		var dest = {'x': 0, 'y': 0};
 		while (elem) {
@@ -1905,7 +1904,7 @@ window['MINI'] = (function() {
 	 *                 parameter for this function is the id selector with the syntax "#id".
 	 * @return a DOM object of the first match, or undefined if the selector did not return at least one match
 	 */
-    $$: function(selector) {
+    '$$': function(selector) {
 		return dollarRaw(selector)[0];
 	},
 
@@ -2004,7 +2003,7 @@ window['MINI'] = (function() {
 	 *                         The syntax is exactly like fill().
 	 * @return a list containing the DOM HTMLElement that has been created or modified as only element
 	 */
-	el: function(e, attributes, children) {
+	'el': function(e, attributes, children) {
 		// @cond debug if (!e) error("el() requires the element name."); 
 		// @cond debug if (/:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
 		var nu = document.documentElement.namespaceURI; // to check whether doc is XHTML
@@ -2078,7 +2077,7 @@ window['MINI'] = (function() {
 	* @param password optional password for HTTP authentication
 	* @return the XmlHTTPRequest object, after its send() method has been called. You may use this to gather additional information, such as the request's state.
 	*/
-	request: function (method, url, data, onSuccess, onFailure, headers, username, password) {
+	'request': function (method, url, data, onSuccess, onFailure, headers, username, password) {
 		// @cond debug if (!method) error("request() requires a HTTP method as first argument.");
 		// @cond debug if (!url) error("request() requires a url as second argument.");
 		// @cond debug if (onSuccess && typeof onSuccess != 'function') error("request()'s fourth argument is optional, but if it is set, it must be a function.");
@@ -2176,21 +2175,19 @@ window['MINI'] = (function() {
     * @return the JSON string
     */
     // @condblock ie7compatibility
-    toJSON: (window.JSON && JSON.stringify) || function toJSON(value) {
-		var ctor = value && value.constructor;
-
-		if (isString(value) || ctor == String)
+    'toJSON': (window.JSON && JSON.stringify) || function toJSON(value) {
+		if (value == null)
+			return ""+value; //result: "null"; toString(value) is not possible, because it returns an empty string for null
+		if (isString(value = value.valueOf))
 			return '"' + replace(value, /[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
 		if (isList(value)) 
 			return '[' + collect(value, function(vi) { return toJSON(vi); }).join() + ']';
-		if (isObject(value) && ctor != Number && ctor != Boolean)
+		if (isObject(value))
 			return '{' + collect(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
-		if (value == null)
-			return 'null';
 		return toString(value);
 	},
     // @condend
-    // @cond !ie7compatibility toJSON: (window.JSON && JSON.stringify),
+    // @cond !ie7compatibility 'toJSON': (window.JSON && JSON.stringify),
     
 	/**
 	* @id parsejson
@@ -2212,7 +2209,7 @@ window['MINI'] = (function() {
 	* @return the resulting JavaScript object. Undefined if not valid.
 	*/
     // @condblock ie7compatibility
-    parseJSON: (window.JSON && JSON.parse) || function (text) {
+    'parseJSON': (window.JSON && JSON.parse) || function (text) {
         if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
 				.test(replace(replace(replace(text = replace(text, /[\u0000\u00ad\u0600-\uffff]/g, ucode), 
 								/\\(["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@'), 
@@ -2223,7 +2220,7 @@ window['MINI'] = (function() {
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     },
     // @condend
-    // @cond !ie7compatibility parseJSON: JSON && JSON.parse,
+    // @cond !ie7compatibility 'parseJSON': JSON && JSON.parse,
     
 	/**
     * @id ready
@@ -2244,7 +2241,7 @@ window['MINI'] = (function() {
     *
     * @param handler the function to be called when the HTML is ready
     */
-    ready: ready,
+    'ready': ready,
 
    
 	/**
@@ -2284,7 +2281,7 @@ window['MINI'] = (function() {
      *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
      *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
      */
-    setCookie: function setCookie(name, value, dateOrDays, path, domain, dontEscape) {
+    'setCookie': function(name, value, dateOrDays, path, domain, dontEscape) {
 		// @cond debug if (!name) error('Cookie name must be set!');
 		// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
     	document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
@@ -2317,7 +2314,7 @@ window['MINI'] = (function() {
      *                     in a special way, and not with the JavaScript encode() method)
      * @return the value of the cookie, or null if not found. Depending on the dontUnescape parameter, it may be unescape or not.
      */
-    getCookie: function(name, dontUnescape) {
+    'getCookie': function(name, dontUnescape) {
     	// @cond debug if (!name) error('Cookie name must be set!');
     	// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
     	var regexp, match = (regexp = RegExp('(^|;) *'+name+'=([^;]*)').exec(document.cookie)) && regexp[2];
@@ -2340,7 +2337,7 @@ window['MINI'] = (function() {
      *
      * @param the cookie's name
      */
-    deleteCookie: function(name) {
+    'deleteCookie': function(name) {
     	MINI.setCookie(name, '', -1);
     },
  
@@ -2384,7 +2381,7 @@ window['MINI'] = (function() {
 	* </ul>
 	* @return a function() that, when you invoke it, stops the currently running animation.
 	*/
-	loop: function(paintCallback) { 
+	'loop': function(paintCallback) { 
         var entry = {c: paintCallback, t: now()};
         var stopFunc = function() {
     		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // can't use each() or filter() here, list may be modified during run!!
@@ -2418,7 +2415,9 @@ window['MINI'] = (function() {
         if (DOMREADY_OLD_ONLOAD)
         	DOMREADY_OLD_ONLOAD();
     };
+    // @condblock ie8compatibility
     if (document.addEventListener)
+    // @condend
     	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
 
 	/**
