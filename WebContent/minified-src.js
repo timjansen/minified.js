@@ -756,10 +756,9 @@ window['MINI'] = (function() {
     				 if (name == '$') {
     					 each(newValue.split(/\s+/), function(clzz) {
     						 var cName = replace(clzz, /^[+-]/);
-    						 var reg = new RegExp(BACKSLASHB + cName + BACKSLASHB);
-    						 var contains = reg.test(className);
-    						 className = replace(className, reg);
-    						 if (/^\+/.test(clzz) || (cName==clzz && !contains)) // for + and toggle-add
+    						 var oldClassName = className;
+    						 className = replace(className, new RegExp(BACKSLASHB + cName + BACKSLASHB));
+    						 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
     							 className += ' ' + cName;
     					 });
     					 obj.className = replace(className, /^\s+|\s+(?=\s|$)/g);
