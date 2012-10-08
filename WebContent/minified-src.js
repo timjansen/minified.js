@@ -69,6 +69,7 @@ window['MINI'] = (function() {
 	 * @requires ie7compatibility 
 	 * @module 9
 	 * @configurable yes
+	 * @doc no
 	 * @name Backward-Compatibility for IE8 and similar browsers
 	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8.
 	 */
@@ -79,6 +80,7 @@ window['MINI'] = (function() {
 	 * @requires ie8compatibility 
 	 * @module 9
 	 * @configurable yes
+	 * @doc no
 	 * @name Backward-Compatibility for IE7 and similar browsers
 	 * The difference between IE7 and IE8 compatibility that IE7 provides neither native selector support (querySelectorAll) nor native JSON.
 	 * Disabling IE6 and IE7 will not only make Minified smaller, but give you full CSS selectors and complete JSON support. 
@@ -98,6 +100,7 @@ window['MINI'] = (function() {
 	 * @requires ie7compatibility 
 	 * @module 9
 	 * @configurable yes
+	 * @doc no
 	 * @name Backward-Compatibility for IE6 and similar browsers
 	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6 which makes the library a tiny 
 	 * little bit larger.
@@ -108,6 +111,7 @@ window['MINI'] = (function() {
 	 * @requires animate set 
 	 * @module 7
 	 * @configurable yes
+	 * @doc no
 	 * @name Support for $$fade and $$slide
 	 */
 	/**
@@ -346,6 +350,7 @@ window['MINI'] = (function() {
 	 * @id debug
 	 * @module 9
 	 * @configurable no
+	 * @doc no
 	 * @name Debugging Support
 	 */
 	function error(msg) {
@@ -482,7 +487,7 @@ window['MINI'] = (function() {
      * @configurable yes
      * @name list.each()
      * @syntax each(callback)
-     * Invokes the given function once for each item in the list with the item as first parameter and the zero-based index as second.
+     * Invokes the given function once for each item in the list. The function will be calles with the item as first parameter and the zero-based index as second.
      *
      * @example This goes through all h2 elements of the class 'section' and changes their content:
      * <pre>
@@ -541,7 +546,7 @@ window['MINI'] = (function() {
      * @name list.collect() 
      * @syntax collect(collectFunc) 
      * @syntax collect(collectFunc, resultList) 
-     * Creates a new list from the current list with the help of the given callback function. 
+     * Creates a new list from the current list using given callback function. 
      * The callback is invoked once for each element of the current 
      * list. The callback results will be appended either to the given resultList, or to 
      * a new array. The callback can return 
@@ -792,8 +797,7 @@ window['MINI'] = (function() {
 	 * </pre>
 	 *
 	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
-	 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
-	 *                     A dollar ('$') prefix is a shortcut for 'style.'.
+	 *                     A dollar ('$') is used to select a CSS style.
 	 * @param value the value to append. It will be converted to a string before appending it. 
 	 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
 	 *                    return value will not be appended, but will overwrite the existing value.
@@ -819,8 +823,7 @@ window['MINI'] = (function() {
 	 * </pre>
 	 *
 	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
-	 *                     If it contains one or more dots ('.'), the set() will traverse the properties of those names.
-	 *                     A dollar ('$') prefix is a shortcut for 'style.'.
+	 *                     A dollar ('$') is used to select a CSS style.
 	 * @param value the value to prepend. It will be converted to a string before prepending it. 
 	 *                    If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
 	 *                    return value will not be prepended, but will overwrite the existing value.
@@ -2448,6 +2451,7 @@ window['MINI'] = (function() {
  * @id topleveldollardollar
  * @module 8
  * @requires dollardollar topleveldollar
+ * @doc no
  * @configurable yes
  * @name $$() (shortcut for MINI.$$() )
  * @syntax $$(selector)
@@ -2465,6 +2469,7 @@ window['$$'] = $['$$'];
  * @id toplevelee
  * @module 8
  * @requires el topleveldollar
+ * @doc no
  * @configurable yes
  * @name EE() (shortcut for MINI.el() )
  * @syntax EE(selector)
