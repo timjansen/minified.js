@@ -711,7 +711,8 @@ window['MINI'] = (function() {
 	 * 
 	 * @param value the value to set. If it is a function, the function(oldValue, index, obj) will be invoked for each list element to evaluate the value. 
 	 * The function is called with with the old value as first argument and the index in the list as second.
-	 * The third value is the object being modified.
+	 * The third value is the object being modified. Functions are not possible for virtual properties ('$$fade' and '$$slide'). For the CSS style names,
+	 * the old value given to the function is the old value of the className property containing the existing classes.
 	 * If value is null and name specified an attribute, the value will be ignored.
 	 * If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefix with a '+' the class will be added,
 	 * with a '+' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.
