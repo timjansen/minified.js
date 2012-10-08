@@ -465,7 +465,7 @@ window['MINI'] = (function() {
 		 * var list = $('input');
 		 * var myValues = {};
 		 * for (var i = 0; i < list.length; i++)
-		 *    myValues[list[i].name] = list[i].value;
+		 *    myValues[list[i].ame] = list[i].value;
 		 * </pre>
 		 */
 		// empty, always defined above
@@ -725,61 +725,57 @@ window['MINI'] = (function() {
 	 * @return the list
 	 */
      'set': function (name, value, defaultFunction) {
-		var self = this, v;
-		// @cond debug if (name == null) error("First argument must be set!");
-		if (value !== undef) {
-			// @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
-			
-			// @condblock fadeslide
-			if (name == '$$fade' || name == '$$slide') {
-				self.set({$visibility: (v = toNumWithoutUnit(value)) > 0 ? 'visible' : 'hidden', $display: 'block'})
-					.set(
-					(name == '$$fade')  ? (
-					// @condblock ie8compatibility 
-					 IS_PRE_IE9 ? {$filter: 'alpha(opacity = '+(100*v)+')', $zoom: 1} :
-					// @condend
-						{$opacity: v})
-					:
-					{$height: /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight(element))  + 'px';},
-					    $overflow: 'hidden'}
-					);
-			}
-			else
-			// @condend
-			if (name == '$')
-				self.each(function(obj) {
-					var className = obj.className || '';
-					each(value.split(/\s+/), function(clzz) {
-						var cName = replace(clzz, /^[+-]/);
-						var reg = new RegExp(BACKSLASHB + cName + BACKSLASHB);
-						var contains = reg.test(className);
-						className = replace(className, reg);
-						if (/^\+/.test(clzz) || (cName==clzz && !contains)) // for + and toggle-add
-							className += ' ' + cName;
-					});
-					obj.className = replace(className, /^\s+|\s+(?=\s|$)/g);
-				});
-			else {
-				var f = isFunction(value) ? value : defaultFunction;
-				var nameClean = replace(name, /^[@$]/), isAttr = /^@/.test(name);
-				self.each( 
-					function(obj, c) {
-						var newObj = /^\$/.test(name) ? obj.style : obj;
-						var newValue = f ? f(isAttr ? newObj.getAttribute(nameClean) : newObj[nameClean], c, obj, value) : value;
-						if (!isAttr)
-							newObj[nameClean] = newValue;
-						else if (newValue != null)  
-							newObj.setAttribute(nameClean, newValue);
-				});
-			}
-		}
-		else if (isString(name))
-			self.set('$', name);
-		else
-			each(name, function(n,v) { self.set(n, v, defaultFunction); });
-		return self;
-	},
-	
+    	 var self = this, v;
+ 		 // @cond debug if (name == null) error("First argument must be set!");
+    	 if (value !== undef) {
+    		 // @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
+ 			
+    		 // @condblock fadeslide
+    		 if (name == '$$fade' || name == '$$slide') {
+    			 self.set({$visibility: (v = toNumWithoutUnit(value)) > 0 ? 'visible' : 'hidden', $display: 'block'})
+    			     .set((name == '$$fade')  ? (
+    			 // @condblock ie8compatibility 
+    			    	  IS_PRE_IE9 ? {$filter: 'alpha(opacity = '+(100*v)+')', $zoom: 1} :
+    			 // @condend
+    			    	  {$opacity: v})
+    			        :
+    			        {$height: /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight(element))  + 'px';},
+    			         $overflow: 'hidden'}
+ 					);
+    		 }
+    		 else
+    			// @condend
+    			 self.each(function(obj, c) {
+    				 var f = isFunction(value) ? value : defaultFunction;
+    				 var nameClean = replace(name, /^[@$]/);
+    				 var isAttr = /^@/.test(name);
+    				 var className = obj.className || '';
+    				 var newObj = /^\$/.test(name) ? obj.style : obj;
+    				 var newValue = f ? f(name == '$' ? className : isAttr ? newObj.getAttribute(nameClean) : newObj[nameClean], c, obj, value) : value;
+    				 if (name == '$') {
+    					 each(newValue.split(/\s+/), function(clzz) {
+    						 var cName = replace(clzz, /^[+-]/);
+    						 var reg = new RegExp(BACKSLASHB + cName + BACKSLASHB);
+    						 var contains = reg.test(className);
+    						 className = replace(className, reg);
+    						 if (/^\+/.test(clzz) || (cName==clzz && !contains)) // for + and toggle-add
+    							 className += ' ' + cName;
+    					 });
+    					 obj.className = replace(className, /^\s+|\s+(?=\s|$)/g);
+    				 }
+    				 else if (!isAttr)
+    					 newObj[nameClean] = newValue;
+    				 else if (newValue != null)  
+    					 newObj.setAttribute(nameClean, newValue);
+    			 });
+    	 }
+    	 else if (isString(name) || isFunction(name))
+    		 self.set('$', name);
+    	 else
+    		 each(name, function(n,v) { self.set(n, v, defaultFunction); });
+    	 return self;
+     },
+ 	
 	/**
 	 * @id append
 	 * @module 1
