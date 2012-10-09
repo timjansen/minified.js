@@ -434,9 +434,10 @@ window['MINI'] = (function() {
      * @dependency yes
      */
 	function M(list) {
-		var len = this['length'] = list.length;
-		for (var i = 0; i < len; i++)
+		for (var i = 0; i < list.length; i++)
 			this[i] = list[i];
+
+		this['length'] = list.length;
 		
 		/**
 		 * @id listraw
@@ -630,6 +631,7 @@ window['MINI'] = (function() {
  		var e = endIndex == null ? this.length : endIndex >= 0 ? endIndex : this.length+endIndex;
  		return this.filter(function(o, index) { return index >= s && index < e; });
  	},
+ 	
      
 	/**
 	 * @id listremove
