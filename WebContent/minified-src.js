@@ -2138,8 +2138,8 @@ window['MINI'] = (function() {
 	
 	/*
 	 * JSON Module. Uses browser built-ins or json.org implementation if available. Otherwise its own implementation,
-	 * based on public domain implementation http://www.JSON.org/json2.js / http://www.JSON.org/js.html.
-	 * Simplified code, made variables local, removed all side-effects (especially new properties for String, Date and Number).
+	 * originally based on public domain implementation http://www.JSON.org/json2.js / http://www.JSON.org/js.html.
+	 * Extremely simplified code, made variables local, removed all side-effects (especially new properties for String, Date and Number).
 	 */
     
 
@@ -2209,11 +2209,11 @@ window['MINI'] = (function() {
 	*/
     // @condblock ie7compatibility
     'parseJSON': (window.JSON && JSON.parse) || function (text) {
-        if (/^[\],:{}\s]*$/                  // dont remove, tests required for security reasons!
-				.test(replace(replace(replace(text = replace(text, /[\u0000\u00ad\u0600-\uffff]/g, ucode), 
-								/\\(["\\\/bfnrt]|u[\da-fA-F]{4})/g, '@'), 
-						    	/"[^"\\\n\r]*"|true|false|null|-?\d+(\.\d*)?([eE][+\-]?\d+)?/g, ']'),
-						    	/(^|:|,)(\s*\[)+/g))) 
+        if (/^[[\],:{}\s]*$/                  // test that, after getting rid of literals, only allowed characters can be found
+				.test(replace(replace(text = replace(text, /[\x00\xad\u0600-\uffff]/g, ucode), // encode unsafe characters
+						/\\["\\\/bfnrtu]/g),                               // remove all escapes
+						/"[^"\\\n\r]*"|true|false|null|[\d.eE+-]+/g))      // remove all literals
+				)
         	return eval('(' + text + ')');
         // fall through if not valid
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
@@ -2284,7 +2284,7 @@ window['MINI'] = (function() {
 		// @cond debug if (!name) error('Cookie name must be set!');
 		// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
     	document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
-    	    (dateOrDays ? (dateOrDays.getDay ? dateOrDays: new Date(now() + dateOrDays * 24 * 3600000)) : '') + 
+    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(now() + dateOrDays * 86400000)).toUTCString()) : '') + 
     		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
     },
     
