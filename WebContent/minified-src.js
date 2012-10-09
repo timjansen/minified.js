@@ -1830,19 +1830,19 @@ window['MINI'] = (function() {
 	 *         map value is an array of strings
 	 */
 	'serialize': function(data) {
-		data = data || {};
+		var r = data || {};
 		this.each(function(el) {
-			var n = el.name, v = toString(el.value), t = el.tagName, y = el.type, o=data[n];
+			var n = el.name, v = toString(el.value), t = el.tagName, y = el.type, o=r[n];
 			if (/form/i.test(t))
 				MINI(el.elements).serialize(data);
 			else if (n && (!/kbox|dio/i.test(y) || el.checked)) { // short for checkbox, radio
 					if (isList(o))
 						o.push(v);
 					else
-						data[n] = (o == null) ? v : [o, v];
+						r[n] = (o == null) ? v : [o, v];
 			}
 		});
-		return data;
+		return r;
 	},
 	
 	/**
@@ -2210,12 +2210,12 @@ window['MINI'] = (function() {
 	*/
     // @condblock ie7compatibility
     'parseJSON': json ? json.parse : function (text) {
+    	var t = replace(text, /[\x00\xad\u0600-\uffff]/g, ucode); // encode unsafe characters
         if (/^[[\],:{}\s]*$/                  // test that, after getting rid of literals, only allowed characters can be found
-				.test(replace(replace(text = replace(text, /[\x00\xad\u0600-\uffff]/g, ucode), // encode unsafe characters
-						/\\["\\\/bfnrtu]/g),                               // remove all escapes
+				.test(replace(replace(t , /\\["\\\/bfnrtu]/g),             // remove all escapes
 						/"[^"\\\n\r]*"|true|false|null|[\d.eE+-]+/g))      // remove all literals
 				)
-        	return eval('(' + text + ')');
+        	return eval('(' + t + ')');
         // fall through if not valid
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     },
