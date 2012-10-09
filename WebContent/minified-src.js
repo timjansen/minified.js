@@ -595,6 +595,42 @@ window['MINI'] = (function() {
     	 return new M(collect(this.raw, collectFunc, resultList)); 
      },
 	
+     /** 
+      * @id sub
+      * @module 1 
+      * @requires filter 
+      * @configurable yes 
+      * @name list.sub() 
+      * @syntax sub() 
+      * Returns a new list containing only the element in the specified range. If there are no elements in the range, an empty list is returned.
+      *
+      * @example Remove the third to 5th list elements:
+      * <pre> 
+      * $('#myList li').sub(3, 6).remove();
+      * </pre> 
+      *
+      * @example Clear all elements but the first:
+      * <pre> 
+      * $('#myList li').sub(1).fill();
+      * </pre> 
+      *
+      * @example Changes the class of the last list element:
+      * <pre> 
+      * $('#myList li').sub(-1).set('+lastItem');
+      * </pre> 
+      * 
+      * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and thus it is the position
+      *                   seen from the list end.
+      * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and thus it is the position
+      *                   seen from the list end. If omitted, all elements to the list end are included.
+      * @return a new list containing only the items in the index range. 
+      */ 
+ 	'sub': function(startIndex, endIndex) {
+ 		var s = startIndex < 0 ? this.length+startIndex : startIndex;
+ 		var e = endIndex == null ? this.length : endIndex >= 0 ? endIndex : this.length+endIndex;
+ 		return this.filter(function(o, index) { return index >= s && index < e; });
+ 	},
+     
 	/**
 	 * @id listremove
 	 * @module 1
@@ -1834,7 +1870,7 @@ window['MINI'] = (function() {
 		this.each(function(el) {
 			var n = el.name, v = toString(el.value), t = el.tagName, y = el.type, o=r[n];
 			if (/form/i.test(t))
-				MINI(el.elements).serialize(data);
+				MINI(el.elements).serialize(r);
 			else if (n && (!/kbox|dio/i.test(y) || el.checked)) { // short for checkbox, radio
 					if (isList(o))
 						o.push(v);

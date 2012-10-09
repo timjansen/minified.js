@@ -51,6 +51,39 @@ window.miniTests.push.apply(window.miniTests, [
 	},
 
 	{
+		name: "MINI().sub()",
+	 	exec: function() {
+	 		var r1 = MINI([]);
+	 		check(r1.sub(0).length, 0);
+	 		check(r1.sub(0, 1).length, 0);
+	 		check(r1.sub(-5, 16).length, 0);
+
+	 		var r2 = MINI([1, 2, 3, 4]);
+	 		check(r2.sub(0, 4).length, 4);
+	 		check(r2.sub(0, 4)[0], 1);
+	 		check(r2.sub(0, 4)[1], 2);
+	 		check(r2.sub(0, 4)[2], 3);
+	 		check(r2.sub(0, 4)[3], 4);
+
+	 		check(r2.sub(0, 1).length, 1);
+	 		check(r2.sub(0, 1)[0], 1);
+
+	 		check(r2.sub(3, 4).length, 1);
+	 		check(r2.sub(3, 4)[0], 4);
+
+	 		check(r2.sub(4, 5).length, 0);
+
+	 		check(r2.sub(-1).length, 1);
+	 		check(r2.sub(-1)[0], 4);
+
+	 		check(r2.sub(-3, -1).length, 2);
+	 		check(r2.sub(-3, -1)[0], 2);
+	 		check(r2.sub(-3, -1)[1], 3);
+	 	}
+	},
+	
+	
+	{
 		name: "MINI().remove(none)",
 	 	exec: function() {
 			MINI("#ddfgfdf").remove();
