@@ -45,6 +45,7 @@ window['MINI'] = (function() {
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	var BACKSLASHB = '\\b';
+	var json = window.JSON;
 	var undef;
 	
     /**
@@ -2174,7 +2175,7 @@ window['MINI'] = (function() {
     * @return the JSON string
     */
     // @condblock ie7compatibility
-    'toJSON': (window.JSON && JSON.stringify) || function toJSON(value) {
+    'toJSON': json ? json.stringify : function toJSON(value) {
 		if (value == null)
 			return ""+value; //result: "null"; toString(value) is not possible, because it returns an empty string for null
 		if (isString(value = value.valueOf))
@@ -2186,7 +2187,7 @@ window['MINI'] = (function() {
 		return toString(value);
 	},
     // @condend
-    // @cond !ie7compatibility 'toJSON': (window.JSON && JSON.stringify),
+    // @cond !ie7compatibility 'toJSON': json && json.stringify,
     
 	/**
 	* @id parsejson
@@ -2208,7 +2209,7 @@ window['MINI'] = (function() {
 	* @return the resulting JavaScript object. Undefined if not valid.
 	*/
     // @condblock ie7compatibility
-    'parseJSON': (window.JSON && JSON.parse) || function (text) {
+    'parseJSON': json ? json.parse : function (text) {
         if (/^[[\],:{}\s]*$/                  // test that, after getting rid of literals, only allowed characters can be found
 				.test(replace(replace(text = replace(text, /[\x00\xad\u0600-\uffff]/g, ucode), // encode unsafe characters
 						/\\["\\\/bfnrtu]/g),                               // remove all escapes
@@ -2219,7 +2220,7 @@ window['MINI'] = (function() {
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     },
     // @condend
-    // @cond !ie7compatibility 'parseJSON': JSON && JSON.parse,
+    // @cond !ie7compatibility 'parseJSON': json && json.parse,
     
 	/**
     * @id ready
