@@ -16,11 +16,11 @@ window.miniTests.push.apply(window.miniTests, [
 			check(MINI.getCookie('xx'), 'a===');
 			check(MINI.getCookie('a'), 'b');
 			
-			MINI.deleteCookie('a');
+			MINI.setCookie('a', '', -1);
 			check(MINI.getCookie('c'), 'b');
 			check(MINI.getCookie('xx'), 'a===');
 
-			MINI.deleteCookie('c');
+			MINI.setCookie('c', '', -1);
 			check(MINI.getCookie('xx'), 'a===');
 		}
 	}]);

@@ -37,15 +37,9 @@
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
-// @condblock topleveldollar
-window['$'] =
-// @condend
-	
-window['MINI'] = (function() {
+(function(_window, _document) {
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	var BACKSLASHB = '\\b';
-	var json = window.JSON;
 	var undef;
 	
     /**
@@ -53,14 +47,14 @@ window['MINI'] = (function() {
 	 * @dependency
      */
     var DOMREADY_HANDLER = [];
-    var DOMREADY_OLD_ONLOAD = window.onload;
+    var DOMREADY_OLD_ONLOAD = _window.onload;
 
     /**
      * @id animation_vars
      * @dependency
      */
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currently active
-	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return window[n+'equestAnimationFrame']; })[0] || function(callback) {
+	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _window[n+'equestAnimationFrame']; })[0] || function(callback) {
 		delay(33, callback); // 30 fps as fallback
 	};
 	
@@ -74,8 +68,10 @@ window['MINI'] = (function() {
 	 * @name Backward-Compatibility for IE8 and similar browsers
 	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8.
 	 */
-	 var IS_PRE_IE9 = !!document.all && ![].map;
-	 
+	// @condblock ready_vars
+	 var IS_PRE_IE9 = !!_document.all && !DOMREADY_HANDLER.map;
+	// @condend
+	 // @cond !ready_vars var IS_PRE_IE9 = !!_document.all && ![].map;
 	/**
 	 * @id ie7compatibility
 	 * @requires ie8compatibility 
@@ -122,7 +118,7 @@ window['MINI'] = (function() {
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	function toString(s) { // wrapper for Closure optimization
-		return String(s!=null ? s : '');
+		return s!=null ? ''+s : '';
 	}
 	function isType(s,o) {
 		return typeof s == o;
@@ -174,8 +170,8 @@ window['MINI'] = (function() {
 		return toString(s).replace(regexp, sub||'');
 	}
 	function delay(delayMs, f) {
-		var id = delayMs ? window.setTimeout(f, delayMs) : f();
- 		return function() { if(delayMs) window.clearTimeout(id); };
+		var id = delayMs ? _window.setTimeout(f, delayMs) : f();
+ 		return function() { if(delayMs) _window.clearTimeout(id); };
 	}
 	function toNumWithoutUnit(v) {
 		return parseFloat(replace(v, /[^\d.-]/g));
@@ -192,15 +188,15 @@ window['MINI'] = (function() {
 
 	// careful: only works with simple names (no camel case / hyphens)
 	function getEffectiveStyle(element, name) {
-		var s = element.style[name], getComputedStyle = window.getComputedStyle;
+		var s = element.style[name];
 		if (s != null)
 			return s;
 		// @condblock ie8compatibility 
-		else if (!getComputedStyle)
+		else if (!_window.getComputedStyle)
 			return element.currentStyle[name];
 		// @condend
 		else 
-			return getComputedStyle(element).getPropertyValue(name);
+			return _window.getComputedStyle(element).getPropertyValue(name);
 	}
 
     function now() {
@@ -355,7 +351,7 @@ window['MINI'] = (function() {
 	 * @name Debugging Support
 	 */
 	function error(msg) {
-		if (window.console) console.log(msg);
+		if (_window.console) console.log(msg);
 		throw Exception("MINI debug error: " + msg);
 	}
     // @cond debug MINI['debug'] = true;
@@ -367,7 +363,6 @@ window['MINI'] = (function() {
      * @dependency yes
      */
     function dollarRaw(selector, context) { 
-		var doc = document;
 		var parent, steps, dotPos, mainSelector, subSelectors;
 		var elements, regexpFilter, useGEbC, className, elementName, reg;
 
@@ -393,7 +388,7 @@ window['MINI'] = (function() {
 				// fall through to return undef
 			});
 		}
-		if (isNode(selector)  || selector === window) 
+		if (isNode(selector)  || selector === _window) 
 		    return filterElements([selector]); 
 		if (isList(selector))
 		    return filterElements(collect(selector, function(l){return l;})); // flatten list before filtering
@@ -406,12 +401,12 @@ window['MINI'] = (function() {
 			return dollarRaw(steps.slice(1).join(' '), dollarRaw(steps[0], parent));
 
 		if (/^#/.test(mainSelector = steps[0]))
-			return (elements=doc.getElementById(mainSelector.substr(1))) ? filterElements([elements]) : []; 
+			return (elements=_document.getElementById(mainSelector.substr(1))) ? filterElements([elements]) : []; 
 
 		// @cond debug if (/\s/.test(mainSelector)) error("Selector has invalid format, please check for whitespace.");
 		// @cond debug if (/[ :\[\]]/.test(mainSelector)) error("Only simple selectors with ids, classes and element names are allowed.");
 
-		parent = parent || doc;
+		parent = parent || _document;
 
 		elementName = (dotPos = mainSelector.match(/([^.]*)\.?([^.]*)/))[1];
 		className = dotPos[2];
@@ -424,7 +419,7 @@ window['MINI'] = (function() {
 		return elements;
 		// @condend
 		
-		// @cond !ie7compatibility return (parent || doc).querySelectorAll(mainSelector);
+		// @cond !ie7compatibility return (parent || _document).querySelectorAll(mainSelector);
 	};
 	
     
@@ -633,6 +628,55 @@ window['MINI'] = (function() {
  	},
  	
      
+    /** 
+     * @id find 
+     * @module 1 
+     * @requires
+     * @configurable yes 
+     * @name list.find() 
+     * @syntax find(findFunc) 
+     * Allows you to find a specific value in the list. To do this, find() calls the given function for each list element until the function returns a value that is not null or undefined.
+     * This value will be returned.
+     *
+     * @example Goes through the elements to find the first div that has the class 'myClass', and returns this element:
+     * <pre> 
+     * var myClassElement = $('div').find(function(e) { if (/\bmyClass\b/.test(e.className)) return true; });
+     * </pre> 
+     * 
+     * @param findFunc the callback function(item) that will be invoked for every list item until it returns a non-null value.
+     * @return the true value returned by the callback function, or undefined it it never returned a valid value.
+     */ 
+	'find': function(findFunc) {
+		var list = this, r;
+		for (var i = 0; i < list.length; i++)
+			if ((r = findFunc(list[i], i)) != null)
+				return r;
+	},
+	
+    /** 
+     * @id hasclass 
+     * @module 1 
+     * @requires find
+     * @configurable yes 
+     * @name list.hasClass() 
+     * @syntax hasClass(className) 
+     * Checks whether at least one element in the list has the given class name. If yes, the first element that matches is returned. Otherwise
+     * the function returns undefined.
+     *
+	 * @example Checks whether the element 'myElement' the class 'myClass'. If yes, it sets the text color to red.
+	 * <pre>
+	 * if($('#myElement').hasClass('myClass'))
+	 *     $('#myElement').set('$color', 'red');
+	 * </pre>
+     * 
+     * @param name the class to to find
+     * @return the first element that has the given class, or undefined if not found
+     */ 
+	'hasClass': function(name) {
+		var regexp = new RegExp(BACKSLASHB +  name + BACKSLASHB)
+		return this.find(function(e) { return regexp.test(e.className) ? e : null; });
+	},
+	
 	/**
 	 * @id listremove
 	 * @module 1
@@ -940,7 +984,7 @@ window['MINI'] = (function() {
 				if (isList(c))
 					each(c, appendChildren);
 				else if (c != null) {   // must check null, as 0 is a valid parameter 
-					var n = isNode(c) ? c : document.createTextNode(c);
+					var n = isNode(c) ? c : _document.createTextNode(c);
 					if (lastAdded)
 						lastAdded.parentNode.insertBefore(n, lastAdded.nextSibling);
 					else if (addFunction)
@@ -1471,7 +1515,7 @@ window['MINI'] = (function() {
 					// @condend
 					p.s[name] = start;
 					p.e[name] = /^[+-]=/.test(dest) ?
-							replaceValue(dest.substr(2), toNumWithoutUnit(p.s[name]) + toNumWithoutUnit(replace(dest, /\+?=/))) 
+							replaceValue(dest.substr(2), toNumWithoutUnit(start) + toNumWithoutUnit(replace(dest, /\+?=/))) 
 							: dest;
 				});
 				initState.push(p);
@@ -1487,10 +1531,9 @@ window['MINI'] = (function() {
 				}
 
 				function interpolate(startValue, endValue) {
-					var d = endValue - startValue;
-					return startValue +  timePassedMs/durationMs * (linearity * d + (1-linearity) * timePassedMs/durationMs * (3*d - 2*d*timePassedMs/durationMs)); 
+					return startValue +  timePassedMs/durationMs * (endValue - startValue) * (linearity + (1-linearity) * timePassedMs/durationMs * (3 - 2*timePassedMs/durationMs)); 
 				}
-
+				
 				state['time'] = timePassedMs;
 				if (timePassedMs >= durationMs || timePassedMs < 0) {
 					each(initState, function(isi) { // set destination values
@@ -1759,8 +1802,8 @@ window['MINI'] = (function() {
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return this.each(function(el) {
 				handler['_M'] = handler['_M'] || function(e) {
-					var l = document.documentElement, b = document.body;
-					e = e || window.event;
+					var l = _document.documentElement, b = _document.body;
+					e = e || _window.event;
 					// @cond debug try {
 					if (!handler.apply(fThis || e.target, args || [e, { 
 							'key': e.keyCode || e.which, // http://unixpapa.com/js/key.html
@@ -2044,8 +2087,8 @@ window['MINI'] = (function() {
 	'el': function(e, attributes, children) {
 		// @cond debug if (!e) error("el() requires the element name."); 
 		// @cond debug if (/:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
-		var nu = document.documentElement.namespaceURI; // to check whether doc is XHTML
-		var list = MINI(e = isNode(e) ? e : nu ? document.createElementNS(nu, e) : document.createElement(e));
+		var nu = _document.documentElement.namespaceURI; // to check whether doc is XHTML
+		var list = MINI(e = isNode(e) ? e : nu ? _document.createElementNS(nu, e) : _document.createElement(e));
 		return  (isList(attributes) || !isObject(attributes)) ? list.add(attributes) : list.set(attributes).add(children); 
 	},
 		
@@ -2121,32 +2164,31 @@ window['MINI'] = (function() {
 		// @cond debug if (onSuccess && typeof onSuccess != 'function') error("request()'s fourth argument is optional, but if it is set, it must be a function.");
 		// @cond debug if (onFailure && typeof onFailure != 'function') error("request()'s fifth argument is optional, but if it is set, it must be a function.");
 		// @cond debug if (username && !password) error("If the user name is set (7th argument), you must also provide a password as 8th argument.");		method = method.toUpperCase();
-		var xhr, s = [],
+		var xhr,
 				body = data,
 				ContentType = 'Content-Type',
 				callbackCalled = 0;
 		try {
 			//@condblock ie6compatibility
-			xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
+			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			//@condend
 			// @cond !ie6compatibility xhr = new XMLHttpRequest();
 			if (data != null) {
 				headers = headers || {};
 				if (!isString(data) && !isNode(data)) { // if data is parameter map...
-					each(data, function processParam(paramName, paramValue) {
+					body = collect(data, function processParam(paramName, paramValue) {
 						if (isList(paramValue))
-							each(paramValue, function(v) {processParam(paramName, v);});
+							return collect(paramValue, function(v) {return processParam(paramName, v);});
 						else
-							s.push(encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : ''));
-					});
-					body = s.join('&');
+							return encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : '');
+					}).join('&');
 				}
 				if (!/post/i.test(method)) {
 					url += '?' + body;
 					body = null;
 				}
-				else if (!isNode(data) && !headers[ContentType])
-					headers[ContentType] = isString(data) ?  'text/plain; charset="UTF-8"' : 'application/x-www-form-urlencoded';
+				else if (!isNode(data) && !isString(data) && !headers[ContentType])
+					headers[ContentType] = 'application/x-www-form-urlencoded';
 			}
 			
 			xhr.open(method, url, true, username, password);
@@ -2213,7 +2255,7 @@ window['MINI'] = (function() {
     * @return the JSON string
     */
     // @condblock ie7compatibility
-    'toJSON': json ? json.stringify : function toJSON(value) {
+    'toJSON': _window.JSON ? _window.JSON.stringify : function toJSON(value) {
 		if (value == null)
 			return ""+value; //result: "null"; toString(value) is not possible, because it returns an empty string for null
 		if (isString(value = value.valueOf))
@@ -2247,7 +2289,7 @@ window['MINI'] = (function() {
 	* @return the resulting JavaScript object. Undefined if not valid.
 	*/
     // @condblock ie7compatibility
-    'parseJSON': json ? json.parse : function (text) {
+    'parseJSON': _window.JSON ? _window.JSON.parse : function (text) {
     	var t = replace(text, /[\x00\xad\u0600-\uffff]/g, ucode); // encode unsafe characters
         if (/^[[\],:{}\s]*$/                  // test that, after getting rid of literals, only allowed characters can be found
 				.test(replace(replace(t , /\\["\\\/bfnrtu]/g),             // remove all escapes
@@ -2291,8 +2333,8 @@ window['MINI'] = (function() {
      * @syntax MINI.setCookie(name, value, dateOrDays)
      * @syntax MINI.setCookie(name, value, dateOrDays, path)
      * @syntax MINI.setCookie(name, value, dateOrDays, path, domain)
-     * Creates a cookie with the given name and value, optional expiration date, path and domain. If there is an an existing cookie
-     * of the same name, will be overwritten with the new value and settings.
+     * Creates, updates or deletes a cookie. If there is an an existing cookie
+     * of the same name, will be overwritten with the new value and settings. Use a 
      *
      * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
      * <pre>
@@ -2302,14 +2344,19 @@ window['MINI'] = (function() {
      *                      365);                                              // store for 365 days
      * </pre>
      * 
-     * @param name the name of the cookie. This should be ideally an alphanumeric name, as it will not be escaped by MINI and this
+     * @example Deletes the cookie "numberOfVisits":
+     * <pre>
+     * MINI.setCookie('numberOfVisits', '', -1);
+     * </pre>
+     * 
+     * @param name the name of the cookie. This should be ideally an alphanumeric name, as it will not be escaped by Minified and this
      *             guarantees compatibility with all systems.
      *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax. 
      * @param value the value of the cookie. All characters except alphanumeric and "*@-_+./" will be escaped using the 
      *              JavaScript escape() function and thus can be used, unless you set the optional dontEscape parameter.
      * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
      *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
-     *                   browser has been closes.
+     *                   browser has been closes. If the number negative or the date in the past, the cookie will be deleted.
      * @param path optional if set, the cookie will be restricted to documents in the given certain path. Otherwise it is valid
      *                       for the whole domain. This is rarely needed.
      * @param domain optional if set, you use it to specify the domain (e.g. example.com) which can read the cookie. If you don't set it,
@@ -2322,7 +2369,7 @@ window['MINI'] = (function() {
     'setCookie': function(name, value, dateOrDays, path, domain, dontEscape) {
 		// @cond debug if (!name) error('Cookie name must be set!');
 		// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
-    	document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
+    	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
     	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(now() + dateOrDays * 86400000)).toUTCString()) : '') + 
     		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
     },
@@ -2355,30 +2402,10 @@ window['MINI'] = (function() {
     'getCookie': function(name, dontUnescape) {
     	// @cond debug if (!name) error('Cookie name must be set!');
     	// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
-    	var regexp, match = (regexp = RegExp('(^|;) *'+name+'=([^;]*)').exec(document.cookie)) && regexp[2];
+    	var regexp, match = (regexp = RegExp('(^|;) *'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
     	return dontUnescape ? match : match && unescape(match);
     },
 
-    /**
-     * @id deletecookie
-     * @module 6
-     * @requires setcookie
-     * @configurable yes
-     * @name deleteCookie()
-     * @syntax MINI.deleteCookie(name)
-     * Deletes the cookie with the given name. If the cookie does not exist, it does nothing.
-     *
-     * @example Deletes the cookie "numberOfVisits":
-     * <pre>
-     * MINI.deleteCookie('numberOfVisits');
-     * </pre>
-     *
-     * @param the cookie's name
-     */
-    'deleteCookie': function(name) {
-    	MINI.setCookie(name, '', -1);
-    },
- 
 	/**
 	* @id loop
 	* @module 7
@@ -2448,75 +2475,82 @@ window['MINI'] = (function() {
 	 * @id ready_init
 	 * @dependency
      */
-    window.onload = function() {
+    // @condblock ie8compatibility
+    _window.onload = function() {
     	triggerDomReady();
         if (DOMREADY_OLD_ONLOAD)
         	DOMREADY_OLD_ONLOAD();
     };
-    // @condblock ie8compatibility
-    if (document.addEventListener)
+    if (_document.addEventListener)
     // @condend
-    	document.addEventListener("DOMContentLoaded", triggerDomReady, false);
-
+    	_document.addEventListener("DOMContentLoaded", triggerDomReady, false);
 	/**
 	 @stop
 	 */
-	return MINI;
-})();
+
+	//// GLOBAL SYMBOLS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @id topleveldollar
+     * @module 8
+     * @requires dollar
+     * @configurable yes
+     * @name $() (shortcut for MINI() )
+     * @syntax $(selector)
+     * Shortcut for MINI().
+     * @example MINI() and $() are interchangeable:
+     * <pre>
+     * $('.myClass').set('$display', 'none');
+     * </pre>
+     * @param selector the selector (see MINI())
+     * @return the result list (see MINI())
+     */
+    _window['$'] =
+    /**
+   	 @stop
+   	 */
+    _window['MINI'] = MINI; 
+    /**
+     * @id topleveldollardollar
+     * @module 8
+     * @requires dollardollar topleveldollar
+     * @doc no
+     * @configurable yes
+     * @name $$() (shortcut for MINI.$$() )
+     * @syntax $$(selector)
+     * Shortcut for MINI.$$().
+     * @example MINI.$$() and $$() are interchangeable:
+     * <pre>
+     * $$('#myCheckbox').checked = false;
+     * </pre>
+     * @param selector the selector (see MINI.$$())
+     * @return the resulting element (see MINI.$$())
+     */
+    _window['$$'] = MINI.$$;
+
+    /**
+     * @id toplevelee
+     * @module 8
+     * @requires el topleveldollar
+     * @doc no
+     * @configurable yes
+     * @name EE() (shortcut for MINI.el() )
+     * @syntax EE(selector)
+     * Shortcut for MINI.el().
+     * @example MINI.el() and EL() are interchangeable:
+     * <pre>
+     * $('#myDiv').add(EE('span', 'This is a text'));
+     * </pre>
+     * @param selector the selector (see MINI.$$())
+     * @return the resulting element (see MINI.$$())
+     */
+    _window['EE'] = MINI.el;
+	/**
+	 @stop
+	 */
+})(window, document);
 
 
-/**
- * @id topleveldollar
- * @module 8
- * @requires dollar
- * @configurable yes
- * @name $() (shortcut for MINI() )
- * @syntax $(selector)
- * Shortcut for MINI().
- * @example MINI() and $() are interchangeable:
- * <pre>
- * $('.myClass').set('$display', 'none');
- * </pre>
- * @param selector the selector (see MINI())
- * @return the result list (see MINI())
- */
-// implementation moved to top
-
-/**
- * @id topleveldollardollar
- * @module 8
- * @requires dollardollar topleveldollar
- * @doc no
- * @configurable yes
- * @name $$() (shortcut for MINI.$$() )
- * @syntax $$(selector)
- * Shortcut for MINI.$$().
- * @example MINI.$$() and $$() are interchangeable:
- * <pre>
- * $$('#myCheckbox').checked = false;
- * </pre>
- * @param selector the selector (see MINI.$$())
- * @return the resulting element (see MINI.$$())
- */
-window['$$'] = $['$$'];
-
-/**
- * @id toplevelee
- * @module 8
- * @requires el topleveldollar
- * @doc no
- * @configurable yes
- * @name EE() (shortcut for MINI.el() )
- * @syntax EE(selector)
- * Shortcut for MINI.el().
- * @example MINI.el() and EL() are interchangeable:
- * <pre>
- * $('#myDiv').add(EE('span', 'This is a text'));
- * </pre>
- * @param selector the selector (see MINI.$$())
- * @return the resulting element (see MINI.$$())
- */
-window['EE'] = $['el'];
 /**
  * @stop 
  */
