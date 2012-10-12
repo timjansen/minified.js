@@ -83,6 +83,9 @@ window.miniTests.push.apply(window.miniTests, [
 			check(sl[0].childNodes[2].nodeType, 3);
 			check(sl[0].childNodes[3].nodeType, 1);
 			check(/^span$/i.test(sl[0].childNodes[3].tagName));
+			
+			sl.add(null);
+			check(sl[0].childNodes.length, 4);
 		}
 	},
 	{

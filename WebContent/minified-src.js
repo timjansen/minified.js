@@ -2448,20 +2448,19 @@
 	*/
 	'loop': function(paintCallback) { 
         var entry = {c: paintCallback, t: now()};
-        var stopFunc = function() {
+        entry.s = function() {
     		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // can't use each() or filter() here, list may be modified during run!!
     			if (ANIMATION_HANDLERS[i] === entry) 
     				ANIMATION_HANDLERS.splice(i--, 1);
-        }; 
-        entry.s = stopFunc;
+        };
         
         if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
 			(function raFunc() {
-				if (each(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, now() - a.t), a.s);}).length) // check len after run, in case the callback invoked stopFunc() 
+				if (each(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, now() - a.t), a.s);}).length) // check len after run, in case the callback invoked stop func
 					REQUEST_ANIMATION_FRAME(raFunc); 
 			})(); 
         } 
-        return stopFunc; 
+        return entry.s; 
     }
  	/**
  	 * @stop

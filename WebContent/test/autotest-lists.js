@@ -115,7 +115,15 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	
-	
+	{
+		name: "MINI().set(null)",
+	 	exec: function() {
+	 		var l = MINI('#container2').add(MINI.el('span', {'@id':'hello'}, 'hello'));
+	 		l.set(null);
+			check(l[0].childNodes.length, 1);
+			check(!l[0].className);
+		}
+	},
 	{
 		name: "MINI().set(name, value)",
 	 	exec: function() {
