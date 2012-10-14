@@ -368,7 +368,7 @@
      * @dependency yes
      */
     function dollarRaw(selector, context, childOnly) { 
-		var parent, steps, dotPos, mainSelector, subSelectors;
+		var parent, steps, dotPos, subSelectors;
 		var elements, regexpFilter, useGEbC, className, elementName, reg;
 
 		function filterElements(retList) {
@@ -404,18 +404,18 @@
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
 			return collect(subSelectors, function(ssi) { return dollarRaw(ssi, parent);});
 
-		if ((steps = selector.split(/\s+/)).length > 1)
-			return dollarRaw(steps.slice(1).join(' '), dollarRaw(steps[0], parent));
+		if (steps = (/(\S+)\s+(.+)$/.exec(selector)))
+			return dollarRaw(steps[2], dollarRaw(steps[1], parent));
 
-		if (/^#/.test(mainSelector = steps[0]))
-			return (elements=_document.getElementById(mainSelector.substr(1))) ? filterElements([elements]) : []; 
+		if (/^#/.test(selector))
+			return (elements=_document.getElementById(selector.substr(1))) ? filterElements([elements]) : []; 
 
-		// @cond debug if (/\s/.test(mainSelector)) error("Selector has invalid format, please check for whitespace.");
-		// @cond debug if (/[ :\[\]]/.test(mainSelector)) error("Only simple selectors with ids, classes and element names are allowed.");
+		// @cond debug if (/\s/.test(selector)) error("Selector has invalid format, please check for whitespace.");
+		// @cond debug if (/[ :\[\]]/.test(selector)) error("Only simple selectors with ids, classes and element names are allowed.");
 
 		parent = parent || _document;
 
-		elementName = (dotPos = mainSelector.match(/([^.]*)\.?([^.]*)/))[1];
+		elementName = (dotPos = /([^.]*)\.?([^.]*)/.exec(selector))[1];
 		className = dotPos[2];
 		elements = (useGEbC = parent.getElementsByClassName && className) ? parent.getElementsByClassName(className) : parent.getElementsByTagName(elementName || '*'); 
 
@@ -425,7 +425,7 @@
 		}
 		// @condend
 		
-		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(mainSelector);
+		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(selector);
 		return childOnly ? filterElements(elements) : elements;
 	};
 	
