@@ -2493,6 +2493,7 @@
      * @id topleveldollar
      * @module 8
      * @requires dollar
+     * @doc no
      * @configurable yes
      * @name $() (shortcut for MINI() )
      * @syntax $(selector)
