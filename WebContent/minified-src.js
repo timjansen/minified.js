@@ -2402,7 +2402,7 @@
     'getCookie': function(name, dontUnescape) {
     	// @cond debug if (!name) error('Cookie name must be set!');
     	// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
-    	var regexp, match = (regexp = RegExp('(^|;) *'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
+    	var regexp, match = (regexp = new RegExp('(^|;) *'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
     	return dontUnescape ? match : match && unescape(match);
     },
 
