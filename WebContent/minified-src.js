@@ -235,6 +235,7 @@
 	 * @dependency yes
 	 * @syntax MINI(selector)
 	 * @syntax MINI(selector, context)
+	 * @syntax MINI(selector, context, childOnly)
 	 * @syntax MINI(function)
 	 * @shortcut $(selector) - Enabled by default, but can be disabled in the builder.
 	 * Uses a CSS-like selector to create an list containing all elements that fulfill the filter conditions. This is the most central function in Minified. The returned 
@@ -322,11 +323,15 @@
 	 *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
 	 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
 	 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
+	 *             The string "*" will return all elements.
 	 *             You can also use a DOM node as selector, it will be returned as a single-element list.  
-	 *             If you pass a list, a shallow copy of the list will be returned.
+	 *             If you pass a list, a shallow copy of the list will be returned. Nulls will be automatically removed from the copy. Nested lists will be flattened
+	 *             so the result only contains elements.
 	 *             If you pass a function, it will be registered using MINI.ready().
 	 * @param context optional an optional selector, DOM node or list of DOM nodes which specifies one or more common ancestor nodes for the selection. 
 	 *             The returned list contains only descendants of the context nodes, all others will be filtered out. 
+	 * @param childOnly optional if set, only direct children of the context nodes are included in the list. If omitted or not true, all descendants of the
+	 *             context will be included. 
 	 * @return the array-like object containing the content specified by the selector. The returned object is guaranteed to
 	 *             have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
 	 *             regular arrays (e.g. list[2] for the second elements). Other Array functions are not guaranteed to be available, but you can use the filter()
@@ -336,9 +341,9 @@
 	 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to a single list. This list will, 
 	 *             as a whole, not be in document order anymore. The array returned has several convenience functions listed below:
 	 */
-	function MINI(selector, context) { 
+	function MINI(selector, context, childOnly) { 
 		// @condblock ready
-		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context));
+		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context, childOnly));
 		// @condend
 		// @cond !ready return new M(dollarRaw(selector, context));
 	}
@@ -362,9 +367,25 @@
      * @requires 
      * @dependency yes
      */
-    function dollarRaw(selector, context) { 
+    function dollarRaw(selector, context, childOnly) { 
 		var parent, steps, dotPos, mainSelector, subSelectors;
 		var elements, regexpFilter, useGEbC, className, elementName, reg;
+
+		function filterElements(retList) {
+			if (!parent)
+				return retList;
+			return filter(retList, function(node) {
+				var a = node;
+				while (a) {
+					if (a.parentNode === parent)
+						return true;
+					if (childOnly)
+						return false;
+					a = a.parentNode;
+				}
+				// fall through to return undef
+			});
+		}
 
 		if (!selector) 
 		    return [];
@@ -375,23 +396,10 @@
 			parent = context[0];
 		}
 		
-		function filterElements(retList) {
-			if (!parent)
-				return retList;
-			return filter(retList, function(node) {
-				var a = node;
-				while (a) {
-					if (a.parentNode === parent)
-						return true;
-					a = a.parentNode;
-				}
-				// fall through to return undef
-			});
-		}
 		if (isNode(selector)  || selector === _window) 
 		    return filterElements([selector]); 
 		if (isList(selector))
-		    return filterElements(collect(selector, function(l){return l;})); // flatten list before filtering
+		    return filterElements(collect(selector, function(l){return l;})); // flatten list before filtering using collect
 
 		// @condblock ie7compatibility
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
@@ -414,12 +422,12 @@
 
 		if (regexpFilter = useGEbC ? elementName : className) {
 			reg = new RegExp(BACKSLASHB +  regexpFilter + BACKSLASHB, 'i'); 
-			return filter(elements, function(l) {return reg.test(l[useGEbC ? 'nodeName' : 'className']);});
+			elements =  filter(elements, function(l) {return reg.test(l[useGEbC ? 'nodeName' : 'className']);});
 		}
-		return elements;
 		// @condend
 		
-		// @cond !ie7compatibility return (parent || _document).querySelectorAll(mainSelector);
+		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(mainSelector);
+		return childOnly ? filterElements(elements) : elements;
 	};
 	
     

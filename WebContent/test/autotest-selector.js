@@ -201,6 +201,15 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
+		name: "MINI(*, context)",
+		exec: function() {
+			var m = MINI("*", "#c");
+			check(m.length, 6);
+			contains(m, document.getElementById("c_b"));
+			contains(m, document.getElementById("c_a"));
+		}
+	},
+	{
 		name: "MINI(id, context)",
 		exec: function() {
 			var m = MINI("#a", "#container");
@@ -212,6 +221,24 @@ window.miniTests.push.apply(window.miniTests, [
 		exec: function() {
 			var m = MINI("div.z", ".x,.n,.m");
 			containsAll(m, [document.getElementById("a_a"), document.getElementById("a_b"), document.getElementById("c_b")], true);
+		}
+	},
+
+	{
+		name: "MINI(*, context, childOnly)",
+		exec: function() {
+			var m = MINI("*", "#c", true);
+			check(m.length, 3);
+			contains(m, document.getElementById("c_b"));
+			contains(m, document.getElementById("c_a"));
+		}
+	},
+
+	{
+		name: "MINI(element name, context, childOnly)",
+		exec: function() {
+			var m = MINI("div", "#c", true);
+			containsAll(m, [document.getElementById("c_a"), document.getElementById("c_b")], true);
 		}
 	},
 
