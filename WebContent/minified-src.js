@@ -376,12 +376,11 @@
 				return retList;
 			return filter(retList, function(node) {
 				var a = node;
-				while (a) {
-					if (a.parentNode === parent)
+				while (a = a.parentNode) {
+					if (a === parent)
 						return true;
 					if (childOnly)
 						return false;
-					a = a.parentNode;
 				}
 				// fall through to return undef
 			});
