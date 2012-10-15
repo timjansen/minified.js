@@ -371,7 +371,8 @@
 		var parent, steps, dotPos, subSelectors;
 		var elements, regexpFilter, useGEbC, className, elementName, reg;
 
-		function filterElements(retList) {
+		function filterElements(list) {
+			var retList = collect(list, function(l){return l;}); // flatten list, remove nulls
 			if (!parent)
 				return retList;
 			return filter(retList, function(node) {
@@ -386,19 +387,12 @@
 			});
 		}
 
-		if (!selector) 
-		    return [];
-
-		if (context != null) { // context set?
-			if ((context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
-				return collect(context, function(ci) { return dollarRaw(selector, ci);});
-			parent = context[0];
-		}
+		if (context && (context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
+			return collect(context, function(ci) { return dollarRaw(selector, ci);});
+		parent = context && context[0];
 		
-		if (isNode(selector)  || selector === _window) 
-		    return filterElements([selector]); 
-		if (isList(selector))
-		    return filterElements(collect(selector, function(l){return l;})); // flatten list before filtering using collect
+		if (!isString(selector))
+		    return filterElements(isList(selector) ? selector : [selector]); 
 
 		// @condblock ie7compatibility
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
@@ -407,8 +401,8 @@
 		if (steps = (/(\S+)\s+(.+)$/.exec(selector)))
 			return dollarRaw(steps[2], dollarRaw(steps[1], parent));
 
-		if (/^#/.test(selector))
-			return (elements=_document.getElementById(selector.substr(1))) ? filterElements([elements]) : []; 
+		if (selector != (subSelectors = replace(selector, /^#/)))
+			return filterElements([_document.getElementById(subSelectors)]); 
 
 		// @cond debug if (/\s/.test(selector)) error("Selector has invalid format, please check for whitespace.");
 		// @cond debug if (/[ :\[\]]/.test(selector)) error("Only simple selectors with ids, classes and element names are allowed.");
