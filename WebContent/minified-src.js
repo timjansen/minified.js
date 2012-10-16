@@ -1807,7 +1807,7 @@
 		 *                'this' is always the element that caused the event.
 		 *                Unless the handler returns true, all further processing of the event will be stopped. 
 		 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
-		 *                is added to the handler in a property called '_M'.
+		 *                is added to the handler in a property called 'M'.
 		 * @param args optional if set an array of arguments to pass to the handler function instead of the event objects
 		 * @param fThis an optional value for 'this' in the handler, as alternative to the event target
 		 * @return the list
@@ -1816,7 +1816,7 @@
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return this.each(function(el) {
-				handler['_M'] = handler['_M'] || function(e) {
+				handler['M'] = handler['M'] || function(e) {
 					var l = _document.documentElement, b = _document.body;
 					e = e || _window.event;
 					// @cond debug try {
@@ -1842,10 +1842,10 @@
 				// @condblock ie8compatibility 
 				if (el.addEventListener)
 				// @condend
-					el.addEventListener(name, handler['_M'], true); // W3C DOM
+					el.addEventListener(name, handler['M'], true); // W3C DOM
 				// @condblock ie8compatibility 
 				else 
-					el.attachEvent('on'+name, handler['_M']);  // IE < 9 version
+					el.attachEvent('on'+name, handler['M']);  // IE < 9 version
 				// @condend
 			});
 		},
@@ -1878,15 +1878,15 @@
      */
 	'off': function (name, handler) {
 		// @cond debug if (!name || !name.substr) error("No name given or name not a string.");
-		// @cond debug if (!handler || !handler['MINI']) error("No handler given or handler invalid.");
+		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
 	   	return this.each(function(el) {
 			// @condblock ie8compatibility 
 			if (el.addEventListener)
 				// @condend
-				el.removeEventListener(name, handler['_M'], true); // W3C DOM
+				el.removeEventListener(name, handler['M'], true); // W3C DOM
 			// @condblock ie8compatibility 
 			else 
-				el.detachEvent('on'+name, handler['_M']);  // IE < 9 version
+				el.detachEvent('on'+name, handler['M']);  // IE < 9 version
 			// @condend
 	   	});
 	},
