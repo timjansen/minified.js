@@ -47,7 +47,6 @@
 	 * @dependency
      */
     var DOMREADY_HANDLER = [];
-    var DOMREADY_OLD_ONLOAD = _window.onload;
 
     /**
      * @id animation_vars
@@ -177,28 +176,15 @@
 		return parseFloat(replace(v, /[^\d.-]/g));
 	}
 	
-	function getNaturalHeight(element) {
-		var elstyle = element.style;
-		var oldStyles = {$position: elstyle.position, $visibility: elstyle.visibility, $display: elstyle.display};
-		$(element).set({$position: 'absolute', $visibility: 'hidden', $display: 'block', $height: null});
-		var h = element.offsetHeight;
-		$(element).set(oldStyles);
+	function getNaturalHeight(elementList) {
+		var q = {$position: 'absolute', $visibility: 'hidden', $display: 'block', $height: null};
+		var oldStyles = elementList.get(q);
+		elementList.set(q);
+		var h = elementList[0].offsetHeight;
+		elementList.set(oldStyles);
 		return h;
 	}
-
-	// careful: only works with simple names (no camel case / hyphens)
-	function getEffectiveStyle(element, name) {
-		var s = element.style[name];
-		if (s != null)
-			return s;
-		// @condblock ie8compatibility 
-		else if (!_window.getComputedStyle)
-			return element.currentStyle[name];
-		// @condend
-		else 
-			return _window.getComputedStyle(element).getPropertyValue(name);
-	}
-
+	
     function now() {
     	return new Date().getTime();
     }
@@ -695,13 +681,66 @@
      'remove': function() {
     	this.each(function(obj) {obj.parentNode.removeChild(obj);});
      },
-	
-    
+
+	/**
+	 * @id get
+	 * @module 1
+	 * @requires dollar
+	 * @configurable yes
+	 * @name list.get()
+	 * @syntax get(name)
+	 * @syntax get(list)
+	 * @syntax get(map)
+	 * Retrieves value from the first list element.
+	 */
+    'get': function(spec) {
+    	var self = this, element = self[0];
+		if (element) {
+			if (isString(spec)) {
+				var name = replace(spec, /^[$@]/);
+				var s, li = MINI(element);
+				var isHidden = /\$\$/.test(spec) && (self.get('$visibility') == 'hidden' || self.get(li, '$display') == 'none');
+				if (spec == '$')
+					return element.className;
+				else if (spec == '$$fade') {
+					return isNaN(s = isHidden ? 0 :
+					// @condblock ie8compatibility
+						  IS_PRE_IE9 ? toNumWithoutUnit(self.get('$filter'))/100 :
+					// @condend
+						  parseFloat(self.get('$opacity')) 
+						 ) ? 1 : s;
+				}
+				else if (spec == '$$slide') {
+					return (isHidden ? 0 : element.offsetHeight) + 'px';
+				}
+				else if (/^\$/.test(spec)) {
+					if ((s = element.style[name]) != null)
+						return s;
+					// @condblock ie8compatibility 
+					else if (!_window.getComputedStyle)
+						return element.currentStyle[name];
+					// @condend
+					else {
+						return _window.getComputedStyle(element).getPropertyValue(replace(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }), 'style-'));
+					}
+				}
+				else if (/^@/.test(spec))
+					return element.getAttribute(name);
+				else
+					return element[name];
+			}
+			var r = {};
+			each(spec, function(name) {
+				r[name] = self.get(name);
+			});
+			return r;
+		}
+	},
 
 	/**
 	 * @id set
 	 * @module 1
-	 * @requires dollar each
+	 * @requires dollar each get
 	 * @configurable yes
 	 * @name list.set()
 	 * @syntax MINI(selector).set(name, value)
@@ -824,7 +863,7 @@
     			 // @condend
     			    	  {$opacity: v})
     			        :
-    			        {$height: /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight(element))  + 'px';},
+    			        {$height: /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
     			         $overflow: 'hidden'}
  					);
     		 }
@@ -833,10 +872,9 @@
     			 self.each(function(obj, c) {
     				 var f = isFunction(value) ? value : defaultFunction;
     				 var nameClean = replace(name, /^[@$]/);
-    				 var isAttr = /^@/.test(name);
     				 var className = obj.className || '';
     				 var newObj = /^\$/.test(name) ? obj.style : obj;
-    				 var newValue = f ? f(name == '$' ? className : isAttr ? newObj.getAttribute(nameClean) : newObj[nameClean], c, obj, value) : value;
+    				 var newValue = f ? f(MINI(obj).get(name), c, obj, value) : value;
     				 if (name == '$') {
     					 each(newValue.split(/\s+/), function(clzz) {
     						 var cName = replace(clzz, /^[+-]/);
@@ -847,7 +885,7 @@
     					 });
     					 obj.className = replace(className, /^\s+|\s+(?=\s|$)/g);
     				 }
-    				 else if (!isAttr)
+    				 else if (!/^@/.test(name))
     					 newObj[nameClean] = newValue;
     				 else if (newValue != null)  
     					 newObj.setAttribute(nameClean, newValue);
@@ -1368,7 +1406,7 @@
 	/**
 	 * @id animate
 	 * @module 7
-	 * @requires loop dollar each set
+	 * @requires loop dollar each set get
 	 * @configurable yes
 	 * @name list.animate()
 	 * @syntax MINI(selector).animate(properties)
@@ -1487,34 +1525,10 @@
 			// find start values
 			self.each(function(li) {
 				var p = {o:MINI(li), s:{}, e:{}}; 
-				each(properties, function(name) {
-					var start, dest = properties[name], listyle = li.style;
-					var nameClean = replace(name, /^[@$]/);
-					// @condblock fadeslide
-					var isHidden = getEffectiveStyle(li, 'visibility') == 'hidden' || getEffectiveStyle(li, 'display') == 'none';
-					if (name == '$$fade') {
-						start = isNaN(start = isHidden ? 0 :
-					// @condblock ie8compatibility
-							          IS_PRE_IE9 ? toNumWithoutUnit(listyle.filter)/100 :
-					// @condend
-							          parseFloat(listyle.opacity) 
-							         ) ? 1 : start;
-					}
-					else if (name == '$$slide') {
-						start = (isHidden ? 0 : li.offsetHeight) + 'px';
-						dest = dest*getNaturalHeight(li) + 'px';
-					}
-					else {
-						// @condend
-						start = /^@/.test(name)? li.getAttribute(nameClean) : (/^\$/.test(name) ? listyle : li)[nameClean] || 0;
-						// @cond debug if (!colorRegexp.test(dest) && isNan(toNumWithoutUnit(dest))) error('End value of "'+name+'" is neither color nor number: ' + toString(dest));
-						// @cond debug if (!colorRegexp.test(p.s[name]) && isNan(toNumWithoutUnit(p.s[name]))) error('Start value of "'+name+'" is neither color nor number: ' + toString(p.s[name]));
-						// @cond debug if (colorRegexp.test(dest) && !colorRegexp.test(p.s[name])) error('End value of "'+name+'" looks like a color, but start value does not: ' + toString(p.s[name]));
-						// @cond debug if (colorRegexp.test(p.s[name]) && !colorRegexp.test(dest)) error('Start value of "'+name+'" looks like a color, but end value does not: ' + toString(dest));
-					// @condblock fadeslide
-					}
-					// @condend
-					p.s[name] = start;
+				each(p.s = p.o.get(properties), function(name, start) {
+					var dest = properties[name];
+					if (name == '$$slide') 
+						dest = dest*getNaturalHeight(p.o) + 'px';
 					p.e[name] = /^[+-]=/.test(dest) ?
 							replaceValue(dest.substr(2), toNumWithoutUnit(start) + toNumWithoutUnit(replace(dest, /\+?=/))) 
 							: dest;
@@ -2404,7 +2418,7 @@
     'getCookie': function(name, dontUnescape) {
     	// @cond debug if (!name) error('Cookie name must be set!');
     	// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
-    	var regexp, match = (regexp = new RegExp('(^|;) *'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
+    	var regexp, match = (regexp = new RegExp('(^|;)\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
     	return dontUnescape ? match : match && unescape(match);
     },
 
@@ -2477,11 +2491,8 @@
 	 * @dependency
      */
     // @condblock ie8compatibility
-    _window.onload = function() {
-    	triggerDomReady();
-        if (DOMREADY_OLD_ONLOAD)
-        	DOMREADY_OLD_ONLOAD();
-    };
+    _window.onload = triggerDomReady;
+
     if (_document.addEventListener)
     // @condend
     	_document.addEventListener("DOMContentLoaded", triggerDomReady, false);
