@@ -1716,12 +1716,12 @@
 	    'wire': function(events, toggles) {
 	    	return this.each(function(li) {
 	    		function select(selector) {
-	    			return $(selector||li, (selector && !/^#/.test(selector))?li:undef);
+	    			return MINI(selector||li, (selector && !/^#/.test(selector))?li:undef);
 	    		}
 	    		function toggleFunc(selector, args) { 
 	    			return isFunction(args) ? [toggles] :
-						isString(args) ? select(selector).toggle(args) :
-						isList(args) ? (isFunction(args[0]) ? args : [proto.toggle.apply(select(selector), args)]) :
+						isString(args) ? [select(selector).toggle(args)] :
+						isList(args) ? (isFunction(args[0]) ? args : [M.prototype.toggle.apply(select(selector), args)]) :
 						collect(args, toggleFunc);
 	    		}
 	    		var e, toggleList = toggleFunc(null, toggles);
