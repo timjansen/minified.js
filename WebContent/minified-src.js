@@ -389,7 +389,7 @@
 
 		if (context && (context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
 			return collect(context, function(ci) { return dollarRaw(selector, ci);});
-		parent = context && context[0];
+		parent = context && context[0]; // note that context may have changed in the previous two lines!! you can't move this line
 		
 		if (!isString(selector))
 		    return filterElements(isList(selector) ? selector : [selector]); 
@@ -2184,6 +2184,7 @@
 							return encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : '');
 					}).join('&');
 				}
+				
 				if (!/post/i.test(method)) {
 					url += '?' + body;
 					body = null;
