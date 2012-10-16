@@ -1,0 +1,9 @@
+<project name="minified" default="main" basedir=".">
+
+  <property name="src" value="WebContent/minified-src.js"/>
+  <target name="main">
+    
+    <script language="javascript" src="build/docwriter.js" />
+  </target>
+
+</project>
