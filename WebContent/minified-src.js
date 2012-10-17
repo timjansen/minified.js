@@ -721,7 +721,7 @@
 						return element.currentStyle[name];
 					// @condend
 					else {
-						return _window.getComputedStyle(element).getPropertyValue(replace(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }), 'style-'));
+						return _window.getComputedStyle(element, null).getPropertyValue(replace(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }), 'style-'));
 					}
 				}
 				else if (/^@/.test(spec))
@@ -2418,7 +2418,7 @@
     'getCookie': function(name, dontUnescape) {
     	// @cond debug if (!name) error('Cookie name must be set!');
     	// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
-    	var regexp, match = (regexp = new RegExp('(^|;)\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
+    	var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
     	return dontUnescape ? match : match && unescape(match);
     },
 
