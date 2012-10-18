@@ -6,6 +6,12 @@
 		#container, #container2 { display: none; }
 		.resultOk { color: #0f0; }
 		.resultFailed { font-weight: bold; color: #f00; }
+		
+		.x { margin-top: 2px; }
+		#b_a { visibility: hidden; }
+		#b_b { display: none; }
+		#c_a { opacity: 0.7; filter: alpha(opacity = 70); }		
+		#c_b { height: 4px; }
 	</style> 
 
 	<script type="text/javascript" src="../minified-src.js"></script>
@@ -103,6 +109,7 @@
 	</script>
 	<script type="text/javascript" src="autotest-element.js"></script>
 	<script type="text/javascript" src="autotest-selector.js"></script>
+	<script type="text/javascript" src="autotest-getset.js"></script>
 	<script type="text/javascript" src="autotest-lists.js"></script>
 	<script type="text/javascript" src="autotest-class.js"></script>
 	<script type="text/javascript" src="autotest-toggle.js"></script>
@@ -122,7 +129,7 @@
 		
 		<hr/>
 		<div id="container">
-			<div id="a" class="x">
+			<div id="a" class="x" style="margin-top: 5px;" title="tititi">
 				<p><b>div id="a" class="x"</b></p>
 				<div id="a_a" class="y z">
 					<p>div id="a_a" class="y z"</p>
