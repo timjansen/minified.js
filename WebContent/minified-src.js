@@ -691,7 +691,32 @@
 	 * @syntax get(name)
 	 * @syntax get(list)
 	 * @syntax get(map)
-	 * Retrieves value from the first list element.
+	 * Retrieves properties, attributes and styles from the list's first element. The syntax to request those values is mostly identical with set(). You can either
+	 * retrieve a single value if you specify only one name, or a name->value map when you specify several names using either an array or a map.
+	 * 
+	 * @example Retrieves the id, title attribute and the background color of the element:
+	 * <pre>
+	 * var id = $('#myElement).get('id'); 
+	 * var title = $('#myElement).get('@title'); 
+	 * var bgColor = $('#myElement).get('$backgroundColor'); 
+	 * </pre>
+	 *
+	 * @example Retrieves the title attribute of the element:
+	 * <pre>
+	 * </pre>
+	 *
+	 * @param name the name of the property, attribute or style. To retrieve a JavaScript property, just use its name without prefix. To get an attribute value,
+	 *                     prefix the name with a '@'. A '$' prefix will retrieve a CSS style. The syntax for the CSS style is camel-case (e.g. "backgroundColor", not "background-color"). 
+     *                     Shorthand properties like "border" or "margin" are not supported. You must use the full name, e.g. "marginTop". Minified will try to determine the effective style
+	 *                     and thus will also return the value set in style sheets if not overwritten using a regular style.
+	 * 	  		Just '$' will retrieve the 'className'
+	 *                     property of the object, a space-separated list of all CSS classes. The name '$$fade' will return a value between 0 and 1 that specifies the element's
+	 *                     opacity. '$$slide' returns the height of the element in pixels, with a 'px' suffix. Both '$$fade' and '$$slide' will also check the CSS styles 'visibility' and 'display'
+	 *                     to determine whether the object is visible at all. If not, they will return 0 or '0px', respectively.
+	 * @param list in order to retrieve more than one value, you can specify several names in an array or list. get() will then return a name->value map of results.
+	 * @param map if you specify an object that it neither list nor string, it will use it as a map of property names. Each property name will be requested. The values of the properties in 
+	 *                   the map will be ignored. get() will then return a name->value map of results.
+	 * @return if a string was specified as parameter, get() returns the corresponding value. If a list or map was given, get() returns a new map with the names as keys and the values as values.
 	 */
     'get': function(spec) {
     	var self = this, element = self[0];
@@ -699,8 +724,8 @@
 		if (element) {
 			if (isString(spec)) {
 				var name = replace(spec, /^[$@]/);
-				var s, li = MINI(element);
-				var isHidden = /\$\$/.test(spec) && (self.get('$visibility') == 'hidden' || self.get(li, '$display') == 'none');
+				var s;
+				var isHidden = /\$\$/.test(spec) && (self.get('$visibility') == 'hidden' || self.get('$display') == 'none');
 				if (spec == '$')
 					return element.className;
 				else if (spec == '$$fade') {
@@ -708,7 +733,7 @@
 					// @condblock ie8compatibility
 						  IS_PRE_IE9 ? toNumWithoutUnit(self.get('$filter'))/100 :
 					// @condend
-						  parseFloat(self.get('$opacity')) 
+						  toNumWithoutUnit(self.get('$opacity')) 
 						 ) ? 1 : s;
 				}
 				else if (spec == '$$slide') {
