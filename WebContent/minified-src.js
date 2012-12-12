@@ -695,6 +695,7 @@
 	 */
     'get': function(spec) {
     	var self = this, element = self[0];
+
 		if (element) {
 			if (isString(spec)) {
 				var name = replace(spec, /^[$@]/);
@@ -714,14 +715,12 @@
 					return (isHidden ? 0 : element.offsetHeight) + 'px';
 				}
 				else if (/^\$/.test(spec)) {
-					if ((s = element.style[name]) != null)
-						return s;
 					// @condblock ie8compatibility 
-					else if (!_window.getComputedStyle)
+					if (!_window.getComputedStyle)
 						return element.currentStyle[name];
 					// @condend
 					else {
-						return _window.getComputedStyle(element, null).getPropertyValue(replace(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }), 'style-'));
+						return _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 					}
 				}
 				else if (/^@/.test(spec))

@@ -35,7 +35,7 @@ window.miniTests.push.apply(window.miniTests, [
 					error = 'Did not get called on expected event';
 			});
 			
-			check(handler._M != null);
+			check(handler.M != null);
 			
 			expect = s;
 			triggerEvent(s, createClick());
