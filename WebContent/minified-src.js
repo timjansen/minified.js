@@ -608,10 +608,8 @@
       *                   seen from the list end. If omitted, all elements to the list end are included.
       * @return a new list containing only the items in the index range. 
       */ 
- 	'sub': function(startIndex, endIndex) {
- 		var s = startIndex < 0 ? this.length+startIndex : startIndex;
- 		var e = endIndex == null ? this.length : endIndex >= 0 ? endIndex : this.length+endIndex;
- 		return this.filter(function(o, index) { return index >= s && index < e; });
+	'sub': function(startIndex, endIndex) {
+ 		return this.filter(function(o, index) { return index >= (startIndex < 0 ? this.length+startIndex : startIndex) && index < (endIndex == null ? this.length : endIndex >= 0 ? endIndex : this.length+endIndex); });
  	},
  	
      
