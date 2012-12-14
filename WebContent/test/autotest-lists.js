@@ -75,7 +75,6 @@ window.miniTests.push.apply(window.miniTests, [
 
 	 		check(r2.sub(-1).length, 1);
 	 		check(r2.sub(-1)[0], 4);
-
 	 		check(r2.sub(-3, -1).length, 2);
 	 		check(r2.sub(-3, -1)[0], 2);
 	 		check(r2.sub(-3, -1)[1], 3);
