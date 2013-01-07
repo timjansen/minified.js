@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+  <title>Impressum - Minified.js</title>
+  <section>about</section>
+  <main><div>
+<h1><a href="http://en.wikipedia.org/wiki/Impressum">Impressum</a> / Legal Notice</h1>
+Responsible for the content on minifiedjs.com and affiliated sites:<br/>
+Tim Jansen<br/>
+Kuehlwetterstr. 47<br/>
+40239 Duesseldorf<br/>
+Germany<br/><br/>
+Mail: tim@t<span style="display: none">got you</span>jansen.de (preferred; use "jarfiller" in the subject to avoid the spam filter)<br/>
+Phone: +49 211 58007050
+  </div>
+ </main>
+
+  
+</page>

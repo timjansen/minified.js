@@ -1,9 +1,21 @@
-<project name="minified" default="main" basedir=".">
+<project name="minified" default="main">
 
   <property name="src" value="WebContent/minified-src.js"/>
-  <target name="main">
-    
+  <target name="processDocs">
     <script language="javascript" src="build/docwriter.js" />
+  </target>
+
+	<target name="processPages">
+		<!-- Root XML files -->
+		<xslt basedir="srcContent/" includes="*.xml" destdir="WebContent/" 
+			style="templates/template.xslt"
+			extension=".html">
+			<classpath location="thirdPartyLibs/saxon-xslt/saxon9he.jar" />
+		</xslt>
+	</target>
+
+	
+  <target name="main" depends="processDocs, processPages">
   </target>
 
 </project>

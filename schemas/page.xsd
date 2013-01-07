@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://tjansen.de/minifiedPage" xmlns:tns="http://tjansen.de/minifiedPage" elementFormDefault="qualified">
+    <element name="page">
+    	<complexType>
+   			<sequence>
+   				<element name="title" type="string" />
+   				<element name="section">
+   					<simpleType>
+   						<restriction base="string">
+   							<enumeration value="home"/>
+   							<enumeration value="download"/>
+   							<enumeration value="build"/>
+   							<enumeration value="tutorial"/>
+   							<enumeration value="reference"/>
+   							<enumeration value="about"/>
+   						</restriction>
+   					</simpleType>
+   				</element>
+   				<element name="main"/>
+   			</sequence>
+   		</complexType>
+    </element>
+</schema>
