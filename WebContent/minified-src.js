@@ -691,6 +691,7 @@
 	 * @configurable yes
 	 * @name list.get()
 	 * @syntax get(name)
+	 * @syntax get(name, toNumber)
 	 * @syntax get(list)
 	 * @syntax get(map)
 	 * Retrieves properties, attributes and styles from the list's first element. The syntax to request those values is mostly identical with set(). You can either
@@ -718,9 +719,12 @@
 	 * @param list in order to retrieve more than one value, you can specify several names in an array or list. get() will then return a name->value map of results.
 	 * @param map if you specify an object that it neither list nor string, it will use it as a map of property names. Each property name will be requested. The values of the properties in 
 	 *                   the map will be ignored. get() will then return a name->value map of results.
+	 * @param toNumber if set to 'true', convert the value into a number and, if it is a string, remove any non-numeric characters. This is useful when you request a CSS property such as "$marginTop" 
+	 *                 that returns a value with a unit suffix, such as "21px". get() will then convert it into a number and return 21. If the returned value is not parsable as a
+	 *                 numeric, NaN will be returned.
 	 * @return if a string was specified as parameter, get() returns the corresponding value. If a list or map was given, get() returns a new map with the names as keys and the values as values.
 	 */
-    'get': function(spec) {
+    'get': function(spec, toNumber) {
     	var self = this, element = self[0];
 
 		if (element) {
@@ -729,9 +733,9 @@
 				var s;
 				var isHidden = /\$\$/.test(spec) && (self.get('$visibility') == 'hidden' || self.get('$display') == 'none');
 				if (spec == '$')
-					return element.className;
+					s = element.className;
 				else if (spec == '$$fade') {
-					return isNaN(s = isHidden ? 0 :
+					s = isNaN(s = isHidden ? 0 :
 					// @condblock ie8compatibility
 						  IS_PRE_IE9 ? toNumWithoutUnit(self.get('$filter'))/100 :
 					// @condend
@@ -739,21 +743,22 @@
 						 ) ? 1 : s;
 				}
 				else if (spec == '$$slide') {
-					return (isHidden ? 0 : element.offsetHeight) + 'px';
+					s = (isHidden ? 0 : element.offsetHeight) + 'px';
 				}
 				else if (/^\$/.test(spec)) {
 					// @condblock ie8compatibility 
 					if (!_window.getComputedStyle)
-						return element.currentStyle[name];
+						s = element.currentStyle[name];
 					// @condend
 					else {
-						return _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
+						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 					}
 				}
 				else if (/^@/.test(spec))
-					return element.getAttribute(name);
+					s = element.getAttribute(name);
 				else
-					return element[name];
+					s = element[name];
+				return toNumber ? toNumWithoutUnit(s) : s;
 			}
 			var r = {};
 			each(spec, function(name) {

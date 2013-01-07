@@ -174,5 +174,14 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 
+	{
+		name: "MINI().get(name, toNumber)",
+	 	exec: function() {
+			check(MINI('#a').get('$marginTop', true), 5);
+			check(MINI('#a_b').get('$marginTop', true), 2);
+			check(MINI('#c').get('$marginTop', true), 0);
+			check(isNaN(MINI('#a').get('@id', true)));
+		}
+	},
 
 ]);
