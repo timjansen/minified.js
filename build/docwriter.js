@@ -18,14 +18,14 @@ function writeFile(file, content) {
 
 // GO!
 
-eval(readFile('WebContent/libs/valentine.min.js'));
+eval(readFile('WebContent/libs/helper.js'));
 eval(readFile('WebContent/parser-src.js'));
 eval(readFile('build/docbuilder.js'));
 
 var src = readFile(project.getProperty('src'));
 
 var sections = parseSourceSections(src);
-v.each(sections, function(sec) {
+hh.each(sections, function(sec) {
 	createDocs(sec);
 	if (sec.doc)
 		print(sec.doc);

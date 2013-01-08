@@ -12,7 +12,7 @@ function createDocs(sec) {
 	if (sec.syntax.length) {
 		s += '<h3>Syntax</h3>\n';
 		s += '<div class="syntaxVariant">\n';
-		v.each(sec.syntax, function(syn) {
+		hh.each(sec.syntax, function(syn) {
 			s += template('<div class="syntax">SYNTAX</div>\n', {SYNTAX: syn});
 		});
 		s += '</div>\n\n';
@@ -21,7 +21,7 @@ function createDocs(sec) {
 	if (sec.params.length) {
 		s += '<h3>Parameters</h3>\n';
 		s += '<dl class="params">\n';
-		v.each(sec.params, function(param) {
+		hh.each(sec.params, function(param) {
 			if (param.name == '@return')
 				s += template('<dt><a name="#PARAMREF">PARAM</a></dt>\n<dd>DESC</dd>\n', 
 						{PARAMREF: sec.id+'_'+param.name, PARAM: param.name, DESC: param.desc});
@@ -37,7 +37,7 @@ function createDocs(sec) {
 	
 	if (sec.example.length) {
 		s += '<div class="examples">\n';
-		v.each(sec.example, function(example) {
+		hh.each(sec.example, function(example) {
 			s += '<h3>Example</h3>\n';
 			s += template('<div class="example">EXAMPLE</div>\n', {EXAMPLE: example});
 		});
@@ -48,8 +48,12 @@ function createDocs(sec) {
 
 function template(tpl, valueMap) {
 	var t = tpl;
-	v.each(valueMap, function(name, value) {
+	hh.each(valueMap, function(name, value) {
 		t = t.replace(new RegExp(name, 'g'), value);
 	});
 	return t;
+}
+
+function createPage(sections) {
+	
 }

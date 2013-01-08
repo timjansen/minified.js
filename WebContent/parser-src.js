@@ -17,7 +17,7 @@ function parseSourceSections(src) {
 	}
 	var currentSection = createSection();
 	var inComment = false;
-	v.each(lines, function(line) {
+	hh.each(lines, function(line) {
 		if (inComment && /^.*\*\/\s*$/.test(line)) // end of comment ("*/")
 			inComment = false;
 		else if (inComment) {
@@ -25,12 +25,12 @@ function parseSourceSections(src) {
 			var tagmatch = l.match(/^\s*@([a-z]+)/);
 			if (tagmatch) { // comment tag found
 				var tag = tagmatch[1];
-				var content = v.trim(l.replace(/^@[a-z]+\s*/, ''));
+				var content = hh.trim(l.replace(/^@[a-z]+\s*/, ''));
 				if (tag == 'syntax' || tag == 'example')
 					currentSection[tag].push(content);
 				else if (tag == 'requires') {
 					if (content.length)
-						v.each(content.split(/\s+/), function(c) {
+						hh.each(content.split(/\s+/), function(c) {
 							currentSection.requires[c] = 1; 
 						});
 				}
@@ -44,7 +44,7 @@ function parseSourceSections(src) {
 					currentSection[tag] = (content != '') ? content : 1;
 			}
 			else if (currentSection.params.length) // parameters reached?
-				currentSection.params[currentSection.params.length-1].desc += '\n' + v.trim(l);
+				currentSection.params[currentSection.params.length-1].desc += '\n' + hh.trim(l);
 			else if (currentSection.example.length) // in examples?
 				currentSection.example[currentSection.example.length-1] += '\n' + l;
 			else // still in main description
@@ -64,7 +64,7 @@ function parseSourceSections(src) {
 // creates a map of all sections by id
 function createSectionMap(sections) {
 	var m = {};
-	v.each(sections, function(section) {
+	hh.each(sections, function(section) {
 		m[section.id] = section;
 	});
 	return m;
@@ -73,12 +73,12 @@ function createSectionMap(sections) {
 // completes dependencies in the sections by adding depencies of dependencies in the sections
 function completeRequirements(sections, sectionMap) {
 	var addedReqs = 0;
-	v.each(sections, function(s) {
-		v.each(s.requires, function(reqId) {
+	hh.each(sections, function(s) {
+		hh.each(s.requires, function(reqId) {
 			var s2 = sectionMap[reqId];
 			if (!s2)
 				throw Error("Unknown id in requirement: \"" + reqId + "\"");
-			v.each(s2.requires, function(reqId2) {
+			hh.each(s2.requires, function(reqId2) {
 				if (!s.requires[reqId2]) {
 					addedReqs++;
 					s.requires[reqId2] = 1;
@@ -89,8 +89,8 @@ function completeRequirements(sections, sectionMap) {
 	if (addedReqs > 0)
 		completeRequirements(sections, sectionMap); // repeat until all requirements complete
 	else // completed: now start reverse search
-		v.each(sections, function(s) {
-			v.each(s.requires, function(t) { 
+		hh.each(sections, function(s) {
+			hh.each(s.requires, function(t) { 
 				sectionMap[t].requiredBy[s.id] = 1;
 			});
 		});
@@ -99,10 +99,10 @@ function completeRequirements(sections, sectionMap) {
 // creates a map (id->1) of all enabled sections plus their dependencies
 function calculateDependencies(sectionMap, enabledSections) {
 	var r = {};
-	v.each(enabledSections, function(s) {
+	hh.each(enabledSections, function(s) {
 		if (enabledSections[s]) {
 			r[s] = 1;
-			v.each(sectionMap[s].requires, function(req) {
+			hh.each(sectionMap[s].requires, function(req) {
 				r[req] = 1;
 			});
 		}
@@ -113,7 +113,7 @@ function calculateDependencies(sectionMap, enabledSections) {
 //creates a map of all configurable sections by id
 function createDefaultConfigurationMap(sections, includeDisabled) {
 	var m = {};
-	v.each(sections, function(section) {
+	hh.each(sections, function(section) {
 		if (section.configurable && (section.configurable != 'disabled' || includeDisabled))
 			m[section.id] = 1;
 	});
@@ -127,10 +127,10 @@ function compile(sections, sectionMap, enabledSections) {
 	var enabledSectionsWithDeps = calculateDependencies(sectionMap, enabledSections);
 	var condBlock = [];
 	var lastLineEmpty = true; // =true: don't allow empty lines at the beginning
-	v.each(v.filter(sections, function(s) {
+	hh.each(hh.filter(sections, function(s) {
 		return enabledSectionsWithDeps[s.id] || !(s.configurable || s.dependency); 
 	}), function(s){
-		v.each(s.src, function(line) {
+		hh.each(s.src, function(line) {
 			if (/^\s*$/.test(line)) { // empty line?
 				if (!lastLineEmpty)
 					src += '\n';
@@ -196,8 +196,8 @@ var CONFIG_ONLY = 'Only sections ';
 
 //Serializes the configuration into a string
 function serializeEnabledSections(sections, enabledSections) {
-	var configurableSections = v.filter(sections, function(s) { return s.configurable; });
-	var enabledSectionList = v.keys(enabledSections).filter(function(s) { return enabledSections[s];});
+	var configurableSections = hh.filter(sections, function(s) { return s.configurable; });
+	var enabledSectionList = hh.keys(enabledSections).filter(function(s) { return enabledSections[s];});
 
 	var head, listedIds = [];
 	if (enabledSectionList.length == configurableSections.length) {
@@ -206,7 +206,7 @@ function serializeEnabledSections(sections, enabledSections) {
 	}
 	else if (enabledSectionList.length > configurableSections.length/2) {
 		head = CONFIG_COMMENT + CONFIG_ALL_EXCEPT;
-		listedIds = v.filter(configurableSections, function(s) { return !enabledSections[s.id]; }).map(function(s) { return s.id; });
+		listedIds = hh.filter(configurableSections, function(s) { return !enabledSections[s.id]; }).map(function(s) { return s.id; });
 	}
 	else {
 		head = CONFIG_COMMENT + CONFIG_ONLY;
@@ -215,7 +215,7 @@ function serializeEnabledSections(sections, enabledSections) {
 	
 	var txt = "// " + CONFIG_START + " use this comment to re-create your build configuration\n" + head;
 	var charsToBreak = 50;
-	v.each(listedIds.sort(), function(id) {
+	hh.each(listedIds.sort(), function(id) {
 		if (charsToBreak < id.length) {
 			charsToBreak = 70;
 			txt += '\n// - ' + id + ', ';
@@ -261,14 +261,14 @@ function deserializeEnabledSections(sections, src) {
 				s = s.replace(/\s*\.\s*$/,'');
 				if (allExceptRegexp.test(s)) {
 					var r = createDefaultConfigurationMap(sections, true);
-					v.each(s.replace(allExceptRegexp, '').split(/\s*,\s*/), function(section) {
+					hh.each(s.replace(allExceptRegexp, '').split(/\s*,\s*/), function(section) {
 						delete r[section];
 					});
 					return r;
 				}
 				if (onlyRegexp.test(s)) {
 					var r = {};
-					v.each(s.replace(onlyRegexp, '').split(/\s*,\s*/), function(section) {
+					hh.each(s.replace(onlyRegexp, '').split(/\s*,\s*/), function(section) {
 						r[section] = 1;
 					});
 					return r;
