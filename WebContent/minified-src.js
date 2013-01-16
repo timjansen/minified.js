@@ -1650,17 +1650,18 @@
 		 *
 		 * @example To toggle CSS classes specify both states:
 		 * <pre>
-		 * var t = $('#myElement').toggle({$: '-myClass1 -myClass2'}, {$: '+myClass1 +myClass2'});
+		 * var t = $('#myElement').toggle({$: '-myClass1 -myClass2 +myClass3'}, {$: '+myClass1 +myClass2 -myClass3'});
 		 * $('#myController').on('click', t);
 		 * </pre>
 		 *
-		 * @example There is a shortcut for toggling CSS classes. Just list them unprefixed, space-separated in a string:
+		 * @example There is a shortcut for toggling CSS classes. Just list them space-separated in a string and prefix classes that should be enabled in the
+		 *          first state with a '!':
 		 * <pre>
-		 * var t = $('#myElement').toggle('myClass1 myClass2');
+		 * var t = $('#myElement').toggle('myClass1 myClass2 !myClass3');
 		 * </pre>
 		 * 
-		 * @param cssClasses a string containing space-separated CSS class names that will be toggled. For the initial state, the classes will be
-		 *                   removed. For the second state, the classes will be added.
+		 * @param cssClasses a string containing space-separated CSS class names that will be toggled. By default classes are disabled in the first state
+		 *                   and enabled in the second. Prefix class names with '!' to start with the second.
 		 * @param state1 a property map describing the initial state of the properties. The properties will automatically be set when the
 		 *                   toggle() function is created. The property names use the set() syntax ('@' prefix for attributes, '$' for styles). 
 		 *                   For animation, values must be either numbers, numbers with
@@ -1680,8 +1681,8 @@
 			var state = false, stop, regexg = /\b(?=\w)/g;
 			var self = this;
 
-			return isString(state1) && !state2 ?
-				self.toggle(replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
+			return !state2 ?
+				self.toggle(replace(replace(state1, regexg, '-'), '!-', '+'), replace(replace(state1, regexg, '+'), '!+', '-')) :			
 				self.set(state1) && 
 			    function(newState) {
 					if (newState === state) 

@@ -1,6 +1,6 @@
 window.miniTests.push.apply(window.miniTests, [
   	{
-		name:'hasClass()',
+		name:'MINI().hasClass()',
 		exec: function() {
 			var s1, s3;
 			$('#container2').add(s1 = MINI.el('div', {'className': 'a b c d e'}))
@@ -17,7 +17,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'set("$", "-")',
+		name:'MINI().set("$", "-")',
 		exec: function() {
 			var s1 = MINI.el('div', {'className': 'a b c d e'})[0];
 			var m = MINI(s1);
@@ -38,7 +38,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'set("$", "+")',
+		name:'MINI().set("$", "+")',
 		exec: function() {
 			var s1 = MINI.el('div')[0];
 			var s2 = MINI.el('div', {'className':''})[0];
@@ -64,7 +64,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'set("$", "class")',
+		name:'MINI().set("$", "class")',
 		exec: function() {
 			var s1 = MINI.el('div', {'className': 'a b c'})[0];
 			var s2 = MINI.el('div')[0];
@@ -87,7 +87,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'set("$", mix)',
+		name:'MINI().set("$", mix)',
 		exec: function() {
 			var s1 = MINI.el('div', {'className': 'a b c'})[0];
 			var s2 = MINI.el('div')[0];

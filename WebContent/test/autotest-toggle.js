@@ -1,27 +1,27 @@
 window.miniTests.push.apply(window.miniTests, [
 	{
-		name:'toggle(classNames)',
+		name:'MINI().toggle(classNames)',
 		exec: function() {
 			var s1 = MINI.el('div')[0];
 			var s2 = MINI.el('div', {'className':'a b c d'})[0];
-			var t = MINI([s1, s2]).toggle('b d');
-			check(s1.className, '');
-			check(s2.className, 'a c');
+			var t = MINI([s1, s2]).toggle('b d !e');
+			check(s1.className, 'e');
+			check(s2.className, 'a c e');
 			t();
 			check(s1.className, 'b d');
 			check(s2.className, 'a c b d');
 			t();
-			check(s1.className, '');
-			check(s2.className, 'a c');
+			check(s1.className, 'e');
+			check(s2.className, 'a c e');
 			t(1);
 			check(s1.className, 'b d');
 			check(s2.className, 'a c b d');
 			t(null);
-			check(s1.className, '');
-			check(s2.className, 'a c');
+			check(s1.className, 'e');
+			check(s2.className, 'a c e');
 			t(false);
-			check(s1.className, '');
-			check(s2.className, 'a c');
+			check(s1.className, 'e');
+			check(s2.className, 'a c e');
 			t(true);
 			check(s1.className, 'b d');
 			check(s2.className, 'a c b d');
@@ -29,21 +29,21 @@ window.miniTests.push.apply(window.miniTests, [
 			check(s1.className, 'b d');
 			check(s2.className, 'a c b d');
 			t();
-			check(s1.className, '');
-			check(s2.className, 'a c');
+			check(s1.className, 'e');
+			check(s2.className, 'a c e');
 			t(true);
 			check(s1.className, 'b d');
 			check(s2.className, 'a c b d');
 			t(false);
-			check(s1.className, '');
-			check(s2.className, 'a c');
+			check(s1.className, 'e');
+			check(s2.className, 'a c e');
 			t();
 			check(s1.className, 'b d');
 			check(s2.className, 'a c b d');
 		}
 	},
 	{
-		name:'toggle(attributes and styles)',
+		name:'MINI().toggle(attributes and styles)',
 		exec: function() {
 			var s1 = MINI.el('div', {'@title':'init', $display: 'none'})[0];
 			var s2 = MINI.el('div', {})[0];
