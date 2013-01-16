@@ -60,8 +60,7 @@
 	
 	/**
 	 * @id ie8compatibility
-	 * @requires ie7compatibility 
-	 * @module 9
+	 * @module OPTIONS
 	 * @configurable yes
 	 * @doc no
 	 * @name Backward-Compatibility for IE8 and similar browsers
@@ -74,7 +73,7 @@
 	/**
 	 * @id ie7compatibility
 	 * @requires ie8compatibility 
-	 * @module 9
+	 * @module OPTIONS
 	 * @configurable yes
 	 * @doc no
 	 * @name Backward-Compatibility for IE7 and similar browsers
@@ -94,7 +93,7 @@
 	/**
 	 * @id ie6compatibility
 	 * @requires ie7compatibility 
-	 * @module 9
+	 * @module OPTIONS
 	 * @configurable yes
 	 * @doc no
 	 * @name Backward-Compatibility for IE6 and similar browsers
@@ -105,7 +104,7 @@
 	/**
 	 * @id fadeslide
 	 * @requires animate set 
-	 * @module 7
+	 * @module ANIMATION
 	 * @configurable yes
 	 * @doc no
 	 * @name Support for $$fade and $$slide
@@ -216,9 +215,10 @@
     
 	/**
 	 * @id dollar
-	 * @module 1
+	 * @module SELECTORS
 	 * @requires dollarraw addelementlistfuncsstart
 	 * @dependency yes
+	 * @name MINI()
 	 * @syntax MINI(selector)
 	 * @syntax MINI(selector, context)
 	 * @syntax MINI(selector, context, childOnly)
@@ -336,7 +336,7 @@
 	
 	/**
 	 * @id debug
-	 * @module 9
+	 * @module OPTIONS
 	 * @configurable no
 	 * @doc no
 	 * @name Debugging Support
@@ -423,9 +423,9 @@
 		
 		/**
 		 * @id listraw
-		 * @module 1
+		 * @module SELECTORS
 		 * @requires dollar
-		 * @name list.raw
+		 * @name .raw
 		 * @syntax raw
 		 * Returns the creation object of this list, either an Array, a NodeList or another MINI list. 
 		 * This is mostly useful after calling filter(), as only then it is guaranteed to be an Array.
@@ -438,9 +438,9 @@
 		
 		/**
 		 * @id listlength
-		 * @module 1
+		 * @module SELECTORS
 		 * @requires dollar
-		 * @name list.length
+		 * @name .length
 		 * @syntax length
 		 * Contains the number of elements in the list.
 		 * 
@@ -466,10 +466,10 @@
 	each({
     /**
      * @id each
-     * @module 1
+     * @module SELECTORS
      * @requires dollar
      * @configurable yes
-     * @name list.each()
+     * @name .each()
      * @syntax each(callback)
      * Invokes the given function once for each item in the list. The function will be calles with the item as first parameter and the zero-based index as second.
      *
@@ -490,10 +490,10 @@
 	
 	/**
 	 * @id filter
-	 * @module 1
+	 * @module SELECTORS
 	 * @requires dollar
 	 * @configurable yes
-	 * @name list.filter()
+	 * @name .filter()
 	 * @syntax filter(filterFunc)
 	 * Creates a new list that contains only those items approved by the given function. The function is called once for each item. 
 	 * If it returns true, the item is in the returned list, otherwise it will be removed.
@@ -524,10 +524,10 @@
 	
 	/** 
      * @id collect 
-     * @module 1 
+     * @module SELECTORS 
      * @requires dollar 
      * @configurable yes 
-     * @name list.collect() 
+     * @name .collect() 
      * @syntax collect(collectFunc) 
      * @syntax collect(collectFunc, resultList) 
      * Creates a new list from the current list using given callback function. 
@@ -580,10 +580,10 @@
 	
      /** 
       * @id sub
-      * @module 1 
+      * @module SELECTORS 
       * @requires filter 
       * @configurable yes 
-      * @name list.sub() 
+      * @name .sub() 
       * @syntax sub() 
       * Returns a new list containing only the element in the specified range. If there are no elements in the range, an empty list is returned.
       *
@@ -619,10 +619,10 @@
      
     /** 
      * @id find 
-     * @module 1 
+     * @module SELECTORS 
      * @requires
      * @configurable yes 
-     * @name list.find() 
+     * @name .find() 
      * @syntax find(findFunc) 
      * Allows you to find a specific value in the list. To do this, find() calls the given function for each list element until the function returns a value that is not null or undefined.
      * This value will be returned.
@@ -644,10 +644,10 @@
 	
     /** 
      * @id hasclass 
-     * @module 1 
+     * @module SELECTORS 
      * @requires find
      * @configurable yes 
-     * @name list.hasClass() 
+     * @name .hasClass() 
      * @syntax hasClass(className) 
      * Checks whether at least one element in the list has the given class name. If yes, the first element that matches is returned. Otherwise
      * the function returns undefined.
@@ -668,10 +668,10 @@
 	
 	/**
 	 * @id listremove
-	 * @module 1
+	 * @module SELECTORS
 	 * @requires dollar each
 	 * @configurable yes
-	 * @name list.remove()
+	 * @name .remove()
 	 * @syntax remove()
 	 * Removes all nodes of the list from the DOM tree.
 	 * 
@@ -686,10 +686,10 @@
 
 	/**
 	 * @id get
-	 * @module 1
+	 * @module SELECTORS
 	 * @requires dollar
 	 * @configurable yes
-	 * @name list.get()
+	 * @name .get()
 	 * @syntax get(name)
 	 * @syntax get(name, toNumber)
 	 * @syntax get(list)
@@ -749,10 +749,10 @@
 					// @condblock ie8compatibility 
 					if (!_window.getComputedStyle)
 						s = element.currentStyle[name];
+					else 
 					// @condend
-					else {
 						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
-					}
+					
 				}
 				else if (/^@/.test(spec))
 					s = element.getAttribute(name);
@@ -770,10 +770,10 @@
 
 	/**
 	 * @id set
-	 * @module 1
+	 * @module SELECTORS
 	 * @requires dollar each get
 	 * @configurable yes
-	 * @name list.set()
+	 * @name .set()
 	 * @syntax MINI(selector).set(name, value)
 	 * @syntax MINI(selector).set(properties)
 	 * @syntax MINI(selector).set(cssClasses)
@@ -931,10 +931,10 @@
  	
 	/**
 	 * @id append
-	 * @module 1
+	 * @module SELECTORS
 	 * @requires set
 	 * @configurable yes
-	 * @name append()
+	 * @name .append()
 	 * @syntax MINI(selector).append(name, value)
 	 * @syntax MINI(selector).append(properties)
 	 * Appends strings to properties or attributes of list items. append() works mostly like set() and supports the same syntax for properties, but instead of
@@ -957,10 +957,10 @@
 
 	/**
 	 * @id prepend
-	 * @module 1
+	 * @module SELECTORS
 	 * @requires set
 	 * @configurable yes
-	 * @name prepend()
+	 * @name .prepend()
 	 * @syntax MINI(selector).prepend(name, value)
 	 * @syntax MINI(selector).prepend(properties)
 	 * Prepends strings to properties or attributes of list items. prepend() works mostly like set() and supports the same syntax for properties, but instead of
@@ -984,10 +984,10 @@
 	
 	/**
 	 * @id listadd
-	 * @module 2
+	 * @module ELEMENT
 	 * @requires dollar each
 	 * @configurable yes
-	 * @name list.add()
+	 * @name .add()
 	 * @syntax MINI(selector).add(text)
 	 * @syntax MINI(selector).add(callbackFunction)
 	 * @syntax MINI(selector).add(elementContent)
@@ -1070,10 +1070,10 @@
 	
 	/**
 	 * @id listfill
-	 * @module 2
+	 * @module ELEMENT
 	 * @requires dollar each
 	 * @configurable yes
-	 * @name list.fill()
+	 * @name .fill()
 	 * @syntax MINI(selector).fill()
 	 * @syntax MINI(selector).fill(text)
 	 * @syntax MINI(selector).fill(callbackFunction)
@@ -1142,10 +1142,10 @@
 
 	/**
 	 * @id listaddbefore
-	 * @module 2
+	 * @module ELEMENT
 	 * @requires dollar
 	 * @configurable yes
-	 * @name list.addBefore()
+	 * @name .addBefore()
 	 * @syntax MINI(selector).addBefore(text)
 	 * @syntax MINI(selector).addBefore(callbackFunction)
 	 * @syntax MINI(selector).addBefore(elementContent)
@@ -1209,10 +1209,10 @@
 	
 	/**
 	 * @id listaddafter
-	 * @module 2
+	 * @module ELEMENT
 	 * @requires dollar
 	 * @configurable yes
-	 * @name list.addAfter()
+	 * @name .addAfter()
 	 * @syntax MINI(selector).addAfter(text)
 	 * @syntax MINI(selector).addAfter(callbackFunction)
 	 * @syntax MINI(selector).addAfter(elementContent)
@@ -1276,10 +1276,10 @@
 	
 	/**
 	 * @id listaddfront
-	 * @module 2
+	 * @module ELEMENT
 	 * @requires dollar
 	 * @configurable yes
-	 * @name list.addFront()
+	 * @name .addFront()
 	 * @syntax MINI(selector).addFront(text)
 	 * @syntax MINI(selector).addFront(callbackFunction)
 	 * @syntax MINI(selector).addFront(elementContent)
@@ -1345,10 +1345,10 @@
 	
 	/**
 	 * @id listreplace
-	 * @module 2
+	 * @module ELEMENT
 	 * @requires dollar
 	 * @configurable yes
-	 * @name list.replace()
+	 * @name .replace()
 	 * @syntax MINI(selector).replace(text)
 	 * @syntax MINI(selector).replace(callbackFunction)
 	 * @syntax MINI(selector).replace(elementContent)
@@ -1436,15 +1436,15 @@
 	
 	/**
 	 * @id animate
-	 * @module 7
+	 * @module ANIMATION
 	 * @requires loop dollar each set get
 	 * @configurable yes
-	 * @name list.animate()
+	 * @name .animate()
 	 * @syntax MINI(selector).animate(properties)
 	 * @syntax MINI(selector).animate(properties, durationMs)
 	 * @syntax MINI(selector).animate(properties, durationMs, linearity)
 	 * @syntax MINI(selector).animate(properties, durationMs, linearity, callback)
-	 * @shortcut $(selector).animate(properties, durationMs, linearity, callback) - Enabled by default, but can be disabled in the builder.
+	 * @syntax MINI(selector).animate(properties, durationMs, linearity, callback, state)
 	 * Animates the items of the list by modifying their properties, CSS styles and attributes. animate() can work with numbers, strings that contain exactly one
 	 * number and which may also contain units or other text, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
 	 *
@@ -1528,11 +1528,12 @@
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.
 	 * @param callback optional if given, this function(list) will be invoked the list as parameter when the animation finished
 	 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0.
-	 * @param state optional if set, the animation will write information about is state in this object. As soon as the animation starts (after the delay),
-	 *                       it will write a MINI.loop() stop() function in the property state.stop and set state.time to the milliseconds that have
+	 * @param state optional if set, the animation controller will write information about its state in this object. When animate() returns,
+	 *                       there will be a MINI.loop() stop() function in the property state.stop. The property state.time will be continously updated
+	 *                       while the animation is running and contains the number of milliseconds that have
 	 *                       passed from the start until the last invocation of the animation loop, describing the progress of the animation. When the function
 	 *                       has a delay, state.time will return 0 during the delay.
-	 *                       If the animation finished, it will write null to state.time. state.stop will remain unmodified after the animation end. 
+	 *                       If the animation finished, controller writes null into state.time. state.stop will remain unmodified during the whole time. 
 	 * @return the list
 	 */
 	'animate': function (properties, durationMs, linearity, callback, delayMs, state) {
@@ -1610,10 +1611,10 @@
 		
 		/**
 		 * @id toggle
-		 * @module 7
+		 * @module ANIMATION
 		 * @requires animate set
 		 * @configurable yes
-		 * @name list.toggle()
+		 * @name .toggle()
 		 * @syntax MINI(selector).toggle(cssClasses)
 		 * @syntax MINI(selector).toggle(state1, state2)
 		 * @syntax MINI(selector).toggle(state1, state2, durationMs)
@@ -1701,10 +1702,10 @@
 
 		/**
 		 * @id wire
-		 * @module 7
+		 * @module ANIMATION
 		 * @requires toggle liston each set
 		 * @configurable yes
-		 * @name list.wire()
+		 * @name .wire()
 		 * @syntax MINI(selector).wire(events, toggles)
 		 * @shortcut $(selector).wire(events, toggles) - Enabled by default, but can be disabled in the builder.
 		 * 
@@ -1749,13 +1750,26 @@
 		 *                   [{$color: 'red'}, {$color: 'blue'}]);
 		 * </pre>
 		 * 
-		 * @example Wires a dropdown menu.
+		 * @example Wires a dropdown menu. Its toggle modifies the CSS class of the 'dropdown.
 		 * <pre>
 		 * $('.dropdown').wire({'.head': 'click', '.closeButton': '-click'} , [{$: '-shown'}, {$: '+shown'}]);
 		 * </pre>
 		 * 
-		 * @param events 
-		 * @param toggles
+		 * @example wire() also supports single strings as argument for the toggle to modify only CSS classes. The following
+		 *          example does the same as the preceding one.
+		 * <pre>
+		 * $('.dropdown').wire({'.head': 'click', '.closeButton': '-click'} , 'shown');
+		 * </pre>
+		 * 
+		 * @param events either a simple string if the list element is the only element to wire. Then it contains a space-separated list of event names (e.g. 'click', 'mouseover').
+		 *               By default the event toggles, unless it is prefixed with a '-' or '+'. If prefixed, the event will set the toggle to the first state for '-' or the
+		 *               or the second state for '+'.
+		 *               Alternatively, events can contain a map of selectors as keys which describe the triggering element and values that describe the events using the string
+		 *               syntax shown above. Selectors are executed in the list element's context, unless they start with a '#'.
+		 * @param toggles describes the toggle functions that will be triggered by the events. This parameter can be a single toggle function, a list of toggle functions,
+		 *                a list of parameters for toggle() which will be used to create a new toggle, a string that will be used as single parameter for toggle(),
+		 *                or a map whose keys are selector describing the elements to toggle and whose values describe the toggle using any of the previous ways to
+		 *                define a toggle.
 		 * @return the list
 		 */
 	    'wire': function(events, toggles) {
@@ -1781,10 +1795,10 @@
 	
 		/**
 		 * @id liston
-		 * @module 5
+		 * @module EVENTS
 		 * @requires dollar each
 		 * @configurable yes
-		 * @name list.on()
+		 * @name .on()
 		 * @syntax MINI(selector).on(el, name, handler)
 		 * @syntax MINI(selector).on(el, name, handler, args)
 		 * @syntax MINI(selector).on(el, name, handler, args, fThis)
@@ -1883,10 +1897,10 @@
 		
 	/**
 	 * @id listoff
-	 * @module 5
+	 * @module EVENTS
 	 * @requires dollar liston each
 	 * @configurable yes
-	 * @name list.off()
+	 * @name .off()
 	 * @syntax MINI.off(element, name, handler)
 	 * Removes the event handler. The call will be ignored if the given handler has not registered using on().
 	 * 
@@ -1924,10 +1938,10 @@
 	
     /**
 	 * @id serialize
-	 * @module 3
+	 * @module REQUEST
 	 * @requires each
 	 * @configurable yes
-	 * @name list.serialize()
+	 * @name .serialize()
 	 * @syntax MINI().serialize()
 	 * @syntax MINI().serialize(dataMap)
 	 * Creates a name/value map from the given form. serialize() looks at the list's form elements and writes each element's name into the map,
@@ -1974,10 +1988,10 @@
 	
 	/**
 	 * @id listoffset
-	 * @module 1
+	 * @module SELECTORS
 	 * @requires dollar
 	 * @configurable yes
-	 * @name list.offset()
+	 * @name .offset()
 	 * @syntax MINI(selector).offset()
 	 * @shortcut $(selector).offset() - Enabled by default, unless disabled with "Disable $ and $$" option
 	 * Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, with 0/0 being the upper left corner, independent of the user's
@@ -2013,7 +2027,7 @@
 	each({
     /**
 	 * @id dollardollar
-	 * @module 1
+	 * @module SELECTORS
 	 * @requires dollarraw
 	 * @configurable yes
 	 * @name MINI.$$()
@@ -2038,10 +2052,10 @@
 		
 	/**
 	 * @id el
-	 * @module 2
+	 * @module ELEMENT
 	 * @requires dollardollar set
 	 * @configurable yes
-	 * @name el()
+	 * @name MINI.el()
 	 * @syntax MINI.el(name)
 	 * @syntax MINI.el(name, attributes)
 	 * @syntax MINI.el(name, children)
@@ -2141,9 +2155,9 @@
 	
 	/**
 	* @id request
-	* @module 3
+	* @module REQUEST
 	* @configurable yes
-	* @name request()
+	* @name MINI.request()
 	* @syntax MINI.request(method, url)
 	* @syntax MINI.request(method, url, data)
 	* @syntax MINI.request(method, url, data, onSuccess)
@@ -2273,10 +2287,10 @@
 
 	/**
     * @id tojson
-    * @module 4
+    * @module JSON
     * @requires ucode 
     * @configurable yes
-    * @name toJSON()
+    * @name MINI.toJSON()
     * @syntax MINI.toJSON(value)
     * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, date, boolean or null.
     * If JSON.stringify is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
@@ -2318,10 +2332,10 @@
     
 	/**
 	* @id parsejson
-	* @module 4
+	* @module JSON
 	* @requires ucode
 	* @configurable yes
-	* @name parseJSON()
+	* @name MINI.parseJSON()
 	* @syntax MINI.parseJSON(text)
 	* Parses a string containing JSON and returns the de-serialized object.
 	* If JSON.parse is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
@@ -2351,10 +2365,10 @@
     
 	/**
     * @id ready
-    * @module 5
+    * @module EVENTS
     * @requires ready_vars ready_init
     * @configurable yes
-    * @name ready()
+    * @name MINI.ready()
     * @syntax MINI.ready(handler)
     * Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).
     * On older browsers, it is the same as 'window.onload'. 
@@ -2373,9 +2387,9 @@
    
 	/**
      * @id setcookie
-     * @module 6
+     * @module COOKIE
      * @configurable yes
-     * @name setCookie()
+     * @name MINI.setCookie()
      * @syntax MINI.setCookie(name, value)
      * @syntax MINI.setCookie(name, value, dateOrDays)
      * @syntax MINI.setCookie(name, value, dateOrDays, path)
@@ -2423,10 +2437,10 @@
     
     /**
      * @id getcookie
-     * @module 6
+     * @module COOKIE
      * @requires
      * @configurable yes
-     * @name getCookie()
+     * @name MINI.getCookie()
      * @syntax MINI.getCookie(name)
      * @syntax MINI.getCookie(name, dontUnescape)
      * Tries to find the cookie with the given name and returns it.
@@ -2455,10 +2469,10 @@
 
 	/**
 	* @id loop
-	* @module 7
+	* @module ANIMATION
 	* @requires animation_vars 
 	* @configurable yes
-	* @name loop()
+	* @name MINI.loop()
 	* @syntax MINI.loop(paintCallback)
 	* @syntax MINI.loop(paintCallback, element)
 	* Use this function to run an animation loop. In modern browser that support requestAnimationFrame, the given callback is invoked as often 
@@ -2535,7 +2549,7 @@
 
     /**
      * @id topleveldollar
-     * @module 8
+     * @module SHORTCUTS
      * @requires dollar
      * @doc no
      * @configurable yes
@@ -2556,7 +2570,7 @@
     _window['MINI'] = MINI; 
     /**
      * @id topleveldollardollar
-     * @module 8
+     * @module SHORTCUTS
      * @requires dollardollar topleveldollar
      * @doc no
      * @configurable yes
@@ -2574,7 +2588,7 @@
 
     /**
      * @id toplevelee
-     * @module 8
+     * @module SHORTCUTS
      * @requires el topleveldollar
      * @doc no
      * @configurable yes
