@@ -24,10 +24,14 @@ eval(readFile('build/docbuilder.js'));
 
 var src = readFile(project.getProperty('src'));
 
-var sections = parseSourceSections(src);
+var sections = parseSourceSections(src).filter(function(a) {return (a.name && a.desc && a.doc != 'no');});
 hh.each(sections, function(sec) {
 	createDocs(sec);
-	if (sec.doc)
-		print(sec.doc);
+	createPreview(sec);
+	if (sec.htmldoc)
+		print(sec.htmldoc);
 });
 
+
+// Generate ref overview
+writeFile('srcContent/reference/index.xml', createOverviewPage(sections));

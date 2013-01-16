@@ -7,7 +7,7 @@
 
 	<target name="processPages">
 		<!-- Root XML files -->
-		<xslt basedir="srcContent/" includes="*.xml" destdir="WebContent/" 
+		<xslt basedir="srcContent/" includes="**/*.xml" destdir="WebContent/" 
 			style="templates/template.xslt"
 			extension=".html">
 			<classpath location="thirdPartyLibs/saxon-xslt/saxon9he.jar" />

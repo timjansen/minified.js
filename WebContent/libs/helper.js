@@ -1,5 +1,6 @@
 // Simple list of helper functions
 
+var hh = {};
 (function(hh) {
 
 	function toString(s) { // wrapper for Closure optimization
@@ -87,4 +88,4 @@
 		'keys':keys
 	}, hh);
 	
-})(window['hh'] = {});
+})(hh);

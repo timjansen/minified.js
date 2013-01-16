@@ -1,6 +1,6 @@
 var SRC='minified-src.js';
 
-var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'HTTP REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS', 'OPTIONS'];
+var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS', 'OPTIONS'];
 
 function setUpConfigurationUI(s) {
 	
@@ -78,7 +78,7 @@ function setUpConfigurationUI(s) {
 		});
 		
 		var sectionCheckBox;
-		hh.each(hh.filter(s.sections, function(sec) { return sec.module == i && s.enabledSections[sec.id];}).sort(function(a,b) {
+		hh.each(hh.filter(s.sections, function(sec) { return sec.module == MODULES[i] && s.enabledSections[sec.id];}).sort(function(a,b) {
 			var ha = a.name || a.id, hb = b.name || b.id;
 			if (ha == hb)
 				return 0;

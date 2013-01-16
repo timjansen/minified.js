@@ -32,7 +32,10 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
 <body>
 <div id="head">
 	<div class="container">
-		<img src="img/minified.svg" />
+		<!--[if lte IE 8]><img src='/img/minified.png'><![endif]-->
+		<!--[if gt IE 8]><img src='/img/minified.svg'><![endif]-->
+		<!--[if !IE]> --><img src='/img/minified.svg' /><!-- <![endif]-->
+
 		<div id="topMenu">
 			<a class="{if (/page:page/page:section='home') then 'selected' else 'notSelected'}" href="/">Home</a>
 			<a class="{if (/page:page/page:section='download') then 'selected' else 'notSelected'}" href="/download">Download</a>
