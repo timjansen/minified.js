@@ -47,37 +47,37 @@ function countKeys(map) {
 
 window.miniTests.push.apply(window.miniTests, [
    	{
-		name: "MINI().serialize(empty)",
+		name: "MINI().values(empty)",
 	 	exec: function() {
 	 		createForm();
-	 		check(countKeys(MINI().serialize()), 0);
-	 		check(countKeys(MINI('span').serialize()), 0);
+	 		check(countKeys(MINI().values()), 0);
+	 		check(countKeys(MINI('span').values()), 0);
 		}
 	},
 	{
-		name: "MINI().serialize(1 input)",
+		name: "MINI().values(1 input)",
 	 	exec: function() {
 	 		createForm();
-			var a = MINI("#id3_1").serialize();
+			var a = MINI("#id3_1").values();
 			check(countKeys(a), 1);
 			check(a['i3_1'], 'ttt');
 		}
 	},
 	{
-		name: "MINI().serialize(simple form)",
+		name: "MINI().values(simple form)",
 	 	exec: function() {
 	 		createForm();
-			var a = MINI("#id2").serialize();
+			var a = MINI("#id2").values();
 			check(countKeys(a), 2);
 			check(a['i2_1'], 'bb');
 			check(a['i2_2'], 'bc');
 		}
 	},
 	{
-		name: "MINI().serialize(form+input)",
+		name: "MINI().values(form+input)",
 	 	exec: function() {
 	 		createForm();
-			var a = MINI("#id2, #id3_1").serialize();
+			var a = MINI("#id2, #id3_1").values();
 			check(countKeys(a), 3);
 			check(a['i2_1'], 'bb');
 			check(a['i2_2'], 'bc');
@@ -85,27 +85,27 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name: "MINI().serialize(unchecked)",
+		name: "MINI().values(unchecked)",
 	 	exec: function() {
 	 		createForm();
-			var a = MINI("#id1_5").serialize();
+			var a = MINI("#id1_5").values();
 			check(countKeys(a), 0);
 		}
 	},
 	{
-		name: "MINI().serialize(checked)",
+		name: "MINI().values(checked)",
 	 	exec: function() {
 	 		createForm();
-			var a = MINI("#id1_7").serialize();
+			var a = MINI("#id1_7").values();
 			check(countKeys(a), 1);
 			check(a['i1_7'], 'j');
 		}
 	},
 	{
-		name: "MINI().serialize(multi checkbox)",
+		name: "MINI().values(multi checkbox)",
 	 	exec: function() {
 	 		createForm();
-			var a = MINI("#id1_6a, #id1_6b, #id1_6c").serialize();
+			var a = MINI("#id1_6a, #id1_6b, #id1_6c").values();
 			check(countKeys(a), 1);
 			check(a['i1_6'].length, 2);
 			check(a['i1_6'][0], 'f');
@@ -113,28 +113,28 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name: "MINI().serialize(radio)",
+		name: "MINI().values(radio)",
 	 	exec: function() {
 	 		createForm();
-			var a = MINI("#id1_8a, #id1_8b, #id1_8c").serialize();
+			var a = MINI("#id1_8a, #id1_8b, #id1_8c").values();
 			check(countKeys(a), 1);
 			check(a['i1_8'], 'y');
 		}
 	},	
 	{
-		name: "MINI().serialize(textarea)",
+		name: "MINI().values(textarea)",
 	 	exec: function() {
 	 		createForm();
-			var a = MINI("#id1_9").serialize();
+			var a = MINI("#id1_9").values();
 			check(countKeys(a), 1);
 			check(a['i1_9'], 'abc');
 		}
 	},
 	{
-		name: "MINI().serialize(full form)",
+		name: "MINI().values(full form)",
 	 	exec: function() {
 	 		createForm();
-			var a = MINI("#id1").serialize();
+			var a = MINI("#id1").values();
 			check(countKeys(a), 9);
 			check(a['i1_1'], 'a');
 			check(a['i1_2'].length, 3);

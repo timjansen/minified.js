@@ -1941,45 +1941,45 @@
 	},
 	
     /**
-	 * @id serialize
+	 * @id values
 	 * @module REQUEST
 	 * @requires each
 	 * @configurable yes
-	 * @name .serialize()
-	 * @syntax MINI().serialize()
-	 * @syntax MINI().serialize(dataMap)
-	 * Creates a name/value map from the given form. serialize() looks at the list's form elements and writes each element's name into the map,
+	 * @name .values()
+	 * @syntax MINI().values()
+	 * @syntax MINI().values(dataMap)
+	 * Creates a name/value map from the given form. values() looks at the list's form elements and writes each element's name into the map,
 	 * using the element name as key and the element's value as value. If there is more than one value with the same name, the map will contain an array
 	 * of values. Form element without value will be written with 'null' as value. Form elements without name will be ignored.
 	 *
-	 * Serialize() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
+	 * values() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
 	 * elements will be serialized.
 	 * 
-	 * The map format returned by serialize() is exactly the format used by request().
+	 * The map format returned by values() is exactly the format used by request().
 	 * 
 	 * Please note that when you include an input element more than once, for example by having the input itself and its form in the list, the
 	 * value will be included twice in the list.
 	 *
 	 * @example Serialize a form and send it as request parameters:
 	 * <pre>
-	 * MINI.request('get', '/exampleService', $('#myForm').serialize(), resultHandler);
+	 * MINI.request('get', '/exampleService', $('#myForm').values(), resultHandler);
 	 * </pre>
 	 * 
 	 * @example Serialize only some selected input fields:
 	 * <pre>
-	 * var data = $('#myText, input.myRadios').serialize();
+	 * var data = $('#myText, input.myRadios').values();
 	 * </pre>
 	 * 
 	 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
 	 * @return a map containing name->value pairs as strings. If there is more than one value with the same name,
 	 *         map value is an array of strings
 	 */
-	'serialize': function(data) {
+	'values': function(data) {
 		var r = data || {};
 		this.each(function(el) {
 			var n = el.name, v = toString(el.value), t = el.tagName, y = el.type, o=r[n];
 			if (/form/i.test(t))
-				MINI(el.elements).serialize(r);
+				MINI(el.elements).values(r);
 			else if (n && (!/kbox|dio/i.test(y) || el.checked)) { // short for checkbox, radio
 					if (isList(o))
 						o.push(v);
