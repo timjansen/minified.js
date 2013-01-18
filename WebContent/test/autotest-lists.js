@@ -11,7 +11,6 @@ window.miniTests.push.apply(window.miniTests, [
 			check(cnt, 3);
 		}
 	},
-	
 	{
 		name: "MINI().filter()",
 	 	exec: function() {

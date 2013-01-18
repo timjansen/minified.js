@@ -25,6 +25,32 @@ window.miniTests.push.apply(window.miniTests, [
 			var m = MINI(e);
 			check(m.length, 3);
 			containsAll(m, e);
+			
+	 		var m1 = MINI([document.getElementById("a")]);
+			containsAll(m1, [document.getElementById("a")], true);
+		}
+	},
+	{
+		name: "MINI(null list)",
+		exec: function() {
+			var e = [null, 4, null, 2, null, 3, null];
+			var m = MINI(e);
+			check(m.length, 3);
+			containsAll(m, [4, 2, 3]);
+			
+	 		var m1 = MINI([document.getElementById("a"), null, document.getElementById("b"), null]);
+			containsAll(m1, [document.getElementById("a"), document.getElementById("b")], true);
+
+	 		var m2 = MINI([null]);
+			containsAll(m2, [], true);
+		}
+	},
+	{
+		name: "MINI(nested)",
+		exec: function() {
+			var e = [[[null, 5]], [[[null]]], [[[[1]]]], 4, null, [2, 7, 8], null, 3, null, [99]];
+			var m = MINI(e);
+			containsAll(m, [5, 1, 4, 2, 7, 8, 3, 99]);
 		}
 	},
 	{

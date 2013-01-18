@@ -354,11 +354,11 @@
      * @dependency yes
      */
     function dollarRaw(selector, context, childOnly) { 
-		var parent, steps, dotPos, subSelectors;
-		var elements, regexpFilter, useGEbC, className, elementName, reg;
-
+		function flatten(a) { // flatten list, keep non-lists, remove nulls
+			return isList(a) ? collect(a, flatten) : a; 
+		}
 		function filterElements(list) {
-			var retList = collect(list, function(l){return l;}); // flatten list, remove nulls
+			var retList = flatten(list);
 			if (!parent)
 				return retList;
 			return filter(retList, function(node) {
@@ -372,6 +372,9 @@
 				// fall through to return undef
 			});
 		}
+		
+		var parent, steps, dotPos, subSelectors;
+		var elements, regexpFilter, useGEbC, className, elementName, reg;
 
 		if (context && (context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
 			return collect(context, function(ci) { return dollarRaw(selector, ci);});

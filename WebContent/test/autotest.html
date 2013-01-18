@@ -15,34 +15,35 @@
 		function fail(text) {
 			throw text;
 		}
-		function check(value, expected) {
+
+		function check(value, expected, extraMsg) {
 			var undefined;
 			if (expected === undefined) {
 				if (!value) {
-					if (window.console) console.log("Check for true failed, given:", value);
-					fail("Value '"+value+"' is not true");
+					if (window.console) console.log("Check for true failed, given:", value, extraMsg?extraMsg:'');
+					fail("Value '"+value+"' is not true. " + (extraMsg?extraMsg:''));
 				}
 			}
 			else
 				if (value != expected) {
-					if (window.console) console.log("Check failed, given:", value, " expected:", expected);
-					fail("Value '"+value+"' is not '"+expected+"'");
+					if (window.console) console.log("Check failed, given:", value, " expected:", expected, extraMsg?extraMsg:'');
+					fail("Value '"+value+"' given, but expected '"+expected+"'. " + (extraMsg?extraMsg:''));
 				}
 		}
 		
-		function contains(list, value, checkIdentity) {
+		function contains(list, value, checkIdentity, extraMsg) {
 			for (var i = 0; i < list.length; i++)
 				if (list[i] === value || (!checkIdentity && list[i] == value))
 					return true;
-			throw "Can not find '"+value+"' in list";
+			fail("Can not find '"+value+"' in list. " + extraMsg?extraMsg:'');
 		}
 		
-		function containsAll(list, valueList, checkIdentity) {
-			check(list.length, valueList.length);
-			for (var i = 0; i < valueList.length; i++)
-				contains(list, valueList[i], checkIdentity);
+		function containsAll(list, expectedValueList, checkIdentity) {
+			check(list.length, expectedValueList.length, 'Testing for array length.');
+			for (var i = 0; i < expectedValueList.length; i++)
+				contains(list, expectedValueList[i], checkIdentity, 'Checked index='+i+'.');
 		}
-		
+
 		window.miniTests = [];
 					
 		var testNum = 0;
