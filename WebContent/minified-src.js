@@ -2060,12 +2060,12 @@
 	 * @requires dollardollar set
 	 * @configurable yes
 	 * @name MINI.el()
-	 * @syntax MINI.el(name)
-	 * @syntax MINI.el(name, attributes)
-	 * @syntax MINI.el(name, children)
-	 * @syntax MINI.el(name, attributes, children)
-	 * @shortcul EE(name, attributes, children)
-	 * Creates a new HTML element, optionally with attributes and children, and returns a list containing the DOM HTMLElement.
+	 * @syntax MINI.el(elementName)
+	 * @syntax MINI.el(elementName, attributes)
+	 * @syntax MINI.el(elementName, children)
+	 * @syntax MINI.el(elementName, attributes, children)
+	 * @shortcut EE(elementName, attributes, children)
+	 * Creates a new HTML element, optionally with attributes and children, and returns a MINI list containing the DOM HTMLElement.
 	 * Typically the return value is inserted into the DOM tree using add() or a similar function. 
 	 *
 	 * By default, Minified creates a shortcut called EE for this function.
@@ -2131,13 +2131,7 @@
 	 * var myStylesSpan = EE('span', {$color: "red", $fontWeight: "bold"}, "I'm styled");
 	 * </pre>
 	 * 
-	 * @example Modify an existing element by specifying it instead of the name. Attributes will be added,
-	 *          if children are specified the old ones will be replaced.
-	 * <pre>
-	 * EE(myOldSpan, {'@title':'Some text', $color: "red"}, "The new text");
-	 * </pre>
-	 * 
-	 * @param e the element name to create (e.g. 'div')
+	 * @param elementName the element name to create (e.g. 'div')
 	 * @param attributes optional an object which contains a map of attributes and other values. The syntax is exactly like set(): Attribute values are prefixed with '@',
 	 *                   CSS styles with '$' and regular properties can be set without prefix.
 	 *                   If the attribute value is null, the attribute will omitted (styles and properties can be set to null). 
@@ -2146,13 +2140,13 @@
 	 * @param children optional  an element or a list of elements to add as children. Strings will be converted as text nodes. Lists can be 
 	 *                         nested and will then automatically be flattened. Null elements in lists will be ignored. 
 	 *                         The syntax is exactly like fill().
-	 * @return a list containing the DOM HTMLElement that has been created or modified as only element
+	 * @return a MINI list containing the DOM HTMLElement that has been created or modified as only element
 	 */
-	'el': function(e, attributes, children) {
-		// @cond debug if (!e) error("el() requires the element name."); 
-		// @cond debug if (/:/.test(e)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
+	'el': function(elementName, attributes, children) {
+		// @cond debug if (!elementName) error("el() requires the element name."); 
+		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
 		var nu = _document.documentElement.namespaceURI; // to check whether doc is XHTML
-		var list = MINI(e = isNode(e) ? e : nu ? _document.createElementNS(nu, e) : _document.createElement(e));
+		var list = MINI(nu ? _document.createElementNS(nu, elementName) : _document.createElement(elementName));
 		return  (isList(attributes) || !isObject(attributes)) ? list.add(attributes) : list.set(attributes).add(children); 
 	},
 		
@@ -2186,9 +2180,9 @@
 	* var myRequest = {         // create a request object that can be serialized via JSON
 	*      request: 'register',
 	*      entries: [
-	* {name: 'Joe',
-	*      	job: 'Plumber'
-	* }]};
+	*        {name: 'Joe',
+	*      	    job: 'Plumber'
+	*      }]};
 	* 
 	* function failureHandler() {
 	*   $('#registrationResult').fill('Registration failed');
@@ -2220,7 +2214,8 @@
 	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.
 	* @param username optional username to be used for HTTP authentication, together with the password parameter
 	* @param password optional password for HTTP authentication
-	* @return the XmlHTTPRequest object, after its send() method has been called. You may use this to gather additional information, such as the request's state.
+	* @return the XmlHTTPRequest object. The send() method of the returned object has already been called. You may use the object to gather additional 
+	* information, such as the request's state.
 	*/
 	'request': function (method, url, data, onSuccess, onFailure, headers, username, password) {
 		// @cond debug if (!method) error("request() requires a HTTP method as first argument.");
