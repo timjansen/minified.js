@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>.sub() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-sub">.sub()</a></h3>
+<div class="summary">Returns a new list containing only the element in the specified range.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">sub()</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="sub_startIndex"><a name="sub_startIndex">startIndex</a></dt>
+<dd>the 0-based position of the sub-list start. If negative, the list's length is added and thus it is the position
+seen from the list end.</dd>
+<dt id="sub_endIndex"><a name="sub_endIndex">endIndex</a></dt>
+<dd><span class="optional">optional</span> the 0-based position of the sub-list end. If negative, the list's length is added and thus it is the position
+seen from the list end. If omitted, all elements to the list end are included.</dd>
+<dt id="sub_RETURN" class="returnValue"><a name="sub_RETURN">return value</a></dt>
+<dd>a new list containing only the items in the index range.</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Returns a new list containing only the element in the specified range. If there are no elements in the range, an empty list is returned.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Remove the third to 5th list elements:
+<pre>
+$('#myList li').sub(3, 6).remove();
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Clear all elements but the first:
+<pre>
+$('#myList li').sub(1).fill();
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Changes the class of the last list element:
+<pre>
+$('#myList li').sub(-1).set('+lastItem');
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

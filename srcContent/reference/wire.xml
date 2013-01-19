@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>.wire() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-wire">.wire()</a></h3>
+<div class="summary">
+Sets up events that will trigger the given toggles.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI(selector).wire(events, toggles)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="wire_events"><a name="wire_events">events</a></dt>
+<dd>either a simple string if the list element is the only element to wire. Then it contains a space-separated list of event names (e.g. 'click', 'mouseover').
+By default the event toggles, unless it is prefixed with a '-' or '+'. If prefixed, the event will set the toggle to the first state for '-' or the
+or the second state for '+'.
+Alternatively, events can contain a map of selectors as keys which describe the triggering element and values that describe the events using the string
+syntax shown above. Selectors are executed in the list element's context, unless they start with a '#'.</dd>
+<dt id="wire_toggles"><a name="wire_toggles">toggles</a></dt>
+<dd>describes the toggle functions that will be triggered by the events. This parameter can be a single toggle function, a list of toggle functions,
+a list of parameters for toggle() which will be used to create a new toggle, a string that will be used as single parameter for toggle(),
+or a map whose keys are selector describing the elements to toggle and whose values describe the toggle using any of the previous ways to
+define a toggle.</dd>
+<dt id="wire_RETURN" class="returnValue"><a name="wire_RETURN">return value</a></dt>
+<dd>the list</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">
+Sets up events that will trigger the given toggles.
+
+The first arguments sets up which kind of events will trigger the toggles in what way. There are two ways to specify the events:
+<ul>
+<li>A simple string in the form "eventtype +eventtype -eventtype" adds the space-separated event handlers for each list member. Non-prefixed
+    event types toggle. If prefixed with + or -, they will put the toggles in the first or second state.</li>
+<li>A map allows you to add events to more than one element. They map key specifies the selector to find the element. The map value specifies the
+    events in the form described above.</li>
+</ul>
+
+The second argument describes the toggles that are controlled by the events. If you pass a simple toggle function or a list of toggle function,
+they will be simply called. You can also specify an array of parameters to the toggle() function to create new toggles for each list member.
+The most powerful form of argument is a map containing selectors as first and toggle() arrays as values. This will set up new toggles for each
+list member.
+
+The selectors given in the event and toggle maps are always executed in the context of the current list elements, unless they start with a '#'. In
+the latter case, they will be executes in the document context. If you pass a 0 (or any other value evaluating to false), the value applies to the list
+member itself.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Wires the list members to change the text color of the element 'colorChanger' on click:
+<pre>
+var tog = $('#colorChanger').toggle({$color: 'red'}, {$color: 'blue'});
+$('.clicky').wire('click', tog);
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Wires the list members to change their own text color on click:
+<pre>
+$('.clicky').wire('click', [{$color: 'red'}, {$color: 'blue'}]);
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Wires the list members to change their own text color to blue on mouseover and red otherwise:
+<pre>
+$('.mouseovers').wire('-mouseout +mouseover', [{$color: 'red'}, {$color: 'blue'}]);
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Same mouse over effect as in the previous example, but wires element '#allBlueButton' to change the color of all elements to blue on click:
+<pre>
+$('.mouseovers').wire({'': '-mouseout +mouseover', '#allBlueButton': '+click'}
+                  [{$color: 'red'}, {$color: 'blue'}]);
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Wires a dropdown menu. Its toggle modifies the CSS class of the 'dropdown.
+<pre>
+$('.dropdown').wire({'.head': 'click', '.closeButton': '-click'} , [{$: '-shown'}, {$: '+shown'}]);
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">wire() also supports single strings as argument for the toggle to modify only CSS classes. The following
+         example does the same as the preceding one.
+<pre>
+$('.dropdown').wire({'.head': 'click', '.closeButton': '-click'} , 'shown');
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

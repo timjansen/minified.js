@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>MINI.request() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-request">MINI.request()</a></h3>
+<div class="summary">Initiates a HTTP request (using XmlHTTPRequest) to the given URL.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI.request(method, url)</div>
+<div class="syntax">MINI.request(method, url, data)</div>
+<div class="syntax">MINI.request(method, url, data, onSuccess)</div>
+<div class="syntax">MINI.request(method, url, data, onSuccess, onFailure)</div>
+<div class="syntax">MINI.request(method, url, data, onSuccess, onFailure, headers)</div>
+<div class="syntax">MINI.request(method, url, data, onSuccess, onFailure, headers, username, password)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="request_method"><a name="request_method">method</a></dt>
+<dd>the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data on the server, and 'get' to only request data). Not case sensitive.</dd>
+<dt id="request_url"><a name="request_url">url</a></dt>
+<dd>the server URL to request. May be a relative URL (relative to the document) or an absolute URL. Note that unless you do something
+fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only call URLs on the server your script originates from.</dd>
+<dt id="request_data"><a name="request_data">data</a></dt>
+<dd><span class="optional">optional</span> data to send in the request, either as POST body or as URL parameters. It can be either a map of
+parameters (all HTTP methods), a string (all methods) or a DOM document ('post' only). If the method is 'post', it will be
+sent as body, otherwise appended to the URL. In order to send several parameters with the same name, use an array of values
+in the map. Use null as value for a parameter without value.</dd>
+<dt id="request_onSuccess"><a name="request_onSuccess">onSuccess</a></dt>
+<dd><span class="optional">optional</span> this function will be called when the request has been finished successfully and had the HTTP status 200. Its first argument
+is the text sent by the server.
+You can add an optional second argument, which will contain the XML sent by the server, if there was any.</dd>
+<dt id="request_onFailure"><a name="request_onFailure">onFailure</a></dt>
+<dd><span class="optional">optional</span> this function will be called if the request failed. The first argument is the HTTP status (never 200; 0 if no HTTP request took place),
+the second a status text (or null, if the browser threw an exception) and the third the returned text, if there was
+any (the exception as string if the browser threw it).</dd>
+<dt id="request_headers"><a name="request_headers">headers</a></dt>
+<dd><span class="optional">optional</span> a map of HTTP headers to add to the request. Note that the you should use the proper capitalization of the
+header 'Content-Type', if you set it, because otherwise it may be overwritten.</dd>
+<dt id="request_username"><a name="request_username">username</a></dt>
+<dd><span class="optional">optional</span> username to be used for HTTP authentication, together with the password parameter</dd>
+<dt id="request_password"><a name="request_password">password</a></dt>
+<dd><span class="optional">optional</span> password for HTTP authentication</dd>
+<dt id="request_RETURN" class="returnValue"><a name="request_RETURN">return value</a></dt>
+<dd>the XmlHTTPRequest object. The send() method of the returned object has already been called. You may use the object to gather additional
+information, such as the request's state.</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Initiates a HTTP request (using XmlHTTPRequest) to the given URL. When the request finished, either the onSuccess or the onFailure function
+will be invoked.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Invoke a REST web service and parse the resulting document using JSON:
+<pre>
+MINI.request('get', 'http://service.example.com/weather', {zipcode: 90210}, function(txt) {
+    var json = MINI.parseJSON(txt);
+    $('#weatherResult').fill('Today's forecast is is: ' + json.today.forecast);
+}, function() {
+    $('#weatherResult').fill('The weather service was not available.');
+});
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Send a JSON object to a REST web service:
+<pre>
+var myRequest = {         // create a request object that can be serialized via JSON
+     request: 'register',
+     entries: [
+       {name: 'Joe',
+     	    job: 'Plumber'
+     }]};
+
+function failureHandler() {
+  $('#registrationResult').fill('Registration failed');
+}
+
+MINI.request('post', 'http://service.example.com/directory',
+    MINI.toJSON(myRequest), function(txt) {
+      if (txt == 'OK')
+           $('#registrationResult').fill('Registration succeeded');
+      else
+           failureHandler();
+}, failureHandler);
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

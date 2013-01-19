@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>.fill() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-fill">.fill()</a></h3>
+<div class="summary">Sets the content of the list elements, replacing old content.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI(selector).fill()</div>
+<div class="syntax">MINI(selector).fill(text)</div>
+<div class="syntax">MINI(selector).fill(callbackFunction)</div>
+<div class="syntax">MINI(selector).fill(elementContent)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="fill_text"><a name="fill_text">text</a></dt>
+<dd>a text to set as text node of the list elements</dd>
+<dt id="fill_callbackFunction"><a name="fill_callbackFunction">callbackFunction</a></dt>
+<dd>a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.</dd>
+<dt id="fill_elementContent"><a name="fill_elementContent">elementContent</a></dt>
+<dd>content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
+an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
+this list's first match.</dd>
+<dt id="fill_RETURN" class="returnValue"><a name="fill_RETURN">return value</a></dt>
+<dd>the current list</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node to all elements.
+If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
+to several list items, you need to pass a factory function(element, index) thats creates new instances for each item.
+The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both.
+
+Call fill() without arguments to remove all children from a node.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Using the following HTML:
+<pre>
+&lt;div id="status">Done&lt;/div>
+</pre>
+fill() with a simple string replaces the element's content with the text:
+<pre>
+$('#status').fill('Please Wait..');
+</pre>
+Results in:
+<pre>
+&lt;div id="status">Please Wait..&lt;/div>
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Pass an element to replace the old content with that. Note that an element can only be added to the first match:
+<pre>
+$('#status').fill(EE('span', {'className': 'bold'}, 'Please Wait...'));
+</pre>
+With the previous example's HTML, this would create this:
+<pre>
+&lt;div id="status">&lt;span class='bold'>Please Wait..&lt;/span>&lt;/div>
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">You can also pass a list of elements and texts:
+<pre>
+$('#status').fill(['Here', EE('br'), 'are', EE('br'), 'four', EE('br'), 'lines.]);
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Or a complete structure built using EE:
+<pre>
+$('#myListContainer').fill([EE('h2', 'My List'), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]);
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">If you need to add your list to more than one element, you must add a factory function that re-creates
+             the list for every instance:
+<pre>
+$('.listContainers').fill(function(e, index) { return [EE('h2', 'List Number '+index), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]});
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">fill() without arguments deletes the content of the list elements:
+<pre>
+$('.listContainers').fill();
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

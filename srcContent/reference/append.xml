@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>.append() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-append">.append()</a></h3>
+<div class="summary">Appends strings to properties or attributes of list items.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI(selector).append(name, value)</div>
+<div class="syntax">MINI(selector).append(properties)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="append_name"><a name="append_name">name</a></dt>
+<dd>the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
+A dollar ('$') is used to select a CSS style.</dd>
+<dt id="append_value"><a name="append_value">value</a></dt>
+<dd>the value to append. It will be converted to a string before appending it.
+If it is a function, the function will be invoked for each list element to evaluate the value, exactly like a in set(). Please note that the function's
+return value will not be appended, but will overwrite the existing value.</dd>
+<dt id="append_properties"><a name="append_properties">properties</a></dt>
+<dd>a map containing names as keys and the values to append as map values. See above for the syntax.</dd>
+<dt id="append_RETURN" class="returnValue"><a name="append_RETURN">return value</a></dt>
+<dd>the list</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Appends strings to properties or attributes of list items. append() works mostly like set() and supports the same syntax for properties, but instead of
+overwriting the old values, it reads the old value, converts it to a string and then appends the given value.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Add a link after each h2 headline:
+<pre>
+$('h2').append('outerHTML', '<a href="#toc">Table of Content</a>');
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

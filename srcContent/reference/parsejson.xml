@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>MINI.parseJSON() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-parsejson">MINI.parseJSON()</a></h3>
+<div class="summary">Parses a string containing JSON and returns the de-serialized object.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI.parseJSON(text)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="parsejson_text"><a name="parsejson_text">text</a></dt>
+<dd>the JSON string</dd>
+<dt id="parsejson_RETURN" class="returnValue"><a name="parsejson_RETURN">return value</a></dt>
+<dd>the resulting JavaScript object. Undefined if not valid.</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Parses a string containing JSON and returns the de-serialized object.
+If JSON.parse is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Parsing a JSON string:
+<pre>
+var jsonString = "{name: 'Fruits', roles: ['apple', 'banana', 'orange']}";
+var myObj = MINI.parseJSON(jsonString);
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

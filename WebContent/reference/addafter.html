@@ -1,0 +1,168 @@
+<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="UTF-8"></meta>
+      <title>.addAfter() - Minified.js</title><style type="text/css">
+body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-serif;}
+#head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
+.container { margin: auto; width: 70em; }
+#head .container { height: 2.4em; border-bottom: 1px solid #aaa; padding: 0; }
+#head .container img { height: 2em; float: left; margin: 0.2em 0.5em;} 
+#topMenu { text-align: right;}
+#topMenu a { display: inline-block; height: 1.4em; padding: 0.5em 1em 0.5em; color: black; text-decoration: none; vertical-align: middle;}
+#topMenu a:hover { color: white; background-color: #f80; }
+#topMenu a.selected,  #topMenu a:hover.selected { color: white; background-color: black; }
+#foot .container { height: 2.4em; border-top: 1px solid #aaa; padding: 0; }
+#foot .container p { font-size: smaller; color: #bbb; margin: 0.5em; padding: 0; text-align: left; }
+#foot .container A { color: #888; font-weight: bold; font-size: smaller; }
+#main .container { padding: 1em; }
+</style><script type="text/javascript" src="minified-src.js"></script></head>
+   <body>
+      <div id="head">
+         <div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div>
+         </div>
+      </div>
+      <div id="main">
+         <div class="container">
+            
+            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
+            
+            <h3 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a name="doc-addafter">.addAfter()</a></h3>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="summary">Inserts the given text or element(s) as sibling after each element of this list.</div>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Syntax</h4>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="syntaxVariant">
+               
+               <div class="syntax">MINI(selector).addAfter(text)</div>
+               
+               <div class="syntax">MINI(selector).addAfter(callbackFunction)</div>
+               
+               <div class="syntax">MINI(selector).addAfter(elementContent)</div>
+               
+            </div>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Parameters</h4>
+            
+            <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
+               
+               <dt id="addafter_text"><a name="addafter_text">text</a></dt>
+               
+               <dd>a text to insert as sibling text node after of the list elements</dd>
+               
+               <dt id="addafter_callbackFunction"><a name="addafter_callbackFunction">callbackFunction</a></dt>
+               
+               <dd>a factory function(element, index) that will be invoked for each list element to determine
+                  its content. The function can return either a string for a text node,
+                  an HTML element or a list containing strings and/or HTML elements. As parameters it
+                  receives the current list element and its 0-based index.
+               </dd>
+               
+               <dt id="addafter_elementContent"><a name="addafter_elementContent">elementContent</a></dt>
+               
+               <dd>content to insert <strong>only after the first element</strong> of the list. The content can be a string for a text node,
+                  an HTML element or a list containing strings and/or HTML elements. Note that if you
+                  use a HTML node or an array here, it will only be added once to
+                  this list's first match.
+               </dd>
+               
+               <dt id="addafter_RETURN" class="returnValue"><a name="addafter_RETURN">return value</a></dt>
+               
+               <dd>the current list</dd>
+               
+            </dl>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Description</h4>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="description">Inserts the given text or element(s) as sibling after each element of this list. If
+               a string has been given, it will be added as text node.
+               If you pass an element or a list, it will be inserted <strong>only after of the first element of the list</strong>. In order to add elements
+               to several list items, you need to pass a factory function(element, index) thats creates
+               new instances for each item.
+               The function will be invoked for each element and may return either a string for a
+               text node, a simple HTML element or a list containing both.
+               
+               
+            </div>
+            
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="examples">
+               
+               <h4>Example</h4>
+               
+               <div class="example">Using the following HTML:
+                  <pre>
+&lt;div&gt;
+  <div id="mainText">Here is some text</div>
+&lt;/div&gt;
+</pre>
+                  Use addAfter() with a simple string to add a text node.
+                  <pre>
+$('#mainText').addAfter('Disclaimer: bla bla bla');
+</pre>
+                  This results in the following HTML:
+                  <pre>
+&lt;div&gt;
+  <div id="mainText">Here is some text</div>
+  Disclaimer: bla bla bla
+&lt;/div&gt;
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">You can also pass an element, but note that a node can only be added once to the first
+                  list item, even if the list has more than one item:
+                  <pre>
+$('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
+</pre>
+                  With the previous example's HTML, this would create this:
+                  <pre>
+&lt;div&gt;
+  <div id="mainText">Disclaimer: bla bla bla</div>
+  &lt;span class="disclaimer"&gt;WARNING&lt;/span&gt;
+&lt;/div&gt;
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">Lists of elements and nodes are possible as well. Like nodes, it will only be added
+                  to the first list item.
+                  <pre>
+$('#status').addAfter([EE('hr'), 'Disclaimer']);
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">If you need to add your list to more than one list item, you must add a factory function
+                  that re-creates
+                  the list for every instance:
+                  <pre>
+$('.textSnippets').addAfter(function(e, index) { return [EE('hr'), 'Disclaimer']; });
+</pre>
+                  </div>
+               
+            </div>
+            
+            
+            
+            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
+            	
+         </div>
+      </div>
+      <div id="foot">
+         <div class="container">
+            <p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>.
+               		You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>, but 
+               		don't expect too much.
+               		<a href="/impressum.html">Legal Notice / Impressum</a>.
+            </p>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="UTF-8"></meta>
+      <title>MINI() - Minified.js</title><style type="text/css">
+body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-serif;}
+#head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
+.container { margin: auto; width: 70em; }
+#head .container { height: 2.4em; border-bottom: 1px solid #aaa; padding: 0; }
+#head .container img { height: 2em; float: left; margin: 0.2em 0.5em;} 
+#topMenu { text-align: right;}
+#topMenu a { display: inline-block; height: 1.4em; padding: 0.5em 1em 0.5em; color: black; text-decoration: none; vertical-align: middle;}
+#topMenu a:hover { color: white; background-color: #f80; }
+#topMenu a.selected,  #topMenu a:hover.selected { color: white; background-color: black; }
+#foot .container { height: 2.4em; border-top: 1px solid #aaa; padding: 0; }
+#foot .container p { font-size: smaller; color: #bbb; margin: 0.5em; padding: 0; text-align: left; }
+#foot .container A { color: #888; font-weight: bold; font-size: smaller; }
+#main .container { padding: 1em; }
+</style><script type="text/javascript" src="minified-src.js"></script></head>
+   <body>
+      <div id="head">
+         <div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div>
+         </div>
+      </div>
+      <div id="main">
+         <div class="container">
+            
+            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
+            
+            <h3 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a name="doc-dollar">MINI()</a></h3>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="summary">Uses a CSS-like selector to create an list containing all elements that fulfill the
+               filter conditions.
+            </div>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Syntax</h4>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="syntaxVariant">
+               
+               <div class="syntax">MINI(selector)</div>
+               
+               <div class="syntax">MINI(selector, context)</div>
+               
+               <div class="syntax">MINI(selector, context, childOnly)</div>
+               
+               <div class="syntax">MINI(function)</div>
+               
+            </div>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Parameters</h4>
+            
+            <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
+               
+               <dt id="dollar_selector"><a name="dollar_selector">selector</a></dt>
+               
+               <dd>a simple, CSS-like selector for the elements. It supports '#id' (lookup by id), '.class'
+                  (lookup by class),
+                  'element' (lookup by elements) and 'element.class' (combined class and element). Use
+                  commas to combine several selectors.
+                  You can also separate two (or more) selectors by space to find elements which are
+                  descendants of the previous selectors.
+                  For example, use 'div' to find all div elements, '.header' to find all elements containing
+                  a class name called 'header', and
+                  'a.popup' for all a elements with the class 'popup'. To find all elements with 'header'
+                  or 'footer' class names,
+                  write '.header, .footer'. To find all divs elements below the element with the id
+                  'main', use '#main div'.
+                  The string "*" will return all elements.
+                  You can also use a DOM node as selector, it will be returned as a single-element list.
+                  If you pass a list, a shallow copy of the list will be returned. Nulls will be automatically
+                  removed from the copy. Nested lists will be flattened
+                  so the result only contains elements.
+                  If you pass a function, it will be registered using MINI.ready().
+               </dd>
+               
+               <dt id="dollar_context"><a name="dollar_context">context</a></dt>
+               
+               <dd><span class="optional">optional</span> an optional selector, DOM node or list of DOM nodes which specifies one or more common
+                  ancestor nodes for the selection.
+                  The returned list contains only descendants of the context nodes, all others will
+                  be filtered out.
+               </dd>
+               
+               <dt id="dollar_childOnly"><a name="dollar_childOnly">childOnly</a></dt>
+               
+               <dd><span class="optional">optional</span> if set, only direct children of the context nodes are included in the list. If omitted
+                  or not true, all descendants of the
+                  context will be included.
+               </dd>
+               
+               <dt id="dollar_RETURN" class="returnValue"><a name="dollar_RETURN">return value</a></dt>
+               
+               <dd>the array-like object containing the content specified by the selector. The returned
+                  object is guaranteed to
+                  have a property 'length', specifying the number of elements, and allows you to access
+                  elements with numbered properties, as in
+                  regular arrays (e.g. list[2] for the second elements). Other Array functions are not
+                  guaranteed to be available, but you can use the filter()
+                  function to get a list that is guaranteed to extend Array.
+                  Please note that duplicates (e.g. created using the comma-syntax or several context
+                  nodes) will not be removed. If the selector was a list,
+                  the existing order will be kept. If the selector was a simple selector, the elements
+                  are in document order. If you combined several selectors
+                  using commas, only the individual results of the selectors will keep the document
+                  order, but will then be joined to a single list. This list will,
+                  as a whole, not be in document order anymore. The array returned has several convenience
+                  functions listed below:
+               </dd>
+               
+            </dl>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Description</h4>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="description">Uses a CSS-like selector to create an list containing all elements that fulfill the
+               filter conditions. This is the most central function in Minified. The returned
+               list has a number of functions to work with the list elements.
+               
+               As a special shortcut, if you pass a function to MINI(), it will be registered using
+               MINI.ready() to be executed when the DOM model is complete.
+               
+               The name of this function is MINI(), but by default Minified also creates an alias
+               "$" for it, which should be more convenient and also familiar for most users.
+               
+               
+            </div>
+            
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="examples">
+               
+               <h4>Example</h4>
+               
+               <div class="example">A simple selector to find an element by id.
+                  <pre>
+var l1 = $('#myElementId');
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">You can also pass a reference to an DOM node to the function to receive a list containing
+                  only this node:
+                  <pre>
+var l2 = $(document.getElementById('myElementId'));
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">Lists will be copied:
+                  <pre>
+var l2 = $([elementA, elementB, elementC]);
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">A simple selector to find all elements with the given class.
+                  <pre>
+var l3 = $('.myClass');
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">A selector to find all elements with the given name.
+                  <pre>
+var l4 = $('input'); // finds all input elements
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">A selector to find all elements with the given name and class.
+                  <pre>
+var l5 = $('input.myRadio'); // finds all input elements wit
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">A selector to find all elements that are descendants of the given element.
+                  <pre>
+var l6 = $('#myForm input'); // finds all input elements that are in the element with the id myForm
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">A selector to find all elements with one of the given classes:
+                  <pre>
+var l7 = $('.a, .b'); // finds all elements that have either the class a or class b
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">A selector that finds all elements that are descendants of the element myDivision,
+                  are inside a .myForm class and are input elements:
+                  <pre>
+var l8 = $('#myDivision .myForm input');
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">Using contexts to make it easier to specify ancestors:
+                  <pre>
+var l9 = $('.myRadio', '#formA, #formB, #formC');  // same as $('#formA .myRadio, #formB .myRadio, #formC .myRadio')
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">Using one of the list functions, set(), on the list, and set the element's text color.
+                  '$' at the beginning of the property name is short for 'style.' and thus
+                  sets a CSS value.
+                  <pre>
+$('#myElementId').set('$color', 'red');
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">Most functions return the list you invoked them on, allowing you to chain them:
+                  <pre>
+$('#myForm .myRadio').addClass('uncheckedRadio')
+                              .set('checked', true)
+                              .on('click', function() {
+                                    $(this).set({@: 'uncheckedRadio');
+                               });
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">Using $() as a MINI.ready() shortcut:
+                  <pre>
+$(function() {
+  // work with the DOM tree
+});
+</pre>
+                  </div>
+               
+            </div>
+            
+            
+            
+            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
+            	
+         </div>
+      </div>
+      <div id="foot">
+         <div class="container">
+            <p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>.
+               		You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>, but 
+               		don't expect too much.
+               		<a href="/impressum.html">Legal Notice / Impressum</a>.
+            </p>
+         </div>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>MINI.loop() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-loop">MINI.loop()</a></h3>
+<div class="summary">Use this function to run an animation loop.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI.loop(paintCallback)</div>
+<div class="syntax">MINI.loop(paintCallback, element)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="loop_paintCallback"><a name="loop_paintCallback">paintCallback</a></dt>
+<dd>a callback function(timestamp, stopFunc) to invoke for painting. Parameters given to callback:
+<ul>
+<li>timestamp - number of miliseconds since animation start</li>
+<li>stopFunc - call this function() to stop the currently running animation</li>
+</ul></dd>
+<dt id="loop_RETURN" class="returnValue"><a name="loop_RETURN">return value</a></dt>
+<dd>a function() that, when you invoke it, stops the currently running animation.</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Use this function to run an animation loop. In modern browser that support requestAnimationFrame, the given callback is invoked as often
+as the browser is ready for a new animation frame. The frequency is determined by the browser and may vary depending on factors such as the time needed to render the current page.
+the screen's framerate and whether the page is currently shown to the user (page is the current tab, browser window not minimized etc).
+In older browsers, the callback function will be invoked every 33 milliseconds.
+To stop a running animation loop, either invoke the function that is returned or the function given as second parameter to the callback.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">A animates a div by moving it in a circle.
+<pre>
+  var myDiv = $$('#myAnimatedDiv');
+  var rotationsPerMs = 1000;               // one rotation per second
+  var maxRadius = 100;
+  var d = 3000;                                 // duration in ms
+  MINI.loop(function(t, stopFunc) {
+    if (t > d) {                                   // time is up: call stopFunc()!
+      stopFunc();
+      return;
+    }
+
+    var a = 2 * Math.PI * t / d;                          // angular position
+    var r = maxRadius*sin(t / d * Math.PI);           // radius changes from 0 to 1 back to 0 during the animatio
+    myDiv.style.left = (r * Math.cos(a) + ' px';
+    myDiv.style.top = (r * Math.sin(a) + ' px';
+  });
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

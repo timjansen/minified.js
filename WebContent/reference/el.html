@@ -1,0 +1,204 @@
+<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="UTF-8"></meta>
+      <title>MINI.el() - Minified.js</title><style type="text/css">
+body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-serif;}
+#head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
+.container { margin: auto; width: 70em; }
+#head .container { height: 2.4em; border-bottom: 1px solid #aaa; padding: 0; }
+#head .container img { height: 2em; float: left; margin: 0.2em 0.5em;} 
+#topMenu { text-align: right;}
+#topMenu a { display: inline-block; height: 1.4em; padding: 0.5em 1em 0.5em; color: black; text-decoration: none; vertical-align: middle;}
+#topMenu a:hover { color: white; background-color: #f80; }
+#topMenu a.selected,  #topMenu a:hover.selected { color: white; background-color: black; }
+#foot .container { height: 2.4em; border-top: 1px solid #aaa; padding: 0; }
+#foot .container p { font-size: smaller; color: #bbb; margin: 0.5em; padding: 0; text-align: left; }
+#foot .container A { color: #888; font-weight: bold; font-size: smaller; }
+#main .container { padding: 1em; }
+</style><script type="text/javascript" src="minified-src.js"></script></head>
+   <body>
+      <div id="head">
+         <div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div>
+         </div>
+      </div>
+      <div id="main">
+         <div class="container">
+            
+            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
+            
+            <h3 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a name="doc-el">MINI.el()</a></h3>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="summary">Creates a new HTML element, optionally with attributes and children, and returns a
+               MINI list containing the DOM HTMLElement.
+            </div>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Syntax</h4>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="syntaxVariant">
+               
+               <div class="syntax">MINI.el(elementName)</div>
+               
+               <div class="syntax">MINI.el(elementName, attributes)</div>
+               
+               <div class="syntax">MINI.el(elementName, children)</div>
+               
+               <div class="syntax">MINI.el(elementName, attributes, children)</div>
+               
+            </div>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Parameters</h4>
+            
+            <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
+               
+               <dt id="el_elementName"><a name="el_elementName">elementName</a></dt>
+               
+               <dd>the element name to create (e.g. 'div')</dd>
+               
+               <dt id="el_attributes"><a name="el_attributes">attributes</a></dt>
+               
+               <dd><span class="optional">optional</span> an object which contains a map of attributes and other values. The syntax is exactly
+                  like set(): Attribute values are prefixed with '@',
+                  CSS styles with '$' and regular properties can be set without prefix.
+                  If the attribute value is null, the attribute will omitted (styles and properties
+                  can be set to null).
+                  In order to stay compatible with Internet Explorer 7 and earlier, you should not set
+                  the attributes '@class' and '@style'. Instead
+                  set the property 'className' instead of '@class' and set styles using the '$' syntax.
+               </dd>
+               
+               <dt id="el_children"><a name="el_children">children</a></dt>
+               
+               <dd><span class="optional">optional</span>  an element or a list of elements to add as children. Strings will be converted as
+                  text nodes. Lists can be
+                  nested and will then automatically be flattened. Null elements in lists will be ignored.
+                  The syntax is exactly like fill().
+               </dd>
+               
+               <dt id="el_RETURN" class="returnValue"><a name="el_RETURN">return value</a></dt>
+               
+               <dd>a MINI list containing the DOM HTMLElement that has been created or modified as only
+                  element
+               </dd>
+               
+            </dl>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Description</h4>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="description">Creates a new HTML element, optionally with attributes and children, and returns a
+               MINI list containing the DOM HTMLElement.
+               Typically the return value is inserted into the DOM tree using add() or a similar
+               function.
+               
+               By default, Minified creates a shortcut called EE for this function.
+               
+               The function is namespace-aware and will create XHTML nodes if called in an XHTML
+               document.
+               
+               
+            </div>
+            
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="examples">
+               
+               <h4>Example</h4>
+               
+               <div class="example">Creating a simple &lt;span&gt; element with some text:
+                  <pre>
+var mySpan = EE('span', 'Hello World');
+</pre>
+                  creates this:
+                  <pre>
+ &lt;span&gt;Hello World&lt;/span&gt;
+</pre></div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">Creating a &lt;span&gt; element with style, some text, and append it to the element with
+                  the id 'greetingsDiv':
+                  <pre>
+$('greetingsDiv').add(EE('span', {'@title': 'Greetings'}, 'Hello World'));
+</pre>
+                  creates this:
+                  <pre>
+ &lt;span title="Greetings"&gt;Hello World&lt;/span&gt;
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">The function always returns a MINI list with a single element. You can directly use
+                  it, for example,
+                  to add an event handler.
+                  <pre>
+var myDiv =EE('div', 'Hello World');
+myDiv.on('click', function() { window.alert('Clicked!'); });
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">Creating a &lt;form&gt; element with two text fields, labels and a submit button:
+                  <pre>
+var myForm = EE('form', {'@method': 'post'}, [
+    EE('label', {'@for': 'nameInput'}, 'Name:'),
+    EE('input', {'@id': 'nameInput', '@type': 'input'}),
+    EE('br'),
+    EE('label', {'@for': 'ageInput'}, 'Age:'),
+    EE('input', {'@id': 'ageInput', '@type': 'input'}),
+    EE('br'),
+    EE('input', {'@type': 'submit, '@value': 'Join'})
+]);
+</pre>
+                  results in (newlines and indentation added for readability):
+                  <pre>
+	&lt;form method="post&gt;
+    &lt;label for="nameInput"&gt;Name:&lt;/label&gt;
+    &lt;input id="nameInput" type="input"/&gt;
+    &lt;br/&gt;
+    &lt;label for="ageInput"/&gt;Age:&lt;/label&gt;
+    &lt;input id="ageInput" type="input"/&gt;
+    &lt;br/&gt;
+    &lt;input value="Join" type="submit"/&gt;
+ &lt;/form&gt;
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">Null attributes often come handy when you don't always need a particular attribute.
+                  Attributes with null values will be ignored:
+                  <pre>
+var myInput = EE('input', {'@id': 'myCheckbox', '@type': 'checkbox', '@checked': shouldBeChecked() ? 'checked' : null});
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">You can set styles directly using a $ prefix for the name:
+                  <pre>
+var myStylesSpan = EE('span', {$color: "red", $fontWeight: "bold"}, "I'm styled");
+</pre>
+                  </div>
+               
+            </div>
+            
+            
+            
+            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
+            	
+         </div>
+      </div>
+      <div id="foot">
+         <div class="container">
+            <p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>.
+               		You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>, but 
+               		don't expect too much.
+               		<a href="/impressum.html">Legal Notice / Impressum</a>.
+            </p>
+         </div>
+      </div>
+   </body>
+</html>

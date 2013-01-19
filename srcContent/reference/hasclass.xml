@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>.hasClass() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-hasclass">.hasClass()</a></h3>
+<div class="summary">Checks whether at least one element in the list has the given class name.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">hasClass(className)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="hasclass_name"><a name="hasclass_name">name</a></dt>
+<dd>the class to to find</dd>
+<dt id="hasclass_RETURN" class="returnValue"><a name="hasclass_RETURN">return value</a></dt>
+<dd>the first element that has the given class, or undefined if not found</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Checks whether at least one element in the list has the given class name. If yes, the first element that matches is returned. Otherwise
+the function returns undefined.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Checks whether the element 'myElement' the class 'myClass'. If yes, it sets the text color to red.
+<pre>
+if($('#myElement').hasClass('myClass'))
+    $('#myElement').set('$color', 'red');
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

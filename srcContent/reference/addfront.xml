@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>.addFront() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-addfront">.addFront()</a></h3>
+<div class="summary">Adds the given node(s) as content to the list elements as additional nodes.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI(selector).addFront(text)</div>
+<div class="syntax">MINI(selector).addFront(callbackFunction)</div>
+<div class="syntax">MINI(selector).addFront(elementContent)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="addfront_text"><a name="addfront_text">text</a></dt>
+<dd>a text to add as text node of the list elements</dd>
+<dt id="addfront_callbackFunction"><a name="addfront_callbackFunction">callbackFunction</a></dt>
+<dd>a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+an HTML element or a list containing strings and/or HTML elements.</dd>
+<dt id="addfront_elementContent"><a name="addfront_elementContent">elementContent</a></dt>
+<dd>content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
+an HTML element or a list containing strings and/or HTML elements.</dd>
+<dt id="addfront_RETURN" class="returnValue"><a name="addfront_RETURN">return value</a></dt>
+<dd>the current list</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Adds the given node(s) as content to the list elements as additional nodes. Unlike add(), the new nodes will be the first children of the list items.
+If a string has been given, it will be added as text node to all elements.
+If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
+to several list items, you need to pass a factory function(element, index) thats creates new instances for each item.
+The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Using the following HTML:
+<pre>
+&lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
+</pre>
+Add a text to the given 'comment' div:
+<pre>
+$('#comments').addFront('Some additional text. ');
+</pre>
+This results in:
+<pre>
+&lt;div id="comments">Some additional text.Here is some text.&lt;br/>&lt;/div>
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Using the following HTML:
+<pre>
+&lt;ul id="myList">
+  &lt;li>First list entry&lt;/li>
+  &lt;li>Second list entry&lt;/li>
+&lt;/ul>
+</pre>
+The following Javascript adds an element to the list:
+<pre>
+$('#myList').addFront(EE('li', 'My extra point'));
+</pre>
+This results in
+<pre>
+&lt;ul id="myList">
+  &lt;li>My extra point&lt;/li>
+  &lt;li>First list entry&lt;/li>
+  &lt;li>Second list entry&lt;/li>
+&lt;/ul>
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Use a list to add several elements at once:
+<pre>
+$('#comments').addFront([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">If you need to add an element or a list to more than one element, you need to provide a factory function:
+<pre>
+$('.chapter').addFront(function(e, index) { return EE('div', 'Scroll down for the next chapter.'); });
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

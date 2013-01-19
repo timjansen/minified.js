@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>MINI.ready() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-ready">MINI.ready()</a></h3>
+<div class="summary">Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI.ready(handler)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="ready_handler"><a name="ready_handler">handler</a></dt>
+<dd>the function to be called when the HTML is ready</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).
+On older browsers, it is the same as 'window.onload'.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Register an handler that sets some text in an element:
+<pre>
+MINI.ready(function() {
+  $$('#someElement').innerHTML = 'ready() called';
+});
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

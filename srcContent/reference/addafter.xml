@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>.addAfter() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-addafter">.addAfter()</a></h3>
+<div class="summary">Inserts the given text or element(s) as sibling after each element of this list.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI(selector).addAfter(text)</div>
+<div class="syntax">MINI(selector).addAfter(callbackFunction)</div>
+<div class="syntax">MINI(selector).addAfter(elementContent)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="addafter_text"><a name="addafter_text">text</a></dt>
+<dd>a text to insert as sibling text node after of the list elements</dd>
+<dt id="addafter_callbackFunction"><a name="addafter_callbackFunction">callbackFunction</a></dt>
+<dd>a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
+an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.</dd>
+<dt id="addafter_elementContent"><a name="addafter_elementContent">elementContent</a></dt>
+<dd>content to insert <strong>only after the first element</strong> of the list. The content can be a string for a text node,
+an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
+this list's first match.</dd>
+<dt id="addafter_RETURN" class="returnValue"><a name="addafter_RETURN">return value</a></dt>
+<dd>the current list</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Inserts the given text or element(s) as sibling after each element of this list. If a string has been given, it will be added as text node.
+If you pass an element or a list, it will be inserted <strong>only after of the first element of the list</strong>. In order to add elements
+to several list items, you need to pass a factory function(element, index) thats creates new instances for each item.
+The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Using the following HTML:
+<pre>
+&lt;div>
+  <div id="mainText">Here is some text</div>
+&lt;/div>
+</pre>
+Use addAfter() with a simple string to add a text node.
+<pre>
+$('#mainText').addAfter('Disclaimer: bla bla bla');
+</pre>
+This results in the following HTML:
+<pre>
+&lt;div>
+  <div id="mainText">Here is some text</div>
+  Disclaimer: bla bla bla
+&lt;/div>
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
+<pre>
+$('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
+</pre>
+With the previous example's HTML, this would create this:
+<pre>
+&lt;div>
+  <div id="mainText">Disclaimer: bla bla bla</div>
+  &lt;span class="disclaimer">WARNING&lt;/span>
+&lt;/div>
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Lists of elements and nodes are possible as well. Like nodes, it will only be added to the first list item.
+<pre>
+$('#status').addAfter([EE('hr'), 'Disclaimer']);
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">If you need to add your list to more than one list item, you must add a factory function that re-creates
+             the list for every instance:
+<pre>
+$('.textSnippets').addAfter(function(e, index) { return [EE('hr'), 'Disclaimer']; });
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

@@ -17,25 +17,26 @@ function parseSourceSections(src) {
 	}
 	var currentSection = createSection();
 	var inComment = false;
-	hh.each(lines, function(line) {
+	hhEach(lines, function(line) {
 		if (inComment && /^.*\*\/\s*$/.test(line)) // end of comment ("*/")
 			inComment = false;
 		else if (inComment) {
-			var l = line.replace(/^\s*(\*\s?)?/, '').replace(/\s*$/, '');
+			var l = line.replace(/^\s*(\*\s?)?/, '').replace(/\s*$/, ''); // line without leading space, asterisk and trailing space
 			var tagmatch = l.match(/^\s*@([a-z]+)/);
 			if (tagmatch) { // comment tag found
 				var tag = tagmatch[1];
-				var content = hh.trim(l.replace(/^@[a-z]+\s*/, ''));
+				var content = hhTrim(l.replace(/^\s*@[a-z]+\s*/, '')); // remove tag from line
 				if (tag == 'syntax' || tag == 'example')
 					currentSection[tag].push(content);
 				else if (tag == 'requires') {
 					if (content.length)
-						hh.each(content.split(/\s+/), function(c) {
+						hhEach(content.split(/\s+/), function(c) {
 							currentSection.requires[c] = 1; 
 						});
 				}
-				else if (tag == 'params')
-					currentSection.params.push({name: content.replace(/\s.*$/, ''), desc: content.replace(/^\S+\s+/, '')});
+				else if (tag == 'param')
+					currentSection.params.push({name: content.replace(/\s.*$/, ''),  // param name is the first word
+						                       desc: content.replace(/^\S+\s+/, '')}); // for the description, remove the first word and following space
 				else if (tag == 'return')
 					currentSection.params.push({name: '@return', desc: content});
 				else if (tag == 'function')
@@ -44,9 +45,9 @@ function parseSourceSections(src) {
 					currentSection[tag] = (content != '') ? content : 1;
 			}
 			else if (currentSection.params.length) // parameters reached?
-				currentSection.params[currentSection.params.length-1].desc += '\n' + hh.trim(l);
+				currentSection.params[currentSection.params.length-1].desc += '\n' + hhTrim(l); // append to last parameter
 			else if (currentSection.example.length) // in examples?
-				currentSection.example[currentSection.example.length-1] += '\n' + l;
+				currentSection.example[currentSection.example.length-1] += '\n' + l; // append to last example
 			else // still in main description
 				currentSection.desc += l + '\n';
 		}
@@ -64,7 +65,7 @@ function parseSourceSections(src) {
 // creates a map of all sections by id
 function createSectionMap(sections) {
 	var m = {};
-	hh.each(sections, function(section) {
+	hhEach(sections, function(section) {
 		m[section.id] = section;
 	});
 	return m;
@@ -73,12 +74,12 @@ function createSectionMap(sections) {
 // completes dependencies in the sections by adding depencies of dependencies in the sections
 function completeRequirements(sections, sectionMap) {
 	var addedReqs = 0;
-	hh.each(sections, function(s) {
-		hh.each(s.requires, function(reqId) {
+	hhEach(sections, function(s) {
+		hhEach(s.requires, function(reqId) {
 			var s2 = sectionMap[reqId];
 			if (!s2)
 				throw Error("Unknown id in requirement: \"" + reqId + "\"");
-			hh.each(s2.requires, function(reqId2) {
+			hhEach(s2.requires, function(reqId2) {
 				if (!s.requires[reqId2]) {
 					addedReqs++;
 					s.requires[reqId2] = 1;
@@ -89,8 +90,8 @@ function completeRequirements(sections, sectionMap) {
 	if (addedReqs > 0)
 		completeRequirements(sections, sectionMap); // repeat until all requirements complete
 	else // completed: now start reverse search
-		hh.each(sections, function(s) {
-			hh.each(s.requires, function(t) { 
+		hhEach(sections, function(s) {
+			hhEach(s.requires, function(t) { 
 				sectionMap[t].requiredBy[s.id] = 1;
 			});
 		});
@@ -99,10 +100,10 @@ function completeRequirements(sections, sectionMap) {
 // creates a map (id->1) of all enabled sections plus their dependencies
 function calculateDependencies(sectionMap, enabledSections) {
 	var r = {};
-	hh.each(enabledSections, function(s) {
+	hhEach(enabledSections, function(s) {
 		if (enabledSections[s]) {
 			r[s] = 1;
-			hh.each(sectionMap[s].requires, function(req) {
+			hhEach(sectionMap[s].requires, function(req) {
 				r[req] = 1;
 			});
 		}
@@ -113,7 +114,7 @@ function calculateDependencies(sectionMap, enabledSections) {
 //creates a map of all configurable sections by id
 function createDefaultConfigurationMap(sections, includeDisabled) {
 	var m = {};
-	hh.each(sections, function(section) {
+	hhEach(sections, function(section) {
 		if (section.configurable && (section.configurable != 'disabled' || includeDisabled))
 			m[section.id] = 1;
 	});
@@ -127,10 +128,10 @@ function compile(sections, sectionMap, enabledSections) {
 	var enabledSectionsWithDeps = calculateDependencies(sectionMap, enabledSections);
 	var condBlock = [];
 	var lastLineEmpty = true; // =true: don't allow empty lines at the beginning
-	hh.each(hh.filter(sections, function(s) {
+	hhEach(hhFilter(sections, function(s) {
 		return enabledSectionsWithDeps[s.id] || !(s.configurable || s.dependency); 
 	}), function(s){
-		hh.each(s.src, function(line) {
+		hhEach(s.src, function(line) {
 			if (/^\s*$/.test(line)) { // empty line?
 				if (!lastLineEmpty)
 					src += '\n';
@@ -196,8 +197,8 @@ var CONFIG_ONLY = 'Only sections ';
 
 //Serializes the configuration into a string
 function serializeEnabledSections(sections, enabledSections) {
-	var configurableSections = hh.filter(sections, function(s) { return s.configurable; });
-	var enabledSectionList = hh.keys(enabledSections).filter(function(s) { return enabledSections[s];});
+	var configurableSections = hhFilter(sections, function(s) { return s.configurable; });
+	var enabledSectionList = hhFilter(hhKeys(enabledSections), function(s) { return enabledSections[s];});
 
 	var head, listedIds = [];
 	if (enabledSectionList.length == configurableSections.length) {
@@ -206,7 +207,7 @@ function serializeEnabledSections(sections, enabledSections) {
 	}
 	else if (enabledSectionList.length > configurableSections.length/2) {
 		head = CONFIG_COMMENT + CONFIG_ALL_EXCEPT;
-		listedIds = hh.filter(configurableSections, function(s) { return !enabledSections[s.id]; }).map(function(s) { return s.id; });
+		listedIds = hhCollect(hhFilter(configurableSections, function(s) { return !enabledSections[s.id]; }), function(s) { return s.id; });
 	}
 	else {
 		head = CONFIG_COMMENT + CONFIG_ONLY;
@@ -215,7 +216,7 @@ function serializeEnabledSections(sections, enabledSections) {
 	
 	var txt = "// " + CONFIG_START + " use this comment to re-create your build configuration\n" + head;
 	var charsToBreak = 50;
-	hh.each(listedIds.sort(), function(id) {
+	hhEach(listedIds.sort(), function(id) {
 		if (charsToBreak < id.length) {
 			charsToBreak = 70;
 			txt += '\n// - ' + id + ', ';
@@ -261,14 +262,14 @@ function deserializeEnabledSections(sections, src) {
 				s = s.replace(/\s*\.\s*$/,'');
 				if (allExceptRegexp.test(s)) {
 					var r = createDefaultConfigurationMap(sections, true);
-					hh.each(s.replace(allExceptRegexp, '').split(/\s*,\s*/), function(section) {
+					hhEach(s.replace(allExceptRegexp, '').split(/\s*,\s*/), function(section) {
 						delete r[section];
 					});
 					return r;
 				}
 				if (onlyRegexp.test(s)) {
 					var r = {};
-					hh.each(s.replace(onlyRegexp, '').split(/\s*,\s*/), function(section) {
+					hhEach(s.replace(onlyRegexp, '').split(/\s*,\s*/), function(section) {
 						r[section] = 1;
 					});
 					return r;

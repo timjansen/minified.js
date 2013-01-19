@@ -6,14 +6,14 @@ function createDocs(sec) {
 	if (!sec.name || !sec.desc || sec.doc == 'no')
 		return;
 	
-	var s = template('<h3><a name="doc-ID">TITLE</a></h3>\n'+
+	var s = hhTemplate('<h3><a name="doc-ID">TITLE</a></h3>\n'+
 			'<div class="summary">SUMMARY</div>\n\n',
 			{ID: sec.id, TITLE: sec.name, SUMMARY: sec.desc.replace(/\.[^]+$/m, '.')});
 	if (sec.syntax.length) {
 		s += '<h4>Syntax</h4>\n';
 		s += '<div class="syntaxVariant">\n';
-		hh.each(sec.syntax, function(syn) {
-			s += template('<div class="syntax">SYNTAX</div>\n', {SYNTAX: syn});
+		hhEach(sec.syntax, function(syn) {
+			s += hhTemplate('<div class="syntax">SYNTAX</div>\n', {SYNTAX: syn});
 		});
 		s += '</div>\n\n';
 	}
@@ -21,25 +21,26 @@ function createDocs(sec) {
 	if (sec.params.length) {
 		s += '<h4>Parameters</h4>\n';
 		s += '<dl class="params">\n';
-		hh.each(sec.params, function(param) {
-			if (param.name == '@return')
-				s += template('<dt><a name="#PARAMREF">PARAM</a></dt>\n<dd>DESC</dd>\n', 
-						{PARAMREF: sec.id+'_'+param.name, PARAM: param.name, DESC: param.desc});
+		hhEach(sec.params, function(param) {
+			var desc = param.desc.replace(/^optional/, '<span class="optional">optional</span>').replace('&&', '&amp;&amp;');
+			if (param.name != '@return')
+				s += hhTemplate('<dt id="PARAMREF"><a name="PARAMREF">PARAM</a></dt>\n<dd>DESC</dd>\n', 
+						{PARAMREF: sec.id+'_'+param.name, PARAM: param.name, DESC: desc});
 			else
-				s += template('<dt class="returnValue"><a name="#RETURNREF">PARAM</a></dt>\n<dd>DESC</dd>\n',
-						{RETURNREF: sec.id+'_RETURN', DESC: param.desc});
+				s += hhTemplate('<dt id="RETURNREF" class="returnValue"><a name="RETURNREF">return value</a></dt>\n<dd>DESC</dd>\n',
+						{RETURNREF: sec.id+'_RETURN', DESC: desc});
 		});
 		s += '</dl>\n\n';
 	}
 	
 	s += '<h4>Description</h4>\n';
-	s += template('<div class="description">DESC</div>\n\n', {DESC: sec.desc});
+	s += hhTemplate('<div class="description">DESC</div>\n\n', {DESC: sec.desc});
 	
 	if (sec.example.length) {
 		s += '<div class="examples">\n';
-		hh.each(sec.example, function(example) {
+		hhEach(sec.example, function(example) {
 			s += '<h4>Example</h4>\n';
-			s += template('<div class="example">EXAMPLE</div>\n', {EXAMPLE: example});
+			s += hhTemplate('<div class="example">EXAMPLE</div>\n', {EXAMPLE: example.replace('&&', '&amp;&amp;')});
 		});
 		s += '</div>\n\n';
 	}
@@ -51,18 +52,10 @@ function createPreview(sec) {
 	if (!sec.name || !sec.desc || sec.doc == 'no')
 		return;
 	
-	var s = template('<h3><a href="ID.html">TITLE</a></h3>\n'+
+	var s = hhTemplate('<h3><a href="ID.html">TITLE</a></h3>\n'+
 			'<div class="summary">SUMMARY</div>\n\n',
 			{ID: sec.id, TITLE: sec.name, SUMMARY: sec.desc.replace(/\.[^]+$/m, '.')});
 	sec.htmlpreview = s;
-}
-
-function template(tpl, valueMap) {
-	var t = tpl;
-	hh.each(valueMap, function(name, value) {
-		t = t.replace(new RegExp(name, 'g'), value);
-	});
-	return t;
 }
 
 function createPage(title, main) {
@@ -93,8 +86,16 @@ function createOverviewPage(sections) {
 	
 	// Gen
 	var html = '';
-	hh.each(sections, function(sec) {
+	hhEach(sections, function(sec) {
 		html += sec.htmlpreview;
 	});
 	return createPage("Reference - Minified.js", html);
+}
+
+function createReferencePage(sec) {
+	// Gen
+	var html = '<p><a href="index.html">back to Overview</a></p>\n';
+	html += sec.htmldoc;
+	html += '\n<p><a href="index.html">back to Overview</a></p>\n';
+	return createPage(sec.name + " - Minified.js", html);
 }

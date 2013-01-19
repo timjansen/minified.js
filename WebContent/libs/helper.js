@@ -1,91 +1,81 @@
 // Simple list of helper functions
 
-var hh = {};
-(function(hh) {
 
-	function toString(s) { // wrapper for Closure optimization
-		return s!=null ? ''+s : '';
-	}
-	function trim(s) { // wrapper for Closure optimization
-		return toString(s).replace(/^\s+|\s+$/, '');
-	}
-	function isType(s,o) {
-		return typeof s == o;
-	}
-	function isString(s) {
-		return isType(s, 'string');
-	}
-	function isFunction(f) {
-		return isType(f, 'function');
-	}
-	function isObject(f) {
-		return isType(f, 'object');
-	}
-	function isList(v) {
-		return v && v.length != null && !isString(v) && !isFunction(v);
-	}
-	function each(list, cb) {
-		if (isList(list))
-			for (var i = 0; i < list.length; i++)
-				cb(list[i], i);
-		else
-			for (var n in list)
-				if (list.hasOwnProperty(n))
-					cb(n, list[n]);
-		return list;
-	}
-	function filter(list, filterFunc) {
-		var r = []; 
-		each(list, function(node,index) {
-			if (!filterFunc||filterFunc(node,index))
-				r.push(node);
-		});
-		return r;
-	}
-	function filterMap(map, filterFunc) {
-		var r = {}; 
-		each(list, function(name, value) {
-			if (!filterFunc||filterFunc(name, value))
-				map[name] = value;
-		});
-		return r;
-	}
-	function collect(list, collectFunc, result) {
-		result = result || [];
-		each(list, function(item, index) {
-			if (isList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
-				each(item, function(rr) { result.push(rr); });
-			else if (item != null)
-				result.push(item);
-		});
-		return result;
-	}
-	function copy(from, to) {
-		each(from, function(name, value) {
-			to[name] = value;
-		});
-		return to;
-	}
-	function keys(map) {
-		return collect(map, function(name, value) {
-			return name;
-		});
-	}	
-	
-	copy({
-		'toString':toString,
-		'trim':trim,
-		'isType':isType,
-		'isString':isString,
-		'isFunction':isFunction,
-		'isObject':isObject,
-		'isList':isList,
-		'each':each,
-		'filter':filter,
-		'filterMap':filterMap,
-		'collect':collect,
-		'copy':copy,
-		'keys':keys
-	}, hh);
-	
-})(hh);
+function hhToString(s) { 
+	return s!=null ? ''+s : '';
+}
+function hhTrim(s) { 
+	return hhToString(s).replace(/^\s+|\s+$/, '');
+}
+function hhIsType(s,o) {
+	return typeof s == o;
+}
+function hhIsString(s) {
+	return hhIsType(s, 'string');
+}
+function hhIsFunction(f) {
+	return hhIsType(f, 'function');
+}
+function hhIsObject(f) {
+	return hhIsType(f, 'object');
+}
+function hhIsList(v) {
+	return v && v.length != null && !hhIsString(v) && !hhIsFunction(v);
+}
+function hhEach(list, cb) {
+	if (hhIsList(list))
+		for (var i = 0; i < list.length; i++)
+			cb(list[i], i);
+	else
+		for (var n in list)
+			if (list.hasOwnProperty(n))
+				cb(n, list[n]);
+	return list;
+}
+function hhFilter(list, filterFunc) {
+	var r = []; 
+	hhEach(list, function(node,index) {
+		if (!filterFunc||filterFunc(node,index))
+			r.push(node);
+	});
+	return r;
+}
+function hhFilterMap(map, filterFunc) {
+	var r = {}; 
+	hhEach(list, function(name, value) {
+		if (!filterFunc||filterFunc(name, value))
+			map[name] = value;
+	});
+	return r;
+}
+function hhCollect(list, collectFunc, result) {
+	result = result || [];
+	hhEach(list, function(item, index) {
+		if (hhIsList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
+			each(item, function(rr) { result.push(rr); });
+		else if (item != null)
+			result.push(item);
+	});
+	return result;
+}
+function hhCopy(from, to) {
+	hhEach(from, function(name, value) {
+		to[name] = value;
+	});
+	return to;
+}
+function hhKeys(map) {
+	return hhCollect(map, function(name, value) {
+		return name;
+	});
+}	
+
+
+//simple template function. Input is tpl. valueMap is a map of replacements in the form name->value. 
+function hhTemplate(tpl, valueMap) {
+	var t = tpl;
+	hhEach(valueMap, function(name, value) {
+		t = t.replace(new RegExp(name, 'g'), value.replace(/(\$)/g, '$1$1')); 
+	});
+	return t;
+}

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>MINI.el() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-el">MINI.el()</a></h3>
+<div class="summary">Creates a new HTML element, optionally with attributes and children, and returns a MINI list containing the DOM HTMLElement.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI.el(elementName)</div>
+<div class="syntax">MINI.el(elementName, attributes)</div>
+<div class="syntax">MINI.el(elementName, children)</div>
+<div class="syntax">MINI.el(elementName, attributes, children)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="el_elementName"><a name="el_elementName">elementName</a></dt>
+<dd>the element name to create (e.g. 'div')</dd>
+<dt id="el_attributes"><a name="el_attributes">attributes</a></dt>
+<dd><span class="optional">optional</span> an object which contains a map of attributes and other values. The syntax is exactly like set(): Attribute values are prefixed with '@',
+CSS styles with '$' and regular properties can be set without prefix.
+If the attribute value is null, the attribute will omitted (styles and properties can be set to null).
+In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
+set the property 'className' instead of '@class' and set styles using the '$' syntax.</dd>
+<dt id="el_children"><a name="el_children">children</a></dt>
+<dd><span class="optional">optional</span>  an element or a list of elements to add as children. Strings will be converted as text nodes. Lists can be
+nested and will then automatically be flattened. Null elements in lists will be ignored.
+The syntax is exactly like fill().</dd>
+<dt id="el_RETURN" class="returnValue"><a name="el_RETURN">return value</a></dt>
+<dd>a MINI list containing the DOM HTMLElement that has been created or modified as only element</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Creates a new HTML element, optionally with attributes and children, and returns a MINI list containing the DOM HTMLElement.
+Typically the return value is inserted into the DOM tree using add() or a similar function.
+
+By default, Minified creates a shortcut called EE for this function.
+
+The function is namespace-aware and will create XHTML nodes if called in an XHTML document.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Creating a simple &lt;span> element with some text:
+<pre>
+var mySpan = EE('span', 'Hello World');
+</pre>
+creates this:
+<pre>
+ &lt;span>Hello World&lt;/span>
+</pre></div>
+<h4>Example</h4>
+<div class="example">Creating a &lt;span> element with style, some text, and append it to the element with the id 'greetingsDiv':
+<pre>
+$('greetingsDiv').add(EE('span', {'@title': 'Greetings'}, 'Hello World'));
+</pre>
+creates this:
+<pre>
+ &lt;span title="Greetings">Hello World&lt;/span>
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">The function always returns a MINI list with a single element. You can directly use it, for example,
+         to add an event handler.
+<pre>
+var myDiv =EE('div', 'Hello World');
+myDiv.on('click', function() { window.alert('Clicked!'); });
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Creating a &lt;form> element with two text fields, labels and a submit button:
+<pre>
+var myForm = EE('form', {'@method': 'post'}, [
+    EE('label', {'@for': 'nameInput'}, 'Name:'),
+    EE('input', {'@id': 'nameInput', '@type': 'input'}),
+    EE('br'),
+    EE('label', {'@for': 'ageInput'}, 'Age:'),
+    EE('input', {'@id': 'ageInput', '@type': 'input'}),
+    EE('br'),
+    EE('input', {'@type': 'submit, '@value': 'Join'})
+]);
+</pre>
+results in (newlines and indentation added for readability):
+<pre>
+	&lt;form method="post>
+    &lt;label for="nameInput">Name:&lt;/label>
+    &lt;input id="nameInput" type="input"/>
+    &lt;br/>
+    &lt;label for="ageInput"/>Age:&lt;/label>
+    &lt;input id="ageInput" type="input"/>
+    &lt;br/>
+    &lt;input value="Join" type="submit"/>
+ &lt;/form>
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Null attributes often come handy when you don't always need a particular attribute. Attributes with null values will be ignored:
+<pre>
+var myInput = EE('input', {'@id': 'myCheckbox', '@type': 'checkbox', '@checked': shouldBeChecked() ? 'checked' : null});
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">You can set styles directly using a $ prefix for the name:
+<pre>
+var myStylesSpan = EE('span', {$color: "red", $fontWeight: "bold"}, "I'm styled");
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

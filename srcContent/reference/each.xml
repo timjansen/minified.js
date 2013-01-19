@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>.each() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-each">.each()</a></h3>
+<div class="summary">Invokes the given function once for each item in the list.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">each(callback)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="each_callback"><a name="each_callback">callback</a></dt>
+<dd>the callback function(item, index) to invoke.</dd>
+<dt id="each_RETURN" class="returnValue"><a name="each_RETURN">return value</a></dt>
+<dd>the list</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Invokes the given function once for each item in the list. The function will be calles with the item as first parameter and the zero-based index as second.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">This goes through all h2 elements of the class 'section' and changes their content:
+<pre>
+$('h2.section').each(function(item, index) {
+    item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
+});
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

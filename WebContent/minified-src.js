@@ -425,7 +425,7 @@
 		this['length'] = list.length;
 		
 		/**
-		 * @id listraw
+		 * @id raw
 		 * @module SELECTORS
 		 * @requires dollar
 		 * @name .raw
@@ -440,7 +440,7 @@
 		this['raw'] = list;
 		
 		/**
-		 * @id listlength
+		 * @id length
 		 * @module SELECTORS
 		 * @requires dollar
 		 * @name .length
@@ -451,7 +451,7 @@
 		 * <pre>
 		 * var list = $('input');
 		 * var myValues = {};
-		 * for (var i = 0; i < list.length; i++)
+		 * for (var i = 0; i &lt; list.length; i++)
 		 *    myValues[list[i].ame] = list[i].value;
 		 * </pre>
 		 */
@@ -670,7 +670,7 @@
 	},
 	
 	/**
-	 * @id listremove
+	 * @id remove
 	 * @module SELECTORS
 	 * @requires dollar each
 	 * @configurable yes
@@ -986,7 +986,7 @@
 
 	
 	/**
-	 * @id listadd
+	 * @id add
 	 * @module ELEMENT
 	 * @requires dollar each
 	 * @configurable yes
@@ -1072,7 +1072,7 @@
 
 	
 	/**
-	 * @id listfill
+	 * @id fill
 	 * @module ELEMENT
 	 * @requires dollar each
 	 * @configurable yes
@@ -1144,7 +1144,7 @@
 	},
 
 	/**
-	 * @id listaddbefore
+	 * @id addbefore
 	 * @module ELEMENT
 	 * @requires dollar
 	 * @configurable yes
@@ -1211,7 +1211,7 @@
 	},
 	
 	/**
-	 * @id listaddafter
+	 * @id addafter
 	 * @module ELEMENT
 	 * @requires dollar
 	 * @configurable yes
@@ -1278,7 +1278,7 @@
 	},
 	
 	/**
-	 * @id listaddfront
+	 * @id addfront
 	 * @module ELEMENT
 	 * @requires dollar
 	 * @configurable yes
@@ -1347,7 +1347,7 @@
 	},
 	
 	/**
-	 * @id listreplace
+	 * @id replace
 	 * @module ELEMENT
 	 * @requires dollar
 	 * @configurable yes
@@ -1707,7 +1707,7 @@
 		/**
 		 * @id wire
 		 * @module ANIMATION
-		 * @requires toggle liston each set
+		 * @requires toggle on each set
 		 * @configurable yes
 		 * @name .wire()
 		 * @syntax MINI(selector).wire(events, toggles)
@@ -1718,9 +1718,9 @@
  	     * The first arguments sets up which kind of events will trigger the toggles in what way. There are two ways to specify the events:
  	     * <ul>
  	     * <li>A simple string in the form "eventtype +eventtype -eventtype" adds the space-separated event handlers for each list member. Non-prefixed
- 	     *     event types toggle. If prefixed with + or -, they will put the toggles in the first or second state.
+ 	     *     event types toggle. If prefixed with + or -, they will put the toggles in the first or second state.</li>
  	     * <li>A map allows you to add events to more than one element. They map key specifies the selector to find the element. The map value specifies the
- 	     *     events in the form described above.
+ 	     *     events in the form described above.</li>
  	     * </ul>
  	     * 
  	     * The second argument describes the toggles that are controlled by the events. If you pass a simple toggle function or a list of toggle function,
@@ -1798,7 +1798,7 @@
 	    },
 	
 		/**
-		 * @id liston
+		 * @id on
 		 * @module EVENTS
 		 * @requires dollar each
 		 * @configurable yes
@@ -1816,8 +1816,8 @@
 		 * <li><code>key</code> - the key code, if it was a key press. Will return event.keyCode if set, otherwise event.which. This should work in practically all browsers. 
 		 *                                              See http://unixpapa.com/js/key.html for key code tables.</li>
 		 * <li><code>right</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
-		 * <li><code>pageX</code> - the page coordinate of the event
-		 * <li><code>pageY</code> - the page coordinate of the event
+		 * <li><code>pageX</code> - the page coordinate of the event</li>
+		 * <li><code>pageY</code> - the page coordinate of the event</li>
 		 * </ul>
 		 * Unless the handler returns 'true', the event will not be propagated to other handlers.
 		 * 
@@ -1900,9 +1900,9 @@
 		},
 		
 	/**
-	 * @id listoff
+	 * @id off
 	 * @module EVENTS
-	 * @requires dollar liston each
+	 * @requires dollar on each
 	 * @configurable yes
 	 * @name .off()
 	 * @syntax MINI.off(element, name, handler)
@@ -1991,7 +1991,7 @@
 	},
 	
 	/**
-	 * @id listoffset
+	 * @id offset
 	 * @module SELECTORS
 	 * @requires dollar
 	 * @configurable yes

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>.off() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-off">.off()</a></h3>
+<div class="summary">Removes the event handler.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI.off(element, name, handler)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="off_name"><a name="off_name">name</a></dt>
+<dd>the name of the event (see on)</dd>
+<dt id="off_handler"><a name="off_handler">handler</a></dt>
+<dd>the handler to unregister, as given to on(). It must be a handler that has previously been registered using
+on().</dd>
+<dt id="off_RETURN" class="returnValue"><a name="off_RETURN">return value</a></dt>
+<dd>the list</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Removes the event handler. The call will be ignored if the given handler has not registered using on().
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Adds a handler to an element
+<pre>
+function myEventHandler() {
+   this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
+}
+$('#myElement').on('click', myEventHandler);     // add event handler
+
+window.setInterval(function() {                      // after 5s, remove event handler
+   $('#myElement').off('click', myEventHandler);
+}, 5000);
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>MINI.toJSON() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-tojson">MINI.toJSON()</a></h3>
+<div class="summary">Converts the given value into a JSON string.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI.toJSON(value)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="tojson_value"><a name="tojson_value">value</a></dt>
+<dd>the value (map-like object, array, string, number, date, boolean or null)</dd>
+<dt id="tojson_RETURN" class="returnValue"><a name="tojson_RETURN">return value</a></dt>
+<dd>the JSON string</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, date, boolean or null.
+If JSON.stringify is defined (built-in in some browsers), it will be used; otherwise MINI's own implementation.
+
+The following types are supported by the built-in implementation:
+<ul>
+  <li>Objects (direct properties will be serialized)</li>
+  <li>Arrays</li>
+  <li>Strings</li>
+  <li>Numbers</li>
+  <li>Boolean</li>
+  <li>null</li>
+</ul>
+Any other types in your value, especially Dates, should be converted into Strings by you.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Convert an object into a JSON object:
+<pre>
+var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
+var jsonString = MINI.toJSON(myObj);
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

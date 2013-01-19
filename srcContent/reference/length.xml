@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>.length - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-length">.length</a></h3>
+<div class="summary">Contains the number of elements in the list.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">length</div>
+</div>
+
+<h4>Description</h4>
+<div class="description">Contains the number of elements in the list.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">
+<pre>
+var list = $('input');
+var myValues = {};
+for (var i = 0; i &lt; list.length; i++)
+   myValues[list[i].ame] = list[i].value;
+</pre></div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

@@ -49,11 +49,11 @@ function setUpConfigurationUI(s) {
 	function fulfillSectionDependencies(element) {
 		var sec = s.sectionMap[element.id.substr(4)];
 		if (element.checked)
-			hh.each(sec.requires, function(rid) {
+			hhEach(sec.requires, function(rid) {
 				$('#sec-'+rid).set('checked', true);
 			});
 		else
-			hh.each(sec.requiredBy, function(rid) {
+			hhEach(sec.requiredBy, function(rid) {
 				$('#sec-'+rid).set('checked', false);
 			});
 	}
@@ -78,7 +78,7 @@ function setUpConfigurationUI(s) {
 		});
 		
 		var sectionCheckBox;
-		hh.each(hh.filter(s.sections, function(sec) { return sec.module == MODULES[i] && s.enabledSections[sec.id];}).sort(function(a,b) {
+		hhEach(hhFilter(s.sections, function(sec) { return sec.module == MODULES[i] && s.enabledSections[sec.id];}).sort(function(a,b) {
 			var ha = a.name || a.id, hb = b.name || b.id;
 			if (ha == hb)
 				return 0;
@@ -86,11 +86,11 @@ function setUpConfigurationUI(s) {
 		}), function(sec) {
 			function createList(prefix, map) {
 				var MAX = 8;
-				var list = hh.keys(map).filter(function(t){ return !!s.sectionMap[t].name;});
+				var list = hhFilter(hhKeys(map), function(t){ return !!s.sectionMap[t].name;});
 				if (!list.length)
 					return null;
 				var idx = 0, txt=prefix;
-				hh.each(list, function(r) {
+				hhEach(list, function(r) {
 					if (idx++ < Math.min(list.length, MAX)) {
 						if (idx > 1) {
 							if (idx == Math.min(list.length, MAX))

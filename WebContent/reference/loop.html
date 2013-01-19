@@ -1,0 +1,129 @@
+<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="UTF-8"></meta>
+      <title>MINI.loop() - Minified.js</title><style type="text/css">
+body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-serif;}
+#head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
+.container { margin: auto; width: 70em; }
+#head .container { height: 2.4em; border-bottom: 1px solid #aaa; padding: 0; }
+#head .container img { height: 2em; float: left; margin: 0.2em 0.5em;} 
+#topMenu { text-align: right;}
+#topMenu a { display: inline-block; height: 1.4em; padding: 0.5em 1em 0.5em; color: black; text-decoration: none; vertical-align: middle;}
+#topMenu a:hover { color: white; background-color: #f80; }
+#topMenu a.selected,  #topMenu a:hover.selected { color: white; background-color: black; }
+#foot .container { height: 2.4em; border-top: 1px solid #aaa; padding: 0; }
+#foot .container p { font-size: smaller; color: #bbb; margin: 0.5em; padding: 0; text-align: left; }
+#foot .container A { color: #888; font-weight: bold; font-size: smaller; }
+#main .container { padding: 1em; }
+</style><script type="text/javascript" src="minified-src.js"></script></head>
+   <body>
+      <div id="head">
+         <div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div>
+         </div>
+      </div>
+      <div id="main">
+         <div class="container">
+            
+            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
+            
+            <h3 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a name="doc-loop">MINI.loop()</a></h3>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="summary">Use this function to run an animation loop.</div>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Syntax</h4>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="syntaxVariant">
+               
+               <div class="syntax">MINI.loop(paintCallback)</div>
+               
+               <div class="syntax">MINI.loop(paintCallback, element)</div>
+               
+            </div>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Parameters</h4>
+            
+            <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
+               
+               <dt id="loop_paintCallback"><a name="loop_paintCallback">paintCallback</a></dt>
+               
+               <dd>a callback function(timestamp, stopFunc) to invoke for painting. Parameters given
+                  to callback:
+                  
+                  <ul>
+                     
+                     <li>timestamp - number of miliseconds since animation start</li>
+                     
+                     <li>stopFunc - call this function() to stop the currently running animation</li>
+                     
+                  </ul>
+               </dd>
+               
+               <dt id="loop_RETURN" class="returnValue"><a name="loop_RETURN">return value</a></dt>
+               
+               <dd>a function() that, when you invoke it, stops the currently running animation.</dd>
+               
+            </dl>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Description</h4>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="description">Use this function to run an animation loop. In modern browser that support requestAnimationFrame,
+               the given callback is invoked as often
+               as the browser is ready for a new animation frame. The frequency is determined by
+               the browser and may vary depending on factors such as the time needed to render the
+               current page.
+               the screen's framerate and whether the page is currently shown to the user (page is
+               the current tab, browser window not minimized etc).
+               In older browsers, the callback function will be invoked every 33 milliseconds.
+               To stop a running animation loop, either invoke the function that is returned or the
+               function given as second parameter to the callback.
+               
+               
+            </div>
+            
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="examples">
+               
+               <h4>Example</h4>
+               
+               <div class="example">A animates a div by moving it in a circle.
+                  <pre>
+  var myDiv = $$('#myAnimatedDiv');
+  var rotationsPerMs = 1000;               // one rotation per second
+  var maxRadius = 100;
+  var d = 3000;                                 // duration in ms
+  MINI.loop(function(t, stopFunc) {
+    if (t &gt; d) {                                   // time is up: call stopFunc()!
+      stopFunc();
+      return;
+    }
+
+    var a = 2 * Math.PI * t / d;                          // angular position
+    var r = maxRadius*sin(t / d * Math.PI);           // radius changes from 0 to 1 back to 0 during the animatio
+    myDiv.style.left = (r * Math.cos(a) + ' px';
+    myDiv.style.top = (r * Math.sin(a) + ' px';
+  });
+</pre>
+                  </div>
+               
+            </div>
+            
+            
+            
+            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
+            	
+         </div>
+      </div>
+      <div id="foot">
+         <div class="container">
+            <p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>.
+               		You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>, but 
+               		don't expect too much.
+               		<a href="/impressum.html">Legal Notice / Impressum</a>.
+            </p>
+         </div>
+      </div>
+   </body>
+</html>

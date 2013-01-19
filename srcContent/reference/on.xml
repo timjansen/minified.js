@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>.on() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-on">.on()</a></h3>
+<div class="summary">Registers the function as event handler for all items in the list.</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">MINI(selector).on(el, name, handler)</div>
+<div class="syntax">MINI(selector).on(el, name, handler, args)</div>
+<div class="syntax">MINI(selector).on(el, name, handler, args, fThis)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="on_name"><a name="on_name">name</a></dt>
+<dd>the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.</dd>
+<dt id="on_handler"><a name="on_handler">handler</a></dt>
+<dd>the function(event, extraEvent) to invoke when the event has been triggered. If no arguments have been given,
+the handler gets the original event object as first parameter and the compatibility object as second.
+'this' is always the element that caused the event.
+Unless the handler returns true, all further processing of the event will be stopped.
+Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper
+is added to the handler in a property called 'M'.</dd>
+<dt id="on_args"><a name="on_args">args</a></dt>
+<dd><span class="optional">optional</span> if set an array of arguments to pass to the handler function instead of the event objects</dd>
+<dt id="on_fThis"><a name="on_fThis">fThis</a></dt>
+<dd>an optional value for 'this' in the handler, as alternative to the event target</dd>
+<dt id="on_RETURN" class="returnValue"><a name="on_RETURN">return value</a></dt>
+<dd>the list</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Registers the function as event handler for all items in the list.
+
+By default, handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
+of the event (e.g. the button that has been clicked). The original event object the is object given to the event or obtained
+from 'window.event'. The compatibility event object has the following properties:
+<ul>
+<li><code>key</code> - the key code, if it was a key press. Will return event.keyCode if set, otherwise event.which. This should work in practically all browsers.
+                                             See http://unixpapa.com/js/key.html for key code tables.</li>
+<li><code>right</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
+<li><code>pageX</code> - the page coordinate of the event</li>
+<li><code>pageY</code> - the page coordinate of the event</li>
+</ul>
+Unless the handler returns 'true', the event will not be propagated to other handlers.
+
+Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the event handler. When you pass arguments, the
+handler's return value is always ignored and the event will always be cancelled.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Adds a simple click handler to a button. Event objects are ignored.
+<pre>
+$('#myButton').on('click', function() {
+   window.alert('Button clicked!');
+});
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Adds a handler to all divs that paints their background color to red when clicked.
+<pre>
+$('div').on('click', function() {
+   this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
+});
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Adds an handler for mousedown events to a canvas:
+<pre>
+var ctx = $$('#myCanvas').getContext('2d');                      // get a canvas context
+$('#myCanvas').on('mousedown', function(evt, extraInfo) {        // add handler for mouse down events
+    if (extraInfo.right)                                         // right mouse button paints white, all other black
+        ctx.fillStyle = "white";
+    else
+        ctx.fillStyle = "black";
+    ctx.fillRect(evt.clientX, evt.clientY, 1, 1);                // paints a pixel at the cursor position
+});
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+	</main>
+</page>

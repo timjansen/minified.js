@@ -1,0 +1,195 @@
+<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="UTF-8"></meta>
+      <title>MINI.request() - Minified.js</title><style type="text/css">
+body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-serif;}
+#head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
+.container { margin: auto; width: 70em; }
+#head .container { height: 2.4em; border-bottom: 1px solid #aaa; padding: 0; }
+#head .container img { height: 2em; float: left; margin: 0.2em 0.5em;} 
+#topMenu { text-align: right;}
+#topMenu a { display: inline-block; height: 1.4em; padding: 0.5em 1em 0.5em; color: black; text-decoration: none; vertical-align: middle;}
+#topMenu a:hover { color: white; background-color: #f80; }
+#topMenu a.selected,  #topMenu a:hover.selected { color: white; background-color: black; }
+#foot .container { height: 2.4em; border-top: 1px solid #aaa; padding: 0; }
+#foot .container p { font-size: smaller; color: #bbb; margin: 0.5em; padding: 0; text-align: left; }
+#foot .container A { color: #888; font-weight: bold; font-size: smaller; }
+#main .container { padding: 1em; }
+</style><script type="text/javascript" src="minified-src.js"></script></head>
+   <body>
+      <div id="head">
+         <div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div>
+         </div>
+      </div>
+      <div id="main">
+         <div class="container">
+            
+            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
+            
+            <h3 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a name="doc-request">MINI.request()</a></h3>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="summary">Initiates a HTTP request (using XmlHTTPRequest) to the given URL.</div>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Syntax</h4>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="syntaxVariant">
+               
+               <div class="syntax">MINI.request(method, url)</div>
+               
+               <div class="syntax">MINI.request(method, url, data)</div>
+               
+               <div class="syntax">MINI.request(method, url, data, onSuccess)</div>
+               
+               <div class="syntax">MINI.request(method, url, data, onSuccess, onFailure)</div>
+               
+               <div class="syntax">MINI.request(method, url, data, onSuccess, onFailure, headers)</div>
+               
+               <div class="syntax">MINI.request(method, url, data, onSuccess, onFailure, headers, username, password)</div>
+               
+            </div>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Parameters</h4>
+            
+            <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
+               
+               <dt id="request_method"><a name="request_method">method</a></dt>
+               
+               <dd>the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests
+                  that change data on the server, and 'get' to only request data). Not case sensitive.
+               </dd>
+               
+               <dt id="request_url"><a name="request_url">url</a></dt>
+               
+               <dd>the server URL to request. May be a relative URL (relative to the document) or an
+                  absolute URL. Note that unless you do something
+                  fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only
+                  call URLs on the server your script originates from.
+               </dd>
+               
+               <dt id="request_data"><a name="request_data">data</a></dt>
+               
+               <dd><span class="optional">optional</span> data to send in the request, either as POST body or as URL parameters. It can be
+                  either a map of
+                  parameters (all HTTP methods), a string (all methods) or a DOM document ('post' only).
+                  If the method is 'post', it will be
+                  sent as body, otherwise appended to the URL. In order to send several parameters with
+                  the same name, use an array of values
+                  in the map. Use null as value for a parameter without value.
+               </dd>
+               
+               <dt id="request_onSuccess"><a name="request_onSuccess">onSuccess</a></dt>
+               
+               <dd><span class="optional">optional</span> this function will be called when the request has been finished successfully and
+                  had the HTTP status 200. Its first argument
+                  is the text sent by the server.
+                  You can add an optional second argument, which will contain the XML sent by the server,
+                  if there was any.
+               </dd>
+               
+               <dt id="request_onFailure"><a name="request_onFailure">onFailure</a></dt>
+               
+               <dd><span class="optional">optional</span> this function will be called if the request failed. The first argument is the HTTP
+                  status (never 200; 0 if no HTTP request took place),
+                  the second a status text (or null, if the browser threw an exception) and the third
+                  the returned text, if there was
+                  any (the exception as string if the browser threw it).
+               </dd>
+               
+               <dt id="request_headers"><a name="request_headers">headers</a></dt>
+               
+               <dd><span class="optional">optional</span> a map of HTTP headers to add to the request. Note that the you should use the proper
+                  capitalization of the
+                  header 'Content-Type', if you set it, because otherwise it may be overwritten.
+               </dd>
+               
+               <dt id="request_username"><a name="request_username">username</a></dt>
+               
+               <dd><span class="optional">optional</span> username to be used for HTTP authentication, together with the password parameter
+               </dd>
+               
+               <dt id="request_password"><a name="request_password">password</a></dt>
+               
+               <dd><span class="optional">optional</span> password for HTTP authentication
+               </dd>
+               
+               <dt id="request_RETURN" class="returnValue"><a name="request_RETURN">return value</a></dt>
+               
+               <dd>the XmlHTTPRequest object. The send() method of the returned object has already been
+                  called. You may use the object to gather additional
+                  information, such as the request's state.
+               </dd>
+               
+            </dl>
+            
+            
+            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Description</h4>
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="description">Initiates a HTTP request (using XmlHTTPRequest) to the given URL. When the request
+               finished, either the onSuccess or the onFailure function
+               will be invoked.
+               
+               
+            </div>
+            
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="examples">
+               
+               <h4>Example</h4>
+               
+               <div class="example">Invoke a REST web service and parse the resulting document using JSON:
+                  <pre>
+MINI.request('get', 'http://service.example.com/weather', {zipcode: 90210}, function(txt) {
+    var json = MINI.parseJSON(txt);
+    $('#weatherResult').fill('Today's forecast is is: ' + json.today.forecast);
+}, function() {
+    $('#weatherResult').fill('The weather service was not available.');
+});
+</pre>
+                  </div>
+               
+               <h4>Example</h4>
+               
+               <div class="example">Send a JSON object to a REST web service:
+                  <pre>
+var myRequest = {         // create a request object that can be serialized via JSON
+     request: 'register',
+     entries: [
+       {name: 'Joe',
+     	    job: 'Plumber'
+     }]};
+
+function failureHandler() {
+  $('#registrationResult').fill('Registration failed');
+}
+
+MINI.request('post', 'http://service.example.com/directory',
+    MINI.toJSON(myRequest), function(txt) {
+      if (txt == 'OK')
+           $('#registrationResult').fill('Registration succeeded');
+      else
+           failureHandler();
+}, failureHandler);
+</pre>
+                  </div>
+               
+            </div>
+            
+            
+            
+            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
+            	
+         </div>
+      </div>
+      <div id="foot">
+         <div class="container">
+            <p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>.
+               		You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>, but 
+               		don't expect too much.
+               		<a href="/impressum.html">Legal Notice / Impressum</a>.
+            </p>
+         </div>
+      </div>
+   </body>
+</html>
