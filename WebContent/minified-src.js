@@ -639,9 +639,10 @@
      * @return the true value returned by the callback function, or undefined it it never returned a valid value.
      */ 
 	'find': function(findFunc) {
+		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 		var list = this, r;
 		for (var i = 0; i < list.length; i++)
-			if ((r = findFunc(list[i], i)) != null)
+			if ((r = f(list[i], i)) != null)
 				return r;
 	},
 	
@@ -665,7 +666,7 @@
      * @return the first element that has the given class, or undefined if not found
      */ 
 	'hasClass': function(name) {
-		var regexp = new RegExp(BACKSLASHB +  name + BACKSLASHB)
+		var regexp = new RegExp(BACKSLASHB +  name + BACKSLASHB);
 		return this.find(function(e) { return regexp.test(e.className) ? e : null; });
 	},
 	
@@ -876,9 +877,9 @@
 	 * @param properties a map containing names as keys and the values to set as map values. See above for the syntax.
 	 * @param cssClasses if set() is invoked with a string as single argument, the name "$" (CSS classes) is taken by default and the argument is the
 	 *                   value. See value above for CSS syntax.
-	 * @param defaultFunction optional if set and no function is provided as value, this function will be invoked for each list element 
+	 * @param defaultFunction optional if set and no function is provided as value, this function(oldValue, index, obj, newValue) will be invoked for each list element 
 	 *                                 and property to determine the value. The function is called with with the old value as first 
-	 *                                 argument and the index in the list as second. The third value is the new value specified
+	 *                                 argument and the item's list index as second, and the object being modified as third. The fourth value is the new value specified
 	 *                                 in the set() call.
 	 * @return the list
 	 */
@@ -1544,11 +1545,9 @@
 		// @cond debug if (linearity < 0 || linearity > 1) error('Third parameter must be at least 0 and not larger than 1.');
 		// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
 		// @cond debug var colorRegexp = /^(rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|#\w{3}|#\w{6})\s*$/i;
-		function replaceValue(originalValue, newNumber) {
-			return replace(originalValue, /-?[\d.]+/, newNumber);
-		}
 		var self = this;
 		var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
+		var numRegExp = /-?[\d.]+/;
 		var delayStop, loopStop;
 		state = state || {};
 		state['time'] = 0;
@@ -1565,7 +1564,7 @@
 					if (name == '$$slide') 
 						dest = dest*getNaturalHeight(p.o) + 'px';
 					p.e[name] = /^[+-]=/.test(dest) ?
-							replaceValue(dest.substr(2), toNumWithoutUnit(start) + toNumWithoutUnit(replace(dest, /\+?=/))) 
+							replace(dest.substr(2), numRegExp, toNumWithoutUnit(start) + toNumWithoutUnit(replace(dest, /\+?=/))) 
 							: dest;
 				});
 				initState.push(p);
@@ -1603,7 +1602,7 @@
 									newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i))) + (i < 2 ? ',' : ')');
 							}
 							else 
-								newValue = replaceValue(end, interpolate(toNumWithoutUnit(start), toNumWithoutUnit(end)));
+								newValue = replace(end, numRegExp, interpolate(toNumWithoutUnit(start), toNumWithoutUnit(end)));
 							isi.o.set(name, newValue);
 						});
 					});
@@ -1611,6 +1610,7 @@
 			});
 			return self;		
 		},
+		
 		
 		/**
 		 * @id toggle
@@ -1653,18 +1653,17 @@
 		 *
 		 * @example To toggle CSS classes specify both states:
 		 * <pre>
-		 * var t = $('#myElement').toggle({$: '-myClass1 -myClass2 +myClass3'}, {$: '+myClass1 +myClass2 -myClass3'});
+		 * var t = $('#myElement').toggle({$: '-myClass1 -myClass2'}, {$: '+myClass1 +myClass2'});
 		 * $('#myController').on('click', t);
 		 * </pre>
 		 *
-		 * @example There is a shortcut for toggling CSS classes. Just list them space-separated in a string and prefix classes that should be enabled in the
-		 *          first state with a '!':
+		 * @example There is a shortcut for toggling CSS classes. Just list them space-separated in a string:
 		 * <pre>
-		 * var t = $('#myElement').toggle('myClass1 myClass2 !myClass3');
+		 * var t = $('#myElement').toggle('myClass1 myClass2');
 		 * </pre>
 		 * 
-		 * @param cssClasses a string containing space-separated CSS class names that will be toggled. By default classes are disabled in the first state
-		 *                   and enabled in the second. Prefix class names with '!' to start with the second.
+		 * @param cssClasses a string containing space-separated CSS class names that will be toggled. Classes are disabled in the first state
+		 *                   and enabled in the second.
 		 * @param state1 a property map describing the initial state of the properties. The properties will automatically be set when the
 		 *                   toggle() function is created. The property names use the set() syntax ('@' prefix for attributes, '$' for styles). 
 		 *                   For animation, values must be either numbers, numbers with
@@ -1685,7 +1684,7 @@
 			var self = this;
 
 			return !state2 ?
-				self.toggle(replace(replace(state1, regexg, '-'), '!-', '+'), replace(replace(state1, regexg, '+'), '!+', '-')) :			
+				self.toggle(replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
 				self.set(state1) && 
 			    function(newState) {
 					if (newState === state) 
@@ -1865,9 +1864,9 @@
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return this.each(function(el) {
-				handler['M'] = handler['M'] || function(e) {
+				var h = handler['M'] = handler['M'] || function(event) {
 					var l = _document.documentElement, b = _document.body;
-					e = e || _window.event;
+					e = event || _window.event;
 					// @cond debug try {
 					if (!handler.apply(fThis || e.target, args || [e, { 
 							'key': e.keyCode || e.which, // http://unixpapa.com/js/key.html
@@ -1891,10 +1890,10 @@
 				// @condblock ie8compatibility 
 				if (el.addEventListener)
 				// @condend
-					el.addEventListener(name, handler['M'], true); // W3C DOM
+					el.addEventListener(name, h, true); // W3C DOM
 				// @condblock ie8compatibility 
 				else 
-					el.attachEvent('on'+name, handler['M']);  // IE < 9 version
+					el.attachEvent('on'+name, h);  // IE < 9 version
 				// @condend
 			});
 		},
@@ -1977,10 +1976,10 @@
 	'values': function(data) {
 		var r = data || {};
 		this.each(function(el) {
-			var n = el.name, v = toString(el.value), t = el.tagName, y = el.type, o=r[n];
-			if (/form/i.test(t))
+			var n = el.name, v = toString(el.value), o=r[n];
+			if (/form/i.test(el.tagName))
 				MINI(el.elements).values(r);
-			else if (n && (!/kbox|dio/i.test(y) || el.checked)) { // short for checkbox, radio
+			else if (n && (!/kbox|dio/i.test(el.type) || el.checked)) { // short for checkbox, radio
 					if (isList(o))
 						o.push(v);
 					else
@@ -2315,19 +2314,19 @@
     * @return the JSON string
     */
     // @condblock ie7compatibility
-    'toJSON': _window.JSON ? _window.JSON.stringify : function toJSON(value) {
+    'toJSON': function toJSON(value) {
 		if (value == null)
-			return ""+value; //result: "null"; toString(value) is not possible, because it returns an empty string for null
-		if (isString(value = value.valueOf))
+			return ""+value;                        //result: "null"; toString(value) is not possible, because it returns an empty string for null
+		if (isString(value = value.valueOf()))
 			return '"' + replace(value, /[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
 		if (isList(value)) 
-			return '[' + collect(value, function(vi) { return toJSON(vi); }).join() + ']';
+			return '[' + collect(value, toJSON).join() + ']';
 		if (isObject(value))
 			return '{' + collect(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
 		return toString(value);
 	},
     // @condend
-    // @cond !ie7compatibility 'toJSON': json && json.stringify,
+    // @cond !ie7compatibility 'toJSON': _window.JSON && JSON.stringify,
     
 	/**
 	* @id parsejson
@@ -2372,7 +2371,7 @@
     * Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).
     * On older browsers, it is the same as 'window.onload'. 
     *
-    * @example Register an handler that sets some text in an element:
+    * @example Registers a handler that sets some text in an element:
     * <pre>
     * MINI.ready(function() {
     *   $$('#someElement').innerHTML = 'ready() called';
@@ -2430,7 +2429,7 @@
 		// @cond debug if (!name) error('Cookie name must be set!');
 		// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
     	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
-    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(now() + dateOrDays * 86400000)).toUTCString()) : '') + 
+    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(now() + dateOrDays * 8.64E7)).toUTCString()) : '') + 
     		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
     },
     

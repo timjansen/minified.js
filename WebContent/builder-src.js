@@ -127,7 +127,7 @@ function setUpConfigurationUI(s) {
 	}
 }
 
-MINI.ready(function() {
+MINI(function() {
 	MINI.request('get', SRC, null, function(src) {
 		setUpConfigurationUI(prepareSections(src));
 	});

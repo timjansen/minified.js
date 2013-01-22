@@ -4,7 +4,8 @@ window.miniTests.push.apply(window.miniTests, [
 		name:'toJSON() / parseJSON simple',
 		exec: function() {
 			var a = 3;
-			check(MINI.parseJSON(MINI.toJSON(a)), 3);
+			var x = MINI.toJSON(a);
+			check(MINI.parseJSON(x), 3);
 		}
 	},
    	{
@@ -27,9 +28,9 @@ window.miniTests.push.apply(window.miniTests, [
 		exec: function() {
 			var b = {a: new String("foo"), b: new Number(7), c: new Boolean(true)};
 			var jb = MINI.parseJSON(MINI.toJSON(b));
-			check(jb.a == b.a);
-			check(jb.b == b.b);
-			check(jb.c == b.c);
+			check(jb.a, b.a, "Testing String");
+			check(jb.b, b.b, "Testing Number");
+			check(jb.c, b.c, "Testing Boolean");
 		}
 	},
 	{
