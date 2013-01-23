@@ -12,7 +12,7 @@ function createDocs(sec) {
 	if (sec.syntax.length) {
 		s += '<h4>Syntax</h4>\n';
 		s += '<div class="syntaxVariant">\n';
-		hhEach(sec.syntax, function(syn) {
+		hhEach(sec.syntax, function(syn, synIndex) {
 			s += hhTemplate('<div class="syntax">SYNTAX</div>\n', {SYNTAX: syn});
 		});
 		s += '</div>\n\n';
@@ -23,12 +23,19 @@ function createDocs(sec) {
 		s += '<dl class="params">\n';
 		hhEach(sec.params, function(param) {
 			var desc = param.desc.replace(/^optional/, '<span class="optional">optional</span>').replace('&&', '&amp;&amp;');
+			var re = RegExp('\b' + paramName + '\b');
+			var highlightClasses = [];
+			hhEach(sec.syntax, function(syn, synIndex) {
+				if (param.name == '@return' || re.test(syn))
+					highlightClasses.push('inSyntax' + synIndex);
+				
+			});
 			if (param.name != '@return')
-				s += hhTemplate('<dt id="PARAMREF"><a name="PARAMREF">PARAM</a></dt>\n<dd>DESC</dd>\n', 
-						{PARAMREF: sec.id+'_'+param.name, PARAM: param.name, DESC: desc});
+				s += hhTemplate('<dt id="PARAMREF" class="CLASSDEF"><a name="PARAMREF">PARAM</a></dt>\n<dd class="CLASSDEF">DESC</dd>\n', 
+						{PARAMREF: sec.id+'_'+param.name, PARAM: param.name, DESC: desc, CLASSDEF: highlightClasses.join(' ')});
 			else
-				s += hhTemplate('<dt id="RETURNREF" class="returnValue"><a name="RETURNREF">return value</a></dt>\n<dd>DESC</dd>\n',
-						{RETURNREF: sec.id+'_RETURN', DESC: desc});
+				s += hhTemplate('<dt id="RETURNREF" class="returnValue CLASSDEF"><a name="RETURNREF">return value</a></dt>\n<dd class="CLASSDEF">DESC</dd>\n',
+						{RETURNREF: sec.id+'_RETURN', DESC: desc, CLASSDEF: highlightClasses.join(' ')});
 		});
 		s += '</dl>\n\n';
 	}

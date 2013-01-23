@@ -627,16 +627,29 @@
      * @configurable yes 
      * @name .find() 
      * @syntax find(findFunc) 
-     * Allows you to find a specific value in the list. To do this, find() calls the given function for each list element until the function returns a value that is not null or undefined.
-     * This value will be returned.
+     * @syntax find(element) 
+     * Allows you to find a specific value in the list. There are two ways of calling find():
+     * <ol>
+     * <li>With an element as argument. The function will search for the first occurrence of that element in the list
+     *     and return the index. If it is not found, the function returns undefined.</li>
+     * <li>With a callback function. find() will then call the given function for each list element until the function 
+     *     returns a value that is not null or undefined. This value will be returned.</li>
+     * </ol>
      *
-     * @example Goes through the elements to find the first div that has the class 'myClass', and returns this element:
+     * @example Determine the position of #wanted among all li elements:
      * <pre> 
-     * var myClassElement = $('div').find(function(e) { if (/\bmyClass\b/.test(e.className)) return true; });
+     * var elementIndex = $('li').find($$('#wanted'));
      * </pre> 
      * 
-     * @param findFunc the callback function(item) that will be invoked for every list item until it returns a non-null value.
-     * @return the true value returned by the callback function, or undefined it it never returned a valid value.
+     * @example Goes through the elements to find the first div that has the class 'myClass', and returns this element:
+     * <pre> 
+     * var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) return e; });
+     * </pre> 
+     * 
+     * @param findFunc the callback function(item, index) that will be invoked for every list item until it returns a non-null value.
+     * @param element the element to search for
+     * @return if called with an element, either the element's index in the list or undefined if not found. If called with a callback function,
+     *         it returns either the value returned by the callback or undefined.
      */ 
 	'find': function(findFunc) {
 		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
@@ -1045,8 +1058,8 @@
 	 * </pre>
 	 *
 	 * @param text a text to add as text node of the list elements
-	 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-	 *              an HTML element or a list containing strings and/or HTML elements.
+	 * @param callbackFunction a function(newNode, listItem, parentNode) that will be invoked for each list element to determine its content. 
+	 *              The function can return either a string for a text node, an HTML element or a list containing strings and/or HTML elements.
 	 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
 	 *              an HTML element or a list containing strings and/or HTML elements.
 	 * @return the current list
@@ -1453,11 +1466,11 @@
 	 * number and which may also contain units or other text, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
 	 *
 	 * When you invoke the function, it will first read all old values from the object and extract their numbers and colors. These start values will be compared to 
-	 * the destination values that have been specified in the given properties. Then animate() will create a background task using MINI.loop() that will update the 
+	 * the destination values that have been specified in the given properties. Then animate() will create a background task using MINI.loop() that updates the 
 	 * specified properties in frequent intervals so that they transition to their destination values.
 	 *
-	 * The start values will be read using the elements' style properties. Therefore it is important that you either set the start values directly in the elements'
-	 * style attribute, or set them yourself before you start the animation. Styles inherited from CSS definitions will not provide correct start values!
+	 * The start values will be obtained using get(). It is recommended to set the start values using set() before you start the animation, even if this is not
+	 * always required.
 	 *
 	 * You can define the kind of transition using the 'linearity' parameter. If you omit it or pass 0, animate's default algorithm will cause a smooth transition
 	 * from the start value to the end value. If you pass 1, the transition will be linear, with a sudden start and end of the animation. Any value between 0 and 1 
@@ -1473,6 +1486,9 @@
 	 * When you animate colors, animate() is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not 
 	 * use color names such as 'red'.
 	 *
+	 * You can prefix any number, including numbers with units, with "-=" or "+=" in order to specify a value relative to the starting value. The new value will be added
+	 * to or substracted from the start value to determine the end value.
+	 *
 	 * To allow more complex animation, animate() allows you to add a callback which will be called when the animation has finished. You can also specify a delay
 	 * to create timelines.
 	 *
@@ -1482,6 +1498,12 @@
 	 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})                // start values
 	 *                  .animate({$left: '50px', $top: '100px'}, 1000);  // animation
 	 * </pre>
+	 *
+	 * @example Using relative values for animation:
+	 * <pre>
+	 * $('#myMovingDiv').set({$left: '100px', $top: '100px'})                // start values
+	 *                  .animate({$left: '-=50px', $top: '+=100px'}, 1000);  // animation
+	 * </pre>
 	 * 
 	 * @example Change the color of an element:
 	 * <pre>
@@ -1489,12 +1511,12 @@
 	 *                    .animate({$backgroundColor: '#ff0000'}, 1000);
 	 * </pre>
 	 * 
-	 * @example Fade-out effect. Note that $$fade does not require an initial value, it will automatically determine the element's initial visibility.
+	 * @example Fade-out effect:
 	 * <pre>
 	 * $('#myFadingDiv').animate({$$fade: 0}, 1000);
 	 * </pre>
 	 * 
- 	 * @example Slide-in effect. Note that $$slide does not require an initial value, it will automatically determine the element's initial visibility.
+ 	 * @example Slide-in effect:
 	 * <pre>
 	 * $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
 	 * </pre>
@@ -1527,7 +1549,8 @@
 	 * @param properties a property map describing the end values of the corresponding properties. The names can use the
 	 *                   set() syntax ('@' prefix for attributes, '$' for styles, '$$fade' for fading and '$$slide' for slide effects). 
 	 *                   Values must be either numbers, numbers with units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). 
-	 *                   The properties will be set for all elements of the list.
+	 *                   Number values, including those with units, can be prefixed with "+=" or "-=", meaning that the value is relative 
+	 *                   to the original value and should be added or subtracted.
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.
 	 * @param callback optional if given, this function(list) will be invoked the list as parameter when the animation finished
@@ -1850,9 +1873,9 @@
 		 * </pre>
 		 *
 		 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
-		 * @param handler the function(event, extraEvent) to invoke when the event has been triggered. If no arguments have been given, 
-		 *                the handler gets the original event object as first parameter and the compatibility object as second. 
-		 *                'this' is always the element that caused the event.
+		 * @param handler the function(event, extraEvent, index) to invoke when the event has been triggered. If no arguments have been given, 
+		 *                the handler gets the original event object as first parameter, the compatibility object as second and the index
+		 *                of the object in the current MINI list as third. 'this' is always the element that caused the event.
 		 *                Unless the handler returns true, all further processing of the event will be stopped. 
 		 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
 		 *                is added to the handler in a property called 'M'.
@@ -1863,17 +1886,17 @@
 		'on': function (name, handler, args, fThis) {
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
-			return this.each(function(el) {
+			return this.each(function(el, index) {
 				var h = handler['M'] = handler['M'] || function(event) {
 					var l = _document.documentElement, b = _document.body;
-					e = event || _window.event;
+					var e = event || _window.event;
 					// @cond debug try {
 					if (!handler.apply(fThis || e.target, args || [e, { 
 							'key': e.keyCode || e.which, // http://unixpapa.com/js/key.html
 							'right': e.which ? (e.which == 3) : (e.button == 2),
 							'pageX': l.scrollLeft + b.scrollLeft + e.clientX,
 							'pageY': l.scrollTop + b.scrollTop + e.clientY
-					}]) && !args) {
+					}, index]) && !args) {
 						// @condblock ie8compatibility 
 						if (e.stopPropagation) {// W3C DOM3 event cancelling available?
 						// @condend
