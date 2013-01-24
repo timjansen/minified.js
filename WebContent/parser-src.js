@@ -115,7 +115,7 @@ function calculateDependencies(sectionMap, enabledSections) {
 function createDefaultConfigurationMap(sections, includeDisabled) {
 	var m = {};
 	hhEach(sections, function(section) {
-		if (section.configurable && (section.configurable != 'disabled' || includeDisabled))
+		if (section.configurable && (section.configurable == 'default' || includeDisabled))
 			m[section.id] = 1;
 	});
 	return m;

@@ -113,7 +113,7 @@ function setUpConfigurationUI(s) {
 			var requires = createList('Requires ', sec.requires);
 		
 			div.add(MINI.el('div', {'className': 'sectionDescriptor'}, [
-				sectionCheckBox = MINI.el('input', {'className': 'secCheck', '@type': 'checkbox', '@id': 'sec-'+sec.id, checked: sec.configurable=='yes' ? 'checked' : null}),
+				sectionCheckBox = MINI.el('input', {'className': 'secCheck', '@type': 'checkbox', '@id': 'sec-'+sec.id, checked: sec.configurable=='default' ? 'checked' : null}),
 				MINI.el('label', {'@for': 'sec-'+sec.id}, sec.name || sec.id),
 				MINI.el('div', {'className': 'requirements'}, [requiredBy ? [requiredBy, MINI.el('br')] : null , requires])
 			]));

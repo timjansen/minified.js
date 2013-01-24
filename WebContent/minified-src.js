@@ -22,7 +22,7 @@
  * Multi-Line Comments:
  * - @id marks the beginning of an optional block. It ends with the next @id block, or the next @stop comment.
  * - @requires defines the ids that the current block depends on. They will always be available.
- * - @configurable the block can be selected in the GUI. If the value is 'yes', it is a enabled by default.
+ * - @configurable the block can be selected in the GUI. If the value is 'default', it is a enabled by default. If it is 'optional', it is not.
  * - @dependency if set, the block is only used as a dependency
  * 
  * Single-Line Comments
@@ -61,7 +61,7 @@
 	/**
 	 * @id ie8compatibility
 	 * @module OPTIONS
-	 * @configurable yes
+	 * @configurable default
 	 * @doc no
 	 * @name Backward-Compatibility for IE8 and similar browsers
 	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8.
@@ -74,7 +74,7 @@
 	 * @id ie7compatibility
 	 * @requires ie8compatibility 
 	 * @module OPTIONS
-	 * @configurable yes
+	 * @configurable default
 	 * @doc no
 	 * @name Backward-Compatibility for IE7 and similar browsers
 	 * The difference between IE7 and IE8 compatibility that IE7 provides neither native selector support (querySelectorAll) nor native JSON.
@@ -94,7 +94,7 @@
 	 * @id ie6compatibility
 	 * @requires ie7compatibility 
 	 * @module OPTIONS
-	 * @configurable yes
+	 * @configurable default
 	 * @doc no
 	 * @name Backward-Compatibility for IE6 and similar browsers
 	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6 which makes the library a tiny 
@@ -105,7 +105,7 @@
 	 * @id fadeslide
 	 * @requires animate set 
 	 * @module ANIMATION
-	 * @configurable yes
+	 * @configurable default
 	 * @doc no
 	 * @name Support for $$fade and $$slide
 	 */
@@ -171,8 +171,8 @@
 		var id = delayMs ? _window.setTimeout(f, delayMs) : f();
  		return function() { if(delayMs) _window.clearTimeout(id); };
 	}
-	function toNumWithoutUnit(v) {
-		return parseFloat(replace(v, /[^\d.-]/g));
+	function extractNumber(v) {
+		return parseFloat(replace(v, /^[^\d-]/));
 	}
 	
 	function getNaturalHeight(elementList) {
@@ -337,7 +337,7 @@
 	/**
 	 * @id debug
 	 * @module OPTIONS
-	 * @configurable no
+	 * @configurable optional
 	 * @doc no
 	 * @name Debugging Support
 	 */
@@ -471,7 +471,7 @@
      * @id each
      * @module SELECTORS
      * @requires dollar
-     * @configurable yes
+     * @configurable default
      * @name .each()
      * @syntax each(callback)
      * Invokes the given function once for each item in the list. The function will be calles with the item as first parameter and the zero-based index as second.
@@ -495,7 +495,7 @@
 	 * @id filter
 	 * @module SELECTORS
 	 * @requires dollar
-	 * @configurable yes
+	 * @configurable default
 	 * @name .filter()
 	 * @syntax filter(filterFunc)
 	 * Creates a new list that contains only those items approved by the given function. The function is called once for each item. 
@@ -529,7 +529,7 @@
      * @id collect 
      * @module SELECTORS 
      * @requires dollar 
-     * @configurable yes 
+     * @configurable default 
      * @name .collect() 
      * @syntax collect(collectFunc) 
      * @syntax collect(collectFunc, resultList) 
@@ -585,7 +585,7 @@
       * @id sub
       * @module SELECTORS 
       * @requires filter 
-      * @configurable yes 
+      * @configurable default 
       * @name .sub() 
       * @syntax sub() 
       * Returns a new list containing only the element in the specified range. If there are no elements in the range, an empty list is returned.
@@ -624,7 +624,7 @@
      * @id find 
      * @module SELECTORS 
      * @requires
-     * @configurable yes 
+     * @configurable default 
      * @name .find() 
      * @syntax find(findFunc) 
      * @syntax find(element) 
@@ -663,7 +663,7 @@
      * @id hasclass 
      * @module SELECTORS 
      * @requires find
-     * @configurable yes 
+     * @configurable default 
      * @name .hasClass() 
      * @syntax hasClass(className) 
      * Checks whether at least one element in the list has the given class name. If yes, the first element that matches is returned. Otherwise
@@ -687,7 +687,7 @@
 	 * @id remove
 	 * @module SELECTORS
 	 * @requires dollar each
-	 * @configurable yes
+	 * @configurable default
 	 * @name .remove()
 	 * @syntax remove()
 	 * Removes all nodes of the list from the DOM tree.
@@ -705,7 +705,7 @@
 	 * @id get
 	 * @module SELECTORS
 	 * @requires dollar
-	 * @configurable yes
+	 * @configurable default
 	 * @name .get()
 	 * @syntax get(name)
 	 * @syntax get(name, toNumber)
@@ -754,9 +754,9 @@
 				else if (spec == '$$fade') {
 					s = isNaN(s = isHidden ? 0 :
 					// @condblock ie8compatibility
-						  IS_PRE_IE9 ? toNumWithoutUnit(self.get('$filter'))/100 :
+						  IS_PRE_IE9 ? extractNumber(self.get('$filter'))/100 :
 					// @condend
-						  toNumWithoutUnit(self.get('$opacity')) 
+						  extractNumber(self.get('$opacity')) 
 						 ) ? 1 : s;
 				}
 				else if (spec == '$$slide') {
@@ -775,7 +775,7 @@
 					s = element.getAttribute(name);
 				else
 					s = element[name];
-				return toNumber ? toNumWithoutUnit(s) : s;
+				return toNumber ? extractNumber(s) : s;
 			}
 			var r = {};
 			each(spec, function(name) {
@@ -789,7 +789,7 @@
 	 * @id set
 	 * @module SELECTORS
 	 * @requires dollar each get
-	 * @configurable yes
+	 * @configurable default
 	 * @name .set()
 	 * @syntax MINI(selector).set(name, value)
 	 * @syntax MINI(selector).set(properties)
@@ -890,6 +890,7 @@
 	 * @param properties a map containing names as keys and the values to set as map values. See above for the syntax.
 	 * @param cssClasses if set() is invoked with a string as single argument, the name "$" (CSS classes) is taken by default and the argument is the
 	 *                   value. See value above for CSS syntax.
+	 *                   Instead of a string, you can also specify a function(oldValue, index, obj) to generate the string. 
 	 * @param defaultFunction optional if set and no function is provided as value, this function(oldValue, index, obj, newValue) will be invoked for each list element 
 	 *                                 and property to determine the value. The function is called with with the old value as first 
 	 *                                 argument and the item's list index as second, and the object being modified as third. The fourth value is the new value specified
@@ -904,7 +905,7 @@
  			
     		 // @condblock fadeslide
     		 if (name == '$$fade' || name == '$$slide') {
-    			 self.set({$visibility: (v = toNumWithoutUnit(value)) > 0 ? 'visible' : 'hidden', $display: 'block'})
+    			 self.set({$visibility: (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', $display: 'block'})
     			     .set((name == '$$fade')  ? (
     			 // @condblock ie8compatibility 
     			    	  IS_PRE_IE9 ? {$filter: 'alpha(opacity = '+(100*v)+')', $zoom: 1} :
@@ -950,7 +951,7 @@
 	 * @id append
 	 * @module SELECTORS
 	 * @requires set
-	 * @configurable yes
+	 * @configurable default
 	 * @name .append()
 	 * @syntax MINI(selector).append(name, value)
 	 * @syntax MINI(selector).append(properties)
@@ -976,7 +977,7 @@
 	 * @id prepend
 	 * @module SELECTORS
 	 * @requires set
-	 * @configurable yes
+	 * @configurable default
 	 * @name .prepend()
 	 * @syntax MINI(selector).prepend(name, value)
 	 * @syntax MINI(selector).prepend(properties)
@@ -1003,7 +1004,7 @@
 	 * @id add
 	 * @module ELEMENT
 	 * @requires dollar each
-	 * @configurable yes
+	 * @configurable default
 	 * @name .add()
 	 * @syntax MINI(selector).add(text)
 	 * @syntax MINI(selector).add(callbackFunction)
@@ -1089,7 +1090,7 @@
 	 * @id fill
 	 * @module ELEMENT
 	 * @requires dollar each
-	 * @configurable yes
+	 * @configurable default
 	 * @name .fill()
 	 * @syntax MINI(selector).fill()
 	 * @syntax MINI(selector).fill(text)
@@ -1161,7 +1162,7 @@
 	 * @id addbefore
 	 * @module ELEMENT
 	 * @requires dollar
-	 * @configurable yes
+	 * @configurable default
 	 * @name .addBefore()
 	 * @syntax MINI(selector).addBefore(text)
 	 * @syntax MINI(selector).addBefore(callbackFunction)
@@ -1228,7 +1229,7 @@
 	 * @id addafter
 	 * @module ELEMENT
 	 * @requires dollar
-	 * @configurable yes
+	 * @configurable default
 	 * @name .addAfter()
 	 * @syntax MINI(selector).addAfter(text)
 	 * @syntax MINI(selector).addAfter(callbackFunction)
@@ -1295,7 +1296,7 @@
 	 * @id addfront
 	 * @module ELEMENT
 	 * @requires dollar
-	 * @configurable yes
+	 * @configurable default
 	 * @name .addFront()
 	 * @syntax MINI(selector).addFront(text)
 	 * @syntax MINI(selector).addFront(callbackFunction)
@@ -1364,7 +1365,7 @@
 	 * @id replace
 	 * @module ELEMENT
 	 * @requires dollar
-	 * @configurable yes
+	 * @configurable default
 	 * @name .replace()
 	 * @syntax MINI(selector).replace(text)
 	 * @syntax MINI(selector).replace(callbackFunction)
@@ -1455,7 +1456,7 @@
 	 * @id animate
 	 * @module ANIMATION
 	 * @requires loop dollar each set get
-	 * @configurable yes
+	 * @configurable default
 	 * @name .animate()
 	 * @syntax MINI(selector).animate(properties)
 	 * @syntax MINI(selector).animate(properties, durationMs)
@@ -1587,7 +1588,7 @@
 					if (name == '$$slide') 
 						dest = dest*getNaturalHeight(p.o) + 'px';
 					p.e[name] = /^[+-]=/.test(dest) ?
-							replace(dest.substr(2), numRegExp, toNumWithoutUnit(start) + toNumWithoutUnit(replace(dest, /\+?=/))) 
+							replace(dest.substr(2), numRegExp, extractNumber(start) + extractNumber(replace(dest, /\+?=/))) 
 							: dest;
 				});
 				initState.push(p);
@@ -1625,7 +1626,7 @@
 									newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i))) + (i < 2 ? ',' : ')');
 							}
 							else 
-								newValue = replace(end, numRegExp, interpolate(toNumWithoutUnit(start), toNumWithoutUnit(end)));
+								newValue = replace(end, numRegExp, interpolate(extractNumber(start), extractNumber(end)));
 							isi.o.set(name, newValue);
 						});
 					});
@@ -1639,7 +1640,7 @@
 		 * @id toggle
 		 * @module ANIMATION
 		 * @requires animate set
-		 * @configurable yes
+		 * @configurable default
 		 * @name .toggle()
 		 * @syntax MINI(selector).toggle(cssClasses)
 		 * @syntax MINI(selector).toggle(state1, state2)
@@ -1730,7 +1731,7 @@
 		 * @id wire
 		 * @module ANIMATION
 		 * @requires toggle on each set
-		 * @configurable yes
+		 * @configurable default
 		 * @name .wire()
 		 * @syntax MINI(selector).wire(events, toggles)
 		 * @shortcut $(selector).wire(events, toggles) - Enabled by default, but can be disabled in the builder.
@@ -1823,7 +1824,7 @@
 		 * @id on
 		 * @module EVENTS
 		 * @requires dollar each
-		 * @configurable yes
+		 * @configurable default
 		 * @name .on()
 		 * @syntax MINI(selector).on(el, name, handler)
 		 * @syntax MINI(selector).on(el, name, handler, args)
@@ -1925,7 +1926,7 @@
 	 * @id off
 	 * @module EVENTS
 	 * @requires dollar on each
-	 * @configurable yes
+	 * @configurable default
 	 * @name .off()
 	 * @syntax MINI.off(element, name, handler)
 	 * Removes the event handler. The call will be ignored if the given handler has not registered using on().
@@ -1966,7 +1967,7 @@
 	 * @id values
 	 * @module REQUEST
 	 * @requires each
-	 * @configurable yes
+	 * @configurable default
 	 * @name .values()
 	 * @syntax MINI().values()
 	 * @syntax MINI().values(dataMap)
@@ -2016,7 +2017,7 @@
 	 * @id offset
 	 * @module SELECTORS
 	 * @requires dollar
-	 * @configurable yes
+	 * @configurable default
 	 * @name .offset()
 	 * @syntax MINI(selector).offset()
 	 * @shortcut $(selector).offset() - Enabled by default, unless disabled with "Disable $ and $$" option
@@ -2051,11 +2052,26 @@
  	//// MINI FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	each({
+
+	/**
+	 * @id iecompatibilitycheck
+	 * @module OPTIONS
+	 * @configurable optional
+	 * @name isCompatible()
+	 * Checks whether the current JavaScript environment is supported by Minified. This allows you to identify the case that you
+	 * are using a Minified version without IE8 (or earlier) support and someone opens the page with an old IE. You can then
+	 * try to handle the situation, e.g. by forwarding the user to an error page.
+	 * @return true if the environment is compatible with Minified, false otherwise
+	 */
+	'isCompatible': function() {
+		return !!(_document.querySelectorAll && _document.addEventListener && _window.XMLHttpRequest && _window.JSON);
+	},
+
     /**
 	 * @id dollardollar
 	 * @module SELECTORS
 	 * @requires dollarraw
-	 * @configurable yes
+	 * @configurable default
 	 * @name MINI.$$()
 	 * @syntax MINI.$$(selector)
 	 * @shortcut $$(selector) - Enabled by default, but can be disabled in the builder.
@@ -2080,7 +2096,7 @@
 	 * @id el
 	 * @module ELEMENT
 	 * @requires dollardollar set
-	 * @configurable yes
+	 * @configurable default
 	 * @name MINI.el()
 	 * @syntax MINI.el(elementName)
 	 * @syntax MINI.el(elementName, attributes)
@@ -2176,7 +2192,7 @@
 	/**
 	* @id request
 	* @module REQUEST
-	* @configurable yes
+	* @configurable default
 	* @name MINI.request()
 	* @syntax MINI.request(method, url)
 	* @syntax MINI.request(method, url, data)
@@ -2310,7 +2326,7 @@
     * @id tojson
     * @module JSON
     * @requires ucode 
-    * @configurable yes
+    * @configurable default
     * @name MINI.toJSON()
     * @syntax MINI.toJSON(value)
     * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, date, boolean or null.
@@ -2355,7 +2371,7 @@
 	* @id parsejson
 	* @module JSON
 	* @requires ucode
-	* @configurable yes
+	* @configurable default
 	* @name MINI.parseJSON()
 	* @syntax MINI.parseJSON(text)
 	* Parses a string containing JSON and returns the de-serialized object.
@@ -2388,7 +2404,7 @@
     * @id ready
     * @module EVENTS
     * @requires ready_vars ready_init
-    * @configurable yes
+    * @configurable default
     * @name MINI.ready()
     * @syntax MINI.ready(handler)
     * Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).
@@ -2409,7 +2425,7 @@
 	/**
      * @id setcookie
      * @module COOKIE
-     * @configurable yes
+     * @configurable default
      * @name MINI.setCookie()
      * @syntax MINI.setCookie(name, value)
      * @syntax MINI.setCookie(name, value, dateOrDays)
@@ -2460,7 +2476,7 @@
      * @id getcookie
      * @module COOKIE
      * @requires
-     * @configurable yes
+     * @configurable default
      * @name MINI.getCookie()
      * @syntax MINI.getCookie(name)
      * @syntax MINI.getCookie(name, dontUnescape)
@@ -2492,7 +2508,7 @@
 	* @id loop
 	* @module ANIMATION
 	* @requires animation_vars 
-	* @configurable yes
+	* @configurable default
 	* @name MINI.loop()
 	* @syntax MINI.loop(paintCallback)
 	* @syntax MINI.loop(paintCallback, element)
@@ -2573,7 +2589,7 @@
      * @module SHORTCUTS
      * @requires dollar
      * @doc no
-     * @configurable yes
+     * @configurable default
      * @name $() (shortcut for MINI() )
      * @syntax $(selector)
      * Shortcut for MINI().
@@ -2594,7 +2610,7 @@
      * @module SHORTCUTS
      * @requires dollardollar topleveldollar
      * @doc no
-     * @configurable yes
+     * @configurable default
      * @name $$() (shortcut for MINI.$$() )
      * @syntax $$(selector)
      * Shortcut for MINI.$$().
@@ -2612,7 +2628,7 @@
      * @module SHORTCUTS
      * @requires el topleveldollar
      * @doc no
-     * @configurable yes
+     * @configurable default
      * @name EE() (shortcut for MINI.el() )
      * @syntax EE(selector)
      * Shortcut for MINI.el().
