@@ -1861,26 +1861,17 @@
 		 * });
 		 * </pre>
 		 *
-		 * @example Adds an handler for mousedown events to a canvas:
-		 * <pre>
-		 * var ctx = $$('#myCanvas').getContext('2d');                      // get a canvas context
-		 * $('#myCanvas').on('mousedown', function(evt, extraInfo) {        // add handler for mouse down events
-		 *     if (extraInfo.right)                                         // right mouse button paints white, all other black
-		 *         ctx.fillStyle = "white";
-		 *     else
-		 *         ctx.fillStyle = "black";
-		 *     ctx.fillRect(evt.clientX, evt.clientY, 1, 1);                // paints a pixel at the cursor position
-		 * });
-		 * </pre>
-		 *
 		 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
-		 * @param handler the function(event, extraEvent, index) to invoke when the event has been triggered. If no arguments have been given, 
-		 *                the handler gets the original event object as first parameter, the compatibility object as second and the index
-		 *                of the object in the current MINI list as third. 'this' is always the element that caused the event.
-		 *                Unless the handler returns true, all further processing of the event will be stopped. 
+		 * @param handler the function(event, index) to invoke when the event has been triggered. If no new arguments have been given using 
+		 *                on()'s second argument, the handler gets the original event object as first parameter and the index
+		 *                of the object in the current MINI list as second. 'this' is the element that caused the event, unless you override it with the
+		 *                third argument.
+		 *                Unless the handler returns true, all further processing of the event will be stopped and event bubbling will be disabled. If you supply
+		 *                custom arguments, the event processing and bubbling will always be disabled, no mattter what the handler returns.
 		 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
-		 *                is added to the handler in a property called 'M'.
-		 * @param args optional if set an array of arguments to pass to the handler function instead of the event objects
+		 *                is added to the handler in an array property called 'M'.
+		 * @param args optional if set an array of arguments to pass to the handler function instead of the event objects. If you pass custom arguments, the
+		 *                      return value of the handler will always be ignored.
 		 * @param fThis an optional value for 'this' in the handler, as alternative to the event target
 		 * @return the list
 		 */
@@ -1888,16 +1879,11 @@
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return this.each(function(el, index) {
-				var h = handler['M'] = handler['M'] || function(event) {
+				var h = function(event) {
 					var l = _document.documentElement, b = _document.body;
 					var e = event || _window.event;
 					// @cond debug try {
-					if (!handler.apply(fThis || e.target, args || [e, { 
-							'key': e.keyCode || e.which, // http://unixpapa.com/js/key.html
-							'right': e.which ? (e.which == 3) : (e.button == 2),
-							'pageX': l.scrollLeft + b.scrollLeft + e.clientX,
-							'pageY': l.scrollTop + b.scrollTop + e.clientY
-					}, index]) && !args) {
+					if (!handler.apply(fThis || e.target, args || [e, index]) || args) {
 						// @condblock ie8compatibility 
 						if (e.stopPropagation) {// W3C DOM3 event cancelling available?
 						// @condend
@@ -1911,6 +1897,7 @@
 					}
 					// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 				};
+				(handler['M'] = handler['M'] || []).push({'e':el, 'h':h, 'n': name});
 				// @condblock ie8compatibility 
 				if (el.addEventListener)
 				// @condend
@@ -1928,8 +1915,9 @@
 	 * @requires dollar on each
 	 * @configurable default
 	 * @name .off()
-	 * @syntax MINI.off(element, name, handler)
-	 * Removes the event handler. The call will be ignored if the given handler has not registered using on().
+	 * @syntax MINI.off(handler)
+	 * Removes the event handler. The call will be ignored if the given handler has not registered using on(). If the handler has been registered
+	 * for more than one element or event, it will be removed from all instances.
 	 * 
 	 * @example Adds a handler to an element
 	 * <pre>
@@ -1939,28 +1927,27 @@
 	 * $('#myElement').on('click', myEventHandler);     // add event handler
 	 *
 	 * window.setInterval(function() {                      // after 5s, remove event handler
-	 *    $('#myElement').off('click', myEventHandler);
+	 *    $('#myElement').off(myEventHandler);
 	 * }, 5000);
 	 * </pre>
 	 * 
-	 * @param name the name of the event (see on)
-	 * @param handler the handler to unregister, as given to on(). It must be a handler that has previously been registered using
-	 *                on().
+	 * @param handler the handler to unregister, as given to on(). It must be a handler that has previously been registered using on().
      * @return the list
      */
-	'off': function (name, handler) {
-		// @cond debug if (!name || !name.substr) error("No name given or name not a string.");
+	'off': function (handler) {
 		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
-	   	return this.each(function(el) {
+	   	each(handler['M'], function(h) {	
 			// @condblock ie8compatibility 
-			if (el.addEventListener)
+			if (h['e'].addEventListener)
 				// @condend
-				el.removeEventListener(name, handler['M'], true); // W3C DOM
+				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
 			// @condblock ie8compatibility 
 			else 
-				el.detachEvent('on'+name, handler['M']);  // IE < 9 version
+				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
 			// @condend
-	   	});
+		});
+		handler['M'] = null;
+	   	return this;
 	},
 	
     /**

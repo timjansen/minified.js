@@ -24,27 +24,31 @@ window.miniTests.push.apply(window.miniTests, [
 		exec: function() {
 			var p = $('#container2');
 			var handler;
-			var callNum = 0;
+			var callNum = 0, lastIndex;
 			var expect, error;
 			var s, s2;
 			p.add(s = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
 			p.add(s2 = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
-			$('div', p).on('click', handler = function(e, xe) {
+			$('div', p).on('click', handler = function(e, index) {
 				callNum++;
+				lastIndex = index;
 				if (this != expect)
 					error = 'Did not get called on expected event';
 			});
 			
 			check(handler.M != null);
+			check(handler.M.length, 2);
 			
 			expect = s;
 			triggerEvent(s, createClick());
-			check(callNum, 1);
+			check(callNum, 1, "callNum");
+			check(lastIndex, 0, "index");
 			check(error, null);
 
 			expect = s2;
 			triggerEvent(s2, createClick());
-			check(callNum, 2);
+			check(callNum, 2, "callNum");
+			check(lastIndex, 1, "index");
 			check(error, null);
 		}
 	},
@@ -58,25 +62,25 @@ window.miniTests.push.apply(window.miniTests, [
 			var s, s2;
 			p.add(s = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
 			p.add(s2 = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
-			$('div', p).on('click', handler = function(e, xe) {
+			$('div', p).on('click', handler = function(e, index) {
 				callNum++;
 				if (this != expect)
 					error = 'Did not get called on expected event';
 			});
-			
-			$(s).off('click', handler); 
+			check(handler.M.length, 2);
 			
 			triggerEvent(s, createClick());
-			check(callNum, 0);
+			check(callNum, 1, "callNum");
+			triggerEvent(s2, createClick());
+			check(callNum, 2, "callNum");
 
-			expect = s2;
-			triggerEvent(s2, createClick());
-			check(callNum, 1);
-			check(error, null);
+			$(s).off(handler); 
+			check(handler.M, null, "Handler.M nulled");
 			
-			$(s2).off('click', handler); 
+			callNum = 0;
+			triggerEvent(s, createClick());
 			triggerEvent(s2, createClick());
-			check(callNum, 1);
+			check(callNum, 0, "after off");
 		}
 	}
 ]);
