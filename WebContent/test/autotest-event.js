@@ -74,7 +74,7 @@ window.miniTests.push.apply(window.miniTests, [
 			triggerEvent(s2, createClick());
 			check(callNum, 2, "callNum");
 
-			$(s).off(handler); 
+			$.off(handler); 
 			check(handler.M, null, "Handler.M nulled");
 			
 			callNum = 0;

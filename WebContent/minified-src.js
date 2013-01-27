@@ -1909,46 +1909,6 @@
 			});
 		},
 		
-	/**
-	 * @id off
-	 * @module EVENTS
-	 * @requires dollar on each
-	 * @configurable default
-	 * @name .off()
-	 * @syntax MINI.off(handler)
-	 * Removes the event handler. The call will be ignored if the given handler has not registered using on(). If the handler has been registered
-	 * for more than one element or event, it will be removed from all instances.
-	 * 
-	 * @example Adds a handler to an element
-	 * <pre>
-	 * function myEventHandler() {
-	 *    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
-	 * }
-	 * $('#myElement').on('click', myEventHandler);     // add event handler
-	 *
-	 * window.setInterval(function() {                      // after 5s, remove event handler
-	 *    $('#myElement').off(myEventHandler);
-	 * }, 5000);
-	 * </pre>
-	 * 
-	 * @param handler the handler to unregister, as given to on(). It must be a handler that has previously been registered using on().
-     * @return the list
-     */
-	'off': function (handler) {
-		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
-	   	each(handler['M'], function(h) {	
-			// @condblock ie8compatibility 
-			if (h['e'].addEventListener)
-				// @condend
-				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
-			// @condblock ie8compatibility 
-			else 
-				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
-			// @condend
-		});
-		handler['M'] = null;
-	   	return this;
-	},
 	
     /**
 	 * @id values
@@ -2546,7 +2506,47 @@
 			})(); 
         } 
         return entry.s; 
-    }
+    },
+    
+    /**
+	 * @id off
+	 * @module EVENTS
+	 * @requires dollar on each
+	 * @configurable default
+	 * @name MINI.off()
+	 * @syntax MINI.off(handler)
+	 * Removes the event handler. The call will be ignored if the given handler has not registered using on(). If the handler has been registered
+	 * for more than one element or event, it will be removed from all instances.
+	 * 
+	 * @example Adds a handler to an element
+	 * <pre>
+	 * function myEventHandler() {
+	 *    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
+	 * }
+	 * $('#myElement').on('click', myEventHandler);     // add event handler
+	 *
+	 * window.setInterval(function() {                      // after 5s, remove event handler
+	 *    MINI.off(myEventHandler);
+	 * }, 5000);
+	 * </pre>
+	 * 
+	 * @param handler the handler to unregister, as given to on(). It must be a handler that has previously been registered using on().
+     * @return the list
+     */
+	'off': function (handler) {
+		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
+	   	each(handler['M'], function(h) {	
+			// @condblock ie8compatibility 
+			if (h['e'].addEventListener)
+				// @condend
+				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
+			// @condblock ie8compatibility 
+			else 
+				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
+			// @condend
+		});
+		handler['M'] = null;
+	}
  	/**
  	 * @stop
  	 */
