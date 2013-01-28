@@ -46,9 +46,9 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
             
             <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
                
-               <dt id="wire_events"><a name="wire_events">events</a></dt>
+               <dt id="wire_events" class=""><a name="wire_events">events</a></dt>
                
-               <dd>either a simple string if the list element is the only element to wire. Then it contains
+               <dd class="">either a simple string if the list element is the only element to wire. Then it contains
                   a space-separated list of event names (e.g. 'click', 'mouseover').
                   By default the event toggles, unless it is prefixed with a '-' or '+'. If prefixed,
                   the event will set the toggle to the first state for '-' or the
@@ -59,9 +59,9 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
                   start with a '#'.
                </dd>
                
-               <dt id="wire_toggles"><a name="wire_toggles">toggles</a></dt>
+               <dt id="wire_toggles" class=""><a name="wire_toggles">toggles</a></dt>
                
-               <dd>describes the toggle functions that will be triggered by the events. This parameter
+               <dd class="">describes the toggle functions that will be triggered by the events. This parameter
                   can be a single toggle function, a list of toggle functions,
                   a list of parameters for toggle() which will be used to create a new toggle, a string
                   that will be used as single parameter for toggle(),
@@ -70,9 +70,9 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
                   define a toggle.
                </dd>
                
-               <dt id="wire_RETURN" class="returnValue"><a name="wire_RETURN">return value</a></dt>
+               <dt id="wire_RETURN" class="returnValue inSyntax0"><a name="wire_RETURN">return value</a></dt>
                
-               <dd>the list</dd>
+               <dd class="inSyntax0">the list</dd>
                
             </dl>
             
@@ -131,9 +131,10 @@ $('.clicky').wire('click', tog);
                
                <h4>Example</h4>
                
-               <div class="example">Wires the list members to change their own text color on click:
+               <div class="example">Wires the list members to change their own text color on click. This example also
+                  animates the color transition:
                   <pre>
-$('.clicky').wire('click', [{$color: 'red'}, {$color: 'blue'}]);
+$('.clicky').wire('click', [{$color: '#f00'}, {$color: '#00f'}, 750]);
 </pre>
                   </div>
                
@@ -174,12 +175,62 @@ $('.dropdown').wire({'.head': 'click', '.closeButton': '-click'} , 'shown');
 </pre>
                   </div>
                
+               <h4>Example</h4>
+               
+               <div class="example">The second argument to wire() can contain a map just like the first.
+                  <pre>
+$('.twoCols').wire({'#swapCols': 'click'} ,
+                   {
+                       '.col1': [{$left: '0px'}, {$left: '300px'}, 500] // swap positions on click
+                       '.col2': [{$left: '300px'}, {$left: '0px'}, 500]
+                   });
+</pre>
+                  </div>
+               
             </div>
             
             
             
             <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
-            	
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="toc"><a href="dollar.html">MINI()</a>
+               <a href="add.html">.add()</a>
+               <a href="addafter.html">.addAfter()</a>
+               <a href="addbefore.html">.addBefore()</a>
+               <a href="addfront.html">.addFront()</a>
+               <a href="animate.html">.animate()</a>
+               <a href="append.html">.append()</a>
+               <a href="collect.html">.collect()</a>
+               <a href="each.html">.each()</a>
+               <a href="fill.html">.fill()</a>
+               <a href="filter.html">.filter()</a>
+               <a href="find.html">.find()</a>
+               <a href="get.html">.get()</a>
+               <a href="hasclass.html">.hasClass()</a>
+               <a href="length.html">.length</a>
+               <a href="offset.html">.offset()</a>
+               <a href="on.html">.on()</a>
+               <a href="prepend.html">.prepend()</a>
+               <a href="raw.html">.raw</a>
+               <a href="remove.html">.remove()</a>
+               <a href="replace.html">.replace()</a>
+               <a href="set.html">.set()</a>
+               <a href="sub.html">.sub()</a>
+               <a href="toggle.html">.toggle()</a>
+               <a href="values.html">.values()</a>
+               <a href="wire.html">.wire()</a>
+               <a href="dollardollar.html">MINI.$$()</a>
+               <a href="el.html">MINI.el()</a>
+               <a href="getcookie.html">MINI.getCookie()</a>
+               <a href="loop.html">MINI.loop()</a>
+               <a href="off.html">MINI.off()</a>
+               <a href="parsejson.html">MINI.parseJSON()</a>
+               <a href="ready.html">MINI.ready()</a>
+               <a href="request.html">MINI.request()</a>
+               <a href="setcookie.html">MINI.setCookie()</a>
+               <a href="tojson.html">MINI.toJSON()</a>
+               
+            </div>	
          </div>
       </div>
       <div id="foot">

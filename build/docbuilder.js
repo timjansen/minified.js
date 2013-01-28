@@ -23,7 +23,7 @@ function createDocs(sec) {
 		s += '<dl class="params">\n';
 		hhEach(sec.params, function(param) {
 			var desc = param.desc.replace(/^optional/, '<span class="optional">optional</span>').replace('&&', '&amp;&amp;');
-			var re = RegExp('\b' + paramName + '\b');
+			var re = RegExp('\b' + param.name + '\b');
 			var highlightClasses = [];
 			hhEach(sec.syntax, function(syn, synIndex) {
 				if (param.name == '@return' || re.test(syn))
@@ -65,6 +65,23 @@ function createPreview(sec) {
 	sec.htmlpreview = s;
 }
 
+
+//takes a section, as created by parseSourceSections(). Adds a 'tocentry' property containing a HTML preview of the function.
+function createTOCEntry(sec) {
+	if (!sec.name || !sec.desc || sec.doc == 'no')
+		return;
+	
+	sec.tocentry = hhTemplate('<a href="ID.html">TITLE</a>\n',	{ID: sec.id, TITLE: sec.name});
+}
+
+function documentSections(docSections) {
+	hhEach(docSections, function(sec) {
+		createDocs(sec);
+		createPreview(sec);
+		createTOCEntry(sec);
+	});
+}
+
 function createPage(title, main) {
 	var p = '<?xml version="1.0" encoding="UTF-8"?>\n' +
 		'<!--\n'+
@@ -77,7 +94,7 @@ function createPage(title, main) {
 	return p;
 }
 
-function createOverviewPage(sections) {
+function sortTocOrder(sections) {
 	// Sort in overview order
 	sections.sort(function(a, b) { 
 		if (a.id == 'dollar')
@@ -90,6 +107,10 @@ function createOverviewPage(sections) {
 			return 1;
 		return a.name > b.name ? 1 : -1;
 	});
+}
+
+function createOverviewPage(sections) {
+	sortTocOrder(sections);
 	
 	// Gen
 	var html = '';
@@ -99,10 +120,22 @@ function createOverviewPage(sections) {
 	return createPage("Reference - Minified.js", html);
 }
 
-function createReferencePage(sec) {
+function createToc(sections) {
+	sortTocOrder(sections);
+	
+	var html = '<div id="toc">';
+	hhEach(sections, function(sec) {
+		html += sec.tocentry;
+	});
+	html += '</div>';
+	return html;
+}
+
+function createReferencePage(sec, toc) {
 	// Gen
 	var html = '<p><a href="index.html">back to Overview</a></p>\n';
 	html += sec.htmldoc;
 	html += '\n<p><a href="index.html">back to Overview</a></p>\n';
+	html += toc;
 	return createPage(sec.name + " - Minified.js", html);
 }

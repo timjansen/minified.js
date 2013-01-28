@@ -48,38 +48,44 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
             
             <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
                
-               <dt id="on_name"><a name="on_name">name</a></dt>
+               <dt id="on_name" class=""><a name="on_name">name</a></dt>
                
-               <dd>the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the
+               <dd class="">the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the
                   name must not used.
                </dd>
                
-               <dt id="on_handler"><a name="on_handler">handler</a></dt>
+               <dt id="on_handler" class=""><a name="on_handler">handler</a></dt>
                
-               <dd>the function(event, extraEvent) to invoke when the event has been triggered. If no
-                  arguments have been given,
-                  the handler gets the original event object as first parameter and the compatibility
-                  object as second.
-                  'this' is always the element that caused the event.
-                  Unless the handler returns true, all further processing of the event will be stopped.
+               <dd class="">the function(event, index) to invoke when the event has been triggered. If no new
+                  arguments have been given using
+                  on()'s second argument, the handler gets the original event object as first parameter
+                  and the index
+                  of the object in the current MINI list as second. 'this' is the element that caused
+                  the event, unless you override it with the
+                  third argument.
+                  Unless the handler returns true, all further processing of the event will be stopped
+                  and event bubbling will be disabled. If you supply
+                  custom arguments, the event processing and bubbling will always be disabled, no mattter
+                  what the handler returns.
                   Minified will not use directly add this handler to the element, but create a wrapper
                   that will eventually invoke it. The wrapper
-                  is added to the handler in a property called 'M'.
+                  is added to the handler in an array property called 'M'.
                </dd>
                
-               <dt id="on_args"><a name="on_args">args</a></dt>
+               <dt id="on_args" class=""><a name="on_args">args</a></dt>
                
-               <dd><span class="optional">optional</span> if set an array of arguments to pass to the handler function instead of the event
-                  objects
+               <dd class=""><span class="optional">optional</span> if set an array of arguments to pass to the handler function instead of the event
+                  objects. If you pass custom arguments, the
+                  return value of the handler will always be ignored.
                </dd>
                
-               <dt id="on_fThis"><a name="on_fThis">fThis</a></dt>
+               <dt id="on_fThis" class=""><a name="on_fThis">fThis</a></dt>
                
-               <dd>an optional value for 'this' in the handler, as alternative to the event target</dd>
+               <dd class="">an optional value for 'this' in the handler, as alternative to the event target</dd>
                
-               <dt id="on_RETURN" class="returnValue"><a name="on_RETURN">return value</a></dt>
+               <dt id="on_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="on_RETURN">return value</a></dt>
                
-               <dd>the list</dd>
+               <dd class="inSyntax0 inSyntax1 inSyntax2">the list</dd>
                
             </dl>
             
@@ -143,27 +149,50 @@ $('div').on('click', function() {
 </pre>
                   </div>
                
-               <h4>Example</h4>
-               
-               <div class="example">Adds an handler for mousedown events to a canvas:
-                  <pre>
-var ctx = $$('#myCanvas').getContext('2d');                      // get a canvas context
-$('#myCanvas').on('mousedown', function(evt, extraInfo) {        // add handler for mouse down events
-    if (extraInfo.right)                                         // right mouse button paints white, all other black
-        ctx.fillStyle = "white";
-    else
-        ctx.fillStyle = "black";
-    ctx.fillRect(evt.clientX, evt.clientY, 1, 1);                // paints a pixel at the cursor position
-});
-</pre>
-                  </div>
-               
             </div>
             
             
             
             <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
-            	
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="toc"><a href="dollar.html">MINI()</a>
+               <a href="add.html">.add()</a>
+               <a href="addafter.html">.addAfter()</a>
+               <a href="addbefore.html">.addBefore()</a>
+               <a href="addfront.html">.addFront()</a>
+               <a href="animate.html">.animate()</a>
+               <a href="append.html">.append()</a>
+               <a href="collect.html">.collect()</a>
+               <a href="each.html">.each()</a>
+               <a href="fill.html">.fill()</a>
+               <a href="filter.html">.filter()</a>
+               <a href="find.html">.find()</a>
+               <a href="get.html">.get()</a>
+               <a href="hasclass.html">.hasClass()</a>
+               <a href="length.html">.length</a>
+               <a href="offset.html">.offset()</a>
+               <a href="on.html">.on()</a>
+               <a href="prepend.html">.prepend()</a>
+               <a href="raw.html">.raw</a>
+               <a href="remove.html">.remove()</a>
+               <a href="replace.html">.replace()</a>
+               <a href="set.html">.set()</a>
+               <a href="sub.html">.sub()</a>
+               <a href="toggle.html">.toggle()</a>
+               <a href="values.html">.values()</a>
+               <a href="wire.html">.wire()</a>
+               <a href="dollardollar.html">MINI.$$()</a>
+               <a href="el.html">MINI.el()</a>
+               <a href="getcookie.html">MINI.getCookie()</a>
+               <a href="loop.html">MINI.loop()</a>
+               <a href="off.html">MINI.off()</a>
+               <a href="parsejson.html">MINI.parseJSON()</a>
+               <a href="ready.html">MINI.ready()</a>
+               <a href="request.html">MINI.request()</a>
+               <a href="setcookie.html">MINI.setCookie()</a>
+               <a href="tojson.html">MINI.toJSON()</a>
+               
+            </div>	
          </div>
       </div>
       <div id="foot">

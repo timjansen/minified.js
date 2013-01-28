@@ -50,25 +50,25 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
             
             <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
                
-               <dt id="setcookie_name"><a name="setcookie_name">name</a></dt>
+               <dt id="setcookie_name" class=""><a name="setcookie_name">name</a></dt>
                
-               <dd>the name of the cookie. This should be ideally an alphanumeric name, as it will not
+               <dd class="">the name of the cookie. This should be ideally an alphanumeric name, as it will not
                   be escaped by Minified and this
                   guarantees compatibility with all systems.
                   If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax.
                </dd>
                
-               <dt id="setcookie_value"><a name="setcookie_value">value</a></dt>
+               <dt id="setcookie_value" class=""><a name="setcookie_value">value</a></dt>
                
-               <dd>the value of the cookie. All characters except alphanumeric and "*@-_+./" will be
+               <dd class="">the value of the cookie. All characters except alphanumeric and "*@-_+./" will be
                   escaped using the
                   JavaScript escape() function and thus can be used, unless you set the optional dontEscape
                   parameter.
                </dd>
                
-               <dt id="setcookie_dateOrDays"><a name="setcookie_dateOrDays">dateOrDays</a></dt>
+               <dt id="setcookie_dateOrDays" class=""><a name="setcookie_dateOrDays">dateOrDays</a></dt>
                
-               <dd><span class="optional">optional</span> specifies when the cookie expires. Can be either a Date object or a number that specifies
+               <dd class=""><span class="optional">optional</span> specifies when the cookie expires. Can be either a Date object or a number that specifies
                   the
                   amount of days. If not set, the cookie has a session lifetime, which means it will
                   be deleted as soon as the
@@ -76,25 +76,25 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
                   will be deleted.
                </dd>
                
-               <dt id="setcookie_path"><a name="setcookie_path">path</a></dt>
+               <dt id="setcookie_path" class=""><a name="setcookie_path">path</a></dt>
                
-               <dd><span class="optional">optional</span> if set, the cookie will be restricted to documents in the given certain path. Otherwise
+               <dd class=""><span class="optional">optional</span> if set, the cookie will be restricted to documents in the given certain path. Otherwise
                   it is valid
                   for the whole domain. This is rarely needed.
                </dd>
                
-               <dt id="setcookie_domain"><a name="setcookie_domain">domain</a></dt>
+               <dt id="setcookie_domain" class=""><a name="setcookie_domain">domain</a></dt>
                
-               <dd><span class="optional">optional</span> if set, you use it to specify the domain (e.g. example.com) which can read the cookie.
+               <dd class=""><span class="optional">optional</span> if set, you use it to specify the domain (e.g. example.com) which can read the cookie.
                   If you don't set it,
                   the domain which hosts the current document is used. This parameter is rarely used,
                   because there are only very
                   few use cases in which this makes sense.
                </dd>
                
-               <dt id="setcookie_dontEscape"><a name="setcookie_dontEscape">dontEscape</a></dt>
+               <dt id="setcookie_dontEscape" class=""><a name="setcookie_dontEscape">dontEscape</a></dt>
                
-               <dd><span class="optional">optional</span> if set, the cookie value is not escaped. Note that without escaping you can not use
+               <dd class=""><span class="optional">optional</span> if set, the cookie value is not escaped. Note that without escaping you can not use
                   every possible
                   character (e.g. ";" will break the cookie), but it may be needed for interoperability
                   with systems that need
@@ -139,7 +139,45 @@ MINI.setCookie('numberOfVisits', '', -1);
             
             
             <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
-            	
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="toc"><a href="dollar.html">MINI()</a>
+               <a href="add.html">.add()</a>
+               <a href="addafter.html">.addAfter()</a>
+               <a href="addbefore.html">.addBefore()</a>
+               <a href="addfront.html">.addFront()</a>
+               <a href="animate.html">.animate()</a>
+               <a href="append.html">.append()</a>
+               <a href="collect.html">.collect()</a>
+               <a href="each.html">.each()</a>
+               <a href="fill.html">.fill()</a>
+               <a href="filter.html">.filter()</a>
+               <a href="find.html">.find()</a>
+               <a href="get.html">.get()</a>
+               <a href="hasclass.html">.hasClass()</a>
+               <a href="length.html">.length</a>
+               <a href="offset.html">.offset()</a>
+               <a href="on.html">.on()</a>
+               <a href="prepend.html">.prepend()</a>
+               <a href="raw.html">.raw</a>
+               <a href="remove.html">.remove()</a>
+               <a href="replace.html">.replace()</a>
+               <a href="set.html">.set()</a>
+               <a href="sub.html">.sub()</a>
+               <a href="toggle.html">.toggle()</a>
+               <a href="values.html">.values()</a>
+               <a href="wire.html">.wire()</a>
+               <a href="dollardollar.html">MINI.$$()</a>
+               <a href="el.html">MINI.el()</a>
+               <a href="getcookie.html">MINI.getCookie()</a>
+               <a href="loop.html">MINI.loop()</a>
+               <a href="off.html">MINI.off()</a>
+               <a href="parsejson.html">MINI.parseJSON()</a>
+               <a href="ready.html">MINI.ready()</a>
+               <a href="request.html">MINI.request()</a>
+               <a href="setcookie.html">MINI.setCookie()</a>
+               <a href="tojson.html">MINI.toJSON()</a>
+               
+            </div>	
          </div>
       </div>
       <div id="foot">

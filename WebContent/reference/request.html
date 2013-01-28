@@ -54,23 +54,23 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
             
             <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
                
-               <dt id="request_method"><a name="request_method">method</a></dt>
+               <dt id="request_method" class=""><a name="request_method">method</a></dt>
                
-               <dd>the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests
+               <dd class="">the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests
                   that change data on the server, and 'get' to only request data). Not case sensitive.
                </dd>
                
-               <dt id="request_url"><a name="request_url">url</a></dt>
+               <dt id="request_url" class=""><a name="request_url">url</a></dt>
                
-               <dd>the server URL to request. May be a relative URL (relative to the document) or an
+               <dd class="">the server URL to request. May be a relative URL (relative to the document) or an
                   absolute URL. Note that unless you do something
                   fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only
                   call URLs on the server your script originates from.
                </dd>
                
-               <dt id="request_data"><a name="request_data">data</a></dt>
+               <dt id="request_data" class=""><a name="request_data">data</a></dt>
                
-               <dd><span class="optional">optional</span> data to send in the request, either as POST body or as URL parameters. It can be
+               <dd class=""><span class="optional">optional</span> data to send in the request, either as POST body or as URL parameters. It can be
                   either a map of
                   parameters (all HTTP methods), a string (all methods) or a DOM document ('post' only).
                   If the method is 'post', it will be
@@ -79,44 +79,44 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
                   in the map. Use null as value for a parameter without value.
                </dd>
                
-               <dt id="request_onSuccess"><a name="request_onSuccess">onSuccess</a></dt>
+               <dt id="request_onSuccess" class=""><a name="request_onSuccess">onSuccess</a></dt>
                
-               <dd><span class="optional">optional</span> this function will be called when the request has been finished successfully and
+               <dd class=""><span class="optional">optional</span> this function will be called when the request has been finished successfully and
                   had the HTTP status 200. Its first argument
                   is the text sent by the server.
                   You can add an optional second argument, which will contain the XML sent by the server,
                   if there was any.
                </dd>
                
-               <dt id="request_onFailure"><a name="request_onFailure">onFailure</a></dt>
+               <dt id="request_onFailure" class=""><a name="request_onFailure">onFailure</a></dt>
                
-               <dd><span class="optional">optional</span> this function will be called if the request failed. The first argument is the HTTP
+               <dd class=""><span class="optional">optional</span> this function will be called if the request failed. The first argument is the HTTP
                   status (never 200; 0 if no HTTP request took place),
                   the second a status text (or null, if the browser threw an exception) and the third
                   the returned text, if there was
                   any (the exception as string if the browser threw it).
                </dd>
                
-               <dt id="request_headers"><a name="request_headers">headers</a></dt>
+               <dt id="request_headers" class=""><a name="request_headers">headers</a></dt>
                
-               <dd><span class="optional">optional</span> a map of HTTP headers to add to the request. Note that the you should use the proper
+               <dd class=""><span class="optional">optional</span> a map of HTTP headers to add to the request. Note that the you should use the proper
                   capitalization of the
                   header 'Content-Type', if you set it, because otherwise it may be overwritten.
                </dd>
                
-               <dt id="request_username"><a name="request_username">username</a></dt>
+               <dt id="request_username" class=""><a name="request_username">username</a></dt>
                
-               <dd><span class="optional">optional</span> username to be used for HTTP authentication, together with the password parameter
+               <dd class=""><span class="optional">optional</span> username to be used for HTTP authentication, together with the password parameter
                </dd>
                
-               <dt id="request_password"><a name="request_password">password</a></dt>
+               <dt id="request_password" class=""><a name="request_password">password</a></dt>
                
-               <dd><span class="optional">optional</span> password for HTTP authentication
+               <dd class=""><span class="optional">optional</span> password for HTTP authentication
                </dd>
                
-               <dt id="request_RETURN" class="returnValue"><a name="request_RETURN">return value</a></dt>
+               <dt id="request_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="request_RETURN">return value</a></dt>
                
-               <dd>the XmlHTTPRequest object. The send() method of the returned object has already been
+               <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">the XmlHTTPRequest object. The send() method of the returned object has already been
                   called. You may use the object to gather additional
                   information, such as the request's state.
                </dd>
@@ -179,7 +179,45 @@ MINI.request('post', 'http://service.example.com/directory',
             
             
             <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
-            	
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="toc"><a href="dollar.html">MINI()</a>
+               <a href="add.html">.add()</a>
+               <a href="addafter.html">.addAfter()</a>
+               <a href="addbefore.html">.addBefore()</a>
+               <a href="addfront.html">.addFront()</a>
+               <a href="animate.html">.animate()</a>
+               <a href="append.html">.append()</a>
+               <a href="collect.html">.collect()</a>
+               <a href="each.html">.each()</a>
+               <a href="fill.html">.fill()</a>
+               <a href="filter.html">.filter()</a>
+               <a href="find.html">.find()</a>
+               <a href="get.html">.get()</a>
+               <a href="hasclass.html">.hasClass()</a>
+               <a href="length.html">.length</a>
+               <a href="offset.html">.offset()</a>
+               <a href="on.html">.on()</a>
+               <a href="prepend.html">.prepend()</a>
+               <a href="raw.html">.raw</a>
+               <a href="remove.html">.remove()</a>
+               <a href="replace.html">.replace()</a>
+               <a href="set.html">.set()</a>
+               <a href="sub.html">.sub()</a>
+               <a href="toggle.html">.toggle()</a>
+               <a href="values.html">.values()</a>
+               <a href="wire.html">.wire()</a>
+               <a href="dollardollar.html">MINI.$$()</a>
+               <a href="el.html">MINI.el()</a>
+               <a href="getcookie.html">MINI.getCookie()</a>
+               <a href="loop.html">MINI.loop()</a>
+               <a href="off.html">MINI.off()</a>
+               <a href="parsejson.html">MINI.parseJSON()</a>
+               <a href="ready.html">MINI.ready()</a>
+               <a href="request.html">MINI.request()</a>
+               <a href="setcookie.html">MINI.setCookie()</a>
+               <a href="tojson.html">MINI.toJSON()</a>
+               
+            </div>	
          </div>
       </div>
       <div id="foot">

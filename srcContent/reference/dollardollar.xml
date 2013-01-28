@@ -17,11 +17,11 @@
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="dollardollar_selector"><a name="dollardollar_selector">selector</a></dt>
-<dd>a simple, CSS-like selector for the element. Uses the syntax described in MINI. The most common
+<dt id="dollardollar_selector" class=""><a name="dollardollar_selector">selector</a></dt>
+<dd class="">a simple, CSS-like selector for the element. Uses the syntax described in MINI. The most common
 parameter for this function is the id selector with the syntax "#id".</dd>
-<dt id="dollardollar_RETURN" class="returnValue"><a name="dollardollar_RETURN">return value</a></dt>
-<dd>a DOM object of the first match, or undefined if the selector did not return at least one match</dd>
+<dt id="dollardollar_RETURN" class="returnValue inSyntax0"><a name="dollardollar_RETURN">return value</a></dt>
+<dd class="inSyntax0">a DOM object of the first match, or undefined if the selector did not return at least one match</dd>
 </dl>
 
 <h4>Description</h4>
@@ -41,5 +41,41 @@ $$('#myCheckbox').selected = true;
 
 
 <p><a href="index.html">back to Overview</a></p>
-	</main>
+<div id="toc"><a href="dollar.html">MINI()</a>
+<a href="add.html">.add()</a>
+<a href="addafter.html">.addAfter()</a>
+<a href="addbefore.html">.addBefore()</a>
+<a href="addfront.html">.addFront()</a>
+<a href="animate.html">.animate()</a>
+<a href="append.html">.append()</a>
+<a href="collect.html">.collect()</a>
+<a href="each.html">.each()</a>
+<a href="fill.html">.fill()</a>
+<a href="filter.html">.filter()</a>
+<a href="find.html">.find()</a>
+<a href="get.html">.get()</a>
+<a href="hasclass.html">.hasClass()</a>
+<a href="length.html">.length</a>
+<a href="offset.html">.offset()</a>
+<a href="on.html">.on()</a>
+<a href="prepend.html">.prepend()</a>
+<a href="raw.html">.raw</a>
+<a href="remove.html">.remove()</a>
+<a href="replace.html">.replace()</a>
+<a href="set.html">.set()</a>
+<a href="sub.html">.sub()</a>
+<a href="toggle.html">.toggle()</a>
+<a href="values.html">.values()</a>
+<a href="wire.html">.wire()</a>
+<a href="dollardollar.html">MINI.$$()</a>
+<a href="el.html">MINI.el()</a>
+<a href="getcookie.html">MINI.getCookie()</a>
+<a href="loop.html">MINI.loop()</a>
+<a href="off.html">MINI.off()</a>
+<a href="parsejson.html">MINI.parseJSON()</a>
+<a href="ready.html">MINI.ready()</a>
+<a href="request.html">MINI.request()</a>
+<a href="setcookie.html">MINI.setCookie()</a>
+<a href="tojson.html">MINI.toJSON()</a>
+</div>	</main>
 </page>

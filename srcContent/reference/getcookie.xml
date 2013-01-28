@@ -18,14 +18,14 @@
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="getcookie_name"><a name="getcookie_name">name</a></dt>
-<dd>the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped.
+<dt id="getcookie_name" class=""><a name="getcookie_name">name</a></dt>
+<dd class="">the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped.
 You may want to escape the name using encodeURIComponent() for all other characters.</dd>
-<dt id="getcookie_dontUnescape"><a name="getcookie_dontUnescape">dontUnescape</a></dt>
-<dd><span class="optional">optional</span> if set and true, the value will be returned unescaped (use this only if the value has been encoded
+<dt id="getcookie_dontUnescape" class=""><a name="getcookie_dontUnescape">dontUnescape</a></dt>
+<dd class=""><span class="optional">optional</span> if set and true, the value will be returned unescaped (use this only if the value has been encoded
 in a special way, and not with the JavaScript encode() method)</dd>
-<dt id="getcookie_RETURN" class="returnValue"><a name="getcookie_RETURN">return value</a></dt>
-<dd>the value of the cookie, or null if not found. Depending on the dontUnescape parameter, it may be unescape or not.</dd>
+<dt id="getcookie_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="getcookie_RETURN">return value</a></dt>
+<dd class="inSyntax0 inSyntax1">the value of the cookie, or null if not found. Depending on the dontUnescape parameter, it may be unescape or not.</dd>
 </dl>
 
 <h4>Description</h4>
@@ -48,5 +48,41 @@ else
 
 
 <p><a href="index.html">back to Overview</a></p>
-	</main>
+<div id="toc"><a href="dollar.html">MINI()</a>
+<a href="add.html">.add()</a>
+<a href="addafter.html">.addAfter()</a>
+<a href="addbefore.html">.addBefore()</a>
+<a href="addfront.html">.addFront()</a>
+<a href="animate.html">.animate()</a>
+<a href="append.html">.append()</a>
+<a href="collect.html">.collect()</a>
+<a href="each.html">.each()</a>
+<a href="fill.html">.fill()</a>
+<a href="filter.html">.filter()</a>
+<a href="find.html">.find()</a>
+<a href="get.html">.get()</a>
+<a href="hasclass.html">.hasClass()</a>
+<a href="length.html">.length</a>
+<a href="offset.html">.offset()</a>
+<a href="on.html">.on()</a>
+<a href="prepend.html">.prepend()</a>
+<a href="raw.html">.raw</a>
+<a href="remove.html">.remove()</a>
+<a href="replace.html">.replace()</a>
+<a href="set.html">.set()</a>
+<a href="sub.html">.sub()</a>
+<a href="toggle.html">.toggle()</a>
+<a href="values.html">.values()</a>
+<a href="wire.html">.wire()</a>
+<a href="dollardollar.html">MINI.$$()</a>
+<a href="el.html">MINI.el()</a>
+<a href="getcookie.html">MINI.getCookie()</a>
+<a href="loop.html">MINI.loop()</a>
+<a href="off.html">MINI.off()</a>
+<a href="parsejson.html">MINI.parseJSON()</a>
+<a href="ready.html">MINI.ready()</a>
+<a href="request.html">MINI.request()</a>
+<a href="setcookie.html">MINI.setCookie()</a>
+<a href="tojson.html">MINI.toJSON()</a>
+</div>	</main>
 </page>

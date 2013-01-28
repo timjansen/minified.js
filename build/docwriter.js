@@ -25,23 +25,14 @@ eval(readFile('build/docbuilder.js'));
 var src = readFile(project.getProperty('src'));
 
 var docSections = parseSourceSections(src).filter(function(a) {return (a.name && a.desc && a.doc != 'no');});
-hhEach(docSections, function(sec) {
-	createDocs(sec);
-	createPreview(sec);
-	if (sec.params && sec.id=='el') {
-		print("sec=" + sec.id + " params=" + sec.params.length);
-		hhEach(sec.params, function (param){
-			print("  name=" + param.name + " desc=" + param.desc.replace('\n', '\n  '));
-			//print(sec.htmldoc);
-		});
-	}
-});
-
+documentSections(docSections);
 
 // Generate ref overview
 writeFile('srcContent/reference/index.xml', createOverviewPage(docSections));
 
+var tocHtml = createToc(docSections);
+
 // Generate single doc pages
 hhEach(docSections, function(sec) {
-	writeFile('srcContent/reference/'+sec.id+'.xml', createReferencePage(sec));
+	writeFile('srcContent/reference/'+sec.id+'.xml', createReferencePage(sec, tocHtml));
 });

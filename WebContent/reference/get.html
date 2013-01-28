@@ -50,9 +50,9 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
             
             <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
                
-               <dt id="get_name"><a name="get_name">name</a></dt>
+               <dt id="get_name" class=""><a name="get_name">name</a></dt>
                
-               <dd>the name of the property, attribute or style. To retrieve a JavaScript property, just
+               <dd class="">the name of the property, attribute or style. To retrieve a JavaScript property, just
                   use its name without prefix. To get an attribute value,
                   prefix the name with a '@'. A '$' prefix will retrieve a CSS style. The syntax for
                   the CSS style is camel-case (e.g. "backgroundColor", not "background-color").
@@ -69,32 +69,32 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
                   respectively.
                </dd>
                
-               <dt id="get_list"><a name="get_list">list</a></dt>
+               <dt id="get_list" class=""><a name="get_list">list</a></dt>
                
-               <dd>in order to retrieve more than one value, you can specify several names in an array
+               <dd class="">in order to retrieve more than one value, you can specify several names in an array
                   or list. get() will then return a name-&gt;value map of results.
                </dd>
                
-               <dt id="get_map"><a name="get_map">map</a></dt>
+               <dt id="get_map" class=""><a name="get_map">map</a></dt>
                
-               <dd>if you specify an object that it neither list nor string, it will use it as a map
+               <dd class="">if you specify an object that it neither list nor string, it will use it as a map
                   of property names. Each property name will be requested. The values of the properties
                   in
                   the map will be ignored. get() will then return a name-&gt;value map of results.
                </dd>
                
-               <dt id="get_toNumber"><a name="get_toNumber">toNumber</a></dt>
+               <dt id="get_toNumber" class=""><a name="get_toNumber">toNumber</a></dt>
                
-               <dd>if set to 'true', convert the value into a number and, if it is a string, remove any
+               <dd class="">if set to 'true', convert the value into a number and, if it is a string, remove any
                   non-numeric characters. This is useful when you request a CSS property such as "$marginTop"
                   that returns a value with a unit suffix, such as "21px". get() will then convert it
                   into a number and return 21. If the returned value is not parsable as a
                   numeric, NaN will be returned.
                </dd>
                
-               <dt id="get_RETURN" class="returnValue"><a name="get_RETURN">return value</a></dt>
+               <dt id="get_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="get_RETURN">return value</a></dt>
                
-               <dd>if a string was specified as parameter, get() returns the corresponding value. If
+               <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">if a string was specified as parameter, get() returns the corresponding value. If
                   a list or map was given, get() returns a new map with the names as keys and the values
                   as values.
                </dd>
@@ -137,7 +137,45 @@ var bgColor = $('#myElement).get('$backgroundColor');
             
             
             <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
-            	
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="toc"><a href="dollar.html">MINI()</a>
+               <a href="add.html">.add()</a>
+               <a href="addafter.html">.addAfter()</a>
+               <a href="addbefore.html">.addBefore()</a>
+               <a href="addfront.html">.addFront()</a>
+               <a href="animate.html">.animate()</a>
+               <a href="append.html">.append()</a>
+               <a href="collect.html">.collect()</a>
+               <a href="each.html">.each()</a>
+               <a href="fill.html">.fill()</a>
+               <a href="filter.html">.filter()</a>
+               <a href="find.html">.find()</a>
+               <a href="get.html">.get()</a>
+               <a href="hasclass.html">.hasClass()</a>
+               <a href="length.html">.length</a>
+               <a href="offset.html">.offset()</a>
+               <a href="on.html">.on()</a>
+               <a href="prepend.html">.prepend()</a>
+               <a href="raw.html">.raw</a>
+               <a href="remove.html">.remove()</a>
+               <a href="replace.html">.replace()</a>
+               <a href="set.html">.set()</a>
+               <a href="sub.html">.sub()</a>
+               <a href="toggle.html">.toggle()</a>
+               <a href="values.html">.values()</a>
+               <a href="wire.html">.wire()</a>
+               <a href="dollardollar.html">MINI.$$()</a>
+               <a href="el.html">MINI.el()</a>
+               <a href="getcookie.html">MINI.getCookie()</a>
+               <a href="loop.html">MINI.loop()</a>
+               <a href="off.html">MINI.off()</a>
+               <a href="parsejson.html">MINI.parseJSON()</a>
+               <a href="ready.html">MINI.ready()</a>
+               <a href="request.html">MINI.request()</a>
+               <a href="setcookie.html">MINI.setCookie()</a>
+               <a href="tojson.html">MINI.toJSON()</a>
+               
+            </div>	
          </div>
       </div>
       <div id="foot">

@@ -21,26 +21,26 @@ Creates a function that switches between the two given states for the list.</div
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="toggle_cssClasses"><a name="toggle_cssClasses">cssClasses</a></dt>
-<dd>a string containing space-separated CSS class names that will be toggled. By default classes are disabled in the first state
-and enabled in the second. Prefix class names with '!' to start with the second.</dd>
-<dt id="toggle_state1"><a name="toggle_state1">state1</a></dt>
-<dd>a property map describing the initial state of the properties. The properties will automatically be set when the
+<dt id="toggle_cssClasses" class=""><a name="toggle_cssClasses">cssClasses</a></dt>
+<dd class="">a string containing space-separated CSS class names that will be toggled. Classes are disabled in the first state
+and enabled in the second.</dd>
+<dt id="toggle_state1" class=""><a name="toggle_state1">state1</a></dt>
+<dd class="">a property map describing the initial state of the properties. The properties will automatically be set when the
 toggle() function is created. The property names use the set() syntax ('@' prefix for attributes, '$' for styles).
 For animation, values must be either numbers, numbers with
 units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). The properties will be set
 for all elements of the list.</dd>
-<dt id="toggle_state2"><a name="toggle_state2">state2</a></dt>
-<dd>a property map describing the second state of the properties. Uses set() syntax, like the other state.</dd>
-<dt id="toggle_durationMs"><a name="toggle_durationMs">durationMs</a></dt>
-<dd><span class="optional">optional</span> if set, the duration of the animation in milliseconds. By default, there is no animation and the set will be changed
+<dt id="toggle_state2" class=""><a name="toggle_state2">state2</a></dt>
+<dd class="">a property map describing the second state of the properties. Uses set() syntax, like the other state.</dd>
+<dt id="toggle_durationMs" class=""><a name="toggle_durationMs">durationMs</a></dt>
+<dd class=""><span class="optional">optional</span> if set, the duration of the animation in milliseconds. By default, there is no animation and the set will be changed
 immediately.</dd>
-<dt id="toggle_linearity"><a name="toggle_linearity">linearity</a></dt>
-<dd><span class="optional">optional</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.</dd>
-<dt id="toggle_delayMs"><a name="toggle_delayMs">delayMs</a></dt>
-<dd><span class="optional">optional</span> defines an optional delay before the animation starts. Default: 0. Ignored if durationMs is 0.</dd>
-<dt id="toggle_RETURN" class="returnValue"><a name="toggle_RETURN">return value</a></dt>
-<dd>a function(newState) that will change from the first to the second state and vice versa if called without argument or with
+<dt id="toggle_linearity" class=""><a name="toggle_linearity">linearity</a></dt>
+<dd class=""><span class="optional">optional</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.</dd>
+<dt id="toggle_delayMs" class=""><a name="toggle_delayMs">delayMs</a></dt>
+<dd class=""><span class="optional">optional</span> defines an optional delay before the animation starts. Default: 0. Ignored if durationMs is 0.</dd>
+<dt id="toggle_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="toggle_RETURN">return value</a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">a function(newState) that will change from the first to the second state and vice versa if called without argument or with
 newState set to null. If the argument is a boolean false or true, the first or second state will be set respectively.
 If the argument is not boolean or the function is called without arguments, the function toggles between both states.</dd>
 </dl>
@@ -83,20 +83,55 @@ $('#mySwitch').on('click', dimmer);
 <h4>Example</h4>
 <div class="example">To toggle CSS classes specify both states:
 <pre>
-var t = $('#myElement').toggle({$: '-myClass1 -myClass2 +myClass3'}, {$: '+myClass1 +myClass2 -myClass3'});
+var t = $('#myElement').toggle({$: '-myClass1 -myClass2'}, {$: '+myClass1 +myClass2'});
 $('#myController').on('click', t);
 </pre>
 </div>
 <h4>Example</h4>
-<div class="example">There is a shortcut for toggling CSS classes. Just list them space-separated in a string and prefix classes that should be enabled in the
-         first state with a '!':
+<div class="example">There is a shortcut for toggling CSS classes. Just list them space-separated in a string:
 <pre>
-var t = $('#myElement').toggle('myClass1 myClass2 !myClass3');
+var t = $('#myElement').toggle('myClass1 myClass2');
 </pre>
 </div>
 </div>
 
 
 <p><a href="index.html">back to Overview</a></p>
-	</main>
+<div id="toc"><a href="dollar.html">MINI()</a>
+<a href="add.html">.add()</a>
+<a href="addafter.html">.addAfter()</a>
+<a href="addbefore.html">.addBefore()</a>
+<a href="addfront.html">.addFront()</a>
+<a href="animate.html">.animate()</a>
+<a href="append.html">.append()</a>
+<a href="collect.html">.collect()</a>
+<a href="each.html">.each()</a>
+<a href="fill.html">.fill()</a>
+<a href="filter.html">.filter()</a>
+<a href="find.html">.find()</a>
+<a href="get.html">.get()</a>
+<a href="hasclass.html">.hasClass()</a>
+<a href="length.html">.length</a>
+<a href="offset.html">.offset()</a>
+<a href="on.html">.on()</a>
+<a href="prepend.html">.prepend()</a>
+<a href="raw.html">.raw</a>
+<a href="remove.html">.remove()</a>
+<a href="replace.html">.replace()</a>
+<a href="set.html">.set()</a>
+<a href="sub.html">.sub()</a>
+<a href="toggle.html">.toggle()</a>
+<a href="values.html">.values()</a>
+<a href="wire.html">.wire()</a>
+<a href="dollardollar.html">MINI.$$()</a>
+<a href="el.html">MINI.el()</a>
+<a href="getcookie.html">MINI.getCookie()</a>
+<a href="loop.html">MINI.loop()</a>
+<a href="off.html">MINI.off()</a>
+<a href="parsejson.html">MINI.parseJSON()</a>
+<a href="ready.html">MINI.ready()</a>
+<a href="request.html">MINI.request()</a>
+<a href="setcookie.html">MINI.setCookie()</a>
+<a href="tojson.html">MINI.toJSON()</a>
+</div>	</main>
 </page>

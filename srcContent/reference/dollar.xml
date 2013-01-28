@@ -20,8 +20,8 @@
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="dollar_selector"><a name="dollar_selector">selector</a></dt>
-<dd>a simple, CSS-like selector for the elements. It supports '#id' (lookup by id), '.class' (lookup by class),
+<dt id="dollar_selector" class=""><a name="dollar_selector">selector</a></dt>
+<dd class="">a simple, CSS-like selector for the elements. It supports '#id' (lookup by id), '.class' (lookup by class),
 'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
 You can also separate two (or more) selectors by space to find elements which are descendants of the previous selectors.
 For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
@@ -32,14 +32,14 @@ You can also use a DOM node as selector, it will be returned as a single-element
 If you pass a list, a shallow copy of the list will be returned. Nulls will be automatically removed from the copy. Nested lists will be flattened
 so the result only contains elements.
 If you pass a function, it will be registered using MINI.ready().</dd>
-<dt id="dollar_context"><a name="dollar_context">context</a></dt>
-<dd><span class="optional">optional</span> an optional selector, DOM node or list of DOM nodes which specifies one or more common ancestor nodes for the selection.
+<dt id="dollar_context" class=""><a name="dollar_context">context</a></dt>
+<dd class=""><span class="optional">optional</span> an optional selector, DOM node or list of DOM nodes which specifies one or more common ancestor nodes for the selection.
 The returned list contains only descendants of the context nodes, all others will be filtered out.</dd>
-<dt id="dollar_childOnly"><a name="dollar_childOnly">childOnly</a></dt>
-<dd><span class="optional">optional</span> if set, only direct children of the context nodes are included in the list. If omitted or not true, all descendants of the
+<dt id="dollar_childOnly" class=""><a name="dollar_childOnly">childOnly</a></dt>
+<dd class=""><span class="optional">optional</span> if set, only direct children of the context nodes are included in the list. If omitted or not true, all descendants of the
 context will be included.</dd>
-<dt id="dollar_RETURN" class="returnValue"><a name="dollar_RETURN">return value</a></dt>
-<dd>the array-like object containing the content specified by the selector. The returned object is guaranteed to
+<dt id="dollar_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="dollar_RETURN">return value</a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the array-like object containing the content specified by the selector. The returned object is guaranteed to
 have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in
 regular arrays (e.g. list[2] for the second elements). Other Array functions are not guaranteed to be available, but you can use the filter()
 function to get a list that is guaranteed to extend Array.
@@ -149,5 +149,41 @@ $(function() {
 
 
 <p><a href="index.html">back to Overview</a></p>
-	</main>
+<div id="toc"><a href="dollar.html">MINI()</a>
+<a href="add.html">.add()</a>
+<a href="addafter.html">.addAfter()</a>
+<a href="addbefore.html">.addBefore()</a>
+<a href="addfront.html">.addFront()</a>
+<a href="animate.html">.animate()</a>
+<a href="append.html">.append()</a>
+<a href="collect.html">.collect()</a>
+<a href="each.html">.each()</a>
+<a href="fill.html">.fill()</a>
+<a href="filter.html">.filter()</a>
+<a href="find.html">.find()</a>
+<a href="get.html">.get()</a>
+<a href="hasclass.html">.hasClass()</a>
+<a href="length.html">.length</a>
+<a href="offset.html">.offset()</a>
+<a href="on.html">.on()</a>
+<a href="prepend.html">.prepend()</a>
+<a href="raw.html">.raw</a>
+<a href="remove.html">.remove()</a>
+<a href="replace.html">.replace()</a>
+<a href="set.html">.set()</a>
+<a href="sub.html">.sub()</a>
+<a href="toggle.html">.toggle()</a>
+<a href="values.html">.values()</a>
+<a href="wire.html">.wire()</a>
+<a href="dollardollar.html">MINI.$$()</a>
+<a href="el.html">MINI.el()</a>
+<a href="getcookie.html">MINI.getCookie()</a>
+<a href="loop.html">MINI.loop()</a>
+<a href="off.html">MINI.off()</a>
+<a href="parsejson.html">MINI.parseJSON()</a>
+<a href="ready.html">MINI.ready()</a>
+<a href="request.html">MINI.request()</a>
+<a href="setcookie.html">MINI.setCookie()</a>
+<a href="tojson.html">MINI.toJSON()</a>
+</div>	</main>
 </page>

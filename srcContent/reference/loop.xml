@@ -18,14 +18,14 @@
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="loop_paintCallback"><a name="loop_paintCallback">paintCallback</a></dt>
-<dd>a callback function(timestamp, stopFunc) to invoke for painting. Parameters given to callback:
+<dt id="loop_paintCallback" class=""><a name="loop_paintCallback">paintCallback</a></dt>
+<dd class="">a callback function(timestamp, stopFunc) to invoke for painting. Parameters given to callback:
 <ul>
 <li>timestamp - number of miliseconds since animation start</li>
 <li>stopFunc - call this function() to stop the currently running animation</li>
 </ul></dd>
-<dt id="loop_RETURN" class="returnValue"><a name="loop_RETURN">return value</a></dt>
-<dd>a function() that, when you invoke it, stops the currently running animation.</dd>
+<dt id="loop_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="loop_RETURN">return value</a></dt>
+<dd class="inSyntax0 inSyntax1">a function() that, when you invoke it, stops the currently running animation.</dd>
 </dl>
 
 <h4>Description</h4>
@@ -39,22 +39,21 @@ To stop a running animation loop, either invoke the function that is returned or
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">A animates a div by moving it in a circle.
+<div class="example">A animates a div by moving along in a circle.
 <pre>
   var myDiv = $$('#myAnimatedDiv');
-  var rotationsPerMs = 1000;               // one rotation per second
-  var maxRadius = 100;
-  var d = 3000;                                 // duration in ms
+  var rotationsPerMs = 1000;                           // one rotation per second
+  var radius = 100;
+  var d = 3000;                                        // duration in ms
   MINI.loop(function(t, stopFunc) {
-    if (t > d) {                                   // time is up: call stopFunc()!
+    if (t > d) {                                       // time is up: call stopFunc()!
       stopFunc();
       return;
     }
 
-    var a = 2 * Math.PI * t / d;                          // angular position
-    var r = maxRadius*sin(t / d * Math.PI);           // radius changes from 0 to 1 back to 0 during the animatio
-    myDiv.style.left = (r * Math.cos(a) + ' px';
-    myDiv.style.top = (r * Math.sin(a) + ' px';
+    var a = 2 * Math.PI * t / rotationsPerMs           // angular position
+    myDiv.style.left = (radius * Math.cos(a) + ' px';
+    myDiv.style.top = (radius * Math.sin(a) + ' px';
   });
 </pre>
 </div>
@@ -62,5 +61,41 @@ To stop a running animation loop, either invoke the function that is returned or
 
 
 <p><a href="index.html">back to Overview</a></p>
-	</main>
+<div id="toc"><a href="dollar.html">MINI()</a>
+<a href="add.html">.add()</a>
+<a href="addafter.html">.addAfter()</a>
+<a href="addbefore.html">.addBefore()</a>
+<a href="addfront.html">.addFront()</a>
+<a href="animate.html">.animate()</a>
+<a href="append.html">.append()</a>
+<a href="collect.html">.collect()</a>
+<a href="each.html">.each()</a>
+<a href="fill.html">.fill()</a>
+<a href="filter.html">.filter()</a>
+<a href="find.html">.find()</a>
+<a href="get.html">.get()</a>
+<a href="hasclass.html">.hasClass()</a>
+<a href="length.html">.length</a>
+<a href="offset.html">.offset()</a>
+<a href="on.html">.on()</a>
+<a href="prepend.html">.prepend()</a>
+<a href="raw.html">.raw</a>
+<a href="remove.html">.remove()</a>
+<a href="replace.html">.replace()</a>
+<a href="set.html">.set()</a>
+<a href="sub.html">.sub()</a>
+<a href="toggle.html">.toggle()</a>
+<a href="values.html">.values()</a>
+<a href="wire.html">.wire()</a>
+<a href="dollardollar.html">MINI.$$()</a>
+<a href="el.html">MINI.el()</a>
+<a href="getcookie.html">MINI.getCookie()</a>
+<a href="loop.html">MINI.loop()</a>
+<a href="off.html">MINI.off()</a>
+<a href="parsejson.html">MINI.parseJSON()</a>
+<a href="ready.html">MINI.ready()</a>
+<a href="request.html">MINI.request()</a>
+<a href="setcookie.html">MINI.setCookie()</a>
+<a href="tojson.html">MINI.toJSON()</a>
+</div>	</main>
 </page>

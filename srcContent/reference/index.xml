@@ -51,9 +51,6 @@
 <h3><a href="length.html">.length</a></h3>
 <div class="summary">Contains the number of elements in the list.</div>
 
-<h3><a href="off.html">.off()</a></h3>
-<div class="summary">Removes the event handler.</div>
-
 <h3><a href="offset.html">.offset()</a></h3>
 <div class="summary">Returns the pixel page coordinates of the list's first element.</div>
 
@@ -100,6 +97,9 @@ Sets up events that will trigger the given toggles.</div>
 
 <h3><a href="loop.html">MINI.loop()</a></h3>
 <div class="summary">Use this function to run an animation loop.</div>
+
+<h3><a href="off.html">MINI.off()</a></h3>
+<div class="summary">Removes the event handler.</div>
 
 <h3><a href="parsejson.html">MINI.parseJSON()</a></h3>
 <div class="summary">Parses a string containing JSON and returns the de-serialized object.</div>

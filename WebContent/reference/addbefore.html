@@ -48,29 +48,29 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
             
             <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
                
-               <dt id="addbefore_text"><a name="addbefore_text">text</a></dt>
+               <dt id="addbefore_text" class=""><a name="addbefore_text">text</a></dt>
                
-               <dd>a text to insert as text node in front of the list elements</dd>
+               <dd class="">a text to insert as text node in front of the list elements</dd>
                
-               <dt id="addbefore_callbackFunction"><a name="addbefore_callbackFunction">callbackFunction</a></dt>
+               <dt id="addbefore_callbackFunction" class=""><a name="addbefore_callbackFunction">callbackFunction</a></dt>
                
-               <dd>a factory function(element, index) that will be invoked for each list element to determine
+               <dd class="">a factory function(element, index) that will be invoked for each list element to determine
                   its content. The function can return either a string for a text node,
                   an HTML element or a list containing strings and/or HTML elements. As parameters it
                   receives the current list element and its 0-based index.
                </dd>
                
-               <dt id="addbefore_elementContent"><a name="addbefore_elementContent">elementContent</a></dt>
+               <dt id="addbefore_elementContent" class=""><a name="addbefore_elementContent">elementContent</a></dt>
                
-               <dd>content to insert in front of <strong>the first element</strong> of the list. The content can be a string for a text node,
+               <dd class="">content to insert in front of <strong>the first element</strong> of the list. The content can be a string for a text node,
                   an HTML element or a list containing strings and/or HTML elements. Note that if you
                   use a HTML node or an array here, it will only be added once to
                   this list's first match.
                </dd>
                
-               <dt id="addbefore_RETURN" class="returnValue"><a name="addbefore_RETURN">return value</a></dt>
+               <dt id="addbefore_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="addbefore_RETURN">return value</a></dt>
                
-               <dd>the current list</dd>
+               <dd class="inSyntax0 inSyntax1 inSyntax2">the current list</dd>
                
             </dl>
             
@@ -152,7 +152,45 @@ $('.textSnippets').addBefore(function(e, index) { return [EE('hr'), 'WARNING']; 
             
             
             <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
-            	
+            
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="toc"><a href="dollar.html">MINI()</a>
+               <a href="add.html">.add()</a>
+               <a href="addafter.html">.addAfter()</a>
+               <a href="addbefore.html">.addBefore()</a>
+               <a href="addfront.html">.addFront()</a>
+               <a href="animate.html">.animate()</a>
+               <a href="append.html">.append()</a>
+               <a href="collect.html">.collect()</a>
+               <a href="each.html">.each()</a>
+               <a href="fill.html">.fill()</a>
+               <a href="filter.html">.filter()</a>
+               <a href="find.html">.find()</a>
+               <a href="get.html">.get()</a>
+               <a href="hasclass.html">.hasClass()</a>
+               <a href="length.html">.length</a>
+               <a href="offset.html">.offset()</a>
+               <a href="on.html">.on()</a>
+               <a href="prepend.html">.prepend()</a>
+               <a href="raw.html">.raw</a>
+               <a href="remove.html">.remove()</a>
+               <a href="replace.html">.replace()</a>
+               <a href="set.html">.set()</a>
+               <a href="sub.html">.sub()</a>
+               <a href="toggle.html">.toggle()</a>
+               <a href="values.html">.values()</a>
+               <a href="wire.html">.wire()</a>
+               <a href="dollardollar.html">MINI.$$()</a>
+               <a href="el.html">MINI.el()</a>
+               <a href="getcookie.html">MINI.getCookie()</a>
+               <a href="loop.html">MINI.loop()</a>
+               <a href="off.html">MINI.off()</a>
+               <a href="parsejson.html">MINI.parseJSON()</a>
+               <a href="ready.html">MINI.ready()</a>
+               <a href="request.html">MINI.request()</a>
+               <a href="setcookie.html">MINI.setCookie()</a>
+               <a href="tojson.html">MINI.toJSON()</a>
+               
+            </div>	
          </div>
       </div>
       <div id="foot">

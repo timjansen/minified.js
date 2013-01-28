@@ -22,8 +22,8 @@
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="set_name"><a name="set_name">name</a></dt>
-<dd>the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
+<dt id="set_name" class=""><a name="set_name">name</a></dt>
+<dd class="">the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
 A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
 The special name '$$fade' expects a value between 0 and 1 and sets the opacity of the element in a browser-independent way.
 The special name '$$slide' expects a value between 0 and 1 that defines how much of the element is visible. The rest will
@@ -34,26 +34,27 @@ the element's visibility will automatically be set to 'hidden'. If the value is 
 In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
 use the '$' syntax.
 </dd>
-<dt id="set_value"><a name="set_value">value</a></dt>
-<dd>the value to set. If it is a function, the function(oldValue, index, obj) will be invoked for each list element to evaluate the value.
+<dt id="set_value" class=""><a name="set_value">value</a></dt>
+<dd class="">the value to set. If it is a function, the function(oldValue, index, obj) will be invoked for each list element to evaluate the value.
 The function is called with with the old value as first argument and the index in the list as second.
 The third value is the object being modified. Functions are not possible for virtual properties ('$$fade' and '$$slide'). For the CSS style names,
 the old value given to the function is the old value of the className property containing the existing classes.
 If value is null and name specified an attribute, the value will be ignored.
 If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefix with a '+' the class will be added,
 with a '+' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.</dd>
-<dt id="set_properties"><a name="set_properties">properties</a></dt>
-<dd>a map containing names as keys and the values to set as map values. See above for the syntax.</dd>
-<dt id="set_cssClasses"><a name="set_cssClasses">cssClasses</a></dt>
-<dd>if set() is invoked with a string as single argument, the name "$" (CSS classes) is taken by default and the argument is the
-value. See value above for CSS syntax.</dd>
-<dt id="set_defaultFunction"><a name="set_defaultFunction">defaultFunction</a></dt>
-<dd><span class="optional">optional</span> if set and no function is provided as value, this function will be invoked for each list element
+<dt id="set_properties" class=""><a name="set_properties">properties</a></dt>
+<dd class="">a map containing names as keys and the values to set as map values. See above for the syntax.</dd>
+<dt id="set_cssClasses" class=""><a name="set_cssClasses">cssClasses</a></dt>
+<dd class="">if set() is invoked with a string as single argument, the name "$" (CSS classes) is taken by default and the argument is the
+value. See value above for CSS syntax.
+Instead of a string, you can also specify a function(oldValue, index, obj) to generate the string.</dd>
+<dt id="set_defaultFunction" class=""><a name="set_defaultFunction">defaultFunction</a></dt>
+<dd class=""><span class="optional">optional</span> if set and no function is provided as value, this function(oldValue, index, obj, newValue) will be invoked for each list element
 and property to determine the value. The function is called with with the old value as first
-argument and the index in the list as second. The third value is the new value specified
+argument and the item's list index as second, and the object being modified as third. The fourth value is the new value specified
 in the set() call.</dd>
-<dt id="set_RETURN" class="returnValue"><a name="set_RETURN">return value</a></dt>
-<dd>the list</dd>
+<dt id="set_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="set_RETURN">return value</a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">the list</dd>
 </dl>
 
 <h4>Description</h4>
@@ -148,5 +149,41 @@ $('h2').set('innerHTML', function(oldValue, index) {
 
 
 <p><a href="index.html">back to Overview</a></p>
-	</main>
+<div id="toc"><a href="dollar.html">MINI()</a>
+<a href="add.html">.add()</a>
+<a href="addafter.html">.addAfter()</a>
+<a href="addbefore.html">.addBefore()</a>
+<a href="addfront.html">.addFront()</a>
+<a href="animate.html">.animate()</a>
+<a href="append.html">.append()</a>
+<a href="collect.html">.collect()</a>
+<a href="each.html">.each()</a>
+<a href="fill.html">.fill()</a>
+<a href="filter.html">.filter()</a>
+<a href="find.html">.find()</a>
+<a href="get.html">.get()</a>
+<a href="hasclass.html">.hasClass()</a>
+<a href="length.html">.length</a>
+<a href="offset.html">.offset()</a>
+<a href="on.html">.on()</a>
+<a href="prepend.html">.prepend()</a>
+<a href="raw.html">.raw</a>
+<a href="remove.html">.remove()</a>
+<a href="replace.html">.replace()</a>
+<a href="set.html">.set()</a>
+<a href="sub.html">.sub()</a>
+<a href="toggle.html">.toggle()</a>
+<a href="values.html">.values()</a>
+<a href="wire.html">.wire()</a>
+<a href="dollardollar.html">MINI.$$()</a>
+<a href="el.html">MINI.el()</a>
+<a href="getcookie.html">MINI.getCookie()</a>
+<a href="loop.html">MINI.loop()</a>
+<a href="off.html">MINI.off()</a>
+<a href="parsejson.html">MINI.parseJSON()</a>
+<a href="ready.html">MINI.ready()</a>
+<a href="request.html">MINI.request()</a>
+<a href="setcookie.html">MINI.setCookie()</a>
+<a href="tojson.html">MINI.toJSON()</a>
+</div>	</main>
 </page>
