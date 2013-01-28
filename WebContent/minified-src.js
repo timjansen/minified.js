@@ -1761,9 +1761,9 @@
 		 * $('.clicky').wire('click', tog);
 		 * </pre>
 		 * 
-		 * @example Wires the list members to change their own text color on click:
+		 * @example Wires the list members to change their own text color on click. This example also animates the color transition:
 		 * <pre>
-		 * $('.clicky').wire('click', [{$color: 'red'}, {$color: 'blue'}]);
+		 * $('.clicky').wire('click', [{$color: '#f00'}, {$color: '#00f'}, 750]);
 		 * </pre>
 		 * 
 		 * @example Wires the list members to change their own text color to blue on mouseover and red otherwise:
@@ -1786,6 +1786,15 @@
 		 *          example does the same as the preceding one.
 		 * <pre>
 		 * $('.dropdown').wire({'.head': 'click', '.closeButton': '-click'} , 'shown');
+		 * </pre>
+		 
+		 * @example The second argument to wire() can contain a map just like the first.
+		 * <pre>
+		 * $('.twoCols').wire({'#swapCols': 'click'} , 
+		 *                    {
+		 *                        '.col1': [{$left: '0px'}, {$left: '300px'}, 500] // swap positions on click
+		 *                        '.col2': [{$left: '300px'}, {$left: '0px'}, 500]
+		 *                    });
 		 * </pre>
 		 * 
 		 * @param events either a simple string if the list element is the only element to wire. Then it contains a space-separated list of event names (e.g. 'click', 'mouseover').
@@ -1999,20 +2008,6 @@
  	//// MINI FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	each({
-
-	/**
-	 * @id iecompatibilitycheck
-	 * @module OPTIONS
-	 * @configurable optional
-	 * @name isCompatible()
-	 * Checks whether the current JavaScript environment is supported by Minified. This allows you to identify the case that you
-	 * are using a Minified version without IE8 (or earlier) support and someone opens the page with an old IE. You can then
-	 * try to handle the situation, e.g. by forwarding the user to an error page.
-	 * @return true if the environment is compatible with Minified, false otherwise
-	 */
-	'isCompatible': function() {
-		return !!(_document.querySelectorAll && _document.addEventListener && _window.XMLHttpRequest && _window.JSON);
-	},
 
     /**
 	 * @id dollardollar
@@ -2465,22 +2460,21 @@
 	* In older browsers, the callback function will be invoked every 33 milliseconds.
 	* To stop a running animation loop, either invoke the function that is returned or the function given as second parameter to the callback.
 	*
-	* @example A animates a div by moving it in a circle.
+	* @example A animates a div by moving along in a circle.
 	* <pre>
 	*   var myDiv = $$('#myAnimatedDiv');
-	*   var rotationsPerMs = 1000;               // one rotation per second
-	*   var maxRadius = 100;
-	*   var d = 3000;                                 // duration in ms
+	*   var rotationsPerMs = 1000;                           // one rotation per second
+	*   var radius = 100;
+	*   var d = 3000;                                        // duration in ms
 	*   MINI.loop(function(t, stopFunc) {
-	*     if (t > d) {                                   // time is up: call stopFunc()!
+	*     if (t > d) {                                       // time is up: call stopFunc()!
 	*       stopFunc();
 	*       return;
 	*     }
 	* 
-	*     var a = 2 * Math.PI * t / d;                          // angular position
-	*     var r = maxRadius*sin(t / d * Math.PI);           // radius changes from 0 to 1 back to 0 during the animatio
-	*     myDiv.style.left = (r * Math.cos(a) + ' px';
-	*     myDiv.style.top = (r * Math.sin(a) + ' px';
+	*     var a = 2 * Math.PI * t / rotationsPerMs           // angular position
+	*     myDiv.style.left = (radius * Math.cos(a) + ' px';
+	*     myDiv.style.top = (radius * Math.sin(a) + ' px';
 	*   });
 	* </pre>
 	*
