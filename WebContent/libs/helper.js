@@ -108,7 +108,7 @@ function hhPromise() {
     			var f = (state ? onFulfilled : onRejected);
     			if (hhIsFunction(f)) {
 	   				var r = f.apply(null, values);
-	   				if (r && r.then)
+	   				if (r && hhIsFunction(r.then))
 	   					r.then(function(value){newPromise.s(true,[value]);}, function(value){newPromise.s(false,[value]);});
 	   				else
 	   					newPromise.s(true, [r]);
