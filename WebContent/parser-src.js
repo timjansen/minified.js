@@ -170,8 +170,7 @@ function closureCompile(src, cb) {
 				output_info: ['compiled_code', 'statistics'],
 				output_file_name: 'minified-custom.js',
 				compilation_level: 'ADVANCED_OPTIMIZATIONS'
-			}, 
-		function(txt) {
+			}).then(function(txt) {
 				cb&&cb(MINI.parseJSON(txt));
 		}, onError);
 }

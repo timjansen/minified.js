@@ -188,9 +188,11 @@
     	return new Date().getTime();
     }
 
+	function callArg(f) {f();}
+
     // for ready()
     function triggerDomReady() {
-    	each(DOMREADY_HANDLER, function(e) {e();});
+    	each(DOMREADY_HANDLER, callArg);
     	DOMREADY_HANDLER = null;
     }
     
@@ -200,6 +202,148 @@
 			DOMREADY_HANDLER.push(handler);
 		else
 			delay(1, handler);
+    }
+    
+    function defer(func) {
+    	_window.setTimeout(func, 0);
+    }
+    
+    function promise(success) {
+    	var state = success; // undefined/null = pending, true = fulfilled, false = rejected
+    	var values = [];     // an array of values as arguments for the then() handlers
+ 		var deferred = [];   // this function calls the functions supplied by then()
+ 	
+    	function set(newState, newValues) {
+    		state = newState;
+    		values = newValues;
+    		if (state != null)
+    			defer(function() {
+    				each(deferred, callArg);
+    			});
+    	}
+		function then(onFulfilled, onRejected) {
+			var newPromise = promise();
+			deferred.push(function() {
+	    		try {
+	    			var f = (state ? onFulfilled : onRejected);
+	    			if (isFunction(f)) {
+		   				var r = f.apply(null, values);
+		   				if (r.then)
+		   					r.then(function(value){newPromise.s(true,[value]);}, function(value){newPromise.s(false,[value]);});
+		   				else
+		   					newPromise.s(true, [r]);
+		   			}
+		   			else
+		   				newPromise.s(state, values);
+				}
+				catch (e) {
+					newPromise.s(false, [e]);
+				}
+			});
+			set(state, values);    		
+    		return newPromise;
+    	}
+	    		
+    	return {
+	/**
+	 * @id then
+	 * @module REQUEST
+	 * @name promise.then()
+	 * @syntax promise.then(onSuccess)
+	 * @syntax promise.then(onSuccess, onError)
+	 * Allows you to add callbacks to an asynchronous operation that will be invoked when the operation finished 
+	 * successfully (onSuccess) or an error occurred (onError). 
+	 * Implements the Promises/A+ specification, allowing interoperability with Promises frameworks for managing promises. 
+	 * You can chain then() invocations, as then() returns another Promise object that you can attach to. 
+	 *
+	 * @example Simple handler for a HTTP request.
+	 * <pre>
+	 * MINI.request('get', '/weather.html')
+	 *     .then(function(txt) {
+	 *        alert('Got response!');
+	 *     });
+	 * </pre>
+	 *
+	 * @example Including an error handler.
+	 * <pre>
+	 * MINI.request('get', '/weather.html')
+	 *     .then(function(txt) {
+	 *        alert('Got response!');
+	 *     }, function(err) {
+	 *        alert('Error!');
+	 *     }));
+	 * </pre>
+	 *
+	 * @example Chained handler.
+	 * <pre>
+	 * MINI.request('get', '/weather.html')
+	 *     .then(function(txt) {
+	 *        showResult();
+	 *     }
+	 *     .then(function() {
+	 *        alert('Result shown');
+	 *     }, function() {
+	 *        alert('An error occurred');
+	 *     });
+	 * </pre>
+	 *
+	 * @param onSuccess optional a function to be called when the operation has been completed successfully. The exact arguments depend on the operation.  
+	 *                           If provided and it returns a Promise, that promise will
+	 *                           be evaluated to determine the state of the returned promise. If provided and it returns regularly, the returned promise will 
+	 *                           have success status. If it throws an error, the returned promise will be in the error state.
+	 * @param onError optional a function to be called when the operation failed. The exact arguments depend on the operation. If provided and it returns a Promise, that promise will
+	 *                           be evaluated to determine the state of the returned promise. If provided and it returns regularly, the returned promise will 
+	 *                           have success status. If it throws an error, the returned promise will be in the error state.
+	 * @return a new Promises object. Its state is determined by the callbacks.
+	 */    	        
+	 			'then': then,
+    			's': set,
+	/**
+	 * @id always
+	 * @module REQUEST
+	 * @name promise.always()
+	 * @syntax promise.always(callback)
+	 * Allows you to add a callback that will always be called, no matter whether the operation succeeded or not.
+	 * This is a convenience function that will call then() with the same function for both arguments. 
+	 *
+	 * @example Simple handler for a HTTP request.
+	 * <pre>
+	 * MINI.request('get', '/weather.html')
+	 *     .always(function() {
+	 *        alert('Got response or error!');
+	 *     });
+	 * </pre>
+	 *
+	 * @param callback a function to be called when the operation has been finished, no matter what its result was. The exact arguments depend on the operation and may
+	 *                 vary depending on whether it succeeded or not. If the function returns a Promise, that promise will
+	 *                           be evaluated to determine the state of the returned promise. If provided and it returns regularly, the returned promise will 
+	 *                           have success status. If it throws an error, the returned promise will be in the error state.
+	 * @return a new Promises object. Its state is determined by the callback.
+	 */
+    			'always': function(func) { return then(func, func); },
+	/**
+	 * @id onerror
+	 * @module REQUEST
+	 * @name promise.onError()
+	 * @syntax promise.onError(callback)
+	 * Allows you to add a callback that will be called when the operation failed.
+	 * This is a convenience function that will call then() with the only the second argument set.
+	 *
+	 * @example Simple handler for a HTTP request.
+	 * <pre>
+	 * MINI.request('get', '/weather.html')
+	 *     .onError(function() {
+	 *        alert('Got error!');
+	 *     });
+	 * </pre>
+	 *
+	 * @param callback a function to be called when the operation has fao;ed. The exact arguments depend on the operation. If the function returns a Promise, that promise will
+	 *                           be evaluated to determine the state of the returned promise. If provided and it returns regularly, the returned promise will 
+	 *                           have success status. If it throws an error, the returned promise will be in the error state.
+	 * @return a new Promises object. Its state is determined by the callback.
+	 */    			 
+    			'onError': function(func) { return then(0, func); }
+	    	};
     }
     
     /**
@@ -1461,8 +1605,8 @@
 	 * @syntax MINI(selector).animate(properties)
 	 * @syntax MINI(selector).animate(properties, durationMs)
 	 * @syntax MINI(selector).animate(properties, durationMs, linearity)
-	 * @syntax MINI(selector).animate(properties, durationMs, linearity, callback)
-	 * @syntax MINI(selector).animate(properties, durationMs, linearity, callback, state)
+	 * @syntax MINI(selector).animate(properties, durationMs, linearity)
+	 * @syntax MINI(selector).animate(properties, durationMs, linearity, state)
 	 * Animates the items of the list by modifying their properties, CSS styles and attributes. animate() can work with numbers, strings that contain exactly one
 	 * number and which may also contain units or other text, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
 	 *
@@ -1522,22 +1666,24 @@
 	 * $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
 	 * </pre>
 	 *
-	 * @example Chained animation using callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
+	 * @example Chained animation using promise callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
 	 * <pre>
-	 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})
-	 *                  .animate({$left: '200px', $top: '0px'}, 600, 0, function(list) {
-	 *         list.animate({$left: '200px', $top: '200px'}, 800, 0, function(list) {
-	 *                list.animate({$left: '100px', $top: '100px'}, 400);
-	 *         });
+	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+	 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
+	 *    .then(function() {
+	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
+	 *    }).then(function() {
+	 *           div.animate({$left: '100px', $top: '100px'}, 400);
+	 *    });
 	 * });
 	 * </pre>
 	 *
 	 * @example Does same as the previous example, but implemented using delays:
 	 * <pre>
-	 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})
-	 *                  .animate({$left: '200px', $top: '0px'}, 600)
-	 *                  .animate({$left: '200px', $top: '200px'}, 800, 0, null, 600)
-	 *                  .animate({$left: '100px', $top: '100px'}, 400), 0, null, 600+800);
+	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+	 * div.animate({$left: '200px', $top: '0px'}, 600)
+	 * div.animate({$left: '200px', $top: '200px'}, 800, 0, null, 600)
+	 * div.animate({$left: '100px', $top: '100px'}, 400), 0, null, 600+800);
 	 * </pre>
 	 *
 	 * @example Three block race to the position 500px with delayed start:
@@ -1554,7 +1700,6 @@
 	 *                   to the original value and should be added or subtracted.
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.
-	 * @param callback optional if given, this function(list) will be invoked the list as parameter when the animation finished
 	 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0.
 	 * @param state optional if set, the animation controller will write information about its state in this object. When animate() returns,
 	 *                       there will be a MINI.loop() stop() function in the property state.stop. The property state.time will be continously updated
@@ -1562,9 +1707,9 @@
 	 *                       passed from the start until the last invocation of the animation loop, describing the progress of the animation. When the function
 	 *                       has a delay, state.time will return 0 during the delay.
 	 *                       If the animation finished, controller writes null into state.time. state.stop will remain unmodified during the whole time. 
-	 * @return the list
+	 * @return a Promise object for the animation's state. It is fulfilled when the animation ended, and rejected if the animation had been stopped.
 	 */
-	'animate': function (properties, durationMs, linearity, callback, delayMs, state) {
+	'animate': function (properties, durationMs, linearity, delayMs, state) {
 		// @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
 		// @cond debug if (linearity < 0 || linearity > 1) error('Third parameter must be at least 0 and not larger than 1.');
 		// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
@@ -1573,9 +1718,10 @@
 		var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
 		var numRegExp = /-?[\d.]+/;
 		var delayStop, loopStop;
+		var prom = promise();
 		state = state || {};
 		state['time'] = 0;
-		state['stop'] = function() { if (delayStop) delayStop(); if (loopStop) loopStop(); };
+		state['stop'] = function() { if (delayStop) delayStop(); if (loopStop) loopStop(); prom.s(false); };
 		delayStop = delay(delayMs, function() {
 			durationMs = durationMs || 500;
 			linearity = linearity || 0;
@@ -1614,8 +1760,7 @@
 					});
 					stop();
 					state['time'] = state['stop'] = null;
-					if (callback) 
-						callback(self);
+					prom.s(true, [self]);
 				}
 				else
 					each(initState, function(isi) {
@@ -1632,7 +1777,7 @@
 					});
 				});
 			});
-			return self;		
+			return prom;		
 		},
 		
 		
@@ -1727,108 +1872,6 @@
 				};
 		},
 
-		/**
-		 * @id wire
-		 * @module ANIMATION
-		 * @requires toggle on each set
-		 * @configurable default
-		 * @name .wire()
-		 * @syntax MINI(selector).wire(events, toggles)
-		 * @shortcut $(selector).wire(events, toggles) - Enabled by default, but can be disabled in the builder.
-		 * 
-		 * Sets up events that will trigger the given toggles.
-		 *
- 	     * The first arguments sets up which kind of events will trigger the toggles in what way. There are two ways to specify the events:
- 	     * <ul>
- 	     * <li>A simple string in the form "eventtype +eventtype -eventtype" adds the space-separated event handlers for each list member. Non-prefixed
- 	     *     event types toggle. If prefixed with + or -, they will put the toggles in the first or second state.</li>
- 	     * <li>A map allows you to add events to more than one element. They map key specifies the selector to find the element. The map value specifies the
- 	     *     events in the form described above.</li>
- 	     * </ul>
- 	     * 
- 	     * The second argument describes the toggles that are controlled by the events. If you pass a simple toggle function or a list of toggle function,
- 	     * they will be simply called. You can also specify an array of parameters to the toggle() function to create new toggles for each list member.
- 	     * The most powerful form of argument is a map containing selectors as first and toggle() arrays as values. This will set up new toggles for each
- 	     * list member.
- 	     * 
- 	     * The selectors given in the event and toggle maps are always executed in the context of the current list elements, unless they start with a '#'. In
- 	     * the latter case, they will be executes in the document context. If you pass a 0 (or any other value evaluating to false), the value applies to the list
- 	     * member itself.
-		 *
-		 * @example Wires the list members to change the text color of the element 'colorChanger' on click:
-		 * <pre>
-		 * var tog = $('#colorChanger').toggle({$color: 'red'}, {$color: 'blue'});
-		 * $('.clicky').wire('click', tog);
-		 * </pre>
-		 * 
-		 * @example Wires the list members to change their own text color on click. This example also animates the color transition:
-		 * <pre>
-		 * $('.clicky').wire('click', [{$color: '#f00'}, {$color: '#00f'}, 750]);
-		 * </pre>
-		 * 
-		 * @example Wires the list members to change their own text color to blue on mouseover and red otherwise:
-		 * <pre>
-		 * $('.mouseovers').wire('-mouseout +mouseover', [{$color: 'red'}, {$color: 'blue'}]);
-		 * </pre>
-		 * 
-		 * @example Same mouse over effect as in the previous example, but wires element '#allBlueButton' to change the color of all elements to blue on click:
-		 * <pre>
-		 * $('.mouseovers').wire({'': '-mouseout +mouseover', '#allBlueButton': '+click'} 
-		 *                   [{$color: 'red'}, {$color: 'blue'}]);
-		 * </pre>
-		 * 
-		 * @example Wires a dropdown menu. Its toggle modifies the CSS class of the 'dropdown.
-		 * <pre>
-		 * $('.dropdown').wire({'.head': 'click', '.closeButton': '-click'} , [{$: '-shown'}, {$: '+shown'}]);
-		 * </pre>
-		 * 
-		 * @example wire() also supports single strings as argument for the toggle to modify only CSS classes. The following
-		 *          example does the same as the preceding one.
-		 * <pre>
-		 * $('.dropdown').wire({'.head': 'click', '.closeButton': '-click'} , 'shown');
-		 * </pre>
-		 
-		 * @example The second argument to wire() can contain a map just like the first.
-		 * <pre>
-		 * $('.twoCols').wire({'#swapCols': 'click'} , 
-		 *                    {
-		 *                        '.col1': [{$left: '0px'}, {$left: '300px'}, 500] // swap positions on click
-		 *                        '.col2': [{$left: '300px'}, {$left: '0px'}, 500]
-		 *                    });
-		 * </pre>
-		 * 
-		 * @param events either a simple string if the list element is the only element to wire. Then it contains a space-separated list of event names (e.g. 'click', 'mouseover').
-		 *               By default the event toggles, unless it is prefixed with a '-' or '+'. If prefixed, the event will set the toggle to the first state for '-' or the
-		 *               or the second state for '+'.
-		 *               Alternatively, events can contain a map of selectors as keys which describe the triggering element and values that describe the events using the string
-		 *               syntax shown above. Selectors are executed in the list element's context, unless they start with a '#'.
-		 * @param toggles describes the toggle functions that will be triggered by the events. This parameter can be a single toggle function, a list of toggle functions,
-		 *                a list of parameters for toggle() which will be used to create a new toggle, a string that will be used as single parameter for toggle(),
-		 *                or a map whose keys are selector describing the elements to toggle and whose values describe the toggle using any of the previous ways to
-		 *                define a toggle.
-		 * @return the list
-		 */
-	    'wire': function(events, toggles) {
-	    	return this.each(function(li) {
-	    		function select(selector) {
-	    			return MINI(selector||li, (selector && !/^#/.test(selector))?li:undef);
-	    		}
-	    		function toggleFunc(selector, args) { 
-	    			return isFunction(args) ? [toggles] :
-						isString(args) ? [select(selector).toggle(args)] :
-						isList(args) ? (isFunction(args[0]) ? args : [M.prototype.toggle.apply(select(selector), args)]) :
-						collect(args, toggleFunc);
-	    		}
-	    		var e, toggleList = toggleFunc(null, toggles);
-	    		
-	    		each(isString(events) ? {'':events} : events, function(selector, eventSpec) {
-	    			each(eventSpec.split(/\s+/), function(event) {
-	    				select(selector).on(e = replace(event, /^[+-]/), function(v) {each(toggleList, function(toggle) {toggle(v);});}, [/^\+/.test(event) || (event==e && undef)]);
-	    			});
-	    		});
-	    	});
-	    },
-	
 		/**
 		 * @id on
 		 * @module EVENTS
@@ -2142,17 +2185,18 @@
 	* @syntax MINI.request(method, url, data, onSuccess, onFailure)
 	* @syntax MINI.request(method, url, data, onSuccess, onFailure, headers)
 	* @syntax MINI.request(method, url, data, onSuccess, onFailure, headers, username, password)
-	* Initiates a HTTP request (using XmlHTTPRequest) to the given URL. When the request finished, either the onSuccess or the onFailure function
-	* will be invoked.
+	* Initiates a HTTP request (using XmlHTTPRequest) to the given URL. It returns a Promise object that allows you to obtain the result.
 	* 
 	* @example Invoke a REST web service and parse the resulting document using JSON:
 	* <pre>
-	* MINI.request('get', 'http://service.example.com/weather', {zipcode: 90210}, function(txt) {
-	*     var json = MINI.parseJSON(txt);
-	*     $('#weatherResult').fill('Today's forecast is is: ' + json.today.forecast);
-	* }, function() {
-	*     $('#weatherResult').fill('The weather service was not available.');
-	* });
+	* MINI.request('get', 'http://service.example.com/weather', {zipcode: 90210})
+	*    .then(function(txt) {
+	*         var json = MINI.parseJSON(txt);
+	*         $('#weatherResult').fill('Today's forecast is is: ' + json.today.forecast);
+	*    })
+	*    .onError(function(status, statusText, responseText) {
+	*         $('#weatherResult').fill('The weather service was not available.');
+	*     });
 	* </pre>
 	* 
 	* @example Send a JSON object to a REST web service:
@@ -2168,13 +2212,14 @@
 	*   $('#registrationResult').fill('Registration failed');
 	* }
 	*
-	* MINI.request('post', 'http://service.example.com/directory', 
-	*     MINI.toJSON(myRequest), function(txt) {
-	*       if (txt == 'OK')
-	*            $('#registrationResult').fill('Registration succeeded');
-	*       else
-	*            failureHandler();
-	* }, failureHandler);
+	* MINI.request('post', 'http://service.example.com/directory', MINI.toJSON(myRequest))
+	*     .then(function(txt) {
+	*        if (txt == 'OK')
+	*             $('#registrationResult').fill('Registration succeeded');
+	*        else
+	*              failureHandler();
+	*        })
+	*     .onError(failureHandler);
 	* </pre>
 	* 
 	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data on the server, and 'get' to only request data). Not case sensitive.
@@ -2184,20 +2229,17 @@
 	*             parameters (all HTTP methods), a string (all methods) or a DOM document ('post' only). If the method is 'post', it will be 
 	*             sent as body, otherwise appended to the URL. In order to send several parameters with the same name, use an array of values
 	*             in the map. Use null as value for a parameter without value.
-	* @param onSuccess optional this function will be called when the request has been finished successfully and had the HTTP status 200. Its first argument 
-	*                  is the text sent by the server.
-	*                  You can add an optional second argument, which will contain the XML sent by the server, if there was any.
-	* @param onFailure optional this function will be called if the request failed. The first argument is the HTTP status (never 200; 0 if no HTTP request took place), 
-	*                  the second a status text (or null, if the browser threw an exception) and the third the returned text, if there was 
-	*                  any (the exception as string if the browser threw it).
 	* @param headers optional a map of HTTP headers to add to the request. Note that the you should use the proper capitalization of the
 	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.
 	* @param username optional username to be used for HTTP authentication, together with the password parameter
 	* @param password optional password for HTTP authentication
-	* @return the XmlHTTPRequest object. The send() method of the returned object has already been called. You may use the object to gather additional 
-	* information, such as the request's state.
+	* @return a Promise containing the request's status. If the request has successfully completed with HTTP status 200, the success handler will be called.
+	*         Its first argument is the text sent by the server. The second argument will contain the XML sent by the server, if there was a XML response.
+	*         The failure handler will receive three arguments. The first argument is the HTTP status (never 200; 0 if no HTTP request took place), 
+	*                  the second a status text (or null, if the browser threw an exception) and the third the returned text, if there was 
+	*                  any (the exception as string if the browser threw it).
 	*/
-	'request': function (method, url, data, onSuccess, onFailure, headers, username, password) {
+	'request': function (method, url, data, headers, username, password) {
 		// @cond debug if (!method) error("request() requires a HTTP method as first argument.");
 		// @cond debug if (!url) error("request() requires a url as second argument.");
 		// @cond debug if (onSuccess && typeof onSuccess != 'function') error("request()'s fourth argument is optional, but if it is set, it must be a function.");
@@ -2206,7 +2248,8 @@
 		var xhr,
 				body = data,
 				ContentType = 'Content-Type',
-				callbackCalled = 0;
+				callbackCalled = 0,
+				prom = promise();
 		try {
 			//@condblock ie6compatibility
 			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
@@ -2239,20 +2282,19 @@
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState == 4 && !callbackCalled++) {
 					if (xhr.status == 200) {
-						if (onSuccess)
-							onSuccess(xhr.responseText, xhr.responseXML);
+						prom.s(true, [xhr.responseText, xhr.responseXML]);
 					}
-					else if (onFailure)
-						onFailure(xhr.status, xhr.statusText, xhr.responseText);
+					else
+						prom.s(false, [xhr.status, xhr.statusText, xhr.responseText]);
 				}
 			};
 			
 			xhr.send(body);
-			return xhr;
+			return prom;
 		}
 		catch (e) {
-			if (onFailure && !callbackCalled) 
-				onFailure(0, null, toString(e));
+			if (!callbackCalled) 
+				prom.s(false, [0, null, toString(e)]);
 		}
 	},
 	
@@ -2541,6 +2583,7 @@
 		});
 		handler['M'] = null;
 	}
+	
  	/**
  	 * @stop
  	 */
