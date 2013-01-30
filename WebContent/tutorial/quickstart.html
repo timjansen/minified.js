@@ -179,7 +179,7 @@ var r = <a href="/reference/dollar.html">$</a>(‘#myTable tr’)               
                   This example iterates through a list using a <code>for</code> loop:
                   <pre>
 var list = <a href="/reference/dollar.html">$</a>(‘input’); 
-for (var i = 0; i &lt;<a href="/reference/length.html">length</a> ; i++)
+for (var i = 0; i &lt; <a href="/reference/length.html">length</a> ; i++)
     list[i].value = ‘’;
 </pre>
                   Alternatively, you could use the Minified’s <a href="/reference/each.html"><code>each()</code></a> function:
@@ -474,7 +474,7 @@ function setZoomLevel(percentage) {
                <h2>Toggles</h2>
                
                
-               <p>A toggle is just a function that can switch between two states. The states are defined
+               <p>A toggle is a function that can switch between two states. The states are defined
                   as two <a href="/reference/set.html"><code>set()</code></a> arguments. The following example creates a toggle that changes the background color
                   of the &lt;body&gt; element:
                   <pre>
@@ -545,85 +545,6 @@ var highlighter3 = <a href="/reference/dollar.html">$</a>(‘.marked’).<a href
                   You can also use more than one space-separated CSS classes in the string, as you would
                   when toggling CSS classes with <a href="/reference/set.html"><code>set()</code></a>.
                   
-               </p>
-               
-               
-               <h2>Wire</h2>
-               
-               
-               <p>Toggles can make event handling a bit easier, but wires allow you to go further. A
-                  wire connects one or more events with one or more toggles, all created in a single
-                  function call.
-                  
-               </p>
-               
-               
-               <p>The most simple wires are those where the element firing the event is also the event
-                  being modified. The following example creates a wire for all elements with the class
-                  ‘expandable’ that toggles the class ‘expanded’ on click:
-                  <pre>
-$(‘.expandable’).<a href="/reference/wire.html">wire</a>(‘click’, ‘expanded’); // toggle class ‘expanded’ on click
-</pre>
-                  </p>
-               
-               
-               <p>Events are not limited to toggling, but also be used to set a specific state. You
-                  can specify all event types that trigger the wire in the first argument as a space-separated
-                  list. Only unprefixed events will toggle. If prefixed with ‘-’, the first toggle state
-                  will be set, and with the prefix ‘+’ the second state set. The following example sets
-                  the CSS class “highlighted" for all elements with the class “marked" while the mouse
-                  pointer is touching it:
-                  <pre>
-<a href="/reference/dollar.html">$</a>(‘.marked’).<a href="/reference/wire.html">wire</a>(‘+mouseover -mouseout’, ‘highlighted’); // highlight on mouse over
-</pre>
-                  </p>
-               
-               
-               <p>Wire()’s second argument can also take an array that will be passed to <a href="/reference/toggle.html"><code>toggle()</code></a> in order to create a new toggle. Let’s modify the first example to let the expandable
-                  elements slide in and out:
-                  <pre>
-<a href="/reference/dollar.html">$</a>(‘.expandable’).<a href="/reference/wire.html">wire</a>(‘click’, [{$$slide: 0}, {$$slide: 1}, 500]); // smoothly slide-in/out in 500 ms on click
-</pre>
-                  </p>
-               
-               
-               <p>If you have more than one expandable section, you may want to have buttons that expand
-                  or collapse all sections. You can declare them in the first argument as a map:
-                  
-                  
-                  
-                  <pre>
-<a href="/reference/dollar.html">$</a>(‘.expandable’).<a href="/reference/wire.html">wire</a>(
-   {
-     ‘’:‘click’,                         // ‘’ refers to the list element,toggles
-     ‘#collapseAll’:’-click’,    // #collapseAll sets first state
-     ‘#expandAll’:’+click’      // #expandAll sets second state
-   }, 
-   [{$$slide: 0}, {$$slide: 1}, 500]); 
-</pre>
-                  The map key is a selected to be executed in the context of the list element. The empty
-                  string (‘’) represents the list element itself. Keys starting with ‘#’ are recognized
-                  as global and this will not use a context.
-                  </p>
-               
-               
-               <p>
-                  wire()’s second argument can also be a map, allowing you to set toggles for the objects
-                  inside the list element as well as for global objects.
-                  <pre>
-<a href="/reference/dollar.html">$</a>(‘.expandable’).<a href="/reference/wire.html">wire</a>({‘’:‘click’, ‘#collapseAll’:’-click’, ‘#expandAll’:’+click’}, 
-   { 
-     ‘’:        [{$$slide: 0}, {$$slide: 1}, 500], // slide the whole element in/out
-     ‘.text’: [{$$fade: 0}, {$$fade: 1}, 500]   // at the same time, fade element’s text in/out
-   }); 
-</pre>
-                  </p>
-               
-               
-               <p>For even more complex toggles, you can pass a toggle function or a list of toggle
-                  functions as second argument for the wire. Also, note that it is easy to write a custom
-                  toggle, for example for more complex animations. A toggle is nothing but a function
-                  taking an optional boolean argument, and very easy to implement.
                </p>
                
                

@@ -37,8 +37,6 @@ for all elements of the list.</dd>
 immediately.</dd>
 <dt id="toggle_linearity" class=""><a name="toggle_linearity">linearity</a></dt>
 <dd class=""><span class="optional">optional</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.</dd>
-<dt id="toggle_delayMs" class=""><a name="toggle_delayMs">delayMs</a></dt>
-<dd class=""><span class="optional">optional</span> defines an optional delay before the animation starts. Default: 0. Ignored if durationMs is 0.</dd>
 <dt id="toggle_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="toggle_RETURN">return value</a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">a function(newState) that will change from the first to the second state and vice versa if called without argument or with
 newState set to null. If the argument is a boolean false or true, the first or second state will be set respectively.
@@ -122,7 +120,6 @@ var t = $('#myElement').toggle('myClass1 myClass2');
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
 <a href="values.html">.values()</a>
-<a href="wire.html">.wire()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>
@@ -133,5 +130,8 @@ var t = $('#myElement').toggle('myClass1 myClass2');
 <a href="request.html">MINI.request()</a>
 <a href="setcookie.html">MINI.setCookie()</a>
 <a href="tojson.html">MINI.toJSON()</a>
+<a href="always.html">promise.always()</a>
+<a href="onerror.html">promise.onError()</a>
+<a href="then.html">promise.then()</a>
 </div>	</main>
 </page>

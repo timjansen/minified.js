@@ -15,8 +15,8 @@
 <div class="syntax">MINI(selector).animate(properties)</div>
 <div class="syntax">MINI(selector).animate(properties, durationMs)</div>
 <div class="syntax">MINI(selector).animate(properties, durationMs, linearity)</div>
-<div class="syntax">MINI(selector).animate(properties, durationMs, linearity, callback)</div>
-<div class="syntax">MINI(selector).animate(properties, durationMs, linearity, callback, state)</div>
+<div class="syntax">MINI(selector).animate(properties, durationMs, linearity)</div>
+<div class="syntax">MINI(selector).animate(properties, durationMs, linearity, state)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -31,8 +31,6 @@ to the original value and should be added or subtracted.</dd>
 <dd class=""><span class="optional">optional</span> the duration of the animation in milliseconds. Default: 500ms.</dd>
 <dt id="animate_linearity" class=""><a name="animate_linearity">linearity</a></dt>
 <dd class=""><span class="optional">optional</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.</dd>
-<dt id="animate_callback" class=""><a name="animate_callback">callback</a></dt>
-<dd class=""><span class="optional">optional</span> if given, this function(list) will be invoked the list as parameter when the animation finished</dd>
 <dt id="animate_delayMs" class=""><a name="animate_delayMs">delayMs</a></dt>
 <dd class=""><span class="optional">optional</span> if set, the animation will be delayed by the given time in milliseconds. Default: 0.</dd>
 <dt id="animate_state" class=""><a name="animate_state">state</a></dt>
@@ -43,7 +41,7 @@ passed from the start until the last invocation of the animation loop, describin
 has a delay, state.time will return 0 during the delay.
 If the animation finished, controller writes null into state.time. state.stop will remain unmodified during the whole time.</dd>
 <dt id="animate_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4"><a name="animate_RETURN">return value</a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">the list</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">a Promise object for the animation's state. It is fulfilled when the animation ended, and rejected if the animation had been stopped.</dd>
 </dl>
 
 <h4>Description</h4>
@@ -115,23 +113,25 @@ $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
 </pre>
 </div>
 <h4>Example</h4>
-<div class="example">Chained animation using callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
+<div class="example">Chained animation using promise callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
 <pre>
-$('#myMovingDiv').set({$left: '0px', $top: '0px'})
-                 .animate({$left: '200px', $top: '0px'}, 600, 0, function(list) {
-        list.animate({$left: '200px', $top: '200px'}, 800, 0, function(list) {
-               list.animate({$left: '100px', $top: '100px'}, 400);
-        });
+var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+div.animate({$left: '200px', $top: '0px'}, 600, 0)
+   .then(function() {
+          div.animate({$left: '200px', $top: '200px'}, 800, 0);
+   }).then(function() {
+          div.animate({$left: '100px', $top: '100px'}, 400);
+   });
 });
 </pre>
 </div>
 <h4>Example</h4>
 <div class="example">Does same as the previous example, but implemented using delays:
 <pre>
-$('#myMovingDiv').set({$left: '0px', $top: '0px'})
-                 .animate({$left: '200px', $top: '0px'}, 600)
-                 .animate({$left: '200px', $top: '200px'}, 800, 0, null, 600)
-                 .animate({$left: '100px', $top: '100px'}, 400), 0, null, 600+800);
+var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+div.animate({$left: '200px', $top: '0px'}, 600)
+div.animate({$left: '200px', $top: '200px'}, 800, 0, null, 600)
+div.animate({$left: '100px', $top: '100px'}, 400), 0, null, 600+800);
 </pre>
 </div>
 <h4>Example</h4>
@@ -171,7 +171,6 @@ $('#racingDiv3').set({$left: '0px'}).animate({$left: '500px'}, 500, 0, null, 300
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
 <a href="values.html">.values()</a>
-<a href="wire.html">.wire()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>
@@ -182,5 +181,8 @@ $('#racingDiv3').set({$left: '0px'}).animate({$left: '500px'}, 500, 0, null, 300
 <a href="request.html">MINI.request()</a>
 <a href="setcookie.html">MINI.setCookie()</a>
 <a href="tojson.html">MINI.toJSON()</a>
+<a href="always.html">promise.always()</a>
+<a href="onerror.html">promise.onError()</a>
+<a href="then.html">promise.then()</a>
 </div>	</main>
 </page>

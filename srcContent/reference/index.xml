@@ -82,10 +82,6 @@ Creates a function that switches between the two given states for the list.</div
 <h3><a href="values.html">.values()</a></h3>
 <div class="summary">Creates a name/value map from the given form.</div>
 
-<h3><a href="wire.html">.wire()</a></h3>
-<div class="summary">
-Sets up events that will trigger the given toggles.</div>
-
 <h3><a href="dollardollar.html">MINI.$$()</a></h3>
 <div class="summary">Returns an DOM object containing the first match of the given selector, or undefined if no match.</div>
 
@@ -115,6 +111,16 @@ Sets up events that will trigger the given toggles.</div>
 
 <h3><a href="tojson.html">MINI.toJSON()</a></h3>
 <div class="summary">Converts the given value into a JSON string.</div>
+
+<h3><a href="always.html">promise.always()</a></h3>
+<div class="summary">Allows you to add a callback that will always be called, no matter whether the operation succeeded or not.</div>
+
+<h3><a href="onerror.html">promise.onError()</a></h3>
+<div class="summary">Allows you to add a callback that will be called when the operation failed.</div>
+
+<h3><a href="then.html">promise.then()</a></h3>
+<div class="summary">Allows you to add callbacks to an asynchronous operation that will be invoked when the operation finished
+successfully (onSuccess) or an error occurred (onError).</div>
 
 	</main>
 </page>

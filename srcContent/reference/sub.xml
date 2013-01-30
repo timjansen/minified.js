@@ -80,7 +80,6 @@ $('#myList li').sub(-1).set('+lastItem');
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
 <a href="values.html">.values()</a>
-<a href="wire.html">.wire()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>
@@ -91,5 +90,8 @@ $('#myList li').sub(-1).set('+lastItem');
 <a href="request.html">MINI.request()</a>
 <a href="setcookie.html">MINI.setCookie()</a>
 <a href="tojson.html">MINI.toJSON()</a>
+<a href="always.html">promise.always()</a>
+<a href="onerror.html">promise.onError()</a>
+<a href="then.html">promise.then()</a>
 </div>	</main>
 </page>

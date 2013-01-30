@@ -168,7 +168,7 @@
 		return toString(s).replace(regexp, sub||'');
 	}
 	function delay(delayMs, f) {
-		var id = delayMs ? _window.setTimeout(f, delayMs) : f();
+		var id = _window.setTimeout(f, delayMs||0);
  		return function() { if(delayMs) _window.clearTimeout(id); };
 	}
 	function extractNumber(v) {
@@ -201,34 +201,31 @@
     	if (DOMREADY_HANDLER) // if DOM ready, call immediately
 			DOMREADY_HANDLER.push(handler);
 		else
-			delay(1, handler);
+			delay(0, handler);
     }
-    
-    function defer(func) {
-    	_window.setTimeout(func, 0);
-    }
-    
-    function promise(success) {
-    	var state = success; // undefined/null = pending, true = fulfilled, false = rejected
+     
+    function promise() {
+    	var state;           // undefined/null = pending, true = fulfilled, false = rejected
     	var values = [];     // an array of values as arguments for the then() handlers
- 		var deferred = [];   // this function calls the functions supplied by then()
- 	
+ 		var deferred = [];   // functions to call when set() is invoked
+ 	 	
     	function set(newState, newValues) {
-    		state = newState;
-    		values = newValues;
-    		if (state != null)
-    			defer(function() {
-    				each(deferred, callArg);
-    			});
+    		if (state == null) {
+	    		state = newState;
+	    		values = newValues;
+   				delay(0, function() {
+   					each(deferred, callArg);
+   				});
+    		}
     	}
 		function then(onFulfilled, onRejected) {
 			var newPromise = promise();
-			deferred.push(function() {
+			var callCallbacks = function() {
 	    		try {
 	    			var f = (state ? onFulfilled : onRejected);
 	    			if (isFunction(f)) {
 		   				var r = f.apply(null, values);
-		   				if (r.then)
+		   				if (r && r.then)
 		   					r.then(function(value){newPromise.s(true,[value]);}, function(value){newPromise.s(false,[value]);});
 		   				else
 		   					newPromise.s(true, [r]);
@@ -239,8 +236,11 @@
 				catch (e) {
 					newPromise.s(false, [e]);
 				}
-			});
-			set(state, values);    		
+			};
+			if (state != null)
+				delay(0, callCallbacks);
+			else
+				deferred.push(callCallbacks);    		
     		return newPromise;
     	}
 	    		
@@ -276,12 +276,18 @@
 	 *
 	 * @example Chained handler.
 	 * <pre>
-	 * MINI.request('get', '/weather.html')
+	 * MINI.request('get', '/weather.do')
 	 *     .then(function(txt) {
-	 *        showResult();
+	 *        showWeather(txt);
 	 *     }
 	 *     .then(function() {
-	 *        alert('Result shown');
+	 *        return MINI.request('get', '/traffic.do');
+	 *     }
+	 *     .then(function(txt) {
+	 *        showTraffic(txt);
+	 *     }
+	 *     .then(function() {
+	 *        alert('All result displayed');
 	 *     }, function() {
 	 *        alert('An error occurred');
 	 *     });
@@ -344,6 +350,9 @@
 	 */    			 
     			'onError': function(func) { return then(0, func); }
 	    	};
+	  /**
+	   * @stop
+	   */ 
     }
     
     /**
@@ -1842,14 +1851,13 @@
 		 * @param durationMs optional if set, the duration of the animation in milliseconds. By default, there is no animation and the set will be changed
 		 *                   immediately.
 		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.
-		 * @param delayMs optional defines an optional delay before the animation starts. Default: 0. Ignored if durationMs is 0.
 		 * @return a function(newState) that will change from the first to the second state and vice versa if called without argument or with
 		 *         newState set to null. If the argument is a boolean false or true, the first or second state will be set respectively. 
 		 *         If the argument is not boolean or the function is called without arguments, the function toggles between both states. 
 		 */
-		'toggle': function(state1, state2, durationMs, linearity, delayMs) {
+		'toggle': function(state1, state2, durationMs, linearity) {
 			var animState = {};
-			var state = false, stop, regexg = /\b(?=\w)/g;
+			var state = false, regexg = /\b(?=\w)/g;
 			var self = this;
 
 			return !state2 ?
@@ -1860,15 +1868,10 @@
 						return;
 					state = isType(newState, 'boolean') ? newState : !state;
 	
-					if (stop) 
-						stop();
-					stop = delay(delayMs, function() {
-						if (durationMs) 
-							self.animate(state ? state2 : state1, animState.stop ? (animState.stop() || animState.time) : durationMs, linearity, null, 0, animState);
-						else
-							self.set(state ? state2 : state1); 
-						stop=null; 
-					});
+					if (durationMs) 
+						self.animate(state ? state2 : state1, animState.stop ? (animState.stop() || animState.time) : durationMs, linearity, 0, animState);
+					else
+						self.set(state ? state2 : state1); 
 				};
 		},
 
@@ -2221,6 +2224,7 @@
 	*        })
 	*     .onError(failureHandler);
 	* </pre>
+	*
 	* 
 	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data on the server, and 'get' to only request data). Not case sensitive.
 	* @param url the server URL to request. May be a relative URL (relative to the document) or an absolute URL. Note that unless you do something 

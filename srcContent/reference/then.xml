@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Auto-generated using docbuilder.js. Do not edit manually. 
+-->
+<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+	<title>promise.then() - Minified.js</title>
+	<section>reference</section>
+	<main>
+<p><a href="index.html">back to Overview</a></p>
+<h3><a name="doc-then">promise.then()</a></h3>
+<div class="summary">Allows you to add callbacks to an asynchronous operation that will be invoked when the operation finished
+successfully (onSuccess) or an error occurred (onError).</div>
+
+<h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">promise.then(onSuccess)</div>
+<div class="syntax">promise.then(onSuccess, onError)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="then_onSuccess" class=""><a name="then_onSuccess">onSuccess</a></dt>
+<dd class=""><span class="optional">optional</span> a function to be called when the operation has been completed successfully. The exact arguments depend on the operation.
+If provided and it returns a Promise, that promise will
+be evaluated to determine the state of the returned promise. If provided and it returns regularly, the returned promise will
+have success status. If it throws an error, the returned promise will be in the error state.</dd>
+<dt id="then_onError" class=""><a name="then_onError">onError</a></dt>
+<dd class=""><span class="optional">optional</span> a function to be called when the operation failed. The exact arguments depend on the operation. If provided and it returns a Promise, that promise will
+be evaluated to determine the state of the returned promise. If provided and it returns regularly, the returned promise will
+have success status. If it throws an error, the returned promise will be in the error state.</dd>
+<dt id="then_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="then_RETURN">return value</a></dt>
+<dd class="inSyntax0 inSyntax1">a new Promises object. Its state is determined by the callbacks.</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description">Allows you to add callbacks to an asynchronous operation that will be invoked when the operation finished
+successfully (onSuccess) or an error occurred (onError).
+Implements the Promises/A+ specification, allowing interoperability with Promises frameworks for managing promises.
+You can chain then() invocations, as then() returns another Promise object that you can attach to.
+
+</div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example">Simple handler for a HTTP request.
+<pre>
+MINI.request('get', '/weather.html')
+    .then(function(txt) {
+       alert('Got response!');
+    });
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Including an error handler.
+<pre>
+MINI.request('get', '/weather.html')
+    .then(function(txt) {
+       alert('Got response!');
+    }, function(err) {
+       alert('Error!');
+    }));
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">Chained handler.
+<pre>
+MINI.request('get', '/weather.html')
+    .then(function(txt) {
+       showResult();
+    }
+    .then(function() {
+       alert('Result shown');
+    }, function() {
+       alert('An error occurred');
+    });
+</pre>
+</div>
+</div>
+
+
+<p><a href="index.html">back to Overview</a></p>
+<div id="toc"><a href="dollar.html">MINI()</a>
+<a href="add.html">.add()</a>
+<a href="addafter.html">.addAfter()</a>
+<a href="addbefore.html">.addBefore()</a>
+<a href="addfront.html">.addFront()</a>
+<a href="animate.html">.animate()</a>
+<a href="append.html">.append()</a>
+<a href="collect.html">.collect()</a>
+<a href="each.html">.each()</a>
+<a href="fill.html">.fill()</a>
+<a href="filter.html">.filter()</a>
+<a href="find.html">.find()</a>
+<a href="get.html">.get()</a>
+<a href="hasclass.html">.hasClass()</a>
+<a href="length.html">.length</a>
+<a href="offset.html">.offset()</a>
+<a href="on.html">.on()</a>
+<a href="prepend.html">.prepend()</a>
+<a href="raw.html">.raw</a>
+<a href="remove.html">.remove()</a>
+<a href="replace.html">.replace()</a>
+<a href="set.html">.set()</a>
+<a href="sub.html">.sub()</a>
+<a href="toggle.html">.toggle()</a>
+<a href="values.html">.values()</a>
+<a href="dollardollar.html">MINI.$$()</a>
+<a href="el.html">MINI.el()</a>
+<a href="getcookie.html">MINI.getCookie()</a>
+<a href="loop.html">MINI.loop()</a>
+<a href="off.html">MINI.off()</a>
+<a href="parsejson.html">MINI.parseJSON()</a>
+<a href="ready.html">MINI.ready()</a>
+<a href="request.html">MINI.request()</a>
+<a href="setcookie.html">MINI.setCookie()</a>
+<a href="tojson.html">MINI.toJSON()</a>
+<a href="always.html">promise.always()</a>
+<a href="onerror.html">promise.onError()</a>
+<a href="then.html">promise.then()</a>
+</div>	</main>
+</page>

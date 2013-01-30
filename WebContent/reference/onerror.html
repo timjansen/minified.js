@@ -1,7 +1,7 @@
 <!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml">
    <head>
       <meta charset="UTF-8"></meta>
-      <title>.offset() - Minified.js</title><style type="text/css">
+      <title>promise.onError() - Minified.js</title><style type="text/css">
 body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-serif;}
 #head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
 .container { margin: auto; width: 70em; }
@@ -26,16 +26,16 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
             
             <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
             
-            <h3 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a name="doc-offset">.offset()</a></h3>
+            <h3 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a name="doc-onerror">promise.onError()</a></h3>
             
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="summary">Returns the pixel page coordinates of the list's first element.</div>
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="summary">Allows you to add a callback that will be called when the operation failed.</div>
             
             
             <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Syntax</h4>
             
             <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="syntaxVariant">
                
-               <div class="syntax">MINI(selector).offset()</div>
+               <div class="syntax">promise.onError(callback)</div>
                
             </div>
             
@@ -44,23 +44,28 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
             
             <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
                
-               <dt id="offset_element" class=""><a name="offset_element">element</a></dt>
+               <dt id="onerror_callback" class=""><a name="onerror_callback">callback</a></dt>
                
-               <dd class="">the element whose coordinates should be determined</dd>
+               <dd class="">a function to be called when the operation has fao;ed. The exact arguments depend
+                  on the operation. If the function returns a Promise, that promise will
+                  be evaluated to determine the state of the returned promise. If provided and it returns
+                  regularly, the returned promise will
+                  have success status. If it throws an error, the returned promise will be in the error
+                  state.
+               </dd>
                
-               <dt id="offset_RETURN" class="returnValue inSyntax0"><a name="offset_RETURN">return value</a></dt>
+               <dt id="onerror_RETURN" class="returnValue inSyntax0"><a name="onerror_RETURN">return value</a></dt>
                
-               <dd class="inSyntax0">an object containing pixel coordinates in two properties 'x' and 'y'</dd>
+               <dd class="inSyntax0">a new Promises object. Its state is determined by the callback.</dd>
                
             </dl>
             
             
             <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Description</h4>
             
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="description">Returns the pixel page coordinates of the list's first element. Page coordinates are
-               the pixel coordinates within the document, with 0/0 being the upper left corner, independent
-               of the user's
-               current view (which depends on the user's current scroll position and zoom level).
+            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="description">Allows you to add a callback that will be called when the operation failed.
+               This is a convenience function that will call then() with the only the second argument
+               set.
                
                
             </div>
@@ -70,10 +75,12 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
                
                <h4>Example</h4>
                
-               <div class="example">Displays the position of the element with the id 'myElement' in the element 'resultElement':
+               <div class="example">Simple handler for a HTTP request.
                   <pre>
-var pos = $('#myElement').offset();
-$('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.x + ' top=' + pos.y);
+MINI.request('get', '/weather.html')
+    .onError(function() {
+       alert('Got error!');
+    });
 </pre>
                   </div>
                
