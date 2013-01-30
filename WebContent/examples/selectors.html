@@ -13,7 +13,7 @@
 	<script type="text/javascript">
 
 	function change() {
-		$($$('#selector').value).set('$background_color', $$('#color').value);
+		$($$('#selector').value).set('$backgroundColor', $$('#color').value);
 	}
 	function randomize(select) {
 		select = $$(select);
@@ -27,7 +27,7 @@
 		change();
 	}
 	
-	MINI.ready(function() {
+	$(function() {
 		$('#changeButton').on('click', change);
 		$('#animateButton').on('click', function() {
 			if (timer == null)

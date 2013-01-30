@@ -19,20 +19,20 @@
 	
 	function moveControllable(props) {
 		disableButtons();
-		$('#controllableBox').animate(props, parseFloat($$('#durationField').value), parseFloat($$('#linearityField').value), enableButtons);		
+		$('#controllableBox').animate(props, parseFloat($$('#durationField').value), parseFloat($$('#linearityField').value)).then(enableButtons);		
 	}
 	
 	MINI.ready(function() {
 		$('#moveButton').on('click', function() {
 			disableButtons();			
 			for (var i = 0; i < BOXES.length; i++) 
-				$(BOXES[i].id).animate(POSITIONS[(++BOXES[i].pos)%POSITIONS.length], parseFloat($$('#durationField').value), parseFloat($$('#linearityField').value), enableButtons);
+				$(BOXES[i].id).animate(POSITIONS[(++BOXES[i].pos)%POSITIONS.length], parseFloat($$('#durationField').value), parseFloat($$('#linearityField').value)).then(enableButtons);
 		});
 
 		$('#colorButton').on('click', function() {
 			disableButtons();	
 			for (var i = 0; i < BOXES.length; i++) 
-				$(BOXES[i].id).animate({$backgroundColor: COLORS[(++BOXES[i].colorPos)%COLORS.length]}, parseFloat($$('#durationField').value), parseFloat($$('#linearityField').value), enableButtons);
+				$(BOXES[i].id).animate({$backgroundColor: COLORS[(++BOXES[i].colorPos)%COLORS.length]}, parseFloat($$('#durationField').value), parseFloat($$('#linearityField').value)).then(enableButtons);
 		});
 		
 		$('#leftButton').on('click', function() { moveControllable({$left: '-=50px'}); });

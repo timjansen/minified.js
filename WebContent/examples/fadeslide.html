@@ -23,13 +23,10 @@
 
 	
 	$(function() {
-		$('#cntA').wire({'#fadeButton': 'click'}, 
-			{
-				'.boxesA': [{$$fade: 1}, {$$fade: 0}, 1000], 
-				'.boxesB': [{$$fade: 0}, {$$fade: 1}, 1000]
-			});
+		$('#fadeButton').on('click', $('#cntA .boxesA').toggle({$$fade: 1}, {$$fade: 0}, 1000));
+		$('#fadeButton').on('click', $('#cntA .boxesB').toggle({$$fade: 0}, {$$fade: 1}, 1000));
 		
-		$('body').wire({'#slideButton': 'click'}, {'#cntC': [{$$slide: 1}, {$$slide: 0}, 1000]});
+		$('#slideButton').on('click', $('#cntC').toggle({$$slide: 1}, {$$slide: 0}, 1000));
 		
 		$('#fade1Button').on('click', function() {
 			$('#cntB .boxesA').animate({$$fade: 0});

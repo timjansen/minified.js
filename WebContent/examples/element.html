@@ -16,12 +16,12 @@
 			
 			var innerElem;
 			if (textStyle == 'none')
-				innerElem = MINI.text(text);
+				innerElem = text;
 			else if (textStyle == 'bold')
 				innerElem = MINI.el('b', text);
 			else // small
 				innerElem = MINI.el('span', {$fontSize: 'x-small'}, text);
-			$(#container').add(EE('div', {$border: boxStyle, $margin, '6px', $padding: '3px;'}, innerElem));
+			$('#container').add(EE('div', {$border: boxStyle, $margin: '6px', $padding: '3px'}, innerElem));
 		});
 	});
 	</script>
