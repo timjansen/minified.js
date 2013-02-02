@@ -115,7 +115,7 @@ Creates a function that switches between the two given states for the list.</div
 <h3><a href="always.html">promise.always()</a></h3>
 <div class="summary">Allows you to add a callback that will always be called, no matter whether the operation succeeded or not.</div>
 
-<h3><a href="onerror.html">promise.onError()</a></h3>
+<h3><a href="error.html">promise.error()</a></h3>
 <div class="summary">Allows you to add a callback that will be called when the operation failed.</div>
 
 <h3><a href="then.html">promise.then()</a></h3>

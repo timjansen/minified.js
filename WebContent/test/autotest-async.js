@@ -60,5 +60,40 @@ window.miniTests.push.apply(window.miniTests, [
 			
 			check(!!s);
 		}
+	},
+	{
+		name:'MINI.request() promises',
+		async: 1000,
+		exec: function(setSuccess, playground) {
+			var s = MINI.request('get', '/minified.js/test/test.txt', null)
+			.then(function(txt) {
+				checkFunc(setSuccess, function() {
+					check(txt.indexOf('Used for testing MINI.request.') > 0);
+				});
+			})
+			.then(function(txt) {
+				var p = hhPromise();
+				p.set(true, ["123"]);
+				return p;
+			})
+			.then(function(txt) {
+				check(txt, "123");
+				var p = hhPromise();
+				p.set(false, ["xxx"]);
+				return p;
+			})
+			.then(function(value) {
+				setSuccess(false, 'then should be skipped after error');
+			})
+			.error(function(value) {
+				check(value, "xxx");
+				return 23;
+			})
+			.always(function(value) {
+				check(value, 23);
+				setSuccess(true, "ok")
+			});
+			check(!!s);
+		}
 	}
 ]);

@@ -76,7 +76,7 @@ MINI.ready(function() {
 <a href="setcookie.html">MINI.setCookie()</a>
 <a href="tojson.html">MINI.toJSON()</a>
 <a href="always.html">promise.always()</a>
-<a href="onerror.html">promise.onError()</a>
+<a href="error.html">promise.error()</a>
 <a href="then.html">promise.then()</a>
 </div>	</main>
 </page>

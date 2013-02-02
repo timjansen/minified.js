@@ -121,12 +121,18 @@ MINI.request('get', '/weather.html')
                
                <div class="example">Chained handler.
                   <pre>
-MINI.request('get', '/weather.html')
+MINI.request('get', '/weather.do')
     .then(function(txt) {
-       showResult();
+       showWeather(txt);
     }
     .then(function() {
-       alert('Result shown');
+       return MINI.request('get', '/traffic.do');
+    }
+    .then(function(txt) {
+       showTraffic(txt);
+    }
+    .then(function() {
+       alert('All result displayed');
     }, function() {
        alert('An error occurred');
     });
@@ -175,7 +181,7 @@ MINI.request('get', '/weather.html')
                <a href="setcookie.html">MINI.setCookie()</a>
                <a href="tojson.html">MINI.toJSON()</a>
                <a href="always.html">promise.always()</a>
-               <a href="onerror.html">promise.onError()</a>
+               <a href="error.html">promise.error()</a>
                <a href="then.html">promise.then()</a>
                
             </div>	

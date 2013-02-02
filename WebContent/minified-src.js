@@ -328,27 +328,27 @@
 	 */
     			'always': function(func) { return then(func, func); },
 	/**
-	 * @id onerror
+	 * @id error
 	 * @module REQUEST
-	 * @name promise.onError()
-	 * @syntax promise.onError(callback)
+	 * @name promise.error()
+	 * @syntax promise.error(callback)
 	 * Allows you to add a callback that will be called when the operation failed.
 	 * This is a convenience function that will call then() with the only the second argument set.
 	 *
 	 * @example Simple handler for a HTTP request.
 	 * <pre>
-	 * MINI.request('get', '/weather.html')
-	 *     .onError(function() {
+	 * $.request('get', '/weather.html')
+	 *     .error(function() {
 	 *        alert('Got error!');
 	 *     });
 	 * </pre>
 	 *
-	 * @param callback a function to be called when the operation has fao;ed. The exact arguments depend on the operation. If the function returns a Promise, that promise will
+	 * @param callback a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a Promise, that promise will
 	 *                           be evaluated to determine the state of the returned promise. If provided and it returns regularly, the returned promise will 
 	 *                           have success status. If it throws an error, the returned promise will be in the error state.
 	 * @return a new Promises object. Its state is determined by the callback.
 	 */    			 
-    			'onError': function(func) { return then(0, func); }
+    			'error': function(func) { return then(0, func); }
 	    	};
 	  /**
 	   * @stop
@@ -2197,7 +2197,7 @@
 	*         var json = MINI.parseJSON(txt);
 	*         $('#weatherResult').fill('Today's forecast is is: ' + json.today.forecast);
 	*    })
-	*    .onError(function(status, statusText, responseText) {
+	*    .error(function(status, statusText, responseText) {
 	*         $('#weatherResult').fill('The weather service was not available.');
 	*     });
 	* </pre>
@@ -2222,7 +2222,7 @@
 	*        else
 	*              failureHandler();
 	*        })
-	*     .onError(failureHandler);
+	*     .error(failureHandler);
 	* </pre>
 	*
 	* 

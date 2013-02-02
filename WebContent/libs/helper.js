@@ -76,7 +76,7 @@ function hhToList(a) {
 }
 
 function hhDefer(callback) {
-	if (process && process.nextTick)
+	if (typeof process != 'undefined' && process.nextTick)
 		process.nextTick(callback);
 	else
 		window.setTimeout(callback, 0);
@@ -132,7 +132,7 @@ function hhPromise() {
    		's': set, // for MINI compatibility (and to save some bytes in then())
    		'set': set,
 		'always': function(func) { return then(func, func); },
-		'onError': function(func) { return then(0, func); },
+		'error': function(func) { return then(0, func); },
 
 		// Takes a list of promises and registers with them by calling their then(). If all given promises succeed, this promise succeeds and their values are given to the fulfillment handler as array 
 		// in the same order the promised were given to join().

@@ -1,4 +1,4 @@
-// Tests helper.js with the Promises / A+ Test Suite
+// Tests helper.js with the Promises / A+ Test Suite (https://github.com/promises-aplus/promises-tests)
 
 var promisesAplusTests = require("promises-aplus-tests");
 
