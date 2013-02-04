@@ -1307,7 +1307,7 @@
 	 * @return the current list
 	 */
 	'fill': function (children) {
-		return this['each'](function(e) { MINI(e.childNodes).remove(); }).add(children);
+		return this['each'](function(e) { MINI(e.childNodes)['remove'](); })['add'](children);
 	},
 
 	/**

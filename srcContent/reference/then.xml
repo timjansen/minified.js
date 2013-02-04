@@ -29,7 +29,8 @@ have success status. If it throws an error, the returned promise will be in the 
 be evaluated to determine the state of the returned promise. If provided and it returns regularly, the returned promise will
 have success status. If it throws an error, the returned promise will be in the error state.</dd>
 <dt id="then_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="then_RETURN">return value</a></dt>
-<dd class="inSyntax0 inSyntax1">a new Promises object. Its state is determined by the callbacks.</dd>
+<dd class="inSyntax0 inSyntax1">a new Promises object. If you specified a callback for success or error, the new object's state will be determined by that callback if it is called.
+If no callback has been provided for success or error and the original Promise changes to that state, the new promise will change to that state as well.</dd>
 </dl>
 
 <h4>Description</h4>

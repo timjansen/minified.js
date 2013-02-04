@@ -3,6 +3,8 @@
 
 	<style type="text/css">
 		body {font-family: sans-serif;}
+		#rerun {display: none; margin: 0.5em;}
+		#header { height: 4.5em; }
 		#container, #container2 { display: none; }
 		.resultOk { color: #0f0; }
 		.resultFailed { font-weight: bold; color: #f00; }
@@ -11,7 +13,12 @@
 	</style> 
 
 	<script type="text/javascript" src="helper.js"></script>
-	<script type="text/javascript" src="../minified.js"></script>
+	<script type="text/javascript">
+	// Load either minified.js or minified-src.js, depending on whether 'compiled' is in the URL query
+	var testingCompiled =  /compiled/.test(window.location.search); 
+	var file = (testingCompiled ? "../minified.js" : "../minified-src.js") + '?rnd=' + (new Date().getTime());
+    document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
+	</script>
 	<script type="text/javascript">
 		function fail(text) {
 			throw text;
@@ -47,7 +54,21 @@
 
 		window.miniTests = [];
 					
-		var testNum = 0;
+		var testNum = 0;      // started tests
+		var finishedNum = 0;  // finished tests
+		var failedNum = 0;   // failed
+		
+		function testsCompleted() {
+			$("#rerun").set({$display: 'block'});
+			if (failedNum == 0)
+				$('#status').set('+resultOk').fill("All passed.");
+			else
+				$('#status').set('+resultFailed').fill(failedNum + "out of " +finishedNum+ " failed.");
+			
+			if (failedNum == 0 && !testingCompiled)
+				document.location.href='autotest.html?compiled';
+		}
+		
 		function runTest() {
 			var test = window.miniTests[testNum];
 			var msgSpan;
@@ -64,9 +85,14 @@
 					playgroundDiv = null;
 				}
 				if (!testFinished) {
-					msgSpan.set({'@class': s ? 'resultOk' : 'resultFailed'}).fill(s ? 'OK' : 'Failed (' + msg + ')');
+					msgSpan.set(s ? '+resultOk' : '+resultFailed').fill(s ? 'OK' : 'Failed (' + msg + ')');
 					if (window.console) console.log('Test:', test.name, 'Result:', s, 'Msg:', msg);
 					testFinished = true;
+					finishedNum++;
+					if (!s)
+						failedNum++;
+					if (finishedNum == miniTests.length) 
+						testsCompleted();
 				}
 			}
 			
@@ -86,24 +112,30 @@
 					window.setTimeout(function() {setSuccess(false, 'timeout, waited ' + test.async + 'ms')}, test.async);
 			}
 			else if (MINI.debug) { // only test if debug available
-				var success = false;
+				var success = true;
 				try {
 					test.exec(setSuccess, playgroundDiv);
 				}
 				catch (e) {
-					success = true;
+					success = false;
 				}
 				if (!success)
 					setSuccess(success, test.debugFailure);
 			}
-			else 
+			else {
 				msgSpan.fill('not executable');
+				finishedNum++;
+			}
 			
 			$('#container2').fill();
 			if (++testNum < window.miniTests.length)
 				window.setTimeout(runTest, 1);
+			else {
+				
+			}
 		}
 		$(function() { window.setTimeout(runTest, 1); });
+		$(function() {$('#file').fill(testingCompiled ? "minified.js (compiled)" : "minified-src.js (development)");});
 		
 	</script>
 	<script type="text/javascript" src="autotest-element.js"></script>
@@ -121,6 +153,14 @@
 	</head>
 	<body>
 		<h1>Minified.js Unit Test</h1>
+
+		<div id="header">
+			<div>File: <span id="file">TBD</span></div>
+			<div>Status: <span id="status">running</span></div>
+			<div id="rerun" >
+			<form action="autotest.html" method="post"><input type="submit" value="Run again"/></form>
+			</div>
+		</div>
 		
 		<div id="results">&nbsp;
 		
