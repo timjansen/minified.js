@@ -177,8 +177,8 @@
 	
 	function getNaturalHeight(elementList) {
 		var q = {$position: 'absolute', $visibility: 'hidden', $display: 'block', $height: null};
-		var oldStyles = elementList.get(q);
-		elementList.set(q);
+		var oldStyles = elementList['get'](q);
+		elementList['set'](q);
 		var h = elementList[0].offsetHeight;
 		elementList.set(oldStyles);
 		return h;
@@ -226,15 +226,15 @@
 	    			if (isFunction(f)) {
 		   				var r = f.apply(null, values);
 		   				if (r && isFunction(r.then))
-		   					r.then(function(value){newPromise.s(true,[value]);}, function(value){newPromise.s(false,[value]);});
+		   					r.then(function(value){newPromise['s'](true,[value]);}, function(value){newPromise.s(false,[value]);});
 		   				else
-		   					newPromise.s(true, [r]);
+		   					newPromise['s'](true, [r]);
 		   			}
 		   			else
-		   				newPromise.s(state, values);
+		   				newPromise['s'](state, values);
 				}
 				catch (e) {
-					newPromise.s(false, [e]);
+					newPromise['s'](false, [e]);
 				}
 			};
 			if (state != null)
@@ -640,7 +640,7 @@
      * @return the list
      */
 	'each': function (callback) {
-		each(this.raw, callback); // use list, as a real Array may be faster
+		each(this['raw'], callback); // use list, as a real Array may be faster
 		return this;
 	},
 	
@@ -675,7 +675,7 @@
 	 * @return the new list, always guaranteed to be based on Array and always a new instance
 	 */
 	'filter': function(filterFunc) {
-	    return new M(filter(this.raw, filterFunc));
+	    return new M(filter(this['raw'], filterFunc));
 	},
 	
 	/** 
@@ -731,7 +731,7 @@
      * on Array and always a new instance 
      */ 
 	'collect': function(collectFunc, resultList) { 
-    	 return new M(collect(this.raw, collectFunc, resultList)); 
+    	 return new M(collect(this['raw'], collectFunc, resultList)); 
      },
 	
      /** 
@@ -765,8 +765,9 @@
       * @return a new list containing only the items in the index range. 
       */ 
 	'sub': function(startIndex, endIndex) {
-	    var s = (startIndex < 0 ? this.length+startIndex : startIndex);
-	    var e = endIndex == null ? this.length : (endIndex >= 0 ? endIndex : this.length+endIndex);
+		var l = this['length'];
+	    var s = (startIndex < 0 ? l+startIndex : startIndex);
+	    var e = endIndex == null ? l : (endIndex >= 0 ? endIndex : l+endIndex);
  		return this.filter(function(o, index) { 
  			return index >= s && index < e; 
  		});
@@ -851,7 +852,7 @@
 	 * </pre>
 	 */
      'remove': function() {
-    	this.each(function(obj) {obj.parentNode.removeChild(obj);});
+    	this['each'](function(obj) {obj.parentNode.removeChild(obj);});
      },
 
 	/**
@@ -1071,7 +1072,7 @@
     		 }
     		 else
     			// @condend
-    			 self.each(function(obj, c) {
+    			 self['each'](function(obj, c) {
     				 var f = isFunction(value) ? value : defaultFunction;
     				 var nameClean = replace(name, /^[@$]/);
     				 var className = obj.className || '';
@@ -1219,7 +1220,7 @@
 	 * @return the current list
 	 */
 	'add': function (children, addFunction) {
-		return this.each(function(e, index) {
+		return this['each'](function(e, index) {
 			var lastAdded;
 			(function appendChildren(c) {
 				if (isList(c))
@@ -1308,7 +1309,7 @@
 	 * @return the current list
 	 */
 	'fill': function (children) {
-		return this.each(function(e) { MINI(e.childNodes).remove(); }).add(children);
+		return this['each'](function(e) { MINI(e.childNodes).remove(); }).add(children);
 	},
 
 	/**
@@ -1730,13 +1731,13 @@
 		var prom = promise();
 		state = state || {};
 		state['time'] = 0;
-		state['stop'] = function() { if (delayStop) delayStop(); if (loopStop) loopStop(); prom.s(false); };
+		state['stop'] = function() { if (delayStop) delayStop(); if (loopStop) loopStop(); prom['s'](false); };
 		delayStop = delay(delayMs, function() {
 			durationMs = durationMs || 500;
 			linearity = linearity || 0;
 			
 			// find start values
-			self.each(function(li) {
+			self['each'](function(li) {
 				var p = {o:MINI(li), s:{}, e:{}}; 
 				each(p.s = p.o.get(properties), function(name, start) {
 					var dest = properties[name];
@@ -1769,7 +1770,7 @@
 					});
 					stop();
 					state['time'] = state['stop'] = null;
-					prom.s(true, [self]);
+					prom['s'](true, [self]);
 				}
 				else
 					each(initState, function(isi) {
@@ -1933,7 +1934,7 @@
 		'on': function (name, handler, args, fThis) {
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
-			return this.each(function(el, index) {
+			return this['each'](function(el, index) {
 				var h = function(event) {
 					var l = _document.documentElement, b = _document.body;
 					var e = event || _window.event;
@@ -2001,10 +2002,10 @@
 	 */
 	'values': function(data) {
 		var r = data || {};
-		this.each(function(el) {
+		this['each'](function(el) {
 			var n = el.name, v = toString(el.value), o=r[n];
 			if (/form/i.test(el.tagName))
-				MINI(el.elements).values(r);
+				MINI(el.elements)['values'](r);
 			else if (n && (!/kbox|dio/i.test(el.type) || el.checked)) { // short for checkbox, radio
 					if (isList(o))
 						o.push(v);
@@ -2171,6 +2172,7 @@
 	'el': function(elementName, attributes, children) {
 		// @cond debug if (!elementName) error("el() requires the element name."); 
 		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
+	
 		var nu = _document.documentElement.namespaceURI; // to check whether doc is XHTML
 		var list = MINI(nu ? _document.createElementNS(nu, elementName) : _document.createElement(elementName));
 		return  (isList(attributes) || !isObject(attributes)) ? list.add(attributes) : list.set(attributes).add(children); 
@@ -2286,10 +2288,10 @@
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState == 4 && !callbackCalled++) {
 					if (xhr.status == 200) {
-						prom.s(true, [xhr.responseText, xhr.responseXML]);
+						prom['s'](true, [xhr.responseText, xhr.responseXML]);
 					}
 					else
-						prom.s(false, [xhr.status, xhr.statusText, xhr.responseText]);
+						prom['s'](false, [xhr.status, xhr.statusText, xhr.responseText]);
 				}
 			};
 			
@@ -2298,7 +2300,7 @@
 		}
 		catch (e) {
 			if (!callbackCalled) 
-				prom.s(false, [0, null, toString(e)]);
+				prom['s'](false, [0, null, toString(e)]);
 		}
 	},
 	
@@ -2649,7 +2651,7 @@
      * @param selector the selector (see MINI.$$())
      * @return the resulting element (see MINI.$$())
      */
-    _window['$$'] = MINI.$$;
+    _window['$$'] = MINI['$$'];
 
     /**
      * @id toplevelee
@@ -2667,7 +2669,7 @@
      * @param selector the selector (see MINI.$$())
      * @return the resulting element (see MINI.$$())
      */
-    _window['EE'] = MINI.el;
+    _window['EE'] = MINI['el'];
 	/**
 	 @stop
 	 */
