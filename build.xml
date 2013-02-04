@@ -1,6 +1,30 @@
 <project name="minified" default="main">
 
   <property name="src" value="WebContent/minified-src.js"/>
+	
+  <target name="compileJavascript">
+  	<!-- Helper.js for Autotest -->
+  	<copy file="srcContent/js/helper.js" tofile="WebContent/test/helper.js" />
+  	
+  	<!-- Minified script -->
+  	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
+  	 	<arg value="--compilation_level=ADVANCED_OPTIMIZATIONS" />
+  	    <arg value="--js=WebContent/minified-src.js"/>
+  	 	<arg value="--js_output_file=WebContent/minified.js"/>
+     </java>
+
+     <!-- Builder script -->
+  	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
+  	 	<!--<arg value="- -compilation_level=ADVANCED_OPTIMIZATIONS" />-->
+  	    <arg value="--js=srcContent/js/helper.js"/>
+  	    <arg value="--js=WebContent/minified.js"/>
+  	    <arg value="--js=srcContent/js/parser-src.js"/>
+  	    <arg value="--js=srcContent/js/builder-src.js"/>
+  	 	<arg value="--js_output_file=WebContent/js/builder.js"/>
+     </java>
+  	
+  </target>
+	
   <target name="processDocs">
     <script language="javascript" src="build/docwriter.js" />
   </target>
@@ -15,7 +39,7 @@
 	</target>
 
 	
-  <target name="main" depends="processDocs, processPages">
+  <target name="main" depends="compileJavascript, processDocs, processPages">
   </target>
 
 </project>

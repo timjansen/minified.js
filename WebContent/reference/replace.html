@@ -15,7 +15,7 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
 #foot .container p { font-size: smaller; color: #bbb; margin: 0.5em; padding: 0; text-align: left; }
 #foot .container A { color: #888; font-weight: bold; font-size: smaller; }
 #main .container { padding: 1em; }
-</style><script type="text/javascript" src="minified-src.js"></script></head>
+</style></head>
    <body>
       <div id="head">
          <div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div>
@@ -23,195 +23,165 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
       </div>
       <div id="main">
          <div class="container">
+            <p><a href="index.html">back to Overview</a></p>
+            <h3><a name="doc-replace">.replace()</a></h3>
+            <div class="summary">Replaces the list items with the the given node(s) in the DOM
+            tree.</div>
             
-            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
-            
-            <h3 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a name="doc-replace">.replace()</a></h3>
-            
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="summary">Replaces the list items with the the given node(s) in the DOM tree.</div>
-            
-            
-            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Syntax</h4>
-            
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="syntaxVariant">
-               
-               <div class="syntax">MINI(selector).replace(text)</div>
-               
-               <div class="syntax">MINI(selector).replace(callbackFunction)</div>
-               
-               <div class="syntax">MINI(selector).replace(elementContent)</div>
-               
+            <h4>Syntax</h4>
+            <div class="syntaxVariant">
+            <div class="syntax">MINI(selector).replace(text)</div>
+            <div class="syntax">MINI(selector).replace(callbackFunction)</div>
+            <div class="syntax">MINI(selector).replace(elementContent)</div>
             </div>
             
-            
-            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Parameters</h4>
-            
-            <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
-               
-               <dt id="replace_text" class=""><a name="replace_text">text</a></dt>
-               
-               <dd class="">a text for the text nodes that replace the list elements</dd>
-               
-               <dt id="replace_callbackFunction" class=""><a name="replace_callbackFunction">callbackFunction</a></dt>
-               
-               <dd class="">a function that will be invoked for each list element to determine its content. The
-                  function can return either a string for a text node,
-                  an HTML element or a list containing strings and/or HTML elements.
-               </dd>
-               
-               <dt id="replace_elementContent" class=""><a name="replace_elementContent">elementContent</a></dt>
-               
-               <dd class="">content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
-                  an HTML element or a list containing strings and/or HTML elements.
-               </dd>
-               
-               <dt id="replace_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="replace_RETURN">return value</a></dt>
-               
-               <dd class="inSyntax0 inSyntax1 inSyntax2">the current list</dd>
-               
+            <h4>Parameters</h4>
+            <dl class="params">
+            <dt id="replace_text" class=""><a name="replace_text">text</a></dt>
+            <dd class="">a text for the text nodes that replace the list elements</dd>
+            <dt id="replace_callbackFunction" class=""><a name="replace_callbackFunction">callbackFunction</a></dt>
+            <dd class="">a function that will be invoked for each list element to determine its
+            content. The function can return either a string for a text node,
+            an HTML element or a list containing strings and/or HTML elements.</dd>
+            <dt id="replace_elementContent" class=""><a name="replace_elementContent">elementContent</a></dt>
+            <dd class="">content to replace <strong>only to the first element</strong> of the
+            list with. The content can be a string for a text node,
+            an HTML element or a list containing strings and/or HTML elements.</dd>
+            <dt id="replace_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="replace_RETURN">return
+            value</a></dt>
+            <dd class="inSyntax0 inSyntax1 inSyntax2">the current list</dd>
             </dl>
             
+            <h4>Description</h4>
+            <div class="description">Replaces the list items with the the given node(s) in the
+            DOM tree.
+            If a string has been given, each list item will be replaced with a new text node containing
+            the string.
+            If you pass an element or a list, it will replace <strong>only the first element of
+            the list</strong>. In order to replace
+            several list items with content more complex than a string, you need to pass a factory
+            function(element, index) thats creates new instances for each item.
+            The function will be invoked for each element and may return either a string for a
+            text node, a simple HTML element or a list containing both.
             
-            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Description</h4>
+            </div>
             
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="description">Replaces the list items with the the given node(s) in the DOM tree.
-               If a string has been given, each list item will be replaced with a new text node containing
-               the string.
-               If you pass an element or a list, it will replace <strong>only the first element of the list</strong>. In order to replace
-               several list items with content more complex than a string, you need to pass a factory
-               function(element, index) thats creates new instances for each item.
-               The function will be invoked for each element and may return either a string for a
-               text node, a simple HTML element or a list containing both.
-               
-               
+            <div class="examples">
+            <h4>Example</h4>
+            <div class="example">Using the following HTML:
+            <pre>
+            &lt;div id="comments">
+            &lt;div id="commentOne">My old comment.&lt;/div>
+            &lt;/div>
+            </pre>
+            Replaces the div 'commentOne':
+            <pre>
+            $('#commentOne').replace('Some new comment.');
+            </pre>
+            This results in:
+            <pre>
+            &lt;div id="comments">
+            Some new comment.
+            &lt;/div>
+            </pre>
+            Please note that not only the text has changed, but the whole &lt;div> has been replaced.
+            If you only want to replace the element's text content
+            you should use fill() instead of replace().
+            </div>
+            <h4>Example</h4>
+            <div class="example">Using the following HTML:
+            <pre>
+            &lt;ul id="myList">
+            &lt;li>First list entry&lt;/li>
+            &lt;li>Second list entry&lt;/li>
+            &lt;/ul>
+            </pre>
+            The following JavaScript will replace <strong>only the first &lt;li> element</strong>:
+            <pre>
+            $('#myList li').replace(EE('li', 'My extra point'));
+            </pre>
+            This results in
+            <pre>
+            &lt;ul id="myList">
+            &lt;li>My extra point&lt;/li>
+            &lt;li>Second list entry&lt;/li>
+            &lt;/ul>
+            </pre>
+            </div>
+            <h4>Example</h4>
+            <div class="example">If you need to replace several elements at once, you need to
+            provide a factory function
+            <pre>
+            $('#myList li').replace(function(e, index) { return EE('li', 'My extra point'); });
+            </pre>
+            With the previous HTML would result in:
+            <pre>
+            &lt;ul id="myList">
+            &lt;li>My extra point&lt;/li>
+            &lt;li>My extra point&lt;/li>
+            &lt;/ul>
+            </pre>
+            </div>
+            <h4>Example</h4>
+            <div class="example">Use a list to add several elements at once:
+            <pre>
+            $('#myList li').replace(function(e, index) { return [EE('li', 'Extra point 1'), EE('li',
+            'Extra point 2')]; });
+            </pre>
+            Now every original &lt;li> element is replaced with two elements:
+            <pre>
+            &lt;ul id="myList">
+            &lt;li>Extra point 1&lt;/li>
+            &lt;li>Extra point 2&lt;/li>
+            &lt;li>Extra point 1&lt;/li>
+            &lt;li>Extra point 2&lt;/li>
+            &lt;/ul>
+            </pre>
+            </div>
             </div>
             
             
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="examples">
-               
-               <h4>Example</h4>
-               
-               <div class="example">Using the following HTML:
-                  <pre>
-&lt;div id="comments"&gt;
-   &lt;div id="commentOne"&gt;My old comment.&lt;/div&gt;
-&lt;/div&gt;
-</pre>
-                  Replaces the div 'commentOne':
-                  <pre>
-$('#commentOne').replace('Some new comment.');
-</pre>
-                  This results in:
-                  <pre>
-&lt;div id="comments"&gt;
-   Some new comment.
-&lt;/div&gt;
-</pre>
-                  Please note that not only the text has changed, but the whole &lt;div&gt; has been replaced.
-                  If you only want to replace the element's text content
-                  you should use fill() instead of replace().
-                  </div>
-               
-               <h4>Example</h4>
-               
-               <div class="example">Using the following HTML:
-                  <pre>
-&lt;ul id="myList"&gt;
-  &lt;li&gt;First list entry&lt;/li&gt;
-  &lt;li&gt;Second list entry&lt;/li&gt;
-&lt;/ul&gt;
-</pre>
-                  The following JavaScript will replace <strong>only the first &lt;li&gt; element</strong>:
-                  <pre>
-$('#myList li').replace(EE('li', 'My extra point'));
-</pre>
-                  This results in
-                  <pre>
-&lt;ul id="myList"&gt;
-  &lt;li&gt;My extra point&lt;/li&gt;
-  &lt;li&gt;Second list entry&lt;/li&gt;
-&lt;/ul&gt;
-</pre>
-                  </div>
-               
-               <h4>Example</h4>
-               
-               <div class="example">If you need to replace several elements at once, you need to provide a factory function
-                  <pre>
-$('#myList li').replace(function(e, index) { return EE('li', 'My extra point'); });
-</pre>
-                  With the previous HTML would result in:
-                  <pre>
-&lt;ul id="myList"&gt;
-  &lt;li&gt;My extra point&lt;/li&gt;
-  &lt;li&gt;My extra point&lt;/li&gt;
-&lt;/ul&gt;
-</pre>
-                  </div>
-               
-               <h4>Example</h4>
-               
-               <div class="example">Use a list to add several elements at once:
-                  <pre>
-$('#myList li').replace(function(e, index) { return [EE('li', 'Extra point 1'), EE('li', 'Extra point 2')]; });
-</pre>
-                  Now every original &lt;li&gt; element is replaced with two elements:
-                  <pre>
-&lt;ul id="myList"&gt;
-  &lt;li&gt;Extra point 1&lt;/li&gt;
-  &lt;li&gt;Extra point 2&lt;/li&gt;
-  &lt;li&gt;Extra point 1&lt;/li&gt;
-  &lt;li&gt;Extra point 2&lt;/li&gt;
-&lt;/ul&gt;
-</pre>
-                  </div>
-               
+            <p><a href="index.html">back to Overview</a></p>
+            <div id="toc"><a href="dollar.html">MINI()</a>
+            <a href="add.html">.add()</a>
+            <a href="addafter.html">.addAfter()</a>
+            <a href="addbefore.html">.addBefore()</a>
+            <a href="addfront.html">.addFront()</a>
+            <a href="animate.html">.animate()</a>
+            <a href="append.html">.append()</a>
+            <a href="collect.html">.collect()</a>
+            <a href="each.html">.each()</a>
+            <a href="fill.html">.fill()</a>
+            <a href="filter.html">.filter()</a>
+            <a href="find.html">.find()</a>
+            <a href="get.html">.get()</a>
+            <a href="hasclass.html">.hasClass()</a>
+            <a href="length.html">.length</a>
+            <a href="offset.html">.offset()</a>
+            <a href="on.html">.on()</a>
+            <a href="prepend.html">.prepend()</a>
+            <a href="raw.html">.raw</a>
+            <a href="remove.html">.remove()</a>
+            <a href="replace.html">.replace()</a>
+            <a href="set.html">.set()</a>
+            <a href="sub.html">.sub()</a>
+            <a href="toggle.html">.toggle()</a>
+            <a href="values.html">.values()</a>
+            <a href="dollardollar.html">MINI.$$()</a>
+            <a href="el.html">MINI.el()</a>
+            <a href="getcookie.html">MINI.getCookie()</a>
+            <a href="loop.html">MINI.loop()</a>
+            <a href="off.html">MINI.off()</a>
+            <a href="parsejson.html">MINI.parseJSON()</a>
+            <a href="ready.html">MINI.ready()</a>
+            <a href="request.html">MINI.request()</a>
+            <a href="setcookie.html">MINI.setCookie()</a>
+            <a href="tojson.html">MINI.toJSON()</a>
+            <a href="always.html">promise.always()</a>
+            <a href="error.html">promise.error()</a>
+            <a href="then.html">promise.then()</a>
             </div>
             
-            
-            
-            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
-            
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="toc"><a href="dollar.html">MINI()</a>
-               <a href="add.html">.add()</a>
-               <a href="addafter.html">.addAfter()</a>
-               <a href="addbefore.html">.addBefore()</a>
-               <a href="addfront.html">.addFront()</a>
-               <a href="animate.html">.animate()</a>
-               <a href="append.html">.append()</a>
-               <a href="collect.html">.collect()</a>
-               <a href="each.html">.each()</a>
-               <a href="fill.html">.fill()</a>
-               <a href="filter.html">.filter()</a>
-               <a href="find.html">.find()</a>
-               <a href="get.html">.get()</a>
-               <a href="hasclass.html">.hasClass()</a>
-               <a href="length.html">.length</a>
-               <a href="offset.html">.offset()</a>
-               <a href="on.html">.on()</a>
-               <a href="prepend.html">.prepend()</a>
-               <a href="raw.html">.raw</a>
-               <a href="remove.html">.remove()</a>
-               <a href="replace.html">.replace()</a>
-               <a href="set.html">.set()</a>
-               <a href="sub.html">.sub()</a>
-               <a href="toggle.html">.toggle()</a>
-               <a href="values.html">.values()</a>
-               <a href="dollardollar.html">MINI.$$()</a>
-               <a href="el.html">MINI.el()</a>
-               <a href="getcookie.html">MINI.getCookie()</a>
-               <a href="loop.html">MINI.loop()</a>
-               <a href="off.html">MINI.off()</a>
-               <a href="parsejson.html">MINI.parseJSON()</a>
-               <a href="ready.html">MINI.ready()</a>
-               <a href="request.html">MINI.request()</a>
-               <a href="setcookie.html">MINI.setCookie()</a>
-               <a href="tojson.html">MINI.toJSON()</a>
-               <a href="always.html">promise.always()</a>
-               <a href="error.html">promise.error()</a>
-               <a href="then.html">promise.then()</a>
-               
-            </div>	
          </div>
       </div>
       <div id="foot">

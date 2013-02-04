@@ -15,7 +15,7 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
 #foot .container p { font-size: smaller; color: #bbb; margin: 0.5em; padding: 0; text-align: left; }
 #foot .container A { color: #888; font-weight: bold; font-size: smaller; }
 #main .container { padding: 1em; }
-</style><script type="text/javascript" src="minified-src.js"></script></head>
+</style></head>
    <body>
       <div id="head">
          <div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div>
@@ -23,136 +23,103 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
       </div>
       <div id="main">
          <div class="container">
+            <p><a href="index.html">back to Overview</a></p>
+            <h3><a name="doc-find">.find()</a></h3>
+            <div class="summary">Allows you to find a specific value in the list.</div>
             
-            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
-            
-            <h3 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a name="doc-find">.find()</a></h3>
-            
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="summary">Allows you to find a specific value in the list.</div>
-            
-            
-            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Syntax</h4>
-            
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="syntaxVariant">
-               
-               <div class="syntax">find(findFunc)</div>
-               
-               <div class="syntax">find(element)</div>
-               
+            <h4>Syntax</h4>
+            <div class="syntaxVariant">
+            <div class="syntax">find(findFunc)</div>
+            <div class="syntax">find(element)</div>
             </div>
             
-            
-            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Parameters</h4>
-            
-            <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
-               
-               <dt id="find_findFunc" class=""><a name="find_findFunc">findFunc</a></dt>
-               
-               <dd class="">the callback function(item, index) that will be invoked for every list item until
-                  it returns a non-null value.
-               </dd>
-               
-               <dt id="find_element" class=""><a name="find_element">element</a></dt>
-               
-               <dd class="">the element to search for</dd>
-               
-               <dt id="find_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="find_RETURN">return value</a></dt>
-               
-               <dd class="inSyntax0 inSyntax1">if called with an element, either the element's index in the list or undefined if
-                  not found. If called with a callback function,
-                  it returns either the value returned by the callback or undefined.
-               </dd>
-               
+            <h4>Parameters</h4>
+            <dl class="params">
+            <dt id="find_findFunc" class=""><a name="find_findFunc">findFunc</a></dt>
+            <dd class="">the callback function(item, index) that will be invoked for every list
+            item until it returns a non-null value.</dd>
+            <dt id="find_element" class=""><a name="find_element">element</a></dt>
+            <dd class="">the element to search for</dd>
+            <dt id="find_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="find_RETURN">return
+            value</a></dt>
+            <dd class="inSyntax0 inSyntax1">if called with an element, either the element's index
+            in the list or undefined if not found. If called with a callback function,
+            it returns either the value returned by the callback or undefined.</dd>
             </dl>
             
+            <h4>Description</h4>
+            <div class="description">Allows you to find a specific value in the list. There are
+            two ways of calling find():
+            <ol>
+            <li>With an element as argument. The function will search for the first occurrence
+            of that element in the list
+            and return the index. If it is not found, the function returns undefined.</li>
+            <li>With a callback function. find() will then call the given function for each list
+            element until the function
+            returns a value that is not null or undefined. This value will be returned.</li>
+            </ol>
             
-            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Description</h4>
+            </div>
             
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="description">Allows you to find a specific value in the list. There are two ways of calling find():
-               
-               <ol>
-                  
-                  <li>With an element as argument. The function will search for the first occurrence of
-                     that element in the list
-                     and return the index. If it is not found, the function returns undefined.
-                  </li>
-                  
-                  <li>With a callback function. find() will then call the given function for each list element
-                     until the function
-                     returns a value that is not null or undefined. This value will be returned.
-                  </li>
-                  
-               </ol>
-               
-               
+            <div class="examples">
+            <h4>Example</h4>
+            <div class="example">Determine the position of #wanted among all li elements:
+            <pre>
+            var elementIndex = $('li').find($$('#wanted'));
+            </pre>
+            </div>
+            <h4>Example</h4>
+            <div class="example">Goes through the elements to find the first div that has the
+            class 'myClass', and returns this element:
+            <pre>
+            var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) return
+            e; });
+            </pre>
+            </div>
             </div>
             
             
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="examples">
-               
-               <h4>Example</h4>
-               
-               <div class="example">Determine the position of #wanted among all li elements:
-                  <pre>
-var elementIndex = $('li').find($$('#wanted'));
-</pre>
-                  </div>
-               
-               <h4>Example</h4>
-               
-               <div class="example">Goes through the elements to find the first div that has the class 'myClass', and
-                  returns this element:
-                  <pre>
-var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) return e; });
-</pre>
-                  </div>
-               
+            <p><a href="index.html">back to Overview</a></p>
+            <div id="toc"><a href="dollar.html">MINI()</a>
+            <a href="add.html">.add()</a>
+            <a href="addafter.html">.addAfter()</a>
+            <a href="addbefore.html">.addBefore()</a>
+            <a href="addfront.html">.addFront()</a>
+            <a href="animate.html">.animate()</a>
+            <a href="append.html">.append()</a>
+            <a href="collect.html">.collect()</a>
+            <a href="each.html">.each()</a>
+            <a href="fill.html">.fill()</a>
+            <a href="filter.html">.filter()</a>
+            <a href="find.html">.find()</a>
+            <a href="get.html">.get()</a>
+            <a href="hasclass.html">.hasClass()</a>
+            <a href="length.html">.length</a>
+            <a href="offset.html">.offset()</a>
+            <a href="on.html">.on()</a>
+            <a href="prepend.html">.prepend()</a>
+            <a href="raw.html">.raw</a>
+            <a href="remove.html">.remove()</a>
+            <a href="replace.html">.replace()</a>
+            <a href="set.html">.set()</a>
+            <a href="sub.html">.sub()</a>
+            <a href="toggle.html">.toggle()</a>
+            <a href="values.html">.values()</a>
+            <a href="dollardollar.html">MINI.$$()</a>
+            <a href="el.html">MINI.el()</a>
+            <a href="getcookie.html">MINI.getCookie()</a>
+            <a href="loop.html">MINI.loop()</a>
+            <a href="off.html">MINI.off()</a>
+            <a href="parsejson.html">MINI.parseJSON()</a>
+            <a href="ready.html">MINI.ready()</a>
+            <a href="request.html">MINI.request()</a>
+            <a href="setcookie.html">MINI.setCookie()</a>
+            <a href="tojson.html">MINI.toJSON()</a>
+            <a href="always.html">promise.always()</a>
+            <a href="error.html">promise.error()</a>
+            <a href="then.html">promise.then()</a>
             </div>
             
-            
-            
-            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
-            
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="toc"><a href="dollar.html">MINI()</a>
-               <a href="add.html">.add()</a>
-               <a href="addafter.html">.addAfter()</a>
-               <a href="addbefore.html">.addBefore()</a>
-               <a href="addfront.html">.addFront()</a>
-               <a href="animate.html">.animate()</a>
-               <a href="append.html">.append()</a>
-               <a href="collect.html">.collect()</a>
-               <a href="each.html">.each()</a>
-               <a href="fill.html">.fill()</a>
-               <a href="filter.html">.filter()</a>
-               <a href="find.html">.find()</a>
-               <a href="get.html">.get()</a>
-               <a href="hasclass.html">.hasClass()</a>
-               <a href="length.html">.length</a>
-               <a href="offset.html">.offset()</a>
-               <a href="on.html">.on()</a>
-               <a href="prepend.html">.prepend()</a>
-               <a href="raw.html">.raw</a>
-               <a href="remove.html">.remove()</a>
-               <a href="replace.html">.replace()</a>
-               <a href="set.html">.set()</a>
-               <a href="sub.html">.sub()</a>
-               <a href="toggle.html">.toggle()</a>
-               <a href="values.html">.values()</a>
-               <a href="dollardollar.html">MINI.$$()</a>
-               <a href="el.html">MINI.el()</a>
-               <a href="getcookie.html">MINI.getCookie()</a>
-               <a href="loop.html">MINI.loop()</a>
-               <a href="off.html">MINI.off()</a>
-               <a href="parsejson.html">MINI.parseJSON()</a>
-               <a href="ready.html">MINI.ready()</a>
-               <a href="request.html">MINI.request()</a>
-               <a href="setcookie.html">MINI.setCookie()</a>
-               <a href="tojson.html">MINI.toJSON()</a>
-               <a href="always.html">promise.always()</a>
-               <a href="error.html">promise.error()</a>
-               <a href="then.html">promise.then()</a>
-               
-            </div>	
          </div>
       </div>
       <div id="foot">

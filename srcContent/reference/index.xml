@@ -5,7 +5,7 @@
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
 	<title>Reference - Minified.js</title>
 	<section>reference</section>
-	<main>
+	<main><![CDATA[
 <h3><a href="dollar.html">MINI()</a></h3>
 <div class="summary">Uses a CSS-like selector to create an list containing all elements that fulfill the filter conditions.</div>
 
@@ -122,5 +122,6 @@ Creates a function that switches between the two given states for the list.</div
 <div class="summary">Allows you to add callbacks to an asynchronous operation that will be invoked when the operation finished
 successfully (onSuccess) or an error occurred (onError).</div>
 
-	</main>
+
+]]></main>
 </page>

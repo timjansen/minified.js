@@ -10,8 +10,8 @@
 		.x { margin-top: 2px; }		
 	</style> 
 
-	<script type="text/javascript" src="../libs/helper.js"></script>
-	<script type="text/javascript" src="../minified-src.js"></script>
+	<script type="text/javascript" src="helper.js"></script>
+	<script type="text/javascript" src="../minified.js"></script>
 	<script type="text/javascript">
 		function fail(text) {
 			throw text;
@@ -65,6 +65,7 @@
 				}
 				if (!testFinished) {
 					msgSpan.set({'@class': s ? 'resultOk' : 'resultFailed'}).fill(s ? 'OK' : 'Failed (' + msg + ')');
+					if (window.console) console.log('Test:', test.name, 'Result:', s, 'Msg:', msg);
 					testFinished = true;
 				}
 			}

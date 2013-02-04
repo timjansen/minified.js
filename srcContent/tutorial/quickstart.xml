@@ -2,7 +2,7 @@
 <page:page xmlns:page="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
   <page:title>Minified.js for JavaScript Developers</page:title>
   <page:section>tutorial</page:section>
-  <page:main><div>
+  <page:main><![CDATA[<div>
   <h1>Minified.js for JavaScript Developers</h1>
 
 <h2>What is Minified.js?</h2>
@@ -473,7 +473,7 @@ var visits = <a href="/reference/getcookie.html">$.getCookie</a>('numberOfVisits
 
   
   </div>
- </page:main>
+ ]]></page:main>
 
   
 </page:page>

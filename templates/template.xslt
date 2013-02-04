@@ -27,7 +27,10 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
 #foot .container A { color: #888; font-weight: bold; font-size: smaller; }
 #main .container { padding: 1em; }
 </style>
-<script type="text/javascript" src="minified-src.js"></script>
+<xsl:for-each select="/page:page/page:externalCss"><link rel="stylesheet" type="text/css" href="{.}"/></xsl:for-each>
+<xsl:for-each select="/page:page/page:inlineCss"><style type="text/css"><xsl:value-of select="."></xsl:value-of></style></xsl:for-each>
+<xsl:for-each select="/page:page/page:externalJs"><script type="text/javascript" src="{.}"></script></xsl:for-each>
+<xsl:for-each select="/page:page/page:inlineJs"><script type="text/javascript"><xsl:value-of select="."></xsl:value-of></script></xsl:for-each>
 </head>
 <body>
 <div id="head">
@@ -39,7 +42,7 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
 		<div id="topMenu">
 			<a class="{if (/page:page/page:section='home') then 'selected' else 'notSelected'}" href="/">Home</a>
 			<a class="{if (/page:page/page:section='download') then 'selected' else 'notSelected'}" href="/download">Download</a>
-			<a class="{if (/page:page/page:section='build') then 'selected' else 'notSelected'}" href="/build">Build</a>
+			<a class="{if (/page:page/page:section='builder.html') then 'selected' else 'notSelected'}" href="/build">Build</a>
 			<a class="{if (/page:page/page:section='tutorial') then 'selected' else 'notSelected'}" href="/tutorials">Tutorials</a>
 			<a class="{if (/page:page/page:section='reference') then 'selected' else 'notSelected'}" href="/api">Reference</a>
 			<a class="{if (/page:page/page:section='about') then 'selected' else 'notSelected'}" href="/about">About</a>
@@ -48,7 +51,7 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
 </div>
 <div id="main">
 	<div class="container">
-		<xsl:copy-of select="/page:page/page:main/node()"/>
+		<xsl:value-of select="/page:page/page:main" disable-output-escaping="yes"/>
 	</div>
 </div>
 <div id="foot">

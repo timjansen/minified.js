@@ -1,7 +1,7 @@
 <!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml">
    <head>
       <meta charset="UTF-8"></meta>
-      <title>.addBefore() - Minified.js</title><style type="text/css">
+      <title>promise.error() - Minified.js</title><style type="text/css">
 body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-serif;}
 #head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
 .container { margin: auto; width: 70em; }
@@ -24,98 +24,45 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
       <div id="main">
          <div class="container">
             <p><a href="index.html">back to Overview</a></p>
-            <h3><a name="doc-addbefore">.addBefore()</a></h3>
-            <div class="summary">Inserts the given text or element(s) as sibling in front of each
-            element of this list.</div>
+            <h3><a name="doc-error">promise.error()</a></h3>
+            <div class="summary">Allows you to add a callback that will be called when the operation
+            failed.</div>
             
             <h4>Syntax</h4>
             <div class="syntaxVariant">
-            <div class="syntax">MINI(selector).addBefore(text)</div>
-            <div class="syntax">MINI(selector).addBefore(callbackFunction)</div>
-            <div class="syntax">MINI(selector).addBefore(elementContent)</div>
+            <div class="syntax">promise.error(callback)</div>
             </div>
             
             <h4>Parameters</h4>
             <dl class="params">
-            <dt id="addbefore_text" class=""><a name="addbefore_text">text</a></dt>
-            <dd class="">a text to insert as text node in front of the list elements</dd>
-            <dt id="addbefore_callbackFunction" class=""><a name="addbefore_callbackFunction">callbackFunction</a></dt>
-            <dd class="">a factory function(element, index) that will be invoked for each list
-            element to determine its content. The function can return either a string for a text
-            node,
-            an HTML element or a list containing strings and/or HTML elements. As parameters it
-            receives the current list element and its 0-based index.</dd>
-            <dt id="addbefore_elementContent" class=""><a name="addbefore_elementContent">elementContent</a></dt>
-            <dd class="">content to insert in front of <strong>the first element</strong> of the
-            list. The content can be a string for a text node,
-            an HTML element or a list containing strings and/or HTML elements. Note that if you
-            use a HTML node or an array here, it will only be added once to
-            this list's first match.</dd>
-            <dt id="addbefore_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="addbefore_RETURN">return
+            <dt id="error_callback" class=""><a name="error_callback">callback</a></dt>
+            <dd class="">a function to be called when the operation has failed. The exact arguments
+            depend on the operation. If the function returns a Promise, that promise will
+            be evaluated to determine the state of the returned promise. If provided and it returns
+            regularly, the returned promise will
+            have success status. If it throws an error, the returned promise will be in the error
+            state.</dd>
+            <dt id="error_RETURN" class="returnValue inSyntax0"><a name="error_RETURN">return
             value</a></dt>
-            <dd class="inSyntax0 inSyntax1 inSyntax2">the current list</dd>
+            <dd class="inSyntax0">a new Promises object. Its state is determined by the callback.</dd>
             </dl>
             
             <h4>Description</h4>
-            <div class="description">Inserts the given text or element(s) as sibling in front
-            of each element of this list. If a string has been given, it will be added as text
-            node.
-            If you pass an element or a list, it will be inserted <strong>only in front of the
-            first element of the list</strong>. In order to add elements
-            to several list items, you need to pass a factory function(element, index) thats creates
-            new instances for each item.
-            The function will be invoked for each element and may return either a string for a
-            text node, a simple HTML element or a list containing both.
+            <div class="description">Allows you to add a callback that will be called when the
+            operation failed.
+            This is a convenience function that will call then() with the only the second argument
+            set.
             
             </div>
             
             <div class="examples">
             <h4>Example</h4>
-            <div class="example">Using the following HTML:
+            <div class="example">Simple handler for a HTTP request.
             <pre>
-            &lt;div>
-            <div id="mainText">Here is some text</div>
-            &lt;/div>
-            </pre>
-            addBefore() adds text in front of the selected list items.
-            <pre>
-            $('#mainText').addBefore('COMMENT');
-            </pre>
-            This results in:
-            <pre>
-            &lt;div>
-            COMMENT
-            <div id="mainText">Here is some text</div>
-            &lt;/div>
-            </pre>
-            </div>
-            <h4>Example</h4>
-            <div class="example">You can also pass an element, but note that a node can only be
-            added once to the first list item, even if the list has more than one item:
-            <pre>
-            $('#mainText').addBefore(EE('span', {'className': 'important'}, 'WARNING'));
-            </pre>
-            With the previous example's HTML, this would create this:
-            <pre>
-            &lt;div>
-            &lt;span class="important">WARNING&lt;/span>
-            <div id="mainText">Here is some text</div>
-            &lt;/div>
-            </pre>
-            </div>
-            <h4>Example</h4>
-            <div class="example">Lists of elements and nodes are possible as well. Like nodes,
-            it will only be added to the first list item.
-            <pre>
-            $('#status').addBefore([EE('hr'), 'WARNING']);
-            </pre>
-            </div>
-            <h4>Example</h4>
-            <div class="example">If you need to add your list to more than one list item, you
-            must add a factory function that re-creates
-            the list for every instance:
-            <pre>
-            $('.textSnippets').addBefore(function(e, index) { return [EE('hr'), 'WARNING']; });
+            $.request('get', '/weather.html')
+            .error(function() {
+            alert('Got error!');
+            });
             </pre>
             </div>
             </div>

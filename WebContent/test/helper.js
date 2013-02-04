@@ -82,8 +82,8 @@ function hhDefer(callback) {
 		window.setTimeout(callback, 0);
 }
 
-function hhCall(functionList, arguments, fThis) {
-	hhEach(hhToList(functionList), function(f) { f.apply(fThis, hhToList(arguments)); });
+function hhCall(functionList, args, fThis) {
+	hhEach(hhToList(functionList), function(f) { f.apply(fThis, hhToList(args)); });
 }
 
 function hhPromise() {

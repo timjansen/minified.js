@@ -5,7 +5,7 @@
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
 	<title>.get() - Minified.js</title>
 	<section>reference</section>
-	<main>
+	<main><![CDATA[
 <p><a href="index.html">back to Overview</a></p>
 <h3><a name="doc-get">.get()</a></h3>
 <div class="summary">Retrieves properties, attributes and styles from the list's first element.</div>
@@ -104,5 +104,6 @@ var bgColor = $('#myElement).get('$backgroundColor');
 <a href="always.html">promise.always()</a>
 <a href="error.html">promise.error()</a>
 <a href="then.html">promise.then()</a>
-</div>	</main>
+</div>
+]]></main>
 </page>

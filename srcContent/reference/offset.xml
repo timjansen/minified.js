@@ -5,7 +5,7 @@
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
 	<title>.offset() - Minified.js</title>
 	<section>reference</section>
-	<main>
+	<main><![CDATA[
 <p><a href="index.html">back to Overview</a></p>
 <h3><a name="doc-offset">.offset()</a></h3>
 <div class="summary">Returns the pixel page coordinates of the list's first element.</div>
@@ -79,5 +79,6 @@ $('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.x + 
 <a href="always.html">promise.always()</a>
 <a href="error.html">promise.error()</a>
 <a href="then.html">promise.then()</a>
-</div>	</main>
+</div>
+]]></main>
 </page>

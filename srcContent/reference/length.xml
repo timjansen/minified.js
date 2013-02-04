@@ -5,7 +5,7 @@
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
 	<title>.length - Minified.js</title>
 	<section>reference</section>
-	<main>
+	<main><![CDATA[
 <p><a href="index.html">back to Overview</a></p>
 <h3><a name="doc-length">.length</a></h3>
 <div class="summary">Contains the number of elements in the list.</div>
@@ -71,5 +71,6 @@ for (var i = 0; i &lt; list.length; i++)
 <a href="always.html">promise.always()</a>
 <a href="error.html">promise.error()</a>
 <a href="then.html">promise.then()</a>
-</div>	</main>
+</div>
+]]></main>
 </page>

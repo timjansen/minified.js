@@ -5,7 +5,7 @@
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
 	<title>MINI.parseJSON() - Minified.js</title>
 	<section>reference</section>
-	<main>
+	<main><![CDATA[
 <p><a href="index.html">back to Overview</a></p>
 <h3><a name="doc-parsejson">MINI.parseJSON()</a></h3>
 <div class="summary">Parses a string containing JSON and returns the de-serialized object.</div>
@@ -79,5 +79,6 @@ var myObj = MINI.parseJSON(jsonString);
 <a href="always.html">promise.always()</a>
 <a href="error.html">promise.error()</a>
 <a href="then.html">promise.then()</a>
-</div>	</main>
+</div>
+]]></main>
 </page>

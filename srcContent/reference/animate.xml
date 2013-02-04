@@ -5,7 +5,7 @@
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
 	<title>.animate() - Minified.js</title>
 	<section>reference</section>
-	<main>
+	<main><![CDATA[
 <p><a href="index.html">back to Overview</a></p>
 <h3><a name="doc-animate">.animate()</a></h3>
 <div class="summary">Animates the items of the list by modifying their properties, CSS styles and attributes.</div>
@@ -184,5 +184,6 @@ $('#racingDiv3').set({$left: '0px'}).animate({$left: '500px'}, 500, 0, null, 300
 <a href="always.html">promise.always()</a>
 <a href="error.html">promise.error()</a>
 <a href="then.html">promise.then()</a>
-</div>	</main>
+</div>
+]]></main>
 </page>

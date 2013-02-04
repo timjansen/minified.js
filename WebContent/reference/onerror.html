@@ -15,7 +15,7 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
 #foot .container p { font-size: smaller; color: #bbb; margin: 0.5em; padding: 0; text-align: left; }
 #foot .container A { color: #888; font-weight: bold; font-size: smaller; }
 #main .container { padding: 1em; }
-</style><script type="text/javascript" src="minified-src.js"></script></head>
+</style></head>
    <body>
       <div id="head">
          <div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div>
@@ -23,113 +23,88 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
       </div>
       <div id="main">
          <div class="container">
+            back to Overview
+            promise.onError()
+            Allows you to add a callback that will be called when the operation failed.
             
-            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
+            Syntax
             
-            <h3 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a name="doc-onerror">promise.onError()</a></h3>
-            
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="summary">Allows you to add a callback that will be called when the operation failed.</div>
-            
-            
-            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Syntax</h4>
-            
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="syntaxVariant">
-               
-               <div class="syntax">promise.onError(callback)</div>
-               
-            </div>
+            promise.onError(callback)
             
             
-            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Parameters</h4>
+            Parameters
             
-            <dl xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="params">
-               
-               <dt id="onerror_callback" class=""><a name="onerror_callback">callback</a></dt>
-               
-               <dd class="">a function to be called when the operation has fao;ed. The exact arguments depend
-                  on the operation. If the function returns a Promise, that promise will
-                  be evaluated to determine the state of the returned promise. If provided and it returns
-                  regularly, the returned promise will
-                  have success status. If it throws an error, the returned promise will be in the error
-                  state.
-               </dd>
-               
-               <dt id="onerror_RETURN" class="returnValue inSyntax0"><a name="onerror_RETURN">return value</a></dt>
-               
-               <dd class="inSyntax0">a new Promises object. Its state is determined by the callback.</dd>
-               
-            </dl>
+            callback
+            a function to be called when the operation has fao;ed. The exact arguments depend
+            on the operation. If the function returns a Promise, that promise will
+            be evaluated to determine the state of the returned promise. If provided and it returns
+            regularly, the returned promise will
+            have success status. If it throws an error, the returned promise will be in the error
+            state.
+            return value
+            a new Promises object. Its state is determined by the callback.
             
             
-            <h4 xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Description</h4>
-            
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="description">Allows you to add a callback that will be called when the operation failed.
-               This is a convenience function that will call then() with the only the second argument
-               set.
-               
-               
-            </div>
-            
-            
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="examples">
-               
-               <h4>Example</h4>
-               
-               <div class="example">Simple handler for a HTTP request.
-                  <pre>
-MINI.request('get', '/weather.html')
-    .onError(function() {
-       alert('Got error!');
-    });
-</pre>
-                  </div>
-               
-            </div>
+            Description
+            Allows you to add a callback that will be called when the operation failed.
+            This is a convenience function that will call then() with the only the second argument
+            set.
             
             
             
-            <p xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><a href="index.html">back to Overview</a></p>
             
-            <div xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="toc"><a href="dollar.html">MINI()</a>
-               <a href="add.html">.add()</a>
-               <a href="addafter.html">.addAfter()</a>
-               <a href="addbefore.html">.addBefore()</a>
-               <a href="addfront.html">.addFront()</a>
-               <a href="animate.html">.animate()</a>
-               <a href="append.html">.append()</a>
-               <a href="collect.html">.collect()</a>
-               <a href="each.html">.each()</a>
-               <a href="fill.html">.fill()</a>
-               <a href="filter.html">.filter()</a>
-               <a href="find.html">.find()</a>
-               <a href="get.html">.get()</a>
-               <a href="hasclass.html">.hasClass()</a>
-               <a href="length.html">.length</a>
-               <a href="offset.html">.offset()</a>
-               <a href="on.html">.on()</a>
-               <a href="prepend.html">.prepend()</a>
-               <a href="raw.html">.raw</a>
-               <a href="remove.html">.remove()</a>
-               <a href="replace.html">.replace()</a>
-               <a href="set.html">.set()</a>
-               <a href="sub.html">.sub()</a>
-               <a href="toggle.html">.toggle()</a>
-               <a href="values.html">.values()</a>
-               <a href="dollardollar.html">MINI.$$()</a>
-               <a href="el.html">MINI.el()</a>
-               <a href="getcookie.html">MINI.getCookie()</a>
-               <a href="loop.html">MINI.loop()</a>
-               <a href="off.html">MINI.off()</a>
-               <a href="parsejson.html">MINI.parseJSON()</a>
-               <a href="ready.html">MINI.ready()</a>
-               <a href="request.html">MINI.request()</a>
-               <a href="setcookie.html">MINI.setCookie()</a>
-               <a href="tojson.html">MINI.toJSON()</a>
-               <a href="always.html">promise.always()</a>
-               <a href="onerror.html">promise.onError()</a>
-               <a href="then.html">promise.then()</a>
-               
-            </div>	
+            Example
+            Simple handler for a HTTP request.
+            
+            MINI.request('get', '/weather.html')
+            .onError(function() {
+            alert('Got error!');
+            });
+            
+            
+            
+            
+            
+            back to Overview
+            MINI()
+            .add()
+            .addAfter()
+            .addBefore()
+            .addFront()
+            .animate()
+            .append()
+            .collect()
+            .each()
+            .fill()
+            .filter()
+            .find()
+            .get()
+            .hasClass()
+            .length
+            .offset()
+            .on()
+            .prepend()
+            .raw
+            .remove()
+            .replace()
+            .set()
+            .sub()
+            .toggle()
+            .values()
+            MINI.$$()
+            MINI.el()
+            MINI.getCookie()
+            MINI.loop()
+            MINI.off()
+            MINI.parseJSON()
+            MINI.ready()
+            MINI.request()
+            MINI.setCookie()
+            MINI.toJSON()
+            promise.always()
+            promise.onError()
+            promise.then()
+            	
          </div>
       </div>
       <div id="foot">

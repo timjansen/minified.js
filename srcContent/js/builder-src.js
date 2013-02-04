@@ -61,9 +61,9 @@ function setUpConfigurationUI(s) {
 	$('#compile').on('click', compileClicked);
 	
 	for (var i = 1; i < MODULES.length; i++) {
-		var moduleCheckBox, div, topDiv = $('#sectionCheckboxes').add(div = MINI.el('div', {'@id': 'divMod-'+i}, MINI.el('div', {'className': 'moduleDescriptor'}, [
-			moduleCheckBox = MINI.el('input', {'@id': 'mod-'+i, 'className': 'modCheck', '@type':'checkbox', checked: 'checked'}),
-			MINI.el('label', {'@for': 'mod-'+i}, MODULES[i])     
+		var moduleCheckBox, div, topDiv = $('#sectionCheckboxes').add(div = $.el('div', {'@id': 'divMod-'+i}, $.el('div', {'className': 'moduleDescriptor'}, [
+			moduleCheckBox = $.el('input', {'@id': 'mod-'+i, 'className': 'modCheck', '@type':'checkbox', checked: 'checked'}),
+			$.el('label', {'@for': 'mod-'+i}, MODULES[i])     
 		])));
 		
 		$(moduleCheckBox).on('change', function() {
@@ -112,10 +112,10 @@ function setUpConfigurationUI(s) {
 			var requiredBy = createList('Required by ', sec.requiredBy);
 			var requires = createList('Requires ', sec.requires);
 		
-			div.add(MINI.el('div', {'className': 'sectionDescriptor'}, [
-				sectionCheckBox = MINI.el('input', {'className': 'secCheck', '@type': 'checkbox', '@id': 'sec-'+sec.id, checked: sec.configurable=='default' ? 'checked' : null}),
-				MINI.el('label', {'@for': 'sec-'+sec.id}, sec.name || sec.id),
-				MINI.el('div', {'className': 'requirements'}, [requiredBy ? [requiredBy, MINI.el('br')] : null , requires])
+			div.add($.el('div', {'className': 'sectionDescriptor'}, [
+				sectionCheckBox = $.el('input', {'className': 'secCheck', '@type': 'checkbox', '@id': 'sec-'+sec.id, checked: sec.configurable=='default' ? 'checked' : null}),
+				$.el('label', {'@for': 'sec-'+sec.id}, sec.name || sec.id),
+				$.el('div', {'className': 'requirements'}, [requiredBy ? [requiredBy, $.el('br')] : null , requires])
 			]));
 			
 			$(sectionCheckBox).on('change', function() {
@@ -127,8 +127,8 @@ function setUpConfigurationUI(s) {
 	}
 }
 
-MINI(function() {
-	MINI.request('get', SRC, null).then(function(src) {
+$(function() {
+	$.request('get', SRC, null).then(function(src) {
 		setUpConfigurationUI(prepareSections(src));
 	});
 });
