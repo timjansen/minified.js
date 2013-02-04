@@ -209,7 +209,7 @@
     	var values = [];     // an array of values as arguments for the then() handlers
  		var deferred = [];   // functions to call when set() is invoked
  	 	
-    	function set(newState, newValues) {
+    	var set = function (newState, newValues) {
     		if (state == null) {
 	    		state = newState;
 	    		values = newValues;
@@ -217,35 +217,8 @@
    					each(deferred, callArg);
    				});
     		}
-    	}
-		function then(onFulfilled, onRejected) {
-			var newPromise = promise();
-			var callCallbacks = function() {
-	    		try {
-	    			var f = (state ? onFulfilled : onRejected);
-	    			if (isFunction(f)) {
-		   				var r = f.apply(null, values);
-		   				if (r && isFunction(r.then))
-		   					r.then(function(value){newPromise['s'](true,[value]);}, function(value){newPromise.s(false,[value]);});
-		   				else
-		   					newPromise['s'](true, [r]);
-		   			}
-		   			else
-		   				newPromise['s'](state, values);
-				}
-				catch (e) {
-					newPromise['s'](false, [e]);
-				}
-			};
-			if (state != null)
-				delay(0, callCallbacks);
-			else
-				deferred.push(callCallbacks);    		
-    		return newPromise;
-    	}
-	    		
-    	return {
-	/**
+    	};
+ 	/**
 	 * @id then
 	 * @module REQUEST
 	 * @name promise.then()
@@ -300,11 +273,35 @@
 	 * @param onError optional a function to be called when the operation failed. The exact arguments depend on the operation. If provided and it returns a Promise, that promise will
 	 *                           be evaluated to determine the state of the returned promise. If provided and it returns regularly, the returned promise will 
 	 *                           have success status. If it throws an error, the returned promise will be in the error state.
-	 * @return a new Promises object. Its state is determined by the callbacks.
+	 * @return a new Promises object. If you specified a callback for success or error, the new object's state will be determined by that callback if it is called.
+	 *         If no callback has been provided for success or error and the original Promise changes to that state, the new promise will change to that state as well.
 	 */    	        
-	 			'then': then,
-    			's': set,
-	/**
+ 		var then = set['then'] = function(onFulfilled, onRejected) {
+			var newPromise = promise();
+			var callCallbacks = function() {
+	    		try {
+	    			var f = (state ? onFulfilled : onRejected);
+	    			if (isFunction(f)) {
+		   				var r = f.apply(null, values);
+		   				if (r && isFunction(r.then))
+		   					r.then(function(value){newPromise(true,[value]);}, function(value){newPromise(false,[value]);});
+		   				else
+		   					newPromise(true, [r]);
+		   			}
+		   			else
+		   				newPromise(state, values);
+				}
+				catch (e) {
+					newPromise(false, [e]);
+				}
+			};
+			if (state != null)
+				delay(0, callCallbacks);
+			else
+				deferred.push(callCallbacks);    		
+    		return newPromise;
+    	};
+  	/**
 	 * @id always
 	 * @module REQUEST
 	 * @name promise.always()
@@ -326,8 +323,9 @@
 	 *                           have success status. If it throws an error, the returned promise will be in the error state.
 	 * @return a new Promises object. Its state is determined by the callback.
 	 */
-    			'always': function(func) { return then(func, func); },
-	/**
+      	set['always'] = function(func) { return then(func, func); };
+      	
+ 	/**
 	 * @id error
 	 * @module REQUEST
 	 * @name promise.error()
@@ -348,11 +346,11 @@
 	 *                           have success status. If it throws an error, the returned promise will be in the error state.
 	 * @return a new Promises object. Its state is determined by the callback.
 	 */    			 
-    			'error': function(func) { return then(0, func); }
-	    	};
+     	set['error'] = function(func) { return then(0, func); };
 	  /**
 	   * @stop
 	   */ 
+    	return set;
     }
     
     /**
@@ -1731,7 +1729,7 @@
 		var prom = promise();
 		state = state || {};
 		state['time'] = 0;
-		state['stop'] = function() { if (delayStop) delayStop(); if (loopStop) loopStop(); prom['s'](false); };
+		state['stop'] = function() { if (delayStop) delayStop(); if (loopStop) loopStop(); prom(false); };
 		delayStop = delay(delayMs, function() {
 			durationMs = durationMs || 500;
 			linearity = linearity || 0;
@@ -1770,7 +1768,7 @@
 					});
 					stop();
 					state['time'] = state['stop'] = null;
-					prom['s'](true, [self]);
+					prom(true, [self]);
 				}
 				else
 					each(initState, function(isi) {
@@ -2288,10 +2286,10 @@
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState == 4 && !callbackCalled++) {
 					if (xhr.status == 200) {
-						prom['s'](true, [xhr.responseText, xhr.responseXML]);
+						prom(true, [xhr.responseText, xhr.responseXML]);
 					}
 					else
-						prom['s'](false, [xhr.status, xhr.statusText, xhr.responseText]);
+						prom(false, [xhr.status, xhr.statusText, xhr.responseText]);
 				}
 			};
 			
@@ -2300,7 +2298,7 @@
 		}
 		catch (e) {
 			if (!callbackCalled) 
-				prom['s'](false, [0, null, toString(e)]);
+				prom(false, [0, null, toString(e)]);
 		}
 	},
 	
