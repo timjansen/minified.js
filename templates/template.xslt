@@ -12,21 +12,7 @@
 <head>
 <meta charset="UTF-8" />
 <title><xsl:value-of select="/page:page/page:title"/></title>
-<style type="text/css">
-body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-serif;}
-#head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
-.container { margin: auto; width: 70em; }
-#head .container { height: 2.4em; border-bottom: 1px solid #aaa; padding: 0; }
-#head .container img { height: 2em; float: left; margin: 0.2em 0.5em;} 
-#topMenu { text-align: right;}
-#topMenu a { display: inline-block; height: 1.4em; padding: 0.5em 1em 0.5em; color: black; text-decoration: none; vertical-align: middle;}
-#topMenu a:hover { color: white; background-color: #f80; }
-#topMenu a.selected,  #topMenu a:hover.selected { color: white; background-color: black; }
-#foot .container { height: 2.4em; border-top: 1px solid #aaa; padding: 0; }
-#foot .container p { font-size: smaller; color: #bbb; margin: 0.5em; padding: 0; text-align: left; }
-#foot .container A { color: #888; font-weight: bold; font-size: smaller; }
-#main .container { padding: 1em; }
-</style>
+<xsl:if test="count(/page:page/page:externalCss)=0"><link rel="stylesheet" type="text/css" href="css/minimum.css"/></xsl:if>
 <xsl:for-each select="/page:page/page:externalCss"><link rel="stylesheet" type="text/css" href="{.}"/></xsl:for-each>
 <xsl:for-each select="/page:page/page:inlineCss"><style type="text/css"><xsl:value-of select="."></xsl:value-of></style></xsl:for-each>
 <xsl:for-each select="/page:page/page:externalJs"><script type="text/javascript" src="{.}"></script></xsl:for-each>

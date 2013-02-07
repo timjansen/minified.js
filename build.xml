@@ -24,6 +24,18 @@
      </java>
   	
   </target>
+
+  <target name="compileCss">
+    <apply verbose="true" executable="java" parallel="false" failonerror="true">
+        <fileset dir="srcContent/css/" includes="**/*.css"/>
+        <arg line="-jar"/>
+        <arg path="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar"/>
+        <arg line="-o"/>
+        <mapper type="glob" from="*.css" to="WebContent/css/*.css"/>
+        <targetfile/>
+        <srcfile/>
+    </apply>
+  </target>
 	
   <target name="processDocs">
     <script language="javascript" src="build/docwriter.js" />
@@ -39,7 +51,7 @@
 	</target>
 
 	
-  <target name="main" depends="compileJavascript, processDocs, processPages">
+  <target name="main" depends="compileJavascript, compileCss, processDocs, processPages">
   </target>
 
 </project>

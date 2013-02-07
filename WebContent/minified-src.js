@@ -283,8 +283,8 @@
 	    			var f = (state ? onFulfilled : onRejected);
 	    			if (isFunction(f)) {
 		   				var r = f.apply(null, values);
-		   				if (r && isFunction(r.then))
-		   					r.then(function(value){newPromise(true,[value]);}, function(value){newPromise(false,[value]);});
+		   				if (r && isFunction(r['then']))
+		   					r['then'](function(value){newPromise(true,[value]);}, function(value){newPromise(false,[value]);});
 		   				else
 		   					newPromise(true, [r]);
 		   			}
