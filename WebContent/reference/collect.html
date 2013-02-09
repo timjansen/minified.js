@@ -1,149 +1,16 @@
-<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml">
-   <head>
-      <meta charset="UTF-8"></meta>
-      <title>.collect() - Minified.js</title>
-      <link rel="stylesheet" type="text/css" href="css/minimum.css"></link>
-   </head>
-   <body>
-      <div id="head">
-         <div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div>
-         </div>
-      </div>
-      <div id="main">
-         <div class="container">
-            <p><a href="index.html">back to Overview</a></p>
-            <h3><a name="doc-collect">.collect()</a></h3>
-            <div class="summary">Creates a new list from the current list using given callback
-            function.</div>
-            
-            <h4>Syntax</h4>
-            <div class="syntaxVariant">
-            <div class="syntax">collect(collectFunc)</div>
-            <div class="syntax">collect(collectFunc, resultList)</div>
-            </div>
-            
-            <h4>Parameters</h4>
-            <dl class="params">
-            <dt id="collect_collectFunc" class=""><a name="collect_collectFunc">collectFunc</a></dt>
-            <dd class="">the callback function(item, index) to invoke for each item with the item
-            as first argument and the
-            0-based index as second argument.
-            If the function returns a list, its elements will be added to the result list. Other
-            objects will also be added. Nulls
-            will be ignored and not added.</dd>
-            <dt id="collect_resultList" class=""><a name="collect_resultList">resultList</a></dt>
-            <dd class=""><span class="optional">optional</span> if given, an array to append the
-            elements to. collect() will use push() to add them.
-            If omitted, a new array-based list will be created.</dd>
-            <dt id="collect_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="collect_RETURN">return
-            value</a></dt>
-            <dd class="inSyntax0 inSyntax1">the new list. If resultList has been omitted, the
-            result is guaranteed to be based
-            on Array and always a new instance</dd>
-            </dl>
-            
-            <h4>Description</h4>
-            <div class="description">Creates a new list from the current list using given callback
-            function.
-            The callback is invoked once for each element of the current
-            list. The callback results will be appended either to the given resultList, or to
-            a new array. The callback can return
-            <ul>
-            <li>An array or another list-like object whose elements will be appended to the result
-            array as single elements.</li>
-            <li>A regular object which will be appended to the list</li>
-            <li>null (or undefined), which means that no object will be added to the list.
-            If you need to add null or modified to the result list, put it into a single-element
-            array.</li>
-            </ul>
-            
-            </div>
-            
-            <div class="examples">
-            <h4>Example</h4>
-            <div class="example">Goes through input elements. If they are text inputs, their value
-            will be added to the list:
-            <pre>
-            var texts = $('input').collect(function(input) {
-            if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') //
-            text is default, so check for null
-            return input.value;
-            else
-            return null; // ignore
-            });
-            </pre>
-            </div>
-            <h4>Example</h4>
-            <div class="example">Creates a list of all children of the selected list.
-            <pre>
-            var childList = $('.mySections').collect(function(node) {
-            return node.childNodes; // adds a while list of nodes
-            });
-            </pre>
-            </div>
-            <h4>Example</h4>
-            <div class="example">Goes through selected input elements. For each hit, the innerHTML
-            is added twice, once in lower case and once in upper case:
-            <pre>
-            var elements = $('input.myTexts').collect(function(item) {
-            return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()];
-            });
-            </pre>
-            </div>
-            </div>
-            
-            
-            <p><a href="index.html">back to Overview</a></p>
-            <div id="toc"><a href="dollar.html">MINI()</a>
-            <a href="add.html">.add()</a>
-            <a href="addafter.html">.addAfter()</a>
-            <a href="addbefore.html">.addBefore()</a>
-            <a href="addfront.html">.addFront()</a>
-            <a href="animate.html">.animate()</a>
-            <a href="append.html">.append()</a>
-            <a href="collect.html">.collect()</a>
-            <a href="each.html">.each()</a>
-            <a href="fill.html">.fill()</a>
-            <a href="filter.html">.filter()</a>
-            <a href="find.html">.find()</a>
-            <a href="get.html">.get()</a>
-            <a href="hasclass.html">.hasClass()</a>
-            <a href="length.html">.length</a>
-            <a href="offset.html">.offset()</a>
-            <a href="on.html">.on()</a>
-            <a href="prepend.html">.prepend()</a>
-            <a href="raw.html">.raw</a>
-            <a href="remove.html">.remove()</a>
-            <a href="replace.html">.replace()</a>
-            <a href="set.html">.set()</a>
-            <a href="sub.html">.sub()</a>
-            <a href="toggle.html">.toggle()</a>
-            <a href="values.html">.values()</a>
-            <a href="dollardollar.html">MINI.$$()</a>
-            <a href="el.html">MINI.el()</a>
-            <a href="getcookie.html">MINI.getCookie()</a>
-            <a href="loop.html">MINI.loop()</a>
-            <a href="off.html">MINI.off()</a>
-            <a href="parsejson.html">MINI.parseJSON()</a>
-            <a href="ready.html">MINI.ready()</a>
-            <a href="request.html">MINI.request()</a>
-            <a href="setcookie.html">MINI.setCookie()</a>
-            <a href="tojson.html">MINI.toJSON()</a>
-            <a href="always.html">promise.always()</a>
-            <a href="error.html">promise.error()</a>
-            <a href="then.html">promise.then()</a>
-            </div>
-            
-         </div>
-      </div>
-      <div id="foot">
-         <div class="container">
-            <p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>.
-               		You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>, but 
-               		don't expect too much.
-               		<a href="/impressum.html">Legal Notice / Impressum</a>.
-            </p>
-         </div>
-      </div>
-   </body>
-</html>
+<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="UTF-8"></meta><title>.collect() - Minified.js</title><link rel="stylesheet" type="text/css" href="css/minimum.css"></link></head><body><div id="head"><div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div></div></div><div id="main"><div class="container"> <p><a href="index.html">back to Overview</a></p> <h3><a name="doc-collect">.collect()</a></h3> <div class="summary">Creates a new list from the current list using given callback function.</div> <h4>Syntax</h4> <div class="syntaxVariant"> <div class="syntax">collect(collectFunc)</div> <div class="syntax">collect(collectFunc, resultList)</div> </div> <h4>Parameters</h4> <dl class="params"> <dt id="collect_collectFunc" class=""><a name="collect_collectFunc">collectFunc</a></dt> <dd class="">the callback function(item, index) to invoke for each item with the item as first argument and the 0-based index as second argument. If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls will be ignored and not added.</dd> <dt id="collect_resultList" class=""><a name="collect_resultList">resultList</a></dt> <dd class=""><span class="optional">optional</span> if given, an array to append the elements to. collect() will use push() to add them. If omitted, a new array-based list will be created.</dd> <dt id="collect_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="collect_RETURN">return value</a></dt> <dd class="inSyntax0 inSyntax1">the new list. If resultList has been omitted, the result is guaranteed to be based on Array and always a new instance</dd> </dl> <h4>Description</h4> <div class="description">Creates a new list from the current list using given callback function. The callback is invoked once for each element of the current list. The callback results will be appended either to the given resultList, or to a new array. The callback can return <ul> <li>An array or another list-like object whose elements will be appended to the result array as single elements.</li> <li>A regular object which will be appended to the list</li> <li>null (or undefined), which means that no object will be added to the list. If you need to add null or modified to the result list, put it into a single-element array.</li> </ul> </div> <div class="examples"> <h4>Example</h4> <div class="example">Goes through input elements. If they are text inputs, their value will be added to the list: <pre>
+var texts = $('input').collect(function(input) {
+if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') // text is default, so check for null
+    return input.value;
+else
+    return null; // ignore
+});
+</pre> </div> <h4>Example</h4> <div class="example">Creates a list of all children of the selected list. <pre>
+var childList = $('.mySections').collect(function(node) {
+return node.childNodes; // adds a while list of nodes
+});
+</pre> </div> <h4>Example</h4> <div class="example">Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case: <pre>
+var elements = $('input.myTexts').collect(function(item) {
+    return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()];
+});
+</pre> </div> </div> <p><a href="index.html">back to Overview</a></p> <div id="toc"><a href="dollar.html">MINI()</a> <a href="add.html">.add()</a> <a href="addafter.html">.addAfter()</a> <a href="addbefore.html">.addBefore()</a> <a href="addfront.html">.addFront()</a> <a href="animate.html">.animate()</a> <a href="append.html">.append()</a> <a href="collect.html">.collect()</a> <a href="each.html">.each()</a> <a href="fill.html">.fill()</a> <a href="filter.html">.filter()</a> <a href="find.html">.find()</a> <a href="get.html">.get()</a> <a href="hasclass.html">.hasClass()</a> <a href="length.html">.length</a> <a href="offset.html">.offset()</a> <a href="on.html">.on()</a> <a href="prepend.html">.prepend()</a> <a href="raw.html">.raw</a> <a href="remove.html">.remove()</a> <a href="replace.html">.replace()</a> <a href="set.html">.set()</a> <a href="sub.html">.sub()</a> <a href="toggle.html">.toggle()</a> <a href="values.html">.values()</a> <a href="dollardollar.html">MINI.$$()</a> <a href="el.html">MINI.el()</a> <a href="getcookie.html">MINI.getCookie()</a> <a href="loop.html">MINI.loop()</a> <a href="off.html">MINI.off()</a> <a href="parsejson.html">MINI.parseJSON()</a> <a href="ready.html">MINI.ready()</a> <a href="request.html">MINI.request()</a> <a href="setcookie.html">MINI.setCookie()</a> <a href="tojson.html">MINI.toJSON()</a> <a href="always.html">promise.always()</a> <a href="error.html">promise.error()</a> <a href="then.html">promise.then()</a> </div> </div></div><div id="foot"><div class="container"><p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>, but don't expect too much. <a href="/impressum.html">Legal Notice / Impressum</a>.</p></div></div></body></html>

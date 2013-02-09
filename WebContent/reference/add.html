@@ -1,165 +1,24 @@
-<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml">
-   <head>
-      <meta charset="UTF-8"></meta>
-      <title>.add() - Minified.js</title>
-      <link rel="stylesheet" type="text/css" href="css/minimum.css"></link>
-   </head>
-   <body>
-      <div id="head">
-         <div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div>
-         </div>
-      </div>
-      <div id="main">
-         <div class="container">
-            <p><a href="index.html">back to Overview</a></p>
-            <h3><a name="doc-add">.add()</a></h3>
-            <div class="summary">Adds the given node(s) as content to the list elements as additional
-            nodes.</div>
-            
-            <h4>Syntax</h4>
-            <div class="syntaxVariant">
-            <div class="syntax">MINI(selector).add(text)</div>
-            <div class="syntax">MINI(selector).add(callbackFunction)</div>
-            <div class="syntax">MINI(selector).add(elementContent)</div>
-            </div>
-            
-            <h4>Parameters</h4>
-            <dl class="params">
-            <dt id="add_text" class=""><a name="add_text">text</a></dt>
-            <dd class="">a text to add as text node of the list elements</dd>
-            <dt id="add_callbackFunction" class=""><a name="add_callbackFunction">callbackFunction</a></dt>
-            <dd class="">a function(newNode, listItem, parentNode) that will be invoked for each
-            list element to determine its content.
-            The function can return either a string for a text node, an HTML element or a list
-            containing strings and/or HTML elements.</dd>
-            <dt id="add_elementContent" class=""><a name="add_elementContent">elementContent</a></dt>
-            <dd class="">content to add <strong>only to the first element</strong> of the list.
-            The content can be a string for a text node,
-            an HTML element or a list containing strings and/or HTML elements.</dd>
-            <dt id="add_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="add_RETURN">return
-            value</a></dt>
-            <dd class="inSyntax0 inSyntax1 inSyntax2">the current list</dd>
-            </dl>
-            
-            <h4>Description</h4>
-            <div class="description">Adds the given node(s) as content to the list elements as
-            additional nodes. If a string has been given, it will be added as text node to all
-            elements.
-            If you pass an element or a list, it will be added <strong>only to the first element
-            of the list</strong>. In order to add elements
-            to several list items, you need to pass a factory function(element, index) thats creates
-            new instances for each item.
-            The function will be invoked for each element and may return either a string for a
-            text node, a simple HTML element or a list containing both.
-            
-            
-            </div>
-            
-            <div class="examples">
-            <h4>Example</h4>
-            <div class="example">Using the following HTML:
-            <pre>
-            &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
-            </pre>
-            Add a text to the given 'comment' div:
-            <pre>
-            $('#comments').add('Some additional text.');
-            </pre>
-            This results in:
-            <pre>
-            &lt;div id="comments">Here is some text.&lt;br/>&lt;Some additional text./div>
-            </pre>
-            </div>
-            <h4>Example</h4>
-            <div class="example">Using the following HTML:
-            <pre>
-            &lt;ul id="myList">
-            &lt;li>First list entry&lt;/li>
-            &lt;li>Second list entry&lt;/li>
-            &lt;/ul>
-            </pre>
-            The following Javascript adds an element to the list:
-            <pre>
-            $('#myList').add(EE('li', 'My extra point');
-            </pre>
-            This results in
-            <pre>
-            &lt;ul id="myList">
-            &lt;li>First list entry&lt;/li>
-            &lt;li>Second list entry&lt;/li>
-            &lt;li>My extra point&lt;/li>
-            &lt;/ul>
-            </pre>
-            </div>
-            <h4>Example</h4>
-            <div class="example">Use a list to add several elements at once:
-            <pre>
-            $('#comments').add([EE('br'), 'Some text', EE('span', {'className': 'highlight'},
-            'Some highlighted text')]);
-            </pre>
-            </div>
-            <h4>Example</h4>
-            <div class="example">If you need to add an element or a list to more than one element,
-            you need to provide a factory function:
-            <pre>
-            $('.chapter').add(function(e, index) { return EE('div', 'Scroll down for the next
-            chapter.'); });
-            </pre>
-            </div>
-            </div>
-            
-            
-            <p><a href="index.html">back to Overview</a></p>
-            <div id="toc"><a href="dollar.html">MINI()</a>
-            <a href="add.html">.add()</a>
-            <a href="addafter.html">.addAfter()</a>
-            <a href="addbefore.html">.addBefore()</a>
-            <a href="addfront.html">.addFront()</a>
-            <a href="animate.html">.animate()</a>
-            <a href="append.html">.append()</a>
-            <a href="collect.html">.collect()</a>
-            <a href="each.html">.each()</a>
-            <a href="fill.html">.fill()</a>
-            <a href="filter.html">.filter()</a>
-            <a href="find.html">.find()</a>
-            <a href="get.html">.get()</a>
-            <a href="hasclass.html">.hasClass()</a>
-            <a href="length.html">.length</a>
-            <a href="offset.html">.offset()</a>
-            <a href="on.html">.on()</a>
-            <a href="prepend.html">.prepend()</a>
-            <a href="raw.html">.raw</a>
-            <a href="remove.html">.remove()</a>
-            <a href="replace.html">.replace()</a>
-            <a href="set.html">.set()</a>
-            <a href="sub.html">.sub()</a>
-            <a href="toggle.html">.toggle()</a>
-            <a href="values.html">.values()</a>
-            <a href="dollardollar.html">MINI.$$()</a>
-            <a href="el.html">MINI.el()</a>
-            <a href="getcookie.html">MINI.getCookie()</a>
-            <a href="loop.html">MINI.loop()</a>
-            <a href="off.html">MINI.off()</a>
-            <a href="parsejson.html">MINI.parseJSON()</a>
-            <a href="ready.html">MINI.ready()</a>
-            <a href="request.html">MINI.request()</a>
-            <a href="setcookie.html">MINI.setCookie()</a>
-            <a href="tojson.html">MINI.toJSON()</a>
-            <a href="always.html">promise.always()</a>
-            <a href="error.html">promise.error()</a>
-            <a href="then.html">promise.then()</a>
-            </div>
-            
-         </div>
-      </div>
-      <div id="foot">
-         <div class="container">
-            <p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>.
-               		You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>, but 
-               		don't expect too much.
-               		<a href="/impressum.html">Legal Notice / Impressum</a>.
-            </p>
-         </div>
-      </div>
-   </body>
-</html>
+<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="UTF-8"></meta><title>.add() - Minified.js</title><link rel="stylesheet" type="text/css" href="css/minimum.css"></link></head><body><div id="head"><div class="container"><img src="/img/minified.svg"></img><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download">Download</a><a class="notSelected" href="/build">Build</a><a class="notSelected" href="/tutorials">Tutorials</a><a class="selected" href="/api">Reference</a><a class="notSelected" href="/about">About</a></div></div></div><div id="main"><div class="container"> <p><a href="index.html">back to Overview</a></p> <h3><a name="doc-add">.add()</a></h3> <div class="summary">Adds the given node(s) as content to the list elements as additional nodes.</div> <h4>Syntax</h4> <div class="syntaxVariant"> <div class="syntax">MINI(selector).add(text)</div> <div class="syntax">MINI(selector).add(callbackFunction)</div> <div class="syntax">MINI(selector).add(elementContent)</div> </div> <h4>Parameters</h4> <dl class="params"> <dt id="add_text" class=""><a name="add_text">text</a></dt> <dd class="">a text to add as text node of the list elements</dd> <dt id="add_callbackFunction" class=""><a name="add_callbackFunction">callbackFunction</a></dt> <dd class="">a function(newNode, listItem, parentNode) that will be invoked for each list element to determine its content. The function can return either a string for a text node, an HTML element or a list containing strings and/or HTML elements.</dd> <dt id="add_elementContent" class=""><a name="add_elementContent">elementContent</a></dt> <dd class="">content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node, an HTML element or a list containing strings and/or HTML elements.</dd> <dt id="add_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="add_RETURN">return value</a></dt> <dd class="inSyntax0 inSyntax1 inSyntax2">the current list</dd> </dl> <h4>Description</h4> <div class="description">Adds the given node(s) as content to the list elements as additional nodes. If a string has been given, it will be added as text node to all elements. If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. </div> <div class="examples"> <h4>Example</h4> <div class="example">Using the following HTML: <pre>
+&lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
+</pre> Add a text to the given 'comment' div: <pre>
+$('#comments').add('Some additional text.');
+</pre> This results in: <pre>
+&lt;div id="comments">Here is some text.&lt;br/>&lt;Some additional text./div>
+</pre> </div> <h4>Example</h4> <div class="example">Using the following HTML: <pre>
+&lt;ul id="myList">
+  &lt;li>First list entry&lt;/li>
+  &lt;li>Second list entry&lt;/li>
+&lt;/ul>
+</pre> The following Javascript adds an element to the list: <pre>
+$('#myList').add(EE('li', 'My extra point');
+</pre> This results in <pre>
+&lt;ul id="myList">
+  &lt;li>First list entry&lt;/li>
+  &lt;li>Second list entry&lt;/li>
+  &lt;li>My extra point&lt;/li>
+&lt;/ul>
+</pre> </div> <h4>Example</h4> <div class="example">Use a list to add several elements at once: <pre>
+$('#comments').add([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
+</pre> </div> <h4>Example</h4> <div class="example">If you need to add an element or a list to more than one element, you need to provide a factory function: <pre>
+$('.chapter').add(function(e, index) { return EE('div', 'Scroll down for the next chapter.'); });
+</pre> </div> </div> <p><a href="index.html">back to Overview</a></p> <div id="toc"><a href="dollar.html">MINI()</a> <a href="add.html">.add()</a> <a href="addafter.html">.addAfter()</a> <a href="addbefore.html">.addBefore()</a> <a href="addfront.html">.addFront()</a> <a href="animate.html">.animate()</a> <a href="append.html">.append()</a> <a href="collect.html">.collect()</a> <a href="each.html">.each()</a> <a href="fill.html">.fill()</a> <a href="filter.html">.filter()</a> <a href="find.html">.find()</a> <a href="get.html">.get()</a> <a href="hasclass.html">.hasClass()</a> <a href="length.html">.length</a> <a href="offset.html">.offset()</a> <a href="on.html">.on()</a> <a href="prepend.html">.prepend()</a> <a href="raw.html">.raw</a> <a href="remove.html">.remove()</a> <a href="replace.html">.replace()</a> <a href="set.html">.set()</a> <a href="sub.html">.sub()</a> <a href="toggle.html">.toggle()</a> <a href="values.html">.values()</a> <a href="dollardollar.html">MINI.$$()</a> <a href="el.html">MINI.el()</a> <a href="getcookie.html">MINI.getCookie()</a> <a href="loop.html">MINI.loop()</a> <a href="off.html">MINI.off()</a> <a href="parsejson.html">MINI.parseJSON()</a> <a href="ready.html">MINI.ready()</a> <a href="request.html">MINI.request()</a> <a href="setcookie.html">MINI.setCookie()</a> <a href="tojson.html">MINI.toJSON()</a> <a href="always.html">promise.always()</a> <a href="error.html">promise.error()</a> <a href="then.html">promise.then()</a> </div> </div></div><div id="foot"><div class="container"><p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>, but don't expect too much. <a href="/impressum.html">Legal Notice / Impressum</a>.</p></div></div></body></html>

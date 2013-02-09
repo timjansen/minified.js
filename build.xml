@@ -26,16 +26,10 @@
   </target>
 
   <target name="compileCss">
-    <apply verbose="true" executable="java" parallel="false" failonerror="true">
-        <fileset dir="srcContent/css/" includes="**/*.css"/>
-        <arg line="-jar"/>
-        <arg path="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar"/>
-        <arg line="-o"/>
-        <mapper type="glob" from="*.css" to="WebContent/css/*.css"/>
-        <targetfile/>
-        <srcfile/>
-    </apply>
-  </target>
+ 	 <java jar="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar" failonerror="true" fork="true">
+ 	    <arg line="-o WebContent/css/minimum.css srcContent/css/minimum.css"/>
+    </java>
+   </target>
 	
   <target name="processDocs">
     <script language="javascript" src="build/docwriter.js" />
@@ -50,8 +44,19 @@
 		</xslt>
 	</target>
 
-	
-  <target name="main" depends="compileJavascript, compileCss, processDocs, processPages">
-  </target>
+   <target name="compressHtml" depends="processDocs, processPages">
+	 <java jar="thirdPartyLibs/htmlcompressor/htmlcompressor-1.5.3.jar" failonerror="true" fork="true">
+	    <arg line="-o WebContent/ --mask *.html WebContent/"/>
+	 </java>
+	 <java jar="thirdPartyLibs/htmlcompressor/htmlcompressor-1.5.3.jar" failonerror="true" fork="true">
+	    <arg line="-r -o WebContent/tutorial/ --mask *.html WebContent/tutorial/"/>
+	 </java>
+	 <java jar="thirdPartyLibs/htmlcompressor/htmlcompressor-1.5.3.jar" failonerror="true" fork="true">
+	    <arg line="-r -o WebContent/reference/ --mask *.html WebContent/reference/"/>
+	 </java>
+   </target>	
+  
+   <target name="main" depends="compileJavascript, compileCss, compressHtml">
+   </target>
 
 </project>

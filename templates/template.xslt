@@ -5,7 +5,7 @@
 				xmlns:page="http://tjansen.de/minifiedPage"
 				xmlns:i="http://tjansen.de/internal"
 				xmlns="http://www.w3.org/1999/xhtml">
-<xsl:output method="html" encoding="utf-8" indent="yes" />
+<xsl:output method="html" encoding="utf-8" indent="no" />
 <xsl:template match="/">
 <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html></xsl:text>
 <html>
