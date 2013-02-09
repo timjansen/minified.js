@@ -39,26 +39,35 @@
 
 (function(_window, _document) {
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * @const
+	 * @type {!string}
+	 */
 	var BACKSLASHB = '\\b';
+	/** @const */
 	var undef;
 	
-    /**
+    /*$
 	 * @id ready_vars
 	 * @dependency
      */
+    /** @type {!Array.<function()>} */
     var DOMREADY_HANDLER = [];
 
-    /**
+    /*$
      * @id animation_vars
      * @dependency
      */
+     /** @type {!Array.<{c:!function(), t:!number, s:!function()}>} */
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currently active
+	
+	/** @type {!function()} */
 	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _window[n+'equestAnimationFrame']; })[0] || function(callback) {
 		delay(33, callback); // 30 fps as fallback
 	};
 	
 	
-	/**
+	/*$
 	 * @id ie8compatibility
 	 * @module OPTIONS
 	 * @configurable default
@@ -66,11 +75,15 @@
 	 * @name Backward-Compatibility for IE8 and similar browsers
 	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8.
 	 */
+	/**
+	 * @const 
+	 * @type {boolean} 
+	 */
 	// @condblock ready_vars
 	 var IS_PRE_IE9 = !!_document.all && !DOMREADY_HANDLER.map;
 	// @condend
 	 // @cond !ready_vars var IS_PRE_IE9 = !!_document.all && ![].map;
-	/**
+	/*$
 	 * @id ie7compatibility
 	 * @requires ie8compatibility 
 	 * @module OPTIONS
@@ -81,6 +94,10 @@
 	 * Disabling IE6 and IE7 will not only make Minified smaller, but give you full CSS selectors and complete JSON support. 
 	 */
     // @condblock ucode
+    /**
+     * @const 
+     * @type {Object.<string, string>} 
+     */
 	var STRING_SUBSTITUTIONS = {    // table of character substitutions
             '\t': '\\t',
             '\r': '\\r',
@@ -90,7 +107,7 @@
         };
     // @condend
 
-	/**
+	/*$
 	 * @id ie6compatibility
 	 * @requires ie7compatibility 
 	 * @module OPTIONS
@@ -101,7 +118,7 @@
 	 * little bit larger.
 	 */
 
-	/**
+	/*$
 	 * @id fadeslide
 	 * @requires animate set 
 	 * @module ANIMATION
@@ -109,18 +126,24 @@
 	 * @doc no
 	 * @name Support for $$fade and $$slide
 	 */
-	/**
+	/*$
 	 * @stop
 	 */
 
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	/** @param s {?} */
 	function toString(s) { // wrapper for Closure optimization
 		return s!=null ? ''+s : '';
 	}
+	/**
+	 * @param s {?}
+	 * @param o {string}
+	 */
 	function isType(s,o) {
 		return typeof s == o;
 	}
+	/** @param s {?} */
 	function isString(s) {
 		return isType(s, 'string');
 	}
@@ -218,7 +241,7 @@
    				});
     		}
     	};
- 	/**
+ 	/*$
 	 * @id then
 	 * @module REQUEST
 	 * @name promise.then()
@@ -301,7 +324,7 @@
 				deferred.push(callCallbacks);    		
     		return newPromise;
     	};
-  	/**
+  	/*$
 	 * @id always
 	 * @module REQUEST
 	 * @name promise.always()
@@ -325,7 +348,7 @@
 	 */
       	set['always'] = function(func) { return then(func, func); };
       	
- 	/**
+ 	/*$
 	 * @id error
 	 * @module REQUEST
 	 * @name promise.error()
@@ -347,13 +370,13 @@
 	 * @return a new Promises object. Its state is determined by the callback.
 	 */    			 
      	set['error'] = function(func) { return then(0, func); };
-	  /**
+	  /*$
 	   * @stop
 	   */ 
     	return set;
     }
     
-    /**
+    /*$
 	 * @id ucode
 	 * @dependency
      */
@@ -364,7 +387,7 @@
     // @condend
 
     
-	/**
+	/*$
 	 * @id dollar
 	 * @module SELECTORS
 	 * @requires dollarraw addelementlistfuncsstart
@@ -485,7 +508,7 @@
 		// @cond !ready return new M(dollarRaw(selector, context));
 	}
 	
-	/**
+	/*$
 	 * @id debug
 	 * @module OPTIONS
 	 * @configurable optional
@@ -499,7 +522,7 @@
     // @cond debug MINI['debug'] = true;
 	
   
-    /**
+    /*$
      * @id dollarraw
      * @requires 
      * @dependency yes
@@ -564,18 +587,19 @@
 	};
 	
     
-    /**
+    /*$
      * @id addelementlistfuncsstart
      * @requires addelementlistfuncend
      * @dependency yes
      */
+    /** @constructor */
 	function M(list) {
 		for (var i = 0; i < list.length; i++)
 			this[i] = list[i];
 
 		this['length'] = list.length;
 		
-		/**
+		/*$
 		 * @id raw
 		 * @module SELECTORS
 		 * @requires dollar
@@ -590,7 +614,7 @@
 		 */
 		this['raw'] = list;
 		
-		/**
+		/*$
 		 * @id length
 		 * @module SELECTORS
 		 * @requires dollar
@@ -609,7 +633,7 @@
 		// empty, always defined above
 		
 
-	    /**
+	    /*$
 	     * @id addelementlistfuncend
 	     * @dependency yes
 	     */
@@ -618,7 +642,7 @@
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	each({
-    /**
+    /*$
      * @id each
      * @module SELECTORS
      * @requires dollar
@@ -642,7 +666,7 @@
 		return this;
 	},
 	
-	/**
+	/*$
 	 * @id filter
 	 * @module SELECTORS
 	 * @requires dollar
@@ -676,7 +700,7 @@
 	    return new M(filter(this['raw'], filterFunc));
 	},
 	
-	/** 
+	/*$ 
      * @id collect 
      * @module SELECTORS 
      * @requires dollar 
@@ -732,7 +756,7 @@
     	 return new M(collect(this['raw'], collectFunc, resultList)); 
      },
 	
-     /** 
+     /*$ 
       * @id sub
       * @module SELECTORS 
       * @requires filter 
@@ -772,7 +796,7 @@
  	},
  	
      
-    /** 
+    /*$ 
      * @id find 
      * @module SELECTORS 
      * @requires
@@ -811,7 +835,7 @@
 				return r;
 	},
 	
-    /** 
+    /*$ 
      * @id hasclass 
      * @module SELECTORS 
      * @requires find
@@ -835,7 +859,7 @@
 		return this.find(function(e) { return regexp.test(e.className) ? e : null; });
 	},
 	
-	/**
+	/*$
 	 * @id remove
 	 * @module SELECTORS
 	 * @requires dollar each
@@ -853,7 +877,7 @@
     	this['each'](function(obj) {obj.parentNode.removeChild(obj);});
      },
 
-	/**
+	/*$
 	 * @id get
 	 * @module SELECTORS
 	 * @requires dollar
@@ -937,7 +961,7 @@
 		}
 	},
 
-	/**
+	/*$
 	 * @id set
 	 * @module SELECTORS
 	 * @requires dollar each get
@@ -1099,7 +1123,7 @@
     	 return self;
      },
  	
-	/**
+	/*$
 	 * @id append
 	 * @module SELECTORS
 	 * @requires set
@@ -1125,7 +1149,7 @@
 	 */
 	'append': function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return toString(oldValue) + newValue;});},
 
-	/**
+	/*$
 	 * @id prepend
 	 * @module SELECTORS
 	 * @requires set
@@ -1152,7 +1176,7 @@
 	'prepend': function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return newValue + toString(oldValue);});},
 
 	
-	/**
+	/*$
 	 * @id add
 	 * @module ELEMENT
 	 * @requires dollar each
@@ -1238,7 +1262,7 @@
 	},
 
 	
-	/**
+	/*$
 	 * @id fill
 	 * @module ELEMENT
 	 * @requires dollar each
@@ -1310,7 +1334,7 @@
 		return this['each'](function(e) { MINI(e.childNodes)['remove'](); })['add'](children);
 	},
 
-	/**
+	/*$
 	 * @id addbefore
 	 * @module ELEMENT
 	 * @requires dollar
@@ -1377,7 +1401,7 @@
 		return this.add(children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode); });
 	},
 	
-	/**
+	/*$
 	 * @id addafter
 	 * @module ELEMENT
 	 * @requires dollar
@@ -1444,7 +1468,7 @@
 		return this.add(children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode.nextSibling); });
 	},
 	
-	/**
+	/*$
 	 * @id addfront
 	 * @module ELEMENT
 	 * @requires dollar
@@ -1513,7 +1537,7 @@
 		return this.add(children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
 	},
 	
-	/**
+	/*$
 	 * @id replace
 	 * @module ELEMENT
 	 * @requires dollar
@@ -1604,7 +1628,7 @@
 	},
 
 	
-	/**
+	/*$
 	 * @id animate
 	 * @module ANIMATION
 	 * @requires loop dollar each set get
@@ -1789,7 +1813,7 @@
 		},
 		
 		
-		/**
+		/*$
 		 * @id toggle
 		 * @module ANIMATION
 		 * @requires animate set
@@ -1874,7 +1898,7 @@
 				};
 		},
 
-		/**
+		/*$
 		 * @id on
 		 * @module EVENTS
 		 * @requires dollar each
@@ -1964,7 +1988,7 @@
 		},
 		
 	
-    /**
+    /*$
 	 * @id values
 	 * @module REQUEST
 	 * @requires each
@@ -2014,7 +2038,7 @@
 		return r;
 	},
 	
-	/**
+	/*$
 	 * @id offset
 	 * @module SELECTORS
 	 * @requires dollar
@@ -2044,7 +2068,7 @@
 		}
 		return dest;
      }
- 	/**
+ 	/*$
  	 * @stop
  	 */
 	}, function(n, v) {M.prototype[n]=v;});
@@ -2054,7 +2078,7 @@
 
 	each({
 
-    /**
+    /*$
 	 * @id dollardollar
 	 * @module SELECTORS
 	 * @requires dollarraw
@@ -2079,7 +2103,7 @@
 	},
 
 		
-	/**
+	/*$
 	 * @id el
 	 * @module ELEMENT
 	 * @requires dollardollar set
@@ -2177,7 +2201,7 @@
 	},
 		
 	
-	/**
+	/*$
 	* @id request
 	* @module REQUEST
 	* @configurable default
@@ -2310,7 +2334,7 @@
 	 */
     
 
-	/**
+	/*$
     * @id tojson
     * @module JSON
     * @requires ucode 
@@ -2355,7 +2379,7 @@
     // @condend
     // @cond !ie7compatibility 'toJSON': _window.JSON && JSON.stringify,
     
-	/**
+	/*$
 	* @id parsejson
 	* @module JSON
 	* @requires ucode
@@ -2388,7 +2412,7 @@
     // @condend
     // @cond !ie7compatibility 'parseJSON': json && json.parse,
     
-	/**
+	/*$
     * @id ready
     * @module EVENTS
     * @requires ready_vars ready_init
@@ -2410,7 +2434,7 @@
     'ready': ready,
 
    
-	/**
+	/*$
      * @id setcookie
      * @module COOKIE
      * @configurable default
@@ -2460,7 +2484,7 @@
     		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
     },
     
-    /**
+    /*$
      * @id getcookie
      * @module COOKIE
      * @requires
@@ -2492,7 +2516,7 @@
     	return dontUnescape ? match : match && unescape(match);
     },
 
-	/**
+	/*$
 	* @id loop
 	* @module ANIMATION
 	* @requires animation_vars 
@@ -2548,7 +2572,7 @@
         return entry.s; 
     },
     
-    /**
+    /*$
 	 * @id off
 	 * @module EVENTS
 	 * @requires dollar on each
@@ -2588,7 +2612,7 @@
 		handler['M'] = null;
 	}
 	
- 	/**
+ 	/*$
  	 * @stop
  	 */
 
@@ -2596,7 +2620,7 @@
 
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    /**
+    /*$
 	 * @id ready_init
 	 * @dependency
      */
@@ -2606,13 +2630,13 @@
     if (_document.addEventListener)
     // @condend
     	_document.addEventListener("DOMContentLoaded", triggerDomReady, false);
-	/**
+	/*$
 	 @stop
 	 */
 
 	//// GLOBAL SYMBOLS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
+    /*$
      * @id topleveldollar
      * @module SHORTCUTS
      * @requires dollar
@@ -2629,11 +2653,11 @@
      * @return the result list (see MINI())
      */
     _window['$'] =
-    /**
+    /*$
    	 @stop
    	 */
     _window['MINI'] = MINI; 
-    /**
+    /*$
      * @id topleveldollardollar
      * @module SHORTCUTS
      * @requires dollardollar topleveldollar
@@ -2651,7 +2675,7 @@
      */
     _window['$$'] = MINI['$$'];
 
-    /**
+    /*$
      * @id toplevelee
      * @module SHORTCUTS
      * @requires el topleveldollar
@@ -2668,13 +2692,13 @@
      * @return the resulting element (see MINI.$$())
      */
     _window['EE'] = MINI['el'];
-	/**
+	/*$
 	 @stop
 	 */
-})(window, document);
+})(this, document);
 
 
-/**
+/*$
  * @stop 
  */
 

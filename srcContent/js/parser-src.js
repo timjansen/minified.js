@@ -51,7 +51,7 @@ function parseSourceSections(src) {
 			else // still in main description
 				currentSection.desc += l + '\n';
 		}
-		else if (/^\s*\/\*\*/.test(line) && !/\*\/\s*$/.test(line)){ // start of comment ("/**" at start of line)
+		else if (/^\s*\/\*\$/.test(line) && !/\*\/\s*$/.test(line)){ // start of multi-line comment ("/*$" at start of line)
 			inComment = true;
 			sections.push(currentSection);
 			currentSection = createSection();
