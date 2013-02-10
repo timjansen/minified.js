@@ -14,9 +14,14 @@
 
 	<script type="text/javascript" src="helper.js"></script>
 	<script type="text/javascript">
-	// Load either minified.js or minified-src.js, depending on whether 'compiled' is in the URL query
-	var testingCompiled =  /compiled/.test(window.location.search); 
-	var file = (testingCompiled ? "../minified.js" : "../minified-src.js") + '?rnd=' + (new Date().getTime());
+	// Load the right source, depending on whether 'compiled' is in the URL query
+	
+	var q = window.location.search;
+	var srcFiles = ["../minified-src.js", "../minified.js", "../minified-src.noie.js", "../minified.noie.js"];
+	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie version on old ie
+	
+	var srcNum = parseInt(hhToString(q).replace(/[^0-9]/g, '')||'0') || 0;
+	var file = srcFiles[srcNum] + '?rnd=' + (new Date().getTime());
     document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
 	</script>
 	<script type="text/javascript">
@@ -63,10 +68,10 @@
 			if (failedNum == 0)
 				$('#status').set('+resultOk').fill("All passed.");
 			else
-				$('#status').set('+resultFailed').fill(failedNum + "out of " +finishedNum+ " failed.");
+				$('#status').set('+resultFailed').fill(failedNum + " out of " +finishedNum+ " failed.");
 			
-			if (failedNum == 0 && !testingCompiled)
-				document.location.href='autotest.html?compiled';
+			if (failedNum == 0 && ++srcNum < srcFiles.length)
+				document.location.href='autotest.html?src=' + srcNum;
 		}
 		
 		function runTest() {
@@ -135,7 +140,7 @@
 			}
 		}
 		$(function() { window.setTimeout(runTest, 1); });
-		$(function() {$('#file').fill(testingCompiled ? "minified.js (compiled)" : "minified-src.js (development)");});
+		$(function() {$('#file').fill(srcFiles[srcNum]);});
 		
 	</script>
 	<script type="text/javascript" src="autotest-element.js"></script>

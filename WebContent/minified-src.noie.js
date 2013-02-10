@@ -2241,7 +2241,7 @@
 	* @param text the JSON string
 	* @return the resulting JavaScript object. Undefined if not valid.
 	*/
-    'parseJSON': json && json.parse,
+    'parseJSON': _window.JSON && JSON.parse,
 
 	/*$
     * @id ready

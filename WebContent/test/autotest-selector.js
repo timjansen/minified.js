@@ -192,8 +192,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name: "MINI(elementName.class elementName)",
 		exec: function() {
-			var m = MINI('div.n p');
-			check(m.length, 4);
+			var m = MINI('#container div.n p');
+			check(m.length == 4 || m.length == 3); // Minified's impl will return 4, native CSS 3
 		}
 	},
 	{

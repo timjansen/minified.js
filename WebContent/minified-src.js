@@ -2402,7 +2402,7 @@
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     },
     // @condend
-    // @cond !ie7compatibility 'parseJSON': json && json.parse,
+    // @cond !ie7compatibility 'parseJSON': _window.JSON && JSON.parse,
     
 	/*$
     * @id ready
