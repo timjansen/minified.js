@@ -38,18 +38,20 @@
   	    <arg value="--js=srcContent/js/builder-src.js"/>
   	 	<arg value="--js_output_file=WebContent/js/builder.js"/>
      </java>
-  	
   </target>
 
-  <target name="compileCss">
- 	 <java jar="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar" failonerror="true" fork="true">
- 	    <arg line="-o WebContent/css/minimum.css srcContent/css/minimum.css"/>
-    </java>
-   </target>
-	
-  <target name="processDocs">
-    <script language="javascript" src="build/docwriter.js" />
-  </target>
+	<target name="compileCss">
+ 		<java jar="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar" failonerror="true" fork="true">
+ 	    	<arg line="-o WebContent/css/minimum.css srcContent/css/minimum.css"/>
+    	</java>
+	 	<java jar="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar" failonerror="true" fork="true">
+	    	<arg line="-o WebContent/css/reference.css srcContent/css/minimum.css srcContent/css/reference.css"/>
+  	 	</java>
+  	</target>
+
+	<target name="processDocs">
+		<script language="javascript" src="build/docwriter.js" />
+ 	</target>
 
 	<target name="processPages">
 		<!-- Root XML files -->

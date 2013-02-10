@@ -5,6 +5,7 @@
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
 	<title>MINI.ready() - Minified.js</title>
 	<section>reference</section>
+	<externalCss>../css/reference.css</externalCss>
 	<main><![CDATA[
 <p><a href="index.html">back to Overview</a></p>
 <h3><a name="doc-ready">MINI.ready()</a></h3>

@@ -90,6 +90,7 @@ function createPage(title, main) {
 		'<page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">\n' +
         '\t<title>'+title+'</title>\n' +
         '\t<section>reference</section>\n' +
+        '\t<externalCss>../css/reference.css</externalCss>\n' +
         '\t<main><![CDATA[\n' + main + '\n]]></main>\n</page>\n';
 	return p;
 }
