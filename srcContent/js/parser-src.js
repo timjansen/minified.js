@@ -71,7 +71,7 @@ function createSectionMap(sections) {
 	return m;
 }
 
-// completes dependencies in the sections by adding depencies of dependencies in the sections
+// completes dependencies in the sections by adding dependencies of dependencies in the sections
 function completeRequirements(sections, sectionMap) {
 	var addedReqs = 0;
 	hhEach(sections, function(s) {
@@ -122,7 +122,9 @@ function createDefaultConfigurationMap(sections, includeDisabled) {
 }
 
 
-// compiles the list of sections into a single string, given the map of enabled sections
+// compiles the list of sections into a single string, given the map of enabled sections. Dependencies
+// will be automatically calculated.
+// Returns new source code.
 function compile(sections, sectionMap, enabledSections) {
 	var src = '';
 	var enabledSectionsWithDeps = calculateDependencies(sectionMap, enabledSections);
@@ -154,26 +156,6 @@ function compile(sections, sectionMap, enabledSections) {
 	return src;
 }
 
-
-// submits the given source code (src) to the Closure online compiler. When finished, will invoke given callback cb with JSON result. 
-// On error, it passes null to the callback.
-function closureCompile(src, cb) {
-	function onError(e, e2, e3) {
-		if(window.console)console.log('error', e, e2, e3);
-		cb&&cb(null);
-	}
-	var URL = 'http://closure-compiler.appspot.com/compile';
-	MINI.request('post', URL, 
-			{
-				js_code: src,
-				output_format: 'json',
-				output_info: ['compiled_code', 'statistics'],
-				output_file_name: 'minified-custom.js',
-				compilation_level: 'ADVANCED_OPTIMIZATIONS'
-			}).then(function(txt) {
-				cb&&cb(MINI.parseJSON(txt));
-		}, onError);
-}
 
 // takes the source code src and parses it. 
 // Returns an object {sections: <list of sections>, sectionMap: <map id->section>, enabledSections: <default configuration map id->1>}
@@ -231,10 +213,10 @@ function serializeEnabledSections(sections, enabledSections) {
 
 // finds a serialized configuration in the given source, returns a map id->1 of all enabled sections. Null if no config found.
 function deserializeEnabledSections(sections, src) {
-	function makeRegExp(s) {
-		return new RegExp('^'+s.replace(' ', '\\s+'));
+	function makeRegexp(s) {
+		return new RegExp('^'+s.replace(/ /g, '\\s+'));
 	}
-	var startRegexp = makeRegexp(CONFIG_START);
+	var startRegexp = makeRegexp(CONFIG_START + '.*');
 	var allRegexp = makeRegexp(CONFIG_ALL + '\\s*\\.');
 	var allExceptRegexp = makeRegexp(CONFIG_ALL_EXCEPT + '\\s*');
 	var onlyRegexp = makeRegexp(CONFIG_ONLY  + '\\s*');
@@ -244,8 +226,9 @@ function deserializeEnabledSections(sections, src) {
 	for (var i = 0; i < lines.length; i++) { 
 		var line = lines[i];
 		if (/^\s*\/\/s*/.test(line)) {
-			var cmt = line.replace(/^\s*\/\/s*/, '');
+			var cmt = line.replace(/^\s*\/\/\s*/, '');
 			if (startRegexp.test(cmt) && i+1 < lines.length) {
+print('Start');
 				var s = '';
 				for (var j = i+1; j < lines.length; j++)
 					if (configCmtRegexp.test(lines[j])) {

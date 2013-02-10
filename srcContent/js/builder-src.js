@@ -2,6 +2,26 @@ var SRC='minified-src.js';
 
 var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS', 'OPTIONS'];
 
+//submits the given source code (src) to the Closure online compiler. When finished, will invoke given callback cb with JSON result. 
+//On error, it passes null to the callback.
+function closureCompile(src, advanced, cb) {
+	function onError(e, e2, e3) {
+		if(window.console)console.log('error', e, e2, e3);
+		cb&&cb(null);
+	}
+	var URL = 'http://closure-compiler.appspot.com/compile';
+	MINI.request('post', URL, 
+			{
+				js_code: src,
+				output_format: 'json',
+				output_info: ['compiled_code', 'statistics'],
+				output_file_name: 'minified-custom.js',
+				compilation_level: advanced ? 'ADVANCED_OPTIMIZATIONS' : 'SIMPLE_OPTIMIZATIONS'
+			}).then(function(txt) {
+				cb&&cb(MINI.parseJSON(txt));
+		}, onError);
+}
+
 function setUpConfigurationUI(s) {
 	
 	function compileClicked() {
@@ -13,22 +33,25 @@ function setUpConfigurationUI(s) {
 		
 		var src = compile(s.sections, s.sectionMap, enabledSections);
 		var header = serializeEnabledSections(s.sections, enabledSections);
-		if ($$('#compressionClosure').checked) {
+		if ($$('#compressionAdvanced').checked || $$('#compressionSimple').checked) {
 			$$('#compile').disabled = true;
-			closureCompile(src, function(closureResult) {
+			closureCompile(src, $$('#compressionAdvanced').checked, function(closureResult) {
+				$$('#compile').disabled = false;
 				if (closureResult) {
 					$$('#compile').disabled = false;
 					$('#gzipRow, #downloadRow').set({$display: 'table-row'});
 					$$('#resultSrc').value = header + closureResult.compiledCode;
-					$$('#resultPlain').innerHTML = (closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedSize + ' bytes)' ;
-					$$('#resultGzipped').innerHTML = (closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedGzipSize + ' bytes)' ;
+					$('#resultPlain').fill((closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedSize + ' bytes)');
+					$('#resultGzipped').fill((closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedGzipSize + ' bytes)');
 					$$('#resultLink').setAttribute('href', 'http://closure-compiler.appspot.com' +closureResult.outputFilePath);
 				}
+				else
+					alert("Google Closure Service not availble. Try again later.");
 			});
 		}
 		else  {
 			$$('#resultSrc').value = header + src;
-			$$('#resultPlain').innerHTML = (src.length/1024).toFixed(2) + 'kb';
+			$('#resultPlain').fill((src.length/1024).toFixed(2) + 'kb');
 			$('#gzipRow, #downloadRow').set({$display: 'none'});
 		}
 		return false;

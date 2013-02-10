@@ -46,7 +46,7 @@
 	var BACKSLASHB = '\\b';
 	/** @const */
 	var undef;
-	
+
     /*$
 	 * @id ready_vars
 	 * @dependency
@@ -60,63 +60,11 @@
      */
      /** @type {!Array.<{c:!function(), t:!number, s:!function()}>} */
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currently active
-	
+
 	/** @type {!function()} */
 	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _window[n+'equestAnimationFrame']; })[0] || function(callback) {
 		delay(33, callback); // 30 fps as fallback
 	};
-	
-	
-	/*$
-	 * @id ie8compatibility
-	 * @module OPTIONS
-	 * @configurable default
-	 * @doc no
-	 * @name Backward-Compatibility for IE8 and similar browsers
-	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8.
-	 */
-	/**
-	 * @const 
-	 * @type {boolean} 
-	 */
-	// @condblock ready_vars
-	 var IS_PRE_IE9 = !!_document.all && !DOMREADY_HANDLER.map;
-	// @condend
-	 // @cond !ready_vars var IS_PRE_IE9 = !!_document.all && ![].map;
-	/*$
-	 * @id ie7compatibility
-	 * @requires ie8compatibility 
-	 * @module OPTIONS
-	 * @configurable default
-	 * @doc no
-	 * @name Backward-Compatibility for IE7 and similar browsers
-	 * The difference between IE7 and IE8 compatibility that IE7 provides neither native selector support (querySelectorAll) nor native JSON.
-	 * Disabling IE6 and IE7 will not only make Minified smaller, but give you full CSS selectors and complete JSON support. 
-	 */
-    // @condblock ucode
-    /**
-     * @const 
-     * @type {Object.<string, string>} 
-     */
-	var STRING_SUBSTITUTIONS = {    // table of character substitutions
-            '\t': '\\t',
-            '\r': '\\r',
-            '\n': '\\n',
-            '"' : '\\"',
-            '\\': '\\\\'
-        };
-    // @condend
-
-	/*$
-	 * @id ie6compatibility
-	 * @requires ie7compatibility 
-	 * @module OPTIONS
-	 * @configurable default
-	 * @doc no
-	 * @name Backward-Compatibility for IE6 and similar browsers
-	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6 which makes the library a tiny 
-	 * little bit larger.
-	 */
 
 	/*$
 	 * @id fadeslide
@@ -197,7 +145,7 @@
 	function extractNumber(v) {
 		return parseFloat(replace(v, /^[^\d-]/));
 	}
-	
+
 	function getNaturalHeight(elementList) {
 		var q = {$position: 'absolute', $visibility: 'hidden', $display: 'block', $height: null};
 		var oldStyles = elementList['get'](q);
@@ -206,7 +154,7 @@
 		elementList.set(oldStyles);
 		return h;
 	}
-	
+
     function now() {
     	return new Date().getTime();
     }
@@ -218,7 +166,7 @@
     	each(DOMREADY_HANDLER, callArg);
     	DOMREADY_HANDLER = null;
     }
-    
+
     function ready(handler) {
     	// @cond debug if (typeof handler != 'function') error("First argument must be a function");
     	if (DOMREADY_HANDLER) // if DOM ready, call immediately
@@ -226,12 +174,12 @@
 		else
 			delay(0, handler);
     }
-     
+
     function promise() {
     	var state;           // undefined/null = pending, true = fulfilled, false = rejected
     	var values = [];     // an array of values as arguments for the then() handlers
  		var deferred = [];   // functions to call when set() is invoked
- 	 	
+
     	var set = function (newState, newValues) {
     		if (state == null) {
 	    		state = newState;
@@ -347,7 +295,7 @@
 	 * @return a new Promises object. Its state is determined by the callback.
 	 */
       	set['always'] = function(func) { return then(func, func); };
-      	
+
  	/*$
 	 * @id error
 	 * @module REQUEST
@@ -372,18 +320,12 @@
      	set['error'] = function(func) { return then(0, func); };
     	return set;
     }
-    
+
     /*$
 	 * @id ucode
 	 * @dependency
      */
-    // @condblock ie7compatibility
-    function ucode(a) {
-        return STRING_SUBSTITUTIONS[a] ||  ('\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4));
-    }
-    // @condend
 
-    
 	/*$
 	 * @id dollar
 	 * @module SELECTORS
@@ -499,26 +441,10 @@
 	 *             as a whole, not be in document order anymore. The array returned has several convenience functions listed below:
 	 */
 	function MINI(selector, context, childOnly) { 
-		// @condblock ready
 		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context, childOnly));
-		// @condend
 		// @cond !ready return new M(dollarRaw(selector, context));
 	}
-	
-	/*$
-	 * @id debug
-	 * @module OPTIONS
-	 * @configurable optional
-	 * @doc no
-	 * @name Debugging Support
-	 */
-	function error(msg) {
-		if (_window.console) console.log(msg);
-		throw Exception("MINI debug error: " + msg);
-	}
-    // @cond debug MINI['debug'] = true;
-	
-  
+
     /*$
      * @id dollarraw
      * @requires 
@@ -543,47 +469,28 @@
 				// fall through to return undef
 			});
 		}
-		
+
 		var parent, steps, dotPos, subSelectors;
 		var elements, regexpFilter, useGEbC, className, elementName, reg;
 
 		if (context && (context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
 			return collect(context, function(ci) { return dollarRaw(selector, ci);});
 		parent = context && context[0]; // note that context may have changed in the previous two lines!! you can't move this line
-		
+
 		if (!isString(selector))
 		    return filterElements(isList(selector) ? selector : [selector]); 
 
-		// @condblock ie7compatibility
-		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
-			return collect(subSelectors, function(ssi) { return dollarRaw(ssi, parent);});
 
-		if (steps = (/(\S+)\s+(.+)$/.exec(selector)))
-			return dollarRaw(steps[2], dollarRaw(steps[1], parent));
 
-		if (selector != (subSelectors = replace(selector, /^#/)))
-			return filterElements([_document.getElementById(subSelectors)]); 
 
-		// @cond debug if (/\s/.test(selector)) error("Selector has invalid format, please check for whitespace.");
-		// @cond debug if (/[ :\[\]]/.test(selector)) error("Only simple selectors with ids, classes and element names are allowed.");
 
-		parent = parent || _document;
 
-		elementName = (dotPos = /([^.]*)\.?([^.]*)/.exec(selector))[1];
-		className = dotPos[2];
-		elements = (useGEbC = parent.getElementsByClassName && className) ? parent.getElementsByClassName(className) : parent.getElementsByTagName(elementName || '*'); 
 
-		if (regexpFilter = useGEbC ? elementName : className) {
-			reg = new RegExp(BACKSLASHB +  regexpFilter + BACKSLASHB, 'i'); 
-			elements =  filter(elements, function(l) {return reg.test(l[useGEbC ? 'nodeName' : 'className']);});
-		}
-		// @condend
-		
-		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(selector);
+
+		elements = (parent || _document).querySelectorAll(selector);
 		return childOnly ? filterElements(elements) : elements;
 	};
-	
-    
+
     /*$
      * @stop
      */
@@ -593,7 +500,7 @@
 			this[i] = list[i];
 
 		this['length'] = list.length;
-		
+
 		/*$
 		 * @id raw
 		 * @module SELECTORS
@@ -608,7 +515,7 @@
 		 * </pre>
 		 */
 		this['raw'] = list;
-		
+
 		/*$
 		 * @id length
 		 * @module SELECTORS
@@ -626,13 +533,12 @@
 		 * </pre>
 		 */
 		// empty, always defined above
-		
 
 	    /*$
 	     * @stop
 	     */
 	}
-	
+
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	each({
@@ -659,7 +565,7 @@
 		each(this['raw'], callback); // use list, as a real Array may be faster
 		return this;
 	},
-	
+
 	/*$
 	 * @id filter
 	 * @module SELECTORS
@@ -693,7 +599,7 @@
 	'filter': function(filterFunc) {
 	    return new M(filter(this['raw'], filterFunc));
 	},
-	
+
 	/*$ 
      * @id collect 
      * @module SELECTORS 
@@ -749,7 +655,7 @@
 	'collect': function(collectFunc, resultList) { 
     	 return new M(collect(this['raw'], collectFunc, resultList)); 
      },
-	
+
      /*$ 
       * @id sub
       * @module SELECTORS 
@@ -788,8 +694,7 @@
  			return index >= s && index < e; 
  		});
  	},
- 	
-     
+
     /*$ 
      * @id find 
      * @module SELECTORS 
@@ -828,7 +733,7 @@
 			if ((r = f(list[i], i)) != null)
 				return r;
 	},
-	
+
     /*$ 
      * @id hasclass 
      * @module SELECTORS 
@@ -852,7 +757,7 @@
 		var regexp = new RegExp(BACKSLASHB +  name + BACKSLASHB);
 		return this.find(function(e) { return regexp.test(e.className) ? e : null; });
 	},
-	
+
 	/*$
 	 * @id remove
 	 * @module SELECTORS
@@ -923,9 +828,6 @@
 					s = element.className;
 				else if (spec == '$$fade') {
 					s = isNaN(s = isHidden ? 0 :
-					// @condblock ie8compatibility
-						  IS_PRE_IE9 ? extractNumber(self.get('$filter'))/100 :
-					// @condend
 						  extractNumber(self.get('$opacity')) 
 						 ) ? 1 : s;
 				}
@@ -933,13 +835,8 @@
 					s = (isHidden ? 0 : element.offsetHeight) + 'px';
 				}
 				else if (/^\$/.test(spec)) {
-					// @condblock ie8compatibility 
-					if (!_window.getComputedStyle)
-						s = element.currentStyle[name];
-					else 
-					// @condend
 						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
-					
+
 				}
 				else if (/^@/.test(spec))
 					s = element.getAttribute(name);
@@ -1072,14 +969,10 @@
  		 // @cond debug if (name == null) error("First argument must be set!");
     	 if (value !== undef) {
     		 // @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
- 			
-    		 // @condblock fadeslide
+
     		 if (name == '$$fade' || name == '$$slide') {
     			 self.set({$visibility: (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', $display: 'block'})
     			     .set((name == '$$fade')  ? (
-    			 // @condblock ie8compatibility 
-    			    	  IS_PRE_IE9 ? {$filter: 'alpha(opacity = '+(100*v)+')', $zoom: 1} :
-    			 // @condend
     			    	  {$opacity: v})
     			        :
     			        {$height: /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
@@ -1087,7 +980,6 @@
  					);
     		 }
     		 else
-    			// @condend
     			 self['each'](function(obj, c) {
     				 var f = isFunction(value) ? value : defaultFunction;
     				 var nameClean = replace(name, /^[@$]/);
@@ -1116,7 +1008,7 @@
     		 each(name, function(n,v) { self.set(n, v, defaultFunction); });
     	 return self;
      },
- 	
+
 	/*$
 	 * @id append
 	 * @module SELECTORS
@@ -1169,7 +1061,6 @@
 	 */
 	'prepend': function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return newValue + toString(oldValue);});},
 
-	
 	/*$
 	 * @id add
 	 * @module ELEMENT
@@ -1255,7 +1146,6 @@
 		});
 	},
 
-	
 	/*$
 	 * @id fill
 	 * @module ELEMENT
@@ -1394,7 +1284,7 @@
 	'addBefore': function (children) {
 		return this.add(children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode); });
 	},
-	
+
 	/*$
 	 * @id addafter
 	 * @module ELEMENT
@@ -1461,7 +1351,7 @@
 	'addAfter': function (children) {
 		return this.add(children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode.nextSibling); });
 	},
-	
+
 	/*$
 	 * @id addfront
 	 * @module ELEMENT
@@ -1530,7 +1420,7 @@
 	'addFront': function (children) {
 		return this.add(children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
 	},
-	
+
 	/*$
 	 * @id replace
 	 * @module ELEMENT
@@ -1621,7 +1511,6 @@
 		return this.add(children, function(newNode, refNode, parent) { parent.replaceChild(newNode, refNode); });
 	},
 
-	
 	/*$
 	 * @id animate
 	 * @module ANIMATION
@@ -1751,7 +1640,7 @@
 		delayStop = delay(delayMs, function() {
 			durationMs = durationMs || 500;
 			linearity = linearity || 0;
-			
+
 			// find start values
 			self['each'](function(li) {
 				var p = {o:MINI(li), s:{}, e:{}}; 
@@ -1765,7 +1654,7 @@
 				});
 				initState.push(p);
 			});
-					
+
 			// start animation
 			loopStop = MINI.loop(function(timePassedMs, stop) { 
 				function getColorComponent(colorCode, index) {
@@ -1778,7 +1667,7 @@
 				function interpolate(startValue, endValue) {
 					return startValue +  timePassedMs/durationMs * (endValue - startValue) * (linearity + (1-linearity) * timePassedMs/durationMs * (3 - 2*timePassedMs/durationMs)); 
 				}
-				
+
 				state['time'] = timePassedMs;
 				if (timePassedMs >= durationMs || timePassedMs < 0) {
 					each(initState, function(isi) { // set destination values
@@ -1805,8 +1694,7 @@
 			});
 			return prom;		
 		},
-		
-		
+
 		/*$
 		 * @id toggle
 		 * @module ANIMATION
@@ -1884,7 +1772,7 @@
 					if (newState === state) 
 						return;
 					state = isType(newState, 'boolean') ? newState : !state;
-	
+
 					if (durationMs) 
 						self.animate(state ? state2 : state1, animState.stop ? (animState.stop() || animState.time) : durationMs, linearity, 0, animState);
 					else
@@ -1956,32 +1844,16 @@
 					var e = event || _window.event;
 					// @cond debug try {
 					if (!handler.apply(fThis || e.target, args || [e, index]) || args) {
-						// @condblock ie8compatibility 
-						if (e.stopPropagation) {// W3C DOM3 event cancelling available?
-						// @condend
 							e.preventDefault();
 							e.stopPropagation();
-						// @condblock ie8compatibility 
-						}
-						e.returnValue = false; // cancel for IE
-						e.cancelBubble = true; // cancel bubble for IE
-						// @condend
 					}
 					// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 				};
 				(handler['M'] = handler['M'] || []).push({'e':el, 'h':h, 'n': name});
-				// @condblock ie8compatibility 
-				if (el.addEventListener)
-				// @condend
 					el.addEventListener(name, h, true); // W3C DOM
-				// @condblock ie8compatibility 
-				else 
-					el.attachEvent('on'+name, h);  // IE < 9 version
-				// @condend
 			});
 		},
-		
-	
+
     /*$
 	 * @id values
 	 * @module REQUEST
@@ -2031,7 +1903,7 @@
 		});
 		return r;
 	},
-	
+
 	/*$
 	 * @id offset
 	 * @module SELECTORS
@@ -2066,7 +1938,6 @@
  	 * @stop
  	 */
 	}, function(n, v) {M.prototype[n]=v;});
-     
 
  	//// MINI FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2096,7 +1967,6 @@
 		return dollarRaw(selector)[0];
 	},
 
-		
 	/*$
 	 * @id el
 	 * @module ELEMENT
@@ -2188,13 +2058,12 @@
 	'el': function(elementName, attributes, children) {
 		// @cond debug if (!elementName) error("el() requires the element name."); 
 		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
-	
+
 		var nu = _document.documentElement.namespaceURI; // to check whether doc is XHTML
 		var list = MINI(nu ? _document.createElementNS(nu, elementName) : _document.createElement(elementName));
 		return  (isList(attributes) || !isObject(attributes)) ? list.add(attributes) : list.set(attributes).add(children); 
 	},
-		
-	
+
 	/*$
 	* @id request
 	* @module REQUEST
@@ -2271,10 +2140,7 @@
 		/** @const */ var ContentType = 'Content-Type';
 		var xhr, body = data, callbackCalled = 0, prom = promise();
 		try {
-			//@condblock ie6compatibility
-			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
-			//@condend
-			// @cond !ie6compatibility xhr = new XMLHttpRequest();
+			xhr = new XMLHttpRequest();
 			if (data != null) {
 				headers = headers || {};
 				if (!isString(data) && !isNode(data)) { // if data is parameter map...
@@ -2285,7 +2151,7 @@
 							return encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : '');
 					}).join('&');
 				}
-				
+
 				if (!/post/i.test(method)) {
 					url += '?' + body;
 					body = null;
@@ -2293,7 +2159,7 @@
 				else if (!isNode(data) && !isString(data) && !headers[ContentType])
 					headers[ContentType] = 'application/x-www-form-urlencoded';
 			}
-			
+
 			xhr.open(method, url, true, username, password);
 			each(headers, function(hdrName, hdrValue) {
 				xhr.setRequestHeader(hdrName, hdrValue);
@@ -2308,7 +2174,7 @@
 						prom(false, [xhr.status, xhr.statusText, xhr.responseText]);
 				}
 			};
-			
+
 			xhr.send(body);
 			return prom;
 		}
@@ -2317,14 +2183,12 @@
 				prom(false, [0, null, toString(e)]);
 		}
 	},
-	
-	
+
 	/*
 	 * JSON Module. Uses browser built-ins or json.org implementation if available. Otherwise its own implementation,
 	 * originally based on public domain implementation http://www.JSON.org/json2.js / http://www.JSON.org/js.html.
 	 * Extremely simplified code, made variables local, removed all side-effects (especially new properties for String, Date and Number).
 	 */
-    
 
 	/*$
     * @id tojson
@@ -2356,21 +2220,8 @@
     * @param value the value (map-like object, array, string, number, date, boolean or null)
     * @return the JSON string
     */
-    // @condblock ie7compatibility
-    'toJSON': function toJSON(value) {
-		if (value == null)
-			return ""+value;                  //result: "null"; toString(value) is not possible, because it returns an empty string for null
-		if (isString(value = value.valueOf()))
-			return '"' + replace(value, /[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
-		if (isList(value)) 
-			return '[' + collect(value, toJSON).join() + ']';
-		if (isObject(value))
-			return '{' + collect(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
-		return toString(value);
-	},
-    // @condend
-    // @cond !ie7compatibility 'toJSON': _window.JSON && JSON.stringify,
-    
+    'toJSON': _window.JSON && JSON.stringify,
+
 	/*$
 	* @id parsejson
 	* @module JSON
@@ -2390,20 +2241,8 @@
 	* @param text the JSON string
 	* @return the resulting JavaScript object. Undefined if not valid.
 	*/
-    // @condblock ie7compatibility
-    'parseJSON': _window.JSON ? _window.JSON.parse : function (text) {
-    	var t = replace(text, /[\x00\xad\u0600-\uffff]/g, ucode); // encode unsafe characters
-        if (/^[[\],:{}\s]*$/                  // test that, after getting rid of literals, only allowed characters can be found
-				.test(replace(replace(t , /\\["\\\/bfnrtu]/g),             // remove all escapes
-						/"[^"\\\n\r]*"|true|false|null|[\d.eE+-]+/g))      // remove all literals
-				)
-        	return eval('(' + t + ')');
-        // fall through if not valid
-        // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
-    },
-    // @condend
-    // @cond !ie7compatibility 'parseJSON': json && json.parse,
-    
+    'parseJSON': json && json.parse,
+
 	/*$
     * @id ready
     * @module EVENTS
@@ -2425,7 +2264,6 @@
     */
     'ready': ready,
 
-   
 	/*$
      * @id setcookie
      * @module COOKIE
@@ -2475,7 +2313,7 @@
     	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(now() + dateOrDays * 8.64E7)).toUTCString()) : '') + 
     		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
     },
-    
+
     /*$
      * @id getcookie
      * @module COOKIE
@@ -2554,7 +2392,7 @@
     			if (ANIMATION_HANDLERS[i] === entry) 
     				ANIMATION_HANDLERS.splice(i--, 1);
         };
-        
+
         if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
 			(function raFunc() {
 				if (each(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, now() - a.t), a.s);}).length) // check len after run, in case the callback invoked stop func
@@ -2563,7 +2401,7 @@
         } 
         return entry.s; 
     },
-    
+
     /*$
 	 * @id off
 	 * @module EVENTS
@@ -2592,18 +2430,11 @@
 	'off': function (handler) {
 		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
 	   	each(handler['M'], function(h) {	
-			// @condblock ie8compatibility 
-			if (h['e'].addEventListener)
-				// @condend
 				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
-			// @condblock ie8compatibility 
-			else 
-				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
-			// @condend
 		});
 		handler['M'] = null;
 	}
-	
+
  	/*$
  	 * @stop
  	 */
@@ -2611,16 +2442,12 @@
 	}, function(n, v) {MINI[n]=v;});
 
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     /*$
 	 * @id ready_init
 	 * @dependency
      */
-    // @condblock ie8compatibility
-    _window.onload = triggerDomReady;
 
-    if (_document.addEventListener)
-    // @condend
     	_document.addEventListener("DOMContentLoaded", triggerDomReady, false);
 	/*$
 	 @stop
@@ -2689,10 +2516,7 @@
 	 */
 })(this, document);
 
-
 /*$
  * @stop 
  */
-
-
 

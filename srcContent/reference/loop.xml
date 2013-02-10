@@ -25,7 +25,7 @@
 <li>stopFunc - call this function() to stop the currently running animation</li>
 </ul></dd>
 <dt id="loop_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="loop_RETURN">return value</a></dt>
-<dd class="inSyntax0 inSyntax1">a function() that, when you invoke it, stops the currently running animation.</dd>
+<dd class="inSyntax0 inSyntax1">a function() that stops the currently running animation.</dd>
 </dl>
 
 <h4>Description</h4>

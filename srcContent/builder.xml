@@ -17,8 +17,8 @@
 		<form id="configurationForm">
 			<div id="sectionCheckboxes"></div>
 			<p>
-			<input id="compressionClosure" type="radio" name="compression" value="closure" checked="checked"/><label for="compressionClosure">Minify using Closure</label>
-			<input id="compressionSource" type="radio" name="compression" value="source"/><label for="compressionSource">Plain Source</label>
+			<input id="compressionAdvanced" type="radio" name="compression" value="closure" checked="checked"/><label for="compressionAdvanced">Minify using Closure / Advanced Compression</label>
+			<input id="compressionNo" type="radio" name="compression" value="source"/><label for="compressionNo">Plain Source</label>
 			</p>
 			<p>
 			<button id="compile">Compile!</button>

@@ -18,7 +18,7 @@ function writeFile(file, content) {
 
 // GO!
 
-eval(readFile('srcContent/js/helper.js'));
+eval(readFile('srcContent/js/helper-src.js'));
 eval(readFile('srcContent/js/parser-src.js'));
 eval(readFile('build/docbuilder.js'));
 
