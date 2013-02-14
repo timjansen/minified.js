@@ -3,7 +3,7 @@ minified.js
 
 Overview
 ----------
-minified.js is a universal javascript library for HTML applications. It gives you a clean and simple API that provides you 
+minified.js is a universal JavaScript library for HTML applications. It gives you a clean and simple API that provides you 
 with everything that you need to work interact with the browser on an HTML page. 
 
 While the purpose and scope of minified.js are comparable to jQuery and MooTools, its size is 
@@ -15,8 +15,8 @@ Size Comparison
 -----------------
 <table>
 <tr><th>Name</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><td>minified.js (standard)</td><td>8.9kb</td><td>&lt;4.0kb</td></tr>
-<tr><td>minified.noie.js (no IE6/7/8 compatibility)</td><td>7.6kb</td><td>3.3kb</td></tr>
+<tr><td>minified.js (standard)</td><td>8.8kb</td><td>3.9kb</td></tr>
+<tr><td>minified.noie.js (no IE6/7/8 compatibility)</td><td>7.5kb</td><td>3.3kb</td></tr>
 <tr><td>jQuery 1.9.0</td><td>91kb</td><td>32kb</td></tr>
 <tr><td>MooTools Core NoCompat 1.4.5</td><td>88kb</td><td>29kb</td></tr>
 <tr><td>Zepto.js 1.0rc1</td><td>23kb</td><td>8.4kb</td></tr>
@@ -64,7 +64,7 @@ Background
 Maybe I am an old-fashioned guy, but the size of JavaScript libraries like jQuery and MooTools has always bothered me. 
 Don't get me wrong, they are fantastic libraries and I really like to use them, but they contain about 90kb of code even after minification. 
 This code needs to be parsed and executed on every page that you include them on.  For me, that just feels too large for what that they offer, 
-and especially for what I need. The 25-30kb size that they have after gzipping will can also cause a significant delay on low-bandwidth networks.
+and especially for what I need. The 30kb size that they have after gzipping will can also cause a significant delay on low-bandwidth networks.
 
 In the last years I worked on some personal projects (<a href="http://jarfiller.org">jarfiller.org</a> is the only one that has been published), 
 and when I work on them, I usually strive for perfection. Every unnecessary kilobyte hurts.  So instead of using jQuery, I started writing my own 

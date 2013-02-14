@@ -12,15 +12,6 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name: "MINI().filter()",
-	 	exec: function() {
-			var m = MINI("#a, #b, #c").filter();
-			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c")], true);
-			check(m.raw.push);
-			check(m.raw instanceof Array);
-		}
-	},
-	{
 		name: "MINI().filter(func false)",
 	 	exec: function() {
 	 		var l = [document.getElementById("a"), document.getElementById("b"), document.getElementById("c")];

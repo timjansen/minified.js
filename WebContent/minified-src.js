@@ -63,7 +63,7 @@
 	
 	/** @type {!function()} */
 	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _window[n+'equestAnimationFrame']; })[0] || function(callback) {
-		delay(33, callback); // 30 fps as fallback
+		delay(callback, 33); // 30 fps as fallback
 	};
 	
 	
@@ -172,7 +172,7 @@
 	function filter(list, filterFunc) {
 		var r = []; 
 		each(list, function(node,index) {
-			if (!filterFunc||filterFunc(node,index))
+			if (filterFunc(node,index))
 				r.push(node);
 		});
 		return r;
@@ -190,9 +190,8 @@
 	function replace(s, regexp, sub) {
 		return toString(s).replace(regexp, sub||'');
 	}
-	function delay(delayMs, f) {
-		var id = _window.setTimeout(f, delayMs||0);
- 		return function() { if(delayMs) _window.clearTimeout(id); };
+	function delay(f, delayMs) {
+		_window.setTimeout(f, delayMs||0);
 	}
 	function extractNumber(v) {
 		return parseFloat(replace(v, /^[^\d-]/));
@@ -224,7 +223,7 @@
     	if (DOMREADY_HANDLER) // if DOM ready, call immediately
 			DOMREADY_HANDLER.push(handler);
 		else
-			delay(0, handler);
+			delay(handler);
     }
      
     function promise() {
@@ -236,7 +235,7 @@
     		if (state == null) {
 	    		state = newState;
 	    		values = newValues;
-   				delay(0, function() {
+   				delay(function() {
    					each(deferred, callArg);
    				});
     		}
@@ -319,7 +318,7 @@
 				}
 			};
 			if (state != null)
-				delay(0, callCallbacks);
+				delay(callCallbacks);
 			else
 				deferred.push(callCallbacks);    		
     		return newPromise;
@@ -532,16 +531,17 @@
 			var retList = flatten(list);
 			if (!parent)
 				return retList;
-			return filter(retList, function(node) {
-				var a = node;
-				while (a = a.parentNode) {
-					if (a === parent)
-						return true;
-					if (childOnly)
-						return false;
-				}
-				// fall through to return undef
-			});
+			else
+				return filter(retList, function(node) {
+					var a = node;
+					while (a = a.parentNode) {
+						if (a === parent)
+							return true;
+						if (childOnly)
+							return false;
+					}
+					// fall through to return undef
+				});
 		}
 		
 		var parent, steps, dotPos, subSelectors;
@@ -595,21 +595,6 @@
 		this['length'] = list.length;
 		
 		/*$
-		 * @id raw
-		 * @module SELECTORS
-		 * @requires dollar
-		 * @name .raw
-		 * @syntax raw
-		 * Returns the creation object of this list, either an Array, a NodeList or another MINI list. 
-		 * This is mostly useful after calling filter(), as only then it is guaranteed to be an Array.
-		 * @example
-		 * <pre>
-		 * $($('.myElement').filter().raw.slice(1, 3)).addClass('secondOrThird'); 
-		 * </pre>
-		 */
-		this['raw'] = list;
-		
-		/*$
 		 * @id length
 		 * @module SELECTORS
 		 * @requires dollar
@@ -656,7 +641,7 @@
      * @return the list
      */
 	'each': function (callback) {
-		each(this['raw'], callback); // use list, as a real Array may be faster
+		each(this, callback);
 		return this;
 	},
 	
@@ -669,8 +654,6 @@
 	 * @syntax filter(filterFunc)
 	 * Creates a new list that contains only those items approved by the given function. The function is called once for each item. 
 	 * If it returns true, the item is in the returned list, otherwise it will be removed.
-	 * This function also guarantees that the returned list is always based on an Array and thus its raw property has access to all
-	 * Array functions.
 	 *
 	 * @example Creates a list of all unchecked checkboxes.
 	 * <pre>
@@ -679,19 +662,12 @@
 	 * });
 	 * </pre>
 	 * 
-	 * @example Converts a list to an Array-based list and uses the function Array.slice() to select only the second and third elements. Note that the Array returned by slice()
-	 *               is a new Array object and does not contain addClass(), so the new Array must be converted to a MINI list using $() first.
-	 * <pre>
-	 * $($('.myElement').filter().raw.slice(1, 3)).addClass('secondOrThird'); 
-	 * </pre>
-	 *
-	 * @param filterFunc optional the callback function(item, index) to invoke for each item with the item as first argument and the 0-based index as second argument.  
-	 *        If the function returns false for an item, it is not included in the resulting list. If you omit the callback (or use null), filter() returns a new Array-based list that is a shallow copy
-	 *        of the original.
-	 * @return the new list, always guaranteed to be based on Array and always a new instance
+	 * @param filterFunc the callback function(item, index) to invoke for each item with the item as first argument and the 0-based index as second argument.  
+	 *        If the function returns false for an item, it is not included in the resulting list. 
+	 * @return the new, filtered list
 	 */
 	'filter': function(filterFunc) {
-	    return new M(filter(this['raw'], filterFunc));
+	    return new M(filter(this, filterFunc));
 	},
 	
 	/*$ 
@@ -747,7 +723,7 @@
      * on Array and always a new instance 
      */ 
 	'collect': function(collectFunc, resultList) { 
-    	 return new M(collect(this['raw'], collectFunc, resultList)); 
+    	 return new M(collect(this, collectFunc, resultList)); 
      },
 	
      /*$ 
@@ -1682,6 +1658,8 @@
 			}
 			else if (nodeType > 2 && nodeType < 5)
 				return e.textContent;
+			else 
+				return null;
 		});
 	},
 
@@ -1726,8 +1704,7 @@
 	 * You can prefix any number, including numbers with units, with "-=" or "+=" in order to specify a value relative to the starting value. The new value will be added
 	 * to or substracted from the start value to determine the end value.
 	 *
-	 * To allow more complex animation, animate() allows you to add a callback which will be called when the animation has finished. You can also specify a delay
-	 * to create timelines.
+	 * To allow more complex animation, animate() returns a promise that is fulfulled when the animation has finished. 
 	 *
 	 * @example Move an element. Note that you need to set the initial value for styles, unless they have been explicitly set
 	 * for the HTML element using the style attribute before or you set it earlier with an earlier set() or animate() invocation.
@@ -1770,20 +1747,6 @@
 	 * });
 	 * </pre>
 	 *
-	 * @example Does same as the previous example, but implemented using delays:
-	 * <pre>
-	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
-	 * div.animate({$left: '200px', $top: '0px'}, 600)
-	 * div.animate({$left: '200px', $top: '200px'}, 800, 0, null, 600)
-	 * div.animate({$left: '100px', $top: '100px'}, 400), 0, null, 600+800);
-	 * </pre>
-	 *
-	 * @example Three block race to the position 500px with delayed start:
-	 * <pre>
-	 * $('#racingDiv1').set({$left: '0px'}).animate({$left: '500px'}, 750, 0, null, 250); // waits 250ms, then needs 750ms
-	 * $('#racingDiv2').set({$left: '0px'}).animate({$left: '500px'}, 900, 1);            // starts immediately, linear motion, then needs 900ms
-	 * $('#racingDiv3').set({$left: '0px'}).animate({$left: '500px'}, 500, 0, null, 300); // waits 200ms, then needs 500ms
-	 * </pre>
 	 *
 	 * @param properties a property map describing the end values of the corresponding properties. The names can use the
 	 *                   set() syntax ('@' prefix for attributes, '$' for styles, '$$fade' for fading and '$$slide' for slide effects). 
@@ -1792,80 +1755,75 @@
 	 *                   to the original value and should be added or subtracted.
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.
-	 * @param delayMs optional if set, the animation will be delayed by the given time in milliseconds. Default: 0.
 	 * @param state optional if set, the animation controller will write information about its state in this object. When animate() returns,
 	 *                       there will be a MINI.loop() stop() function in the property state.stop. The property state.time will be continously updated
 	 *                       while the animation is running and contains the number of milliseconds that have
-	 *                       passed from the start until the last invocation of the animation loop, describing the progress of the animation. When the function
-	 *                       has a delay, state.time will return 0 during the delay.
+	 *                       passed from the start until the last invocation of the animation loop, describing the progress of the animation. 
 	 *                       If the animation finished, controller writes null into state.time. state.stop will remain unmodified during the whole time. 
 	 * @return a Promise object for the animation's state. It is fulfilled when the animation ended, and rejected if the animation had been stopped.
 	 */
-	'animate': function (properties, durationMs, linearity, delayMs, state) {
+	'animate': function (properties, durationMs, linearity, state) {
 		// @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
 		// @cond debug if (linearity < 0 || linearity > 1) error('Third parameter must be at least 0 and not larger than 1.');
-		// @cond debug if (callback || typeof callback == 'function') error('Fourth is optional, but if set it must be a callback function.');
 		// @cond debug var colorRegexp = /^(rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|#\w{3}|#\w{6})\s*$/i;
 		var self = this;
 		var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
 		var numRegExp = /-?[\d.]+/;
-		var delayStop, loopStop;
+		var loopStop;
 		var prom = promise();
 		state = state || {};
 		state['time'] = 0;
-		state['stop'] = function() { if (delayStop) delayStop(); if (loopStop) loopStop(); prom(false); };
-		delayStop = delay(delayMs, function() {
-			durationMs = durationMs || 500;
-			linearity = linearity || 0;
-			
-			// find start values
-			self['each'](function(li) {
-				var p = {o:MINI(li), s:{}, e:{}}; 
-				each(p.s = p.o.get(properties), function(name, start) {
-					var dest = properties[name];
-					if (name == '$$slide') 
-						dest = dest*getNaturalHeight(p.o) + 'px';
-					p.e[name] = /^[+-]=/.test(dest) ?
-							replace(dest.substr(2), numRegExp, extractNumber(start) + extractNumber(replace(dest, /\+?=/))) 
-							: dest;
-				});
-				initState.push(p);
+		state['stop'] = function() { loopStop(); prom(false); };
+		durationMs = durationMs || 500;
+		linearity = linearity || 0;
+		
+		// find start values
+		self['each'](function(li) {
+			var p = {o:MINI(li), s:{}, e:{}}; 
+			each(p.s = p.o.get(properties), function(name, start) {
+				var dest = properties[name];
+				if (name == '$$slide') 
+					dest = dest*getNaturalHeight(p.o) + 'px';
+				p.e[name] = /^[+-]=/.test(dest) ?
+						replace(dest.substr(2), numRegExp, extractNumber(start) + extractNumber(replace(dest, /\+?=/))) 
+						: dest;
 			});
-					
-			// start animation
-			loopStop = MINI.loop(function(timePassedMs, stop) { 
-				function getColorComponent(colorCode, index) {
-					return (/^#/.test(colorCode)) ?
-						parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
-						:
-						parseInt(replace(colorCode, /[^\d,]+/g).split(',')[index]);
-				}
-
-				function interpolate(startValue, endValue) {
-					return startValue +  timePassedMs/durationMs * (endValue - startValue) * (linearity + (1-linearity) * timePassedMs/durationMs * (3 - 2*timePassedMs/durationMs)); 
-				}
+			initState.push(p);
+		});
 				
-				state['time'] = timePassedMs;
-				if (timePassedMs >= durationMs || timePassedMs < 0) {
-					each(initState, function(isi) { // set destination values
-						isi.o.set(isi.e);
-					});
-					stop();
-					state['time'] = state['stop'] = null;
-					prom(true, [self]);
-				}
-				else
-					each(initState, function(isi) {
-						each(isi.s, function(name, start) {
-							var newValue= 'rgb(', end=isi.e[name];
-							if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
-								for (var i = 0; i < 3; i++) 
-									newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i))) + (i < 2 ? ',' : ')');
-							}
-							else 
-								newValue = replace(end, numRegExp, interpolate(extractNumber(start), extractNumber(end)));
-							isi.o.set(name, newValue);
-						});
+		// start animation
+		loopStop = MINI.loop(function(timePassedMs, stop) { 
+			function getColorComponent(colorCode, index) {
+				return (/^#/.test(colorCode)) ?
+					parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
+					:
+					parseInt(replace(colorCode, /[^\d,]+/g).split(',')[index]);
+			}
+
+			function interpolate(startValue, endValue) {
+				return startValue +  timePassedMs/durationMs * (endValue - startValue) * (linearity + (1-linearity) * timePassedMs/durationMs * (3 - 2*timePassedMs/durationMs)); 
+			}
+			
+			state['time'] = timePassedMs;
+			if (timePassedMs >= durationMs || timePassedMs < 0) {
+				each(initState, function(isi) { // set destination values
+					isi.o.set(isi.e);
+				});
+				stop();
+				state['time'] = state['stop'] = null;
+				prom(true, [self]);
+			}
+			else
+				each(initState, function(isi) {
+					each(isi.s, function(name, start) {
+						var newValue= 'rgb(', end=isi.e[name];
+						if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
+							for (var i = 0; i < 3; i++) 
+								newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i))) + (i < 2 ? ',' : ')');
+						}
+						else 
+							newValue = replace(end, numRegExp, interpolate(extractNumber(start), extractNumber(end)));
+						isi.o.set(name, newValue);
 					});
 				});
 			});
@@ -1952,7 +1910,7 @@
 					state = isType(newState, 'boolean') ? newState : !state;
 	
 					if (durationMs) 
-						self.animate(state ? state2 : state1, animState.stop ? (animState.stop() || animState.time) : durationMs, linearity, 0, animState);
+						self.animate(state ? state2 : state1, animState.stop ? (animState.stop() || animState.time) : durationMs, linearity, animState);
 					else
 						self.set(state ? state2 : state1); 
 				};
@@ -2286,7 +2244,7 @@
 	*             parameters (all HTTP methods), a string (all methods) or a DOM document ('post' only). If the method is 'post', it will be 
 	*             sent as body, otherwise appended to the URL. In order to send several parameters with the same name, use an array of values
 	*             in the map. Use null as value for a parameter without value.
-	* @param headers optional a map of HTTP headers to add to the request. Note that the you should use the proper capitalization of the
+	* @param headers optional a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
 	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.
 	* @param username optional username to be used for HTTP authentication, together with the password parameter
 	* @param password optional password for HTTP authentication
@@ -2621,7 +2579,6 @@
 	 * </pre>
 	 * 
 	 * @param handler the handler to unregister, as given to on(). It must be a handler that has previously been registered using on().
-     * @return the list
      */
 	'off': function (handler) {
 		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
