@@ -28,8 +28,8 @@
 		<div id="topMenu">
 			<a class="{if (/page:page/page:section='home') then 'selected' else 'notSelected'}" href="/">Home</a>
 			<a class="{if (/page:page/page:section='download') then 'selected' else 'notSelected'}" href="/download">Download</a>
-			<a class="{if (/page:page/page:section='builder.html') then 'selected' else 'notSelected'}" href="/build">Build</a>
-			<a class="{if (/page:page/page:section='tutorial') then 'selected' else 'notSelected'}" href="/tutorials">Tutorials</a>
+			<a class="{if (/page:page/page:section='build') then 'selected' else 'notSelected'}" href="/builder.html">Build</a>
+			<a class="{if (/page:page/page:section='docs') then 'selected' else 'notSelected'}" href="/docs">Documentation</a>
 			<a class="{if (/page:page/page:section='reference') then 'selected' else 'notSelected'}" href="/api">Reference</a>
 			<a class="{if (/page:page/page:section='about') then 'selected' else 'notSelected'}" href="/about">About</a>
 		</div>

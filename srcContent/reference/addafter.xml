@@ -14,30 +14,38 @@
 <h4>Syntax</h4>
 <div class="syntaxVariant">
 <div class="syntax">MINI(selector).addAfter(text)</div>
-<div class="syntax">MINI(selector).addAfter(callbackFunction)</div>
-<div class="syntax">MINI(selector).addAfter(elementContent)</div>
+<div class="syntax">MINI(selector).addAfter(factoryFunction)</div>
+<div class="syntax">MINI(selector).addAfter(list)</div>
+<div class="syntax">MINI(selector).addAfter(node)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="addafter_text" class=""><a name="addafter_text">text</a></dt>
-<dd class="">a text to insert as sibling text node after of the list elements</dd>
-<dt id="addafter_callbackFunction" class=""><a name="addafter_callbackFunction">callbackFunction</a></dt>
-<dd class="">a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.</dd>
-<dt id="addafter_elementContent" class=""><a name="addafter_elementContent">elementContent</a></dt>
-<dd class="">content to insert <strong>only after the first element</strong> of the list. The content can be a string for a text node,
-an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
-this list's first match.</dd>
-<dt id="addafter_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="addafter_RETURN">return value</a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">the current list</dd>
+<dd class="">a string to add as text node of the list elements</dd>
+<dt id="addafter_factoryFunction" class=""><a name="addafter_factoryFunction">factoryFunction</a></dt>
+<dd class="">a function(listItem, listIndex) that will be invoked for each list element to create the nodes.
+The function can return either a string for a text node, a function to invoke, an HTML element or a list
+containing strings, lists, functions and/or DOM nodes.</dd>
+<dt id="addafter_list" class=""><a name="addafter_list">list</a></dt>
+<dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
+and attempt to add them to more than one element, the result is undefined. You should always use factories if your
+MINI list contains more than one item.</dd>
+<dt id="addafter_node" class=""><a name="addafter_node">node</a></dt>
+<dd class="">a DOM node to add <strong>only to the first element</strong> of the list.</dd>
+<dt id="addafter_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="addafter_RETURN">return value</a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the current list</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Inserts the given text or element(s) as sibling after each element of this list. If a string has been given, it will be added as text node.
-If you pass an element or a list, it will be inserted <strong>only after of the first element of the list</strong>. In order to add elements
-to several list items, you need to pass a factory function(element, index) thats creates new instances for each item.
-The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both.
+<div class="description">Inserts the given text or element(s) as sibling after each element of this list.
+If a string has been given, it will be added as text node.
+If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+allowed by addAfter(), including another function to be called.
+If you pass a list or a function returns a list, all its elements will be added using the rules above.
+
+It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
+does not allow adding it more than once.
 
 </div>
 
@@ -62,7 +70,7 @@ This results in the following HTML:
 </pre>
 </div>
 <h4>Example</h4>
-<div class="example">You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
+<div class="example">You can also pass an Element Factory:
 <pre>
 $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
 </pre>
@@ -72,19 +80,6 @@ With the previous example's HTML, this would create this:
   <div id="mainText">Disclaimer: bla bla bla</div>
   &lt;span class="disclaimer">WARNING&lt;/span>
 &lt;/div>
-</pre>
-</div>
-<h4>Example</h4>
-<div class="example">Lists of elements and nodes are possible as well. Like nodes, it will only be added to the first list item.
-<pre>
-$('#status').addAfter([EE('hr'), 'Disclaimer']);
-</pre>
-</div>
-<h4>Example</h4>
-<div class="example">If you need to add your list to more than one list item, you must add a factory function that re-creates
-             the list for every instance:
-<pre>
-$('.textSnippets').addAfter(function(e, index) { return [EE('hr'), 'Disclaimer']; });
 </pre>
 </div>
 </div>
@@ -98,6 +93,7 @@ $('.textSnippets').addAfter(function(e, index) { return [EE('hr'), 'Disclaimer']
 <a href="addfront.html">.addFront()</a>
 <a href="animate.html">.animate()</a>
 <a href="append.html">.append()</a>
+<a href="clone.html">.clone()</a>
 <a href="collect.html">.collect()</a>
 <a href="each.html">.each()</a>
 <a href="fill.html">.fill()</a>
@@ -109,13 +105,11 @@ $('.textSnippets').addAfter(function(e, index) { return [EE('hr'), 'Disclaimer']
 <a href="offset.html">.offset()</a>
 <a href="on.html">.on()</a>
 <a href="prepend.html">.prepend()</a>
-<a href="raw.html">.raw</a>
 <a href="remove.html">.remove()</a>
 <a href="replace.html">.replace()</a>
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
-<a href="values.html">.values()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>

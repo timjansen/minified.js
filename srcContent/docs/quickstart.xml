@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page:page xmlns:page="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
   <page:title>Minified.js for JavaScript Developers</page:title>
-  <page:section>tutorial</page:section>
+  <page:section>docs</page:section>
+  <page:externalCss>../css/doc.css</page:externalCss>
   <page:main><![CDATA[<div>
   <h1>Minified.js for JavaScript Developers</h1>
 
@@ -219,21 +220,24 @@ Please see the <a href="/reference/animate.html"><code>animate()</code></a> docu
 </p>
 
 <p>
-If you call <a href="/reference/fill.html"><code>fill()</code></a> or <a href="/reference/add.html"><code>add()</code></a> with a string, they will create a new text node and add it:
+Call <a href="/reference/fill.html"><code>fill()</code></a> or <a href="/reference/add.html"><code>add()</code></a> with a string to create a new text node and add it:
 <pre>
 <a href="/reference/dollar.html">$</a>(‘.greetings’).<a href="/reference/fill.html">fill</a>(“Hello");                  // Replace children with text “Hello"
 <a href="/reference/dollar.html">$</a>(‘.greetings’).<a href="/reference/add.html">add</a>(“and Goodbye");  // add a second text node
 </pre>
 </p>
 
-<p>In order to create a new element, use the function <a href="/reference/el.html"><code>EE()</code></a>. <a href="/reference/el.html"><code>EE()</code></a> creates a new element, optionally adds children to the new element using <a href="/reference/add.html"><code>add()</code></a>, and can also add attributes and everything else that is supported by <a href="/reference/set.html"><code>set()</code></a>.
+<p>When you want to add a new element, <a href="/reference/el.html"><code>EE()</code></a> comes into play. 
+<a href="/reference/el.html"><code>EE()</code></a> creates an <strong>Element Factory</strong>. Element Factories are simple no-argument functions to new create 
+elements. When called, the Element Factory creates the element and returns it wrapped in a MINI list. 
+
+Optionally they can also add children to the new element, as well as attributes and everything else that is supported 
+by <a href="/reference/set.html"><code>set()</code></a>.
+
 <pre>
-<a href="/reference/dollar.html">$</a>(‘#header’).<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>(‘h2’, ‘My Title’));                                                            // create &lt;h2>MyTitle&lt;/h2>
-
-<a href="/reference/dollar.html">$</a>(‘#linkContainer’).<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>(‘a’, {‘@href’: ‘http://acme.com’}, “ACME"));  // create &lt;a href="http://acme.com">ACME&lt;/a>
-
+<a href="/reference/dollar.html">$</a>(‘#header’).<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>(‘h2’, ‘My Title’));                                                            // creates &lt;h2>MyTitle&lt;/h2>
+<a href="/reference/dollar.html">$</a>(‘#linkContainer’).<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>(‘a’, {‘@href’: ‘http://acme.com’}, “ACME"));  // creates &lt;a href="http://acme.com">ACME&lt;/a>
 <a href="/reference/dollar.html">$</a>(‘#header’).<a href="/reference/add.html">add</a>([<a href="/reference/el.html">EE</a>(‘br’), “Single line", <a href="/reference/el.html">EE</a>(‘br’)]);                                  // add &lt;br/>Single line&lt;br/>
-
 <a href="/reference/dollar.html">$</a>(‘#list’).<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>(‘ul’, [  // &lt;ul>
                                       <a href="/reference/el.html">EE</a>(‘li’, {$: ‘first’}, “First item"), // &lt;li class="first">First Item&lt;/li>
                                       <a href="/reference/el.html">EE</a>(‘li’, “Second item"),             // &lt;li>Second Item&lt;/li>
@@ -242,24 +246,16 @@ If you call <a href="/reference/fill.html"><code>fill()</code></a> or <a href="/
 </pre>
 </p>
 
-<p>Please note that <a href="/reference/el.html"><code>EE()</code></a> just creates and returns a single DOM element. A DOM element can only be added once to a DOM tree. Minified won’t clone DOM nodes, unlike jQuery. Therefore, even though <a href="/reference/fill.html"><code>fill()</code></a> and <a href="/reference/add.html"><code>add()</code></a> can add text nodes for more than one list element, if you pass a elements or lists as arguments, they will only be added to the first list element!</p>
-
-<p>If you need to add elements to more than once list member, you need to provide a generator function to <a href="/reference/add.html"><code>add()</code></a> or <a href="/reference/fill.html"><code>fill()</code></a>. This function will be called for each list member to create a new DOM element:
+<p>You can also write your own factory function and give it to <a href="/reference/add.html"><code>add()</code></a>
+or <a href="/reference/fill.html"><code>fill()</code></a>. The function will be called for each list member to create a new DOM element:
 <pre>
-<a href="/reference/dollar.html">$</a>(‘.headers’).<a href="/reference/fill.html">fill</a>(function(elem, index) { return EE(‘h2’, ‘My Title’); });
-
-<a href="/reference/dollar.html">$</a>(‘.linkContainers’).<a href="/reference/fill.html">fill</a>(function() { return <a href="/reference/el.html">EE</a>(‘a’, {‘@href’: ‘http://acme.com’}, “ACME"); });
-
-<a href="/reference/dollar.html">$</a>(‘.headers’).<a href="/reference/add.html">add</a>(function(elem, index) { return [<a href="/reference/el.html">EE</a>(‘br’), “Single line", <a href="/reference/el.html">EE</a>(‘br’)]});
-
-<a href="/reference/dollar.html">$</a>(‘.lists’).<a href="/reference/fill.html">fill</a>(function(elem, index) { return <a href="/reference/el.html">EE</a>(‘ul’, [ 
-                                      <a href="/reference/el.html">EE</a>(‘li’, {$: ‘first’}, “First item"),
-                                      <a href="/reference/el.html">EE</a>(‘li’, “Second item"),
-                                      <a href="/reference/el.html">EE</a>(‘li’, “Third item"), 
-                                   ])});
+<a href="/reference/dollar.html">$</a>(‘.chapter’).<a href="/reference/add.html">add</a>(function(elem, index) { 
+	return <a href="/reference/el.html">EE</a>(‘span’, {$: 'chapterFooter'}, 'This was chapter ' + index);
+});
 </pre>
-Generator functions are not required to add a simple text node, only for elements and lists.
+Factory functions can return everything that can be handled by <a href="/reference/add.html"><code>add()</code></a>: strings (for text nodes), DOM elements, another factory function (to be called) or lists containing these things.
 </p>
+
 
 <p>Beside <a href="/reference/fill.html"><code>fill()</code></a> and <a href="/reference/add.html"><code>add()</code></a>, there are a few more functions for adding or removing nodes:
 <pre>

@@ -32,14 +32,11 @@ to the original value and should be added or subtracted.</dd>
 <dd class=""><span class="optional">optional</span> the duration of the animation in milliseconds. Default: 500ms.</dd>
 <dt id="animate_linearity" class=""><a name="animate_linearity">linearity</a></dt>
 <dd class=""><span class="optional">optional</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.</dd>
-<dt id="animate_delayMs" class=""><a name="animate_delayMs">delayMs</a></dt>
-<dd class=""><span class="optional">optional</span> if set, the animation will be delayed by the given time in milliseconds. Default: 0.</dd>
 <dt id="animate_state" class=""><a name="animate_state">state</a></dt>
 <dd class=""><span class="optional">optional</span> if set, the animation controller will write information about its state in this object. When animate() returns,
 there will be a MINI.loop() stop() function in the property state.stop. The property state.time will be continously updated
 while the animation is running and contains the number of milliseconds that have
-passed from the start until the last invocation of the animation loop, describing the progress of the animation. When the function
-has a delay, state.time will return 0 during the delay.
+passed from the start until the last invocation of the animation loop, describing the progress of the animation.
 If the animation finished, controller writes null into state.time. state.stop will remain unmodified during the whole time.</dd>
 <dt id="animate_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4"><a name="animate_RETURN">return value</a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">a Promise object for the animation's state. It is fulfilled when the animation ended, and rejected if the animation had been stopped.</dd>
@@ -73,8 +70,7 @@ use color names such as 'red'.
 You can prefix any number, including numbers with units, with "-=" or "+=" in order to specify a value relative to the starting value. The new value will be added
 to or substracted from the start value to determine the end value.
 
-To allow more complex animation, animate() allows you to add a callback which will be called when the animation has finished. You can also specify a delay
-to create timelines.
+To allow more complex animation, animate() returns a promise that is fulfulled when the animation has finished.
 
 </div>
 
@@ -125,23 +121,7 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
    });
 });
 </pre>
-</div>
-<h4>Example</h4>
-<div class="example">Does same as the previous example, but implemented using delays:
-<pre>
-var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
-div.animate({$left: '200px', $top: '0px'}, 600)
-div.animate({$left: '200px', $top: '200px'}, 800, 0, null, 600)
-div.animate({$left: '100px', $top: '100px'}, 400), 0, null, 600+800);
-</pre>
-</div>
-<h4>Example</h4>
-<div class="example">Three block race to the position 500px with delayed start:
-<pre>
-$('#racingDiv1').set({$left: '0px'}).animate({$left: '500px'}, 750, 0, null, 250); // waits 250ms, then needs 750ms
-$('#racingDiv2').set({$left: '0px'}).animate({$left: '500px'}, 900, 1);            // starts immediately, linear motion, then needs 900ms
-$('#racingDiv3').set({$left: '0px'}).animate({$left: '500px'}, 500, 0, null, 300); // waits 200ms, then needs 500ms
-</pre>
+
 </div>
 </div>
 
@@ -154,6 +134,7 @@ $('#racingDiv3').set({$left: '0px'}).animate({$left: '500px'}, 500, 0, null, 300
 <a href="addfront.html">.addFront()</a>
 <a href="animate.html">.animate()</a>
 <a href="append.html">.append()</a>
+<a href="clone.html">.clone()</a>
 <a href="collect.html">.collect()</a>
 <a href="each.html">.each()</a>
 <a href="fill.html">.fill()</a>
@@ -165,13 +146,11 @@ $('#racingDiv3').set({$left: '0px'}).animate({$left: '500px'}, 500, 0, null, 300
 <a href="offset.html">.offset()</a>
 <a href="on.html">.on()</a>
 <a href="prepend.html">.prepend()</a>
-<a href="raw.html">.raw</a>
 <a href="remove.html">.remove()</a>
 <a href="replace.html">.replace()</a>
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
-<a href="values.html">.values()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>

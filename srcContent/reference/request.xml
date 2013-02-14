@@ -34,7 +34,7 @@ parameters (all HTTP methods), a string (all methods) or a DOM document ('post' 
 sent as body, otherwise appended to the URL. In order to send several parameters with the same name, use an array of values
 in the map. Use null as value for a parameter without value.</dd>
 <dt id="request_headers" class=""><a name="request_headers">headers</a></dt>
-<dd class=""><span class="optional">optional</span> a map of HTTP headers to add to the request. Note that the you should use the proper capitalization of the
+<dd class=""><span class="optional">optional</span> a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
 header 'Content-Type', if you set it, because otherwise it may be overwritten.</dd>
 <dt id="request_username" class=""><a name="request_username">username</a></dt>
 <dd class=""><span class="optional">optional</span> username to be used for HTTP authentication, together with the password parameter</dd>
@@ -103,6 +103,7 @@ MINI.request('post', 'http://service.example.com/directory', MINI.toJSON(myReque
 <a href="addfront.html">.addFront()</a>
 <a href="animate.html">.animate()</a>
 <a href="append.html">.append()</a>
+<a href="clone.html">.clone()</a>
 <a href="collect.html">.collect()</a>
 <a href="each.html">.each()</a>
 <a href="fill.html">.fill()</a>
@@ -114,13 +115,11 @@ MINI.request('post', 'http://service.example.com/directory', MINI.toJSON(myReque
 <a href="offset.html">.offset()</a>
 <a href="on.html">.on()</a>
 <a href="prepend.html">.prepend()</a>
-<a href="raw.html">.raw</a>
 <a href="remove.html">.remove()</a>
 <a href="replace.html">.replace()</a>
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
-<a href="values.html">.values()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>

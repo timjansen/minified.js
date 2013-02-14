@@ -26,6 +26,7 @@
 <dt id="set_name" class=""><a name="set_name">name</a></dt>
 <dd class="">the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
 A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
+The special name '$$' allows you setting the style attribute in a browser independent way.
 The special name '$$fade' expects a value between 0 and 1 and sets the opacity of the element in a browser-independent way.
 The special name '$$slide' expects a value between 0 and 1 that defines how much of the element is visible. The rest will
 be cut up at its buttom. It can be used in animations to slide in or out an element.
@@ -157,6 +158,7 @@ $('h2').set('innerHTML', function(oldValue, index) {
 <a href="addfront.html">.addFront()</a>
 <a href="animate.html">.animate()</a>
 <a href="append.html">.append()</a>
+<a href="clone.html">.clone()</a>
 <a href="collect.html">.collect()</a>
 <a href="each.html">.each()</a>
 <a href="fill.html">.fill()</a>
@@ -168,13 +170,11 @@ $('h2').set('innerHTML', function(oldValue, index) {
 <a href="offset.html">.offset()</a>
 <a href="on.html">.on()</a>
 <a href="prepend.html">.prepend()</a>
-<a href="raw.html">.raw</a>
 <a href="remove.html">.remove()</a>
 <a href="replace.html">.replace()</a>
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
-<a href="values.html">.values()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>

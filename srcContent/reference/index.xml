@@ -28,6 +28,9 @@
 <h3><a href="append.html">.append()</a></h3>
 <div class="summary">Appends strings to properties or attributes of list items.</div>
 
+<h3><a href="clone.html">.clone()</a></h3>
+<div class="summary">Creates a MINI list of strings and Element Factories that returns clones of the list elements.</div>
+
 <h3><a href="collect.html">.collect()</a></h3>
 <div class="summary">Creates a new list from the current list using given callback function.</div>
 
@@ -61,9 +64,6 @@
 <h3><a href="prepend.html">.prepend()</a></h3>
 <div class="summary">Prepends strings to properties or attributes of list items.</div>
 
-<h3><a href="raw.html">.raw</a></h3>
-<div class="summary">Returns the creation object of this list, either an Array, a NodeList or another MINI list.</div>
-
 <h3><a href="remove.html">.remove()</a></h3>
 <div class="summary">Removes all nodes of the list from the DOM tree.</div>
 
@@ -80,14 +80,11 @@
 <div class="summary">
 Creates a function that switches between the two given states for the list.</div>
 
-<h3><a href="values.html">.values()</a></h3>
-<div class="summary">Creates a name/value map from the given form.</div>
-
 <h3><a href="dollardollar.html">MINI.$$()</a></h3>
 <div class="summary">Returns an DOM object containing the first match of the given selector, or undefined if no match.</div>
 
 <h3><a href="el.html">MINI.el()</a></h3>
-<div class="summary">Creates a new HTML element, optionally with attributes and children, and returns a MINI list containing the DOM HTMLElement.</div>
+<div class="summary">Creates a new Element Factory.</div>
 
 <h3><a href="getcookie.html">MINI.getCookie()</a></h3>
 <div class="summary">Tries to find the cookie with the given name and returns it.</div>

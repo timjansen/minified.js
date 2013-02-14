@@ -26,8 +26,9 @@
 prefix the name with a '@'. A '$' prefix will retrieve a CSS style. The syntax for the CSS style is camel-case (e.g. "backgroundColor", not "background-color").
 Shorthand properties like "border" or "margin" are not supported. You must use the full name, e.g. "marginTop". Minified will try to determine the effective style
 and thus will also return the value set in style sheets if not overwritten using a regular style.
-Just '$' will retrieve the 'className'
-property of the object, a space-separated list of all CSS classes. The name '$$fade' will return a value between 0 and 1 that specifies the element's
+Just '$' will retrieve the 'className' property of the object, a space-separated list of all CSS classes.
+The special name '$$' allows you setting the style attribute in a browser independent way.
+'$$fade' will return a value between 0 and 1 that specifies the element's
 opacity. '$$slide' returns the height of the element in pixels, with a 'px' suffix. Both '$$fade' and '$$slide' will also check the CSS styles 'visibility' and 'display'
 to determine whether the object is visible at all. If not, they will return 0 or '0px', respectively.</dd>
 <dt id="get_list" class=""><a name="get_list">list</a></dt>
@@ -74,6 +75,7 @@ var bgColor = $('#myElement).get('$backgroundColor');
 <a href="addfront.html">.addFront()</a>
 <a href="animate.html">.animate()</a>
 <a href="append.html">.append()</a>
+<a href="clone.html">.clone()</a>
 <a href="collect.html">.collect()</a>
 <a href="each.html">.each()</a>
 <a href="fill.html">.fill()</a>
@@ -85,13 +87,11 @@ var bgColor = $('#myElement).get('$backgroundColor');
 <a href="offset.html">.offset()</a>
 <a href="on.html">.on()</a>
 <a href="prepend.html">.prepend()</a>
-<a href="raw.html">.raw</a>
 <a href="remove.html">.remove()</a>
 <a href="replace.html">.replace()</a>
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
-<a href="values.html">.values()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>

@@ -15,30 +15,38 @@
 <div class="syntaxVariant">
 <div class="syntax">MINI(selector).fill()</div>
 <div class="syntax">MINI(selector).fill(text)</div>
-<div class="syntax">MINI(selector).fill(callbackFunction)</div>
-<div class="syntax">MINI(selector).fill(elementContent)</div>
+<div class="syntax">MINI(selector).fill(factoryFunction)</div>
+<div class="syntax">MINI(selector).fill(list)</div>
+<div class="syntax">MINI(selector).fill(node)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="fill_text" class=""><a name="fill_text">text</a></dt>
-<dd class="">a text to set as text node of the list elements</dd>
-<dt id="fill_callbackFunction" class=""><a name="fill_callbackFunction">callbackFunction</a></dt>
-<dd class="">a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.</dd>
-<dt id="fill_elementContent" class=""><a name="fill_elementContent">elementContent</a></dt>
-<dd class="">content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
-an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
-this list's first match.</dd>
-<dt id="fill_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="fill_RETURN">return value</a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the current list</dd>
+<dd class="">a string to set as text node of the list elements</dd>
+<dt id="fill_factoryFunction" class=""><a name="fill_factoryFunction">factoryFunction</a></dt>
+<dd class="">a function(listItem, listIndex) that will be invoked for each list element to create the nodes.
+The function can return either a string for a text node, a function to invoke, an HTML element or a list
+containing strings, lists, functions and/or DOM nodes.</dd>
+<dt id="fill_list" class=""><a name="fill_list">list</a></dt>
+<dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
+and attempt to add them to more than one element, the result is undefined. You should always use factories if your
+MINI list contains more than one item.</dd>
+<dt id="fill_node" class=""><a name="fill_node">node</a></dt>
+<dd class="">a DOM node to set <strong>only in the first element</strong> of the list.
+</dd>
+<dt id="fill_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4"><a name="fill_RETURN">return value</a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">the current list</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node to all elements.
-If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
-to several list items, you need to pass a factory function(element, index) thats creates new instances for each item.
-The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both.
+<div class="description">Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node.
+If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+allowed by fill(), including another function to be called.
+If you pass a list or a function returns a list, all its elements will be added using the rules above.
+
+It is also possible to pass a DOM node, but it will be set <strong>only in the first element of the list</strong>, because DOM
+does not allow adding it more than once.
 
 Call fill() without arguments to remove all children from a node.
 
@@ -60,7 +68,7 @@ Results in:
 </pre>
 </div>
 <h4>Example</h4>
-<div class="example">Pass an element to replace the old content with that. Note that an element can only be added to the first match:
+<div class="example">Pass an Element Factory to replace the old content with that:
 <pre>
 $('#status').fill(EE('span', {'className': 'bold'}, 'Please Wait...'));
 </pre>
@@ -82,8 +90,7 @@ $('#myListContainer').fill([EE('h2', 'My List'), EE('ol', [EE('li', 'First Item'
 </pre>
 </div>
 <h4>Example</h4>
-<div class="example">If you need to add your list to more than one element, you must add a factory function that re-creates
-             the list for every instance:
+<div class="example">You can write a factory function that re-creates the list for every instance:
 <pre>
 $('.listContainers').fill(function(e, index) { return [EE('h2', 'List Number '+index), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]});
 </pre>
@@ -105,6 +112,7 @@ $('.listContainers').fill();
 <a href="addfront.html">.addFront()</a>
 <a href="animate.html">.animate()</a>
 <a href="append.html">.append()</a>
+<a href="clone.html">.clone()</a>
 <a href="collect.html">.collect()</a>
 <a href="each.html">.each()</a>
 <a href="fill.html">.fill()</a>
@@ -116,13 +124,11 @@ $('.listContainers').fill();
 <a href="offset.html">.offset()</a>
 <a href="on.html">.on()</a>
 <a href="prepend.html">.prepend()</a>
-<a href="raw.html">.raw</a>
 <a href="remove.html">.remove()</a>
 <a href="replace.html">.replace()</a>
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
-<a href="values.html">.values()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>

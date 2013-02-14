@@ -14,30 +14,38 @@
 <h4>Syntax</h4>
 <div class="syntaxVariant">
 <div class="syntax">MINI(selector).addFront(text)</div>
-<div class="syntax">MINI(selector).addFront(callbackFunction)</div>
-<div class="syntax">MINI(selector).addFront(elementContent)</div>
+<div class="syntax">MINI(selector).addFront(factoryFunction)</div>
+<div class="syntax">MINI(selector).addFront(list)</div>
+<div class="syntax">MINI(selector).addFront(node)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="addfront_text" class=""><a name="addfront_text">text</a></dt>
-<dd class="">a text to add as text node of the list elements</dd>
-<dt id="addfront_callbackFunction" class=""><a name="addfront_callbackFunction">callbackFunction</a></dt>
-<dd class="">a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-an HTML element or a list containing strings and/or HTML elements.</dd>
-<dt id="addfront_elementContent" class=""><a name="addfront_elementContent">elementContent</a></dt>
-<dd class="">content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
-an HTML element or a list containing strings and/or HTML elements.</dd>
-<dt id="addfront_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="addfront_RETURN">return value</a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">the current list</dd>
+<dd class="">a string to add as text node of the list elements</dd>
+<dt id="addfront_factoryFunction" class=""><a name="addfront_factoryFunction">factoryFunction</a></dt>
+<dd class="">a function(listItem, listIndex) that will be invoked for each list element to create the nodes.
+The function can return either a string for a text node, a function to invoke, an HTML element or a list
+containing strings, lists, functions and/or DOM nodes.</dd>
+<dt id="addfront_list" class=""><a name="addfront_list">list</a></dt>
+<dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
+and attempt to add them to more than one element, the result is undefined. You should always use factories if your
+MINI list contains more than one item.</dd>
+<dt id="addfront_node" class=""><a name="addfront_node">node</a></dt>
+<dd class="">a DOM node to add <strong>only to the first element</strong> of the list.</dd>
+<dt id="addfront_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="addfront_RETURN">return value</a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the current list</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description">Adds the given node(s) as content to the list elements as additional nodes. Unlike add(), the new nodes will be the first children of the list items.
-If a string has been given, it will be added as text node to all elements.
-If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
-to several list items, you need to pass a factory function(element, index) thats creates new instances for each item.
-The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both.
+If a string has been given, it will be added as text node.
+If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+allowed by addFront(), including another function to be called.
+If you pass a list or a function returns a list, all its elements will be added using the rules above.
+
+It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
+does not allow adding it more than once.
 
 </div>
 
@@ -83,12 +91,6 @@ This results in
 $('#comments').addFront([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
 </pre>
 </div>
-<h4>Example</h4>
-<div class="example">If you need to add an element or a list to more than one element, you need to provide a factory function:
-<pre>
-$('.chapter').addFront(function(e, index) { return EE('div', 'Scroll down for the next chapter.'); });
-</pre>
-</div>
 </div>
 
 
@@ -100,6 +102,7 @@ $('.chapter').addFront(function(e, index) { return EE('div', 'Scroll down for th
 <a href="addfront.html">.addFront()</a>
 <a href="animate.html">.animate()</a>
 <a href="append.html">.append()</a>
+<a href="clone.html">.clone()</a>
 <a href="collect.html">.collect()</a>
 <a href="each.html">.each()</a>
 <a href="fill.html">.fill()</a>
@@ -111,13 +114,11 @@ $('.chapter').addFront(function(e, index) { return EE('div', 'Scroll down for th
 <a href="offset.html">.offset()</a>
 <a href="on.html">.on()</a>
 <a href="prepend.html">.prepend()</a>
-<a href="raw.html">.raw</a>
 <a href="remove.html">.remove()</a>
 <a href="replace.html">.replace()</a>
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
-<a href="values.html">.values()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>

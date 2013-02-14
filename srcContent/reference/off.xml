@@ -20,8 +20,6 @@
 <dl class="params">
 <dt id="off_handler" class=""><a name="off_handler">handler</a></dt>
 <dd class="">the handler to unregister, as given to on(). It must be a handler that has previously been registered using on().</dd>
-<dt id="off_RETURN" class="returnValue inSyntax0"><a name="off_RETURN">return value</a></dt>
-<dd class="inSyntax0">the list</dd>
 </dl>
 
 <h4>Description</h4>
@@ -55,6 +53,7 @@ window.setInterval(function() {                      // after 5s, remove event h
 <a href="addfront.html">.addFront()</a>
 <a href="animate.html">.animate()</a>
 <a href="append.html">.append()</a>
+<a href="clone.html">.clone()</a>
 <a href="collect.html">.collect()</a>
 <a href="each.html">.each()</a>
 <a href="fill.html">.fill()</a>
@@ -66,13 +65,11 @@ window.setInterval(function() {                      // after 5s, remove event h
 <a href="offset.html">.offset()</a>
 <a href="on.html">.on()</a>
 <a href="prepend.html">.prepend()</a>
-<a href="raw.html">.raw</a>
 <a href="remove.html">.remove()</a>
 <a href="replace.html">.replace()</a>
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
-<a href="values.html">.values()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>

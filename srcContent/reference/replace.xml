@@ -14,8 +14,9 @@
 <h4>Syntax</h4>
 <div class="syntaxVariant">
 <div class="syntax">MINI(selector).replace(text)</div>
-<div class="syntax">MINI(selector).replace(callbackFunction)</div>
-<div class="syntax">MINI(selector).replace(elementContent)</div>
+<div class="syntax">MINI(selector).replace(factoryFunction)</div>
+<div class="syntax">MINI(selector).replace(list)</div>
+<div class="syntax">MINI(selector).replace(node)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -28,16 +29,19 @@ an HTML element or a list containing strings and/or HTML elements.</dd>
 <dt id="replace_elementContent" class=""><a name="replace_elementContent">elementContent</a></dt>
 <dd class="">content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
 an HTML element or a list containing strings and/or HTML elements.</dd>
-<dt id="replace_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="replace_RETURN">return value</a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">the current list</dd>
+<dt id="replace_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="replace_RETURN">return value</a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the current list</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description">Replaces the list items with the the given node(s) in the DOM tree.
-If a string has been given, each list item will be replaced with a new text node containing the string.
-If you pass an element or a list, it will replace <strong>only the first element of the list</strong>. In order to replace
-several list items with content more complex than a string, you need to pass a factory function(element, index) thats creates new instances for each item.
-The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both.
+If a string has been given, it will be set as text node.
+If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+allowed by replace(), including another function to be called.
+If you pass a list or a function returns a list, all its elements will be set using the rules above.
+
+It is also possible to pass a DOM node, but it will replace <strong>only the first element of the list</strong>, because DOM
+does not allow adding it more than once.
 
 </div>
 
@@ -70,9 +74,9 @@ you should use fill() instead of replace().
   &lt;li>Second list entry&lt;/li>
 &lt;/ul>
 </pre>
-The following JavaScript will replace <strong>only the first &lt;li> element</strong>:
+The following example will replace <strong>only the first &lt;li> element</strong>:
 <pre>
-$('#myList li').replace(EE('li', 'My extra point'));
+$('#myList li').sub(0, 1).replace(EE('li', 'My extra point'));
 </pre>
 This results in
 <pre>
@@ -81,34 +85,7 @@ This results in
   &lt;li>Second list entry&lt;/li>
 &lt;/ul>
 </pre>
-</div>
-<h4>Example</h4>
-<div class="example">If you need to replace several elements at once, you need to provide a factory function
-<pre>
-$('#myList li').replace(function(e, index) { return EE('li', 'My extra point'); });
-</pre>
-With the previous HTML would result in:
-<pre>
-&lt;ul id="myList">
-  &lt;li>My extra point&lt;/li>
-  &lt;li>My extra point&lt;/li>
-&lt;/ul>
-</pre>
-</div>
-<h4>Example</h4>
-<div class="example">Use a list to add several elements at once:
-<pre>
-$('#myList li').replace(function(e, index) { return [EE('li', 'Extra point 1'), EE('li', 'Extra point 2')]; });
-</pre>
-Now every original &lt;li> element is replaced with two elements:
-<pre>
-&lt;ul id="myList">
-  &lt;li>Extra point 1&lt;/li>
-  &lt;li>Extra point 2&lt;/li>
-  &lt;li>Extra point 1&lt;/li>
-  &lt;li>Extra point 2&lt;/li>
-&lt;/ul>
-</pre>
+
 </div>
 </div>
 
@@ -121,6 +98,7 @@ Now every original &lt;li> element is replaced with two elements:
 <a href="addfront.html">.addFront()</a>
 <a href="animate.html">.animate()</a>
 <a href="append.html">.append()</a>
+<a href="clone.html">.clone()</a>
 <a href="collect.html">.collect()</a>
 <a href="each.html">.each()</a>
 <a href="fill.html">.fill()</a>
@@ -132,13 +110,11 @@ Now every original &lt;li> element is replaced with two elements:
 <a href="offset.html">.offset()</a>
 <a href="on.html">.on()</a>
 <a href="prepend.html">.prepend()</a>
-<a href="raw.html">.raw</a>
 <a href="remove.html">.remove()</a>
 <a href="replace.html">.replace()</a>
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
-<a href="values.html">.values()</a>
 <a href="dollardollar.html">MINI.$$()</a>
 <a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>
