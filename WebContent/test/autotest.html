@@ -77,7 +77,7 @@
 		function runTest() {
 			var test = window.miniTests[testNum];
 			var msgSpan;
-			$('#results').add(MINI.el('div', {}, [test.name + ': ', msgSpan = MINI.el('span', 'waiting..')]));
+			$('#results').add(MINI.el('div', {}, [test.name + ': ', msgSpan = MINI.el('span', 'waiting..')()]));
 			
 			var playgroundDiv;
 			if (test.async) // create playground div for async tests; they must not change anything else
@@ -151,7 +151,6 @@
 	<script type="text/javascript" src="autotest-toggle.js"></script>
 	<script type="text/javascript" src="autotest-json.js"></script>
 	<script type="text/javascript" src="autotest-cookies.js"></script>
-	<script type="text/javascript" src="autotest-forms.js"></script>
 	<script type="text/javascript" src="autotest-async.js"></script>
 	<script type="text/javascript" src="autotest-event.js"></script>
 

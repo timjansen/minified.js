@@ -45,7 +45,10 @@
  	    	<arg line="-o WebContent/css/minimum.css srcContent/css/minimum.css"/>
     	</java>
 	 	<java jar="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar" failonerror="true" fork="true">
-	    	<arg line="-o WebContent/css/reference.css srcContent/css/minimum.css srcContent/css/reference.css"/>
+	    	<arg line="-o WebContent/css/doc.css srcContent/css/minimum.css srcContent/css/doc.css"/>
+  	 	</java>
+	 	<java jar="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar" failonerror="true" fork="true">
+	    	<arg line="-o WebContent/css/reference.css srcContent/css/minimum.css srcContent/css/doc.css srcContent/css/reference.css"/>
   	 	</java>
   	</target>
 

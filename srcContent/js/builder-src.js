@@ -84,10 +84,11 @@ function setUpConfigurationUI(s) {
 	$('#compile').on('click', compileClicked);
 	
 	for (var i = 1; i < MODULES.length; i++) {
-		var moduleCheckBox, div, topDiv = $('#sectionCheckboxes').add(div = $.el('div', {'@id': 'divMod-'+i}, $.el('div', {'className': 'moduleDescriptor'}, [
-			moduleCheckBox = $.el('input', {'@id': 'mod-'+i, 'className': 'modCheck', '@type':'checkbox', checked: 'checked'}),
-			$.el('label', {'@for': 'mod-'+i}, MODULES[i])     
-		])));
+		var moduleCheckBox, div;
+		$('#sectionCheckboxes').add(div = EE('div', {'@id': 'divMod-'+i}, EE('div', {'className': 'moduleDescriptor'}, [
+			moduleCheckBox = EE('input', {'@id': 'mod-'+i, 'className': 'modCheck', '@type':'checkbox', checked: 'checked'})(),
+			EE('label', {'@for': 'mod-'+i}, MODULES[i])     
+		]))());
 		
 		$(moduleCheckBox).on('change', function() {
 			var b = this.checked;
@@ -135,10 +136,10 @@ function setUpConfigurationUI(s) {
 			var requiredBy = createList('Required by ', sec.requiredBy);
 			var requires = createList('Requires ', sec.requires);
 		
-			div.add($.el('div', {'className': 'sectionDescriptor'}, [
-				sectionCheckBox = $.el('input', {'className': 'secCheck', '@type': 'checkbox', '@id': 'sec-'+sec.id, checked: sec.configurable=='default' ? 'checked' : null}),
-				$.el('label', {'@for': 'sec-'+sec.id}, sec.name || sec.id),
-				$.el('div', {'className': 'requirements'}, [requiredBy ? [requiredBy, $.el('br')] : null , requires])
+			div.add(EE('div', {'className': 'sectionDescriptor'}, [
+				sectionCheckBox = EE('input', {'className': 'secCheck', '@type': 'checkbox', '@id': 'sec-'+sec.id, checked: sec.configurable=='default' ? 'checked' : null})(),
+				EE('label', {'@for': 'sec-'+sec.id}, sec.name || sec.id),
+				EE('div', {'className': 'requirements'}, [requiredBy ? [requiredBy, EE('br')] : null , requires])
 			]));
 			
 			$(sectionCheckBox).on('change', function() {

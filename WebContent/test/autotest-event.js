@@ -27,8 +27,8 @@ window.miniTests.push.apply(window.miniTests, [
 			var callNum = 0, lastIndex;
 			var expect, error;
 			var s, s2;
-			p.add(s = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
-			p.add(s2 = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
+			p.add(s = MINI.el('div', {$width: '30px', $height: '10px'})()[0]);
+			p.add(s2 = MINI.el('div', {$width: '30px', $height: '10px'})()[0]);
 			$('div', p).on('click', handler = function(e, index) {
 				callNum++;
 				lastIndex = index;
@@ -60,14 +60,15 @@ window.miniTests.push.apply(window.miniTests, [
 			var callNum = 0;
 			var expect = null, error = null;
 			var s, s2;
-			p.add(s = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
-			p.add(s2 = MINI.el('div', {$width: '30px', $height: '10px'})[0]);
+			p.add(s = MINI.el('div', {$width: '30px', $height: '10px'})()[0]);
+			p.add(s2 = MINI.el('div', {$width: '30px', $height: '10px'})()[0]);
 			$('div', p).on('click', handler = function(e, index) {
 				callNum++;
 				if (this != expect)
 					error = 'Did not get called on expected event';
 			});
 			check(handler.M.length, 2);
+			check(error, null);
 			
 			triggerEvent(s, createClick());
 			check(callNum, 1, "callNum");

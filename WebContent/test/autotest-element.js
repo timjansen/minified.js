@@ -2,18 +2,18 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI.el() / simple',
 		exec: function() {
-			var sl = MINI.el('span');
-			check(sl.length, 1);
+			var sl = MINI.el('span')();
+			check(sl.length, 1, "First len test");
 			var s = sl[0];
-			check(s.nodeType, 1);
+			check(s.nodeType, 1, "First node type test");
 			check(/^span$/i.test(s.tagName));
 			check(s.childNodes.length, 0);
 			check(s.parentElement, null);
 			
-			var sl2 = MINI.el('span', {'@title': 'mytitle'});
-			check(sl2.length, 1);
+			var sl2 = MINI.el('span', {'@title': 'mytitle'})();
+			check(sl2.length, 1, "Second len test");
 			var s2 = sl2[0];
-			check(s2.nodeType, 1);
+			check(s2.nodeType, 1, "Second node type test");
 			check(/^span$/i.test(s2.tagName));
 			check(s2.getAttribute('title'), 'mytitle');
 			check(s2.childNodes.length, 0);
@@ -22,7 +22,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI.el() / full',
 		exec: function() {
-			var sl3 = MINI.el('div', {'@title': '5', 'className': 'a b', $marginTop: '2px'}, 'hello');
+			var sl3 = MINI.el('div', {'@title': '5', 'className': 'a b', $marginTop: '2px'}, 'hello')();
 			check(sl3.length, 1);
 			var s3 = sl3[0];
 			check(s3.nodeType, 1);
@@ -38,9 +38,22 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
+		name:'MINI.el() / onCreate',
+		exec: function() {
+			var cap = null;
+			var sl3 = MINI.el('div', {'@title': '5', 'className': 'a b', $marginTop: '2px'}, 'hello', function(e) {
+				cap = e;
+			});
+			var s1 = sl3();
+			check(cap, s1);
+			var s2 = sl3();
+			check(cap, s2);
+		}
+	},
+	{
 		name:'MINI.el() / complex',
 		exec: function() {
-			var sl4 = MINI.el('div', ['hello' , MINI.el('b', null, 'user'), '!']);
+			var sl4 = MINI.el('div', ['hello' , MINI.el('b', null, 'user'), '!'])();
 			var s4 = sl4[0];
 			check(s4.nodeType, 1);
 			check(/^div$/i.test(s4.tagName));
@@ -67,7 +80,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().add()',
 		exec: function() {
-			var sl = MINI.el('span');
+			var sl = MINI.el('span')();
 			sl.add('test');
 			check(sl[0].childNodes.length, 1);
 			check(sl[0].firstChild.nodeType, 3);
@@ -91,7 +104,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().add() / function',
 		exec: function() {
-			var sl = MINI.el('span');
+			var sl = MINI.el('span')();
 			sl.add(function(obj, index) {
 				check(obj, sl[0], true);
 				check(index, 0);
@@ -113,7 +126,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().fill()',
 		exec: function() {
-			var sl = MINI.el('span');
+			var sl = MINI.el('span')();
 			sl.fill(MINI.el('br'));
 			check(sl[0].childNodes.length, 1);
 			check(sl[0].childNodes[0].nodeType, 1);
@@ -128,7 +141,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().replace()',
 		exec: function() {
-			var sl = MINI.el('span');
+			var sl = MINI.el('span')();
 			sl.fill(['foo', MINI.el('br'), 'bar']);
 			$(sl[0].childNodes[2]).replace(MINI.el('br'));
 			check(sl[0].childNodes.length, 3);
@@ -143,7 +156,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().addFront()',
 		exec: function() {
-			var sl = MINI.el('span');
+			var sl = MINI.el('span')();
 			sl.fill([MINI.el('br'), 'bar']);
 			sl.addFront('foo');
 			check(sl[0].childNodes.length, 3);
@@ -155,7 +168,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().addAfter()',
 		exec: function() {
-			var sl = MINI.el('span');
+			var sl = MINI.el('span')();
 			sl.fill([MINI.el('br'), 'bar']);
 			$(sl[0].childNodes[0]).addAfter('foo');
 			check(sl[0].childNodes.length, 3);
@@ -171,7 +184,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().addBefore()',
 		exec: function() {
-			var sl = MINI.el('span');
+			var sl = MINI.el('span')();
 			sl.fill([MINI.el('br'), 'bar']);
 			$(sl[0].childNodes[0]).addBefore('foo');
 			check(sl[0].childNodes.length, 3);
@@ -187,23 +200,36 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().fill() / multi',
 		exec: function() {
-			var sl = MINI([MINI.el('span'), MINI.el('span'), MINI.el('span')]);
+			var sl = MINI([MINI.el('span')(), MINI.el('span')(), MINI.el('span')()]);
 			sl.fill('foo');
 			check(sl[0].childNodes.length, 1);
 			check(sl[1].childNodes.length, 1);
 			check(sl[2].childNodes.length, 1);
 			sl.fill(MINI.el('br'));
 			check(sl[0].childNodes.length, 1);
-			check(sl[1].childNodes.length, 0);
-			check(sl[2].childNodes.length, 0);
+			check(sl[1].childNodes.length, 1);
+			check(sl[2].childNodes.length, 1);
 			sl.fill([MINI.el('br'), 'bar']);
 			check(sl[0].childNodes.length, 2);
-			check(sl[1].childNodes.length, 0);
-			check(sl[2].childNodes.length, 0);
+			check(sl[1].childNodes.length, 2);
+			check(sl[2].childNodes.length, 2);
 			sl.fill(function() { return [MINI.el('br'), 'bar']; });
 			check(sl[0].childNodes.length, 2);
 			check(sl[1].childNodes.length, 2);
 			check(sl[2].childNodes.length, 2);
+		}
+	},
+	{
+		name:'MINI().clone()',
+		exec: function() {
+			var sl = MINI('#a').clone();
+			check(sl.length, 1);
+			console.log(sl[0]());
+
+			var s2 = MINI('#a, #b').clone();
+			check(s2.length, 2);
+
+			// TODO: better tests
 		}
 	}
 ]);

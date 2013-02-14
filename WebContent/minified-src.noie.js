@@ -102,7 +102,7 @@
 		return isType(f, 'object');
 	}
 	function isNode(n) {
-		return n.nodeType;
+		return n && n.nodeType;
 	}
 	function isList(v) {
 		return v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
@@ -690,7 +690,7 @@
 		var l = this['length'];
 	    var s = (startIndex < 0 ? l+startIndex : startIndex);
 	    var e = endIndex == null ? l : (endIndex >= 0 ? endIndex : l+endIndex);
- 		return this.filter(function(o, index) { 
+ 		return this['filter'](function(o, index) { 
  			return index >= s && index < e; 
  		});
  	},
@@ -804,8 +804,9 @@
 	 *                     prefix the name with a '@'. A '$' prefix will retrieve a CSS style. The syntax for the CSS style is camel-case (e.g. "backgroundColor", not "background-color"). 
      *                     Shorthand properties like "border" or "margin" are not supported. You must use the full name, e.g. "marginTop". Minified will try to determine the effective style
 	 *                     and thus will also return the value set in style sheets if not overwritten using a regular style.
-	 * 	  		Just '$' will retrieve the 'className'
-	 *                     property of the object, a space-separated list of all CSS classes. The name '$$fade' will return a value between 0 and 1 that specifies the element's
+	 * 	  		           Just '$' will retrieve the 'className' property of the object, a space-separated list of all CSS classes.
+	 *                     The special name '$$' allows you setting the style attribute in a browser independent way.
+	 *                     '$$fade' will return a value between 0 and 1 that specifies the element's
 	 *                     opacity. '$$slide' returns the height of the element in pixels, with a 'px' suffix. Both '$$fade' and '$$slide' will also check the CSS styles 'visibility' and 'display'
 	 *                     to determine whether the object is visible at all. If not, they will return 0 or '0px', respectively.
 	 * @param list in order to retrieve more than one value, you can specify several names in an array or list. get() will then return a name->value map of results.
@@ -823,9 +824,12 @@
 			if (isString(spec)) {
 				var name = replace(spec, /^[$@]/);
 				var s;
-				var isHidden = /\$\$/.test(spec) && (self.get('$visibility') == 'hidden' || self.get('$display') == 'none');
+				var isHidden = /^\$\$/.test(spec) && (self.get('$visibility') == 'hidden' || self.get('$display') == 'none');
 				if (spec == '$')
 					s = element.className;
+				else if (spec == '$$') {
+						s = element.getAttribute('style');
+				}
 				else if (spec == '$$fade') {
 					s = isNaN(s = isHidden ? 0 :
 						  extractNumber(self.get('$opacity')) 
@@ -938,6 +942,7 @@
 	 * 
 	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
 	 *             A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
+	 *             The special name '$$' allows you setting the style attribute in a browser independent way.
 	 *             The special name '$$fade' expects a value between 0 and 1 and sets the opacity of the element in a browser-independent way. 
 	 *             The special name '$$slide' expects a value between 0 and 1 that defines how much of the element is visible. The rest will
 	 *             be cut up at its buttom. It can be used in animations to slide in or out an element. 
@@ -996,6 +1001,9 @@
     					 });
     					 obj.className = replace(className, /^\s+|\s+(?=\s|$)/g);
     				 }
+   				 	 else if (name == '$$') {
+							 obj.setAttribute('style', newValue);
+					 }
     				 else if (!/^@/.test(name))
     					 newObj[nameClean] = newValue;
     				 else if (newValue != null)  
@@ -1068,13 +1076,16 @@
 	 * @configurable default
 	 * @name .add()
 	 * @syntax MINI(selector).add(text)
-	 * @syntax MINI(selector).add(callbackFunction)
-	 * @syntax MINI(selector).add(elementContent)
-	 * Adds the given node(s) as content to the list elements as additional nodes. If a string has been given, it will be added as text node to all elements.
-	 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
-	 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
-	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 * @syntax MINI(selector).add(factoryFunction)
+	 * @syntax MINI(selector).add(list)
+	 * @syntax MINI(selector).add(node)
+	 * Adds the given node(s) as content to the list elements as additional nodes. If a string has been given, it will be added as text node.
+	 * If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+	 * allowed by add(), including another function to be called.
+	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
 	 *
+	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
+	 * does not allow adding it more than once.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1114,16 +1125,19 @@
 	 * $('#comments').add([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
 	 * </pre>
 	 *
-	 * @example If you need to add an element or a list to more than one element, you need to provide a factory function:
+	 * @example You can implement functions to create elements depending on the context:
 	 * <pre>
-	 * $('.chapter').add(function(e, index) { return EE('div', 'Scroll down for the next chapter.'); });
+	 * $('.chapter').add(function(parent, index) { return EE('h2', 'Chapter number ' + index); });
 	 * </pre>
 	 *
-	 * @param text a text to add as text node of the list elements
-	 * @param callbackFunction a function(newNode, listItem, parentNode) that will be invoked for each list element to determine its content. 
-	 *              The function can return either a string for a text node, an HTML element or a list containing strings and/or HTML elements.
-	 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
-	 *              an HTML element or a list containing strings and/or HTML elements.
+	 * @param text a string to add as text node of the list elements
+	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
+	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
+	 *              containing strings, lists, functions and/or DOM nodes.
+	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
+	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories if your
+	 *             MINI list contains more than one item.
+	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
 	 * @return the current list
 	 */
 	'add': function (children, addFunction) {
@@ -1132,6 +1146,8 @@
 			(function appendChildren(c) {
 				if (isList(c))
 					each(c, appendChildren);
+				else if (isFunction(c))
+					appendChildren(c(e, index));
 				else if (c != null) {   // must check null, as 0 is a valid parameter 
 					var n = isNode(c) ? c : _document.createTextNode(c);
 					if (lastAdded)
@@ -1142,24 +1158,28 @@
 						e.appendChild(n);
 					lastAdded = n;
 				}
-			})(isFunction(children) ? children(e, index) : (children == null || isNode(children) || isList(children)) && index ? null : children);
+			})(isNode(children) && index ? null : children);
 		});
 	},
 
 	/*$
 	 * @id fill
 	 * @module ELEMENT
-	 * @requires dollar each
+	 * @requires dollar add remove
 	 * @configurable default
 	 * @name .fill()
 	 * @syntax MINI(selector).fill()
 	 * @syntax MINI(selector).fill(text)
-	 * @syntax MINI(selector).fill(callbackFunction)
-	 * @syntax MINI(selector).fill(elementContent)
-	 * Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node to all elements.
-	 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
-	 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
-	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 * @syntax MINI(selector).fill(factoryFunction)
+	 * @syntax MINI(selector).fill(list)
+	 * @syntax MINI(selector).fill(node)
+	 * Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node.
+	 * If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+	 * allowed by fill(), including another function to be called.
+	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
+	 *
+	 * It is also possible to pass a DOM node, but it will be set <strong>only in the first element of the list</strong>, because DOM
+	 * does not allow adding it more than once.
 	 *
 	 * Call fill() without arguments to remove all children from a node.
 	 * 
@@ -1176,7 +1196,7 @@
 	 * &lt;div id="status">Please Wait..&lt;/div>
 	 * </pre> 
 	 *
-	 * @example Pass an element to replace the old content with that. Note that an element can only be added to the first match:
+	 * @example Pass an Element Factory to replace the old content with that:
 	 * <pre>
 	 * $('#status').fill(EE('span', {'className': 'bold'}, 'Please Wait...'));
 	 * </pre>
@@ -1195,8 +1215,7 @@
 	 * $('#myListContainer').fill([EE('h2', 'My List'), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]);
 	 * </pre>
 	 *
-	 * @example If you need to add your list to more than one element, you must add a factory function that re-creates
-	 *              the list for every instance:
+	 * @example You can write a factory function that re-creates the list for every instance:
 	 * <pre>
 	 * $('.listContainers').fill(function(e, index) { return [EE('h2', 'List Number '+index), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]});
 	 * </pre>
@@ -1206,12 +1225,15 @@
 	 * $('.listContainers').fill();
 	 * </pre>
 	 *
-	 * @param text a text to set as text node of the list elements
-	 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-	 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
-	 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
-	 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
-	 *              this list's first match.
+	 * @param text a string to set as text node of the list elements
+	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
+	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
+	 *              containing strings, lists, functions and/or DOM nodes.
+	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
+	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories if your
+	 *             MINI list contains more than one item.
+	 * @param node a DOM node to set <strong>only in the first element</strong> of the list. 
+
 	 * @return the current list
 	 */
 	'fill': function (children) {
@@ -1221,16 +1243,21 @@
 	/*$
 	 * @id addbefore
 	 * @module ELEMENT
-	 * @requires dollar
+	 * @requires dollar add
 	 * @configurable default
 	 * @name .addBefore()
 	 * @syntax MINI(selector).addBefore(text)
-	 * @syntax MINI(selector).addBefore(callbackFunction)
-	 * @syntax MINI(selector).addBefore(elementContent)
-	 * Inserts the given text or element(s) as sibling in front of each element of this list. If a string has been given, it will be added as text node.
-	 * If you pass an element or a list, it will be inserted <strong>only in front of the first element of the list</strong>. In order to add elements
-	 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
-	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 * @syntax MINI(selector).addBefore(factoryFunction)
+	 * @syntax MINI(selector).addBefore(list)
+	 * @syntax MINI(selector).addBefore(node)
+	 * Inserts the given text or element(s) as sibling in front of each element of this list. 
+	 * If a string has been given, it will be added as text node.
+	 * If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+	 * allowed by addBefore(), including another function to be called.
+	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
+	 *
+	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
+	 * does not allow adding it more than once.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1250,7 +1277,7 @@
 	 * &lt;/div>
 	 * </pre>  
 	 *
-	 * @example You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
+	 * @example You can also pass an Element Factory:
 	 * <pre>
 	 * $('#mainText').addBefore(EE('span', {'className': 'important'}, 'WARNING'));
 	 * </pre>
@@ -1262,23 +1289,19 @@
 	 * &lt;/div>
 	 * </pre> 
 	 *
-	 * @example Lists of elements and nodes are possible as well. Like nodes, it will only be added to the first list item.
+	 * @example Lists of elements and nodes are possible as well.
 	 * <pre>
 	 * $('#status').addBefore([EE('hr'), 'WARNING']);
 	 * </pre>
 	 *
-	 * @example If you need to add your list to more than one list item, you must add a factory function that re-creates
-	 *              the list for every instance:
-	 * <pre>
-	 * $('.textSnippets').addBefore(function(e, index) { return [EE('hr'), 'WARNING']; });
-	 * </pre>
-	 *
-	 * @param text a text to insert as text node in front of the list elements
-	 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-	 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
-	 * @param elementContent content to insert in front of <strong>the first element</strong> of the list. The content can be a string for a text node,
-	 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
-	 *              this list's first match.
+	 * @param text a string to add as text node of the list elements
+	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
+	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
+	 *              containing strings, lists, functions and/or DOM nodes.
+	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
+	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories if your
+	 *             MINI list contains more than one item.
+	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
 	 * @return the current list
 	 */
 	'addBefore': function (children) {
@@ -1288,16 +1311,21 @@
 	/*$
 	 * @id addafter
 	 * @module ELEMENT
-	 * @requires dollar
+	 * @requires dollar add
 	 * @configurable default
 	 * @name .addAfter()
 	 * @syntax MINI(selector).addAfter(text)
-	 * @syntax MINI(selector).addAfter(callbackFunction)
-	 * @syntax MINI(selector).addAfter(elementContent)
-	 * Inserts the given text or element(s) as sibling after each element of this list. If a string has been given, it will be added as text node.
-	 * If you pass an element or a list, it will be inserted <strong>only after of the first element of the list</strong>. In order to add elements
-	 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
-	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 * @syntax MINI(selector).addAfter(factoryFunction)
+	 * @syntax MINI(selector).addAfter(list)
+	 * @syntax MINI(selector).addAfter(node)
+	 * Inserts the given text or element(s) as sibling after each element of this list. 
+	 * If a string has been given, it will be added as text node.
+	 * If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+	 * allowed by addAfter(), including another function to be called.
+	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
+	 *
+	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
+	 * does not allow adding it more than once.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1317,7 +1345,7 @@
 	 * &lt;/div>
 	 * </pre>   
 	 *
-	 * @example You can also pass an element, but note that a node can only be added once to the first list item, even if the list has more than one item:
+	 * @example You can also pass an Element Factory:
 	 * <pre>
 	 * $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
 	 * </pre>
@@ -1329,23 +1357,14 @@
 	 * &lt;/div>
 	 * </pre> 
 	 *
-	 * @example Lists of elements and nodes are possible as well. Like nodes, it will only be added to the first list item.
-	 * <pre>
-	 * $('#status').addAfter([EE('hr'), 'Disclaimer']);
-	 * </pre>
-	 *
-	 * @example If you need to add your list to more than one list item, you must add a factory function that re-creates
-	 *              the list for every instance:
-	 * <pre>
-	 * $('.textSnippets').addAfter(function(e, index) { return [EE('hr'), 'Disclaimer']; });
-	 * </pre>
-	 *
-	 * @param text a text to insert as sibling text node after of the list elements
-	 * @param callbackFunction a factory function(element, index) that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-	 *              an HTML element or a list containing strings and/or HTML elements. As parameters it receives the current list element and its 0-based index.
-	 * @param elementContent content to insert <strong>only after the first element</strong> of the list. The content can be a string for a text node,
-	 *              an HTML element or a list containing strings and/or HTML elements. Note that if you use a HTML node or an array here, it will only be added once to
-	 *              this list's first match.
+	 * @param text a string to add as text node of the list elements
+	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
+	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
+	 *              containing strings, lists, functions and/or DOM nodes.
+	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
+	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories if your
+	 *             MINI list contains more than one item.
+	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
 	 * @return the current list
 	 */
 	'addAfter': function (children) {
@@ -1355,17 +1374,21 @@
 	/*$
 	 * @id addfront
 	 * @module ELEMENT
-	 * @requires dollar
+	 * @requires dollar add
 	 * @configurable default
 	 * @name .addFront()
 	 * @syntax MINI(selector).addFront(text)
-	 * @syntax MINI(selector).addFront(callbackFunction)
-	 * @syntax MINI(selector).addFront(elementContent)
+	 * @syntax MINI(selector).addFront(factoryFunction)
+	 * @syntax MINI(selector).addFront(list)
+	 * @syntax MINI(selector).addFront(node)
 	 * Adds the given node(s) as content to the list elements as additional nodes. Unlike add(), the new nodes will be the first children of the list items.
-	 * If a string has been given, it will be added as text node to all elements.
-	 * If you pass an element or a list, it will be added <strong>only to the first element of the list</strong>. In order to add elements
-	 * to several list items, you need to pass a factory function(element, index) thats creates new instances for each item. 
-	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 * If a string has been given, it will be added as text node.
+	 * If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+	 * allowed by addFront(), including another function to be called.
+	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
+	 *
+	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
+	 * does not allow adding it more than once.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1405,16 +1428,14 @@
 	 * $('#comments').addFront([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
 	 * </pre>
 	 *
-	 * @example If you need to add an element or a list to more than one element, you need to provide a factory function:
-	 * <pre>
-	 * $('.chapter').addFront(function(e, index) { return EE('div', 'Scroll down for the next chapter.'); });
-	 * </pre>
-	 *
-	 * @param text a text to add as text node of the list elements
-	 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-	 *              an HTML element or a list containing strings and/or HTML elements.
-	 * @param elementContent content to add <strong>only to the first element</strong> of the list. The content can be a string for a text node,
-	 *              an HTML element or a list containing strings and/or HTML elements.
+	 * @param text a string to add as text node of the list elements
+	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
+	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
+	 *              containing strings, lists, functions and/or DOM nodes.
+	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
+	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories if your
+	 *             MINI list contains more than one item.
+	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
 	 * @return the current list
 	 */
 	'addFront': function (children) {
@@ -1424,17 +1445,21 @@
 	/*$
 	 * @id replace
 	 * @module ELEMENT
-	 * @requires dollar
+	 * @requires dollar add
 	 * @configurable default
 	 * @name .replace()
 	 * @syntax MINI(selector).replace(text)
-	 * @syntax MINI(selector).replace(callbackFunction)
-	 * @syntax MINI(selector).replace(elementContent)
+	 * @syntax MINI(selector).replace(factoryFunction)
+	 * @syntax MINI(selector).replace(list)
+	 * @syntax MINI(selector).replace(node)
 	 * Replaces the list items with the the given node(s) in the DOM tree. 
-	 * If a string has been given, each list item will be replaced with a new text node containing the string.
-	 * If you pass an element or a list, it will replace <strong>only the first element of the list</strong>. In order to replace 
-	 * several list items with content more complex than a string, you need to pass a factory function(element, index) thats creates new instances for each item. 
-	 * The function will be invoked for each element and may return either a string for a text node, a simple HTML element or a list containing both. 
+	 * If a string has been given, it will be set as text node.
+	 * If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+	 * allowed by replace(), including another function to be called.
+	 * If you pass a list or a function returns a list, all its elements will be set using the rules above.
+	 *
+	 * It is also possible to pass a DOM node, but it will replace <strong>only the first element of the list</strong>, because DOM
+	 * does not allow adding it more than once.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1462,9 +1487,9 @@
 	 *   &lt;li>Second list entry&lt;/li>
 	 * &lt;/ul>
 	 * </pre>
-	 * The following JavaScript will replace <strong>only the first &lt;li> element</strong>:
+	 * The following example will replace <strong>only the first &lt;li> element</strong>:
 	 * <pre>
-	 * $('#myList li').replace(EE('li', 'My extra point'));
+	 * $('#myList li').sub(0, 1).replace(EE('li', 'My extra point'));
 	 * </pre>
 	 * This results in
 	 * <pre>
@@ -1474,31 +1499,6 @@
 	 * &lt;/ul>
 	 * </pre>
 	 *
-	 * @example If you need to replace several elements at once, you need to provide a factory function
-	 * <pre>
-	 * $('#myList li').replace(function(e, index) { return EE('li', 'My extra point'); });
-	 * </pre>
-	 * With the previous HTML would result in:
-	 * <pre>
-	 * &lt;ul id="myList">
-	 *   &lt;li>My extra point&lt;/li>
-	 *   &lt;li>My extra point&lt;/li>
-	 * &lt;/ul>
-	 * </pre>
-	 *
-	 * @example Use a list to add several elements at once:
-	 * <pre>
-	 * $('#myList li').replace(function(e, index) { return [EE('li', 'Extra point 1'), EE('li', 'Extra point 2')]; });
-	 * </pre>
-	 * Now every original &lt;li> element is replaced with two elements:
-	 * <pre>
-	 * &lt;ul id="myList">
-	 *   &lt;li>Extra point 1&lt;/li>
-	 *   &lt;li>Extra point 2&lt;/li>
-	 *   &lt;li>Extra point 1&lt;/li>
-	 *   &lt;li>Extra point 2&lt;/li>
-	 * &lt;/ul>
-	 * </pre>
 	 *
 	 * @param text a text for the text nodes that replace the list elements
 	 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
@@ -1509,6 +1509,56 @@
 	 */
 	'replace': function (children) {
 		return this.add(children, function(newNode, refNode, parent) { parent.replaceChild(newNode, refNode); });
+	},
+
+	/*$
+	 * @id clone
+	 * @module ELEMENT
+	 * @requires dollar el
+	 * @configurable default
+	 * @name .clone()
+	 * @syntax MINI(selector).clone()
+	 * Creates a MINI list of strings and Element Factories that returns clones of the list elements. An Element Factory is a function
+	 * that does not take arguments and returns a MINI list of DOM nodes. You can pass the list to add() and similar functions
+	 * to re-create the cloned nodes.
+	 *
+	 * If you call clone() on a list with several items, the ElementFactory will return all of them in its list.
+	 *
+	 * clone() is very limited in what it will clone. Only elements, their attributes, text nodes and CDATA will be cloned.
+	 * Modifications of the elements, such as event handlers, will not be cloned.
+	 *
+	 * You should be careful not to clone elements with an id, as ids should be unique in an HTML document.
+	 * 
+	 * @example Using the following HTML:
+	 * <pre>
+	 * &lt;div id="comments">
+	 *    &lt;div class="comment">My comment.&lt;/div>
+	 * &lt;/div>
+	 * </pre> 
+	 * Creating a clone factory:
+	 * <pre>
+	 * var myCloneFactory = $('.comment').clone();
+	 * </pre>
+	 * Cloning a comment and adding it below the existing one:
+	 * <pre>
+	 * $('#comments').add($('.comment').clone());
+	 * </pre> 
+	 * 
+	 * @return the list of Element Factory functions and strings to create clones
+	 */
+	'clone': function () {
+		return this['collect'](function(e) {
+			var attrs = {}, attrName, nodeType = isNode(e);
+			if (nodeType == 1) {
+				each(e.attributes, function(a) {
+					attrs['@'+a.name] =
+							a.value;
+				});
+				return MINI['el'](e.tagName, attrs, MINI(e.childNodes)['clone']());
+			}
+			else if (nodeType > 2 && nodeType < 5)
+				return e.textContent;
+		});
 	},
 
 	/*$
@@ -1854,56 +1904,6 @@
 			});
 		},
 
-    /*$
-	 * @id values
-	 * @module REQUEST
-	 * @requires each
-	 * @configurable default
-	 * @name .values()
-	 * @syntax MINI().values()
-	 * @syntax MINI().values(dataMap)
-	 * Creates a name/value map from the given form. values() looks at the list's form elements and writes each element's name into the map,
-	 * using the element name as key and the element's value as value. If there is more than one value with the same name, the map will contain an array
-	 * of values. Form element without value will be written with 'null' as value. Form elements without name will be ignored.
-	 *
-	 * values() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
-	 * elements will be serialized.
-	 * 
-	 * The map format returned by values() is exactly the format used by request().
-	 * 
-	 * Please note that when you include an input element more than once, for example by having the input itself and its form in the list, the
-	 * value will be included twice in the list.
-	 *
-	 * @example Serialize a form and send it as request parameters:
-	 * <pre>
-	 * MINI.request('get', '/exampleService', $('#myForm').values(), resultHandler);
-	 * </pre>
-	 * 
-	 * @example Serialize only some selected input fields:
-	 * <pre>
-	 * var data = $('#myText, input.myRadios').values();
-	 * </pre>
-	 * 
-	 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
-	 * @return a map containing name->value pairs as strings. If there is more than one value with the same name,
-	 *         map value is an array of strings
-	 */
-	'values': function(data) {
-		var r = data || {};
-		this['each'](function(el) {
-			var n = el.name, v = toString(el.value), o=r[n];
-			if (/form/i.test(el.tagName))
-				MINI(el.elements)['values'](r);
-			else if (n && (!/kbox|dio/i.test(el.type) || el.checked)) { // short for checkbox, radio
-					if (isList(o))
-						o.push(v);
-					else
-						r[n] = (o == null) ? v : [o, v];
-			}
-		});
-		return r;
-	},
-
 	/*$
 	 * @id offset
 	 * @module SELECTORS
@@ -1977,15 +1977,17 @@
 	 * @syntax MINI.el(elementName, attributes)
 	 * @syntax MINI.el(elementName, children)
 	 * @syntax MINI.el(elementName, attributes, children)
+	 * @syntax MINI.el(elementName, attributes, children, onCreate)
 	 * @shortcut EE(elementName, attributes, children)
-	 * Creates a new HTML element, optionally with attributes and children, and returns a MINI list containing the DOM HTMLElement.
-	 * Typically the return value is inserted into the DOM tree using add() or a similar function. 
+	 * Creates a new Element Factory. An Element Factory is a function without arguments that returns MINI list
+	 * containing a newly created element, optionally with attributes and children.
+	 * Typically it will be used to inset elements into the DOM tree using add() or a similar function. 
 	 *
 	 * By default, Minified creates a shortcut called EE for this function.
 	 *
 	 * The function is namespace-aware and will create XHTML nodes if called in an XHTML document.
 	 * 
-	 * @example Creating a simple &lt;span> element with some text:
+	 * @example Creating a simple factory for a &lt;span> element with some text:
 	 * <pre>
 	 * var mySpan = EE('span', 'Hello World'); 
 	 * </pre>
@@ -1993,19 +1995,20 @@
 	 * <pre>
 	 *  &lt;span>Hello World&lt;/span> 
 	 * </pre>
-	 * @example Creating a &lt;span> element with style, some text, and append it to the element with the id 'greetingsDiv':
+	 * @example Creating a factory for a &lt;span> element with style, some text, and append it to elements with the class 'greetingsDiv':
 	 * <pre>
-	 * $('greetingsDiv').add(EE('span', {'@title': 'Greetings'}, 'Hello World')); 
+	 * $('.greetingsDiv').add(EE('span', {'@title': 'Greetings'}, 'Hello World')); 
 	 * </pre>
 	 * creates this:
 	 * <pre>
 	 *  &lt;span title="Greetings">Hello World&lt;/span> 
 	 * </pre>
 	 * 
-	 * @example The function always returns a MINI list with a single element. You can directly use it, for example,
+	 * @example The factory function always returns a MINI list with a single element. You can directly use it, for example,
 	 *          to add an event handler.
 	 * <pre>
-	 * var myDiv =EE('div', 'Hello World');
+	 * var myDiv = EE('div', 'Hello World')();
+	 * container.add(myDiv);
 	 * myDiv.on('click', function() { window.alert('Clicked!'); }); 
 	 * </pre>
 	 * 
@@ -2044,24 +2047,39 @@
 	 * var myStylesSpan = EE('span', {$color: "red", $fontWeight: "bold"}, "I'm styled");
 	 * </pre>
 	 * 
+	 * @example To add event handlers, use the fourth argument:
+	 * <pre>
+	 * var myStylesSpan = EE('input', {'@name': "myInput"}, null, function(e) {
+	 *     e.on('change', inputChanged);
+	 * });
+	 * </pre>
+	 * 
 	 * @param elementName the element name to create (e.g. 'div')
 	 * @param attributes optional an object which contains a map of attributes and other values. The syntax is exactly like set(): Attribute values are prefixed with '@',
 	 *                   CSS styles with '$' and regular properties can be set without prefix.
 	 *                   If the attribute value is null, the attribute will omitted (styles and properties can be set to null). 
 	 *                   In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
 	 *                   set the property 'className' instead of '@class' and set styles using the '$' syntax.
-	 * @param children optional  an element or a list of elements to add as children. Strings will be converted as text nodes. Lists can be 
+	 * @param children optional  an element or a list of elements to add as children. Strings will be converted as text nodes. 
+	 *                         Functions will be invoked and their return value will be used. Lists can be 
 	 *                         nested and will then automatically be flattened. Null elements in lists will be ignored. 
-	 *                         The syntax is exactly like fill().
-	 * @return a MINI list containing the DOM HTMLElement that has been created or modified as only element
+	 *                         The syntax is exactly like add().
+	 * @param onCreate optional a function(elementList) that will be called each time an element had been created. This allows you, for example, to 
+	 *                 add event handlers with on(). Will be called with the created element in a MINI list as argument.
+	 * @return a Element Factory function returning a MINI list containing the DOM HTMLElement that has been created or modified as only element
 	 */
-	'el': function(elementName, attributes, children) {
+	'el': function(elementName, attributes, children, onCreate) {
 		// @cond debug if (!elementName) error("el() requires the element name."); 
 		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
 
-		var nu = _document.documentElement.namespaceURI; // to check whether doc is XHTML
-		var list = MINI(nu ? _document.createElementNS(nu, elementName) : _document.createElement(elementName));
-		return  (isList(attributes) || !isObject(attributes)) ? list.add(attributes) : list.set(attributes).add(children); 
+		return function() {
+			var nu = _document.documentElement.namespaceURI; // to check whether doc is XHTML
+			var list = MINI(nu ? _document.createElementNS(nu, elementName) : _document.createElement(elementName));
+			(isList(attributes) || !isObject(attributes)) ? list['add'](attributes) : list['set'](attributes)['add'](children);
+			if (onCreate)
+				onCreate(list);
+			return list; 
+		};
 	},
 
 	/*$

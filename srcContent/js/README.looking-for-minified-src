@@ -1,0 +1,3 @@
+If you are looking for Minified's actual source file: it is /WebContent/minified-src.js.
+
+It is in /WebContent so you can publish this directory in your local web server and test directly, without having to run build scripts.
