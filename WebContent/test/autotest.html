@@ -5,7 +5,7 @@
 		body {font-family: sans-serif;}
 		#rerun {display: none; margin: 0.5em;}
 		#header { height: 4.5em; }
-		#container, #container2 { display: none; }
+		#container, #container2, #cloneTest { display: none; }
 		.resultOk { color: #0f0; }
 		.resultFailed { font-weight: bold; color: #f00; }
 		
@@ -91,7 +91,7 @@
 				}
 				if (!testFinished) {
 					msgSpan.set(s ? '+resultOk' : '+resultFailed').fill(s ? 'OK' : 'Failed (' + msg + ')');
-					if (window.console) console.log('Test:', test.name, 'Result:', s, 'Msg:', msg);
+					if (window.console) console.log('Test:', test.name, 'Result:', s, 'Msg:', hhToString(msg));
 					testFinished = true;
 					finishedNum++;
 					if (!s)
@@ -201,8 +201,19 @@
 					<p>div id="c_b" class="m z"</p>
 				</div>
 			</div>
+			
 		</div>
 		<div id="container2">
+		</div>
+		<div id="cloneTest">
+			<div class="cloneMe">
+				<p>Test</p> 
+				UglyChar: &szlig;
+				<a href="http://example.com" title="Teest">Test</a>
+				<strong><span class=".bla342">abc<code>def</code>ds</span></strong>
+				<span style="margin: 1px">dd</span>
+			</div>
+			<div id="cloneId">nonono</div>
 		</div>
 		<div id="playground">
 		</div>

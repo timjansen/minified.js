@@ -222,14 +222,20 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().clone()',
 		exec: function() {
-			var sl = MINI('#a').clone();
+			var sl = MINI('#cloneTest .cloneMe').clone();
 			check(sl.length, 1);
-			console.log(sl[0]());
-
-			var s2 = MINI('#a, #b').clone();
-			check(s2.length, 2);
-
-			// TODO: better tests
+			$('#container2').fill(sl);
+			check($$('#cloneTest .cloneMe').innerHTML.toLowerCase(), $$('#container2 .cloneMe').innerHTML.toLowerCase());
+		}
+	},
+	{
+		name:'MINI().clone() / id',
+		exec: function() {
+			var sl = MINI('#cloneId').clone();
+			check(sl.length, 1);
+			$('#container2').fill(sl);
+			check(/id=/.test($$('#container2').innerHTML), false, 'Clone() id removal');
+			check(/nonono/.test($$('#container2').innerHTML), true, 'Clone() id / content');
 		}
 	}
 ]);

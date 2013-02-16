@@ -24,6 +24,7 @@ function closureCompile(src, advanced, cb) {
 
 function setUpConfigurationUI(s) {
 	
+	// onclick handler for compile button
 	function compileClicked() {
 		var enabledSections = {};
 		$('.secCheck').each(function(cb) {
@@ -102,13 +103,13 @@ function setUpConfigurationUI(s) {
 		});
 		
 		var sectionCheckBox;
-		hhEach(hhFilter(s.sections, function(sec) { return sec.module == MODULES[i] && s.enabledSections[sec.id];}).sort(function(a,b) {
+		hhEach(hhFilter(s.sections, function(sec) { return sec.module == MODULES[i] && sec.configurable;}).sort(function(a,b) {
 			var ha = a.name || a.id, hb = b.name || b.id;
 			if (ha == hb)
 				return 0;
 			return ha > hb ? 1 : -1;
 		}), function(sec) {
-			function createList(prefix, map) {
+			function createReqList(prefix, map) {
 				var MAX = 8;
 				var list = hhFilter(hhKeys(map), function(t){ return !!s.sectionMap[t].name;});
 				if (!list.length)
@@ -133,8 +134,8 @@ function setUpConfigurationUI(s) {
 				return txt;
 			}
 		
-			var requiredBy = createList('Required by ', sec.requiredBy);
-			var requires = createList('Requires ', sec.requires);
+			var requiredBy = createReqList('Required by ', sec.requiredBy);
+			var requires = createReqList('Requires ', sec.requires);
 		
 			div.add(EE('div', {'className': 'sectionDescriptor'}, [
 				sectionCheckBox = EE('input', {'className': 'secCheck', '@type': 'checkbox', '@id': 'sec-'+sec.id, checked: sec.configurable=='default' ? 'checked' : null})(),

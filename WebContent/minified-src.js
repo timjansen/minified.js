@@ -154,7 +154,7 @@
 		return isType(f, 'object');
 	}
 	function isNode(n) {
-		return n && n.nodeType;
+		return n && n['nodeType'];
 	}
 	function isList(v) {
 		return v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
@@ -507,7 +507,7 @@
 	/*$
 	 * @id debug
 	 * @module OPTIONS
-	 * @configurable optional
+	 * (TBD) @configurable optional
 	 * @doc no
 	 * @name Debugging Support
 	 */
@@ -1623,7 +1623,8 @@
 	 * clone() is very limited in what it will clone. Only elements, their attributes, text nodes and CDATA will be cloned.
 	 * Modifications of the elements, such as event handlers, will not be cloned.
 	 *
-	 * You should be careful not to clone elements with an id, as ids should be unique in an HTML document.
+	 * Please note that id attributes will be automatically skipped by the Element Factory. This allows you to address the element to clone by id
+	 * without having to worry about duplicate ids in the result.
 	 * 
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1646,18 +1647,20 @@
 		return this['collect'](function(e) {
 			var attrs = {}, attrName, nodeType = isNode(e);
 			if (nodeType == 1) {
-				each(e.attributes, function(a) {
-					// @condblock ie8compatibility
-						attrName = a.name;
-						attrs[attrName == 'style' ? '$$' : (attrName  == 'class' ? '$' : ('@'+attrName))] =
-					// @condend
-					// @cond !ie8compatibility attrs['@'+a.name] =
-							a.value;
+				each(e['attributes'], function(a) {
+					attrName = a['name'];
+					if (attrName != 'id') {
+						// @condblock ie8compatibility
+							attrs[attrName == 'style' ? '$$' : (attrName  == 'class' ? '$' : ('@'+attrName))] =
+						// @condend
+						// @cond !ie8compatibility attrs['@'+attrName] =
+								a['value'];
+					}
 				});
-				return MINI['el'](e.tagName, attrs, MINI(e.childNodes)['clone']());
+				return MINI['el'](e['tagName'], attrs, MINI(e['childNodes'])['clone']());
 			}
-			else if (nodeType > 2 && nodeType < 5)
-				return e.textContent;
+			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)
+				return e['textContent'];
 			else 
 				return null;
 		});

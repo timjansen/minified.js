@@ -102,7 +102,7 @@
 		return isType(f, 'object');
 	}
 	function isNode(n) {
-		return n && n.nodeType;
+		return n && n['nodeType'];
 	}
 	function isList(v) {
 		return v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
@@ -443,6 +443,19 @@
 		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context, childOnly));
 		// @cond !ready return new M(dollarRaw(selector, context));
 	}
+
+	/*$
+	 * @id debug
+	 * @module OPTIONS
+	 * (TBD) @configurable optional
+	 * @doc no
+	 * @name Debugging Support
+	 */
+	function error(msg) {
+		if (_window.console) console.log(msg);
+		throw Exception("MINI debug error: " + msg);
+	}
+    // @cond debug MINI['debug'] = true;
 
     /*$
      * @id dollarraw
@@ -1503,7 +1516,8 @@
 	 * clone() is very limited in what it will clone. Only elements, their attributes, text nodes and CDATA will be cloned.
 	 * Modifications of the elements, such as event handlers, will not be cloned.
 	 *
-	 * You should be careful not to clone elements with an id, as ids should be unique in an HTML document.
+	 * Please note that id attributes will be automatically skipped by the Element Factory. This allows you to address the element to clone by id
+	 * without having to worry about duplicate ids in the result.
 	 * 
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1526,14 +1540,17 @@
 		return this['collect'](function(e) {
 			var attrs = {}, attrName, nodeType = isNode(e);
 			if (nodeType == 1) {
-				each(e.attributes, function(a) {
-					attrs['@'+a.name] =
-							a.value;
+				each(e['attributes'], function(a) {
+					attrName = a['name'];
+					if (attrName != 'id') {
+						attrs['@'+attrName] =
+								a['value'];
+					}
 				});
-				return MINI['el'](e.tagName, attrs, MINI(e.childNodes)['clone']());
+				return MINI['el'](e['tagName'], attrs, MINI(e['childNodes'])['clone']());
 			}
-			else if (nodeType > 2 && nodeType < 5)
-				return e.textContent;
+			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)
+				return e['textContent'];
 			else 
 				return null;
 		});
