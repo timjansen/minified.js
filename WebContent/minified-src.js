@@ -1925,10 +1925,10 @@
 		 * @requires dollar each
 		 * @configurable default
 		 * @name .on()
-		 * @syntax MINI(selector).on(el, name, handler)
-		 * @syntax MINI(selector).on(el, name, handler, args)
-		 * @syntax MINI(selector).on(el, name, handler, args, fThis)
-		 * @shortcut $(selector).on(el, name, handler) - Enabled by default, but can be disabled in the builder.
+		 * @syntax MINI(selector).on(name, handler)
+		 * @syntax MINI(selector).on(name, handler, args)
+		 * @syntax MINI(selector).on(name, handler, fThis, args)
+		 * @shortcut $(selector).on(name, handler) - Enabled by default, but can be disabled in the builder.
 		 * Registers the function as event handler for all items in the list.
 		 * 
 		 * By default, handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
@@ -1969,20 +1969,19 @@
 		 *                custom arguments, the event processing and bubbling will always be disabled, no mattter what the handler returns.
 		 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
 		 *                is added to the handler in an array property called 'M'.
-		 * @param args optional if set an array of arguments to pass to the handler function instead of the event objects. If you pass custom arguments, the
-		 *                      return value of the handler will always be ignored.
 		 * @param fThis an optional value for 'this' in the handler, as alternative to the event target
+		 * @param args optional an array of arguments to pass to the handler function instead of the event objects. If you pass custom arguments, the
+		 *                      return value of the handler will always be ignored.
 		 * @return the list
 		 */
-		'on': function (name, handler, args, fThis) {
+		'on': function (name, handler, fThisOrArgs, args) {
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return this['each'](function(el, index) {
 				var h = function(event) {
-					var l = _document.documentElement, b = _document.body;
 					var e = event || _window.event;
 					// @cond debug try {
-					if (!handler.apply(fThis || e.target, args || [e, index]) || args) {
+					if (!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) {
 						// @condblock ie8compatibility 
 						if (e.stopPropagation) {// W3C DOM3 event cancelling available?
 						// @condend
