@@ -45,15 +45,7 @@ return value of the handler will always be ignored.</dd>
 
 By default, handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
 of the event (e.g. the button that has been clicked). The original event object the is object given to the event or obtained
-from 'window.event'. The compatibility event object has the following properties:
-<ul>
-<li><code>key</code> - the key code, if it was a key press. Will return event.keyCode if set, otherwise event.which. This should work in practically all browsers.
-                                             See http://unixpapa.com/js/key.html for key code tables.</li>
-<li><code>right</code> - true if the right mouse button has been clicked, false otherwise. Works browser-independently.</li>
-<li><code>pageX</code> - the page coordinate of the event</li>
-<li><code>pageY</code> - the page coordinate of the event</li>
-</ul>
-Unless the handler returns 'true', the event will not be propagated to other handlers.
+from 'window.event'. Unless the handler returns 'true', the event will not be propagated to other handlers.
 
 Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the event handler. When you pass arguments, the
 handler's return value is always ignored and the event will always be cancelled.
@@ -62,19 +54,23 @@ handler's return value is always ignored and the event will always be cancelled.
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Adds a simple click handler to a button. Event objects are ignored.
-<pre>
-$('#myButton').on('click', function() {
-   window.alert('Button clicked!');
-});
-</pre>
-</div>
-<h4>Example</h4>
-<div class="example">Adds a handler to all divs that paints their background color to red when clicked.
+<div class="example">Adds a handler to all divs that paints their background color to red when clicked. The event object is not needed.
 <pre>
 $('div').on('click', function() {
    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
 });
+</pre>
+</div>
+<h4>Example</h4>
+<div class="example">handler to call a method setStatus('running') using an inline function:
+<pre>
+$('#myButton').on('click', function() {
+   myObject.setStatus('running');
+});
+</pre>
+The same can be written like this using on() argument and fThis parameters:
+<pre>
+$('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 </pre>
 </div>
 </div>
