@@ -23,7 +23,9 @@
  * - @id marks the beginning of an optional block. It ends with the next @id block, or the next @stop comment.
  * - @requires defines the ids that the current block depends on. They will always be available.
  * - @configurable the block can be selected in the GUI. If the value is 'default', it is a enabled by default. If it is 'optional', it is not.
- * - @dependency if set, the block is only used as a dependency
+ * - @dependency if set, the block is only used as a dependency and won't show up in builder or documentation
+ * - @name a name for builder and reference docs
+ * - @doc if 'no', the section will not be displayed in reference docs, only in builder
  * 
  * Single-Line Comments
  * - @cond id defines that the code following after the id will be included if the block id is enabled 
@@ -37,8 +39,38 @@
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
-(function(_window, _document) {
+    /*$
+     * @id amdfallback
+     * @name Fallback if AMD is not available.
+     * @configurable default
+     * @module OPTIONS
+     * @doc no
+     * If enabled, there will be fallback code to provide a require function even if no AMD framework such as 
+     * require.js is available. If you always use Minified with an AMD framework, you can safely turn this off.
+     */
+if (/^u/.test(typeof define)) { // no AMD support availble ? define a minimal version
+	var def = {};
+	this['define'] = function(name, f) {def[name] = f();};
+	this['require'] = function(name) { return def[name]; }; 
+}
+ 	/*$
+ 	 * @stop
+ 	 */
+ console.log('minified init ');
+define('minified', function() {
+console.log("factory");
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * @const
+	 */
+	var _window = this;
+
+	/**
+	 * @const
+	 */
+	var _document = document;
+
 	/**
 	 * @const
 	 * @type {!string}
@@ -2440,68 +2472,8 @@
 	 @stop
 	 */
 
-	//// GLOBAL SYMBOLS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /*$
-     * @id topleveldollar
-     * @module SHORTCUTS
-     * @requires dollar
-     * @doc no
-     * @configurable default
-     * @name $() (shortcut for MINI() )
-     * @syntax $(selector)
-     * Shortcut for MINI().
-     * @example MINI() and $() are interchangeable:
-     * <pre>
-     * $('.myClass').set('$display', 'none');
-     * </pre>
-     * @param selector the selector (see MINI())
-     * @return the result list (see MINI())
-     */
-    _window['$'] =
-    /*$
-   	 @stop
-   	 */
-    _window['MINI'] = MINI; 
-    /*$
-     * @id topleveldollardollar
-     * @module SHORTCUTS
-     * @requires dollardollar topleveldollar
-     * @doc no
-     * @configurable default
-     * @name $$() (shortcut for MINI.$$() )
-     * @syntax $$(selector)
-     * Shortcut for MINI.$$().
-     * @example MINI.$$() and $$() are interchangeable:
-     * <pre>
-     * $$('#myCheckbox').checked = false;
-     * </pre>
-     * @param selector the selector (see MINI.$$())
-     * @return the resulting element (see MINI.$$())
-     */
-    _window['$$'] = MINI['$$'];
-
-    /*$
-     * @id toplevelee
-     * @module SHORTCUTS
-     * @requires el topleveldollar
-     * @doc no
-     * @configurable default
-     * @name EE() (shortcut for MINI.el() )
-     * @syntax EE(selector)
-     * Shortcut for MINI.el().
-     * @example MINI.el() and EL() are interchangeable:
-     * <pre>
-     * $('#myDiv').add(EE('span', 'This is a text'));
-     * </pre>
-     * @param selector the selector (see MINI.$$())
-     * @return the resulting element (see MINI.$$())
-     */
-    _window['EE'] = MINI['el'];
-	/*$
-	 @stop
-	 */
-})(this, document);
+	return MINI;
+});
 
 /*$
  * @stop 

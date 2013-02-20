@@ -6,9 +6,9 @@
     <!-- Create noie versions etc -->
   	<script language="javascript" src="build/rewriter.js" />
   	
-  	<!-- Helper.js for Autotest -->
+  	<!-- for Autotest.. -->
   	<copy file="srcContent/js/helper-src.js" tofile="WebContent/test/helper.js" />
-  	
+  	  	
   	<!-- Minified script -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
   	 	<arg value="--compilation_level=ADVANCED_OPTIMIZATIONS" />

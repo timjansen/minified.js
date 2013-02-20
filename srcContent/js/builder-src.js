@@ -1,6 +1,8 @@
+var MINI = $ = require('minified'), $$ = $.$$, EE = $.el;
+
 var SRC='minified-src.js';
 
-var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS', 'OPTIONS'];
+var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'OPTIONS'];
 
 //submits the given source code (src) to the Closure online compiler. When finished, will invoke given callback cb with JSON result. 
 //On error, it passes null to the callback.

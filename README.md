@@ -15,8 +15,8 @@ Size Comparison
 -----------------
 <table>
 <tr><th>Name</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><td>minified.js (standard)</td><td>8.8kb</td><td>3.9kb</td></tr>
-<tr><td>minified.noie.js (no IE6/7/8 compatibility)</td><td>7.5kb</td><td>3.3kb</td></tr>
+<tr><td>minified.js (standard)</td><td>8.9kb</td><td>&lt;4kb</td></tr>
+<tr><td>minified.noie.js (no IE6/7/8 compatibility)</td><td>7.6kb</td><td>3.3kb</td></tr>
 <tr><td>jQuery 1.9.0</td><td>91kb</td><td>32kb</td></tr>
 <tr><td>MooTools Core NoCompat 1.4.5</td><td>88kb</td><td>29kb</td></tr>
 <tr><td>Zepto.js 1.0rc1</td><td>23kb</td><td>8.4kb</td></tr>
@@ -45,7 +45,7 @@ If you need them, <a href="http://microjs.com">microjs.com</a> is a great place 
 <tr><td>Cookies</td><td>yes</td> <td>no</td> <td>yes</td> <td>no</td></tr>
 <tr><td>Form Serialization</td><td>no</td> <td>yes</td> <td>no</td> <td>yes</td></tr>
 <tr><td>Array Helpers (Iteration)</td> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>Class Framework</td> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><td>AMD support</td> <td>yes</td> <td>yes</td> <td>no</td> <td>no</td></tr>
 <tr><td>Online Builder</td> <td>yes (modules and functions)</td> <td>no</td> <td>yes (modules)</td> <td>no</td></tr>
 <tr><td>Internet Explorer compatible</td> <td>yes</td> <td>yes</td> <td>yes</td> <td>no</td></tr>
 </table>
