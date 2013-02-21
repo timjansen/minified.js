@@ -14,7 +14,7 @@ window.miniTests.push.apply(window.miniTests, [
 		async: 1000,
 		exec: function(setSuccess, playground) {
 			var s;
-			$(playground).add(s = MINI.el('span', {'@title': 0, $marginTop: '20px', $backgroundColor: '#000'})()[0]);
+			$(playground).add(s = EE('span', {'@title': 0, $marginTop: '20px', $backgroundColor: '#000'})()[0]);
 			check(s.getAttribute('title'), 0);
 			check(s.style.marginTop, '20px');
 			check((s.style.backgroundColor == '#000') || (s.style.backgroundColor == '#000000') || (s.style.backgroundColor == 'rgb(0, 0, 0)'));

@@ -7,9 +7,9 @@
 	
 	<script type="text/javascript" src="../minified-src.js"></script>
 	<script type="text/javascript">
-	var MINI = $ = require('minified'), $$ = $.$$, EE = $.el;
+	var MINI = $ = require('minified'), $$ = $.$$, EE = $.WW;
 
-	MINI.ready(function() {
+	$.ready(function() {
 		$('#changeButton').on('click', function() {
 			var boxStyle = $$('#boxSelect').value;
 			var textStyle = $$('#textSelect').value;
@@ -19,9 +19,9 @@
 			if (textStyle == 'none')
 				innerElem = text;
 			else if (textStyle == 'bold')
-				innerElem = MINI.el('b', text);
+				innerElem = EE('b', text);
 			else // small
-				innerElem = MINI.el('span', {$fontSize: 'x-small'}, text);
+				innerElem = EE('span', {$fontSize: 'x-small'}, text);
 			$('#container').add(EE('div', {$border: boxStyle, $margin: '6px', $padding: '3px'}, innerElem));
 		});
 	});

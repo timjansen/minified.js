@@ -1,4 +1,4 @@
-var MINI = $ = require('minified'), $$ = $.$$, EE = $.el;
+var $ = require('minified'), $$ = $.$$, EE = $.EE;
 
 var SRC='minified-src.js';
 
@@ -12,7 +12,7 @@ function closureCompile(src, advanced, cb) {
 		cb&&cb(null);
 	}
 	var URL = 'http://closure-compiler.appspot.com/compile';
-	MINI.request('post', URL, 
+	$.request('post', URL, 
 			{
 				js_code: src,
 				output_format: 'json',
@@ -20,8 +20,11 @@ function closureCompile(src, advanced, cb) {
 				output_file_name: 'minified-custom.js',
 				compilation_level: advanced ? 'ADVANCED_OPTIMIZATIONS' : 'SIMPLE_OPTIMIZATIONS'
 			}).then(function(txt) {
-				cb&&cb(MINI.parseJSON(txt));
-		}, onError);
+				cb&&cb($.parseJSON(txt));
+			}, onError)
+			.error(function(txt) {
+				window.console && console.log(txt);
+			});
 }
 
 function setUpConfigurationUI(s) {
@@ -92,7 +95,7 @@ function setUpConfigurationUI(s) {
 			moduleCheckBox = EE('input', {'@id': 'mod-'+i, 'className': 'modCheck', '@type':'checkbox', checked: 'checked'})(),
 			EE('label', {'@for': 'mod-'+i}, MODULES[i])     
 		]))());
-		
+
 		$(moduleCheckBox).on('change', function() {
 			var b = this.checked;
 			$('.secCheck', this.parentNode.parentNode)
@@ -157,7 +160,10 @@ function setUpConfigurationUI(s) {
 $(function() {
 	$.request('get', SRC, null).then(function(src) {
 		setUpConfigurationUI(prepareSections(src));
-	});
+	})
+	.error(function(txt) {
+		window.console && console.log(txt);
+	});;
 });
 
 

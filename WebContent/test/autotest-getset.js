@@ -2,7 +2,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name: "MINI().set(null)",
 	 	exec: function() {
-	 		var l = MINI('#container2').add(MINI.el('span', {'@id':'hello'}, 'hello'));
+	 		var l = MINI('#container2').add(EE('span', {'@id':'hello'}, 'hello'));
 	 		l.set(null);
 			check(l[0].childNodes.length, 1);
 			check(!l[0].className);
@@ -27,14 +27,14 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.style['ab'], 2);
 	 		}
 	 		
-	 		$('#container2').add([MINI.el('span', {'@id':'hello1', 'className':'hello'}, 'hello'),
-	 		MINI.el('span', {'@id':'hello2', 'className':'hello'}, 'hello')]);
+	 		$('#container2').add([EE('span', {'@id':'hello1', 'className':'hello'}, 'hello'),
+	 		EE('span', {'@id':'hello2', 'className':'hello'}, 'hello')]);
 	 		MINI('#container2 span').set('className', 'hi').set('@title', 'hello element');
 	 		check(document.getElementById('hello1').getAttribute('class') == 'hi' || document.getElementById('hello1').getAttribute('className') == 'hi');
 	 		check(document.getElementById('hello2').getAttribute('class') == 'hi' || document.getElementById('hello2').getAttribute('className') == 'hi');
 	 		check(document.getElementById('hello1').getAttribute('title'), 'hello element');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'hello element');
-	 		MINI('#hello2').add(MINI.el('b', {'@id':'bello2'}, 'bello'));
+	 		MINI('#hello2').add(EE('b', {'@id':'bello2'}, 'bello'));
 		}
 	},
 	{
@@ -56,8 +56,8 @@ window.miniTests.push.apply(window.miniTests, [
 	 			check(b.style['ab'], 2);
 	 		}
 	 		
-	 		MINI('#container2').add(MINI.el('span', {'@id':'hello1', 'className':'hello'}, 'hello'))
-	 			.add(MINI.el('span', {'@id':'hello2', 'className':'hello'}, 'hello'));
+	 		MINI('#container2').add(EE('span', {'@id':'hello1', 'className':'hello'}, 'hello'))
+	 			.add(EE('span', {'@id':'hello2', 'className':'hello'}, 'hello'));
 	 		MINI('#container2 span').set({'className': 'hi', '@title': 'hello element'});
 	 		check(document.getElementById('hello1').getAttribute('class') == 'hi' || document.getElementById('hello1').getAttribute('className') == 'hi');
 	 		check(document.getElementById('hello2').getAttribute('class') == 'hi' || document.getElementById('hello2').getAttribute('className') == 'hi');

@@ -81,7 +81,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name: "MINI().remove()",
 	 	exec: function() {
-	 		MINI('#container2').add(MINI.el('span', {'@id':'hello'}, 'hello'));
+	 		MINI('#container2').add(EE('span', {'@id':'hello'}, 'hello'));
 			MINI("#hello").remove();
 			check(MINI('#hello').length, 0);
 		}
@@ -96,7 +96,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name: "MINI().fill()",
 	 	exec: function() {
-	 		MINI('#container2').add(MINI.el('span', {'@id':'hello'}, 'hello'));
+	 		MINI('#container2').add(EE('span', {'@id':'hello'}, 'hello'));
 			var l = MINI("#container2").fill().length;
 			check(l, 1);
 			check(MINI('#hello').length, 0);

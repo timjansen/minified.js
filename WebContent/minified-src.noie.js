@@ -56,9 +56,8 @@ if (/^u/.test(typeof define)) { // no AMD support availble ? define a minimal ve
  	/*$
  	 * @stop
  	 */
- console.log('minified init ');
+
 define('minified', function() {
-console.log("factory");
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -194,8 +193,8 @@ console.log("factory");
 
     // for ready()
     function triggerDomReady() {
-    	each(DOMREADY_HANDLER, callArg);
-    	DOMREADY_HANDLER = null;
+		each(DOMREADY_HANDLER, callArg);
+		DOMREADY_HANDLER = null;
     }
 
     function ready(handler) {
@@ -1579,7 +1578,7 @@ console.log("factory");
 								a['value'];
 					}
 				});
-				return MINI['el'](e['tagName'], attrs, MINI(e['childNodes'])['clone']());
+				return MINI['EE'](e['tagName'], attrs, MINI(e['childNodes'])['clone']());
 			}
 			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)
 				return e['textContent'];
@@ -2070,7 +2069,7 @@ console.log("factory");
 	 *                 add event handlers with on(). Will be called with the created element in a MINI list as argument.
 	 * @return a Element Factory function returning a MINI list containing the DOM HTMLElement that has been created or modified as only element
 	 */
-	'el': function(elementName, attributes, children, onCreate) {
+	'EE': function(elementName, attributes, children, onCreate) {
 		// @cond debug if (!elementName) error("el() requires the element name."); 
 		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
 
@@ -2471,7 +2470,6 @@ console.log("factory");
 	/*$
 	 @stop
 	 */
-
 	return MINI;
 });
 

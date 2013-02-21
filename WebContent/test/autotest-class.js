@@ -3,9 +3,9 @@ window.miniTests.push.apply(window.miniTests, [
 		name:'MINI().hasClass()',
 		exec: function() {
 			var s1, s3;
-			$('#container2').add(s1 = MINI.el('div', {'className': 'a b c d e'}))
-					.add(MINI.el('div', {'className': ''}, []))
-					.add(s3 = MINI.el('div', {'className': 'a d f'}, []));
+			$('#container2').add(s1 = EE('div', {'className': 'a b c d e'}))
+					.add(EE('div', {'className': ''}, []))
+					.add(s3 = EE('div', {'className': 'a d f'}, []));
 			var m = MINI('#container2 div');
 			check(m.hasClass('a'), s1[0], true);
 			check(m.hasClass('b'), s1[0], true);
@@ -19,7 +19,7 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().set("$", "-")',
 		exec: function() {
-			var s1 = MINI.el('div', {'className': 'a b c d e'})()[0];
+			var s1 = EE('div', {'className': 'a b c d e'})()[0];
 			var m = MINI(s1);
 			m.set('$', '-x');
 			check(s1.className, 'a b c d e');
@@ -40,8 +40,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().set("$", "+")',
 		exec: function() {
-			var s1 = MINI.el('div')()[0];
-			var s2 = MINI.el('div', {'className':''})()[0];
+			var s1 = EE('div')()[0];
+			var s2 = EE('div', {'className':''})()[0];
 			var m = MINI([s1, s2]);
 			m.set('$', '+a');
 			check(s1.className, 'a');
@@ -66,8 +66,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().set("$", "class")',
 		exec: function() {
-			var s1 = MINI.el('div', {'className': 'a b c'})()[0];
-			var s2 = MINI.el('div')()[0];
+			var s1 = EE('div', {'className': 'a b c'})()[0];
+			var s2 = EE('div')()[0];
 			var m = MINI([s1, s2]);
 			m.set('$', 'a');
 			check(s1.className, 'b c');
@@ -89,8 +89,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'MINI().set("$", mix)',
 		exec: function() {
-			var s1 = MINI.el('div', {'className': 'a b c'})()[0];
-			var s2 = MINI.el('div')()[0];
+			var s1 = EE('div', {'className': 'a b c'})()[0];
+			var s2 = EE('div')()[0];
 			var m = MINI([s1, s2]);
 			m.set('$', 'a b c');
 			check(s1.className, '');
