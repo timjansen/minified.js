@@ -6,6 +6,8 @@
  * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
  * 
  * Contains code based on https://github.com/douglascrockford/JSON-js (also Public Domain).
+ *
+ * https://github.com/timjansen/minified.js
  */
 
 /*

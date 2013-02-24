@@ -12,6 +12,7 @@
 		.x { margin-top: 2px; }		
 	</style> 
 
+	<script type="text/javascript" src="sparkplug.js"></script>
 	<script type="text/javascript" src="helper.js"></script>
 	<script type="text/javascript">
 	// Load the right source, depending on whether 'compiled' is in the URL query
@@ -59,7 +60,16 @@
 				contains(list, expectedValueList[i], checkIdentity, 'Checked index='+i+'.');
 		}
 
-		window.miniTests = [];
+		window.miniTests = [	{
+			name: "Test initialization / verify with sparkplug.js",
+		 	exec: function() {
+				var called = 0;
+				require(['minified'], function(minified) {
+					check(minified, MINI);
+				});
+				check(called, 0);
+			}
+		}];
 					
 		var testNum = 0;      // started tests
 		var finishedNum = 0;  // finished tests

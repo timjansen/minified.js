@@ -8,6 +8,7 @@
   	
   	<!-- for Autotest.. -->
   	<copy file="srcContent/js/helper-src.js" tofile="WebContent/test/helper.js" />
+  	<copy file="srcContent/js/sparkplug-src.js" tofile="WebContent/test/sparkplus.js" />
   	  	
   	<!-- Minified script -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
