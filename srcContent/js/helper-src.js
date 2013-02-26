@@ -42,7 +42,7 @@ function hhFilter(list, filterFunc) {
 }
 function hhFilterMap(map, filterFunc) {
 	var r = {}; 
-	hhEach(list, function(name, value) {
+	hhEach(map, function(name, value) {
 		if (!filterFunc||filterFunc(name, value))
 			map[name] = value;
 	});
