@@ -14,9 +14,9 @@
 	
 	<script type="text/javascript" src="../minified-src.js"></script>
 	<script type="text/javascript">
-	var MINI = $ = require('minified'), $$ = $.$$, EE = $.EE;
+	var $ = require('minified').$, $$ = $.$$, EE = $.EE;
 
-	MINI.ready(function() {
+	$.ready(function() {
 		$('.styleCheckbox').on('change', function(e) {
 			var className = {dottedCheckbox:'dotted', redCheckbox: 'red', greenCheckbox: 'green'}[this.id];
 

@@ -65,7 +65,7 @@ function hhCopy(from, to) {
 	return to;
 }
 function hhKeys(map) {
-	return hhCollect(map, function(name, value) {
+	return hhCollect(map, function(value, name) {
 		return name;
 	});
 }	
@@ -101,7 +101,7 @@ function hhPromise() {
 		}		
     }
 
-	function then(onFulfilled, onRejected) {
+    set['then'] = function then(onFulfilled, onRejected) {
 		var newPromise = hhPromise();
 		var callCallbacks = function() {
     		try {
@@ -109,15 +109,15 @@ function hhPromise() {
     			if (hhIsFunction(f)) {
 	   				var r = f.apply(null, values);
 	   				if (r && hhIsFunction(r['then']))
-	   					r['then'](function(value){newPromise.s(true,[value]);}, function(value){newPromise.s(false,[value]);});
+	   					r['then'](function(value){newPromise(true,[value]);}, function(value){newPromise(false,[value]);});
 	   				else
-	   					newPromise.s(true, [r]);
+	   					newPromise(true, [r]);
 	   			}
 	   			else
-	   				newPromise.s(state, values);
+	   				newPromise(state, values);
 			}
 			catch (e) {
-				newPromise.s(false, [e]);
+				newPromise(false, [e]);
 			}
 		};
 		if (state != null)
@@ -125,28 +125,25 @@ function hhPromise() {
 		else
 			deferred.push(callCallbacks);    		
 		return newPromise;
-	}
+	};
 
-   	return {
-   		'then': then,
-   		's': set, // for MINI compatibility (and to save some bytes in then())
-   		'set': set,
-		'always': function(func) { return then(func, func); },
-		'error': function(func) { return then(0, func); },
+   	set['always'] = function(func) { return then(func, func); };
+   	set['error'] = function(func) { return then(0, func); };
 
-		// Takes a list of promises and registers with them by calling their then(). If all given promises succeed, this promise succeeds and their values are given to the fulfillment handler as array 
-		// in the same order the promised were given to join().
-		// If one promise fails, this promise fails. The rejected handler will be called with the index of the failed promise as first argument and an array containing all results as the second.
-		// The array has one entry per promise, containing its success value, rejection value or undefined if not completed.
-		'join': function() {
+	// Takes a list of promises and registers with them by calling their then(). If all given promises succeed, this promise succeeds
+   	// and their values are given to the fulfillment handler as array in the same order the promised were given to join().
+	// If one promise fails, this promise fails. The rejected handler will be called with the index of the failed promise as 
+   	// first argument and an array containing all results as the second.
+	// The array has one entry per promise, containing its success value, rejection value or undefined if not completed.
+	set['join'] = function() {
 			var args = arguments;
 			var numCompleted = 0;
-			var values = new Array(args.length);
+			var values = [];
 			var aborted = false;
 			hhEach(args, function(promise, index) {
 				promise.then(function(v) {
 					values[index] = v;
-					if (++numCompleted == values.length && !aborted)
+					if (++numCompleted == args.length && !aborted)
 						set(true, [values]);
 				}, function(e) {
 					values[index] = v;
@@ -154,8 +151,8 @@ function hhPromise() {
 					aborted = true;
 				});
 			});
-		}
-   	};
+		};
+   	return set;
 }
 
 //simple template function. Input is tpl. valueMap is a map of replacements in the form name->value. 
