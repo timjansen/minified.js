@@ -3,22 +3,14 @@
 // Instructions:
 // - requires node.js installation
 // - install mocha (npm mocha -g)
-// - run (mocha minified-util-test.js)
+// - run (mocha minified-util-list-test.js)
 //
 
-var vm = require("vm");
-var fs = require("fs");
+var testCommon = require("./minified-util-common.js");
 var assert = require("assert");
 
-var AMD_NAME = 'minifiedUtil';
-
-
-function loadInContextSrc(src) {
-	var ctx = {};
-	var code = fs.readFileSync(src);
-	vm.runInNewContext(code, ctx);
-	return ctx;
-}
+var AMD_NAME = testCommon.AMD_NAME;
+var loadInContextSrc = testCommon.loadInContextSrc;
 
 
 function runTests(loadInContext) {
@@ -156,7 +148,7 @@ function runTests(loadInContext) {
 			assert(!_.equals(_(2, 1), null));
 		});
 	});
-	
+
 	describe('_.each()', function() {
 		it('iterates arrays', function() {
 			var _ = req();
@@ -206,60 +198,26 @@ function runTests(loadInContext) {
 		});
 	});
 	
-	describe('_.isString()', function() {
-		it('checks strings', function() {
+	describe('_.eachObj()', function() {
+		it('iterates objects', function() {
 			var _ = req();
-			assert(_.isString("abc"));
-			assert(_.isString(""));
-			assert(!_.isString(null));
-			assert(!_.isString(2));
-			assert(!_.isString({f:3, a:4}));
-			assert(!_.isString(["r"]));
+			var as = [{}, {a:1, b:2, e:null, f: false, g: true}, {x:2}];
+			for (var i = 0; i < as.length; i++) {
+				var c = 0;
+				_.eachObj(as[i], function(key, value) {
+					c++;
+					assert.equal(value, as[i][key]);
+				});
+				assert.equal(c, _.keys(as[i]).length);
+			}
 		});
-	});
-	
-	describe('_.isFunction()', function() {
-		it('checks functions', function() {
+		it('ignores nulls', function() {
 			var _ = req();
-			assert(_.isFunction(function() {}));
-			assert(!_.isFunction(null));
-			assert(!_.isFunction("abc"));
-		});
-	});
-	
-	describe('_.isObject()', function() {
-		it('checks objects', function() {
-			var _ = req();
-			assert(_.isObject({}));
-			assert(_.isObject(new Date()));
-			assert(!_.isObject(null));
-			assert(!_.isObject("abc"));
-			assert(!_.isObject(function() {}));
-		});
-	});
-
-	describe('_.isList()', function() {
-		it('checks lists', function() {
-			var _ = req();
-			assert(_.isList([]));
-			assert(_.isList([1, 2]));
-			assert(_.isList(_(1, 2)));
-			assert(_.isList(_()));
-			assert(!_.isList(null));
-			assert(!_.isList({}));
-			assert(!_.isList(new Date()));
-			assert(!_.isList("abc"));
-			assert(!_.isList(function() {}));
-		});
-	});
-	
-	describe('_.toString()', function() {
-		it('converts to strings', function() {
-			var _ = req(), undef={};
-			assert.equal(_.toString("abc"), "abc");
-			assert.equal(_.toString(6), "6");
-			assert.equal(_.toString(null), "");
-			assert.equal(_.toString(undef.u), "");
+			var c = 0, x={};
+			_.eachObj(null, function() { c++; });
+			assert.equal(c, 0);
+			_.eachObj(x.x, function() { c++; });
+			assert.equal(c, 0);
 		});
 	});
 	
@@ -269,7 +227,6 @@ function runTests(loadInContext) {
 			var a = _(200, null, 1, 34, 2, 3, 200);
 			var r = [null, 1, 2, 3];
 			var c = 0;
-			
 			var flt = a.filter(function(v, index) { assert.equal(index, c++); return v < 10 || !v; });
 			assert(flt.equals(r));
 		});
@@ -286,6 +243,25 @@ function runTests(loadInContext) {
 			var _ = req();
 			var c = 0;
 			var flt = _.filter(null, function(v, index) { assert.equal(index, c++); return v < 10 || !v; });
+			assert(_.equals(flt, {}));
+			assert.equal(c, 0);
+		});
+	});
+	
+	describe('_.filterObj()', function() {
+		it('filters objects', function() {
+			var _ = req();
+			var a = {a: 200, b: null, c: 1, d: 34, e: 2, f: 3, g: 200};
+			var r = {b: null, c: 1, e: 2, f: 3};
+			var c = 0;
+			var flt = _.filterObj(a, function(name, v) { c++; assert.equal(v, a[name]); return v < 10 || !v; });
+			assert.equal(c, 7);
+			assert(_.equals(flt, r));
+		});
+		it('filters null', function() {
+			var _ = req();
+			var c = 0;
+			var flt = _.filterObj(null, function(v, index) { assert.equal(index, c++); return v < 10 || !v; });
 			assert(_.equals(flt, {}));
 			assert.equal(c, 0);
 		});
@@ -326,6 +302,32 @@ function runTests(loadInContext) {
 			assert.equal(c, 0);
 		});
 	});
+
+	describe('_.reduce()', function() {
+		it('reduce lists', function() {
+			var _ = req();
+			var a = _(5, 6, 7, 8, 9);
+			var c = 0;
+			var flt = a.reduce(17, function(memo, v, index) { assert.equal(index, c++); assert.equal(a[index], index+5); return v+memo; });
+			assert.equal(flt, 52);
+		});
+		it('reduce objects', function() {
+			var _ = req();
+			var a = {a:5, b:6, c:7, d:8, e:9};
+			var flt = _.reduce(a, 17, function(memo, key, value) { assert.equal(a[key], value); return value+memo; });
+			assert.equal(flt, 52);
+		});
+	});
+
+	describe('_.reduceObj()', function() {
+		it('reduce objects', function() {
+			var _ = req();
+			var a = {a:1, b:2, c:3, d:4};
+			var flt = _.reduceObj(a, 2, function(memo, key, value) { assert.equal(a[key], value); return value*memo; });
+			assert.equal(flt, 48);
+		});
+	});
+
 	
 	describe('_.sub()', function() {
 		it('slices lists', function() {
@@ -399,12 +401,113 @@ function runTests(loadInContext) {
 			assert.equal(b.find(function(value) { return value == 'c'? '3' : null; }), '3');
 		});
 	});
+	
+	describe('_.contains()', function() {
+		it('finds value', function() {
+			var _ = req();
+			var a = _(), b= _("a", 3, "c");
+			
+			assert(!_.contains(a, 'a'));
+			assert(_.contains(b, 'a'));
+			assert(!_.contains(a, 3));
+			assert(_.contains(b, 3));
+			assert(!_.contains(a, 'a'));
+			assert(!_.contains(b, 'x'));
+			assert(b.contains(3));
+			assert(!a.contains('a'));
+			assert(!b.contains('x'));
+		});
+	});
+	
+	describe('_.array()', function() {
+		it('converts to array', function() {
+			var _ = req();
+			var a = _(), b= _("a", 3, "c");
+			var a2 = a.array(), b2 = b.array();
+			
+			assert(!a2._);
+			assert(!b2._);
+			assert(_.equals(a, a2));
+			assert(_.equals(b, b2));
+		});
+	});
+	
+	describe('_.join()', function() {
+		it('joins', function() {
+			var _ = req();
+			var b = _("a", 3, "c");
+			
+			assert.equal(b.join(), 'a,3,c');
+			assert.equal(b.join('x'), 'ax3xc');
+		});
+	});
+	
+	describe('_.sort()', function() {
+		it('sorts', function() {
+			var _ = req();
+			var b = _(3, 111, -1);
+			var b2 = b.sort();
+			var b3 = b.sort(function(a, b) { return a - b;});
 
+			assert(_.equals(b, [3, 111, -1]));  // check sort not in-place
+			assert(_.equals(b2, [-1, 111, 3]));
+			assert(_.equals(b3, [-1, 3, 111]));
+		});
+	});
+	
+	describe('_.uniq()', function() {
+		it('removes non-uniqs', function() {
+			var _ = req();
+			var b = _(3, 111, 111, -1, 5, 7, 2, 5, 3);
+			var b2 = b.uniq();
+			assert(_.equals(b2, [3, 111, -1, 5, 7, 2]));
+		});
+	});
+	
+	describe('_.intersection()', function() {
+		it('finds intersection', function() {
+			var _ = req();
+			var a = _(3, 111, 111, -1, 5, 7, 2, 5, 3, 9);
+			var b = [111, 1, 111, 12, 3, 9];
+			assert(_.equals(a.intersection(b), [3, 111, 9]));
+		});
+		it('finds no intersection', function() {
+			var _ = req();
+			var a = _(1, 2, 3);
+			var b = _(45, 6);
+			assert(_.equals(a.intersection(b), []));
+		});
+	});
+	
+	describe('_.onlyLeft()', function() {
+		it('finds only left', function() {
+			var _ = req();
+			var a = _(3, 111, 111, -1, 5, 7, 2, 5, 3, 9);
+			var b = [111, 1, 111, 12, 3, 9];
+			assert(_.equals(a.onlyLeft(b), [-1, 5, 7, 2, 5]));
+		});
+		it('finds no intersection', function() {
+			var _ = req();
+			var a = _(1, 2, 3);
+			var b = _(0, 1, 2, 3, 4);
+			assert(_.equals(a.onlyLeft(b), []));
+		});
+	});
+	
+	describe('_.tap()', function() {
+		it('finds only left', function() {
+			var _ = req();
+			var a = _(3, 111, 111, -1, 5, 7, 2, 5, 3, 9);
+			var c = 0;
+			function f(v) { assert(a === v); c++; }
+			
+			a.tap(f).tap(f).tap(f);
+			assert.equal(c, 3);
+		});
+	});
 }
 
-describe('minified-util-src.js', function() {
-	runTests(function() { return loadInContextSrc('../minified-util-src.js'); });
-});
+testCommon.run(runTests);
 
 
 

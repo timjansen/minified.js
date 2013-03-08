@@ -54,7 +54,18 @@ define('minifiedUtil', function() {
 	/** @const */
 	var undef;
 
-
+	/**
+	 * @const
+	 */
+	var MONTH_SHORT_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	/**
+	 * @const
+	 */
+	var MONTH_LONG_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+	/**
+	 * @const
+	 */
+	var MERIDIAN_NAMES = ['am', 'pm'];
 
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -82,44 +93,69 @@ define('minifiedUtil', function() {
 		return isType(f, 'function');
 	}
 	function isObject(f) {
-		return f && isType(f, 'object');
+		return !!f && isType(f, 'object');
 	}
 	function isNode(n) {
-		return n && n['nodeType'];
+		return !!n && n['nodeType'];
+	}
+	function isNumber(n) {
+		return isType(n, 'number');
+	}
+	function isDate(n) {
+		return isObject(n) && !!n['getDay'];
+	}
+	function isBool(n) {
+		return n === true || n === false;
+	}
+	function isValue(n) {
+		var type = typeof n;
+		return type == 'object' ? !!(n && n['getDay']) : (type == 'string' || type == 'number' || isBool(n));
 	}
 	function isList(v) {
-		return v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
+		return !!v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
 	}
 	function selfFunc(v) {
 		return v;
+	}
+	function replace(s, regexp, sub) {
+		return toString(s).replace(regexp, sub != null ? sub : '');
+	}
+	function escapeRegEx(s) {
+		return replace(s, /[\\\[\]\/{}()*+?.$|^-]/g, "\\$&");
+	}
+	function eachObj(obj, cb) {
+		for (var n in obj)
+			if (obj.hasOwnProperty(n))
+				cb(n, obj[n]);
+		return obj;
 	}
 	function each(list, cb) {
 		if (isList(list))
 			for (var i = 0; i < list.length; i++)
 				cb(list[i], i);
 		else
-			for (var n in list)
-				if (list.hasOwnProperty(n))
-					cb(n, list[n]);
+			eachObj(list, cb);
 		return list;
 	}
+	function filterObj(obj, filterFunc) {
+		var r = {};
+		eachObj(obj, function(key, value) {
+			if (filterFunc(key, value))
+				r[key] = value;
+		});
+		return r;
+	}
 	function filter(list, filterFunc) {
-		var r;
 		if (isList(list)) {
-			r = []; 
+			var r = []; 
 			each(list, function(value, index) {
 				if (filterFunc(value, index))
 					r.push(value);
 			});
+			return r;
 		}
-		else {
-			r = {};
-			each(list, function(key, value) {
-				if (filterFunc(key, value))
-					r[key] = value;
-			});
-		}
-		return r;
+		else
+			return filterObj(list, filterFunc);
 	}
 	function collect(list, collectFunc, addNulls) {
 		var result = [];
@@ -139,6 +175,41 @@ define('minifiedUtil', function() {
 		});
 		return result;
 	}
+	function reduceObj(obj, memoInit, func) {
+		var memo = memoInit;
+		eachObj(obj, function(key, value) {
+			memo = func(memo, key, value);
+		});
+		return memo;
+	}
+	function reduce(list, memoInit, func) {
+		if (isList(list)) {
+			var memo = memoInit;
+			each(list, function(value, index) {
+				memo = func(memo, value, index);
+			});
+			return memo;
+		}
+		else
+			return reduceObj(list, memoInit, func);
+	}
+	function startsWith(base, start) {
+		if (isList(base)) {
+			var s2 = UNDERSCORE(start);
+			return UNDERSCORE(base).sub(0, s2.length).equals(s2);
+		}
+		else
+			return base.substr(0, start.length) == start;
+	}
+	function endsWith(base, end) {
+		// TODO: make public
+		if (isList(base)) {
+			var e2 = UNDERSCORE(end);
+			return UNDERSCORE(base).sub(-e2.length).equals(e2);
+		}
+		else
+			return base.substr(base.length - start.length) == start;
+	}
 	function sub(list, startIndex, endIndex) {
 		if (!isList(list))
 			return [];
@@ -149,9 +220,6 @@ define('minifiedUtil', function() {
  			return index >= s && index < e; 
  		});
  	};
-	function replace(s, regexp, sub) {
-		return toString(s).replace(regexp, sub != null ? sub : '');
-	}
 	function toObject(list, values) {
 		var obj = {};
 		var gotList = isList(values);
@@ -168,9 +236,10 @@ define('minifiedUtil', function() {
 				return r;
 	}
 	function contains(list, value) {
-		for (var i = 0; i < list.length; i++)
-			if (list[i] == value)
-				return true;
+		if (isList(list))
+			for (var i = 0; i < list.length; i++)
+				if (list[i] == value)
+					return true;
 		return false;
 	}
 	// equals if a and b have the same elements and all are equal
@@ -201,16 +270,26 @@ define('minifiedUtil', function() {
 		}
 	}
 	function toRealArray(list) { 
-		return list ? (list['_'] ? list['array']() : (Object.prototype.toString.call(arr) === '[object Array]') ? list : toArray(UNDERSCORE(list))) : []; 
+		return list ? (list['_'] ? list['array']() : (Object.prototype.toString.call(arr) === '[object Array]') ? list : toRealArray(UNDERSCORE(list))) : []; 
 	}
 	
+	function once(f) {
+		var called = 0;
+		return function() {
+			if (!(called++))
+				return f.apply(this, arguments);
+		};
+	}
 	function call(f, fThisOrArgs, args) {
 		return f.apply(args && fThisOrArgs, toRealArray(args || fThisOrArgs));
 	}
-	function bind(f, fThisOrArgs, beforeArgs, afterArgs) {
+	function bind(f, fThis, beforeArgs, afterArgs) {
 		return function() {
-			return call(f, beforeArgs && fThisOrArgs, collect([beforeArgs, arguments, afterArgs], selfFunc));
+			return call(f, fThis, collect([beforeArgs, arguments, afterArgs], selfFunc));
 		};
+	}
+	function partial(f, beforeArgs, afterArgs) {
+		return bind(f, null, beforeArgs, afterArgs);
 	}
 	function delay(delayMs, callback, fThisOrArgs, args) {
 		setTimeout(bind(callback, fThisOrArgs, args), delayMs);
@@ -247,19 +326,25 @@ define('minifiedUtil', function() {
 		if (groupingSize)
 			preDecimal = group(preDecimal);
 		return (signed?'-':'') + preDecimal + (decimalPoint||'.') + omitZerosAfter?replace(/(\.[1-9]+)0+$|\.0+$/, postDecimal, '$1'):postDecimal;
-	}	
+	}
+	function getTimezone(match, idx) {
+		var currentOffset = (new Date()).getTimezoneOffset;
+		var requestedOffset = parseInt(match[idx])*60 + parseInt(match[idx+1]);
+		return requestedOffset-currentOffset;
+	}
 	// formats number with format string (e.g. "#.999", "#,_", "00000", "000.99", "000.000.000,99", "000,000,000.__")
 	// choice syntax: <cmp><value>:<format>|<cmp><value>:<format>|... 
 	// e.g. 0:no item|1:one item|>=2:# items
 	// <value>="null" used to compare with nulls.
 	// choice also works with strings, e.g. ERR:error|WAR:warning|FAT:fatal|ok
 	function formatValue(format, dateOrNumber) {
-		if (isObject(dateOrNumber) && dateOrNumber['getDay']) {
+		if (isDate(dateOrNumber)) {
+			var timezoneOffsetMin, match, formatNoTZ = format;
 			var map = {
 				'y': 'FullYear',
 				'M': ['Month', function(d) { return d + 1; }],
-				'n': ['Month', function(d, values) { return (values||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])[d]; }],
-				'N': ['Month', function(d, values) { return (values||['January','February','March','April','May','June','July','August','September','October','November','December'])[d]; }],
+				'n': ['Month', function(d, values) { return (values||MONTH_SHORT_NAMES)[d]; }],
+				'N': ['Month', function(d, values) { return (values||MONTH_LONG_NAMES)[d]; }],
 				'd':  'Date',
 				'm':  'Minutes',
 				'H':  'Hours',
@@ -268,23 +353,24 @@ define('minifiedUtil', function() {
 				'k': ['Hours', function(d) { return d % 12 + 1; }],
 				's':  'Seconds',
 				'S':  'Milliseconds',
-				'a': ['Hours', function(d, values) { return (values||['am', 'pm'])[d<12?0:1]; }],
+				'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
 				'w': ['Day', function(d, values) { return (values||['Sun','Mon','Tue','Wed','Thu','Fri','Sat'])[d]; }],
 				'W': ['Day', function(d, values) { return (values||['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'])[d]; }],
 				'z': ['TimezoneOffset', function(d) { var sign = d > 0 ? '+' : '-'; d = d > 0 ? d : -d; return sign + pad(2, Math.floor(d/60)) + pad(2, d%60); }]
-				
 			};
-			return replace(format, /(y+|M+|n+|N+|d+|m+|H+|h+|K+|k+|s+|S+|a+|w+|W+)0?(\[[^\]]+\])?/g, function(s) {
-				var utc = /0/.test(s);
-				var len = replace(/[0\[].*/).length;
-				var val = map[s.charAt(0)];
-				var d = dateOrNumber['get' + (utc?'UTC':'') + (isList(val)?val[0]:val)].call(dateOrNumber);
+			if (match = /^\[([+-]\d\d)(\d\d)\](.*)/.exec(format)) {
+				timezoneOffsetMin = getTimezone(match, 1);
+				formatNoTZ = match[3];
+			}
+			var date = timezoneOffsetMin ? dateAdd(dateOrNumber, 'minutes', timezoneOffsetMin) : dateOrNumber;
+			return replace(formatNoTZ, /(y+|M+|n+|N+|d+|m+|H+|h+|K+|k+|s+|S+|a+|w+|W+)(?:\[([^\]]+)\])?/g, function(s, placeholder, params) {
+				var len = placeholder.length;
+				var val = map[placeholder.charAt(0)];
+				var d = date['get' + (isList(val)?val[0]:val)].call(date);
 				
 				if (isList(val)) {
-					var match, optionArray;
-					if (match = /\[(.*)\]/.exec(s)) 
-						optionArray = match[1].split('|');
-					d = val[1](dateOrNumber, optionArray);
+					var optionArray = params ? params.split('|') : null;
+					d = val[1](date, optionArray);
 				}
 				if (!isString(d))
 					d = pad(len, d);
@@ -333,7 +419,138 @@ define('minifiedUtil', function() {
 					return numFmt;
 			});
 	}
-	// reads / writes property in name.name.name syntax. 
+	function parseDate(format, date) {
+		var mapping = {
+			'y': 0, // [ctorIndex, offset]
+			'M': [1,-1],
+			'n': [1, MONTH_SHORT_NAMES], // ctorIndex, value array
+			'N': [1, MONTH_LONG_NAMES],
+			'd': 2,
+			'm': 4,
+			'H': 3,
+			'h': 3,
+			'K': [3, 1],
+			'k': [3, 1],
+			's':  5,
+			'S':  6,
+			'a': [3, MERIDIAN_NAMES]
+		};
+		var indexMap = {}; // contains reGroupPosition -> typeLetter or [typeLetter, value array]
+		var reIndex = 1;
+		var timezoneOffsetMin = 0;
+		var timezoneIndex;
+		var match, formatNoTZ;
+			
+			
+		if (match = /^\[([+-]\d\d)(\d\d)\](.*)/.exec(format)) {
+			timezoneOffsetMin = getTimezone(match, 1);
+			formatNoTZ = match[3];
+		}
+		else
+			formatNoTZ = format;
+			
+		var parser = formatNoTZ.replace(/\s+|(?:M+|m+|y+|d+|H+|h+|K+|k+|s+|S+|z+)|(?:n+|N+|a+|w+|W+)(?:{([^}]*)})?|[^dMmyhHkKsSnNa\s]+/g, function(placeholder, param) { 
+			var placeholderChar = placeholder.charAt(0);
+			if (/[dmyMhsSkK]/.test(placeholderChar)) {
+				indexMap[reIndex++](placeholderChar);
+				var plen = placeholder.length;
+				return "(\\d"+(plen<2?"+":("{1,"+plen+"}"))+")";
+			}
+			else if (placeholderChar == 'z') {
+				timezoneIndex = reIndex;
+				reIndex += 2;
+				return "([+-]\\d\\d)(\\d\\d)";
+			}
+			else if (/[nN]/.test(placeholderChar)) {
+				indexMap[reIndex++]([placeholderChar, param && param.split('|')]);
+				return "(\\w+)"; 
+			}
+			else if (/[wW]/.test(placeholderChar))
+				return "\\w+";
+			else if (/\s/.test(placeholderChar))
+				return "\\s+"; 
+			else 
+				return escapeRegEx(placeholder);
+		});
+		
+		if (!(match = parser.exec(date)))
+			return null;
+		
+		if (timezoneIndex != null)
+			timezoneOffsetMin = getTimezone(match, timezoneIndex);
+			
+		var ctorArgs = [0, 0, 0, timezoneOffsetMin, 0, 0,  0];
+		for (var i = 1; i < reIndex; i++) {
+			var indexEntry = indexMap[i];
+			if (isList(indexEntry)) { // for n or N
+				var mapEntry  = mapping[indexEntry[0]];
+				var valList = indexEntry[1] || mapEntry[1];
+				var listValue = find(valList, function(v) { return startsWith(match[i], v); });
+				if (!listValue)
+					return null;
+				if (indexEntry[0] == 'a')
+					ctorArgs[mapEntry[0]] += listValue * 12;
+				else
+					ctorArgs[mapEntry[0]] = listValue;
+			}
+			else if (indexEntry) { // for numeric values (yHmMs)
+				var value = parseInt(match[i]);
+				var mapEntry  = mapping[indexEntry];
+				if (isList(mapEntry))
+					ctorArgs[mapEntry[0]] += value + mapEntry[1];
+				else
+					ctorArgs[mapEntry] += value;
+			}
+		}
+		return new Date(ctorArgs[0], ctorArgs[1], ctorArgs[2], ctorArgs[3], ctorArgs[4], ctorArgs[5], ctorArgs[6]);
+	}
+	function parseNumber(format, value) {
+		if (arguments.length == 1)
+			return parseNumber(null, value);
+		var decSep = replace(replace(format, '.*[0#]([,.])[_9].*', '$1'), /[^,.]/g) || '.';
+		var grpSep = decSep == ',' ? '.' : ',';
+		var cleanNum = replace(replace(replace(value, escapeRegEx(grpSep)), escapeRegEx(decSep), '.'), /^.*?(-?\d)/, '$1');
+		var r = parseFloat(cleanNum);
+		return isNaN(r) ? null : r;
+	}
+	function dateClone(date) {
+		return new Date(date.getTime());
+	}
+	function dateAdd(date, property, value) {
+		if (arguments.length < 3)
+			return calAdd(new Date(), date, property);
+		var d = dateClone(date);
+		var cProp = property.charAt(0).toUpperCase() + property.substr(1);
+		d['set'+cProp].call(d, d['get'+cProp].call(d) + value);
+		return d;
+	}
+	function dateMidnight(date) {
+		var od = date || new Date();
+		return new Date(od.getYear(), od.getMonth(), od.getDay());
+	}
+	function dateDiff(date1, date2, property) {
+		var dt = date1.getTime() - date2.getTime();
+		if (dt < 0)
+			return -dateDiff(date2, date1, property);
+
+		var propValues = {'milliseconds': 1, 'seconds': 1000, 'minutes': 60000, 'hours': 3600000};
+		var ft = propValues[property];
+		if (ft)
+			return dt / ft;
+		var DAY = 24*3600000;
+		var calApproxValues = {'fullYear': DAY*365, 'month': DAY*30, 'date': DAY*0.999}; // minimum values, a little bit below avg values
+		var minimumResult = (dt / calApproxValues[property])-2; // -2 to remove the imperfections caused by the values above
+		
+		var d = new Date(date2.getTime());
+		dateAdd(d, property, minimumResult);
+		for (var i = minimumResult; i < minimumResult*1.2+3; i++) { // try out 20% more than needed, just to be sure
+			dateAdd(d, property, 1);
+			if (d.getTime() > date1.getTime())
+				return i;
+		}
+		// should never ever be reached
+	}
+	// reads / writes property in name.name.name syntax. Supports setter/getter functions
 	function prop(path, object, value) {
 		var ppos = path.indexOf('.');
 		if (ppos < 0) {
@@ -351,7 +568,11 @@ define('minifiedUtil', function() {
 			return prop(path.substr(ppos), isFunction(val) ? val() : val, value);
 		}
 	}
-    
+	// copies all elements of from into to, merging into existing structures
+	function copyTree(from, to) {
+		// TODO 
+	}
+	
 	/*$
 	 * @id length
 
@@ -426,6 +647,8 @@ define('minifiedUtil', function() {
 	'collect': listBindWrapped(collect),
 	
 	'map': listBindWrapped(collect),
+	
+	'reduce': listBind(reduce),
 
 	'toObject': listBind(toObject),
 	
@@ -435,6 +658,9 @@ define('minifiedUtil', function() {
  	
  	'find': listBind(find),
  	
+ 	'startsWith': listBind(startsWith),
+ 	'endsWith': listBind(endsWith),
+ 	
  	'contains': listBind(contains),
 	
 	'array': function() {
@@ -442,7 +668,7 @@ define('minifiedUtil', function() {
 	},
 	
 	'join': function(separator) {
-		return new M(map(this, selfFunc).join(separator));
+		return map(this, selfFunc).join(separator);
 	},
 	
 	'sort': function(func) {
@@ -464,7 +690,9 @@ define('minifiedUtil', function() {
 	'intersection': function(otherList) {
 		var keys = toObject(otherList, 1);
 		return this['filter'](function(item) {
-			return keys[item];
+			var r = keys[item];
+			keys[item] = 0;
+			return r;
 		});
 	},
 
@@ -479,6 +707,10 @@ define('minifiedUtil', function() {
 	'tap': function(func) {
 		func(this);
 		return this;
+	},
+	
+	'toString': function() {
+		return '[' + this['map'](function(v) { if (isString(v)) return "'" + replace(v, /'/, "\\'") + "'"; else return v;})['join'](', ') + ']';
 	}
 	
 	
@@ -503,25 +735,55 @@ define('minifiedUtil', function() {
 	}
 	each({
 		'bind': bind,
+		'partial': partial,
+		'once': once,
 		'selfFunc': selfFunc,
 		'each': each,
+		'eachObj': eachObj,
 		'toObject': toObject,
 		'filter': funcListBind(filter),
+		'filterObj': filterObj,
 		'collect': funcListBind(collect),
 		'map': funcListBind(map),
+		'reduce': reduce,
+		'reduceObj': reduceObj,
 		'find': find,
+		'contains': contains,
 		'sub': funcListBind(sub),
+	 	'startsWith': startsWith,
+	 	'endsWith': endsWith,
 		'equals': equals,
 		'call': call,
+
 		'toString': toString,
 		'isList': isList,
 		'isFunction': isFunction,
 		'isObject': isObject,
+		'isNumber': isNumber,
+		'isBool': isBool,
+		'isDate': isDate,
+		'isValue': isValue,
 		'isString': isString,
 		'toString': toString,
+
+		'prop': prop,
+		'escapeRegEx': escapeRegEx,
+		
 		'defer': defer,
 		'delay': delay,
 		
+		'dateAdd': dateAdd,
+		'dateClone': dateClone,
+		'dateDiff': dateDiff,
+		'dateMidnight': dateMidnight,
+		
+		'formatNumber' : formatNumber,
+		'pad' : pad,
+		'formatValue': formatValue,
+		
+		'parseDate': parseDate,
+		'parseNumber': parseNumber,
+
 		// returns all keys of a map as list
 		'keys': function(obj) {
 			return new M(map(obj, function(value, key) { return key; }));
@@ -542,7 +804,7 @@ define('minifiedUtil', function() {
 			return eq;
 		},
 		
-		'extend': function(to, from) {
+		'copyObj': function(to, from) {
 			each(from, function(name, value) {
 				to[name] = value;
 			});
@@ -569,12 +831,6 @@ define('minifiedUtil', function() {
 			return null;
 		},
 		
-		'prop': prop,
-		
-		'escapeRegExp': function(s) {
-			return replace(s, /[\\\[\]\/{}()*+?.$|^-]/g, "\\$&");
-		},
-	
 		// takes vararg of other promises to join
 		'promise': function promise() {
 			var state; // undefined/null = pending, true = fulfilled, false = rejected
@@ -646,11 +902,7 @@ define('minifiedUtil', function() {
 		   	return set;
 		},
 		
-		'formatNumber' : formatNumber,
-		'pad' : pad,
-		'formatValue': formatValue,
-		
-		'template': function(format, object) {
+		'format': function(format, object) {
 			return replace(format, /{([\w\d_]+)(,([^}]*))?}/g, function(match, path, subFormatPart, subFormat) {
 				var value = path=='' ? object : prop(path, object);
 				return subFormatPart ? formatValue(subFormat, value) : toString(value);
