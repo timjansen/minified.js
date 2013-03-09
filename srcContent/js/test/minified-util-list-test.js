@@ -96,13 +96,30 @@ function runTests(loadInContext) {
 	});
 
 	describe('_.equals()', function() {
+		it('compares values', function() {
+			var _ = req();
+			assert(_.equals(null, null));
+			assert(_.equals(17, 17));
+			assert(_.equals("17", 17));
+			assert(_.equals("23d", "23d"));
+			assert(_.equals(false, false));
+			assert(_.equals(new Date(2012, 3, 21), new Date(2012, 3, 21)));
+			assert(!_.equals(0, null));
+			assert(!_.equals(18, 17));
+			assert(!_.equals("233d", "23d"));
+			assert(!_.equals(true, false));
+			assert(!_.equals(new Date(2012, 2, 21), new Date(2012, 3, 21)));
+		});
 		it('compares arrays', function() {
 			var _ = req();
 			assert(_.equals([1, 2, 3], [1, 2, 3]));
-			assert(_.equals([1, null, 2, 3], [1, null, 2, 3]));
+			assert(_.equals([1, null, 'test'], [1, null, 'test']));
 			assert(_.equals([], []));
 			assert(!_.equals([], [1, 2, 3]));
+			assert(!_.equals([], {}));
+			assert(!_.equals({}, []));
 			assert(!_.equals([1, 2, 3], []));
+			assert(!_.equals([1, 2, 3], {a:1}));
 			assert(!_.equals([1, 5, 3], [1, 2, 3]));
 		});
 		it('compares lists', function() {
@@ -116,24 +133,34 @@ function runTests(loadInContext) {
 		it('compares objects', function() {
 			var _ = req();
 			assert(_.equals({a:1, b:2, c:3}, {a:1, c:3, b:2}));
+			assert(_.equals({b:2, c:null}, {b:2, c:null}));
 			assert(_.equals({}, {}));
 			assert(!_.equals({a:1, b:2}, {a:1, c:3, b:2}));
 			assert(!_.equals({a:1, b:2, c:3}, {a:1, b:2}));
 		});
-		it('uses compare functions', function() {
+		it('compares nested arrays', function() {
 			var _ = req();
-			function cmp(a, b) { return a!=b || (a > 100 && b > 100); }
-			
-			assert(_(3, 2, 1).equals([0, 1, 9], cmp));
-			assert(_.equals([1, 2, 3], [0, 1, 9], cmp));
-			assert(_.equals([102, 102, 103], [120, 101, 109], cmp));
-			assert(!_.equals([102, 102, 103], [120, 101, 109, 110], cmp));
-			assert(!_.equals([102, 102, 103, 999, 221], [120, 101, 109, 110], cmp));
-			assert(!_.equals([1, 2, 3], [1, 2, 3], cmp));
-			
-			assert(_.equals({a:3, b:1, c:9}, {a:1, c:3, b:2}, cmp));
-			assert(_.equals({a:101, b:102, c:999}, {a:101, c:103, b:102}, cmp));
-			assert(!_.equals({a:101, b:102}, {a:101, c:103, b:102}, cmp));
+			assert(_.equals([1, [], [2, null, 3]], [1, [], [2, null, 3]]));
+			assert(!_.equals([[], [2, 3]], [1, [], [2, 3]]));
+			assert(!_.equals([1, [1], [2, 3]], [1, [], [2, 3]]));
+			assert(!_.equals([1, [], [1, 2, 3]], [1, [], [2, 3]]));
+			assert(!_.equals([1, [], []], [1, [], [2, 3]]));
+		});
+		it('compares nested objects', function() {
+			var _ = req();
+			assert(_.equals({b:2, c:[1, null, 'test']}, {b:2, c:[1, null, 'test']}));
+			assert(_.equals({a:{x:2, y:3}, b:2}, {a:{x:2, y:3}, b:2}));
+			assert(_.equals({a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}, {a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}));
+			assert(!_.equals({a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}, {a:{x:2, y:3, z:2}, b:2, c:[{a:1}, null, 'test']}));
+			assert(!_.equals({a:{x:2, y:3, z:2}, b:2, c:[{a:1}, null, 'test']}, {a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}));
+			assert(!_.equals({a:{x:2, y:3}, b:2, c:[{a:1}, 'test']}, {a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}));
+			assert(!_.equals({a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}, {a:{x:2, y:3}, b:2, c:[{a:1}, 'test']}));
+			assert(!_.equals({a:{x:2, y:4}, b:2, c:[{a:1}, null, 'test']}, {a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}));
+			assert(!_.equals({a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}, {a:{x:2, y:4}, b:2, c:[{a:1}, null, 'test']}));
+			assert(!_.equals({w:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}, {a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}));
+			assert(!_.equals({a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}, {w:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}));
+			assert(!_.equals({a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test', 3]}, {a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}));
+			assert(!_.equals({a:{x:2, y:3}, b:2, c:[{a:1}, null, 'test']}, {a:{x:2, y:3}, b:2, c:[{a:1}, null, 'esd']}));
 		});
 		it('handles nulls', function() {
 			var _ = req();
@@ -174,18 +201,6 @@ function runTests(loadInContext) {
 					assert.equal(value, as[i][index], "Value check i="+i+" index="+index);
 				});
 				assert.equal(c, as[i].length);
-			}
-		});
-		it('iterates objects', function() {
-			var _ = req();
-			var as = [{}, {a:1, b:2, e:null, f: false, g: true}, {x:2}];
-			for (var i = 0; i < as.length; i++) {
-				var c = 0;
-				_.each(as[i], function(key, value) {
-					c++;
-					assert.equal(value, as[i][key]);
-				});
-				assert.equal(c, _.keys(as[i]).length);
 			}
 		});
 		it('ignores nulls', function() {
@@ -230,20 +245,11 @@ function runTests(loadInContext) {
 			var flt = a.filter(function(v, index) { assert.equal(index, c++); return v < 10 || !v; });
 			assert(flt.equals(r));
 		});
-		it('filters objects', function() {
-			var _ = req();
-			var a = {a: 200, b: null, c: 1, d: 34, e: 2, f: 3, g: 200};
-			var r = {b: null, c: 1, e: 2, f: 3};
-			var c = 0;
-			var flt = _.filter(a, function(name, v) { c++; assert.equal(v, a[name]); return v < 10 || !v; });
-			assert.equal(c, 7);
-			assert(_.equals(flt, r));
-		});
 		it('filters null', function() {
 			var _ = req();
 			var c = 0;
 			var flt = _.filter(null, function(v, index) { assert.equal(index, c++); return v < 10 || !v; });
-			assert(_.equals(flt, {}));
+			assert(_.equals(flt, []));
 			assert.equal(c, 0);
 		});
 	});
@@ -290,7 +296,7 @@ function runTests(loadInContext) {
 			var _ = req();
 			var a = _(200, null, 1, 0, 34, [2], [3, 200]);
 			var c = 0;
-			var flt = a.collect(function(v, index) { assert.equal(index, c++); return v; });
+			var flt = a.map(function(v, index) { assert.equal(index, c++); return v; });
 			assert(flt.length, 7);
 			assert(c, 7);
 		});
@@ -299,6 +305,24 @@ function runTests(loadInContext) {
 			var c = 0;
 			var flt = _.map(null, function(v, index) { assert.equal(index, c++); });
 			assert(_.equals(flt, []));
+			assert.equal(c, 0);
+		});
+	});
+	
+	describe('_.mapObj()', function() {
+		it('maps objects', function() {
+			var _ = req();
+			var a = {a:200, b:null, c:1, d:0, e:34, f:[2], g:[3, 200]};
+			var c = 0;
+			var flt = _.mapObj(a, function(key, v) { assert(key == 'b' || key == 'd' || a[key]); c++; return v; });
+			assert.equal(_.keys(flt).length, 7);
+			assert.equal(c, 7);
+		});
+		it('maps null', function() {
+			var _ = req();
+			var c = 0;
+			var flt = _.mapObj(null, function() { c++; });
+			assert(_.equals(flt, {}));
 			assert.equal(c, 0);
 		});
 	});
@@ -503,6 +527,72 @@ function runTests(loadInContext) {
 			
 			a.tap(f).tap(f).tap(f);
 			assert.equal(c, 3);
+		});
+	});
+	
+	describe('_.startsWith()', function() {
+		it('works with arrays', function() {
+			var _ = req();
+			var a = _(3, 111, 111, -1, 5, 7, 2, 5, 3, 9);
+			assert(_.startsWith(a, []));
+			assert(a.startsWith([3]));
+			assert(_.startsWith(a, [3, 111]));
+			assert(_.startsWith(a, [3, 111, 111, -1, 5, 7, 2, 5, 3, 9]));
+			assert(a.startsWith([3, 111, 111, -1, 5, 7, 2, 5, 3, 9]));
+			assert(!_.startsWith(a, [3, 111, 111, -1, 5, 7, 2, 5, 3, 9, 10]));
+			assert(!a.startsWith([3, 111, 7, -1, 5, 7, 2, 5, 3, 9]));
+			assert(!_.startsWith(a, [111]));
+		});
+		it('works with items', function() {
+			var _ = req();
+			var a = _(3, 111, 111, -1, 5, 7, 2, 5, 3, 9);
+			assert(_.startsWith(a, 3));
+			assert(a.startsWith(3));
+			assert(!_.startsWith(a, 111));
+		});
+		it('works with strings', function() {
+			var _ = req();
+			var a = "abcd";
+			assert(_.startsWith(a, ""));
+			assert(_.startsWith(a, "a"));
+			assert(_.startsWith(a, "ab"));
+			assert(_.startsWith(a, "abcd"));
+			assert(!_.startsWith(a, "abcde"));
+			assert(!_.startsWith(a, "4"));
+			assert(!_.startsWith(a, null));
+		});
+	});
+	
+	describe('_.endsWith()', function() {
+		it('works with arrays', function() {
+			var _ = req();
+			var a = _(3, 111, 111, -1, 5, 7, 2, 5, 3, 9);
+			assert(_.endsWith(a, []));
+			assert(a.endsWith([9]));
+			assert(_.endsWith(a, [3, 9]));
+			assert(_.endsWith(a, [3, 111, 111, -1, 5, 7, 2, 5, 3, 9]));
+			assert(a.endsWith([3, 111, 111, -1, 5, 7, 2, 5, 3, 9]));
+			assert(!_.endsWith(a, [1, 3, 111, 111, -1, 5, 7, 2, 5, 3, 9]));
+			assert(!a.endsWith([3, 111, 7, -1, 5, 7, 2, 5, 3, 9]));
+			assert(!_.endsWith(a, [111]));
+		});
+		it('works with items', function() {
+			var _ = req();
+			var a = _(3, 111, 111, -1, 5, 7, 2, 5, 3, 9);
+			assert(_.endsWith(a, 9));
+			assert(a.endsWith(9));
+			assert(!_.endsWith(a, 111));
+		});
+		it('works with strings', function() {
+			var _ = req();
+			var a = "abcd";
+			assert(_.endsWith(a, ""));
+			assert(_.endsWith(a, "d"));
+			assert(_.endsWith(a, "cd"));
+			assert(_.endsWith(a, "abcd"));
+			assert(!_.endsWith(a, "zabcd"));
+			assert(!_.endsWith(a, "4"));
+			assert(!_.endsWith(a, null));
 		});
 	});
 }

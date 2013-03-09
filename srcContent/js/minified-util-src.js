@@ -120,7 +120,7 @@ define('minifiedUtil', function() {
 	function replace(s, regexp, sub) {
 		return toString(s).replace(regexp, sub != null ? sub : '');
 	}
-	function escapeRegEx(s) {
+	function escapeRegExp(s) {
 		return replace(s, /[\\\[\]\/{}()*+?.$|^-]/g, "\\$&");
 	}
 	function eachObj(obj, cb) {
@@ -130,11 +130,9 @@ define('minifiedUtil', function() {
 		return obj;
 	}
 	function each(list, cb) {
-		if (isList(list))
+		if (list)
 			for (var i = 0; i < list.length; i++)
 				cb(list[i], i);
-		else
-			eachObj(list, cb);
 		return list;
 	}
 	function filterObj(obj, filterFunc) {
@@ -146,16 +144,12 @@ define('minifiedUtil', function() {
 		return r;
 	}
 	function filter(list, filterFunc) {
-		if (isList(list)) {
-			var r = []; 
-			each(list, function(value, index) {
-				if (filterFunc(value, index))
-					r.push(value);
-			});
-			return r;
-		}
-		else
-			return filterObj(list, filterFunc);
+		var r = []; 
+		each(list, function(value, index) {
+			if (filterFunc(value, index))
+				r.push(value);
+		});
+		return r;
 	}
 	function collect(list, collectFunc, addNulls) {
 		var result = [];
@@ -165,6 +159,28 @@ define('minifiedUtil', function() {
 				each(item, function(rr) { result.push(rr); });
 			else if (addNulls || item != null)
 				result.push(item);
+		});
+		return result;
+	}
+	function keyCount(obj) {
+		var c = 0;
+		eachObj(obj, function(key) { c++; });
+		return c;
+	}
+	function keys(obj) {
+		var list = [];
+		eachObj(obj, function(key) { list.push(key); });
+		return new M(list);
+	}
+	function values(obj) {
+		var list = [];
+		eachObj(obj, function(key, value) { list.push(value); });
+		return new M(list);
+	}
+	function mapObj(list, mapFunc) {
+		var result = {};
+		eachObj(list, function(key, value) {
+			result[key] = mapFunc(key, value);
 		});
 		return result;
 	}
@@ -195,20 +211,19 @@ define('minifiedUtil', function() {
 	}
 	function startsWith(base, start) {
 		if (isList(base)) {
-			var s2 = UNDERSCORE(start);
-			return UNDERSCORE(base).sub(0, s2.length).equals(s2);
+			var s2 = UNDERSCORE(start); // convert start as we don't know whether it is a list yet
+			return equals(UNDERSCORE(base).sub(0, s2.length), s2);
 		}
 		else
-			return base.substr(0, start.length) == start;
+			return start != null && base.substr(0, start.length) == start;
 	}
 	function endsWith(base, end) {
-		// TODO: make public
 		if (isList(base)) {
 			var e2 = UNDERSCORE(end);
-			return UNDERSCORE(base).sub(-e2.length).equals(e2);
+			return UNDERSCORE(base).sub(-e2.length).equals(e2) || !e2.length;
 		}
 		else
-			return base.substr(base.length - start.length) == start;
+			return end != null && base.substr(base.length - end.length) == end;
 	}
 	function sub(list, startIndex, endIndex) {
 		if (!isList(list))
@@ -243,41 +258,46 @@ define('minifiedUtil', function() {
 		return false;
 	}
 	// equals if a and b have the same elements and all are equal
-	function equals(a, b, compareFunc) {
+	function equals(a, b) {
 		if (a == b)
 			return true;
+		else if (a == null || b == null)
+			return false;
+		else if (isValue(a) || isValue(b))
+			return isDate(a) && isDate(b) && a.getTime()==b.getTime();
 		else if (isList(a)) {
 			if (!isList(b))
 				return false;
-			if (a.length != b.length)
+			else if (a.length != b.length)
 				return false;
-			return !find(a, function(val, index) {
-				if (compareFunc ? !compareFunc(val, b[index]) : val != b[index])
-					return true;
-			});
+			else
+				return !find(a, function(val, index) {
+					if (!equals(val, b[index]))
+						return true;
+				});
 		}
 		else {
-			if (isList(b) || !a || !b)
+			if (isList(b))
 				return false;
-			var aKeys = map(a, selfFunc);
-			if (aKeys.length != map(b, selfFunc).length)
+			var aKeys = keys(a);
+			if (aKeys.length != keyCount(b))
 				return false;
-			return !find(aKeys, function(key) {
-				if (compareFunc ? !compareFunc(a[key], b[key]) : a[key] != b[key])
-					return true;
-			});
-			
+			else
+				return !find(aKeys, function(key) {
+					if (!equals(a[key],b[key]))
+						return true;
+				});
 		}
 	}
 	function toRealArray(list) { 
-		return list ? (list['_'] ? list['array']() : (Object.prototype.toString.call(arr) === '[object Array]') ? list : toRealArray(UNDERSCORE(list))) : []; 
+		return list ? (list['_'] ? list['array']() : (Object.prototype.toString.call(list) === '[object Array]') ? list : toRealArray(UNDERSCORE(list))) : []; 
 	}
 	
 	function once(f) {
 		var called = 0;
 		return function() {
 			if (!(called++))
-				return f.apply(this, arguments);
+				return call(f, this, arguments);
 		};
 	}
 	function call(f, fThisOrArgs, args) {
@@ -470,7 +490,7 @@ define('minifiedUtil', function() {
 			else if (/\s/.test(placeholderChar))
 				return "\\s+"; 
 			else 
-				return escapeRegEx(placeholder);
+				return escapeRegExp(placeholder);
 		});
 		
 		if (!(match = parser.exec(date)))
@@ -509,7 +529,7 @@ define('minifiedUtil', function() {
 			return parseNumber(null, value);
 		var decSep = replace(replace(format, '.*[0#]([,.])[_9].*', '$1'), /[^,.]/g) || '.';
 		var grpSep = decSep == ',' ? '.' : ',';
-		var cleanNum = replace(replace(replace(value, escapeRegEx(grpSep)), escapeRegEx(decSep), '.'), /^.*?(-?\d)/, '$1');
+		var cleanNum = replace(replace(replace(value, escapeRegExp(grpSep)), escapeRegExp(decSep), '.'), /^.*?(-?\d)/, '$1');
 		var r = parseFloat(cleanNum);
 		return isNaN(r) ? null : r;
 	}
@@ -565,12 +585,53 @@ define('minifiedUtil', function() {
 		else {
 			var name = path.substr(0, ppos);
 			var val = object[name];
-			return prop(path.substr(ppos), isFunction(val) ? val() : val, value);
+			return prop(path.substr(ppos+1), isFunction(val) ? val() : val, value);
 		}
 	}
-	// copies all elements of from into to, merging into existing structures
+	// copies all elements of from into to, merging into existing structures.
+	// to is optional. Writes result in to if it is a non-value object.
+	// Returns the copy, which may be to if it was an object
 	function copyTree(from, to) {
-		// TODO 
+		if (isValue(from))
+			return isDate(from) ? dateClone(from) : from;
+
+		var toIsFunc = isFunction(to);
+		var oldTo = toIsFunc ? to() : to;
+		var result;
+		if (!from || equals(from, oldTo))
+			return from;
+		else if (isList(from)) {
+			result = map(from, function(v, idx) { 
+				return oldTo && equals(oldTo[idx], v) ? oldTo[idx] : copyTree(v);
+			});
+			if ((oldTo ? oldTo : from)['_'])
+				result = UNDERSCORE(result);
+		}
+		else {
+			var target = oldTo || {};
+			each(target, function(key) {
+				if (from[key] == null || (isFunction(from[key]) && from[key]() == null)) {
+					if (isFunction(target[key]))
+						target[key](null);
+					else
+						delete target[key];
+				}
+			});
+			each(from, function(key, value) {
+				var isFunc = isFunction(target[key]);
+				var oldValue = isFunc ? target[key]() : target[key];
+				if (!equals(value, oldValue)) {
+					if (isFunc)
+						target[key](copyTree(value));
+					else
+						target[key] = copyTree(value);
+				}
+			});
+		}
+			
+		if (toIsFunc)
+			to(result);
+		return result;
 	}
 	
 	/*$
@@ -639,7 +700,7 @@ define('minifiedUtil', function() {
 	}
 	
 	
-	each({
+	eachObj({
 	'each': listBind(each),
 	
 	'filter': listBindWrapped(filter),
@@ -733,7 +794,7 @@ define('minifiedUtil', function() {
 			return r['_']||!isList(r) ? r : new M(r);
 		};
 	}
-	each({
+	eachObj({
 		'bind': bind,
 		'partial': partial,
 		'once': once,
@@ -745,6 +806,7 @@ define('minifiedUtil', function() {
 		'filterObj': filterObj,
 		'collect': funcListBind(collect),
 		'map': funcListBind(map),
+		'mapObj': mapObj,
 		'reduce': reduce,
 		'reduceObj': reduceObj,
 		'find': find,
@@ -753,7 +815,6 @@ define('minifiedUtil', function() {
 	 	'startsWith': startsWith,
 	 	'endsWith': endsWith,
 		'equals': equals,
-		'call': call,
 
 		'toString': toString,
 		'isList': isList,
@@ -767,13 +828,13 @@ define('minifiedUtil', function() {
 		'toString': toString,
 
 		'prop': prop,
-		'escapeRegEx': escapeRegEx,
+		'escapeRegExp': escapeRegExp,
 		
 		'defer': defer,
 		'delay': delay,
 		
-		'dateAdd': dateAdd,
 		'dateClone': dateClone,
+		'dateAdd': dateAdd,
 		'dateDiff': dateDiff,
 		'dateMidnight': dateMidnight,
 		
@@ -784,15 +845,8 @@ define('minifiedUtil', function() {
 		'parseDate': parseDate,
 		'parseNumber': parseNumber,
 
-		// returns all keys of a map as list
-		'keys': function(obj) {
-			return new M(map(obj, function(value, key) { return key; }));
-		},
-		
-		// returns all values of a map as list
-		'values': function(obj) {
-			return new M(map(obj, selfFunc));
-		},
+		'keys': keys,
+		'values': values,
 		
 		// tests whether all values of object b are equal in a. Keys not in b are ignored.
 		'equalsRight': function(a, b, compareFunc) {
