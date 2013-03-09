@@ -356,9 +356,9 @@ define('minifiedUtil', function() {
 	// choice syntax: <cmp><value>:<format>|<cmp><value>:<format>|... 
 	// e.g. 0:no item|1:one item|>=2:# items
 	// <value>="null" used to compare with nulls.
-	// choice also works with strings, e.g. ERR:error|WAR:warning|FAT:fatal|ok
+	// choice also works with strings or bools, e.g. ERR:error|WAR:warning|FAT:fatal|ok
 	function formatValue(format, dateOrNumber) {
-		if (isDate(dateOrNumber)) {
+		if (isDate(value)) {
 			var timezoneOffsetMin, match, formatNoTZ = format;
 			var map = {
 				'y': 'FullYear',
@@ -376,13 +376,18 @@ define('minifiedUtil', function() {
 				'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
 				'w': ['Day', function(d, values) { return (values||['Sun','Mon','Tue','Wed','Thu','Fri','Sat'])[d]; }],
 				'W': ['Day', function(d, values) { return (values||['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'])[d]; }],
-				'z': ['TimezoneOffset', function(d) { var sign = d > 0 ? '+' : '-'; d = d > 0 ? d : -d; return sign + pad(2, Math.floor(d/60)) + pad(2, d%60); }]
+				'z': ['TimezoneOffset', function(d) { 
+					var off = timezoneOffsetMin != null ? timezoneOffsetMin : d; 
+					var sign = off > 0 ? '+' : '-'; 
+					off = off > 0 ? off : -off; 
+					return sign + pad(2, Math.floor(off/60)) + pad(2, off%60); 
+				}]
 			};
 			if (match = /^\[([+-]\d\d)(\d\d)\](.*)/.exec(format)) {
 				timezoneOffsetMin = getTimezone(match, 1);
 				formatNoTZ = match[3];
 			}
-			var date = timezoneOffsetMin ? dateAdd(dateOrNumber, 'minutes', timezoneOffsetMin) : dateOrNumber;
+			var date = timezoneOffsetMin != null ? dateAdd(value, 'minutes', timezoneOffsetMin) : value;
 			return replace(formatNoTZ, /(y+|M+|n+|N+|d+|m+|H+|h+|K+|k+|s+|S+|a+|w+|W+)(?:\[([^\]]+)\])?/g, function(s, placeholder, params) {
 				var len = placeholder.length;
 				var val = map[placeholder.charAt(0)];
@@ -402,11 +407,12 @@ define('minifiedUtil', function() {
 			return find(format.split('|'), function(fmtPart) {
 				var match, matchGrp, numFmt;
 				if (match = /([<>]?)(=?)([^:]*):(.*)/.exec(fmtPart)) {
-					var cmpVal1 = parseFloat(dateOrNumber), cmpVal2 = parseFloat(match[3]);
+					var cmpVal1 = parseFloat(value), cmpVal2 = parseFloat(match[3]);
 					if (isNan(cmpVal1) || isNaN(cmpVal2)) {
-						cmpVal1 = toString(dateOrNumber);
+						cmpVal1 = toString(value);
 						cmpVal2 = match[3];
 					}
+					
 					if (match[1]) {
 						if ((match[1] == '<' && match[2] && cmpVal1 > cmpVal2) ||
 							(match[1] == '<' && !match[2] && cmpVal1 >= cmpVal2) ||
@@ -414,7 +420,7 @@ define('minifiedUtil', function() {
 							(match[1] == '>' && !match[2] && cmpVal1 <= cmpVal2))
 							return null;
 					}
-					else if (cmpVal1 != dateOrNumber)
+					else if (cmpVal1 != value)
 						return null;
 					numFmt = match[4];
 				}
@@ -432,7 +438,7 @@ define('minifiedUtil', function() {
 						groupingSeparator = matchGrp[1];
 						groupingSize = matchGrp[0].length - 2;
 					}
-					var formatted = formatNumber(dateOrNumber, postDecimal, match[3].length, decimalPoint, preDecimalLen, groupingSeparator, groupingSize);
+					var formatted = formatNumber(value, postDecimal, match[3].length, decimalPoint, preDecimalLen, groupingSeparator, groupingSize);
 					return insertString(format, match.index, match[0].length, formatted);
 				}
 				else
@@ -534,38 +540,46 @@ define('minifiedUtil', function() {
 		return isNaN(r) ? null : r;
 	}
 	function dateClone(date) {
-		return new Date(date.getTime());
+		if (date)
+			return new Date(date.getTime());
+	}
+	function dateAddInline(d, cProp, value) {
+		d['set'+cProp].call(d, d['get'+cProp].call(d) + value);
 	}
 	function dateAdd(date, property, value) {
 		if (arguments.length < 3)
-			return calAdd(new Date(), date, property);
+			return dateAdd(new Date(), date, property);
 		var d = dateClone(date);
 		var cProp = property.charAt(0).toUpperCase() + property.substr(1);
-		d['set'+cProp].call(d, d['get'+cProp].call(d) + value);
+		dateAddInline(d, cProp, value);
 		return d;
 	}
 	function dateMidnight(date) {
 		var od = date || new Date();
-		return new Date(od.getYear(), od.getMonth(), od.getDay());
+		return new Date(od.getFullYear(), od.getMonth(), od.getDate());
 	}
-	function dateDiff(date1, date2, property) {
-		var dt = date1.getTime() - date2.getTime();
+	function dateDiff(property, date1, date2, console) {
+		var d1t = date1.getTime();
+		var d2t = date2.getTime();
+		var dt = d2t - d1t;
 		if (dt < 0)
-			return -dateDiff(date2, date1, property);
+			return -dateDiff(property, date2, date1);
 
 		var propValues = {'milliseconds': 1, 'seconds': 1000, 'minutes': 60000, 'hours': 3600000};
 		var ft = propValues[property];
 		if (ft)
 			return dt / ft;
-		var DAY = 24*3600000;
-		var calApproxValues = {'fullYear': DAY*365, 'month': DAY*30, 'date': DAY*0.999}; // minimum values, a little bit below avg values
-		var minimumResult = (dt / calApproxValues[property])-2; // -2 to remove the imperfections caused by the values above
+
+		var DAY = 8.64e7;
+		var cProp = property.charAt(0).toUpperCase() + property.substr(1);
+		var calApproxValues = {'fullYear': DAY*365, 'month': DAY*365/12, 'date': DAY}; // minimum values, a little bit below avg values
+		var minimumResult = Math.floor((dt / calApproxValues[property])-2); // -2 to remove the imperfections caused by the values above
 		
-		var d = new Date(date2.getTime());
-		dateAdd(d, property, minimumResult);
-		for (var i = minimumResult; i < minimumResult*1.2+3; i++) { // try out 20% more than needed, just to be sure
-			dateAdd(d, property, 1);
-			if (d.getTime() > date1.getTime())
+		var d = new Date(d1t);
+		dateAddInline(d, cProp, minimumResult);
+		for (var i = minimumResult; i < minimumResult*1.2+4; i++) { // try out 20% more than needed, just to be sure
+			dateAddInline(d, cProp, 1);
+			if (d.getTime() > d2t)
 				return i;
 		}
 		// should never ever be reached
@@ -848,7 +862,7 @@ define('minifiedUtil', function() {
 		'keys': keys,
 		'values': values,
 		
-		// tests whether all values of object b are equal in a. Keys not in b are ignored.
+		// tests whether all values of object b exit in a and are equal. Keys not in b are ignored.
 		'equalsRight': function(a, b, compareFunc) {
 			var eq = true;
 			each(a, function(key, value) {
