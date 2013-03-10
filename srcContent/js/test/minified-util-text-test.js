@@ -86,6 +86,144 @@ function runTests(loadInContext) {
 				assert.equal(_.pad(5,-1), "-00001");
 			});
 		});
+		
+		describe('formatValue()', function() {
+			it('formats numbers', function() {
+				assert.equal(_.formatValue("#", 1), "1");
+				assert.equal(_.formatValue("0", -1), "-1");
+				assert.equal(_.formatValue("#####", 1), "1");
+				assert.equal(_.formatValue("00000", 1), "00001");
+				assert.equal(_.formatValue("00000", -1), "-00001");
+				
+				assert.equal(_.formatValue("#.9", 1), "1.0");
+				assert.equal(_.formatValue("0.99", 1), "1.00");
+				assert.equal(_.formatValue("0.9999", 1), "1.0000");
+				assert.equal(_.formatValue("#._", 1), "1");
+				assert.equal(_.formatValue("#.____", 1), "1");
+				assert.equal(_.formatValue("#.9999", -1), "-1.0000");
+				assert.equal(_.formatValue("0._", -1), "-1");
+				
+				assert.equal(_.formatValue("#", 1.5), "2");
+				assert.equal(_.formatValue("#.9", 1.5), "1.5");
+				assert.equal(_.formatValue("#.99", 1.5), "1.50");
+				assert.equal(_.formatValue("#.999", 1.5), "1.500");
+				assert.equal(_.formatValue("#.___", 1.5), "1.5");
+				
+				assert.equal(_.formatValue("#.9", 1.667), "1.7");
+				assert.equal(_.formatValue("#.99", 1.667), "1.67");
+				assert.equal(_.formatValue("#.999", 1.667), "1.667");
+				assert.equal(_.formatValue("#.9999", 1.667), "1.6670");
+				assert.equal(_.formatValue("#._", 1.667), "1.7");
+				assert.equal(_.formatValue("#.__", 1.667), "1.67");
+				assert.equal(_.formatValue("#.___", 1.667), "1.667");
+				assert.equal(_.formatValue("#.____", 1.667), "1.667");
+				
+				assert.equal(_.formatValue("#,_", 1.667), "1,7");
+				assert.equal(_.formatValue("#,9", 1.667), "1,7");
+				
+				assert.equal(_.formatValue("00.9999", 1.667), "01.6670");
+				assert.equal(_.formatValue("0._", 10.667), "10.7");
+				assert.equal(_.formatValue("000000000,99", 1.667), "000000001,67");
+				assert.equal(_.formatValue("000000000.__", 777.667), "000000777.67");
+				
+				assert.equal(_.formatValue("#.###.###.###", 9999999999), "9.999.999.999");
+				assert.equal(_.formatValue("#.###.###.###",  999999999),   "999.999.999");
+				assert.equal(_.formatValue("0.000.000.000",  999999999), "0.999.999.999");
+				assert.equal(_.formatValue("0,000,000,000.__", 9999999999), "9,999,999,999");
+				assert.equal(_.formatValue("0,000,000,000.99", 9999999999), "9,999,999,999.00");
+				assert.equal(_.formatValue("000,000,000.99", 123456.256), "000,123,456.26");
+				assert.equal(_.formatValue("000,000,000.__", 123456.256), "000,123,456.26");
+				assert.equal(_.formatValue("###,###,###.99", 123456.256), "123,456.26");
+				
+				assert.equal(_.formatValue("ABC#####DEF", 1), "ABC1DEF");
+				assert.equal(_.formatValue("$0.99", 1), "$1.00");
+				assert.equal(_.formatValue("bla=0.999 bla", 1.5), "bla=1.500 bla");
+				assert.equal(_.formatValue("#.__ EUR", 1.667), "1.67 EUR");
+				assert.equal(_.formatValue("c 0,000,000,000.99 e", 9999999999), "c 9,999,999,999.00 e");
+			});
+			
+			it('supports string choices', function() {
+				assert.equal(_.formatValue("a:0|b:1|c:2|d:3|4", "c"), "2");
+				assert.equal(_.formatValue("a:0|b:1|c:2|d:3|4", "a"), "0");
+				assert.equal(_.formatValue("a:0|b:1|c:2|d:3|4", "e"), "4");
+
+				assert.equal(_.formatValue("a: 0 | b: 1 | c: 2| d: 3| 4", "c"), "2");
+				assert.equal(_.formatValue("a: 0 | b: 1 | c: 2| d: 3| 4", "a"), "0");
+				assert.equal(_.formatValue("a: 0 | b: 1 | c: 2| d: 3| 4", "e"), "4");
+
+				assert.equal(_.formatValue("true:xx| false:yyy", true), "xx");
+				assert.equal(_.formatValue("true:xx| false:yyy", false), "yyy");
+				assert.equal(_.formatValue("true:xx| yyy", false), "yyy");
+
+				assert.equal(_.formatValue("abc:cba|def:fed|ghi", "abc"), "cba");
+				assert.equal(_.formatValue("abc:cba|def:fed|ghi", null), "ghi");
+				assert.equal(_.formatValue("abc:cba|def:fed|null:n0ll|ghi", null), "n0ll");
+			});
+			
+			it('supports number choices', function() {
+				assert.equal(_.formatValue("<0:neg|0:zero|>0:pos|funny", -0.1), "neg");
+				assert.equal(_.formatValue("<0:neg|=0:zero|>0:pos|funny", 0), "zero");
+				assert.equal(_.formatValue("<0:neg|0:zero|>0:pos|funny", 0), "zero");
+				assert.equal(_.formatValue("<0:neg|0:zero|>0:pos|funny", 0.1), "pos");
+
+				assert.equal(_.formatValue(">0:a|>=0:b|<10:c|<=10:d|e", 1), "a");
+
+				assert.equal(_.formatValue("<13:kid | <=19:teen | >=65:senior | adult", 12), "kid");
+				assert.equal(_.formatValue("<13:kid | <=19:teen | >=65:senior | adult", 13), "teen");
+				assert.equal(_.formatValue("<13:kid | <=19:teen | >=65:senior | adult", 19), "teen");
+				assert.equal(_.formatValue("<13:kid | <=19:teen | >=65:senior | adult", 20), "adult");
+				assert.equal(_.formatValue("<13:kid | <=19:teen | >=65:senior | adult", 64), "adult");
+				assert.equal(_.formatValue("<13:kid | <=19:teen | >=65:senior | adult", 65), "senior");
+				assert.equal(_.formatValue("<13:kid | <=19:teen | >=65:senior | adult", 66), "senior");
+
+				assert.equal(_.formatValue("<10: small #.99 | >100: big 0000.9999 | medium #.#", 1.1), "small 1.10");
+				assert.equal(_.formatValue("<10: small #.99 | >100: big 0000.9999 | medium #.#", 54), "medium 54");
+				assert.equal(_.formatValue("<10: small #.99 | >100: big 0000.9999 | medium #.#", 217), "big 0217.0000");
+				assert.equal(_.formatValue("<10: small #.99 | >100: big 0000.9999 | medium", 50), "medium");
+			});
+			
+			it('formats dates', function() {
+				var d = new Date(2011, 11, 6,  13, 30, 10, 501);
+				var d2 = new Date(2013, 0, 5,  02, 00, 00, 00);
+				assert.equal(_.formatValue("yMd", d), "2011126");
+				assert.equal(_.formatValue("yyyyMMdd", d), "20111206");
+				assert.equal(_.formatValue("yyyyyyMMMMMddd", d), "00201100012006");
+
+				assert.equal(_.formatValue("yyyyMMdd,n,N,m,H,h,K,k,s,S,a,w,W", d), "20111206,Dec,December,30,13,1,14,2,10,501,pm,Tue,Tuesday");
+				assert.equal(_.formatValue("yyyyMMdd,n,N,m,H,h,K,k,s,SSS,a,w,W", d2), "20130105,Jan,January,0,2,2,3,3,0,000,am,Sat,Saturday");
+				assert.equal(_.formatValue("n[a,b,c,d,e,f,g,h,i,j,k,l],N[01,02,03,04,05,06,07,08,09,10,11,12]", d), "l,12");
+				assert.equal(_.formatValue("w[a,b,c,d,e,f,g],W[01,02,03,04,05,06,07]", d), "c,03");
+
+				var zzzz = (d.getTimezoneOffset() < 0 ? '-' : '+') + _.pad(2, Math.abs(Math.floor(d.getTimezoneOffset()/60))) + _.pad(2, Math.floor(Math.abs(d.getTimezoneOffset()%60)));
+				assert.equal(_.formatValue("HHmmss z", d), "133010 " + zzzz);
+				assert.equal(_.formatValue("HHmmss zzzzz", d), "133010 " + zzzz);
+
+				var d3 = new Date(1362956403000); // Sun, 10 Mar 2013 23:00:03 GMT
+				assert.equal(_.formatValue("[+0000] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-10 23:00:03 +0000");
+				assert.equal(_.formatValue("[+0001] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-10 23:01:03 +0001");
+				assert.equal(_.formatValue("[+0100] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-11 00:00:03 +0100");
+				assert.equal(_.formatValue("[-1100] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-10 12:00:03 -1100");
+			});
+		});
+		
+		describe('parseDate()', function() {
+			_.csl = console;
+			it('parses dates', function() {
+				var d0 = new Date(2011, 11, 6);
+				var d = new Date(2011, 11, 6,  13, 30, 10, 501);
+				var d2 = new Date(2013, 0, 5,  02, 00, 00, 00);
+				
+				assert(_.equals(_.parseDate("yyyyMMdd", "20111206"), d0));
+				assert(_.equals(_.parseDate("yyyy,MM,dd", "2011,12,06"), d0));
+				assert(_.equals(_.parseDate("y,M,d", "2011,12,06"), d0));
+				assert(_.equals(_.parseDate("y,M,d", "2011,12,6"), d0));
+
+//console.log(_.parseDate("yyyyMMdd,n,N,m,H,h,K,k,s,S,a,w,W", "20111206,Dec,December,30,13,1,14,2,10,501,pm,Tue,Tuesday"));
+//				assert(_.equals(_.parseDate("yyyyMMdd,n,N,m,H,h,K,k,s,S,a,w,W", "20111206,Dec,December,30,13,1,14,2,10,501,pm,Tue,Tuesday"), d));
+
+			});
+		});
+		
 	});
 }
 

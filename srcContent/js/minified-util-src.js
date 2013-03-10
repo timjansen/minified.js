@@ -348,19 +348,21 @@ define('minifiedUtil', function() {
 		return (signed?'-':'') + preDecimal + 
 			(afterDecimalPoint ? ((omitZerosAfter?replace(replace(postDecimal, /0+$/), /\.$/):postDecimal)) : '');
 	}
-	function getTimezone(match, idx) {
-		var currentOffset = (new Date()).getTimezoneOffset;
+	function getTimezone(match, idx, refDate) {
+		var currentOffset = refDate.getTimezoneOffset();
 		var requestedOffset = parseInt(match[idx])*60 + parseInt(match[idx+1]);
-		return requestedOffset-currentOffset;
+		return requestedOffset + currentOffset;
 	}
 	// formats number with format string (e.g. "#.999", "#,_", "00000", "000.99", "000.000.000,99", "000,000,000.__")
 	// choice syntax: <cmp><value>:<format>|<cmp><value>:<format>|... 
 	// e.g. 0:no item|1:one item|>=2:# items
 	// <value>="null" used to compare with nulls.
 	// choice also works with strings or bools, e.g. ERR:error|WAR:warning|FAT:fatal|ok
-	function formatValue(format, dateOrNumber) {
+	function formatValue(format, value) {
 		if (isDate(value)) {
-			var timezoneOffsetMin, match, formatNoTZ = format;
+			var timezone, match;
+			var formatNoTZ = format;
+			var date = value;
 			var map = {
 				'y': 'FullYear',
 				'M': ['Month', function(d) { return d + 1; }],
@@ -377,43 +379,44 @@ define('minifiedUtil', function() {
 				'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
 				'w': ['Day', function(d, values) { return (values||['Sun','Mon','Tue','Wed','Thu','Fri','Sat'])[d]; }],
 				'W': ['Day', function(d, values) { return (values||['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'])[d]; }],
-				'z': ['TimezoneOffset', function(d) { 
-					var off = timezoneOffsetMin != null ? timezoneOffsetMin : d; 
-					var sign = off > 0 ? '+' : '-'; 
-					off = off > 0 ? off : -off; 
+				'z': ['TimezoneOffset', function(d) {
+					if (timezone)
+						return timezone;
+					var sign = d > 0 ? '+' : '-'; 
+					var off = d > 0 ? d : -d; 
 					return sign + pad(2, Math.floor(off/60)) + pad(2, off%60); 
 				}]
 			};
-			if (match = /^\[([+-]\d\d)(\d\d)\](.*)/.exec(format)) {
-				timezoneOffsetMin = getTimezone(match, 1);
-				formatNoTZ = match[3];
+			if (match = /^\[(([+-]\d\d)(\d\d))\]\s*(.*)/.exec(format)) {
+				timezone = match[1];
+				date = dateAdd(value, 'minutes', getTimezone(match, 2, value));
+				formatNoTZ = match[4];
 			}
-			var date = timezoneOffsetMin != null ? dateAdd(value, 'minutes', timezoneOffsetMin) : value;
-			return replace(formatNoTZ, /(y+|M+|n+|N+|d+|m+|H+|h+|K+|k+|s+|S+|a+|w+|W+)(?:\[([^\]]+)\])?/g, function(s, placeholder, params) {
+			
+			return replace(formatNoTZ, /(y+|M+|n+|N+|d+|m+|H+|h+|K+|k+|s+|S+|a+|w+|W+|z+)(?:\[([^\]]+)\])?/g, function(s, placeholder, params) {
 				var len = placeholder.length;
 				var val = map[placeholder.charAt(0)];
 				var d = date['get' + (isList(val)?val[0]:val)].call(date);
 				
 				if (isList(val)) {
-					var optionArray = params ? params.split('|') : null;
-					d = val[1](date, optionArray);
+					var optionArray = params ? params.split(',') : null;
+					d = val[1](d, optionArray);
 				}
-				if (!isString(d))
+				if (d != null && !isString(d))
 					d = pad(len, d);
 				return d;
 			});
 			
 		}
 		else 
-			return find(format.split('|'), function(fmtPart) {
-				var match, matchGrp, numFmt;
-				if (match = /([<>]?)(=?)([^:]*):(.*)/.exec(fmtPart)) {
-					var cmpVal1 = parseFloat(value), cmpVal2 = parseFloat(match[3]);
-					if (isNan(cmpVal1) || isNaN(cmpVal2)) {
-						cmpVal1 = toString(value);
+			return find(format.split(/\s*\|\s*/), function(fmtPart) {
+				var match, matchGrp, numFmtOrResult;
+				if (match = /^([<>]?)(=?)([^:]*?)\s*:\s*(.*)$/.exec(fmtPart)) {
+					var cmpVal1 = value, cmpVal2 = parseFloat(match[3]);
+					if (isNaN(cmpVal2) || !isNumber(cmpVal1)) {
+						cmpVal1 = (cmpVal1==null) ? "null" : toString(cmpVal1); // not ""+value, because undefined is treated as null here
 						cmpVal2 = match[3];
 					}
-					
 					if (match[1]) {
 						if ((match[1] == '<' && match[2] && cmpVal1 > cmpVal2) ||
 							(match[1] == '<' && !match[2] && cmpVal1 >= cmpVal2) ||
@@ -421,29 +424,29 @@ define('minifiedUtil', function() {
 							(match[1] == '>' && !match[2] && cmpVal1 <= cmpVal2))
 							return null;
 					}
-					else if (cmpVal1 != value)
+					else if (cmpVal1 != cmpVal2)
 						return null;
-					numFmt = match[4];
+					numFmtOrResult = match[4];
 				}
 				else
-					numFmt = fmtPart;
+					numFmtOrResult = fmtPart;
 
 				//  formatNumber(number, afterDecimalPoint, omitZerosAfter, decimalPoint, beforeDecimalPoint, groupingSeparator, groupingSize)
-				if (match = /(0[0.,]*)(#[,.#]*)(_*)(9*)/.exec(numFmt)) {
-					var part1 = match[1] + match[2];
-					var preDecimalLen = match[1].length ? replace(part1, /[.,]/).length : 1;
-					var decimalPoint = replace(replace(part1, /^.*[0#]/), /[^,.]/);
-					var postDecimal = match[3].length + match[4].length;
+				if (isNumber(value) && (match = /(?:(0[0.,]*)|(#[,.#]*))(_*)(9*)/.exec(numFmtOrResult))) {
+					var part1 = toString(match[1]) + toString(match[2]);
+					var preDecimalLen = toString(match[1]).length ? replace(part1, /[.,]/g).length : 1;
+					var decimalPoint = replace(replace(part1, /^.*[0#]/), /[^,.]/g);
+					var postDecimal = toString(match[3]).length + toString(match[4]).length;
 					var groupingSeparator, groupingSize;
 					if (matchGrp = /([.,])[^.,]+[.,]/.exec(match[0])) {
 						groupingSeparator = matchGrp[1];
 						groupingSize = matchGrp[0].length - 2;
 					}
-					var formatted = formatNumber(value, postDecimal, match[3].length, decimalPoint, preDecimalLen, groupingSeparator, groupingSize);
-					return insertString(format, match.index, match[0].length, formatted);
+					var formatted = formatNumber(value, postDecimal, toString(match[3]).length, decimalPoint, preDecimalLen, groupingSeparator, groupingSize);
+					return insertString(numFmtOrResult, match.index, toString(match[0]).length, formatted);
 				}
 				else
-					return numFmt;
+					return numFmtOrResult;
 			});
 	}
 	function parseDate(format, date) {
@@ -469,17 +472,17 @@ define('minifiedUtil', function() {
 		var match, formatNoTZ;
 			
 			
-		if (match = /^\[([+-]\d\d)(\d\d)\](.*)/.exec(format)) {
-			timezoneOffsetMin = getTimezone(match, 1);
+		if (match = /^\[([+-]\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
+			timezoneOffsetMin = getTimezone(match, 1, new Date());
 			formatNoTZ = match[3];
 		}
 		else
 			formatNoTZ = format;
 			
-		var parser = formatNoTZ.replace(/\s+|(?:M+|m+|y+|d+|H+|h+|K+|k+|s+|S+|z+)|(?:n+|N+|a+|w+|W+)(?:{([^}]*)})?|[^dMmyhHkKsSnNa\s]+/g, function(placeholder, param) { 
+		var parser = new RegExp(formatNoTZ.replace(/\s+|(?:M+|m+|y+|d+|H+|h+|K+|k+|s+|S+|z+)|(?:n+|N+|a+|w+|W+)(?:{([^}]*)})?|[^dMmyhHkKsSnNa\s]+/g, function(placeholder, param) { 
 			var placeholderChar = placeholder.charAt(0);
 			if (/[dmyMhsSkK]/.test(placeholderChar)) {
-				indexMap[reIndex++](placeholderChar);
+				indexMap[reIndex++] = placeholderChar;
 				var plen = placeholder.length;
 				return "(\\d"+(plen<2?"+":("{1,"+plen+"}"))+")";
 			}
@@ -489,7 +492,7 @@ define('minifiedUtil', function() {
 				return "([+-]\\d\\d)(\\d\\d)";
 			}
 			else if (/[nN]/.test(placeholderChar)) {
-				indexMap[reIndex++]([placeholderChar, param && param.split('|')]);
+				indexMap[reIndex++] = [placeholderChar, param && param.split('|')];
 				return "(\\w+)"; 
 			}
 			else if (/[wW]/.test(placeholderChar))
@@ -498,7 +501,7 @@ define('minifiedUtil', function() {
 				return "\\s+"; 
 			else 
 				return escapeRegExp(placeholder);
-		});
+		}));
 		
 		if (!(match = parser.exec(date)))
 			return null;
