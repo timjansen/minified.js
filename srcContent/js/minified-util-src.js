@@ -332,12 +332,12 @@ define('minifiedUtil', function() {
 	}
 	function formatNumber(number, afterDecimalPoint, omitZerosAfter, decimalPoint, beforeDecimalPoint, groupingSeparator, groupingSize) {
 		var signed = number < 0;
-		var s = (signed?-number:number).toFixed(afterDecimalPoint);
-		var preDecimal = replace(s, /\..*/), postDecimal = replace(s, /.*\./);
+		var match = /(\d+)(\.(.*))?/.exec((signed?-number:number).toFixed(afterDecimalPoint));
+		var preDecimal = match[1], postDecimal = (decimalPoint||'.') + match[3];
 		function group(s) {
 			var len = s.length;
 			if (len > groupingSize)
-				return group(s.substring(0, len-groupingSize)) + groupingSeparator + s.substr(len-groupingSize);
+				return group(s.substring(0, len-groupingSize)) + (groupingSeparator||',') + s.substr(len-groupingSize);
 			else
 				return s;					
 		}
@@ -345,7 +345,8 @@ define('minifiedUtil', function() {
 			preDecimal = '0' + preDecimal;
 		if (groupingSize)
 			preDecimal = group(preDecimal);
-		return (signed?'-':'') + preDecimal + (decimalPoint||'.') + omitZerosAfter?replace(/(\.[1-9]+)0+$|\.0+$/, postDecimal, '$1'):postDecimal;
+		return (signed?'-':'') + preDecimal + 
+			(afterDecimalPoint ? ((omitZerosAfter?replace(replace(postDecimal, /0+$/), /\.$/):postDecimal)) : '');
 	}
 	function getTimezone(match, idx) {
 		var currentOffset = (new Date()).getTimezoneOffset;
