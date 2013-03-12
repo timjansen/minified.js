@@ -517,6 +517,24 @@ function runTests(loadInContext) {
 			assert(_.equals(a.onlyLeft(b), []));
 		});
 	});
+
+	describe('_.keys()', function() {
+		it('check keys', function() {
+			var _ = req();
+			var a = {a:2, b:1, c:4, '34':23, 'd': 4};
+			assert(_.equals(_.keys(a).sort(), _('a', 'b', 'c', 'd', '34').sort()));
+			assert(_.equals(_.keys({}).sort(), []));
+		});
+	});
+	
+	describe('_.values()', function() {
+		it('check values', function() {
+			var _ = req();
+			var a = {a:2, b:1, c:4, '34':23, 'd': 4};
+			assert(_.equals(_.values(a).sort(), _(1, 2, 4, 4, 23).sort()));
+			assert(_.equals(_.values({}).sort(), []));
+		});
+	});
 	
 	describe('_.tap()', function() {
 		it('finds only left', function() {
@@ -593,6 +611,72 @@ function runTests(loadInContext) {
 			assert(!_.endsWith(a, "zabcd"));
 			assert(!_.endsWith(a, "4"));
 			assert(!_.endsWith(a, null));
+		});
+	});
+	
+	describe('_.equalsRight()', function() {
+		it('check equality', function() {
+			var _ = req();
+			var a = {a:2, b:1, c:4, '34':23, d:4};
+			var b = {a:2, b:1, d:4};
+			var c = {a:2, b:2, c:4, '34':23, d:4};
+			assert(_.equalsRight(a, a));
+			assert(_.equalsRight(a, b));
+			assert(!_.equalsRight(b, a));
+			assert(!_.equalsRight(a, c));
+			assert(!_.equalsRight(c, a));
+		});
+	});
+	
+	describe('_.copyObj()', function() {
+		it('copy objects', function() {
+			var _ = req();
+			var a = {a:2, b:1, c:4, '34':23, d:4};
+			var b = {a:2, b:1, d:4};
+			var c = {a:2, b:2, c:4, '34':23, d:4};
+			var d = {};
+			assert(_.equals(_.copyObj(null, d), {}));
+			assert(_.equals(_.copyObj(b, d), b));
+			assert(_.equals(_.copyObj(c, d), c));
+			assert(_.equals(_.copyObj(a, d), a));
+		});
+	});
+	
+	describe('_.defaults()', function() {
+		it('copy prop if not set', function() {
+			var _ = req();
+			var a = {a:2, b:1, c:4, '34':23, d:4};
+			var b = {a:2, b:1, d:4};
+			var c = {a:2, b:2, c:4, '34':23, d:4};
+			var d = {};
+			assert(_.equals(_.defaults(null, d), {}));
+			assert(_.equals(_.defaults(b, d), b));
+			assert(_.equals(_.defaults(c, d), a));
+			assert(_.equals(_.defaults(a, d), a));
+		});
+	});
+	
+	describe('_.trim()', function() {
+		it('strips space', function() {
+			var _ = req();
+			assert.equal(_.trim(''), '');
+			assert.equal(_.trim('    '), '');
+			assert.equal(_.trim('xw'), 'xw');
+			assert.equal(_.trim(' x'), 'x');
+			assert.equal(_.trim('x '), 'x');
+			assert.equal(_.trim(' r '), 'r');
+			assert.equal(_.trim('       r   '), 'r');
+		});
+	});
+	
+	describe('_.coal()', function() {
+		it('coalesced', function() {
+			var _ = req();
+			assert.equal(_.coal(), null);
+			assert.equal(_.coal(2), 2);
+			assert.equal(_.coal(null, null, null, 3, null, null), 3);
+			assert.equal(_.coal(null, null, null, null, null), null);
+			assert.equal(_.coal(0, false, '', 'abc'), 0);
 		});
 	});
 }

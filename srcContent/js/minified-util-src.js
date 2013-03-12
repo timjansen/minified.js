@@ -57,11 +57,9 @@ define('minifiedUtil', function() {
 	/**
 	 * @const
 	 */
-	var MONTH_SHORT_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-	/**
-	 * @const
-	 */
 	var MONTH_LONG_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, function(v) {return v.substr(0,3);}); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	
 	/**
 	 * @const
 	 */
@@ -151,13 +149,13 @@ define('minifiedUtil', function() {
 		});
 		return r;
 	}
-	function collect(list, collectFunc, addNulls) {
+	function collect(list, collectFunc) {
 		var result = [];
 		collectFunc = collectFunc || selfFunc;
 		each(list, function(item, index) {
 			if (isList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
 				each(item, function(rr) { result.push(rr); });
-			else if (addNulls || item != null)
+			else if (item != null)
 				result.push(item);
 		});
 		return result;
@@ -418,10 +416,9 @@ define('minifiedUtil', function() {
 						cmpVal2 = match[3];
 					}
 					if (match[1]) {
-						if ((match[1] == '<' && match[2] && cmpVal1 > cmpVal2) ||
-							(match[1] == '<' && !match[2] && cmpVal1 >= cmpVal2) ||
-							(match[1] == '>' && match[2] && cmpVal1 < cmpVal2) ||
-							(match[1] == '>' && !match[2] && cmpVal1 <= cmpVal2))
+						if ((!match[2] && cmpVal1 == cmpVal2 ) ||
+						    (match[1] == '<'  && cmpVal1 > cmpVal2)  ||
+						    (match[1] == '>'  && cmpVal1 < cmpVal2))
 							return null;
 					}
 					else if (cmpVal1 != cmpVal2)
@@ -432,7 +429,7 @@ define('minifiedUtil', function() {
 					numFmtOrResult = fmtPart;
 
 				//  formatNumber(number, afterDecimalPoint, omitZerosAfter, decimalPoint, beforeDecimalPoint, groupingSeparator, groupingSize)
-				if (isNumber(value) && (match = /(?:(0[0.,]*)|(#[,.#]*))(_*)(9*)/.exec(numFmtOrResult))) {
+				if (isNumber(value) && (match = /(?:(0[0.,]*)|(#[#.,]*))(_*)(9*)/.exec(numFmtOrResult))) {
 					var part1 = toString(match[1]) + toString(match[2]);
 					var preDecimalLen = toString(match[1]).length ? replace(part1, /[.,]/g).length : 1;
 					var decimalPoint = replace(replace(part1, /^.*[0#]/), /[^,.]/g);
@@ -472,7 +469,7 @@ define('minifiedUtil', function() {
 		var match, formatNoTZ;
 			
 		if (match = /^\[([+-]\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
-			timezoneOffsetMin = getTimezone(match, 1, new Date());
+			timezoneOffsetMin = getTimezone(match, 1, now());
 			formatNoTZ = match[3];
 		}
 		else
@@ -506,7 +503,7 @@ define('minifiedUtil', function() {
 			return null;
 		
 		if (timezoneIndex != null)
-			timezoneOffsetMin = getTimezone(match, timezoneIndex, new Date());
+			timezoneOffsetMin = getTimezone(match, timezoneIndex, now());
 			
 		var ctorArgs = [0, 0, 0, 0, -timezoneOffsetMin, 0,  0];
 		for (var i = 1; i < reIndex; i++) {
@@ -538,30 +535,30 @@ define('minifiedUtil', function() {
 	}
 	function parseNumber(format, value) {
 		if (arguments.length == 1)
-			return parseNumber(null, value);
-		var decSep = replace(replace(format, '.*[0#]([,.])[_9].*', '$1'), /[^,.]/g) || '.';
-		var grpSep = decSep == ',' ? '.' : ',';
-		var cleanNum = replace(replace(replace(value, escapeRegExp(grpSep)), escapeRegExp(decSep), '.'), /^.*?(-?\d)/, '$1');
-		var r = parseFloat(cleanNum);
+			return parseNumber(null, format);
+		var match, decSep = (match = /[0#]([.,])[_9]/.exec(format)) ? match[1] : ((match = /^[.,]$/.exec(format)) ? match[0]: '.');
+		var r = parseFloat(replace(replace(replace(value, decSep == ',' ? /\./g : /,/g), decSep, '.'), /^[^\d-]*(-?\d)/, '$1'));
 		return isNaN(r) ? null : r;
 	}
+	function now() {
+		return new Date();
+	}
 	function dateClone(date) {
-		if (date)
-			return new Date(date.getTime());
+		return new Date(date.getTime());
 	}
 	function dateAddInline(d, cProp, value) {
 		d['set'+cProp].call(d, d['get'+cProp].call(d) + value);
 	}
 	function dateAdd(date, property, value) {
 		if (arguments.length < 3)
-			return dateAdd(new Date(), date, property);
+			return dateAdd(now(), date, property);
 		var d = dateClone(date);
 		var cProp = property.charAt(0).toUpperCase() + property.substr(1);
 		dateAddInline(d, cProp, value);
 		return d;
 	}
 	function dateMidnight(date) {
-		var od = date || new Date();
+		var od = date || now();
 		return new Date(od.getFullYear(), od.getMonth(), od.getDate());
 	}
 	function dateDiff(property, date1, date2, console) {
@@ -682,18 +679,19 @@ define('minifiedUtil', function() {
      * @id listctor
      */
     /** @constructor */
-	function M(list) {
-		for (var i = 0; i < list.length; i++)
-			this[i] = list[i];
+	function M(list, assimilateSublists) {
+		var self = this, idx = 0;
+		for (var i = 0; i < list.length; i++) {
+			var item = list[i];
+			if (assimilateSublists && isList(item))
+				for (var j = 0; j < item.length; j++)
+					self[idx++] = item[j];
+			else 
+				self[idx++] = item;
+		};
 
-		this['length'] = list.length;
-		
-		
-		this['_'] = true;
-
-	    /*$
-	     * @stop
-	     */
+		self['length'] = idx;
+		self['_'] = true;
 	}
 	
 	/*$
@@ -702,7 +700,7 @@ define('minifiedUtil', function() {
 	 * @configurable default
 	 */
 	function UNDERSCORE() {
-		return new M(collect(arguments, selfFunc, true));
+		return new M(arguments, true);
 	}
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -869,23 +867,23 @@ define('minifiedUtil', function() {
 		'values': values,
 		
 		// tests whether all values of object b exist in a and are equal. Keys not in b are ignored.
-		'equalsRight': function(a, b) {
+		'equalsRight': function(left, right) {
 			var eq = true;
-			each(b, function(key, value) {
-				eq = eq && value == s[key];
+			eachObj(right, function(key, value) {
+				eq = eq && value == left[key];
 			});
 			return eq;
 		},
 		
 		'copyObj': function(from, to) {
-			each(from, function(name, value) {
+			eachObj(from, function(name, value) {
 				to[name] = value;
 			});
 			return to;
 		},
 		
 		'defaults': function(from, to) {
-			each(from, function(name, value) {
+			eachObj(from, function(name, value) {
 				if (to[name] == null)
 					to[name] = value;
 			});
