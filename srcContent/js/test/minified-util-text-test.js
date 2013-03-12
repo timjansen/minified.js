@@ -194,7 +194,7 @@ function runTests(loadInContext) {
 				assert.equal(_.formatValue("n[a,b,c,d,e,f,g,h,i,j,k,l],N[01,02,03,04,05,06,07,08,09,10,11,12]", d), "l,12");
 				assert.equal(_.formatValue("w[a,b,c,d,e,f,g],W[01,02,03,04,05,06,07]", d), "c,03");
 
-				var zzzz = (d.getTimezoneOffset() < 0 ? '-' : '+') + _.pad(2, Math.abs(Math.floor(d.getTimezoneOffset()/60))) + _.pad(2, Math.floor(Math.abs(d.getTimezoneOffset()%60)));
+				var zzzz = (d.getTimezoneOffset() > 0 ? '-' : '+') + _.pad(2, Math.abs(Math.floor(d.getTimezoneOffset()/60))) + _.pad(2, Math.floor(Math.abs(d.getTimezoneOffset()%60)));
 				assert.equal(_.formatValue("HHmmss z", d), "133010 " + zzzz);
 				assert.equal(_.formatValue("HHmmss zzzzz", d), "133010 " + zzzz);
 
@@ -207,7 +207,6 @@ function runTests(loadInContext) {
 		});
 		
 		describe('parseDate()', function() {
-			_.csl = console;
 			it('parses dates', function() {
 				var d0 = new Date(2011, 11, 6);
 				var d = new Date(2011, 11, 6,  13, 30, 10, 501);
@@ -217,10 +216,24 @@ function runTests(loadInContext) {
 				assert(_.equals(_.parseDate("yyyy,MM,dd", "2011,12,06"), d0));
 				assert(_.equals(_.parseDate("y,M,d", "2011,12,06"), d0));
 				assert(_.equals(_.parseDate("y,M,d", "2011,12,6"), d0));
+				assert(_.equals(_.parseDate("yyyyMMddhhmmssaa", "20130105020000am"), d2));
+				assert(_.equals(_.parseDate("y,M,d,h,m,s,a", "2013,1,5,2,0,0,am"), d2));
 
-//console.log(_.parseDate("yyyyMMdd,n,N,m,H,h,K,k,s,S,a,w,W", "20111206,Dec,December,30,13,1,14,2,10,501,pm,Tue,Tuesday"));
-//				assert(_.equals(_.parseDate("yyyyMMdd,n,N,m,H,h,K,k,s,S,a,w,W", "20111206,Dec,December,30,13,1,14,2,10,501,pm,Tue,Tuesday"), d));
+				assert(_.equals(_.parseDate("yyyy,d,n,m,H,s,S,w,W", "2011,6,Dec,30,13,10,501,Tue,Tuesday"), d));
+				assert(_.equals(_.parseDate("yyyy,d,n,m,h,s,S,a,w,W", "2011,6,Dec,30,1,10,501,pm,Tue,Tuesday"), d));
+				assert(_.equals(_.parseDate("yyyy,d,n,m,K,s,S,w,W", "2011,06,Dec,30,14,10,501,Wed,Wednesday"), d)); // ignored w/W
+				assert(_.equals(_.parseDate("yyyy,d,N,m,k,s,S,a,w,W", "2011,06,December,30,2,10,501,pm,Tue,Tuesday"), d));
 
+				var f1 = "[+0000] yyyy-MM-dd hh:mm:ss.SSS aa";
+				var f2 = "[-0500] y,M,d,H,m,s,S";
+				assert(_.equals(_.parseDate(f1, _.formatValue(f1, d)), d));
+				assert(_.equals(_.parseDate(f2, _.formatValue(f2, d)), d));
+				assert(_.equals(_.parseDate(f1, _.formatValue(f1, d2)), d2));
+				assert(_.equals(_.parseDate(f2, _.formatValue(f2, d2)), d2));
+
+				var f3 = "yyyy-MM-dd HH:mm:ss.SSS zz";
+				assert(_.equals(_.parseDate(f3, _.formatValue(f3, d)), d));
+				assert(_.equals(_.parseDate(f3, _.formatValue(f3, d2)), d2));
 			});
 		});
 		

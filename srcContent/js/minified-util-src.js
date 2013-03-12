@@ -382,7 +382,7 @@ define('minifiedUtil', function() {
 				'z': ['TimezoneOffset', function(d) {
 					if (timezone)
 						return timezone;
-					var sign = d > 0 ? '+' : '-'; 
+					var sign = d < 0 ? '+' : '-'; 
 					var off = d > 0 ? d : -d; 
 					return sign + pad(2, Math.floor(off/60)) + pad(2, off%60); 
 				}]
@@ -451,16 +451,16 @@ define('minifiedUtil', function() {
 	}
 	function parseDate(format, date) {
 		var mapping = {
-			'y': 0, // [ctorIndex, offset]
-			'M': [1,-1],
-			'n': [1, MONTH_SHORT_NAMES], // ctorIndex, value array
+			'y': 0,      // placeholder -> ctorIndex
+			'M': [1,1], // placeholder -> [ctorIndex, offset|value array]
+			'n': [1, MONTH_SHORT_NAMES], 
 			'N': [1, MONTH_LONG_NAMES],
 			'd': 2,
 			'm': 4,
 			'H': 3,
 			'h': 3,
-			'K': [3, 1],
-			'k': [3, 1],
+			'K': [3,1],
+			'k': [3,1],
 			's':  5,
 			'S':  6,
 			'a': [3, MERIDIAN_NAMES]
@@ -471,17 +471,16 @@ define('minifiedUtil', function() {
 		var timezoneIndex;
 		var match, formatNoTZ;
 			
-			
 		if (match = /^\[([+-]\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
 			timezoneOffsetMin = getTimezone(match, 1, new Date());
 			formatNoTZ = match[3];
 		}
 		else
 			formatNoTZ = format;
-			
-		var parser = new RegExp(formatNoTZ.replace(/\s+|(?:M+|m+|y+|d+|H+|h+|K+|k+|s+|S+|z+)|(?:n+|N+|a+|w+|W+)(?:{([^}]*)})?|[^dMmyhHkKsSnNa\s]+/g, function(placeholder, param) { 
+			var parser = new RegExp(formatNoTZ.replace(/(m+|y+|d+|h+|k+|s+|z+|\s+|n+|a+|w+)(?:\[([^\]]*)\])?/ig, function(wholeMatch, placeholder, param) {
 			var placeholderChar = placeholder.charAt(0);
-			if (/[dmyMhsSkK]/.test(placeholderChar)) {
+
+			if (/[dmhkyhs]/i.test(placeholderChar)) {
 				indexMap[reIndex++] = placeholderChar;
 				var plen = placeholder.length;
 				return "(\\d"+(plen<2?"+":("{1,"+plen+"}"))+")";
@@ -491,11 +490,11 @@ define('minifiedUtil', function() {
 				reIndex += 2;
 				return "([+-]\\d\\d)(\\d\\d)";
 			}
-			else if (/[nN]/.test(placeholderChar)) {
+			else if (/[Nna]/.test(placeholderChar)) {
 				indexMap[reIndex++] = [placeholderChar, param && param.split('|')];
 				return "(\\w+)"; 
 			}
-			else if (/[wW]/.test(placeholderChar))
+			else if (/w/i.test(placeholderChar))
 				return "\\w+";
 			else if (/\s/.test(placeholderChar))
 				return "\\s+"; 
@@ -507,27 +506,30 @@ define('minifiedUtil', function() {
 			return null;
 		
 		if (timezoneIndex != null)
-			timezoneOffsetMin = getTimezone(match, timezoneIndex);
+			timezoneOffsetMin = getTimezone(match, timezoneIndex, new Date());
 			
-		var ctorArgs = [0, 0, 0, timezoneOffsetMin, 0, 0,  0];
+		var ctorArgs = [0, 0, 0, 0, -timezoneOffsetMin, 0,  0];
 		for (var i = 1; i < reIndex; i++) {
+			var matchVal = match[i];
 			var indexEntry = indexMap[i];
-			if (isList(indexEntry)) { // for n or N
-				var mapEntry  = mapping[indexEntry[0]];
+			if (isList(indexEntry)) { // for a, n or N
+				var placeholderChar = indexEntry[0];
+				var mapEntry  = mapping[placeholderChar];
+				var ctorIndex = mapEntry[0];
 				var valList = indexEntry[1] || mapEntry[1];
-				var listValue = find(valList, function(v) { return startsWith(match[i], v); });
-				if (!listValue)
+				var listValue = find(valList, function(v, index) { return startsWith(matchVal, v) ? index : null; });
+				if (listValue == null)
 					return null;
-				if (indexEntry[0] == 'a')
-					ctorArgs[mapEntry[0]] += listValue * 12;
+				if (placeholderChar == 'a')
+					ctorArgs[ctorIndex] += listValue * 12;
 				else
-					ctorArgs[mapEntry[0]] = listValue;
+					ctorArgs[ctorIndex] = listValue;
 			}
 			else if (indexEntry) { // for numeric values (yHmMs)
-				var value = parseInt(match[i]);
+				var value = parseInt(matchVal);
 				var mapEntry  = mapping[indexEntry];
 				if (isList(mapEntry))
-					ctorArgs[mapEntry[0]] += value + mapEntry[1];
+					ctorArgs[mapEntry[0]] += value - mapEntry[1];
 				else
 					ctorArgs[mapEntry] += value;
 			}
@@ -590,8 +592,13 @@ define('minifiedUtil', function() {
 	}
 	// reads / writes property in name.name.name syntax. Supports setter/getter functions
 	function prop(path, object, value) {
-		var ppos = path.indexOf('.');
-		if (ppos < 0) {
+		var match = /([^.]+)\.(.*)/.exec(path);
+		if (match) {
+			var name = match[1];
+			var val = object[name];
+			return prop(match[2], isFunction(val) ? val() : val, value);
+		}
+		else {
 			var val = object[path];
 			if (value === undef)
 				return isFunction(val) ? val() : val;
@@ -599,11 +606,6 @@ define('minifiedUtil', function() {
 				return val(value);
 			else
 				return object[path] = value;
-		}
-		else {
-			var name = path.substr(0, ppos);
-			var val = object[name];
-			return prop(path.substr(ppos+1), isFunction(val) ? val() : val, value);
 		}
 	}
 	// copies all elements of from into to, merging into existing structures.
@@ -866,24 +868,23 @@ define('minifiedUtil', function() {
 		'keys': keys,
 		'values': values,
 		
-		// tests whether all values of object b exit in a and are equal. Keys not in b are ignored.
-		'equalsRight': function(a, b, compareFunc) {
+		// tests whether all values of object b exist in a and are equal. Keys not in b are ignored.
+		'equalsRight': function(a, b) {
 			var eq = true;
-			each(a, function(key, value) {
-				if (compareFunc ? !compareFunc(value, b[key]) : value != b[key])
-					eq = false;
+			each(b, function(key, value) {
+				eq = eq && value == s[key];
 			});
 			return eq;
 		},
 		
-		'copyObj': function(to, from) {
+		'copyObj': function(from, to) {
 			each(from, function(name, value) {
 				to[name] = value;
 			});
 			return to;
 		},
 		
-		'defaults': function(to, from) {
+		'defaults': function(from, to) {
 			each(from, function(name, value) {
 				if (to[name] == null)
 					to[name] = value;
@@ -903,39 +904,57 @@ define('minifiedUtil', function() {
 			return null;
 		},
 		
-		// takes vararg of other promises to join
+		// takes vararg of other promises to assimilate
+		// if one promise is given, this promise assimilates the given promise as-is, and just forwards fulfillment and rejection with the original values.
+		//
+		// if more than one promise given, it will assimilate all of them with slightly different rules:
+		//    - the new promise is fulfilled if all assimilated promises have been fulfilled. The fulfillment values
+		//      of all assimilated promises are given to the handler as arguments. Note that the fulfillment values themselves are always arrays, as a promise can have several fulfillment values in
+		//      the Minified implementation.
+		//    - when one of the promises is rejected, the new promise is rejected immediately. The rejection handler gets the promises rejection value (first argument is it got several)
+		//      as first argument, an array of the result values of all promises as a second (that means one array of arguments for each promise), and the index of the failed promise as third
 		'promise': function promise() {
 			var state; // undefined/null = pending, true = fulfilled, false = rejected
-		    var values = [];     // an array of values as arguments for the then() handlers
-		    var deferred = [];   // this function calls the functions supplied by then()
+			var values = [];     // an array of arguments arrays for the then() handlers
+			var deferred = [];   // this function calls the functions supplied by then()
 
-		    // extra vals to be used if ctor called with varargs
-			var joinedPromises = arguments;
-			var numCompleted = 0; // number of completed promises
-			var values = []; // array containing the result arrays of all joined promises
+			var assimilatedPromises = arguments;
+			var assimilatedNum = assimilatedPromises.length;
+			var numCompleted = 0; // number of completed, assimilated promises
+			var values = []; // array containing the result arrays of all assimilated promises
 		    
-		    function set(newState, newValues) {
-		  		if (state == null) {
-		    		state = newState;
-		    		values = hhToList(newValues);
-		    		defer(function() {
+			function set(newState, newValues) {
+				if (state == null) {
+					state = newState;
+					values = isList(newValues) ? newValues : [newValues];
+					defer(function() {
 						each(deferred, function(f) {f();});
 					});
 				}		
-		    }
+			}
 
-		    // use promise varargs
-			each(joinedPromises, function(promise, index) {
-				promise.then(function(v) {
-					values[index] = v;
-					if (++numCompleted == joinedPromises.length)
-						set(true, [values]);
-				}, function(e) {
-					values[index] = v;
-					set(false, [index, values]);
-				});
+			// use promise varargs
+			each(assimilatedPromises, function assimilate(promise, index) {
+				try {
+					promise['then'](function resolvePromise(v) {
+						if (v && isFunction(v['then'])) {
+							assimilate(v['then'], index);
+						}
+						else {
+							values[index] = map(arguments, selfFunc);
+							if (++numCompleted == assimilatedNum)
+								set(true, assimilatedNum < 2 ? values[index] : values);
+						}
+					}, 
+					function rejectPromise(e) {
+						values[index] = map(arguments, selfFunc);
+						set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
+					});
+				}
+				catch (e) {
+					set(false, [e, values, index]);
+				}
 			});
-
 		    
 		    set['then'] = function then(onFulfilled, onRejected) {
 				var newPromise = promise();
