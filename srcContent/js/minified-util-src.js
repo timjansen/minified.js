@@ -996,7 +996,7 @@ define('minifiedUtil', function() {
 		},
 		
 		'format': function(format, object) {
-			return replace(format, /{([\w\d_]+)(,([^}]*))?}/g, function(match, path, subFormatPart, subFormat) {
+			return replace(format, /{([^,}]*)(,([^}]*))?}/g, function(match, path, subFormatPart, subFormat) {
 				var value = path=='' ? object : prop(path, object);
 				return subFormatPart ? formatValue(subFormat, value) : toString(value);
 					

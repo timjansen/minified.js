@@ -268,6 +268,24 @@ function runTests(loadInContext) {
 				assert.equal(_.parseNumber("#.#.#,9", "-43.3.3.3.0,12"), -433330.12);
 			});
 		});
+		
+		describe('format()', function() {
+			it('replaces the main object', function() {
+				assert.equal(_.format("abc{}def", 5), "abc5def");
+			});
+			it('supports string properties', function() {
+				assert.equal(_.format("{ABC}{XXX}def{DOESNOTEXIST}={_ODD+NAME}", {XXX:5, ABC:'abc', '_ODD+NAME':'0202'}), "abc5def=0202");
+			});
+			it('supports numberic properties', function() {
+				assert.equal(_.format("{0} - {1} - {2} - {3} - {4} - ", [4, 5, 6, null]), "4 - 5 - 6 -  -  - ");
+			});
+			it('supports complex properties', function() {
+				assert.equal(_.format("a.b={a.b}, e.e._32.42={e.e._32.42.1}", {a:{b:2}, e:{e:{_32:{'42':[1, 5]}}}}), "a.b=2, e.e._32.42=5");
+			});
+			it('supports sub formats', function() {
+				assert.equal(_.format("{0,000.99} | {choice,a:x|b:y|c:z} | {date,yyyyMMdd}", {0: 15.8, choice: 'b', date: new Date(2011, 3, 2)}), "015.80 | y | 20110402");
+			});
+		});
 	});
 }
 
