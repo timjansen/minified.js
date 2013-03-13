@@ -1,4 +1,5 @@
 var $ = require('minified').$, $$ = $.$$, EE = $.EE;
+var _ = require('minifiedUtil')._;
 
 var SRC='minified-src.js';
 
@@ -46,7 +47,7 @@ function setUpConfigurationUI(s) {
 				if (closureResult) {
 					$$('#compile').disabled = false;
 					$('#gzipRow, #downloadRow').set({$display: 'table-row'});
-					$$('#resultSrc').value = header + closureResult.compiledCode;
+					$$('#resultSrc').value = header + '\n' + closureResult.compiledCode;
 					$('#resultPlain').fill((closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedSize + ' bytes)');
 					$('#resultGzipped').fill((closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedGzipSize + ' bytes)');
 					$$('#resultLink').setAttribute('href', 'http://closure-compiler.appspot.com' +closureResult.outputFilePath);
@@ -78,11 +79,11 @@ function setUpConfigurationUI(s) {
 	function fulfillSectionDependencies(element) {
 		var sec = s.sectionMap[element.id.substr(4)];
 		if (element.checked)
-			hhEach(sec.requires, function(rid) {
+			_.eachObj(sec.requires, function(rid) {
 				$('#sec-'+rid).set('checked', true);
 			});
 		else
-			hhEach(sec.requiredBy, function(rid) {
+			_.eachObj(sec.requiredBy, function(rid) {
 				$('#sec-'+rid).set('checked', false);
 			});
 	}
@@ -108,19 +109,21 @@ function setUpConfigurationUI(s) {
 		});
 		
 		var sectionCheckBox;
-		hhEach(hhFilter(s.sections, function(sec) { return sec.module == MODULES[i] && sec.configurable;}).sort(function(a,b) {
+		_.filter(s.sections, function(sec) { 
+			return sec.module == MODULES[i] && sec.configurable;}
+		).sort(function(a,b) {
 			var ha = a.name || a.id, hb = b.name || b.id;
 			if (ha == hb)
 				return 0;
 			return ha > hb ? 1 : -1;
-		}), function(sec) {
+		}).each(function(sec) {
 			function createReqList(prefix, map) {
 				var MAX = 8;
-				var list = hhFilter(hhKeys(map), function(t){ return !!map[t].name;});
+				var list = _.filter(_.keys(map), function(t){ return !!map[t].name;});
 				if (!list.length)
 					return null;
 				var idx = 0, txt=prefix;
-				hhEach(list, function(r) {
+				_.each(list, function(r) {
 					if (idx++ < Math.min(list.length, MAX)) {
 						if (idx > 1) {
 							if (idx == Math.min(list.length, MAX))

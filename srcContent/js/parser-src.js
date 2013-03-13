@@ -1,3 +1,4 @@
+var _ = require('minifiedUtil')._;
 
 // parses the source, returns an array of objects describing sections that can be enabled/disabled
 function parseSourceSections(src) {
@@ -17,7 +18,7 @@ function parseSourceSections(src) {
 	}
 	var currentSection = createSection();
 	var inComment = false;
-	hhEach(lines, function(line) {
+	_.each(lines, function(line) {
 		if (inComment && /^.*\*\/\s*$/.test(line)) // end of comment ("*/")
 			inComment = false;
 		else if (inComment) {
@@ -25,12 +26,12 @@ function parseSourceSections(src) {
 			var tagmatch = l.match(/^\s*@([a-z]+)/);
 			if (tagmatch) { // comment tag found
 				var tag = tagmatch[1];
-				var content = hhTrim(l.replace(/^\s*@[a-z]+\s*/, '')); // remove tag from line
+				var content = _.trim(l.replace(/^\s*@[a-z]+\s*/, '')); // remove tag from line
 				if (tag == 'syntax' || tag == 'example')
 					currentSection[tag].push(content);
 				else if (tag == 'requires') {
 					if (content.length)
-						hhEach(content.split(/\s+/), function(c) {
+						_.each(content.split(/\s+/), function(c) {
 							currentSection.requires[c] = 1; 
 						});
 				}
@@ -45,7 +46,7 @@ function parseSourceSections(src) {
 					currentSection[tag] = (content != '') ? content : 1;
 			}
 			else if (currentSection.params.length) // parameters reached?
-				currentSection.params[currentSection.params.length-1].desc += '\n' + hhTrim(l); // append to last parameter
+				currentSection.params[currentSection.params.length-1].desc += '\n' + _.trim(l); // append to last parameter
 			else if (currentSection.example.length) // in examples?
 				currentSection.example[currentSection.example.length-1] += '\n' + l; // append to last example
 			else // still in main description
@@ -65,7 +66,7 @@ function parseSourceSections(src) {
 // creates a map of all sections by id
 function createSectionMap(sections) {
 	var m = {};
-	hhEach(sections, function(section) {
+	_.each(sections, function(section) {
 		m[section.id] = section;
 	});
 	return m;
@@ -74,12 +75,12 @@ function createSectionMap(sections) {
 // completes dependencies in the sections by adding dependencies of dependencies in the sections
 function completeRequirements(sections, sectionMap) {
 	var addedReqs = 0;
-	hhEach(sections, function(s) {
-		hhEach(s.requires, function(reqId) {
+	_.each(sections, function(s) {
+		_.eachObj(s.requires, function(reqId) {
 			var s2 = sectionMap[reqId];
 			if (!s2)
 				throw Error("Unknown id in requirement: \"" + reqId + "\"");
-			hhEach(s2.requires, function(reqId2) {
+			_.eachObj(s2.requires, function(reqId2) {
 				if (!s.requires[reqId2]) {
 					addedReqs++;
 					s.requires[reqId2] = 1;
@@ -90,8 +91,8 @@ function completeRequirements(sections, sectionMap) {
 	if (addedReqs > 0)
 		completeRequirements(sections, sectionMap); // repeat until all requirements complete
 	else // completed: now start reverse search
-		hhEach(sections, function(s) {
-			hhEach(s.requires, function(t) { 
+		_.each(sections, function(s) {
+			_.eachObj(s.requires, function(t) { 
 				sectionMap[t].requiredBy[s.id] = 1;
 			});
 		});
@@ -100,10 +101,10 @@ function completeRequirements(sections, sectionMap) {
 // creates a map (id->1) of all enabled sections plus their dependencies
 function calculateDependencies(sectionMap, enabledSections) {
 	var r = {};
-	hhEach(enabledSections, function(s) {
+	_.eachObj(enabledSections, function(s) {
 		if (enabledSections[s]) {
 			r[s] = 1;
-			hhEach(sectionMap[s].requires, function(req) {
+			_.eachObj(sectionMap[s].requires, function(req) {
 				r[req] = 1;
 			});
 		}
@@ -114,7 +115,7 @@ function calculateDependencies(sectionMap, enabledSections) {
 //creates a map of all configurable sections by id
 function createDefaultConfigurationMap(sections, includeDisabled) {
 	var m = {};
-	hhEach(sections, function(section) {
+	_.each(sections, function(section) {
 		if (section.configurable && (section.configurable == 'default' || includeDisabled))
 			m[section.id] = 1;
 	});
@@ -130,10 +131,10 @@ function compile(sections, sectionMap, enabledSections) {
 	var enabledSectionsWithDeps = calculateDependencies(sectionMap, enabledSections);
 	var condBlock = [];
 	var lastLineEmpty = true; // =true: don't allow empty lines at the beginning
-	hhEach(hhFilter(sections, function(s) {
+	_.filter(sections, function(s) {
 		return enabledSectionsWithDeps[s.id] || !(s.configurable || s.dependency); 
-	}), function(s){
-		hhEach(s.src, function(line) {
+	}).each(function(s){
+		_.each(s.src, function(line) {
 			if (/^\s*$/.test(line)) { // empty line?
 				if (!lastLineEmpty)
 					src += '\n';
@@ -178,8 +179,8 @@ var CONFIG_ONLY = 'Only sections ';
 
 //Serializes the configuration into a string
 function serializeEnabledSections(sections, enabledSections) {
-	var configurableSections = hhFilter(sections, function(s) { return s.configurable; });
-	var enabledSectionList = hhFilter(hhKeys(enabledSections), function(s) { return enabledSections[s];});
+	var configurableSections = _.filter(sections, function(s) { return s.configurable; });
+	var enabledSectionList = _.filter(_.keys(enabledSections), function(s) { return enabledSections[s];});
 
 	var head, listedIds = [];
 	if (enabledSectionList.length == configurableSections.length) {
@@ -188,7 +189,7 @@ function serializeEnabledSections(sections, enabledSections) {
 	}
 	else if (enabledSectionList.length > configurableSections.length/2) {
 		head = CONFIG_COMMENT + CONFIG_ALL_EXCEPT;
-		listedIds = hhCollect(hhFilter(configurableSections, function(s) { return !enabledSections[s.id]; }), function(s) { return s.id; });
+		listedIds = _.filter(configurableSections, function(s) { return !enabledSections[s.id]; }).collect(function(s) { return s.id; });
 	}
 	else {
 		head = CONFIG_COMMENT + CONFIG_ONLY;
@@ -197,7 +198,7 @@ function serializeEnabledSections(sections, enabledSections) {
 	
 	var txt = "// " + CONFIG_START + " use this comment to re-create your build configuration\n" + head;
 	var charsToBreak = 50;
-	hhEach(listedIds.sort(), function(id) {
+	_(listedIds).sort().each(function(id) {
 		if (charsToBreak < id.length) {
 			charsToBreak = 70;
 			txt += '\n// - ' + id + ', ';
@@ -228,7 +229,6 @@ function deserializeEnabledSections(sections, src) {
 		if (/^\s*\/\/s*/.test(line)) {
 			var cmt = line.replace(/^\s*\/\/\s*/, '');
 			if (startRegexp.test(cmt) && i+1 < lines.length) {
-print('Start');
 				var s = '';
 				for (var j = i+1; j < lines.length; j++)
 					if (configCmtRegexp.test(lines[j])) {
@@ -244,14 +244,14 @@ print('Start');
 				s = s.replace(/\s*\.\s*$/,'');
 				if (allExceptRegexp.test(s)) {
 					var r = createDefaultConfigurationMap(sections, true);
-					hhEach(s.replace(allExceptRegexp, '').split(/\s*,\s*/), function(section) {
+					_.each(s.replace(allExceptRegexp, '').split(/\s*,\s*/), function(section) {
 						delete r[section];
 					});
 					return r;
 				}
 				if (onlyRegexp.test(s)) {
 					var r = {};
-					hhEach(s.replace(onlyRegexp, '').split(/\s*,\s*/), function(section) {
+					_.each(s.replace(onlyRegexp, '').split(/\s*,\s*/), function(section) {
 						r[section] = 1;
 					});
 					return r;

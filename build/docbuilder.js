@@ -6,14 +6,14 @@ function createDocs(sec) {
 	if (!sec.name || !sec.desc || sec.doc == 'no')
 		return;
 	
-	var s = hhTemplate('<h3><a name="doc-ID">TITLE</a></h3>\n'+
-			'<div class="summary">SUMMARY</div>\n\n',
+	var s = _.format('<h3><a name="doc-{ID}">{TITLE}</a></h3>\n'+
+			'<div class="summary">{SUMMARY}</div>\n\n',
 			{ID: sec.id, TITLE: sec.name, SUMMARY: sec.desc.replace(/\.[^]+$/m, '.')});
 	if (sec.syntax.length) {
 		s += '<h4>Syntax</h4>\n';
 		s += '<div class="syntaxVariant">\n';
-		hhEach(sec.syntax, function(syn, synIndex) {
-			s += hhTemplate('<div class="syntax">SYNTAX</div>\n', {SYNTAX: syn});
+		_.each(sec.syntax, function(syn, synIndex) {
+			s += _.format('<div class="syntax">{SYNTAX}</div>\n', {SYNTAX: syn});
 		});
 		s += '</div>\n\n';
 	}
@@ -21,33 +21,33 @@ function createDocs(sec) {
 	if (sec.params.length) {
 		s += '<h4>Parameters</h4>\n';
 		s += '<dl class="params">\n';
-		hhEach(sec.params, function(param) {
+		_.each(sec.params, function(param) {
 			var desc = param.desc.replace(/^optional/, '<span class="optional">optional</span>').replace('&&', '&amp;&amp;');
 			var re = RegExp('\b' + param.name + '\b');
 			var highlightClasses = [];
-			hhEach(sec.syntax, function(syn, synIndex) {
+			_.each(sec.syntax, function(syn, synIndex) {
 				if (param.name == '@return' || re.test(syn))
 					highlightClasses.push('inSyntax' + synIndex);
 				
 			});
 			if (param.name != '@return')
-				s += hhTemplate('<dt id="PARAMREF" class="CLASSDEF"><a name="PARAMREF">PARAM</a></dt>\n<dd class="CLASSDEF">DESC</dd>\n', 
+				s += _.format('<dt id="{PARAMREF}" class="{CLASSDEF}"><a name="{PARAMREF}">{PARAM}</a></dt>\n<dd class="{CLASSDEF}">{DESC}</dd>\n', 
 						{PARAMREF: sec.id+'_'+param.name, PARAM: param.name, DESC: desc, CLASSDEF: highlightClasses.join(' ')});
 			else
-				s += hhTemplate('<dt id="RETURNREF" class="returnValue CLASSDEF"><a name="RETURNREF">return value</a></dt>\n<dd class="CLASSDEF">DESC</dd>\n',
+				s += _.format('<dt id="{RETURNREF}" class="returnValue {CLASSDEF}"><a name="{RETURNREF}">return value</a></dt>\n<dd class="{CLASSDEF}">{DESC}</dd>\n',
 						{RETURNREF: sec.id+'_RETURN', DESC: desc, CLASSDEF: highlightClasses.join(' ')});
 		});
 		s += '</dl>\n\n';
 	}
 	
 	s += '<h4>Description</h4>\n';
-	s += hhTemplate('<div class="description">DESC</div>\n\n', {DESC: sec.desc});
+	s += _.format('<div class="description">{DESC}</div>\n\n', {DESC: sec.desc});
 	
 	if (sec.example.length) {
 		s += '<div class="examples">\n';
-		hhEach(sec.example, function(example) {
+		_.each(sec.example, function(example) {
 			s += '<h4>Example</h4>\n';
-			s += hhTemplate('<div class="example">EXAMPLE</div>\n', {EXAMPLE: example.replace('&&', '&amp;&amp;')});
+			s += _.format('<div class="example">{EXAMPLE}</div>\n', {EXAMPLE: example.replace('&&', '&amp;&amp;')});
 		});
 		s += '</div>\n\n';
 	}
@@ -59,8 +59,8 @@ function createPreview(sec) {
 	if (!sec.name || !sec.desc || sec.doc == 'no')
 		return;
 	
-	var s = hhTemplate('<h3><a href="ID.html">TITLE</a></h3>\n'+
-			'<div class="summary">SUMMARY</div>\n\n',
+	var s = _.format('<h3><a href="{ID}.html">{TITLE}</a></h3>\n'+
+			'<div class="summary">{SUMMARY}</div>\n\n',
 			{ID: sec.id, TITLE: sec.name, SUMMARY: sec.desc.replace(/\.[^]+$/m, '.')});
 	sec.htmlpreview = s;
 }
@@ -71,11 +71,11 @@ function createTOCEntry(sec) {
 	if (!sec.name || !sec.desc || sec.doc == 'no')
 		return;
 	
-	sec.tocentry = hhTemplate('<a href="ID.html">TITLE</a>\n',	{ID: sec.id, TITLE: sec.name});
+	sec.tocentry = _.format('<a href="{ID}.html">{TITLE}</a>\n',	{ID: sec.id, TITLE: sec.name});
 }
 
 function documentSections(docSections) {
-	hhEach(docSections, function(sec) {
+	_.each(docSections, function(sec) {
 		createDocs(sec);
 		createPreview(sec);
 		createTOCEntry(sec);
@@ -115,7 +115,7 @@ function createOverviewPage(sections) {
 	
 	// Gen
 	var html = '';
-	hhEach(sections, function(sec) {
+	_.each(sections, function(sec) {
 		html += sec.htmlpreview;
 	});
 	return createPage("Reference - Minified.js", html);
@@ -125,7 +125,7 @@ function createToc(sections) {
 	sortTocOrder(sections);
 	
 	var html = '<div id="toc">';
-	hhEach(sections, function(sec) {
+	_.each(sections, function(sec) {
 		html += sec.tocentry;
 	});
 	html += '</div>';

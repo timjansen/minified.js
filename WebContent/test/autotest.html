@@ -13,7 +13,7 @@
 	</style> 
 
 	<script type="text/javascript" src="sparkplug.js"></script>
-	<script type="text/javascript" src="helper.js"></script>
+	<script type="text/javascript" src="minified-util.js"></script>
 	<script type="text/javascript">
 	// Load the right source, depending on whether 'compiled' is in the URL query
 	
@@ -21,12 +21,13 @@
 	var srcFiles = ["../minified-src.js", "../minified.js", "../minified-src.noie.js", "../minified.noie.js"];
 	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie version on old ie
 	
-	var srcNum = parseInt(hhToString(q).replace(/[^0-9]/g, '')||'0') || 0;
+	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;
 	var file = srcFiles[srcNum] + '?rnd=' + (new Date().getTime());
     document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
 	</script>
 	<script type="text/javascript">
 	 	var MINI = $ = require('minified').$, $$ = $.$$, EE = $.EE;
+ 		var _ = require('minifiedUtil')._;
 	 	
 		function fail(text) {
 			throw text;
@@ -103,7 +104,7 @@
 				}
 				if (!testFinished) {
 					msgSpan.set(s ? '+resultOk' : '+resultFailed').fill(s ? 'OK' : 'Failed (' + msg + ')');
-					if (window.console) console.log('Test:', test.name, 'Result:', s, 'Msg:', hhToString(msg));
+					if (window.console) console.log('Test:', test.name, 'Result:', s, 'Msg:', _.toString(msg));
 					testFinished = true;
 					finishedNum++;
 					if (!s)

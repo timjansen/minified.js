@@ -7,7 +7,7 @@
   	<script language="javascript" src="build/rewriter.js" />
   	
   	<!-- for Autotest.. -->
-  	<copy file="srcContent/js/helper-src.js" tofile="WebContent/test/helper.js" />
+  	<copy file="srcContent/js/minified-util-src.js" tofile="WebContent/test/minified-util.js" />
   	<copy file="srcContent/js/sparkplug-src.js" tofile="WebContent/test/sparkplug.js" />
   	  	
   	<!-- Minified script -->
@@ -33,7 +33,7 @@
   	
      <!-- Builder script -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
-  	    <arg value="--js=srcContent/js/helper-src.js"/>
+  	    <arg value="--js=srcContent/js/minified-util-src.js"/>
   	    <arg value="--js=WebContent/minified.js"/>
   	    <arg value="--js=srcContent/js/parser-src.js"/>
   	    <arg value="--js=srcContent/js/builder-src.js"/>

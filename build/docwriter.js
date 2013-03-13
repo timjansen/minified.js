@@ -18,9 +18,11 @@ function writeFile(file, content) {
 
 // GO!
 
-eval(readFile('srcContent/js/helper-src.js'));
+eval(readFile('srcContent/js/minified-util-src.js'));
 eval(readFile('srcContent/js/parser-src.js'));
 eval(readFile('build/docbuilder.js'));
+
+var _ = require('minifiedUtil')._;
 
 var src = readFile(project.getProperty('src'));
 
@@ -33,6 +35,6 @@ writeFile('srcContent/reference/index.xml', createOverviewPage(docSections));
 var tocHtml = createToc(docSections);
 
 // Generate single doc pages
-hhEach(docSections, function(sec) {
+_.each(docSections, function(sec) {
 	writeFile('srcContent/reference/'+sec.id+'.xml', createReferencePage(sec, tocHtml));
 });
