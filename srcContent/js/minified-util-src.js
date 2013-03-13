@@ -149,16 +149,21 @@ define('minifiedUtil', function() {
 		});
 		return r;
 	}
-	function collect(list, collectFunc) {
+	function collector(iterator, obj, collectFunc) {
 		var result = [];
-		collectFunc = collectFunc || selfFunc;
-		each(list, function(item, index) {
-			if (isList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
-				each(item, function(rr) { result.push(rr); });
-			else if (item != null)
-				result.push(item);
+		iterator(obj, function (a, b) {
+			if (isList(item = collectFunc(a, b))) // extreme variable reusing: a is now the callback result
+				each(a, function(rr) { result.push(rr); });
+			else if (a != null)
+				result.push(a);
 		});
 		return result;
+	}
+	function collectObj(obj, collectFunc) {
+		return collector(eachObj, obj, collectFunc);
+	}
+	function collect(list, collectFunc) {
+		return collector(each, list, collectFunc);
 	}
 	function keyCount(obj) {
 		var c = 0;
@@ -705,10 +710,9 @@ define('minifiedUtil', function() {
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	function listBindWrapped(func) {
+	function listBindArray(func) {
 		return function(arg1, arg2) {
-			var r = func(this, arg1, arg2);
-			return r['_'] ? r : new M(r);
+			return new M(func(this, arg1, arg2));
 		};
 	}
 	function listBind(func) {
@@ -721,11 +725,11 @@ define('minifiedUtil', function() {
 	eachObj({
 	'each': listBind(each),
 	
-	'filter': listBindWrapped(filter),
+	'filter': listBindArray(filter),
 	
-	'collect': listBindWrapped(collect),
+	'collect': listBindArray(collect),
 	
-	'map': listBindWrapped(collect),
+	'map': listBindArray(map),
 	
 	'reduce': listBind(reduce),
 
@@ -733,7 +737,7 @@ define('minifiedUtil', function() {
 	
 	'equals': listBind(equals),
 
-	'sub': listBindWrapped(sub),
+	'sub': listBindArray(sub),
  	
  	'find': listBind(find),
  	
@@ -806,10 +810,9 @@ define('minifiedUtil', function() {
 	/*$
 	 * @id underscorefuncdef
 	 */
-	function funcListBind(func) {
+	function funcArrayBind(func) {
 		return function(arg1, arg2, arg3) {
-			var r = func(arg1, arg2, arg3);
-			return r['_']||!isList(r) ? r : new M(r);
+			return new M(func(arg1, arg2, arg3));
 		};
 	}
 	eachObj({
@@ -820,10 +823,11 @@ define('minifiedUtil', function() {
 		'each': each,
 		'eachObj': eachObj,
 		'toObject': toObject,
-		'filter': funcListBind(filter),
+		'filter': funcArrayBind(filter),
 		'filterObj': filterObj,
-		'collect': funcListBind(collect),
-		'map': funcListBind(map),
+		'collect': funcArrayBind(collect),
+		'collectObj': funcArrayBind(collectObj),
+		'map': funcArrayBind(map),
 		'mapObj': mapObj,
 		'reduce': reduce,
 		'reduceObj': reduceObj,

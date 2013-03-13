@@ -28,7 +28,7 @@
 var list = $('input');
 var myValues = {};
 for (var i = 0; i &lt; list.length; i++)
-   myValues[list[i].ame] = list[i].value;
+   myValues[list[i].name] = list[i].value;
 </pre></div>
 </div>
 

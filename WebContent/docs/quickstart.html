@@ -23,7 +23,7 @@
 
 <h2>How to include Minified.js into your project</h2>
 <ul>
-<li>Download the distribution and refer to it in a script tag:
+<li>The quickest way is download the distribution and refer to it in a script tag:
 <pre>
 &lt;script src="path/to/minified.js">&lt;/script>
 </pre>
@@ -31,6 +31,22 @@ This is by far the easiest way, but you can optimize it even more..</li>
 <li>Use the <a href="/builder">Builder</a> to build a customized version that contains only what you need. Then embed it using the script tag as shown above.</li>
 <li>Use the <a href="/builder">Builder</a> to create a customized version and cut&amp;paste it at the top of one of your JavaScript files, so Minified.js and your code are located in the same file. This will reduce the number of files on your pages and also allows better Gzip compression.</li>
 </ul>
+<p>Instead of loading it with a script tag, you could also use a AMD loader 
+such as <a href="">RequireJS</a> 
+or <a href="https://github.com/timjansen/sparkplug.js</a> Sparkplug.js.
+</p>
+
+<h2>How to Obtain the Reference to Minified</h2>
+<p>
+If you are including Minified with a script tag or use a synchronous loader like Sparkplug.js, it is recommended to use the following 
+line to define the three essiental variables for using Minified:
+<pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+</pre>
+Please note that this works even without AMD loader present, as Minified will then define a global <code>require</code> function
+only for the purpose of loading Minified. All following examples assume that you have those three variables set up like shown above.
+</p>
+
 
 <h2>Creating a MINI list</h2>
 <p>The first step to doing almost anything with Minified is to <b>create a MINI list</b>, an array-like class where most of Minified’s functions are stored.</p>

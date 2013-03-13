@@ -116,7 +116,7 @@ function setUpConfigurationUI(s) {
 		}), function(sec) {
 			function createReqList(prefix, map) {
 				var MAX = 8;
-				var list = hhFilter(hhKeys(map), function(t){ return !!s.sectionMap[t].name;});
+				var list = hhFilter(hhKeys(map), function(t){ return !!map[t].name;});
 				if (!list.length)
 					return null;
 				var idx = 0, txt=prefix;

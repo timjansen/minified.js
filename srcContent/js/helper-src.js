@@ -65,7 +65,7 @@ function hhCopy(from, to) {
 	return to;
 }
 function hhKeys(map) {
-	return hhCollect(map, function(value, name) {
+	return hhCollect(map, function(name, value) {
 		return name;
 	});
 }	

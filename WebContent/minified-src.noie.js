@@ -50,7 +50,7 @@
      * If enabled, there will be fallback code to provide a require function even if no AMD framework such as 
      * require.js is available. If you always use Minified with an AMD framework, you can safely turn this off.
      */
-if (/^u/.test(typeof define)) { // no AMD support availble ? define a minimal version
+if (/^u/.test(typeof define)) { // no AMD support avaialble ? define a minimal version
 	var def = {};
 	this['define'] = function(name, f) {def[name] = f();};
 	this['require'] = function(name) { return def[name]; }; 
@@ -65,7 +65,7 @@ define('minified', function() {
 	/**
 	 * @const
 	 */
-	var _window = this;
+	var _this = this;
 
 	/**
 	 * @const
@@ -95,7 +95,7 @@ define('minified', function() {
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currently active
 
 	/** @type {!function()} */
-	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _window[n+'equestAnimationFrame']; })[0] || function(callback) {
+	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _this[n+'equestAnimationFrame']; })[0] || function(callback) {
 		delay(callback, 33); // 30 fps as fallback
 	};
 
@@ -158,8 +158,8 @@ define('minified', function() {
 		});
 		return r;
 	}
-	function collect(list, collectFunc, result) {
-		result = result || [];
+	function collect(list, collectFunc) {
+		var result = [];
 		each(list, function(item, index) {
 			if (isList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
 				each(item, function(rr) { result.push(rr); });
@@ -172,7 +172,7 @@ define('minified', function() {
 		return toString(s).replace(regexp, sub||'');
 	}
 	function delay(f, delayMs) {
-		_window.setTimeout(f, delayMs||0);
+		_this.setTimeout(f, delayMs||0);
 	}
 	function extractNumber(v) {
 		return parseFloat(replace(v, /^[^\d-]/));
@@ -485,7 +485,7 @@ define('minified', function() {
 	 * @name Debugging Support
 	 */
 	function error(msg) {
-		if (_window.console) console.log(msg);
+		if (_this.console) console.log(msg);
 		throw Exception("MINI debug error: " + msg);
 	}
     // @cond debug MINI['debug'] = true;
@@ -537,37 +537,33 @@ define('minified', function() {
 		return childOnly ? filterElements(elements) : elements;
 	};
 
-    /*$
-     * @stop
-     */
+ 	/*$
+	 * @id length
+	 * @module SELECTORS
+	 * @requires dollar
+	 * @name .length
+	 * @syntax length
+	 * Contains the number of elements in the list.
+	 * 
+	 * @example
+	 * <pre>
+	 * var list = $('input');
+	 * var myValues = {};
+	 * for (var i = 0; i &lt; list.length; i++)
+	 *    myValues[list[i].name] = list[i].value;
+	 * </pre>
+	 */
+	// empty, always defined below
+
+	/*$
+	 * @id listctor
+	 */	
     /** @constructor */
 	function M(list) {
 		for (var i = 0; i < list.length; i++)
 			this[i] = list[i];
 
 		this['length'] = list.length;
-
-		/*$
-		 * @id length
-		 * @module SELECTORS
-		 * @requires dollar
-		 * @name .length
-		 * @syntax length
-		 * Contains the number of elements in the list.
-		 * 
-		 * @example
-		 * <pre>
-		 * var list = $('input');
-		 * var myValues = {};
-		 * for (var i = 0; i &lt; list.length; i++)
-		 *    myValues[list[i].ame] = list[i].value;
-		 * </pre>
-		 */
-		// empty, always defined above
-
-	    /*$
-	     * @stop
-	     */
 	}
 
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -580,7 +576,7 @@ define('minified', function() {
      * @configurable default
      * @name .each()
      * @syntax each(callback)
-     * Invokes the given function once for each item in the list. The function will be calles with the item as first parameter and the zero-based index as second.
+     * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and the zero-based index as second.
      *
      * @example This goes through all h2 elements of the class 'section' and changes their content:
      * <pre>
@@ -629,11 +625,10 @@ define('minified', function() {
      * @configurable default 
      * @name .collect() 
      * @syntax collect(collectFunc) 
-     * @syntax collect(collectFunc, resultList) 
      * Creates a new list from the current list using given callback function. 
      * The callback is invoked once for each element of the current 
-     * list. The callback results will be appended either to the given resultList, or to 
-     * a new array. The callback can return 
+     * list. The callback results will be added to the result list. 
+     * The callback can return 
      * <ul> 
      * <li>An array or another list-like object whose elements will be appended to the result array as single elements.</li> 
      * <li>A regular object which will be appended to the list</li> 
@@ -669,13 +664,10 @@ define('minified', function() {
      * 0-based index as second argument. 
      * If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls 
      * will be ignored and not added. 
-     * @param resultList optional if given, an array to append the elements to. collect() will use push() to add them. 
-     * If omitted, a new array-based list will be created. 
-     * @return the new list. If resultList has been omitted, the result is guaranteed to be based 
-     * on Array and always a new instance 
+     * @return the new list
      */ 
-	'collect': function(collectFunc, resultList) { 
-    	 return new M(collect(this, collectFunc, resultList)); 
+	'collect': function(collectFunc) { 
+    	 return new M(collect(this, collectFunc)); 
      },
 
      /*$ 
@@ -861,7 +853,7 @@ define('minified', function() {
 					s = (isHidden ? 0 : element.offsetHeight) + 'px';
 				}
 				else if (/^\$/.test(spec)) {
-						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
+						s = _this.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 
 				}
 				else if (/^@/.test(spec))
@@ -1894,7 +1886,7 @@ define('minified', function() {
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return this['each'](function(el, index) {
 				var h = function(event) {
-					var e = event || _window.event;
+					var e = event || _this.event;
 					// @cond debug try {
 					if (!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) {
 							e.preventDefault();
@@ -2241,7 +2233,7 @@ define('minified', function() {
     * @param value the value (map-like object, array, string, number, date, boolean or null)
     * @return the JSON string
     */
-    'toJSON': _window.JSON && JSON.stringify,
+    'toJSON': _this.JSON && JSON.stringify,
 
 	/*$
 	* @id parsejson
@@ -2262,7 +2254,7 @@ define('minified', function() {
 	* @param text the JSON string
 	* @return the resulting JavaScript object. Undefined if not valid.
 	*/
-    'parseJSON': _window.JSON && JSON.parse,
+    'parseJSON': _this.JSON && JSON.parse,
 
 	/*$
     * @id ready
@@ -2472,7 +2464,7 @@ define('minified', function() {
 	/*$
 	 @stop
 	 */
-	return MINI;
+	return {'$':MINI};
 });
 
 /*$

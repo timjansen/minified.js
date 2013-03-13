@@ -2638,7 +2638,7 @@ define('minified', function() {
 	/*$
 	 @stop
 	 */
-	return {$:MINI};
+	return {'$':MINI};
 });
 
 /*$

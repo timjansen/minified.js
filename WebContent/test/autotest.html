@@ -65,7 +65,7 @@
 		 	exec: function() {
 				var called = 0;
 				require(['minified'], function(minified) {
-					check(minified, MINI);
+					check(minified.$, MINI);
 				});
 				check(called, 0);
 			}
