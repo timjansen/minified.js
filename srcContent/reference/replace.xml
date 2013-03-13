@@ -115,8 +115,8 @@ This results in
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
+<a href="el.html">EE()</a>
 <a href="dollardollar.html">MINI.$$()</a>
-<a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>
 <a href="loop.html">MINI.loop()</a>
 <a href="off.html">MINI.off()</a>

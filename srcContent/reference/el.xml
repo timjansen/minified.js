@@ -3,21 +3,21 @@
    Auto-generated using docbuilder.js. Do not edit manually. 
 -->
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
-	<title>MINI.el() - Minified.js</title>
+	<title>EE() - Minified.js</title>
 	<section>reference</section>
 	<externalCss>../css/reference.css</externalCss>
 	<main><![CDATA[
 <p><a href="index.html">back to Overview</a></p>
-<h3><a name="doc-el">MINI.el()</a></h3>
+<h3><a name="doc-el">EE()</a></h3>
 <div class="summary">Creates a new Element Factory.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">MINI.el(elementName)</div>
-<div class="syntax">MINI.el(elementName, attributes)</div>
-<div class="syntax">MINI.el(elementName, children)</div>
-<div class="syntax">MINI.el(elementName, attributes, children)</div>
-<div class="syntax">MINI.el(elementName, attributes, children, onCreate)</div>
+<div class="syntax">EE(elementName)</div>
+<div class="syntax">EE(elementName, attributes)</div>
+<div class="syntax">EE(elementName, children)</div>
+<div class="syntax">EE(elementName, attributes, children)</div>
+<div class="syntax">EE(elementName, attributes, children, onCreate)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -156,8 +156,8 @@ var myStylesSpan = EE('input', {'@name': "myInput"}, null, function(e) {
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
+<a href="el.html">EE()</a>
 <a href="dollardollar.html">MINI.$$()</a>
-<a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>
 <a href="loop.html">MINI.loop()</a>
 <a href="off.html">MINI.off()</a>

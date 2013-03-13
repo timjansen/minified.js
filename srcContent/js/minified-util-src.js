@@ -152,7 +152,7 @@ define('minifiedUtil', function() {
 	function collector(iterator, obj, collectFunc) {
 		var result = [];
 		iterator(obj, function (a, b) {
-			if (isList(item = collectFunc(a, b))) // extreme variable reusing: a is now the callback result
+			if (isList(a = collectFunc(a, b))) // extreme variable reusing: a is now the callback result
 				each(a, function(rr) { result.push(rr); });
 			else if (a != null)
 				result.push(a);
@@ -833,7 +833,7 @@ define('minifiedUtil', function() {
 		'reduceObj': reduceObj,
 		'find': find,
 		'contains': contains,
-		'sub': funcListBind(sub),
+		'sub': funcArrayBind(sub),
 	 	'startsWith': startsWith,
 	 	'endsWith': endsWith,
 		'equals': equals,

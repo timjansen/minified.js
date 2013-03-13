@@ -80,11 +80,11 @@
 <div class="summary">
 Creates a function that switches between the two given states for the list.</div>
 
+<h3><a href="el.html">EE()</a></h3>
+<div class="summary">Creates a new Element Factory.</div>
+
 <h3><a href="dollardollar.html">MINI.$$()</a></h3>
 <div class="summary">Returns an DOM object containing the first match of the given selector, or undefined if no match.</div>
-
-<h3><a href="el.html">MINI.el()</a></h3>
-<div class="summary">Creates a new Element Factory.</div>
 
 <h3><a href="getcookie.html">MINI.getCookie()</a></h3>
 <div class="summary">Tries to find the cookie with the given name and returns it.</div>

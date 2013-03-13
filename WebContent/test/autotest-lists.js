@@ -3,12 +3,13 @@ window.miniTests.push.apply(window.miniTests, [
 		name: "MINI().each()",
 	 	exec: function() {
 			var m = MINI("#a, #b, #c");
+			check(m.length, 3, "list check");
 			var cnt = 0;
 			m.each(function(item, index) {
 				check(index == cnt++);
 				contains(m, item, true);
 			});
-			check(cnt, 3);
+			check(cnt, 3, "count check");
 		}
 	},
 	{

@@ -34,7 +34,8 @@ to the original value and should be added or subtracted.</dd>
 <dd class=""><span class="optional">optional</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.</dd>
 <dt id="animate_state" class=""><a name="animate_state">state</a></dt>
 <dd class=""><span class="optional">optional</span> if set, the animation controller will write information about its state in this object. When animate() returns,
-there will be a MINI.loop() stop() function in the property state.stop. The property state.time will be continously updated
+there will be a stop() function in the property state.stop that can be used to abort the animation.
+The property state.time will be continously updated
 while the animation is running and contains the number of milliseconds that have
 passed from the start until the last invocation of the animation loop, describing the progress of the animation.
 If the animation finished, controller writes null into state.time. state.stop will remain unmodified during the whole time.</dd>
@@ -151,8 +152,8 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 <a href="set.html">.set()</a>
 <a href="sub.html">.sub()</a>
 <a href="toggle.html">.toggle()</a>
+<a href="el.html">EE()</a>
 <a href="dollardollar.html">MINI.$$()</a>
-<a href="el.html">MINI.el()</a>
 <a href="getcookie.html">MINI.getCookie()</a>
 <a href="loop.html">MINI.loop()</a>
 <a href="off.html">MINI.off()</a>

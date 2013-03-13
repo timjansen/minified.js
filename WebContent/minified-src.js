@@ -192,14 +192,16 @@ define('minified', function() {
 	function isList(v) {
 		return v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
 	}
+	function eachObj(obj, cb) {
+		for (var n in obj)
+			if (obj.hasOwnProperty(n))
+				cb(n, obj[n]);
+		return obj;
+	}
 	function each(list, cb) {
-		if (isList(list))
+		if (list)
 			for (var i = 0; i < list.length; i++)
 				cb(list[i], i);
-		else
-			for (var n in list)
-				if (list.hasOwnProperty(n))
-					cb(n, list[n]);
 		return list;
 	}
 	function filter(list, filterFunc) {
@@ -210,15 +212,18 @@ define('minified', function() {
 		});
 		return r;
 	}
-	function collect(list, collectFunc) {
+	function collect(obj, collectFunc, iterator) {
 		var result = [];
-		each(list, function(item, index) {
-			if (isList(item = collectFunc(item, index))) // extreme variable reusing: item is now the callback result
-				each(item, function(rr) { result.push(rr); });
-			else if (item != null)
-				result.push(item);
+		(iterator||each)(obj, function (a, b) {
+			if (isList(a = collectFunc(a, b))) // caution: extreme variable re-using of 'a'
+				each(a, function(rr) { result.push(rr); });
+			else if (a != null)
+				result.push(a);
 		});
 		return result;
+	}
+	function collectObj(obj, collectFunc) {
+		return collect(obj, collectFunc, eachObj);
 	}
 	function replace(s, regexp, sub) {
 		return toString(s).replace(regexp, sub||'');
@@ -648,7 +653,7 @@ define('minified', function() {
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	each({
+	eachObj({
     /*$
      * @id each
      * @module SELECTORS
@@ -957,7 +962,7 @@ define('minified', function() {
 				return toNumber ? extractNumber(s) : s;
 			}
 			var r = {};
-			each(spec, function(name) {
+			(isList(spec) ? each : eachObj)(spec, function(name) {
 				r[name] = self.get(name);
 			});
 			return r;
@@ -1131,7 +1136,7 @@ define('minified', function() {
     	 else if (isString(name) || isFunction(name))
     		 self.set('$', name);
     	 else
-    		 each(name, function(n,v) { self.set(n, v, defaultFunction); });
+    		 eachObj(name, function(n,v) { self.set(n, v, defaultFunction); });
     	 return self;
      },
  	
@@ -1783,7 +1788,8 @@ define('minified', function() {
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.
 	 * @param state optional if set, the animation controller will write information about its state in this object. When animate() returns,
-	 *                       there will be a MINI.loop() stop() function in the property state.stop. The property state.time will be continously updated
+	 *                       there will be a stop() function in the property state.stop that can be used to abort the animation. 
+	 *                       The property state.time will be continously updated
 	 *                       while the animation is running and contains the number of milliseconds that have
 	 *                       passed from the start until the last invocation of the animation loop, describing the progress of the animation. 
 	 *                       If the animation finished, controller writes null into state.time. state.stop will remain unmodified during the whole time. 
@@ -1807,7 +1813,7 @@ define('minified', function() {
 		// find start values
 		self['each'](function(li) {
 			var p = {o:MINI(li), s:{}, e:{}}; 
-			each(p.s = p.o.get(properties), function(name, start) {
+			eachObj(p.s = p.o.get(properties), function(name, start) {
 				var dest = properties[name];
 				if (name == '$$slide') 
 					dest = dest*getNaturalHeight(p.o) + 'px';
@@ -1819,7 +1825,7 @@ define('minified', function() {
 		});
 				
 		// start animation
-		loopStop = MINI.loop(function(timePassedMs, stop) { 
+		loopStop = MINI.loop(function(timePassedMs) { 
 			function getColorComponent(colorCode, index) {
 				return (/^#/.test(colorCode)) ?
 					parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
@@ -1836,13 +1842,13 @@ define('minified', function() {
 				each(initState, function(isi) { // set destination values
 					isi.o.set(isi.e);
 				});
-				stop();
-				state['time'] = state['stop'] = null;
+				loopStop();
+				state['time'] = null;
 				prom(true, [self]);
 			}
 			else
 				each(initState, function(isi) {
-					each(isi.s, function(name, start) {
+					eachObj(isi.s, function(name, start) {
 						var newValue= 'rgb(', end=isi.e[name];
 						if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
 							for (var i = 0; i < 3; i++) 
@@ -2066,7 +2072,7 @@ define('minified', function() {
 
  	//// MINI FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	each({
+	eachObj({
 
     /*$
 	 * @id dollardollar
@@ -2098,13 +2104,12 @@ define('minified', function() {
 	 * @module ELEMENT
 	 * @requires dollardollar set
 	 * @configurable default
-	 * @name MINI.el()
-	 * @syntax MINI.el(elementName)
-	 * @syntax MINI.el(elementName, attributes)
-	 * @syntax MINI.el(elementName, children)
-	 * @syntax MINI.el(elementName, attributes, children)
-	 * @syntax MINI.el(elementName, attributes, children, onCreate)
-	 * @shortcut EE(elementName, attributes, children)
+	 * @name EE()
+	 * @syntax EE(elementName)
+	 * @syntax EE(elementName, attributes)
+	 * @syntax EE(elementName, children)
+	 * @syntax EE(elementName, attributes, children)
+	 * @syntax EE(elementName, attributes, children, onCreate)
 	 * Creates a new Element Factory. An Element Factory is a function without arguments that returns MINI list
 	 * containing a newly created element, optionally with attributes and children.
 	 * Typically it will be used to inset elements into the DOM tree using add() or a similar function. 
@@ -2292,7 +2297,7 @@ define('minified', function() {
 			if (data != null) {
 				headers = headers || {};
 				if (!isString(data) && !isNode(data)) { // if data is parameter map...
-					body = collect(data, function processParam(paramName, paramValue) {
+					body = collectObj(data, function processParam(paramName, paramValue) {
 						if (isList(paramValue))
 							return collect(paramValue, function(v) {return processParam(paramName, v);});
 						else
@@ -2309,7 +2314,7 @@ define('minified', function() {
 			}
 			
 			xhr.open(method, url, true, username, password);
-			each(headers, function(hdrName, hdrValue) {
+			eachObj(headers, function(hdrName, hdrValue) {
 				xhr.setRequestHeader(hdrName, hdrValue);
 			});
 
@@ -2379,7 +2384,7 @@ define('minified', function() {
 		if (isList(value)) 
 			return '[' + collect(value, toJSON).join() + ']';
 		if (isObject(value))
-			return '{' + collect(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
+			return '{' + collectObj(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
 		return toString(value);
 	},
     // @condend
