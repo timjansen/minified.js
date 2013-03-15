@@ -218,12 +218,17 @@ function runTests(loadInContext) {
 				assert(_.equals(_.parseDate("y,M,d", "2011,12,6"), d0));
 				assert(_.equals(_.parseDate("yyyyMMddhhmmssaa", "20130105020000am"), d2));
 				assert(_.equals(_.parseDate("y,M,d,h,m,s,a", "2013,1,5,2,0,0,am"), d2));
+				assert(_.equals(_.parseDate("y,M,d,h,m,s,a", "2013,1,5,2,0,0,AM"), d2));
 
 				assert(_.equals(_.parseDate("yyyy,d,n,m,H,s,S,w,W", "2011,6,Dec,30,13,10,501,Tue,Tuesday"), d));
-				assert(_.equals(_.parseDate("yyyy,d,n,m,h,s,S,a,w,W", "2011,6,Dec,30,1,10,501,pm,Tue,Tuesday"), d));
+				assert(_.equals(_.parseDate("yyyy,d,n,m,h,s,S,a,w,W", "2011,6,Decem,30,1,10,501,pm,Tue,Tuesday"), d));
 				assert(_.equals(_.parseDate("yyyy,d,n,m,K,s,S,w,W", "2011,06,Dec,30,14,10,501,Wed,Wednesday"), d)); // ignored w/W
 				assert(_.equals(_.parseDate("yyyy,d,N,m,k,s,S,a,w,W", "2011,06,December,30,2,10,501,pm,Tue,Tuesday"), d));
 
+				assert(_.equals(_.parseDate("yyyy-N[M1M,M2M,M3M,M4M,M5M,M6M,M7M,M8M,M9M,M10M,M11M,M12M]-dd", "2011-M12M-06"), d0));
+				assert(_.equals(_.parseDate("y,M,d,h,m,s,S,a[AMM,PAM]", "2011,12,6,1,30,10,501,PAM"), d));
+				assert(_.equals(_.parseDate("y,M,d,h,m,s,a[AMM,PAM]", "2013,1,5,2,0,0,AMM"), d2));
+				
 				var f1 = "[+0000] yyyy-MM-dd hh:mm:ss.SSS aa";
 				var f2 = "[-0500] y,M,d,H,m,s,S";
 				assert(_.equals(_.parseDate(f1, _.formatValue(f1, d)), d));
@@ -235,6 +240,14 @@ function runTests(loadInContext) {
 				assert(_.equals(_.parseDate(f3, _.formatValue(f3, d)), d));
 				assert(_.equals(_.parseDate(f3, _.formatValue(f3, d2)), d2));
 			});
+			it('does not parse broken strings', function() {
+				assert.equal(_.parseDate("yyyy-MM-dd", "2010-a2-02"), undefined);
+				assert.equal(_.parseDate("yyyy-MM-dd", "2010.02.02"), undefined);
+				assert.equal(_.parseDate("yyyy-MM-dd", "2010-02-"), undefined);
+				assert.equal(_.parseDate("yyyy-NN-dd", "2010-Snowctober-07"), undefined);
+				assert.equal(_.parseDate("yyyy-NN[Jan,Feb]-dd", "2010-October-07"), undefined);
+			});
+
 		});
 
 		describe('parseNumber()', function() {
@@ -266,6 +279,9 @@ function runTests(loadInContext) {
 				assert.equal(_.parseNumber("###.999", "012.135"), 12.135);
 				assert.equal(_.parseNumber("#,#,#.9", "-43,3,3,3,0.12"), -433330.12);
 				assert.equal(_.parseNumber("#.#.#,9", "-43.3.3.3.0,12"), -433330.12);
+			});
+			it('does not parse broken strings', function() {
+				assert.equal(_.parseNumber("0", "a"), undefined);
 			});
 		});
 		
