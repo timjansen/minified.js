@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page:page xmlns:page="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+  <page:title>Minified.js - Redefining "small" for JavaScript</page:title>
+  <page:section>home</page:section>
+  <page:main><![CDATA[<div>
+<h1>Minified.js</h1>
+<ul>
+<li><a href="/download/">Downloads</a></li>
+<li><a href="builder.html">Builder</a></li>
+<li><a href="/documentation/">Documentation</a></li>
+<li><a href="/reference/">API Reference</a></li>
+<li><a href="/about/">About</a></li>
+</ul>
+  </div>
+ ]]></page:main>
+
+  
+</page:page>

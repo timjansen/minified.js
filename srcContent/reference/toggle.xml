@@ -7,38 +7,38 @@
 	<section>reference</section>
 	<externalCss>../css/reference.css</externalCss>
 	<main><![CDATA[
-<p><a href="index.html">back to Overview</a></p>
-<h3><a name="doc-toggle">.toggle()</a></h3>
+<div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
+<h2><a name="doc-toggle">.toggle()</a></h2>
 <div class="summary">
 Creates a function that switches between the two given states for the list.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">MINI(selector).toggle(cssClasses)</div>
-<div class="syntax">MINI(selector).toggle(state1, state2)</div>
-<div class="syntax">MINI(selector).toggle(state1, state2, durationMs)</div>
-<div class="syntax">MINI(selector).toggle(state1, state2, durationMs, linearity)</div>
+<div class="syntax">$(selector).toggle(cssClasses)</div>
+<div class="syntax">$(selector).toggle(state1, state2)</div>
+<div class="syntax">$(selector).toggle(state1, state2, durationMs)</div>
+<div class="syntax">$(selector).toggle(state1, state2, durationMs, linearity)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="toggle_cssClasses" class=""><a name="toggle_cssClasses">cssClasses</a></dt>
+<dt id="toggle_cssClasses" class=""><a name="toggle_cssClasses"><var>cssClasses</var></a></dt>
 <dd class="">a string containing space-separated CSS class names that will be toggled. Classes are disabled in the first state
 and enabled in the second.</dd>
-<dt id="toggle_state1" class=""><a name="toggle_state1">state1</a></dt>
+<dt id="toggle_state1" class=""><a name="toggle_state1"><var>state1</var></a></dt>
 <dd class="">a property map describing the initial state of the properties. The properties will automatically be set when the
-toggle() function is created. The property names use the set() syntax ('@' prefix for attributes, '$' for styles).
+<var>toggle()</var> function is created. The property names use the set() syntax ('@' prefix for attributes, '$' for styles).
 For animation, values must be either numbers, numbers with
 units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). The properties will be set
 for all elements of the list.</dd>
-<dt id="toggle_state2" class=""><a name="toggle_state2">state2</a></dt>
-<dd class="">a property map describing the second state of the properties. Uses set() syntax, like the other state.</dd>
-<dt id="toggle_durationMs" class=""><a name="toggle_durationMs">durationMs</a></dt>
+<dt id="toggle_state2" class=""><a name="toggle_state2"><var>state2</var></a></dt>
+<dd class="">a property map describing the second state of the properties. Uses <code><a href='set.html'>set()</a></code> syntax, like the other state.</dd>
+<dt id="toggle_durationMs" class=""><a name="toggle_durationMs"><var>durationMs</var></a></dt>
 <dd class=""><span class="optional">optional</span> if set, the duration of the animation in milliseconds. By default, there is no animation and the set will be changed
 immediately.</dd>
-<dt id="toggle_linearity" class=""><a name="toggle_linearity">linearity</a></dt>
+<dt id="toggle_linearity" class=""><a name="toggle_linearity"><var>linearity</var></a></dt>
 <dd class=""><span class="optional">optional</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.</dd>
-<dt id="toggle_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="toggle_RETURN">return value</a></dt>
+<dt id="toggle_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="toggle_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">a function(newState) that will change from the first to the second state and vice versa if called without argument or with
 newState set to null. If the argument is a boolean false or true, the first or second state will be set respectively.
 If the argument is not boolean or the function is called without arguments, the function toggles between both states.</dd>
@@ -46,10 +46,10 @@ If the argument is not boolean or the function is called without arguments, the 
 
 <h4>Description</h4>
 <div class="description">
-Creates a function that switches between the two given states for the list. The states use set() syntax.
+Creates a function that switches between the two given states for the list. The states use <code><a href='set.html'>set()</a></code> syntax.
 
-If no duration is given, the returned function changes the state immediately using set(). If a duration has been passed, the returned function
-uses animate() to change the state. If the returned function is invoked while an animation is running, it interrupts the animation and returns
+If no duration is given, the returned function changes the state immediately using ##set(). If a duration has been passed, the returned function
+uses ##animate() to change the state. If the returned function is invoked while an animation is running, it interrupts the animation and returns
 to the other state.
 
 </div>
@@ -95,44 +95,46 @@ var t = $('#myElement').toggle('myClass1 myClass2');
 </div>
 
 
-<p><a href="index.html">back to Overview</a></p>
-<div id="toc"><a href="dollar.html">MINI()</a>
-<a href="add.html">.add()</a>
-<a href="addafter.html">.addAfter()</a>
-<a href="addbefore.html">.addBefore()</a>
-<a href="addfront.html">.addFront()</a>
-<a href="animate.html">.animate()</a>
-<a href="append.html">.append()</a>
-<a href="clone.html">.clone()</a>
-<a href="collect.html">.collect()</a>
-<a href="each.html">.each()</a>
-<a href="fill.html">.fill()</a>
-<a href="filter.html">.filter()</a>
-<a href="find.html">.find()</a>
-<a href="get.html">.get()</a>
-<a href="hasclass.html">.hasClass()</a>
-<a href="length.html">.length</a>
-<a href="offset.html">.offset()</a>
-<a href="on.html">.on()</a>
-<a href="prepend.html">.prepend()</a>
-<a href="remove.html">.remove()</a>
-<a href="replace.html">.replace()</a>
-<a href="set.html">.set()</a>
-<a href="sub.html">.sub()</a>
-<a href="toggle.html">.toggle()</a>
-<a href="el.html">EE()</a>
-<a href="dollardollar.html">MINI.$$()</a>
-<a href="getcookie.html">MINI.getCookie()</a>
-<a href="loop.html">MINI.loop()</a>
-<a href="off.html">MINI.off()</a>
-<a href="parsejson.html">MINI.parseJSON()</a>
-<a href="ready.html">MINI.ready()</a>
-<a href="request.html">MINI.request()</a>
-<a href="setcookie.html">MINI.setCookie()</a>
-<a href="tojson.html">MINI.toJSON()</a>
-<a href="always.html">promise.always()</a>
-<a href="error.html">promise.error()</a>
-<a href="then.html">promise.then()</a>
+<p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
+<div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
+</li><li><a href="dollardollar.html">$$()</a>
+</li><li><a href="getcookie.html">$.getCookie()</a>
+</li><li><a href="loop.html">$.loop()</a>
+</li><li><a href="off.html">$.off()</a>
+</li><li><a href="parsejson.html">$.parseJSON()</a>
+</li><li><a href="ready.html">$.ready()</a>
+</li><li><a href="request.html">$.request()</a>
+</li><li><a href="setcookie.html">$.setCookie()</a>
+</li><li><a href="tojson.html">$.toJSON()</a>
+</li><li><a href="add.html">.add()</a>
+</li><li><a href="addafter.html">.addAfter()</a>
+</li><li><a href="addbefore.html">.addBefore()</a>
+</li><li><a href="addfront.html">.addFront()</a>
+</li><li><a href="animate.html">.animate()</a>
+</li><li><a href="append.html">.append()</a>
+</li><li><a href="clone.html">.clone()</a>
+</li><li><a href="collect.html">.collect()</a>
+</li><li><a href="each.html">.each()</a>
+</li><li><a href="fill.html">.fill()</a>
+</li><li><a href="filter.html">.filter()</a>
+</li><li><a href="find.html">.find()</a>
+</li><li><a href="get.html">.get()</a>
+</li><li><a href="hasclass.html">.hasClass()</a>
+</li><li><a href="length.html">.length</a>
+</li><li><a href="offset.html">.offset()</a>
+</li><li><a href="on.html">.on()</a>
+</li><li><a href="prepend.html">.prepend()</a>
+</li><li><a href="remove.html">.remove()</a>
+</li><li><a href="replace.html">.replace()</a>
+</li><li><a href="set.html">.set()</a>
+</li><li><a href="sub.html">.sub()</a>
+</li><li><a href="toggle.html">.toggle()</a>
+</li><li><a href="ee.html">EE()</a>
+</li><li><a href="always.html">promise.always()</a>
+</li><li><a href="error.html">promise.error()</a>
+</li><li><a href="then.html">promise.then()</a>
+</li></ul></div>
+
 ]]></main>
 </page>

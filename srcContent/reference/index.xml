@@ -7,8 +7,35 @@
 	<section>reference</section>
 	<externalCss>../css/reference.css</externalCss>
 	<main><![CDATA[
-<h3><a href="dollar.html">MINI()</a></h3>
+<h3><a href="dollar.html">$()</a></h3>
 <div class="summary">Uses a CSS-like selector to create an list containing all elements that fulfill the filter conditions.</div>
+
+<h3><a href="dollardollar.html">$$()</a></h3>
+<div class="summary">Returns an DOM object containing the first match of the given selector, or undefined if no match.</div>
+
+<h3><a href="getcookie.html">$.getCookie()</a></h3>
+<div class="summary">Tries to find the cookie with the given name and returns it.</div>
+
+<h3><a href="loop.html">$.loop()</a></h3>
+<div class="summary">Runs an animation loop.</div>
+
+<h3><a href="off.html">$.off()</a></h3>
+<div class="summary">Removes the event handler.</div>
+
+<h3><a href="parsejson.html">$.parseJSON()</a></h3>
+<div class="summary">Parses a string containing JSON and returns the de-serialized object.</div>
+
+<h3><a href="ready.html">$.ready()</a></h3>
+<div class="summary">Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).</div>
+
+<h3><a href="request.html">$.request()</a></h3>
+<div class="summary">Initiates a HTTP request (using XmlHTTPRequest) to the given URL.</div>
+
+<h3><a href="setcookie.html">$.setCookie()</a></h3>
+<div class="summary">Creates, updates or deletes a cookie.</div>
+
+<h3><a href="tojson.html">$.toJSON()</a></h3>
+<div class="summary">Converts the given value into a JSON string.</div>
 
 <h3><a href="add.html">.add()</a></h3>
 <div class="summary">Adds the given node(s) as content to the list elements as additional nodes.</div>
@@ -29,7 +56,7 @@
 <div class="summary">Appends strings to properties or attributes of list items.</div>
 
 <h3><a href="clone.html">.clone()</a></h3>
-<div class="summary">Creates a MINI list of strings and Element Factories that returns clones of the list elements.</div>
+<div class="summary">Creates a Minified list list of strings and Element Factories that returns clones of the list elements.</div>
 
 <h3><a href="collect.html">.collect()</a></h3>
 <div class="summary">Creates a new list from the current list using given callback function.</div>
@@ -44,7 +71,7 @@
 <div class="summary">Creates a new list that contains only those items approved by the given function.</div>
 
 <h3><a href="find.html">.find()</a></h3>
-<div class="summary">Allows you to find a specific value in the list.</div>
+<div class="summary">Find a specific value in the list.</div>
 
 <h3><a href="get.html">.get()</a></h3>
 <div class="summary">Retrieves properties, attributes and styles from the list's first element.</div>
@@ -71,54 +98,27 @@
 <div class="summary">Replaces the list items with the the given node(s) in the DOM tree.</div>
 
 <h3><a href="set.html">.set()</a></h3>
-<div class="summary">Modifies the list's DOM elements or objects by setting their properties, attributes, CSS style and/or CSS classes.</div>
+<div class="summary">Modifies the list's DOM elements by setting their properties, attributes, CSS style and/or CSS classes.</div>
 
 <h3><a href="sub.html">.sub()</a></h3>
-<div class="summary">Returns a new list containing only the element in the specified range.</div>
+<div class="summary">Returns a new list containing only the elements in the specified range.</div>
 
 <h3><a href="toggle.html">.toggle()</a></h3>
 <div class="summary">
 Creates a function that switches between the two given states for the list.</div>
 
-<h3><a href="el.html">EE()</a></h3>
+<h3><a href="ee.html">EE()</a></h3>
 <div class="summary">Creates a new Element Factory.</div>
 
-<h3><a href="dollardollar.html">MINI.$$()</a></h3>
-<div class="summary">Returns an DOM object containing the first match of the given selector, or undefined if no match.</div>
-
-<h3><a href="getcookie.html">MINI.getCookie()</a></h3>
-<div class="summary">Tries to find the cookie with the given name and returns it.</div>
-
-<h3><a href="loop.html">MINI.loop()</a></h3>
-<div class="summary">Use this function to run an animation loop.</div>
-
-<h3><a href="off.html">MINI.off()</a></h3>
-<div class="summary">Removes the event handler.</div>
-
-<h3><a href="parsejson.html">MINI.parseJSON()</a></h3>
-<div class="summary">Parses a string containing JSON and returns the de-serialized object.</div>
-
-<h3><a href="ready.html">MINI.ready()</a></h3>
-<div class="summary">Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).</div>
-
-<h3><a href="request.html">MINI.request()</a></h3>
-<div class="summary">Initiates a HTTP request (using XmlHTTPRequest) to the given URL.</div>
-
-<h3><a href="setcookie.html">MINI.setCookie()</a></h3>
-<div class="summary">Creates, updates or deletes a cookie.</div>
-
-<h3><a href="tojson.html">MINI.toJSON()</a></h3>
-<div class="summary">Converts the given value into a JSON string.</div>
-
 <h3><a href="always.html">promise.always()</a></h3>
-<div class="summary">Allows you to add a callback that will always be called, no matter whether the operation succeeded or not.</div>
+<div class="summary">Registers a callback that will always be called when the promise's operation ended, no matter whether the operation succeeded or not.</div>
 
 <h3><a href="error.html">promise.error()</a></h3>
-<div class="summary">Allows you to add a callback that will be called when the operation failed.</div>
+<div class="summary">Registers a callback that will be called when the operation failed.</div>
 
 <h3><a href="then.html">promise.then()</a></h3>
-<div class="summary">Allows you to add callbacks to an asynchronous operation that will be invoked when the operation finished
-successfully (onSuccess) or an error occurred (onError).</div>
+<div class="summary">Registers two callbacks that will be invoked when the promise's asynchronous operation finished
+successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</div>
 
 
 ]]></main>

@@ -1,0 +1,32 @@
+#docmain {
+	width: 56em;
+	float: right;
+	padding-top: 0.1em;
+	padding-left: 1em;
+	border-left: 1px solid #aaa;
+}
+#toc {
+	width: 12em;
+	float: left;
+	padding-top: 1em;
+}
+#foot {
+	clear: both;
+}
+#toc ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+#toc li {
+	padding: 0.1em;
+}
+#toc h3 {
+	margin: 0 0 0.5em;
+}
+.backOverview {
+	font-size: smaller;
+}
+p.docFoot {
+	margin-top: 2em;
+}

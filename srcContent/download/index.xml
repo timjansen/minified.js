@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page:page xmlns:page="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+  <page:title>Minified.js - Redefining "small" for JavaScript</page:title>
+  <page:section>home</page:section>
+  <page:main><![CDATA[<div>
+<h1>Minified.js Downloads</h1>
+<ul>
+<li><a href="/minified.js"minified.js (Production Version, full compatibility, &lt;4.0kb)></a></li>
+<li><a href="/minified-src.js">minified-src.js (Development Version)</a></li>
+<li><a href="/minified.noie.js">minified.noie.js (Production, no compatibility for IE8 and older, &lt;3.3kb)</a></li>
+<li>Use the <a href="/builder.html">builder</a> to create even smaller custom versions of Minfied</li>
+</ul>
+  </div>
+ ]]></page:main>
+
+  
+</page:page>
