@@ -8,7 +8,7 @@
 	<externalCss>../css/reference.css</externalCss>
 	<main><![CDATA[
 <h3><a href="dollar.html">$()</a></h3>
-<div class="summary">Uses a CSS-like selector to create an list containing all elements that fulfill the filter conditions.</div>
+<div class="summary">Creates a Minified list of HTML nodes.</div>
 
 <h3><a href="dollardollar.html">$$()</a></h3>
 <div class="summary">Returns an DOM object containing the first match of the given selector, or undefined if no match.</div>

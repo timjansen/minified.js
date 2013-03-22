@@ -1,40 +1,41 @@
 <project name="minified" default="main">
 
-  <property name="src" value="WebContent/minified-src.js"/>
+  <property name="src" value="src/minified-web-src.js"/>
 	
   <target name="compileJavascript">
     <!-- Create noie versions etc -->
   	<script language="javascript" src="build/rewriter.js" />
   	
-  	<!-- for Autotest.. -->
-  	<copy file="srcContent/js/minified-util-src.js" tofile="WebContent/test/minified-util.js" />
+  	<!-- for Autotest etc.. -->
+  	<copy file="${src}" tofile="WebContent/minified-web-src.js" />
+  	<copy file="src/minified-util-src.js" tofile="WebContent/test/minified-util.js" />
   	<copy file="srcContent/js/sparkplug-src.js" tofile="WebContent/test/sparkplug.js" />
-  	  	
+
   	<!-- Minified script -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
   	 	<arg value="--compilation_level=ADVANCED_OPTIMIZATIONS" />
-  	    <arg value="--js=WebContent/minified-src.js"/>
-  	 	<arg value="--js_output_file=WebContent/minified-closure.js"/>
+  	    <arg value="--js=${src}"/>
+  	 	<arg value="--js_output_file=WebContent/minified-web-closure.js"/>
      </java>
  	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
  	 	<arg value="--compilation_level=ADVANCED_OPTIMIZATIONS" />
- 	    <arg value="--js=WebContent/minified-src.noie.js"/>
- 	 	<arg value="--js_output_file=WebContent/minified-closure.noie.js"/>
+ 	    <arg value="--js=WebContent/minified-web-src.noie.js"/>
+ 	 	<arg value="--js_output_file=WebContent/minified-web-closure.noie.js"/>
     </java>
   	
     <exec executable="/usr/local/bin/uglifyjs">
-      <arg line="WebContent/minified-closure.js -o WebContent/minified.js"/>
+      <arg line="WebContent/minified-web-closure.js -o WebContent/minified-web.js"/>
       <env key="PATH" path="/usr/local/bin"/>
     </exec>
     <exec executable="/usr/local/bin/uglifyjs">
-      <arg line="WebContent/minified-closure.noie.js -o WebContent/minified.noie.js"/>
+      <arg line="WebContent/minified-web-closure.noie.js -o WebContent/minified-web.noie.js"/>
       <env key="PATH" path="/usr/local/bin"/>
     </exec>
   	
      <!-- Builder script -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
-  	    <arg value="--js=srcContent/js/minified-util-src.js"/>
-  	    <arg value="--js=WebContent/minified.js"/>
+  	    <arg value="--js=src/minified-util-src.js"/>
+  	    <arg value="--js=WebContent/minified-web.js"/>
   	    <arg value="--js=srcContent/js/parser-src.js"/>
   	    <arg value="--js=srcContent/js/builder-src.js"/>
   	 	<arg value="--js_output_file=WebContent/js/builder.js"/>

@@ -1,0 +1,13 @@
+<project name="minified-compile" default="main">
+
+	<property name="srcWeb" value="src/minified-web-src.js"/>
+	<property name="srcUtil" value="src/minified-util-src.js"/>
+	
+ 	<target name="copyJavascript">
+  		<copy file="${srcWeb}" tofile="WebContent/minified-web-src.js" />
+  		<copy file="${srcUtil}" tofile="WebContent/minified-util-src.js" />
+	</target>
+  	
+	<target name="main" depends="copyJavascript"></target>
+
+</project>

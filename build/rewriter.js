@@ -18,7 +18,7 @@ function writeFile(file, content) {
 
 // GO!
 
-eval(readFile('srcContent/js/minified-util-src.js'));
+eval(readFile('src/minified-util-src.js'));
 eval(readFile('srcContent/js/parser-src.js'));
 eval(readFile('build/rebuilder.js'));
 
@@ -30,4 +30,4 @@ var noIeConfig = "// minified.js config start -- use this comment to re-create y
 var noIeSrc = rebuild(src, noIeConfig);
 
 // Generate new source
-writeFile('WebContent/minified-src.noie.js', noIeSrc);
+writeFile('WebContent/minified-web-src.noie.js', noIeSrc);
