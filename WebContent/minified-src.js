@@ -430,72 +430,86 @@ define('minified', function() {
 	 * @syntax $(selector)
 	 * @syntax $(selector, context)
 	 * @syntax $(selector, context, childOnly)
-	 * @syntax $(function)
-	 * Uses a CSS-like selector to create an list containing all elements that fulfill the filter conditions. 
-	 * This is the most central function in Minified. The returned 
-	 * list has a number of functions to work with the list elements.
+	 * @syntax $(list)
+	 * @syntax $(list, context)
+	 * @syntax $(list, context, childOnly)
+	 * @syntax $(node)
+	 * @syntax $(node, context)
+	 * @syntax $(node, context, childOnly)
+	 * @syntax $(domreadyFunction)
+	 * Creates a Minified list of HTML nodes. The most common way is to specify a CSS-like selector to create a list containing all elements of the current HTML
+	 * document that fulfill the filter conditions. Alternatively you can also specify a list of nodes or a single node. Nested lists will automatically be flattened, and
+	 * Nulls will automatically be removed from the resulting list.
+	 * 
+	 * Additionally, you can specify a context to limit the resulting list only to those nodes that are descendants of the context nodes. The context can, again,
+	 * be either a selector, a list or a single HTML node, and will be processed like the selector. A third arguments allows you to limit the list to 
+	 * only those elements that are direct children of the context nodes (so a child of a child would be filtered out).
 	 *
+	 * 
 	 * As a special shortcut, if you pass a function to <var>$()</var>, it will be registered using #ready#$.ready() to be executed 
 	 * when the DOM model is complete.
-	 *
-	 * The usual name of this function is <var>$()</var>, but you can assign it to any other variable in using require().
 	 *
 	 * @example A simple selector to find an element by id.
 	 * <pre>
 	 * var l1 = $('#myElementId');
 	 * </pre>
-     * 	 
+	 * 	 
 	 * @example You can also pass a reference to an DOM node to the function to receive a list containing only this node:
 	 * <pre>
 	 * var l2 = $(document.getElementById('myElementId')); 
 	 * </pre>
-     * 	 
+	 *
 	 * @example Lists will be copied:
 	 * <pre>
 	 * var l2 = $([elementA, elementB, elementC]); 
 	 * </pre>
-     * 	 
+	 * 	 
+	 * @example Lists will be automatically flattened and nulls removed. Thus this list <var>l3</var> has the same content as <var>l2</var>:
+	 * <pre>
+	 * var l3 = $([elementA, [elementB, null, elementC], null]); 
+	 * </pre>
+	 * 	 
 	 * @example A simple selector to find all elements with the given class.
 	 * <pre>
-	 * var l3 = $('.myClass');
+	 * var l4 = $('.myClass');
 	 * </pre>
-     * 	 
+	 * 	 
 	 * @example A selector to find all elements with the given name.
 	 * <pre>
-	 * var l4 = $('input'); // finds all input elements
+	 * var l5 = $('input'); // finds all input elements
 	 * </pre>
-     * 	 
+	 * 	 
 	 * @example A selector to find all elements with the given name and class.
 	 * <pre>
-	 * var l5 = $('input.myRadio'); // finds all input elements wit
+	 * var l6 = $('input.myRadio'); // finds all input elements wit
 	 * </pre>
-     * 	 
+	 * 	 
 	 * @example A selector to find all elements that are descendants of the given element.
 	 * <pre>
-	 * var l6 = $('#myForm input'); // finds all input elements that are in the element with the id myForm
+	 * var l7 = $('#myForm input'); // finds all input elements that are in the element with the id myForm
 	 * </pre>
-     * 	 
+	 * 	 
 	 * @example A selector to find all elements with one of the given classes:
 	 * <pre>
-	 * var l7 = $('.a, .b'); // finds all elements that have either the class a or class b
+	 * var l8 = $('.a, .b'); // finds all elements that have either the class a or class b
 	 * </pre>
-     * 	 
+	 * 	 
 	 * @example A selector that finds all elements that are descendants of the element myDivision, are inside a .myForm class and are input elements:
 	 * <pre>
-	 * var l8 = $('#myDivision .myForm input'); 
+	 * var l9 = $('#myDivision .myForm input'); 
 	 * </pre>
-     * 	 
+	 * 	 
 	 * @example Using contexts to make it easier to specify ancestors:
 	 * <pre>
-	 * var l9 = $('.myRadio', '#formA, #formB, #formC');  // same as $('#formA .myRadio, #formB .myRadio, #formC .myRadio')
+	 * var l10 = $('.myRadio', '#formA, #formB, #formC');  // same as $('#formA .myRadio, #formB .myRadio, #formC .myRadio')
 	 * </pre>
-     * 	 
-	 * @example Using one of the list functions, set(), on the list, and set the element's text color. '$' at the beginning of the property name is short for 'style.' and thus
+	 * 	 
+	 * @example Using one of the list functions, ##set(), on the list, and set the element's text color. '$' at the beginning of the property name is short for 'style.' and thus
 	 *               sets a CSS value.
 	 * <pre>
 	 * $('#myElementId').set('$color', 'red');
 	 * </pre>
-     *
+	 *
 	 * @example Most functions return the list you invoked them on, allowing you to chain them:
 	 * <pre>
 	 * $('#myForm .myRadio').addClass('uncheckedRadio')
@@ -519,22 +533,22 @@ define('minified', function() {
 	 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
 	 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
 	 *             The string "*" will return all elements.
-	 *             You can also use a DOM node as selector, it will be returned as a single-element list.  
-	 *             If you pass a list, a shallow copy of the list will be returned. Nulls will be automatically removed from the copy. Nested lists will be flattened
-	 *             so the result only contains elements.
-	 *             If you pass a function, it will be registered using #ready#$.ready().
-	 * @param context optional an optional selector, DOM node or list of DOM nodes which specifies one or more common ancestor nodes for the selection. 
-	 *             The returned list contains only descendants of the context nodes, all others will be filtered out. 
-	 * @param childOnly optional if set, only direct children of the context nodes are included in the list. If omitted or not true, all descendants of the
-	 *             context will be included. 
-	 * @return the array-like object containing the content specified by the selector. The returned object is guaranteed to
+	 * @param list a list to copy. It can be an array, another minified list, a DOM nodelist or anything else that has a <var>length</var> property and
+	 *             allows read access by index. A shallow copy of the list will be returned. Nulls will be automatically removed from the copy. Nested lists will be flattened
+	 *             so the result only contains nodes.
+	 * @param node a single node to create a single-element list. If the node argument is null, an empty list will be returned.
+	 * @param domreadyFunction A function to be registered using #ready#$.ready().
+	 * @param context optional an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection, using the same syntax variants as the
+	 *             first argument. If given, the returned list contains only descendants of the context nodes, all others will be filtered out. 
+	 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
+	 *             true, all descendants of the context will be included. 
+	 * @return the array-like Minified list object containing the content specified by the selector. The returned object is guaranteed to
 	 *             have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
-	 *             regular arrays (e.g. list[2] for the second elements). Other Array functions are not guaranteed to be available, but you can use the filter()
-	 *             function to get a list that is guaranteed to extend Array.
-	 *             Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the selector was a list, 
-	 *             the existing order will be kept. If the selector was a simple selector, the elements are in document order. If you combined several selectors 
+	 *             regular arrays (e.g. list[2] for the second elements). Beside that, Minified provides a large number of functions that work on the list.
+	 *             Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the first argument was a list, 
+	 *             the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. If you combined several selectors 
 	 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to a single list. This list will, 
-	 *             as a whole, not be in document order anymore. The array returned has several convenience functions listed below:
+	 *             as a whole, not be in document order anymore. 
 	 */
 	function MINI(selector, context, childOnly) { 
 		// @condblock ready
