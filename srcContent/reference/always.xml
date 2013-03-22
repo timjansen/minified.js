@@ -37,7 +37,7 @@ This is a convenience function that will call <code><a href='then.html'>then()</
 <h4>Example</h4>
 <div class="example">Simple handler for a HTTP request.
 <pre>
-MINI.request('get', '/weather.html')
+$.request('get', '/weather.html')
     .always(function() {
        alert('Got response or error!');
     });

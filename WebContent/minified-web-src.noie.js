@@ -1,5 +1,5 @@
 /*
- * Minified.js - Complete library for JavaScript interaction in less than 4kb
+ * Minified-web.js - Complete library for JavaScript interaction in less than 4kb
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  *
@@ -258,12 +258,12 @@ define('minified', function() {
     	 *
     	 * @example Chained handler.
     	 * <pre>
-    	 * MINI.request('get', '/weather.do')
+    	 * $.request('get', '/weather.do')
     	 *     .then(function(txt) {
     	 *        showWeather(txt);
     	 *     }
     	 *     .then(function() {
-    	 *        return MINI.request('get', '/traffic.do');
+    	 *        return $.request('get', '/traffic.do');
     	 *     }
     	 *     .then(function(txt) {
     	 *        showTraffic(txt);
@@ -319,7 +319,7 @@ define('minified', function() {
     	 *
     	 * @example Simple handler for a HTTP request.
     	 * <pre>
-    	 * MINI.request('get', '/weather.html')
+    	 * $.request('get', '/weather.html')
     	 *     .always(function() {
     	 *        alert('Got response or error!');
     	 *     });
@@ -506,7 +506,7 @@ define('minified', function() {
 	 */
 	function error(msg) {
 		if (_this.console) console.log(msg);
-		throw Exception("MINI debug error: " + msg);
+		throw Exception("Minified debug error: " + msg);
 	}
     // @cond debug MINI['debug'] = true;
 
@@ -1222,11 +1222,11 @@ define('minified', function() {
 	 * @requires dollar add remove
 	 * @configurable default
 	 * @name .fill()
-	 * @syntax MINI(selector).fill()
-	 * @syntax MINI(selector).fill(text)
-	 * @syntax MINI(selector).fill(factoryFunction)
-	 * @syntax MINI(selector).fill(list)
-	 * @syntax MINI(selector).fill(node)
+	 * @syntax $(selector).fill()
+	 * @syntax $(selector).fill(text)
+	 * @syntax $(selector).fill(factoryFunction)
+	 * @syntax $(selector).fill(list)
+	 * @syntax $(selector).fill(node)
 	 * Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node.
 	 * If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
 	 * allowed by <var>fill()</var>, including another function to be called.
@@ -1285,7 +1285,7 @@ define('minified', function() {
 	 *              containing strings, lists, functions and/or DOM nodes.
 	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
 	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories if your
-	 *             MINI list contains more than one item.
+	 *             Minified list contains more than one item.
 	 * @param node a DOM node to set <strong>only in the first element</strong> of the list. 
 
 	 * @return the current list
@@ -1300,10 +1300,10 @@ define('minified', function() {
 	 * @requires dollar add
 	 * @configurable default
 	 * @name .addBefore()
-	 * @syntax MINI(selector).addBefore(text)
-	 * @syntax MINI(selector).addBefore(factoryFunction)
-	 * @syntax MINI(selector).addBefore(list)
-	 * @syntax MINI(selector).addBefore(node)
+	 * @syntax $(selector).addBefore(text)
+	 * @syntax $(selector).addBefore(factoryFunction)
+	 * @syntax $(selector).addBefore(list)
+	 * @syntax $(selector).addBefore(node)
 	 * Inserts the given text or element(s) as sibling in front of each element of this list. 
 	 * If a string has been given, it will be added as text node.
 	 * If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
@@ -1354,7 +1354,7 @@ define('minified', function() {
 	 *              containing strings, lists, functions and/or DOM nodes.
 	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
 	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories if your
-	 *             MINI list contains more than one item.
+	 *             Minified list contains more than one item.
 	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
 	 * @return the current list
 	 */
@@ -1368,10 +1368,10 @@ define('minified', function() {
 	 * @requires dollar add
 	 * @configurable default
 	 * @name .addAfter()
-	 * @syntax MINI(selector).addAfter(text)
-	 * @syntax MINI(selector).addAfter(factoryFunction)
-	 * @syntax MINI(selector).addAfter(list)
-	 * @syntax MINI(selector).addAfter(node)
+	 * @syntax $(selector).addAfter(text)
+	 * @syntax $(selector).addAfter(factoryFunction)
+	 * @syntax $(selector).addAfter(list)
+	 * @syntax $(selector).addAfter(node)
 	 * Inserts the given text or element(s) as sibling after each element of this list. 
 	 * If a string has been given, it will be added as text node.
 	 * If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
@@ -1417,7 +1417,7 @@ define('minified', function() {
 	 *              containing strings, lists, functions and/or DOM nodes.
 	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
 	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories if your
-	 *             MINI list contains more than one item.
+	 *             Minified list contains more than one item.
 	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
 	 * @return the current list
 	 */
@@ -1431,10 +1431,10 @@ define('minified', function() {
 	 * @requires dollar add
 	 * @configurable default
 	 * @name .addFront()
-	 * @syntax MINI(selector).addFront(text)
-	 * @syntax MINI(selector).addFront(factoryFunction)
-	 * @syntax MINI(selector).addFront(list)
-	 * @syntax MINI(selector).addFront(node)
+	 * @syntax $(selector).addFront(text)
+	 * @syntax $(selector).addFront(factoryFunction)
+	 * @syntax $(selector).addFront(list)
+	 * @syntax $(selector).addFront(node)
 	 * Adds the given node(s) as content to the list elements as additional nodes. Unlike ##add(), the new nodes will be the first children of the list items.
 	 * If a string has been given, it will be added as text node.
 	 * If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
@@ -1488,7 +1488,7 @@ define('minified', function() {
 	 *              containing strings, lists, functions and/or DOM nodes.
 	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
 	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories if your
-	 *             MINI list contains more than one item.
+	 *             Minified list contains more than one item.
 	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
 	 * @return the current list
 	 */
@@ -1502,10 +1502,10 @@ define('minified', function() {
 	 * @requires dollar add
 	 * @configurable default
 	 * @name .replace()
-	 * @syntax MINI(selector).replace(text)
-	 * @syntax MINI(selector).replace(factoryFunction)
-	 * @syntax MINI(selector).replace(list)
-	 * @syntax MINI(selector).replace(node)
+	 * @syntax $(selector).replace(text)
+	 * @syntax $(selector).replace(factoryFunction)
+	 * @syntax $(selector).replace(list)
+	 * @syntax $(selector).replace(node)
 	 * Replaces the list items with the the given node(s) in the DOM tree. 
 	 * If a string has been given, it will be set as text node.
 	 * If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
@@ -1876,10 +1876,9 @@ define('minified', function() {
 		 * @requires dollar each
 		 * @configurable default
 		 * @name .on()
-		 * @syntax MINI(selector).on(name, handler)
-		 * @syntax MINI(selector).on(name, handler, args)
-		 * @syntax MINI(selector).on(name, handler, fThis, args)
-		 * @shortcut $(selector).on(name, handler) - Enabled by default, but can be disabled in the builder.
+		 * @syntax $(selector).on(name, handler)
+		 * @syntax $(selector).on(name, handler, args)
+		 * @syntax $(selector).on(name, handler, fThis, args)
 		 * Registers the function as event handler for all items in the list.
 		 * 
 		 * By default, handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
@@ -1910,7 +1909,7 @@ define('minified', function() {
 		 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
 		 * @param handler the function(event, index) to invoke when the event has been triggered. If no new arguments have been given using 
 		 *                <var>on()</var>'s second argument, the handler gets the original event object as first parameter and the index
-		 *                of the object in the current MINI list as second. 'this' is the element that caused the event, unless you override it with the
+		 *                of the object in the current Minified list as second. 'this' is the element that caused the event, unless you override it with the
 		 *                third argument.
 		 *                Unless the handler returns true, all further processing of the event will be stopped and event bubbling will be disabled. If you supply
 		 *                custom arguments, the event processing and bubbling will always be disabled, no mattter what the handler returns.
@@ -2019,7 +2018,7 @@ define('minified', function() {
 	 * @syntax $.EE(elementName, attributes, children)
 	 * @syntax $.EE(elementName, attributes, children, onCreate)
 	 * @shortcut EE() - It is recommended that you assign $.EE to a variable EE.
-	 * Creates a new Element Factory. An Element Factory is a function without arguments that returns MINI list
+	 * Creates a new Element Factory. An Element Factory is a function without arguments that returns a Minified list
 	 * containing a newly created element, optionally with attributes and children.
 	 * Typically it will be used to inset elements into the DOM tree using add() or a similar function. 
 	 *
@@ -2050,7 +2049,7 @@ define('minified', function() {
 	 *  &lt;span title="Greetings">Hello World&lt;/span> 
 	 * </pre>
 	 * 
-	 * @example The factory function always returns a MINI list with a single element. You can directly use it, for example,
+	 * @example The factory function always returns a Minified list with a single element. You can directly use it, for example,
 	 *          to add an event handler.
 	 * <pre>
 	 * var myDiv = EE('div', 'Hello World')();
@@ -2111,8 +2110,8 @@ define('minified', function() {
 	 *                         nested and will then automatically be flattened. Null elements in lists will be ignored. 
 	 *                         The syntax is exactly like ##add().
 	 * @param onCreate optional a function(elementList) that will be called each time an element had been created. This allows you, for example, to 
-	 *                 add event handlers with ##on(). Will be called with the created element in a MINI list as argument.
-	 * @return a Element Factory function returning a MINI list containing the DOM HTMLElement that has been created or modified as only element
+	 *                 add event handlers with ##on(). Will be called with the created element in a Minified list as argument.
+	 * @return a Element Factory function returning a Minified list containing the DOM HTMLElement that has been created or modified as only element
 	 */
 	'EE': function(elementName, attributes, children, onCreate) {
 		// @cond debug if (!elementName) error("el() requires the element name."); 

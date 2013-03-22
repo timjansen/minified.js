@@ -37,13 +37,13 @@ nested and will then automatically be flattened. Null elements in lists will be 
 The syntax is exactly like <code><a href='add.html'>add()</a></code>.</dd>
 <dt id="ee_onCreate" class=""><a name="ee_onCreate"><var>onCreate</var></a></dt>
 <dd class=""><span class="optional">optional</span> a function(elementList) that will be called each time an element had been created. This allows you, for example, to
-add event handlers with <code><a href='on.html'>on()</a></code>. Will be called with the created element in a MINI list as argument.</dd>
+add event handlers with <code><a href='on.html'>on()</a></code>. Will be called with the created element in a Minified list as argument.</dd>
 <dt id="ee_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4"><a name="ee_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">a Element Factory function returning a MINI list containing the DOM HTMLElement that has been created or modified as only element</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">a Element Factory function returning a Minified list containing the DOM HTMLElement that has been created or modified as only element</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Creates a new Element Factory. An Element Factory is a function without arguments that returns MINI list
+<div class="description">Creates a new Element Factory. An Element Factory is a function without arguments that returns a Minified list
 containing a newly created element, optionally with attributes and children.
 Typically it will be used to inset elements into the DOM tree using add() or a similar function.
 
@@ -80,7 +80,7 @@ creates this:
 </pre>
 </div>
 <h4>Example</h4>
-<div class="example">The factory function always returns a MINI list with a single element. You can directly use it, for example,
+<div class="example">The factory function always returns a Minified list with a single element. You can directly use it, for example,
          to add an event handler.
 <pre>
 var myDiv = EE('div', 'Hello World')();

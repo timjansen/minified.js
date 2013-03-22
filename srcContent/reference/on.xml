@@ -13,9 +13,9 @@
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">MINI(selector).on(name, handler)</div>
-<div class="syntax">MINI(selector).on(name, handler, args)</div>
-<div class="syntax">MINI(selector).on(name, handler, fThis, args)</div>
+<div class="syntax">$(selector).on(name, handler)</div>
+<div class="syntax">$(selector).on(name, handler, args)</div>
+<div class="syntax">$(selector).on(name, handler, fThis, args)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -25,7 +25,7 @@
 <dt id="on_handler" class=""><a name="on_handler"><var>handler</var></a></dt>
 <dd class="">the function(event, index) to invoke when the event has been triggered. If no new arguments have been given using
 <var>on()</var>'s second argument, the handler gets the original event object as first parameter and the index
-of the object in the current MINI list as second. 'this' is the element that caused the event, unless you override it with the
+of the object in the current Minified list as second. 'this' is the element that caused the event, unless you override it with the
 third argument.
 Unless the handler returns true, all further processing of the event will be stopped and event bubbling will be disabled. If you supply
 custom arguments, the event processing and bubbling will always be disabled, no mattter what the handler returns.

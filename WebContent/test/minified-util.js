@@ -994,7 +994,6 @@ define('minifiedUtil', function() {
 					
 		    });
 		}
-
 		
 	/*$
 	 * @id underscorefuncdefend

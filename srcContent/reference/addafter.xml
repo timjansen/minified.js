@@ -13,10 +13,10 @@
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">MINI(selector).addAfter(text)</div>
-<div class="syntax">MINI(selector).addAfter(factoryFunction)</div>
-<div class="syntax">MINI(selector).addAfter(list)</div>
-<div class="syntax">MINI(selector).addAfter(node)</div>
+<div class="syntax">$(selector).addAfter(text)</div>
+<div class="syntax">$(selector).addAfter(factoryFunction)</div>
+<div class="syntax">$(selector).addAfter(list)</div>
+<div class="syntax">$(selector).addAfter(node)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -30,7 +30,7 @@ containing strings, lists, functions and/or DOM nodes.</dd>
 <dt id="addafter_list" class=""><a name="addafter_list"><var>list</var></a></dt>
 <dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
 and attempt to add them to more than one element, the result is undefined. You should always use factories if your
-MINI list contains more than one item.</dd>
+Minified list contains more than one item.</dd>
 <dt id="addafter_node" class=""><a name="addafter_node"><var>node</var></a></dt>
 <dd class="">a DOM node to add <strong>only to the first element</strong> of the list.</dd>
 <dt id="addafter_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="addafter_RETURN"><var>(return value)</var></a></dt>

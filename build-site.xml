@@ -89,8 +89,14 @@
 	    <arg line="-r -o WebContent/reference/ --mask *.html WebContent/reference/"/>
 	 </java>
    </target>	
-  
-   <target name="main" depends="compileJavascript, compileCss, compressHtml">
+
+   <target name="compressImages">
+	 <java jar="thirdPartyLibs/htmlcompressor/htmlcompressor-1.5.3.jar" failonerror="true" fork="true">
+	    <arg line="-o WebContent/img --mask *.svg -t xml WebContent/img"/>
+	 </java>
+   </target>	
+
+   <target name="main" depends="compileJavascript, compileCss, compressHtml, compressImages">
    </target>
 
 </project>

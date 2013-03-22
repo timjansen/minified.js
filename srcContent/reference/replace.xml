@@ -13,10 +13,10 @@
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">MINI(selector).replace(text)</div>
-<div class="syntax">MINI(selector).replace(factoryFunction)</div>
-<div class="syntax">MINI(selector).replace(list)</div>
-<div class="syntax">MINI(selector).replace(node)</div>
+<div class="syntax">$(selector).replace(text)</div>
+<div class="syntax">$(selector).replace(factoryFunction)</div>
+<div class="syntax">$(selector).replace(list)</div>
+<div class="syntax">$(selector).replace(node)</div>
 </div>
 
 <h4>Parameters</h4>

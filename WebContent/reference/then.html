@@ -11,12 +11,12 @@ $.request('get', '/weather.html')
        alert('Error!');
     }));
 </pre> </div> <h4>Example</h4> <div class="example">Chained handler. <pre>
-MINI.request('get', '/weather.do')
+$.request('get', '/weather.do')
     .then(function(txt) {
        showWeather(txt);
     }
     .then(function() {
-       return MINI.request('get', '/traffic.do');
+       return $.request('get', '/traffic.do');
     }
     .then(function(txt) {
        showTraffic(txt);
