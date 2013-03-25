@@ -94,6 +94,8 @@ function runTests(loadInContext) {
 				assert.equal(_.formatValue("#####", 1), "1");
 				assert.equal(_.formatValue("00000", 1), "00001");
 				assert.equal(_.formatValue("00000", -1), "-00001");
+				assert.equal(_.formatValue("?#", 1), "1");
+				assert.equal(_.formatValue("?00000", -1), "-00001");
 				
 				assert.equal(_.formatValue("#.9", 1), "1.0");
 				assert.equal(_.formatValue("0.99", 1), "1.00");
@@ -136,6 +138,7 @@ function runTests(loadInContext) {
 				assert.equal(_.formatValue("###,###,###.99", 123456.256), "123,456.26");
 				
 				assert.equal(_.formatValue("ABC#####DEF", 1), "ABC1DEF");
+				assert.equal(_.formatValue("?ABC#####DEF", 1), "ABC1DEF");
 				assert.equal(_.formatValue("$0.99", 1), "$1.00");
 				assert.equal(_.formatValue("bla=0.999 bla", 1.5), "bla=1.500 bla");
 				assert.equal(_.formatValue("#.__ EUR", 1.667), "1.67 EUR");
@@ -146,6 +149,7 @@ function runTests(loadInContext) {
 				assert.equal(_.formatValue("a:0|b:1|c:2|d:3|4", "c"), "2");
 				assert.equal(_.formatValue("a:0|b:1|c:2|d:3|4", "a"), "0");
 				assert.equal(_.formatValue("a:0|b:1|c:2|d:3|4", "e"), "4");
+				assert.equal(_.formatValue("?a:0|b:1|c:2|d:3|4", "e"), "4");
 
 				assert.equal(_.formatValue("a: 0 | b: 1 | c: 2| d: 3| 4", "c"), "2");
 				assert.equal(_.formatValue("a: 0 | b: 1 | c: 2| d: 3| 4", "a"), "0");
@@ -165,6 +169,7 @@ function runTests(loadInContext) {
 				assert.equal(_.formatValue("<0:neg|=0:zero|>0:pos|funny", 0), "zero");
 				assert.equal(_.formatValue("<0:neg|0:zero|>0:pos|funny", 0), "zero");
 				assert.equal(_.formatValue("<0:neg|0:zero|>0:pos|funny", 0.1), "pos");
+				assert.equal(_.formatValue("?<0:neg|0:zero|>0:pos|funny", 0.1), "pos");
 
 				assert.equal(_.formatValue(">0:a|>=0:b|<10:c|<=10:d|e", 1), "a");
 
@@ -188,6 +193,7 @@ function runTests(loadInContext) {
 				assert.equal(_.formatValue("yMd", d), "2011126");
 				assert.equal(_.formatValue("yyyyMMdd", d), "20111206");
 				assert.equal(_.formatValue("yyyyyyMMMMMddd", d), "00201100012006");
+				assert.equal(_.formatValue("?yyyyyyMMMMMddd", d), "00201100012006");
 
 				assert.equal(_.formatValue("yyyyMMdd,n,N,m,H,h,K,k,s,S,a,w,W", d), "20111206,Dec,December,30,13,1,14,2,10,501,pm,Tue,Tuesday");
 				assert.equal(_.formatValue("yyyyMMdd,n,N,m,H,h,K,k,s,SSS,a,w,W", d2), "20130105,Jan,January,0,2,2,3,3,0,000,am,Sat,Saturday");
@@ -203,6 +209,7 @@ function runTests(loadInContext) {
 				assert.equal(_.formatValue("[+0001] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-10 23:01:03 +0001");
 				assert.equal(_.formatValue("[+0100] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-11 00:00:03 +0100");
 				assert.equal(_.formatValue("[-1100] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-10 12:00:03 -1100");
+				assert.equal(_.formatValue("?[-1100] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-10 12:00:03 -1100");
 			});
 		});
 		
@@ -223,10 +230,10 @@ function runTests(loadInContext) {
 				assert(_.equals(_.parseDate("yyyy,d,n,m,H,s,S,w,W", "2011,6,Dec,30,13,10,501,Tue,Tuesday"), d));
 				assert(_.equals(_.parseDate("yyyy,d,n,m,h,s,S,a,w,W", "2011,6,Decem,30,1,10,501,pm,Tue,Tuesday"), d));
 				assert(_.equals(_.parseDate("yyyy,d,n,m,K,s,S,w,W", "2011,06,Dec,30,14,10,501,Wed,Wednesday"), d)); // ignored w/W
-				assert(_.equals(_.parseDate("yyyy,d,N,m,k,s,S,a,w,W", "2011,06,December,30,2,10,501,pm,Tue,Tuesday"), d));
+				assert(_.equals(_.parseDate("?yyyy,d,N,m,k,s,S,a,w,W", "2011,06,December,30,2,10,501,pm,Tue,Tuesday"), d));
 
 				assert(_.equals(_.parseDate("yyyy-N[M1M,M2M,M3M,M4M,M5M,M6M,M7M,M8M,M9M,M10M,M11M,M12M]-dd", "2011-M12M-06"), d0));
-				assert(_.equals(_.parseDate("y,M,d,h,m,s,S,a[AMM,PAM]", "2011,12,6,1,30,10,501,PAM"), d));
+				assert(_.equals(_.parseDate("?y,M,d,h,m,s,S,a[AMM,PAM]", "2011,12,6,1,30,10,501,PAM"), d));
 				assert(_.equals(_.parseDate("y,M,d,h,m,s,a[AMM,PAM]", "2013,1,5,2,0,0,AMM"), d2));
 				
 				var f1 = "[+0000] yyyy-MM-dd hh:mm:ss.SSS aa";
@@ -247,7 +254,10 @@ function runTests(loadInContext) {
 				assert.equal(_.parseDate("yyyy-NN-dd", "2010-Snowctober-07"), undefined);
 				assert.equal(_.parseDate("yyyy-NN[Jan,Feb]-dd", "2010-October-07"), undefined);
 			});
-
+			it('it parses empty strings', function() {
+				assert.equal(_.parseDate("?yyyy-MM-dd", ""), null);
+				assert.equal(_.parseDate("?__yyyy-MM-dd ()()(", "    "), null);
+			});
 		});
 
 		describe('parseNumber()', function() {

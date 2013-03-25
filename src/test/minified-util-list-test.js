@@ -513,7 +513,7 @@ function runTests(loadInContext) {
 	});
 	
 	describe('_.tap()', function() {
-		it('finds only left', function() {
+		it('taps', function() {
 			var _ = req();
 			var a = _(3, 111, 111, -1, 5, 7, 2, 5, 3, 9);
 			var c = 0;
