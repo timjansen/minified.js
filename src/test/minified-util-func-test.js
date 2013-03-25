@@ -62,28 +62,6 @@ function runTests(loadInContext) {
 		});
 	});
 
-	describe('partial()', function() {
-		function wrapMe(a, b, c, d) {
-			return a * b - c * d;
-		}
-		it('should surround common args', function() {
-			var _ = req();
-			var f = _.partial(wrapMe, [13, 5], [17]);
-			assert.equal(f(3), 14);
-		});
-		
-		it('should make post-args optional', function() {
-			var _ = req();
-			var f = _.partial(wrapMe, [13, 5]);
-			assert.equal(f(3, 9), 38);
-		});
-
-		it('should make all args optional', function() {
-			var _ = req();
-			var f = _.partial(wrapMe);
-			assert.equal(f(13, 5, 3, 9), 38);
-		});
-	});
 	
 	describe('selfFunc()', function() {
 		it('should return its first arg', function() {

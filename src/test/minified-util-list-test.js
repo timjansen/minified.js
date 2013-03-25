@@ -390,15 +390,6 @@ function runTests(loadInContext) {
 			assert(_.equals(a.toObject(true), {}));
 			assert(_.equals(b.toObject(true), {a: true, '3': true, c: true}));
 		});
-		it('multi value', function() {
-			var _ = req();
-			var a = _(), b= _("a", '3', "c"), c=[4, 9], undef={};
-			
-			assert(_.equals(_.toObject(a, b), {}));
-			assert(_.equals(_.toObject(b, c), {a: 4, '3': 9, c: undef.undef}));
-			assert(_.equals(a.toObject(b), {}));
-			assert(_.equals(b.toObject(c), {a: 4, '3': 9, c: undef.undef}));
-		});
 	});
 	
 	describe('_.find()', function() {
@@ -503,21 +494,6 @@ function runTests(loadInContext) {
 		});
 	});
 	
-	describe('_.onlyLeft()', function() {
-		it('finds only left', function() {
-			var _ = req();
-			var a = _(3, 111, 111, -1, 5, 7, 2, 5, 3, 9);
-			var b = [111, 1, 111, 12, 3, 9];
-			assert(_.equals(a.onlyLeft(b), [-1, 5, 7, 2, 5]));
-		});
-		it('finds no intersection', function() {
-			var _ = req();
-			var a = _(1, 2, 3);
-			var b = _(0, 1, 2, 3, 4);
-			assert(_.equals(a.onlyLeft(b), []));
-		});
-	});
-
 	describe('_.keys()', function() {
 		it('check keys', function() {
 			var _ = req();
@@ -614,20 +590,6 @@ function runTests(loadInContext) {
 		});
 	});
 	
-	describe('_.equalsRight()', function() {
-		it('check equality', function() {
-			var _ = req();
-			var a = {a:2, b:1, c:4, '34':23, d:4};
-			var b = {a:2, b:1, d:4};
-			var c = {a:2, b:2, c:4, '34':23, d:4};
-			assert(_.equalsRight(a, a));
-			assert(_.equalsRight(a, b));
-			assert(!_.equalsRight(b, a));
-			assert(!_.equalsRight(a, c));
-			assert(!_.equalsRight(c, a));
-		});
-	});
-	
 	describe('_.copyObj()', function() {
 		it('copy objects', function() {
 			var _ = req();
@@ -640,22 +602,20 @@ function runTests(loadInContext) {
 			assert(_.equals(_.copyObj(c, d), c));
 			assert(_.equals(_.copyObj(a, d), a));
 		});
-	});
-	
-	describe('_.defaults()', function() {
-		it('copy prop if not set', function() {
+		
+		it('copy cond', function() {
 			var _ = req();
 			var a = {a:2, b:1, c:4, '34':23, d:4};
 			var b = {a:2, b:1, d:4};
 			var c = {a:2, b:2, c:4, '34':23, d:4};
 			var d = {};
-			assert(_.equals(_.defaults(null, d), {}));
-			assert(_.equals(_.defaults(b, d), b));
-			assert(_.equals(_.defaults(c, d), a));
-			assert(_.equals(_.defaults(a, d), a));
+			assert(_.equals(_.copyObj(null, d, true), {}));
+			assert(_.equals(_.copyObj(b, d, true), b));
+			assert(_.equals(_.copyObj(c, d, 1), a));
+			assert(_.equals(_.copyObj(a, d, 1), a));
 		});
 	});
-	
+		
 	describe('_.trim()', function() {
 		it('strips space', function() {
 			var _ = req();

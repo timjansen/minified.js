@@ -237,12 +237,11 @@ define('minifiedUtil', function() {
  		return filter(list, function(o, index) { 
  			return index >= s && index < e; 
  		});
- 	};
-	function toObject(list, values) {
+ 	}
+	function toObject(list, value) {
 		var obj = {};
-		var gotList = isList(values);
 		each(list, function(item, index) {
-			obj[item] = gotList ? values[index] : values;
+			obj[item] = value;
 		});
 		return obj;
 	}
@@ -771,14 +770,6 @@ define('minifiedUtil', function() {
 		});
 	},
 
-	// a.onlyLeft(b) returns values that are only in a 
-	'onlyLeft': function(rightList) {
-		var keys = toObject(rightList, 1);
-		return this['filter'](function(item) {
-			return !keys[item];
-		});
-	},
-	
 	'tap': function(func) {
 		func(this);
 		return this;
@@ -862,25 +853,9 @@ define('minifiedUtil', function() {
 		'keys': keys,
 		'values': values,
 		
-		// tests whether all values of object b exist in a and are equal. Keys not in b are ignored.
-		'equalsRight': function(left, right) {
-			var eq = true;
-			eachObj(right, function(key, value) {
-				eq = eq && value == left[key];
-			});
-			return eq;
-		},
-		
-		'copyObj': function(from, to) {
+		'copyObj': function(from, to, dontOverwrite) {
 			eachObj(from, function(name, value) {
-				to[name] = value;
-			});
-			return to;
-		},
-		
-		'defaults': function(from, to) {
-			eachObj(from, function(name, value) {
-				if (to[name] == null)
+				if (to[name] == null || !dontOverwrite)
 					to[name] = value;
 			});
 			return to;
@@ -895,7 +870,6 @@ define('minifiedUtil', function() {
 			for (var i = 0; i < args.length; i++) 
 				if (args[i] != null)
 					return args[i];
-			return null;
 		},
 		
 		// takes vararg of other promises to assimilate
