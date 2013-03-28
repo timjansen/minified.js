@@ -254,7 +254,7 @@ function runTests(loadInContext) {
 				assert.equal(_.parseDate("yyyy-NN-dd", "2010-Snowctober-07"), undefined);
 				assert.equal(_.parseDate("yyyy-NN[Jan,Feb]-dd", "2010-October-07"), undefined);
 			});
-			it('it parses empty strings', function() {
+			it('parses empty strings', function() {
 				assert.equal(_.parseDate("?yyyy-MM-dd", ""), null);
 				assert.equal(_.parseDate("?__yyyy-MM-dd ()()(", "    "), null);
 			});

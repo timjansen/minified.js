@@ -121,6 +121,9 @@ define('minifiedUtil', function() {
 	function escapeRegExp(s) {
 		return replace(s, /[\\\[\]\/{}()*+?.$|^-]/g, "\\$&");
 	}
+	function trim(s) {
+		return replace(s, /^\s+|\s+$/g);
+	}
 	function eachObj(obj, cb) {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
@@ -237,12 +240,11 @@ define('minifiedUtil', function() {
  		return filter(list, function(o, index) { 
  			return index >= s && index < e; 
  		});
- 	};
-	function toObject(list, values) {
+ 	}
+	function toObject(list, value) {
 		var obj = {};
-		var gotList = isList(values);
 		each(list, function(item, index) {
-			obj[item] = gotList ? values[index] : values;
+			obj[item] = value;
 		});
 		return obj;
 	}
@@ -354,6 +356,7 @@ define('minifiedUtil', function() {
 	// <value>="null" used to compare with nulls.
 	// choice also works with strings or bools, e.g. ERR:error|WAR:warning|FAT:fatal|ok
 	function formatValue(format, value) {
+		format = replace(format, /^\?/);
 		if (isDate(value)) {
 			var timezone, match;
 			var formatNoTZ = format;
@@ -463,15 +466,20 @@ define('minifiedUtil', function() {
 		var reIndex = 1;
 		var timezoneOffsetMin = 0;
 		var timezoneIndex;
-		var match, formatNoTZ;
-			
+		var match;
+	
+		if (/^\?/.test(format)) {
+			if (trim(date) == '')
+				return null;
+			format = format.substr(1);
+		}
+		
 		if (match = /^\[([+-]\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
 			timezoneOffsetMin = getTimezone(match, 1, now());
-			formatNoTZ = match[3];
+			format = match[3];
 		}
-		else
-			formatNoTZ = format;
-			var parser = new RegExp(formatNoTZ.replace(/(m+|y+|d+|h+|k+|s+|z+|\s+|n+|a+|w+)(?:\[([^\]]*)\])?/ig, function(wholeMatch, placeholder, param) {
+
+		var parser = new RegExp(format.replace(/(m+|y+|d+|h+|k+|s+|z+|\s+|n+|a+|w+)(?:\[([^\]]*)\])?/ig, function(wholeMatch, placeholder, param) {
 			var placeholderChar = placeholder.charAt(0);
 
 			if (/[dmhkyhs]/i.test(placeholderChar)) {
@@ -533,6 +541,11 @@ define('minifiedUtil', function() {
 	function parseNumber(format, value) {
 		if (arguments.length == 1)
 			return parseNumber(null, format);
+		if (/^\?/.test(format)) {
+			if (trim(value) == '')
+				return null;
+			format = format.substr(1);
+		}
 		var match, decSep = (match = /[0#]([.,])[_9]/.exec(format)) ? match[1] : ((match = /^[.,]$/.exec(format)) ? match[0]: '.');
 		var r = parseFloat(replace(replace(replace(value, decSep == ',' ? /\./g : /,/g), decSep, '.'), /^[^\d-]*(-?\d)/, '$1'));
 		return isNaN(r) ? undef : r;
@@ -771,14 +784,6 @@ define('minifiedUtil', function() {
 		});
 	},
 
-	// a.onlyLeft(b) returns values that are only in a 
-	'onlyLeft': function(rightList) {
-		var keys = toObject(rightList, 1);
-		return this['filter'](function(item) {
-			return !keys[item];
-		});
-	},
-	
 	'tap': function(func) {
 		func(this);
 		return this;
@@ -843,6 +848,7 @@ define('minifiedUtil', function() {
 
 		'prop': prop,
 		'escapeRegExp': escapeRegExp,
+		'trim': trim,
 		
 		'defer': defer,
 		'delay': delay,
@@ -862,32 +868,12 @@ define('minifiedUtil', function() {
 		'keys': keys,
 		'values': values,
 		
-		// tests whether all values of object b exist in a and are equal. Keys not in b are ignored.
-		'equalsRight': function(left, right) {
-			var eq = true;
-			eachObj(right, function(key, value) {
-				eq = eq && value == left[key];
-			});
-			return eq;
-		},
-		
-		'copyObj': function(from, to) {
+		'copyObj': function(from, to, dontOverwrite) {
 			eachObj(from, function(name, value) {
-				to[name] = value;
-			});
-			return to;
-		},
-		
-		'defaults': function(from, to) {
-			eachObj(from, function(name, value) {
-				if (to[name] == null)
+				if (to[name] == null || !dontOverwrite)
 					to[name] = value;
 			});
 			return to;
-		},
-		
-		'trim': function(s) {
-			return replace(s, /^\s+|\s+$/g);
 		},
 		
 		'coal': function() {
@@ -895,7 +881,6 @@ define('minifiedUtil', function() {
 			for (var i = 0; i < args.length; i++) 
 				if (args[i] != null)
 					return args[i];
-			return null;
 		},
 		
 		// takes vararg of other promises to assimilate

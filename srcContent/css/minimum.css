@@ -11,3 +11,10 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
 #foot .container p { font-size: smaller; color: #bbb; margin: 0.5em; padding: 0; text-align: left; }
 #foot .container A { color: #888; font-weight: bold; font-size: smaller; }
 #main .container { padding: 1em; }
+
+pre {
+	margin: 1em 0;
+	padding: 0.5em 1em;
+	background-color: #eaeaea;
+	font-family: monospace;
+}

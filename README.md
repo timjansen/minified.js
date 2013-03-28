@@ -1,22 +1,22 @@
-minified.js
-============
+Minified Web
+=============
 
 Overview
 ----------
-minified.js is a universal JavaScript library for HTML applications. It gives you a clean and simple API that provides you 
+Minified Web is a universal JavaScript library for HTML applications. It gives you a clean and simple API that provides you 
 with everything that you need to work interact with the browser on an HTML page. 
 
-While the purpose and scope of minified.js are comparable to jQuery and MooTools, its size is 
+While the purpose and scope of Minified Web are comparable to jQuery and MooTools, its size is 
 smaller by an order of magnitude. The compressed size under 9kb, and the gzip'd size is less than 4kb. 
-You can make it even smaller if you don't require all modules of minified.js. The build tool allows you to remove 
+You can make it even smaller if you don't require all modules of Minified Web. The build tool allows you to remove 
 everything that you don't need to reduce its size even more. 
 
 Size Comparison
 -----------------
 <table>
 <tr><th>Name</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><td>minified.js (standard)</td><td>8.9kb</td><td>&lt;4kb</td></tr>
-<tr><td>minified.noie.js (no IE6/7/8 compatibility)</td><td>7.6kb</td><td>3.3kb</td></tr>
+<tr><td>minified-web.js (standard)</td><td>8.9kb</td><td>&lt;4kb</td></tr>
+<tr><td>minified-web.noie.js (no IE6/7/8 compatibility)</td><td>7.6kb</td><td>3.3kb</td></tr>
 <tr><td>jQuery 1.9.0</td><td>91kb</td><td>32kb</td></tr>
 <tr><td>MooTools Core NoCompat 1.4.5</td><td>88kb</td><td>29kb</td></tr>
 <tr><td>Zepto.js 1.0rc1</td><td>23kb</td><td>8.4kb</td></tr>
@@ -24,11 +24,11 @@ Size Comparison
 
 Feature Comparison
 --------------------
-The goal of minified.js is to provide everything you need on an HTML page to interact with the web browser. Everything else is out-of-scope. 
+The goal of Minified Web is to provide everything you need on an HTML page to interact with the web browser. Everything else is out-of-scope. 
 Specifically, it does not include polyfills, a class framework, helper for JavaScript core types or similar things. 
 If you need them, <a href="http://microjs.com">microjs.com</a> is a great place to find them.
 <table>
-<tr><th>Feature</th><th>minified.js</th><th>jQuery</th><th>MooTools</th><th>Zepto.js</th></tr>
+<tr><th>Feature</th><th>Minified</th><th>jQuery</th><th>MooTools</th><th>Zepto.js</th></tr>
 <tr><td>CSS Selector</td><td>yes (limited)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3)</td></tr>
 <tr><td>CSS Style Changes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>CSS Class Changes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
@@ -51,8 +51,8 @@ If you need them, <a href="http://microjs.com">microjs.com</a> is a great place 
 </table>
 
 
-What you can expect from minified.js
--------------------------------------
+What you can expect from Minified Web 
+--------------------------------------
 * General purpose functions to effectively write HTML-based web applications
 * A very small footprint. It will always be smaller than 4kb.
 * A clean and simple, easy to use API 
@@ -70,4 +70,4 @@ In the last years I worked on some personal projects (<a href="http://jarfiller.
 and when I work on them, I usually strive for perfection. Every unnecessary kilobyte hurts.  So instead of using jQuery, I started writing my own 
 little helper functions to replace jQuery functionality without the overhead. As I worked on several other projects, I wrote more and more helper 
 functions and started sharing them between projects until they became a library of their own.  By now they are so mature that I believe that this 
-library, called minified.js, became a valid alternative to jQuery and MooTools at a fraction of the size.
+library, called Minified, became a valid alternative to jQuery and MooTools at a fraction of the size.

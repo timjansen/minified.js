@@ -1,17 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page:page xmlns:page="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
-  <page:title>Minified.js - Redefining "small" for JavaScript</page:title>
+  <page:title>Minified.js - Redefining 'lightweight' for JavaScript Libraries</page:title>
   <page:section>home</page:section>
+  
+    <page:inlineCss>
+		.logo { margin: auto; display: block;}
+		#subtitle { text-align: center; margin-top: 0.75em; font-size: 1.25em;}
+		a { color: black; }
+		hr { margin-top: 3em; margin-bottom: 3em; }
+		table { border-collapse: collapse; border-spacing: 0; }
+		tr:first-child {background-color: #000; color: #fff;}
+		tr:nth-child(2n) {background-color: #eee;}
+		tr:first-child th {padding: 0.5em;}
+		td, th { padding: 0.3em; border: 1px solid #888; text-align: left; }
+  </page:inlineCss>
+  
   <page:main><![CDATA[<div>
-<h1>Minified.js</h1>
-<ul>
-<li><a href="/download/">Downloads</a></li>
-<li><a href="builder.html">Builder</a></li>
-<li><a href="/documentation/">Documentation</a></li>
-<li><a href="/reference/">API Reference</a></li>
-<li><a href="/about/">About</a></li>
-</ul>
+  		<!--[if lte IE 8]><img class='logo' src='/img/minified-large.png' width="400" height="180"><![endif]-->
+		<!--[if gt IE 8]><img class='logo' src='/img/minified.svg' width="400" height="180"><![endif]-->
+		<!--[if !IE]> --><img class='logo' src='/img/minified.svg' width="400" height="180"/><!-- <![endif]-->
   </div>
+  <div id="subtitle">Redefining 'lightweight' for JavaScript Libraries</div>
+  <div id="whatDiv" style="margin-top: 3em;">
+  	<div style="float: left; font-size: 3em; width: 20%; text-align: center;">What?</div>
+  	<div style="float: right; width: 80%; padding-top: 0.5em;">Minified Web is a client-side JavaScript library, comparable to jQuery and MooTools 
+  	in scope. It helps you with DOM manipulation, animation, events and AJAX stuff in the browser.</div>
+  	<div style="clear: both;"/>
+  </div>
+
+  <div id="whyDiv" style="margin-top: 4em;">
+  	<div style="float: left; width: 20%;"><div style="font-size: 3em; transform: rotate(-90deg); -webkit-transform: rotate(-90deg); -ms-transform: rotate(-90deg);">Why?</div></div>
+  	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
+  		<h3 style="margin-top: 0;">Minified is smaller!</h3>
+  		Minified Web is a sub-4kb JavaScript library for client-side scripting. It 
+  		provides you functionality <a href="#featCmp">comparable to jQuery and MooTools</a>, but is <a href="#sizeCmp">7-8 times</a> smaller.
+  	</div>
+  	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
+  		<h3 style="margin-top: 0;">Easy to learn!</h3>
+  		Minified has <a href="reference/">relatively few</a>, but very powerful functions. There's no need to wade through 
+  		two dozens pages filled with functions to find something.
+  	</div>
+  	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
+  		<h3 style="margin-top: 0;">No surprises!</h3>
+  		Minified has no polyfills and does not try too hard to hide browser differences. 
+  		Your JavaScript can, for better or worse, work with the same features as your HTML.
+  	</div>
+  	<div style="clear: both;"/>
+  </div>
+  
+   <div id="plansDiv" style="margin-top: 3em;">
+  	<div style="float: left; font-size: 3em; width: 20%; text-align: center;">Plans</div>
+  	<div style="float: right; width: 80%; padding-top: 0.5em;">
+	Minified will be a set of three libraries, each under 4kb. Minified Web, the one you see here, 
+	is the first one. Number 2 is Minified Util and will provide support for functional programming, 
+	promises, date arithmetic, string formatting and internationalization. Minified MVC is built on top 
+	of the other two and provides an MVC application framework.
+	</div>
+  	<div style="clear: both;"/>
+  </div>
+  
+  <hr/>
+  
+  <h2>Getting Started</h2>
+  <p>Include minified-web.js on your HTML page:</p>
+  
+  <pre>&lt;script src='path/to/minified-web.js'>&lt;/script></pre>
+
+  <p>In your JavaScript, import Minified like this:<p>
+  <pre>var MINI = require('minified'), $ = MINI.$, $$ = $.$$, EE = $.EE;</pre>
+
+  <p>And then it’s time to start. With some knowledge of other libraries the basic stuff should be easy to figure out from the <a href=”reference/”>API docs</a>:
+  </p>
+  <pre>$(function() {
+    $('body').set({$backgroundColor: 'red'}); 
+});</pre>
+
+  
+  <p>To learn about Minified’s advanced functions, I would recommend you to read the <a href=”/doc/quickstart.html”>Tutorial</a>. But just to give you an idea what 
+  Minified can do, here’s one more snippet:</p>
+  <pre>$('#myButton').on('click', $('body').toggle({$backgroundColor: '#fff'}, {$backgroundColor: 'red'}));</pre>
+</p>
+
+
+  <hr/>
+  
+  <h2><a name="sizeCmp">Size Comparison</a></h2>
+  <table>
+<tr><th>Name</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
+<tr><th>minified-web.js (standard)</th><td>8.9kb</td><td>&lt;4kb</td></tr>
+<tr><th>minified-web.noie.js (no IE6/7/8 compatibility)</th><td>7.6kb</td><td>3.3kb</td></tr>
+<tr><th>jQuery 1.9.0</th><td>91kb</td><td>32kb</td></tr>
+<tr><th>MooTools Core NoCompat 1.4.5</th><td>88kb</td><td>29kb</td></tr>
+<tr><th>Zepto.js 1.0rc1</th><td>23kb</td><td>8.4kb</td></tr>
+</table>
+
+<hr />
+
+<h2><a name="featCmp">Feature Comparison</a></h2>
+<table>
+<tr><th>Feature</th><th>Minified</th><th>jQuery</th><th>MooTools</th><th>Zepto.js</th></tr>
+<tr><th>CSS Selector</th><td>yes (limited)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3)</td></tr>
+<tr><th>CSS Style Changes</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><th>CSS Class Changes</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><th>Element Creation</th><td>yes</td> <td>yes (HTML-strings only)</td> <td>yes</td> <td>yes (HTML-strings only)</td></tr>
+<tr><th>Element Cloning</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><th>DOM Manipulation</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><th>Animation (numeric)</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
+<tr><th>Animation (color)</th><td>yes</td> <td>no</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
+<tr><th>Events</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><th>DOMReady</th><td>yes</td><td>yes</td><td>yes</td> <td>yes</td></tr>
+<tr><th>Ajax/XHR</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><th>Promises/A+-compatible</th><td>yes</td> <td>yes</td> <td>no</td> <td>no</td></tr>
+<tr><th>JSON</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><th>Cookies</td><td>yes</th> <td>no</td> <td>yes</td> <td>no</td></tr>
+<tr><th>Form Serialization</th><td>no</td> <td>yes</td> <td>no</td> <td>yes</td></tr>
+<tr><th>Array Helpers (Iteration)</th> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><th>AMD support</th> <td>yes</td> <td>yes</td> <td>no</td> <td>no</td></tr>
+<tr><th>Online Builder</th> <td>yes (modules and functions)</td> <td>no</td> <td>yes (modules)</td> <td>no</td></tr>
+<tr><th>Internet Explorer compatible</th> <td>yes</td> <td>yes</td> <td>yes</td> <td>no</td></tr>
+</table>
+
+
  ]]></page:main>
 
   

@@ -92,8 +92,13 @@
 
    <target name="compressImages">
 	 <java jar="thirdPartyLibs/htmlcompressor/htmlcompressor-1.5.3.jar" failonerror="true" fork="true">
-	    <arg line="-o WebContent/img --mask *.svg -t xml WebContent/img"/>
+	    <arg line="-o WebContent/img --mask *.svg -t xml srcContent/img"/>
 	 </java>
+   	 <copy todir="WebContent/img">
+   	    <fileset dir="srcContent/img">
+   	      <include name="**/*.png"/>
+   	    </fileset>
+   	  </copy>
    </target>	
 
    <target name="main" depends="compileJavascript, compileCss, compressHtml, compressImages">
