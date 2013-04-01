@@ -1,0 +1,235 @@
+<html>
+	<head><title>Minified.js Auto Tests</title>
+
+	<style type="text/css">
+		body {font-family: sans-serif;}
+		#rerun {display: none; margin: 0.5em;}
+		#header { height: 4.5em; }
+		#container, #container2, #cloneTest { display: none; }
+		.resultOk { color: #0f0; }
+		.resultFailed { font-weight: bold; color: #f00; }
+		
+		.x { margin-top: 2px; }		
+	</style> 
+
+	<script type="text/javascript" src="sparkplug.js"></script>
+	<script type="text/javascript" src="minified-util.js"></script>
+	<script type="text/javascript">
+	// Load the right source, depending on whether 'compiled' is in the URL query
+	
+	var q = window.location.search;
+	var srcFiles = ["../minified-src.js", "../minified.js", "../minified-src.noie.js", "../minified.noie.js"];
+	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie version on old ie
+	
+	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;
+	var file = srcFiles[srcNum] + '?rnd=' + (new Date().getTime());
+    document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
+	</script>
+	<script type="text/javascript">
+	 	var MINI = $ = require('minified').$, $$ = $.$$, EE = $.EE;
+ 		var _ = require('minifiedUtil')._;
+	 	
+		function fail(text) {
+			throw text;
+		}
+
+		function check(value, expected, extraMsg) {
+			var undefined;
+			if (expected === undefined) {
+				if (!value) {
+					if (window.console) console.log("Check for true failed, given:", value, extraMsg?extraMsg:'');
+					fail("Value '"+value+"' is not true. " + (extraMsg?extraMsg:''));
+				}
+			}
+			else
+				if (value != expected) {
+					if (window.console) console.log("Check failed, given:", value, " expected:", expected, extraMsg?extraMsg:'');
+					fail("Value '"+value+"' given, but expected '"+expected+"'. " + (extraMsg?extraMsg:''));
+				}
+		}
+		
+		function contains(list, value, checkIdentity, extraMsg) {
+			for (var i = 0; i < list.length; i++)
+				if (list[i] === value || (!checkIdentity && list[i] == value))
+					return true;
+			fail("Can not find '"+value+"' in list. " + extraMsg?extraMsg:'');
+		}
+		
+		function containsAll(list, expectedValueList, checkIdentity) {
+			check(list.length, expectedValueList.length, 'Testing for array length.');
+			for (var i = 0; i < expectedValueList.length; i++)
+				contains(list, expectedValueList[i], checkIdentity, 'Checked index='+i+'.');
+		}
+
+		window.miniTests = [	{
+			name: "Test initialization / verify with sparkplug.js",
+		 	exec: function() {
+				var called = 0;
+				require(['minified'], function(minified) {
+					check(minified.$, MINI);
+				});
+				check(called, 0);
+			}
+		}];
+					
+		var testNum = 0;      // started tests
+		var finishedNum = 0;  // finished tests
+		var failedNum = 0;   // failed
+		
+		function testsCompleted() {
+			$("#rerun").set({$display: 'block'});
+			if (failedNum == 0)
+				$('#status').set('+resultOk').fill("All passed.");
+			else
+				$('#status').set('+resultFailed').fill(failedNum + " out of " +finishedNum+ " failed.");
+			
+			if (failedNum == 0 && ++srcNum < srcFiles.length)
+				document.location.href='autotest.html?src=' + srcNum;
+		}
+		
+		function runTest() {
+			var test = window.miniTests[testNum];
+			var msgSpan;
+			$('#results').add(EE('div', {}, [test.name + ': ', msgSpan = EE('span', 'waiting..')()]));
+			
+			var playgroundDiv;
+			if (test.async) // create playground div for async tests; they must not change anything else
+				 $('#playground').add(playgroundDiv = EE('div')[0]);
+
+			var testFinished = false;
+			function setSuccess(s, msg) {
+				if (playgroundDiv) {
+					$(playgroundDiv).remove(); 
+					playgroundDiv = null;
+				}
+				if (!testFinished) {
+					msgSpan.set(s ? '+resultOk' : '+resultFailed').fill(s ? 'OK' : 'Failed (' + msg + ')');
+					if (window.console) console.log('Test:', test.name, 'Result:', s, 'Msg:', _.toString(msg));
+					testFinished = true;
+					finishedNum++;
+					if (!s)
+						failedNum++;
+					if (finishedNum == miniTests.length) 
+						testsCompleted();
+				}
+			}
+			
+			if (!test.debugFailure) { // regular, non-debug test
+				var success = true, msg;
+				try {
+					test.exec(setSuccess, playgroundDiv);
+				}
+				catch (e) {
+					success = false;
+					msg = ""+e;
+				}
+				if (!success || !test.async)
+					setSuccess(success, msg);
+				
+				if (test.async)
+					window.setTimeout(function() {setSuccess(false, 'timeout, waited ' + test.async + 'ms')}, test.async);
+			}
+			else if (MINI.debug) { // only test if debug available
+				var success = true;
+				try {
+					test.exec(setSuccess, playgroundDiv);
+				}
+				catch (e) {
+					success = false;
+				}
+				if (!success)
+					setSuccess(success, test.debugFailure);
+			}
+			else {
+				msgSpan.fill('not executable');
+				finishedNum++;
+			}
+			
+			$('#container2').fill();
+			if (++testNum < window.miniTests.length)
+				window.setTimeout(runTest, 1);
+			else {
+				
+			}
+		}
+		$(function() { window.setTimeout(runTest, 1); });
+		$(function() {$('#file').fill(srcFiles[srcNum]);});
+		
+	</script>
+	<script type="text/javascript" src="autotest-element.js"></script>
+	<script type="text/javascript" src="autotest-selector.js"></script>
+	<script type="text/javascript" src="autotest-getset.js"></script>
+	<script type="text/javascript" src="autotest-lists.js"></script>
+	<script type="text/javascript" src="autotest-class.js"></script>
+	<script type="text/javascript" src="autotest-toggle.js"></script>
+	<script type="text/javascript" src="autotest-json.js"></script>
+	<script type="text/javascript" src="autotest-cookies.js"></script>
+	<script type="text/javascript" src="autotest-async.js"></script>
+	<script type="text/javascript" src="autotest-event.js"></script>
+
+	</head>
+	<body>
+		<h1>Minified.js Unit Test</h1>
+
+		<div id="header">
+			<div>File: <span id="file">TBD</span></div>
+			<div>Status: <span id="status">running</span></div>
+			<div id="rerun" >
+			<form action="autotest.html" method="post"><input type="submit" value="Run again"/></form>
+			</div>
+		</div>
+		
+		<div id="results">&nbsp;
+		
+		</div>
+		
+		<hr/>
+		<div id="container">
+			<div id="a" class="x" style="margin-top: 5px;" title="tititi">
+				<p><b>div id="a" class="x"</b></p>
+				<div id="a_a" class="y z">
+					<p>div id="a_a" class="y z"</p>
+				</div>
+				<div id="a_b" class="m x z">
+					<p>div id="a_b" class="m x z"</p>
+				</div>
+			</div>
+
+			<div id="b" class="n">
+				<p><b>div id="b" class="n"</b></p>
+				<div id="b_a" class="x y">
+					<p>div id="b_a" class="x y"</p>
+				</div>
+				<div id="b_b" class="n x">
+					<p>div id="b_b" class="n x"</p>
+				</div>
+			</div>
+
+			<div id="c" class="m">
+				<p><b>div id="b" class="m"</b></p>
+				<div id="c_a" class="x y">
+					<p>div id="c_a" class="x y"</p>
+				</div>
+				<div id="c_b" class="m z">
+					<p>div id="c_b" class="m z"</p>
+				</div>
+			</div>
+			
+		</div>
+		<div id="container2">
+		</div>
+		<div id="cloneTest">
+			<div class="cloneMe">
+				<p>Test</p> 
+				UglyChar: &szlig;
+				<a href="http://example.com" title="Teest">Test</a>
+				<strong><span class=".bla342">abc<code>def</code>ds</span></strong>
+				<span style="margin: 1px">dd</span>
+			</div>
+			<div id="cloneId">nonono</div>
+		</div>
+		<div id="playground">
+		</div>
+	</body>
+</html>
+

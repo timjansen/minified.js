@@ -1,0 +1,31 @@
+<html>
+	<head><title>Minified.js Cookie Example</title>
+	
+	<style type="text/css">
+		body {font-family: sans-serif;}
+	</style> 
+	
+	<script type="text/javascript" src="../minified-src.js"></script>
+	<script type="text/javascript">
+	var $ = require('minified').$, $$ = $.$$, EE = $.WW;
+
+	$.ready(function() {
+		var sessionCounter = $.getCookie("sessionCounter") || 0;
+		var counter = $.getCookie("counter") || 0;
+		sessionCounter++;
+		counter++;
+		$.setCookie("sessionCounter", sessionCounter);
+		$.setCookie("counter", counter, 5000);
+		
+		$$('#visitCounter').innerText = counter;
+		$$('#visitSessionCounter').innerText = sessionCounter;
+	});
+	</script>
+
+	</head>
+	<body>
+		Number of visits: <span id="visitCounter">...</span><br/>
+		...in this session: <span id="visitSessionCounter">...</span><br/>
+		<form method='POST'><input type='submit' value='Refresh'/></form>
+	</body>
+</html>
