@@ -15,9 +15,10 @@ Size Comparison
 -----------------
 <table>
 <tr><th>Name</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><td>minified-web.js (standard)</td><td>8.9kb</td><td>&lt;4kb</td></tr>
+<tr><td>minified-web.js (with IE support)</td><td>8.9kb</td><td>&lt;4kb</td></tr>
 <tr><td>minified-web.noie.js (no IE6/7/8 compatibility)</td><td>7.6kb</td><td>3.3kb</td></tr>
-<tr><td>jQuery 1.9.0</td><td>91kb</td><td>32kb</td></tr>
+<tr><td>jQuery 1.9.0 (with IE support)</td><td>91kb</td><td>32kb</td></tr>
+<tr><td>jQuery 2.0b2 (no IE6/7/8 compatibility)</td><td>81kb</td><td>29kb</td></tr>
 <tr><td>MooTools Core NoCompat 1.4.5</td><td>88kb</td><td>29kb</td></tr>
 <tr><td>Zepto.js 1.0rc1</td><td>23kb</td><td>8.4kb</td></tr>
 </table>

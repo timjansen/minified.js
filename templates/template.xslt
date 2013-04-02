@@ -12,7 +12,7 @@
 <head>
 <meta charset="UTF-8" />
 <title><xsl:value-of select="/page:page/page:title"/></title>
-<xsl:if test="count(/page:page/page:externalCss)=0"><link rel="stylesheet" type="text/css" href="css/minimum.css"/></xsl:if>
+<xsl:if test="count(/page:page/page:externalCss)=0"><link rel="stylesheet" type="text/css" href="/css/minimum.css"/></xsl:if>
 <xsl:for-each select="/page:page/page:externalCss"><link rel="stylesheet" type="text/css" href="{.}"/></xsl:for-each>
 <xsl:for-each select="/page:page/page:inlineCss"><style type="text/css"><xsl:value-of select="."></xsl:value-of></style></xsl:for-each>
 <xsl:for-each select="/page:page/page:externalJs"><script type="text/javascript" src="{.}"></script></xsl:for-each>
@@ -21,17 +21,17 @@
 <body>
 <div id="head">
 	<div class="container">
-		<!--[if lte IE 8]><img src='/img/minified-small.png' width="75" height="34"><![endif]-->
+		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' width="75" height="34"><![endif]-->
 		<!--[if gt IE 8]><img src='/img/minified.svg' width="75" height="34"><![endif]-->
-		<!--[if !IE]> --><img src='/img/minified.svg' width="75" height="34"/><!-- <![endif]-->
+		<!--[if !IE]> --><img src='/img/minified.svg' width="75" height="34"/><!-- <![endif]--></a>
 
 		<div id="topMenu">
 			<a class="{if (/page:page/page:section='home') then 'selected' else 'notSelected'}" href="/">Home</a>
-			<a class="{if (/page:page/page:section='download') then 'selected' else 'notSelected'}" href="/download">Download</a>
+			<a class="{if (/page:page/page:section='download') then 'selected' else 'notSelected'}" href="/download/">Download</a>
 			<a class="{if (/page:page/page:section='build') then 'selected' else 'notSelected'}" href="/builder.html">Build</a>
-			<a class="{if (/page:page/page:section='docs') then 'selected' else 'notSelected'}" href="/docs">Documentation</a>
-			<a class="{if (/page:page/page:section='reference') then 'selected' else 'notSelected'}" href="/reference">Reference</a>
-			<a class="{if (/page:page/page:section='about') then 'selected' else 'notSelected'}" href="/about">About</a>
+			<a class="{if (/page:page/page:section='docs') then 'selected' else 'notSelected'}" href="/docs/">Documentation</a>
+			<a class="{if (/page:page/page:section='reference') then 'selected' else 'notSelected'}" href="/reference/">API</a>
+			<a class="{if (/page:page/page:section='about') then 'selected' else 'notSelected'}" href="/about/">About</a>
 		</div>
 	</div>
 </div>

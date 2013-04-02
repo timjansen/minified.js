@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page:page xmlns:page="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
   <page:title>Minified.js - Redefining "small" for JavaScript</page:title>
-  <page:section>home</page:section>
+  <page:section>download</page:section>
   <page:main><![CDATA[<div>
 <h1>Minified.js Downloads</h1>
 <ul>

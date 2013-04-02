@@ -7,6 +7,7 @@
 	<section>reference</section>
 	<externalCss>../css/reference.css</externalCss>
 	<main><![CDATA[
+<h1>Minified Web API</h1>
 <h3><a href="dollar.html">$()</a></h3>
 <div class="summary">Creates a Minified list of HTML nodes.</div>
 

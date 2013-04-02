@@ -124,7 +124,7 @@ function createOverviewPage(sections) {
 	sortTocOrder(sections);
 	
 	// Gen
-	var html = '';
+	var html = '<h1>Minified Web API</h1>\n';
 	_.each(sections, function(sec) {
 		html += sec.htmlpreview;
 	});

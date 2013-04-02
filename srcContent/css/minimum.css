@@ -1,4 +1,6 @@
-body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-serif;}
+body {margin: 0; font-family: helvetica, arial, freesans, clean, sans-serif;}
+img { border: 0; }
+a { color: black; }
 #head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
 .container { margin: auto; width: 70em; }
 #head .container { height: 2.4em; border-bottom: 1px solid #aaa; padding: 0; }
@@ -13,8 +15,9 @@ body {margin: 0; font-family: Calibri, Thesis, Frutiger, Myriad, Verdana, sans-s
 #main .container { padding: 1em; }
 
 pre {
-	margin: 1em 0;
+	margin: 0.5em 0 2em;
 	padding: 0.5em 1em;
-	background-color: #eaeaea;
+	background-color: #efe8e0;
 	font-family: monospace;
+	border-left: 6px solid #ff8200;
 }
