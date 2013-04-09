@@ -57,8 +57,11 @@ define('minifiedUtil', function() {
 	/**
 	 * @const
 	 */
+	function val3(v) {return v.substr(0,3);}
 	var MONTH_LONG_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, function(v) {return v.substr(0,3);}); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, val3); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	var WEEK_LONG_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+	var WEEK_SHORT_NAMES = map(WEEK_LONG_NAMES, val3); 
 	
 	/**
 	 * @const
@@ -355,9 +358,7 @@ define('minifiedUtil', function() {
 	function getTimezone(match, idx, refDate) {
 		if (idx == null || !match)
 			return 0;
-		var currentOffset = refDate.getTimezoneOffset();
-		var requestedOffset = parseInt(match[idx])*60 + parseInt(match[idx+1]);
-		return requestedOffset + currentOffset;
+		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
 	}
 	// formats number with format string (e.g. "#.999", "#,_", "00000", "000.99", "000.000.000,99", "000,000,000.__")
 	// choice syntax: <cmp><value>:<format>|<cmp><value>:<format>|... 
@@ -384,8 +385,8 @@ define('minifiedUtil', function() {
 				's':  'Seconds',
 				'S':  'Milliseconds',
 				'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
-				'w': ['Day', function(d, values) { return (values||['Sun','Mon','Tue','Wed','Thu','Fri','Sat'])[d]; }],
-				'W': ['Day', function(d, values) { return (values||['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'])[d]; }],
+				'w': ['Day', function(d, values) { return (values||WEEK_SHORT_NAMES)[d]; }],
+				'W': ['Day', function(d, values) { return (values||WEEK_LONG_NAMES)[d]; }],
 				'z': ['TimezoneOffset', function(d) {
 					if (timezone)
 						return timezone;
@@ -563,6 +564,9 @@ define('minifiedUtil', function() {
 	function dateClone(date) {
 		return new Date(date.getTime());
 	}
+	function capWord(w) { 
+		return w.charAt(0).toUpperCase() + w.substr(1); 
+	}
 	function dateAddInline(d, cProp, value) {
 		d['set'+cProp].call(d, d['get'+cProp].call(d) + value);
 	}
@@ -570,8 +574,7 @@ define('minifiedUtil', function() {
 		if (arguments.length < 3)
 			return dateAdd(now(), date, property);
 		var d = dateClone(date);
-		var cProp = property.charAt(0).toUpperCase() + property.substr(1);
-		dateAddInline(d, cProp, value);
+		dateAddInline(d, capWord(property), value);
 		return d;
 	}
 	function dateMidnight(date) {
@@ -591,7 +594,7 @@ define('minifiedUtil', function() {
 			return dt / ft;
 
 		var DAY = 8.64e7;
-		var cProp = property.charAt(0).toUpperCase() + property.substr(1);
+		var cProp = capWord(property);
 		var calApproxValues = {'fullYear': DAY*365, 'month': DAY*365/12, 'date': DAY}; // minimum values, a little bit below avg values
 		var minimumResult = Math.floor((dt / calApproxValues[property])-2); // -2 to remove the imperfections caused by the values above
 		
