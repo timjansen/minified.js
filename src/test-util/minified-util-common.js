@@ -9,7 +9,7 @@ exports.AMD_NAME = 'minifiedUtil';
 exports.files = ['minified-util-src.js'];
 
 function loadInContextSrc(src) {
-	var ctx = {};
+	var ctx = {console:console};
 	var code = fs.readFileSync(src);
 	vm.runInNewContext(code, ctx);
 	return ctx;
