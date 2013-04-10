@@ -118,6 +118,9 @@ define('minifiedUtil', function() {
 	function selfFunc(v) {
 		return v;
 	}
+	function plusOne(d) { 
+		return d+1; 
+	}
 	function replace(s, regexp, sub) {
 		return toString(s).replace(regexp, sub != null ? sub : '');
 	}
@@ -364,18 +367,18 @@ define('minifiedUtil', function() {
 			var formatNoTZ = format;
 			var date = value;
 			var map = {
-				'y': 'FullYear',
-				'M': ['Month', function(d) { return d + 1; }],
+				'y': ['FullYear', selfFunc],
+				'M': ['Month', plusOne],
 				'n': ['Month', MONTH_SHORT_NAMES],
 				'N': ['Month', MONTH_LONG_NAMES],
-				'd':  'Date',
-				'm':  'Minutes',
-				'H':  'Hours',
+				'd': ['Date', selfFunc],
+				'm': ['Minutes', selfFunc],
+				'H': ['Hours', selfFunc],
 				'h': ['Hours', function(d) { return (d % 12) || 12; }],
-				'K': ['Hours', function(d) { return d+1; }],
+				'K': ['Hours', plusOne],
 				'k': ['Hours', function(d) { return d % 12 + 1; }],
-				's':  'Seconds',
-				'S':  'Milliseconds',
+				's': ['Seconds', selfFunc],
+				'S': ['Milliseconds', selfFunc],
 				'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
 				'w': ['Day', WEEK_SHORT_NAMES],
 				'W': ['Day', WEEK_LONG_NAMES],
@@ -398,13 +401,11 @@ define('minifiedUtil', function() {
 				var val = map[placeholder.charAt(0)];
 				var d = date['get' + (isList(val)?val[0]:val)].call(date);
 				
-				if (isList(val)) {
-					var optionArray = params && params.split(',');
-					if (isList(val[1])) 
-						d = (optionArray || val[1])[d];
-					else
-						d = val[1](d, optionArray);
-				}
+				var optionArray = params && params.split(',');
+				if (isList(val[1])) 
+					d = (optionArray || val[1])[d];
+				else
+					d = val[1](d, optionArray);
 				if (d != null && !isString(d))
 					d = pad(len, d);
 				return d;
