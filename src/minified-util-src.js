@@ -200,23 +200,12 @@ define('minifiedUtil', function() {
 		});
 		return result;
 	}
-	function reduceObj(obj, memoInit, func) {
+	function reduce(list, memoInit, func) {
 		var memo = memoInit;
-		eachObj(obj, function(key, value) {
-			memo = func(memo, key, value);
+		each(list, function(value, index) {
+			memo = func(memo, value, index);
 		});
 		return memo;
-	}
-	function reduce(list, memoInit, func) {
-		if (isList(list)) {
-			var memo = memoInit;
-			each(list, function(value, index) {
-				memo = func(memo, value, index);
-			});
-			return memo;
-		}
-		else
-			return reduceObj(list, memoInit, func);
 	}
 	function startsWith(base, start) {
 		if (isList(base)) {
@@ -264,6 +253,9 @@ define('minifiedUtil', function() {
 		for (var i = 0; i < list.length; i++)
 			if ((r = f(list[i], i)) != null)
 				return r;
+	}
+	function coal() {
+		return find(arguments, selfFunc);
 	}
 	function contains(list, value) {
 		if (isList(list))
@@ -327,7 +319,7 @@ define('minifiedUtil', function() {
 		setTimeout(bind(callback, fThisOrArgs, args), delayMs);
 	}
 	function defer(callback, fThisOrArgs, args) {
-		if (typeof process != 'undefined' && process.nextTick)
+		if (/^u/.test(typeof process) && process.nextTick)
 			process.nextTick(bind(callback, fThisOrArgs, args));
 		else
 			delay(0, callback, fThisOrArgs, args);
@@ -345,7 +337,7 @@ define('minifiedUtil', function() {
 		function group(s) {
 			var len = s.length;
 			if (len > groupingSize)
-				return group(s.substring(0, len-groupingSize)) + (groupingSeparator||',') + s.substr(len-groupingSize);
+				return group(s.substr(0, len-groupingSize)) + (groupingSeparator||',') + s.substr(len-groupingSize);
 			else
 				return s;					
 		}
@@ -374,8 +366,8 @@ define('minifiedUtil', function() {
 			var map = {
 				'y': 'FullYear',
 				'M': ['Month', function(d) { return d + 1; }],
-				'n': ['Month', function(d, values) { return (values||MONTH_SHORT_NAMES)[d]; }],
-				'N': ['Month', function(d, values) { return (values||MONTH_LONG_NAMES)[d]; }],
+				'n': ['Month', MONTH_SHORT_NAMES],
+				'N': ['Month', MONTH_LONG_NAMES],
 				'd':  'Date',
 				'm':  'Minutes',
 				'H':  'Hours',
@@ -385,8 +377,8 @@ define('minifiedUtil', function() {
 				's':  'Seconds',
 				'S':  'Milliseconds',
 				'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
-				'w': ['Day', function(d, values) { return (values||WEEK_SHORT_NAMES)[d]; }],
-				'W': ['Day', function(d, values) { return (values||WEEK_LONG_NAMES)[d]; }],
+				'w': ['Day', WEEK_SHORT_NAMES],
+				'W': ['Day', WEEK_LONG_NAMES],
 				'z': ['TimezoneOffset', function(d) {
 					if (timezone)
 						return timezone;
@@ -407,8 +399,11 @@ define('minifiedUtil', function() {
 				var d = date['get' + (isList(val)?val[0]:val)].call(date);
 				
 				if (isList(val)) {
-					var optionArray = params ? params.split(',') : null;
-					d = val[1](d, optionArray);
+					var optionArray = params && params.split(',');
+					if (isList(val[1])) 
+						d = (optionArray || val[1])[d];
+					else
+						d = val[1](d, optionArray);
 				}
 				if (d != null && !isString(d))
 					d = pad(len, d);
@@ -838,7 +833,6 @@ define('minifiedUtil', function() {
 		'map': funcArrayBind(map),
 		'mapObj': mapObj,
 		'reduce': reduce,
-		'reduceObj': reduceObj,
 		'find': find,
 		'contains': contains,
 		'sub': funcArrayBind(sub),
@@ -881,12 +875,7 @@ define('minifiedUtil', function() {
 		
 		'copyObj': copyObj,
 		
-		'coal': function() {
-			var args = arguments;
-			for (var i = 0; i < args.length; i++) 
-				if (args[i] != null)
-					return args[i];
-		},
+		'coal': coal,
 		
 		// takes vararg of other promises to assimilate
 		// if one promise is given, this promise assimilates the given promise as-is, and just forwards fulfillment and rejection with the original values.

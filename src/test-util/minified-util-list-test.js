@@ -335,21 +335,6 @@ function runTests(loadInContext) {
 			var flt = a.reduce(17, function(memo, v, index) { assert.equal(index, c++); assert.equal(a[index], index+5); return v+memo; });
 			assert.equal(flt, 52);
 		});
-		it('reduce objects', function() {
-			var _ = req();
-			var a = {a:5, b:6, c:7, d:8, e:9};
-			var flt = _.reduce(a, 17, function(memo, key, value) { assert.equal(a[key], value); return value+memo; });
-			assert.equal(flt, 52);
-		});
-	});
-
-	describe('_.reduceObj()', function() {
-		it('reduce objects', function() {
-			var _ = req();
-			var a = {a:1, b:2, c:3, d:4};
-			var flt = _.reduceObj(a, 2, function(memo, key, value) { assert.equal(a[key], value); return value*memo; });
-			assert.equal(flt, 48);
-		});
 	});
 
 	
