@@ -25,7 +25,7 @@
   <div id="subtitle">Redefining 'lightweight' for JavaScript Libraries</div>
   <div id="whatDiv" style="margin-top: 3em;">
   	<div style="float: left; font-size: 3em; width: 20%; text-align: center;">Wh<span class="colored">a</span>t?</div>
-  	<div style="float: right; width: 80%; padding-top: 0.5em;">Minified Web is a client-side JavaScript library, comparable to jQuery and MooTools 
+  	<div style="float: right; width: 80%; padding-top: 0.5em;">Minified is a client-side JavaScript library, comparable to jQuery and MooTools 
   	in scope. It helps you with DOM manipulation, animation, events and AJAX stuff in the browser.</div>
   	<div style="clear: both;"/>
   </div>
@@ -34,7 +34,7 @@
   	<div style="float: left; width: 20%;"><div style="font-size: 3em; transform: rotate(-90deg); -webkit-transform: rotate(-90deg); -ms-transform: rotate(-90deg);">Wh<span class="colored">y</span>?</div></div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 style="margin-top: 0;">Minified is smaller!</h3>
-  		Minified Web is a sub-4kb JavaScript library for client-side scripting. It 
+  		Minified is a sub-4kb JavaScript library for client-side scripting. It 
   		provides you functionality <a href="#featCmp">comparable to jQuery and MooTools</a>, but is <a href="#sizeCmp">7-8 times</a> smaller.
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">

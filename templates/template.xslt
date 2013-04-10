@@ -21,9 +21,9 @@
 <body>
 <div id="head">
 	<div class="container">
-		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' width="75" height="34"><![endif]-->
-		<!--[if gt IE 8]><img src='/img/minified.svg' width="75" height="34"><![endif]-->
-		<!--[if !IE]> --><img src='/img/minified.svg' width="75" height="34"/><!-- <![endif]--></a>
+		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png'><![endif]-->
+		<!--[if gt IE 8]><img src='/img/minified.svg'><![endif]-->
+		<!--[if !IE]> --><img src='/img/minified.svg'/><!-- <![endif]--></a>
 
 		<div id="topMenu">
 			<a class="{if (/page:page/page:section='home') then 'selected' else 'notSelected'}" href="/">Home</a>

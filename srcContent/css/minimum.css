@@ -3,10 +3,10 @@ img { border: 0; }
 a { color: black; }
 #head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
 .container { margin: auto; width: 70em; }
-#head .container { height: 2.4em; border-bottom: 1px solid #aaa; padding: 0; }
-#head .container img { height: 2em; float: left; margin: 0.2em 0.5em;} 
+#head .container { height: 1.9em; border-bottom: 1px solid #aaa; padding: 0; }
+#head .container img { height: 1.7em; float: left; margin: 0.1em 0.5em;} 
 #topMenu { text-align: right;}
-#topMenu a { display: inline-block; height: 1.4em; padding: 0.5em 1em 0.5em; color: black; text-decoration: none; vertical-align: middle;}
+#topMenu a { display: inline-block; height: 1.4em; padding: 0.5em 1em 0em; color: black; text-decoration: none; vertical-align: middle;}
 #topMenu a:hover { color: white; background-color: #f80; }
 #topMenu a.selected,  #topMenu a:hover.selected { color: white; background-color: black; }
 #foot .container { height: 2.4em; border-top: 1px solid #aaa; padding: 0; margin-top: 3em;}

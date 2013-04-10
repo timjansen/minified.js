@@ -248,6 +248,13 @@ define('minifiedUtil', function() {
 		});
 		return obj;
 	}
+	function copyObj(from, to, dontOverwrite) {
+		eachObj(from, function(name, value) {
+			if (to[name] == null || !dontOverwrite)
+				to[name] = value;
+		});
+		return to;
+	}
 	function find(list, findFunc) {
 		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 		var r;
@@ -387,7 +394,7 @@ define('minifiedUtil', function() {
 			};
 			if (match = /^\[(([+-]\d\d)(\d\d))\]\s*(.*)/.exec(format)) {
 				timezone = match[1];
-				date = dateAdd(value, 'minutes', getTimezone(match, 2, value));
+				date = dateAdd(value, 'minutes', getTimezone(match, 2, now()));
 				formatNoTZ = match[4];
 			}
 			
@@ -598,21 +605,22 @@ define('minifiedUtil', function() {
 		// should never ever be reached
 	}
 	// reads / writes property in name.name.name syntax. Supports setter/getter functions
-	function prop(path, object, value) {
-		var match = /([^.]+)\.(.*)/.exec(path);
+	function prop(object, path, value) {
+		var match = /^((?:[^.]|\.\.)+)\.([^.].*)/.exec(path);
 		if (match) {
-			var name = match[1];
+			var name = replace(match[1], /\.\./g, '.');
 			var val = object[name];
-			return prop(match[2], isFunction(val) ? val() : val, value);
+			return prop(isFunction(val) ? val() : val, match[2], value);
 		}
 		else {
-			var val = object[path];
+			var name = replace(path, /\.\./g, '.');
+			var val = object[name];
 			if (value === undef)
 				return isFunction(val) ? val() : val;
 			else if (isFunction(val))
 				return val(value);
 			else
-				return object[path] = value;
+				return object[name] = value;
 		}
 	}
 	// copies all elements of from into to, merging into existing structures.
@@ -727,7 +735,7 @@ define('minifiedUtil', function() {
 	}
 	
 	
-	eachObj({
+	copyObj({
 	'each': listBind(each),
 	
 	'filter': listBindArray(filter),
@@ -799,7 +807,7 @@ define('minifiedUtil', function() {
  	/*$
  	 * @stop
  	 */
-	}, function(n, v) {M.prototype[n]=v;});
+	}, M.prototype);
      
 
  	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -812,7 +820,7 @@ define('minifiedUtil', function() {
 			return new M(func(arg1, arg2, arg3));
 		};
 	}
-	eachObj({
+	copyObj({
 		'bind': bind,
 		'partial': partial,
 		'once': once,
@@ -868,13 +876,7 @@ define('minifiedUtil', function() {
 		'keys': keys,
 		'values': values,
 		
-		'copyObj': function(from, to, dontOverwrite) {
-			eachObj(from, function(name, value) {
-				if (to[name] == null || !dontOverwrite)
-					to[name] = value;
-			});
-			return to;
-		},
+		'copyObj': copyObj,
 		
 		'coal': function() {
 			var args = arguments;
@@ -974,7 +976,7 @@ define('minifiedUtil', function() {
 		
 		'format': function(format, object) {
 			return replace(format, /{([^,}]*)(,([^}]*))?}/g, function(match, path, subFormatPart, subFormat) {
-				var value = path=='' ? object : prop(path, object);
+				var value = path=='' ? object : prop(object, path);
 				return subFormatPart ? formatValue(subFormat, value) : toString(value);
 					
 		    });
@@ -983,7 +985,7 @@ define('minifiedUtil', function() {
 	/*$
 	 * @id underscorefuncdefend
 	 */
-	}, function(n, v) {UNDERSCORE[n]=v;});
+	}, UNDERSCORE);
 
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
