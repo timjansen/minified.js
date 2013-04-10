@@ -182,12 +182,12 @@ define('minifiedUtil', function() {
 	function keys(obj) {
 		var list = [];
 		eachObj(obj, function(key) { list.push(key); });
-		return new M(list);
+		return list;
 	}
 	function values(obj) {
 		var list = [];
 		eachObj(obj, function(key, value) { list.push(value); });
-		return new M(list);
+		return list;
 	}
 	function mapObj(list, mapFunc) {
 		var result = {};
@@ -871,8 +871,8 @@ define('minifiedUtil', function() {
 		'parseDate': parseDate,
 		'parseNumber': parseNumber,
 
-		'keys': keys,
-		'values': values,
+		'keys': funcArrayBind(keys),
+		'values': funcArrayBind(values),
 		
 		'copyObj': copyObj,
 		
