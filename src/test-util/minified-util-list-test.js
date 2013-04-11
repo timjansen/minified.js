@@ -455,6 +455,17 @@ function runTests(loadInContext) {
 		});
 	});
 	
+	describe('_.reverse()', function() {
+		it('reverses', function() {
+			var _ = req();
+			var b = _.reverse([45,1]);
+			var b2 = _(3, 111, -1).reverse();
+
+			assert(_.equals(b, [1,45]));
+			assert(_.equals(b2, _(-1, 111, 3)));
+		});
+	});
+	
 	describe('_.uniq()', function() {
 		it('removes non-uniqs', function() {
 			var _ = req();

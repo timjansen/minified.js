@@ -226,6 +226,10 @@ define('minifiedUtil', function() {
 		else
 			return end != null && base.substr(base.length - end.length) == end;
 	}
+	function reverse(list) {
+		var i = list.length;
+		return map(list, function() { return list[--i]; });
+	}
 	function sub(list, startIndex, endIndex) {
 		if (!isList(list))
 			return [];
@@ -565,13 +569,12 @@ define('minifiedUtil', function() {
 	}
 	function dateAddInline(d, cProp, value) {
 		d['set'+cProp].call(d, d['get'+cProp].call(d) + value);
+		return d;
 	}
 	function dateAdd(date, property, value) {
 		if (arguments.length < 3)
 			return dateAdd(now(), date, property);
-		var d = dateClone(date);
-		dateAddInline(d, capWord(property), value);
-		return d;
+		return dateAddInline(dateClone(date), capWord(property), value);
 	}
 	function dateMidnight(date) {
 		var od = date || now();
@@ -594,11 +597,9 @@ define('minifiedUtil', function() {
 		var calApproxValues = {'fullYear': DAY*365, 'month': DAY*365/12, 'date': DAY}; // minimum values, a little bit below avg values
 		var minimumResult = Math.floor((dt / calApproxValues[property])-2); // -2 to remove the imperfections caused by the values above
 		
-		var d = new Date(d1t);
-		dateAddInline(d, cProp, minimumResult);
+		var d = dateAddInline(new Date(d1t), cProp, minimumResult);
 		for (var i = minimumResult; i < minimumResult*1.2+4; i++) { // try out 20% more than needed, just to be sure
-			dateAddInline(d, cProp, 1);
-			if (d.getTime() > d2t)
+			if (dateAddInline(d, cProp, 1).getTime() > d2t)
 				return i;
 		}
 		// should never ever be reached
@@ -750,6 +751,8 @@ define('minifiedUtil', function() {
 	'equals': listBind(equals),
 
 	'sub': listBindArray(sub),
+	
+	'reverse': listBindArray(reverse),
  	
  	'find': listBind(find),
  	
@@ -837,6 +840,7 @@ define('minifiedUtil', function() {
 		'find': find,
 		'contains': contains,
 		'sub': funcArrayBind(sub),
+		'reverse': funcArrayBind(reverse),
 	 	'startsWith': startsWith,
 	 	'endsWith': endsWith,
 		'equals': equals,
