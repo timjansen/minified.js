@@ -2,13 +2,18 @@ var GROUPS = ['SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'AN
 
 
 // Parses a description to create some custom HTML: 
-//- ##NAME() will be replaced with <a href="NAME.html">NAME()</a>
-//- #ID#NAME() will be replaced with <a href="ID.html">NAME()</a>
+//- ##NAME() will be replaced with <code><a href="NAME.html">NAME()</a></code>
+//- #ID#NAME() will be replaced with <code><a href="ID.html">NAME()</a></code>
+//- ##ID# bla bla ## will be replaced with <a href="NAME.html"> bla bla </a>
 function parseDescription(desc) {
-	return _.toString(desc).replace(/#(\w*)#([\w$.]+)\(\)/, function(all, id, name) {
-		var rId = id || name;
-		return "<code><a href='"+rId.toLowerCase()+".html'>"+name+"()</a></code>";
-	});
+	return _.toString(desc)
+		.replace(/#(\w*)#([\w$.]+)\(\)/, function(all, id, name) {
+			var rId = id || name;
+			return "<code><a href='"+rId.toLowerCase()+".html'>"+name+"()</a></code>";
+		})
+		.replace(/##(\w+)#([^#]+)##/, function(all, id, text) {
+			return "<a href='"+id.toLowerCase()+".html'>"+text+"()</a>";
+		});
 }
 
 //takes a section, as created by parseSourceSections(). Adds a 'htmldoc' property containing HTML doc.
