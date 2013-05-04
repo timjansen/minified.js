@@ -11,7 +11,7 @@
 <h2><a name="doc-fill">.fill()</a></h2>
 <div class="summary">Sets the content of the list elements, replacing old content.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">$(selector).fill()</div>
 <div class="syntax">$(selector).fill(text)</div>
@@ -30,7 +30,7 @@ The function can return either a string for a text node, a function to invoke, a
 containing strings, lists, functions and/or DOM nodes.</dd>
 <dt id="fill_list" class=""><a name="fill_list"><var>list</var></a></dt>
 <dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-and attempt to add them to more than one element, the result is undefined. You should always use factories if your
+and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
 Minified list contains more than one item.</dd>
 <dt id="fill_node" class=""><a name="fill_node"><var>node</var></a></dt>
 <dd class="">a DOM node to set <strong>only in the first element</strong> of the list.
@@ -41,7 +41,7 @@ Minified list contains more than one item.</dd>
 
 <h4>Description</h4>
 <div class="description">Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node.
-If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+If you pass a function, it will be invoked for each list member to create a node. The function prototype is function(parent, index). It can return all values
 allowed by <var>fill()</var>, including another function to be called.
 If you pass a list or a function returns a list, all its elements will be added using the rules above.
 
@@ -140,6 +140,7 @@ $('.listContainers').fill();
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

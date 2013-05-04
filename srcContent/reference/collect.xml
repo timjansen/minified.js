@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-collect">.collect()</a></h2>
-<div class="summary">Creates a new list from the current list using given callback function.</div>
+<div class="summary">Creates a new <a href="list.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -21,23 +21,23 @@
 <dt id="collect_collectFunc" class=""><a name="collect_collectFunc"><var>collectFunc</var></a></dt>
 <dd class="">the callback function(item, index) to invoke for each item with the item as first argument and the
 0-based index as second argument.
-If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls
+If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls und <var>undefined</var>
 will be ignored and not added.</dd>
 <dt id="collect_RETURN" class="returnValue inSyntax0"><a name="collect_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the new list</dd>
+<dd class="inSyntax0">the new <a href="list.html">list</a></dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Creates a new list from the current list using given callback function.
-The callback is invoked once for each element of the current
-list. The callback results will be added to the result list.
+<div class="description">Creates a new <a href="list.html">Minified list</a> from the current list using the given callback function.
+The callback is invoked once for each element of the current list. The callback results will be added to the result list.
 The callback can return
 <ul>
-<li>An array or another list-like object whose elements will be appended to the result array as single elements.</li>
-<li>A regular object which will be appended to the list</li>
-<li>null (or undefined), which means that no object will be added to the list.
+<li>an array or another list-like object whose elements will be appended to the result list as single elements.</li>
+<li>a regular object which will be appended to the list</li>
+<li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list.
 If you need to add null or modified to the result list, put it into a single-element array.</li>
 </ul>
+
 
 </div>
 
@@ -108,6 +108,7 @@ var elements = $('input.myTexts').collect(function(item) {
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

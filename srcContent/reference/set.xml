@@ -9,9 +9,10 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-set">.set()</a></h2>
-<div class="summary">Modifies the list's DOM elements by setting their properties, attributes, CSS style and/or CSS classes.</div>
+<div class="summary">
+Modifies the list's DOM elements by setting their properties, attributes, CSS style and/or CSS classes.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">$(selector).set(name, value)</div>
 <div class="syntax">$(selector).set(properties)</div>
@@ -40,14 +41,15 @@ with a '+' prefix the class will be removed. Without prefix, the class will be t
 <dt id="set_cssClasses" class=""><a name="set_cssClasses"><var>cssClasses</var></a></dt>
 <dd class="">if <var>set()</var> is invoked with a string as single argument, the name "$" (CSS classes) is taken by default and the argument is the
 value. See value above for CSS syntax.
-Instead of a string, you can also specify a function(oldValue, index, obj) to generate the string.</dd>
+Instead of a string, you can also specify a function(oldValue, index, obj) to modify the existing classes.</dd>
 <dt id="set_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="set_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2">the list</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Modifies the list's DOM elements by setting their properties, attributes, CSS style and/or CSS classes. You can either supply a
-single name and value to set only one property, or you can provide a map of properties to set.
+<div class="description">
+Modifies the list's DOM elements by setting their properties, attributes, CSS style and/or CSS classes. You can either supply a
+single name and value to set only one property, or you can provide an object that contains name/value pairs to describe more than one property.
 More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will
 be set.
 
@@ -82,9 +84,9 @@ $('input.checkbox').set('checked', false);
 </pre>
 </div>
 <h4>Example</h4>
-<div class="example">Changing the text of the next sibling:
+<div class="example">Changing the inner HTML of an element:
 <pre>
-$('input.checkbox').set('nextSibling.innerHTML', 'New Text');
+$('#toc').set('innerHTML', 'Content');
 </pre>
 </div>
 <h4>Example</h4>
@@ -133,7 +135,6 @@ $('.myElem').set('$$fade', 1);
 <div class="example">Using a map to change several properties:
 <pre>
 $('input.checkbox').set({checked: false,
-                         'nextSibling.innerHTML': 'New Text',
                          'parentNode.@title': 'Check this'});
 </pre>
 </div>
@@ -193,6 +194,7 @@ $('h2').set('innerHTML', function(oldValue, index) {
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

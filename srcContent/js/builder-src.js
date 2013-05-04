@@ -1,9 +1,9 @@
 var $ = require('minified').$, $$ = $.$$, EE = $.EE;
 var _ = require('minifiedUtil')._;
 
-var SRC='minified-src.js';
+var SRC='minified-web-src.js';
 
-var MODULES = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'OPTIONS'];
+var GROUPS = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'OPTIONS'];
 
 //submits the given source code (src) to the Closure online compiler. When finished, will invoke given callback cb with JSON result. 
 //On error, it passes null to the callback.
@@ -64,8 +64,8 @@ function setUpConfigurationUI(s) {
 		return false;
 	}
 	
-	function setModuleCheckboxes() {
-		// fix all module checkboxes
+	function setGroupCheckboxes() {
+		// fix all group checkboxes
 		$('.modCheck').each(function(modCheck) {
 			var checkedSectionNum = 0;
 			$('.secCheck', modCheck.parentNode.parentNode).each(function(node) {
@@ -90,27 +90,27 @@ function setUpConfigurationUI(s) {
 	
 	$('#compile').on('click', compileClicked);
 	
-	for (var i = 1; i < MODULES.length; i++) {
-		var moduleCheckBox, div;
-		$('#sectionCheckboxes').add(div = EE('div', {'@id': 'divMod-'+i}, EE('div', {'className': 'moduleDescriptor'}, [
-			moduleCheckBox = EE('input', {'@id': 'mod-'+i, 'className': 'modCheck', '@type':'checkbox', checked: 'checked'})(),
-			EE('label', {'@for': 'mod-'+i}, MODULES[i])     
+	for (var i = 1; i < GROUPS.length; i++) {
+		var groupCheckBox, div;
+		$('#sectionCheckboxes').add(div = EE('div', {'@id': 'divMod-'+i}, EE('div', {'className': 'groupDescriptor'}, [
+			groupCheckBox = EE('input', {'@id': 'mod-'+i, 'className': 'modCheck', '@type':'checkbox', checked: 'checked'})(),
+			EE('label', {'@for': 'mod-'+i}, GROUPS[i])     
 		]))());
 
-		$(moduleCheckBox).on('change', function() {
+		$(groupCheckBox).on('change', function() {
 			var b = this.checked;
 			$('.secCheck', this.parentNode.parentNode)
 			 .each(function(cb) {
 				 cb.checked = b;
 				 fulfillSectionDependencies(cb);
 			 });
-			setModuleCheckboxes();
+			setGroupCheckboxes();
 			return true;
 		});
 		
 		var sectionCheckBox;
 		_.filter(s.sections, function(sec) { 
-			return sec.module == MODULES[i] && sec.configurable;}
+			return sec.group == GROUPS[i] && sec.configurable;}
 		).sort(function(a,b) {
 			var ha = a.name || a.id, hb = b.name || b.id;
 			if (ha == hb)
@@ -153,7 +153,7 @@ function setUpConfigurationUI(s) {
 			
 			$(sectionCheckBox).on('change', function() {
 				fulfillSectionDependencies(this);
-				setModuleCheckboxes();
+				setGroupCheckboxes();
 				return true;
 			});
 		});

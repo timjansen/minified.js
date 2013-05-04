@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-sub">.sub()</a></h2>
-<div class="summary">Returns a new list containing only the elements in the specified range.</div>
+<div class="summary">Returns a new <a href="list.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -25,11 +25,12 @@ seen from the list end.</dd>
 <dd class=""><span class="optional">optional</span> the 0-based position of the sub-list end. If negative, the list's length is added and thus it is the position
 seen from the list end. If omitted, all elements following the <var>startIndex</var> are included in the result.</dd>
 <dt id="sub_RETURN" class="returnValue inSyntax0"><a name="sub_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">a new list containing only the items in the index range.</dd>
+<dd class="inSyntax0">a new <a href="list.html">list</a> containing only the items in the index range.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Returns a new list containing only the elements in the specified range. If there are no elements in the range, an empty list is returned.
+<div class="description">Returns a new <a href="list.html">Minfied list</a> containing only the elements in the specified range. If there are no elements in the range, an empty list is returned.
+Negative indizes are supported and will be added to the list's length, thus allowing you to specify ranged at the list's end.
 
 </div>
 
@@ -91,6 +92,7 @@ $('#myList li').sub(-1).set('+lastItem');
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

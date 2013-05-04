@@ -1,4 +1,4 @@
-var MODULES = ['SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS', 'OPTIONS'];
+var GROUPS = ['SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'SHORTCUTS', 'OPTIONS'];
 
 
 // Parses a description to create some custom HTML: 
@@ -20,7 +20,10 @@ function createDocs(sec) {
 			'<div class="summary">{SUMMARY}</div>\n\n',
 			{ID: sec.id, TITLE: sec.name, SUMMARY: sec.desc.replace(/\.[^]+$/m, '.')});
 	if (sec.syntax.length) {
-		s += '<h4>Syntax</h4>\n';
+		if (sec.syntax.length == 1)
+			s += '<h4>Syntax</h4>\n';
+		else
+			s += '<h4>Syntax Variants</h4>\n';
 		s += '<div class="syntaxVariant">\n';
 		_.each(sec.syntax, function(syn, synIndex) {
 			s += _.format('<div class="syntax">{SYNTAX}</div>\n', {SYNTAX: syn});

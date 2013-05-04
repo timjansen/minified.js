@@ -9,10 +9,10 @@
 	<main><![CDATA[
 <h1>Minified Web API</h1>
 <h3><a href="dollar.html">$()</a></h3>
-<div class="summary">Creates a Minified list of HTML nodes.</div>
+<div class="summary">Creates a <a href="list.</div>
 
 <h3><a href="dollardollar.html">$$()</a></h3>
-<div class="summary">Returns an DOM object containing the first match of the given selector, or undefined if no match.</div>
+<div class="summary">Returns an DOM object containing the first match of the given selector, or <var>undefined</var> if no match.</div>
 
 <h3><a href="getcookie.html">$.getCookie()</a></h3>
 <div class="summary">Tries to find the cookie with the given name and returns it.</div>
@@ -57,10 +57,10 @@
 <div class="summary">Appends strings to properties or attributes of list items.</div>
 
 <h3><a href="clone.html">.clone()</a></h3>
-<div class="summary">Creates a Minified list list of strings and Element Factories that returns clones of the list elements.</div>
+<div class="summary">Creates a <a href="list.</div>
 
 <h3><a href="collect.html">.collect()</a></h3>
-<div class="summary">Creates a new list from the current list using given callback function.</div>
+<div class="summary">Creates a new <a href="list.</div>
 
 <h3><a href="each.html">.each()</a></h3>
 <div class="summary">Invokes the given function once for each item in the list.</div>
@@ -69,10 +69,10 @@
 <div class="summary">Sets the content of the list elements, replacing old content.</div>
 
 <h3><a href="filter.html">.filter()</a></h3>
-<div class="summary">Creates a new list that contains only those items approved by the given function.</div>
+<div class="summary">Creates a new <a href="list.</div>
 
 <h3><a href="find.html">.find()</a></h3>
-<div class="summary">Find a specific value in the list.</div>
+<div class="summary">Finds a specific value in the list.</div>
 
 <h3><a href="get.html">.get()</a></h3>
 <div class="summary">Retrieves properties, attributes and styles from the list's first element.</div>
@@ -99,10 +99,11 @@
 <div class="summary">Replaces the list items with the the given node(s) in the DOM tree.</div>
 
 <h3><a href="set.html">.set()</a></h3>
-<div class="summary">Modifies the list's DOM elements by setting their properties, attributes, CSS style and/or CSS classes.</div>
+<div class="summary">
+Modifies the list's DOM elements by setting their properties, attributes, CSS style and/or CSS classes.</div>
 
 <h3><a href="sub.html">.sub()</a></h3>
-<div class="summary">Returns a new list containing only the elements in the specified range.</div>
+<div class="summary">Returns a new <a href="list.</div>
 
 <h3><a href="toggle.html">.toggle()</a></h3>
 <div class="summary">
@@ -111,14 +112,18 @@ Creates a function that switches between the two given states for the list.</div
 <h3><a href="ee.html">EE()</a></h3>
 <div class="summary">Creates a new Element Factory.</div>
 
+<h3><a href="list.html">Minified Lists</a></h3>
+<div class="summary">
+<i>Minified lists</i> are Array-like objects provided by Minified.</div>
+
 <h3><a href="always.html">promise.always()</a></h3>
-<div class="summary">Registers a callback that will always be called when the promise's operation ended, no matter whether the operation succeeded or not.</div>
+<div class="summary">Registers a callback that will always be called when the Promise's operation ended, no matter whether the operation succeeded or not.</div>
 
 <h3><a href="error.html">promise.error()</a></h3>
 <div class="summary">Registers a callback that will be called when the operation failed.</div>
 
 <h3><a href="then.html">promise.then()</a></h3>
-<div class="summary">Registers two callbacks that will be invoked when the promise's asynchronous operation finished
+<div class="summary">Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
 successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</div>
 
 

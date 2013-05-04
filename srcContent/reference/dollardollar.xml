@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-dollardollar">$$()</a></h2>
-<div class="summary">Returns an DOM object containing the first match of the given selector, or undefined if no match.</div>
+<div class="summary">Returns an DOM object containing the first match of the given selector, or <var>undefined</var> if no match.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -22,11 +22,11 @@
 <dd class="">a simple, CSS-like selector for the element. Uses the syntax described in $(). The most common
 parameter for this function is the id selector with the syntax "#id".</dd>
 <dt id="dollardollar_RETURN" class="returnValue inSyntax0"><a name="dollardollar_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">a DOM object of the first match, or undefined if the selector did not return at least one match</dd>
+<dd class="inSyntax0">a DOM object of the first match, or <var>undefined</var> if the selector did not return at least one match</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Returns an DOM object containing the first match of the given selector, or undefined if no match. <var>$$</var> allows you to easily access
+<div class="description">Returns an DOM object containing the first match of the given selector, or <var>undefined</var> if no match. <var>$$</var> allows you to easily access
 an element directly. It is the equivalent to writing "$(selector)[0]".
 
 Please note that the function <var>$$</var> will not be automatically exported by Minified. You should always import it
@@ -83,6 +83,7 @@ $$('#myCheckbox').selected = true;
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

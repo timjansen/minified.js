@@ -9,9 +9,9 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-find">.find()</a></h2>
-<div class="summary">Find a specific value in the list.</div>
+<div class="summary">Finds a specific value in the list.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">find(findFunc)</div>
 <div class="syntax">find(element)</div>
@@ -24,15 +24,15 @@
 <dt id="find_element" class=""><a name="find_element"><var>element</var></a></dt>
 <dd class="">the element to search for</dd>
 <dt id="find_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="find_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">if called with an element, either the element's index in the list or undefined if not found. If called with a callback function,
-it returns either the value returned by the callback or undefined.</dd>
+<dd class="inSyntax0 inSyntax1">if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
+it returns either the value returned by the callback or <var>undefined</var>.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Find a specific value in the list. There are two ways of calling <var>find()</var>:
+<div class="description">Finds a specific value in the list. There are two ways of calling <var>find()</var>:
 <ol>
-<li>With an element as argument. The <var>find()</var> will search for the first occurrence of that element in the list
-    and return the index. If it is not found, the <var>find()</var> returns undefined.</li>
+<li>With an element as argument. Then <var>find()</var> will search for the first occurrence of that element in the list
+    and return the index. If it is not found, <var>find()</var> returns <var>undefined</var>.</li>
 <li>With a callback function. <var>find()</var> will then call the given function for each list element until the function
     returns a value that is not null or undefined. This value will be returned.</li>
 </ol>
@@ -41,7 +41,7 @@ it returns either the value returned by the callback or undefined.</dd>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Determines the position of the id '#wanted' among all li elements:
+<div class="example">Determines the position of the element with the id '#wanted' among all li elements:
 <pre>
 var elementIndex = $('li').find($$('#wanted'));
 </pre>
@@ -91,6 +91,7 @@ var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) r
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

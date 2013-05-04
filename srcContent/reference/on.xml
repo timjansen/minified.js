@@ -11,7 +11,7 @@
 <h2><a name="doc-on">.on()</a></h2>
 <div class="summary">Registers the function as event handler for all items in the list.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">$(selector).on(name, handler)</div>
 <div class="syntax">$(selector).on(name, handler, args)</div>
@@ -112,6 +112,7 @@ $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

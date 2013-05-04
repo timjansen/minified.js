@@ -11,7 +11,7 @@
 <h2><a name="doc-addfront">.addFront()</a></h2>
 <div class="summary">Adds the given node(s) as content to the list elements as additional nodes.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">$(selector).addFront(text)</div>
 <div class="syntax">$(selector).addFront(factoryFunction)</div>
@@ -29,7 +29,7 @@ The function can return either a string for a text node, a function to invoke, a
 containing strings, lists, functions and/or DOM nodes.</dd>
 <dt id="addfront_list" class=""><a name="addfront_list"><var>list</var></a></dt>
 <dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-and attempt to add them to more than one element, the result is undefined. You should always use factories if your
+and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
 Minified list contains more than one item.</dd>
 <dt id="addfront_node" class=""><a name="addfront_node"><var>node</var></a></dt>
 <dd class="">a DOM node to add <strong>only to the first element</strong> of the list.</dd>
@@ -40,7 +40,7 @@ Minified list contains more than one item.</dd>
 <h4>Description</h4>
 <div class="description">Adds the given node(s) as content to the list elements as additional nodes. Unlike <code><a href='add.html'>add()</a></code>, the new nodes will be the first children of the list items.
 If a string has been given, it will be added as text node.
-If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+If you pass a function, it will be invoked for each list element to create node(s) with the arguments function(parent, index). It can return all values
 allowed by <var>addFront()</var>, including another function to be called.
 If you pass a list or a function returns a list, all its elements will be added using the rules above.
 
@@ -130,6 +130,7 @@ $('#comments').addFront([EE('br'), 'Some text', EE('span', {'className': 'highli
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

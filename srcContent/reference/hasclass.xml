@@ -21,12 +21,12 @@
 <dt id="hasclass_name" class=""><a name="hasclass_name"><var>name</var></a></dt>
 <dd class="">the class to to find</dd>
 <dt id="hasclass_RETURN" class="returnValue inSyntax0"><a name="hasclass_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the first element that has the given class, or undefined if not found</dd>
+<dd class="inSyntax0">the first element that has the given class, or <var>undefined</var> if not found</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description">Checks whether at least one element in the list has the given class name. If yes, the first element that matches is returned. Otherwise
-the function returns undefined.
+the function returns <var>undefined</var>.
 
 </div>
 
@@ -77,6 +77,7 @@ if($('#myElement').hasClass('myClass'))
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

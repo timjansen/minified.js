@@ -57,8 +57,11 @@ define('minifiedUtil', function() {
 	/**
 	 * @const
 	 */
+	function val3(v) {return v.substr(0,3);}
 	var MONTH_LONG_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, function(v) {return v.substr(0,3);}); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, val3); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	var WEEK_LONG_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+	var WEEK_SHORT_NAMES = map(WEEK_LONG_NAMES, val3); 
 	
 	/**
 	 * @const
@@ -114,6 +117,9 @@ define('minifiedUtil', function() {
 	}
 	function selfFunc(v) {
 		return v;
+	}
+	function plusOne(d) { 
+		return d+1; 
 	}
 	function replace(s, regexp, sub) {
 		return toString(s).replace(regexp, sub != null ? sub : '');
@@ -176,12 +182,12 @@ define('minifiedUtil', function() {
 	function keys(obj) {
 		var list = [];
 		eachObj(obj, function(key) { list.push(key); });
-		return new M(list);
+		return list;
 	}
 	function values(obj) {
 		var list = [];
 		eachObj(obj, function(key, value) { list.push(value); });
-		return new M(list);
+		return list;
 	}
 	function mapObj(list, mapFunc) {
 		var result = {};
@@ -197,23 +203,12 @@ define('minifiedUtil', function() {
 		});
 		return result;
 	}
-	function reduceObj(obj, memoInit, func) {
+	function reduce(list, memoInit, func) {
 		var memo = memoInit;
-		eachObj(obj, function(key, value) {
-			memo = func(memo, key, value);
+		each(list, function(value, index) {
+			memo = func(memo, value, index);
 		});
 		return memo;
-	}
-	function reduce(list, memoInit, func) {
-		if (isList(list)) {
-			var memo = memoInit;
-			each(list, function(value, index) {
-				memo = func(memo, value, index);
-			});
-			return memo;
-		}
-		else
-			return reduceObj(list, memoInit, func);
 	}
 	function startsWith(base, start) {
 		if (isList(base)) {
@@ -230,6 +225,10 @@ define('minifiedUtil', function() {
 		}
 		else
 			return end != null && base.substr(base.length - end.length) == end;
+	}
+	function reverse(list) {
+		var i = list.length;
+		return map(list, function() { return list[--i]; });
 	}
 	function sub(list, startIndex, endIndex) {
 		if (!isList(list))
@@ -261,6 +260,9 @@ define('minifiedUtil', function() {
 		for (var i = 0; i < list.length; i++)
 			if ((r = f(list[i], i)) != null)
 				return r;
+	}
+	function coal() {
+		return find(arguments, selfFunc);
 	}
 	function contains(list, value) {
 		if (isList(list))
@@ -324,7 +326,7 @@ define('minifiedUtil', function() {
 		setTimeout(bind(callback, fThisOrArgs, args), delayMs);
 	}
 	function defer(callback, fThisOrArgs, args) {
-		if (typeof process != 'undefined' && process.nextTick)
+		if (/^u/.test(typeof process) && process.nextTick)
 			process.nextTick(bind(callback, fThisOrArgs, args));
 		else
 			delay(0, callback, fThisOrArgs, args);
@@ -342,7 +344,7 @@ define('minifiedUtil', function() {
 		function group(s) {
 			var len = s.length;
 			if (len > groupingSize)
-				return group(s.substring(0, len-groupingSize)) + (groupingSeparator||',') + s.substr(len-groupingSize);
+				return group(s.substr(0, len-groupingSize)) + (groupingSeparator||',') + s.substr(len-groupingSize);
 			else
 				return s;					
 		}
@@ -353,9 +355,9 @@ define('minifiedUtil', function() {
 		return (signed?'-':'') + preDecimal + (afterDecimalPoint ? ((omitZerosAfter?replace(postDecimal, /[.,]?0+$/):postDecimal)) : '');
 	}
 	function getTimezone(match, idx, refDate) {
-		var currentOffset = refDate.getTimezoneOffset();
-		var requestedOffset = parseInt(match[idx])*60 + parseInt(match[idx+1]);
-		return requestedOffset + currentOffset;
+		if (idx == null || !match)
+			return 0;
+		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
 	}
 	// formats number with format string (e.g. "#.999", "#,_", "00000", "000.99", "000.000.000,99", "000,000,000.__")
 	// choice syntax: <cmp><value>:<format>|<cmp><value>:<format>|... 
@@ -369,21 +371,21 @@ define('minifiedUtil', function() {
 			var formatNoTZ = format;
 			var date = value;
 			var map = {
-				'y': 'FullYear',
-				'M': ['Month', function(d) { return d + 1; }],
-				'n': ['Month', function(d, values) { return (values||MONTH_SHORT_NAMES)[d]; }],
-				'N': ['Month', function(d, values) { return (values||MONTH_LONG_NAMES)[d]; }],
-				'd':  'Date',
-				'm':  'Minutes',
-				'H':  'Hours',
-				'h': ['Hours', function(d) { return d % 12; }],
-				'K': ['Hours', function(d) { return d+1; }],
+				'y': ['FullYear', selfFunc],
+				'M': ['Month', plusOne],
+				'n': ['Month', MONTH_SHORT_NAMES],
+				'N': ['Month', MONTH_LONG_NAMES],
+				'd': ['Date', selfFunc],
+				'm': ['Minutes', selfFunc],
+				'H': ['Hours', selfFunc],
+				'h': ['Hours', function(d) { return (d % 12) || 12; }],
+				'K': ['Hours', plusOne],
 				'k': ['Hours', function(d) { return d % 12 + 1; }],
-				's':  'Seconds',
-				'S':  'Milliseconds',
+				's': ['Seconds', selfFunc],
+				'S': ['Milliseconds', selfFunc],
 				'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
-				'w': ['Day', function(d, values) { return (values||['Sun','Mon','Tue','Wed','Thu','Fri','Sat'])[d]; }],
-				'W': ['Day', function(d, values) { return (values||['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'])[d]; }],
+				'w': ['Day', WEEK_SHORT_NAMES],
+				'W': ['Day', WEEK_LONG_NAMES],
 				'z': ['TimezoneOffset', function(d) {
 					if (timezone)
 						return timezone;
@@ -394,7 +396,7 @@ define('minifiedUtil', function() {
 			};
 			if (match = /^\[(([+-]\d\d)(\d\d))\]\s*(.*)/.exec(format)) {
 				timezone = match[1];
-				date = dateAdd(value, 'minutes', getTimezone(match, 2, now()));
+				date = dateAdd(value, 'minutes', getTimezone(match, 2, value));
 				formatNoTZ = match[4];
 			}
 			
@@ -403,10 +405,11 @@ define('minifiedUtil', function() {
 				var val = map[placeholder.charAt(0)];
 				var d = date['get' + (isList(val)?val[0]:val)].call(date);
 				
-				if (isList(val)) {
-					var optionArray = params ? params.split(',') : null;
+				var optionArray = params && params.split(',');
+				if (isList(val[1])) 
+					d = (optionArray || val[1])[d];
+				else
 					d = val[1](d, optionArray);
-				}
 				if (d != null && !isString(d))
 					d = pad(len, d);
 				return d;
@@ -471,7 +474,7 @@ define('minifiedUtil', function() {
 		};
 		var indexMap = {}; // contains reGroupPosition -> typeLetter or [typeLetter, value array]
 		var reIndex = 1;
-		var timezoneOffsetMin = 0;
+		var timezoneOffsetMatch;
 		var timezoneIndex;
 		var match;
 	
@@ -482,7 +485,7 @@ define('minifiedUtil', function() {
 		}
 		
 		if (match = /^\[([+-]\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
-			timezoneOffsetMin = getTimezone(match, 1, now());
+			timezoneOffsetMatch = match;
 			format = match[3];
 		}
 
@@ -513,11 +516,8 @@ define('minifiedUtil', function() {
 		
 		if (!(match = parser.exec(date)))
 			return undef;
-		
-		if (timezoneIndex != null)
-			timezoneOffsetMin = getTimezone(match, timezoneIndex, now());
 			
-		var ctorArgs = [0, 0, 0, 0, -timezoneOffsetMin, 0,  0];
+		var ctorArgs = [0, 0, 0, 0, 0, 0,  0];
 		for (var i = 1; i < reIndex; i++) {
 			var matchVal = match[i];
 			var indexEntry = indexMap[i];
@@ -543,7 +543,8 @@ define('minifiedUtil', function() {
 					ctorArgs[mapEntry] += value;
 			}
 		}
-		return new Date(ctorArgs[0], ctorArgs[1], ctorArgs[2], ctorArgs[3], ctorArgs[4], ctorArgs[5], ctorArgs[6]);
+		var d = new Date(ctorArgs[0], ctorArgs[1], ctorArgs[2], ctorArgs[3], ctorArgs[4], ctorArgs[5], ctorArgs[6]);
+		return dateAdd(d, 'minutes', -getTimezone(timezoneOffsetMatch, 1, d) - getTimezone(match, timezoneIndex, d));
 	}
 	function parseNumber(format, value) {
 		if (arguments.length == 1)
@@ -563,16 +564,17 @@ define('minifiedUtil', function() {
 	function dateClone(date) {
 		return new Date(date.getTime());
 	}
+	function capWord(w) { 
+		return w.charAt(0).toUpperCase() + w.substr(1); 
+	}
 	function dateAddInline(d, cProp, value) {
 		d['set'+cProp].call(d, d['get'+cProp].call(d) + value);
+		return d;
 	}
 	function dateAdd(date, property, value) {
 		if (arguments.length < 3)
 			return dateAdd(now(), date, property);
-		var d = dateClone(date);
-		var cProp = property.charAt(0).toUpperCase() + property.substr(1);
-		dateAddInline(d, cProp, value);
-		return d;
+		return dateAddInline(dateClone(date), capWord(property), value);
 	}
 	function dateMidnight(date) {
 		var od = date || now();
@@ -591,15 +593,13 @@ define('minifiedUtil', function() {
 			return dt / ft;
 
 		var DAY = 8.64e7;
-		var cProp = property.charAt(0).toUpperCase() + property.substr(1);
+		var cProp = capWord(property);
 		var calApproxValues = {'fullYear': DAY*365, 'month': DAY*365/12, 'date': DAY}; // minimum values, a little bit below avg values
 		var minimumResult = Math.floor((dt / calApproxValues[property])-2); // -2 to remove the imperfections caused by the values above
 		
-		var d = new Date(d1t);
-		dateAddInline(d, cProp, minimumResult);
+		var d = dateAddInline(new Date(d1t), cProp, minimumResult);
 		for (var i = minimumResult; i < minimumResult*1.2+4; i++) { // try out 20% more than needed, just to be sure
-			dateAddInline(d, cProp, 1);
-			if (d.getTime() > d2t)
+			if (dateAddInline(d, cProp, 1).getTime() > d2t)
 				return i;
 		}
 		// should never ever be reached
@@ -751,6 +751,8 @@ define('minifiedUtil', function() {
 	'equals': listBind(equals),
 
 	'sub': listBindArray(sub),
+	
+	'reverse': listBindArray(reverse),
  	
  	'find': listBind(find),
  	
@@ -835,10 +837,10 @@ define('minifiedUtil', function() {
 		'map': funcArrayBind(map),
 		'mapObj': mapObj,
 		'reduce': reduce,
-		'reduceObj': reduceObj,
 		'find': find,
 		'contains': contains,
 		'sub': funcArrayBind(sub),
+		'reverse': funcArrayBind(reverse),
 	 	'startsWith': startsWith,
 	 	'endsWith': endsWith,
 		'equals': equals,
@@ -873,17 +875,12 @@ define('minifiedUtil', function() {
 		'parseDate': parseDate,
 		'parseNumber': parseNumber,
 
-		'keys': keys,
-		'values': values,
+		'keys': funcArrayBind(keys),
+		'values': funcArrayBind(values),
 		
 		'copyObj': copyObj,
 		
-		'coal': function() {
-			var args = arguments;
-			for (var i = 0; i < args.length; i++) 
-				if (args[i] != null)
-					return args[i];
-		},
+		'coal': coal,
 		
 		// takes vararg of other promises to assimilate
 		// if one promise is given, this promise assimilates the given promise as-is, and just forwards fulfillment and rejection with the original values.

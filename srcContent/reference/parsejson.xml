@@ -21,7 +21,7 @@
 <dt id="parsejson_text" class=""><a name="parsejson_text"><var>text</var></a></dt>
 <dd class="">the JSON string</dd>
 <dt id="parsejson_RETURN" class="returnValue inSyntax0"><a name="parsejson_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the resulting JavaScript object. Undefined if not valid.</dd>
+<dd class="inSyntax0">the resulting JavaScript object. <var>Undefined</var> if not valid.</dd>
 </dl>
 
 <h4>Description</h4>
@@ -78,6 +78,7 @@ var myObj = $.parseJSON(jsonString);
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

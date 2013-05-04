@@ -20,10 +20,10 @@
 <dl class="params">
 <dt id="error_callback" class=""><a name="error_callback"><var>callback</var></a></dt>
 <dd class="">a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a Promise, that promise will
-be evaluated to determine the state of the returned promise. If it returns regularly, the returned promise will
-have success status. If it throws an error, the returned promise will be in error state.</dd>
+be evaluated to determine the state of the returned Promise. If it returns regularly, the returned Promise will
+have success status. If it throws an error, the returned Promise will be in error state.</dd>
 <dt id="error_RETURN" class="returnValue inSyntax0"><a name="error_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">a new Promises object. Its state is determined by the callback.</dd>
+<dd class="inSyntax0">a new Promise object. Its state is determined by the callback.</dd>
 </dl>
 
 <h4>Description</h4>
@@ -81,6 +81,7 @@ $.request('get', '/weather.html')
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

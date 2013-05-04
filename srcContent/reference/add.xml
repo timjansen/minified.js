@@ -11,7 +11,7 @@
 <h2><a name="doc-add">.add()</a></h2>
 <div class="summary">Adds the given node(s) as content to the list elements as additional nodes.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">$(selector).add(text)</div>
 <div class="syntax">$(selector).add(factoryFunction)</div>
@@ -29,7 +29,7 @@ The function can return either a string for a text node, a function to invoke, a
 containing strings, lists, functions and/or DOM nodes.</dd>
 <dt id="add_list" class=""><a name="add_list"><var>list</var></a></dt>
 <dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-and attempt to add them to more than one element, the result is undefined. You should always use factories
+and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories
 if you add DOM nodes to more than one element.</dd>
 <dt id="add_node" class=""><a name="add_node"><var>node</var></a></dt>
 <dd class="">a DOM node to add <strong>only to the first element</strong> of the list.</dd>
@@ -39,7 +39,7 @@ if you add DOM nodes to more than one element.</dd>
 
 <h4>Description</h4>
 <div class="description">Adds the given node(s) as content to the list elements as additional nodes. If a string has been given, it will be added as text node.
-If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). This is called a factory function. It can return all
+If you pass a function, it will be invoked for each list element to create the node to add. This is called a factory function. It can return all
 values allowed by <var>add()</var>, including another function to be called.
 If you pass a list or a function returning a list, all its elements will be added using the rules above.
 
@@ -55,7 +55,7 @@ and ##clone() are two simple ways to create factory functions.
 <pre>
 &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
 </pre>
-Add a text to the given 'comment' div:
+The next line appends a text node to the given 'comment' div:
 <pre>
 $('#comments').add('Some additional text.');
 </pre>
@@ -136,6 +136,7 @@ $('.chapter').add(function(parent, index) { return EE('h2', 'Chapter number ' + 
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

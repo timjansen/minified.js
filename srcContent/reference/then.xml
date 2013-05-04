@@ -9,10 +9,10 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-then">promise.then()</a></h2>
-<div class="summary">Registers two callbacks that will be invoked when the promise's asynchronous operation finished
+<div class="summary">Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
 successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">promise.then(onSuccess)</div>
 <div class="syntax">promise.then(onSuccess, onError)</div>
@@ -23,20 +23,20 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 <dt id="then_onSuccess" class=""><a name="then_onSuccess"><var>onSuccess</var></a></dt>
 <dd class=""><span class="optional">optional</span> a function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.
 If the function returns a Promise, that promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the
-returned promise will also succeed. If the function throws an error, the returned promise will be in error state.</dd>
+returned Promise will also succeed. If the function throws an error, the returned promise will be in error state.</dd>
 <dt id="then_onError" class=""><a name="then_onError"><var>onError</var></a></dt>
 <dd class=""><span class="optional">optional</span> a function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a Promise, that promise will
 be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns anything else, the returned promise will
 have success status. If the function throws an error, the returned promise will be in the error state.</dd>
 <dt id="then_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="then_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">a new Promises object. If you specified a callback for success or error, the new object's state will be determined by that callback if it is called.
-If no callback has been provided and the original Promise changes to that state, the new promise will change to that state as well.</dd>
+<dd class="inSyntax0 inSyntax1">a new Promise object. If you specified a callback for success or error, the new object's state will be determined by that callback if it is called.
+If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Registers two callbacks that will be invoked when the promise's asynchronous operation finished
-successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after  <var>then()</var> returned, from the
-browser's event loop.
+<div class="description">Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
+successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after
+<var>then()</var> returned, from the browser's event loop.
 Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks.
 You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to.
 
@@ -122,6 +122,7 @@ $.request('get', '/weather.do')
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

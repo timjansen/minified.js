@@ -50,17 +50,7 @@
   	<div style="clear: both;"/>
   </div>
   
-   <div id="plansDiv" style="margin-top: 3em;">
-  	<div style="float: left; font-size: 3em; width: 20%; text-align: center;"> Go<span class="colored">a</span>l</div>
-  	<div style="float: right; width: 80%; padding-top: 0.5em;">
-	Minified will be a set of three libraries, each under 4kb. Minified Web, the one you see here, 
-	is the first one. Number 2 is Minified Util and will provide support for functional programming, 
-	promises, date arithmetic, string formatting and internationalization. Minified MVC is built on top 
-	of the other two and provides an MVC application framework.
-	</div>
-  	<div style="clear: both;"/>
-  </div>
-  
+ 
   <hr/>
   
   <h2>Getting Started</h2>
@@ -68,7 +58,7 @@
   
   <pre>&lt;script src='path/to/minified-web.js'>&lt;/script></pre></p>
 
-  <p>In your JavaScript, import Minified like this:
+  <p>Then import Minified like this in your script:
   <pre>var MINI = require('minified'), $ = MINI.$, $$ = $.$$, EE = $.EE;</pre></p>
 
   <p>And then it’s time to start. With some knowledge of other libraries the basic stuff should be easy to figure out from the <a href=”/reference/”>API docs</a>:
@@ -119,7 +109,7 @@
 <tr><th>Array Helpers (Iteration)</th> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>AMD support</th> <td>yes</td> <td>yes</td> <td>no</td> <td>no</td></tr>
 <tr><th>Online Builder</th> <td>yes (modules and functions)</td> <td>no</td> <td>yes (modules)</td> <td>no</td></tr>
-<tr><th>Internet Explorer compatible</th> <td>yes</td> <td>yes</td> <td>yes</td> <td>no</td></tr>
+<tr><th>Internet Explorer compatible</th> <td>yes</td> <td>yes (&lt;2.0 only)</td> <td>yes</td> <td>no</td></tr>
 </table>
 
 

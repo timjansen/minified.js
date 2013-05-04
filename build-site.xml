@@ -32,6 +32,9 @@
       <env key="PATH" path="/usr/local/bin"/>
     </exec>
   	
+  	<delete file="WebContent/minified-web-closure.noie.js" />
+  	<delete file="WebContent/minified-web-closure.js" />
+  	
      <!-- Builder script -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
   	    <arg value="--js=src/minified-util-src.js"/>

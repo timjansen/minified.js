@@ -12,12 +12,13 @@
 <div class="summary">
 Creates a function that switches between the two given states for the list.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">$(selector).toggle(cssClasses)</div>
 <div class="syntax">$(selector).toggle(state1, state2)</div>
 <div class="syntax">$(selector).toggle(state1, state2, durationMs)</div>
 <div class="syntax">$(selector).toggle(state1, state2, durationMs, linearity)</div>
+<div class="syntax">$(selector).toggle(state1, state2, durationMs, interpolationFunction)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -38,8 +39,11 @@ for all elements of the list.</dd>
 immediately.</dd>
 <dt id="toggle_linearity" class=""><a name="toggle_linearity"><var>linearity</var></a></dt>
 <dd class=""><span class="optional">optional</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.</dd>
-<dt id="toggle_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="toggle_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">a function(newState) that will change from the first to the second state and vice versa if called without argument or with
+<dt id="toggle_interpolationFunc" class=""><a name="toggle_interpolationFunc"><var>interpolationFunc</var></a></dt>
+<dd class=""><span class="optional">optional</span> an interpolation function(startValue, endValue, t) which will be
+called every time an interpolated value is required. <var>t</var> is a value between 0 and 1 that specifies the state of the transition.</dd>
+<dt id="toggle_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4"><a name="toggle_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">a function(newState) that will change from the first to the second state and vice versa if called without argument or with
 newState set to null. If the argument is a boolean false or true, the first or second state will be set respectively.
 If the argument is not boolean or the function is called without arguments, the function toggles between both states.</dd>
 </dl>
@@ -131,6 +135,7 @@ var t = $('#myElement').toggle('myClass1 myClass2');
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

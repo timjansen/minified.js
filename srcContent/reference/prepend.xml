@@ -11,7 +11,7 @@
 <h2><a name="doc-prepend">.prepend()</a></h2>
 <div class="summary">Prepends strings to properties or attributes of list items.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">$(selector).prepend(name, value)</div>
 <div class="syntax">$(selector).prepend(properties)</div>
@@ -21,7 +21,7 @@
 <dl class="params">
 <dt id="prepend_name" class=""><a name="prepend_name"><var>name</var></a></dt>
 <dd class="">the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
-A dollar ('$') is used to select a CSS style. Also supports all other names schemas provded by <code><a href='set.html'>set()</a></code>.</dd>
+A dollar ('$') is used to select a CSS style. Also supports all other names schemas of <code><a href='set.html'>set()</a></code>.</dd>
 <dt id="prepend_value" class=""><a name="prepend_value"><var>value</var></a></dt>
 <dd class="">the value to prepend. It will be converted to a string before prepending it.</dd>
 <dt id="prepend_properties" class=""><a name="prepend_properties"><var>properties</var></a></dt>
@@ -31,7 +31,7 @@ A dollar ('$') is used to select a CSS style. Also supports all other names sche
 </dl>
 
 <h4>Description</h4>
-<div class="description">Prepends strings to properties or attributes of list items. <var>prepend()</var> works mostly like <code><a href='set.html'>set()</a></code> and supports the same syntax for properties, but instead of
+<div class="description">Prepends strings to properties or attributes of list items. <var>prepend()</var> works mostly like <code><a href='set.html'>set()</a></code> and supports the same syntax for property names, but instead of
 overwriting the old values, it reads the old value, converts it to a string and then prepends the given value.
 
 </div>
@@ -82,6 +82,7 @@ $('h2').prepend('outerHTML', '<hr />');
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

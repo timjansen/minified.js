@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-clone">.clone()</a></h2>
-<div class="summary">Creates a Minified list list of strings and Element Factories that returns clones of the list elements.</div>
+<div class="summary">Creates a <a href="list.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -23,11 +23,9 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description">Creates a Minified list list of strings and Element Factories that returns clones of the list elements. An Element Factory is a function
+<div class="description">Creates a <a href="list.html">Minified list</a> of strings and Element Factories that return clones of the list elements. An Element Factory is a function
 that does not take arguments and returns a Minified list of DOM nodes. You can pass the list to <code><a href='add.html'>add()</a></code> and similar functions
 to re-create the cloned nodes.
-
-If you call <var>clone()</var> on a list with several items, the ElementFactory will return all of them in its list.
 
 <var>clone()</var> is very limited in what it will clone. Only elements, their attributes, text nodes and CDATA will be cloned.
 Modifications of the elements, such as event handlers, will not be cloned.
@@ -93,6 +91,7 @@ $('#comments').add($('.comment').clone());
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

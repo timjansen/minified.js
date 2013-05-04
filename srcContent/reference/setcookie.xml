@@ -11,7 +11,7 @@
 <h2><a name="doc-setcookie">$.setCookie()</a></h2>
 <div class="summary">Creates, updates or deletes a cookie.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">$.setCookie(name, value)</div>
 <div class="syntax">$.setCookie(name, value, dateOrDays)</div>
@@ -106,6 +106,7 @@ $.setCookie('numberOfVisits', '', -1);
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

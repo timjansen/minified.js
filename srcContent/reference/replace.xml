@@ -11,7 +11,7 @@
 <h2><a name="doc-replace">.replace()</a></h2>
 <div class="summary">Replaces the list items with the the given node(s) in the DOM tree.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">$(selector).replace(text)</div>
 <div class="syntax">$(selector).replace(factoryFunction)</div>
@@ -25,10 +25,10 @@
 <dd class="">a text for the text nodes that replace the list elements</dd>
 <dt id="replace_callbackFunction" class=""><a name="replace_callbackFunction"><var>callbackFunction</var></a></dt>
 <dd class="">a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-an HTML element or a list containing strings and/or HTML elements.</dd>
-<dt id="replace_elementContent" class=""><a name="replace_elementContent"><var>elementContent</var></a></dt>
+an HTML node or a list containing strings and/or HTML node.</dd>
+<dt id="replace_node" class=""><a name="replace_node"><var>node</var></a></dt>
 <dd class="">content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
-an HTML element or a list containing strings and/or HTML elements.</dd>
+an HTML node or a list containing strings and/or HTML node.</dd>
 <dt id="replace_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="replace_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the current list</dd>
 </dl>
@@ -36,7 +36,7 @@ an HTML element or a list containing strings and/or HTML elements.</dd>
 <h4>Description</h4>
 <div class="description">Replaces the list items with the the given node(s) in the DOM tree.
 If a string has been given, it will be set as text node.
-If you pass a function, it will be invoked to create node(s) with the arguments function(parent, index). It can return all values
+If you pass a function, it will be invoked for each list element to create node(s) with the arguments function(parent, index). It can return all values
 allowed by <var>replace()</var>, including another function to be called.
 If you pass a list or a function returns a list, all its elements will be set using the rules above.
 
@@ -126,6 +126,7 @@ This results in
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

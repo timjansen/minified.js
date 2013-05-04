@@ -48,7 +48,7 @@ If you need them, <a href="http://microjs.com">microjs.com</a> is a great place 
 <tr><td>Array Helpers (Iteration)</td> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>AMD support</td> <td>yes</td> <td>yes</td> <td>no</td> <td>no</td></tr>
 <tr><td>Online Builder</td> <td>yes (modules and functions)</td> <td>no</td> <td>yes (modules)</td> <td>no</td></tr>
-<tr><td>Internet Explorer compatible</td> <td>yes</td> <td>yes</td> <td>yes</td> <td>no</td></tr>
+<tr><td>Internet Explorer compatible</td> <td>yes</td> <td>yes (&lt;2.0 only)</td> <td>yes</td> <td>no</td></tr>
 </table>
 
 

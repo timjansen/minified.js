@@ -11,7 +11,7 @@
 <h2><a name="doc-request">$.request()</a></h2>
 <div class="summary">Initiates a HTTP request (using XmlHTTPRequest) to the given URL.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">$.request(method, url)</div>
 <div class="syntax">$.request(method, url, data)</div>
@@ -131,6 +131,7 @@ $.request('post', 'http://service.example.com/directory', $.toJSON(myRequest))
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
