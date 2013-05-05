@@ -13,31 +13,23 @@
 <i>Minified lists</i> are Array-like objects provided by Minified.</div>
 
 <h4>Description</h4>
-<div class="description">
+<div class="description"><p>
 <i>Minified lists</i> are Array-like objects provided by Minified. Like a regular JavaScript array,
 they provide a <var>length</var> property and you can access their content using the index operator (<code>a[5]</code>).
-However, they do not provide the same methods as JavaScript's native array.
-
-Minified lists are usually created using the <code><a href='/reference/dollar.html'>$()</a></code> function. You can
+However, they do not provide the same methods as JavaScript's native array.</p><p>Minified lists are usually created using the <code><a href='dollar.html'>$()</a></code></a></code> function. You can
 also use  <code>$()</code> to convert a JavaScript array into a Minified list, just be aware that <code>$()</code> will
-remove nulls from the lists and will flatten nested lists.
-
-There is currently no function to convert a Minified list into a JavaScript array (the Utility module
-will provide one though).
-
-The Minified Web module provides a number of helper methods for working with Minified lists:
+remove nulls from the lists and will flatten nested lists.</p><p>There is currently no function to convert a Minified list into a JavaScript array. The upcoming Utility module
+will provide one though.</p><p>The Minified Web module provides a number of helper methods for working with Minified lists:
 <ul>
-<li><code><code><a href='collect.html'>collect()</a></code></code> creates a new list using the collect function which can
+<li><code><a href='collect.html'>collect()</a></code> creates a new list using the collect function which can
  transform list elements or collect data from them ("map() on steriods")</li>
-<li><code>##each()</code> iterates through all list elements</li>
-<li><code>##filter()</code> creates a new list that contains only elements that pass the
+<li><code><a href='each.html'>each()</a></code> iterates through all list elements</li>
+<li><code><a href='filter.html'>filter()</a></code> creates a new list that contains only elements that pass the
  filter function's test</li>
-<li><code>##find()</code> finds a list element or its position with the help of a find function</li>
-<li><code>##sub()</code> creates a list that copies the elements from the specified index range </li>
-</ul>
-
-In addition to that, most methods for working with DOM and the web browser are also implemented as Minified list methods.
-</div>
+<li><code><a href='find.html'>find()</a></code> finds a list element or its position with the help of a find function</li>
+<li><code><a href='sub.html'>sub()</a></code> creates a list that copies the elements from the specified index range </li>
+</ul></p><p>In addition to that, most methods for working with DOM and the web browser are also implemented as Minified list methods.
+</p></div>
 
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
@@ -77,6 +69,7 @@ In addition to that, most methods for working with DOM and the web browser are a
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

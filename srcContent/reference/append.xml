@@ -31,18 +31,16 @@ A dollar ('$') is used to select a CSS style. Also supports all other names sche
 </dl>
 
 <h4>Description</h4>
-<div class="description">Appends strings to properties or attributes of list items. <var>append()</var> works mostly like <code><a href='set.html'>set()</a></code> and supports the same syntax for property names, but instead of
-overwriting the old values, it reads the old value, converts it to a string and then appends the given value.
-
-</div>
+<div class="description"><p>Appends strings to properties or attributes of list items. <var>append()</var> works mostly like <code><a href='set.html'>set()</a></code> and supports the same syntax for property names, but instead of
+overwriting the old values, it reads the old value, converts it to a string and then appends the given value.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Add a link after each h2 headline:
+<div class="example"><p>Add a link after each h2 headline:
 <pre>
 $('h2').append('outerHTML', '<a href="#toc">Table of Content</a>');
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -83,6 +81,7 @@ $('h2').append('outerHTML', '<a href="#toc">Table of Content</a>');
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

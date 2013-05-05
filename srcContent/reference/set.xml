@@ -25,9 +25,7 @@ Modifies the list's DOM elements by setting their properties, attributes, CSS st
 <dd class="">the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
 A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
 The special name '$$' allows you setting the style attribute in a browser independent way.
-The special name '$$fade' and '$$slide' create fade and slide effects, and both expects a value between 0 and 1.
-
-</dd>
+The special name '$$fade' and '$$slide' create fade and slide effects, and both expects a value between 0 and 1.</dd>
 <dt id="set_value" class=""><a name="set_value"><var>value</var></a></dt>
 <dd class="">the value to set. If it is a function, the function(oldValue, index, obj) will be invoked for each list element to evaluate the value.
 The function is called with with the old value as first argument and the index in the list as second.
@@ -47,13 +45,11 @@ Instead of a string, you can also specify a function(oldValue, index, obj) to mo
 </dl>
 
 <h4>Description</h4>
-<div class="description">
+<div class="description"><p>
 Modifies the list's DOM elements by setting their properties, attributes, CSS style and/or CSS classes. You can either supply a
 single name and value to set only one property, or you can provide an object that contains name/value pairs to describe more than one property.
 More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will
-be set.
-
-The name given to <var>set()</var> defines what kind of data you are setting. The following name schemes are supported:
+be set.</p><p>The name given to <var>set()</var> defines what kind of data you are setting. The following name schemes are supported:
 <table>
 <tr><th>Name Schema</th><th>Example</th><th>Sets what?</th><th>Description</th></tr>
 <tr><td>name</td><td>innerHTML</td><td>Property</td><td>A name without prefix of '$' or '@' sets a property of the object.</td></tr>
@@ -72,89 +68,87 @@ The name given to <var>set()</var> defines what kind of data you are setting. Th
              between 0 and 1. '$$slide' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0,
             the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to
             'visible' and the display style to 'block'. '$$slide' only works with block elements.</td></tr>
-</table>
-
-</div>
+</table></p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Unchecking checkboxes:
+<div class="example"><p>Unchecking checkboxes:
 <pre>
 $('input.checkbox').set('checked', false);
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Changing the inner HTML of an element:
+<div class="example"><p>Changing the inner HTML of an element:
 <pre>
 $('#toc').set('innerHTML', 'Content');
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Changing attributes:
+<div class="example"><p>Changing attributes:
 <pre>
 $('a.someLinks').set('@href', 'http://www.example.com/');
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Changing styles:
+<div class="example"><p>Changing styles:
 <pre>
 $('.bigText').set('$font-size', 'x-large');
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Adding and removing CSS classes:
+<div class="example"><p>Adding and removing CSS classes:
 <pre>
 $('.myElem').set('$', '+myClass -otherClass');
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Toggling a CSS class:
+<div class="example"><p>Toggling a CSS class:
 <pre>
 $('.myElem').set('$', 'on');
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Shortcut for CSS manipulation (omit the name - $ is the default name):
+<div class="example"><p>Shortcut for CSS manipulation (omit the name - $ is the default name):
 <pre>
 $('.myElem').set('+myClass -otherClass on');
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Making an element transparent:
+<div class="example"><p>Making an element transparent:
 <pre>
 $('.seeThrough').set('$$fade', 0.5);
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Making an element visible. Note that $$fade will set the element's display style to 'block' and visibility style to 'visible'.
+<div class="example"><p>Making an element visible. Note that $$fade will set the element's display style to 'block' and visibility style to 'visible'.
 <pre>
 $('.myElem').set('$$fade', 1);
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Using a map to change several properties:
+<div class="example"><p>Using a map to change several properties:
 <pre>
 $('input.checkbox').set({checked: false,
                          'parentNode.@title': 'Check this'});
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Changing CSS with a map:
+<div class="example"><p>Changing CSS with a map:
 <pre>
 $('.importantText').set({$fontSize: 'x-large',
                          $color: 'black',
                          $backgroundColor: 'red',
                          $: '+selected -default'});
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">You can specify a function as value to modify a value instead of just setting it:
+<div class="example"><p>You can specify a function as value to modify a value instead of just setting it:
 <pre>
 $('h2').set('innerHTML', function(oldValue, index) {
 		return 'Chapter ' + index + ': ' + oldValue.toUpperCase();
 });
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -195,6 +189,7 @@ $('h2').set('innerHTML', function(oldValue, index) {
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

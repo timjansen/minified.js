@@ -25,19 +25,17 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description">Checks whether at least one element in the list has the given class name. If yes, the first element that matches is returned. Otherwise
-the function returns <var>undefined</var>.
-
-</div>
+<div class="description"><p>Checks whether at least one element in the list has the given class name. If yes, the first element that matches is returned. Otherwise
+the function returns <var>undefined</var>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Checks whether the element 'myElement' has the class 'myClass'. If yes, it sets the text color to red.
+<div class="example"><p>Checks whether the element 'myElement' has the class 'myClass'. If yes, it sets the text color to red.
 <pre>
 if($('#myElement').hasClass('myClass'))
     $('#myElement').set('$color', 'red');
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -78,6 +76,7 @@ if($('#myElement').hasClass('myClass'))
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

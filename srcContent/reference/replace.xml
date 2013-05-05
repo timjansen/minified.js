@@ -34,20 +34,16 @@ an HTML node or a list containing strings and/or HTML node.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Replaces the list items with the the given node(s) in the DOM tree.
+<div class="description"><p>Replaces the list items with the the given node(s) in the DOM tree.
 If a string has been given, it will be set as text node.
 If you pass a function, it will be invoked for each list element to create node(s) with the arguments function(parent, index). It can return all values
 allowed by <var>replace()</var>, including another function to be called.
-If you pass a list or a function returns a list, all its elements will be set using the rules above.
-
-It is also possible to pass a DOM node, but it will replace <strong>only the first element of the list</strong>, because DOM
-does not allow adding it more than once.
-
-</div>
+If you pass a list or a function returns a list, all its elements will be set using the rules above.</p><p>It is also possible to pass a DOM node, but it will replace <strong>only the first element of the list</strong>, because DOM
+does not allow adding it more than once.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Using the following HTML:
+<div class="example"><p>Using the following HTML:
 <pre>
 &lt;div id="comments">
    &lt;div id="commentOne">My old comment.&lt;/div>
@@ -65,9 +61,9 @@ This results in:
 </pre>
 Please note that not only the text has changed, but the whole &lt;div> has been replaced. If you only want to replace the element's text content
 you should use <code><a href='fill.html'>fill()</a></code> instead of <var>replace()</var>.
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Using the following HTML:
+<div class="example"><p>Using the following HTML:
 <pre>
 &lt;ul id="myList">
   &lt;li>First list entry&lt;/li>
@@ -84,9 +80,7 @@ This results in
   &lt;li>My extra point&lt;/li>
   &lt;li>Second list entry&lt;/li>
 &lt;/ul>
-</pre>
-
-</div>
+</pre></p><p></p></div>
 </div>
 
 
@@ -127,6 +121,7 @@ This results in
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

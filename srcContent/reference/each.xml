@@ -26,20 +26,18 @@ of the element.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Invokes the given function once for each item in the list. The function will be called with the item as first parameter and
-the zero-based index as second.
-
-</div>
+<div class="description"><p>Invokes the given function once for each item in the list. The function will be called with the item as first parameter and
+the zero-based index as second.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">This goes through all h2 elements of the class 'section' and changes their content:
+<div class="example"><p>This goes through all h2 elements of the class 'section' and changes their content:
 <pre>
 $('h2.section').each(function(item, index) {
     item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
 });
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -80,6 +78,7 @@ $('h2.section').each(function(item, index) {
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

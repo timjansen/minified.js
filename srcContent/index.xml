@@ -34,8 +34,9 @@
   	<div style="float: left; width: 20%;"><div style="font-size: 3em; transform: rotate(-90deg); -webkit-transform: rotate(-90deg); -ms-transform: rotate(-90deg);">Wh<span class="colored">y</span>?</div></div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 style="margin-top: 0;">Minified is smaller!</h3>
-  		Minified is a sub-4kb JavaScript library for client-side scripting. It 
-  		provides you functionality <a href="#featCmp">comparable to jQuery and MooTools</a>, but is <a href="#sizeCmp">7-8 times</a> smaller.
+  		Minified is a sub-4kb JavaScript library for client-side scripting. It is fully-featured and 
+  		<a href="#featCmp">comparable to jQuery and MooTools</a>, but its file size is over  
+  		<a href="#sizeCmp">85% smaller</a>.
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 style="margin-top: 0;">Easy to learn!</h3>
@@ -58,7 +59,7 @@
   
   <pre>&lt;script src='path/to/minified-web.js'>&lt;/script></pre></p>
 
-  <p>Then import Minified like this in your script:
+  <p>Iimport Minified like this in your script:
   <pre>var MINI = require('minified'), $ = MINI.$, $$ = $.$$, EE = $.EE;</pre></p>
 
   <p>And then it’s time to start. With some knowledge of other libraries the basic stuff should be easy to figure out from the <a href=”/reference/”>API docs</a>:
@@ -70,7 +71,9 @@
   
   <p>To learn about Minified’s advanced functions, I would recommend you to read the <a href=”/docs/quickstart.html”>Tutorial</a>. But just to give you an idea what 
   Minified can do, here’s one more snippet:
-  <pre>$('#myButton').on('click', $('body').toggle({$backgroundColor: '#fff'}, {$backgroundColor: 'red'}));</pre></p>
+  <pre>$('#myButton').on('click', $('body').toggle({$backgroundColor: '#fff'}, {$backgroundColor: 'red'}, 500));</pre>
+  It registers an event handler for a button. If you click on the button, the page's background color will fade from white to red.
+  If you click again, the color will fade back to white.</p>
 
 
   <hr/>

@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-off">$.off()</a></h2>
-<div class="summary">Removes the event handler.</div>
+<div class="summary">Removes the given event handler.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -19,29 +19,26 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="off_handler" class=""><a name="off_handler"><var>handler</var></a></dt>
-<dd class="">the handler to unregister, as given to <code><a href='on.html'>on()</a></code>. It must be a handler that has previously been registered using ##on().</dd>
+<dd class="">the handler to unregister, as given to <code><a href='on.html'>on()</a></code>. It must be a handler that has previously been registered using <code><a href='on.html'>on()</a></code>.
+If the handler is not registered as event handler, the function does nothing.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Removes the event handler. The call will be ignored if the given handler has not registered using <code><a href='on.html'>on()</a></code>. If the handler has been registered
-for more than one element or event, it will be removed from all instances.
-
-</div>
+<div class="description"><p>Removes the given event handler. The call will be ignored if the given handler has not registered using <code><a href='on.html'>on()</a></code>. If the handler has been registered
+for more than one element or event, it will be removed from all instances.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Adds a handler to an element
+<div class="example"><p>Adds a handler to an element:
 <pre>
 function myEventHandler() {
    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
 }
-$('#myElement').on('click', myEventHandler);     // add event handler
-
-window.setInterval(function() {                      // after 5s, remove event handler
+$('#myElement').on('click', myEventHandler);     // add event handler</p><p>window.setInterval(function() {                      // after 5s, remove event handler
    $.off(myEventHandler);
 }, 5000);
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -82,6 +79,7 @@ window.setInterval(function() {                      // after 5s, remove event h
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-filter">.filter()</a></h2>
-<div class="summary">Creates a new <a href="list.</div>
+<div class="summary">Creates a new ##list#Minified list## that contains only those items approved by the given callback function.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -22,25 +22,23 @@
 <dd class="">the callback function(item, index) to invoke for each item with the item as first argument and the 0-based index as second argument.
 If the function returns false for an item, it is not included in the resulting list.</dd>
 <dt id="filter_RETURN" class="returnValue inSyntax0"><a name="filter_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the new, filtered <a href="list.html">list</a></dd>
+<dd class="inSyntax0">the new, filtered <a href='list.html'>list()</a></dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Creates a new <a href="list.html">Minified list</a> that contains only those items approved by the given callback function. The function is
+<div class="description"><p>Creates a new <a href='list.html'>Minified list()</a> that contains only those items approved by the given callback function. The function is
 called once for each item.
-If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
-
-</div>
+If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Creates a list of all unchecked checkboxes.
+<div class="example"><p>Creates a list of all unchecked checkboxes.
 <pre>
 var list = $('input').filter(function(item) {
     return item.getAttribute('type') == 'checkbox' &amp;&amp; item.checked;
 });
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -81,6 +79,7 @@ var list = $('input').filter(function(item) {
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

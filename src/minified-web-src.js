@@ -2728,13 +2728,13 @@ define('minified', function() {
  * 
  * The Minified Web module provides a number of helper methods for working with Minified lists:
  * <ul>
- * <li><code>##collect()</code> creates a new list using the collect function which can 
+ * <li>##collect() creates a new list using the collect function which can 
  *  transform list elements or collect data from them ("map() on steriods")</li>
- * <li><code>##each()</code> iterates through all list elements</li>
- * <li><code>##filter()</code> creates a new list that contains only elements that pass the 
+ * <li>##each() iterates through all list elements</li>
+ * <li>##filter() creates a new list that contains only elements that pass the 
  *  filter function's test</li>
- * <li><code>##find()</code> finds a list element or its position with the help of a find function</li>
- * <li><code>##sub()</code> creates a list that copies the elements from the specified index range </li>
+ * <li>##find() finds a list element or its position with the help of a find function</li>
+ * <li>##sub() creates a list that copies the elements from the specified index range </li>
  * </ul>
  *
  * In addition to that, most methods for working with DOM and the web browser are also implemented as Minified list methods.

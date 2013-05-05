@@ -49,18 +49,14 @@ If the argument is not boolean or the function is called without arguments, the 
 </dl>
 
 <h4>Description</h4>
-<div class="description">
-Creates a function that switches between the two given states for the list. The states use <code><a href='set.html'>set()</a></code> syntax.
-
-If no duration is given, the returned function changes the state immediately using ##set(). If a duration has been passed, the returned function
-uses ##animate() to change the state. If the returned function is invoked while an animation is running, it interrupts the animation and returns
-to the other state.
-
-</div>
+<div class="description"><p>
+Creates a function that switches between the two given states for the list. The states use the <code><a href='set.html'>set()</a></code> syntax.</p><p>If no duration is given, the returned function changes the state immediately using <code><a href='set.html'>set()</a></code>. If a duration has been passed, the returned function
+uses <code><a href='animate.html'>animate()</a></code> to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the animation and returns
+to the other state.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Creates a toggle function that changes the background color of the page.
+<div class="example"><p>Creates a toggle function that changes the background color of the page.
 <pre>
 var light = $('body').set({$backgroundColor: #000}, {$backgroundColor: #fff});
 light();      // toggles state to second state
@@ -68,34 +64,34 @@ light(false); // sets first state (background color to #000).
 light(true);  // sets second state (background color to #fff).
 light();      // toggles state to first state
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Takes the previous function, but adds it as onclick event handler that toggles the color.
+<div class="example"><p>Takes the previous function, but adds it as onclick event handler that toggles the color.
 <pre>
 var light = $('body').toggle({$backgroundColor: #000}, {$backgroundColor: #fff});
 $('#mySwitch').on('click', light);
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Using an animated transition by passing a duration:
+<div class="example"><p>Using an animated transition by passing a duration:
 <pre>
 var dimmer = $('body').toggle({$backgroundColor: #000}, {$backgroundColor: #fff}, 500);
 $('#mySwitch').on('click', dimmer);
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">To toggle CSS classes specify both states:
+<div class="example"><p>To toggle CSS classes specify both states:
 <pre>
 var t = $('#myElement').toggle({$: '-myClass1 -myClass2'}, {$: '+myClass1 +myClass2'});
 $('#myController').on('click', t);
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">There is a shortcut for toggling CSS classes. Just list them space-separated in a string:
+<div class="example"><p>There is a shortcut for toggling CSS classes. Just list them space-separated in a string:
 <pre>
 var t = $('#myElement').toggle('myClass1 myClass2');
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -136,6 +132,7 @@ var t = $('#myElement').toggle('myClass1 myClass2');
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

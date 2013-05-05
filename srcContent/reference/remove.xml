@@ -17,16 +17,14 @@
 </div>
 
 <h4>Description</h4>
-<div class="description">Removes all nodes of the list from the DOM tree.
-
-</div>
+<div class="description"><p>Removes all nodes of the list from the DOM tree.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Removes the element with the id 'myContainer', including all children, from the DOM tree.
+<div class="example"><p>Removes the element with the id 'myContainer', including all children, from the DOM tree.
 <pre>
 $('#myContainer').remove();
-</pre></div>
+</pre></p></div>
 </div>
 
 
@@ -67,6 +65,7 @@ $('#myContainer').remove();
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

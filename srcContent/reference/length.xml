@@ -17,19 +17,17 @@
 </div>
 
 <h4>Description</h4>
-<div class="description">Contains the number of elements in the list.
-
-</div>
+<div class="description"><p>Contains the number of elements in the list.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">
+<div class="example"><p>
 <pre>
 var list = $('input');
 var myValues = {};
 for (var i = 0; i &lt; list.length; i++)
    myValues[list[i].name] = list[i].value;
-</pre></div>
+</pre></p></div>
 </div>
 
 
@@ -70,6 +68,7 @@ for (var i = 0; i &lt; list.length; i++)
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

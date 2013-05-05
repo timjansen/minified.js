@@ -38,20 +38,16 @@ Minified list contains more than one item.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Adds the given node(s) as content to the list elements as additional nodes. Unlike <code><a href='add.html'>add()</a></code>, the new nodes will be the first children of the list items.
+<div class="description"><p>Adds the given node(s) as content to the list elements as additional nodes. Unlike <code><a href='add.html'>add()</a></code>, the new nodes will be the first children of the list items.
 If a string has been given, it will be added as text node.
 If you pass a function, it will be invoked for each list element to create node(s) with the arguments function(parent, index). It can return all values
 allowed by <var>addFront()</var>, including another function to be called.
-If you pass a list or a function returns a list, all its elements will be added using the rules above.
-
-It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
-does not allow adding it more than once.
-
-</div>
+If you pass a list or a function returns a list, all its elements will be added using the rules above.</p><p>It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
+does not allow adding it more than once.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Using the following HTML:
+<div class="example"><p>Using the following HTML:
 <pre>
 &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
 </pre>
@@ -63,9 +59,9 @@ This results in:
 <pre>
 &lt;div id="comments">Some additional text.Here is some text.&lt;br/>&lt;/div>
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Using the following HTML:
+<div class="example"><p>Using the following HTML:
 <pre>
 &lt;ul id="myList">
   &lt;li>First list entry&lt;/li>
@@ -84,13 +80,13 @@ This results in
   &lt;li>Second list entry&lt;/li>
 &lt;/ul>
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Use a list to add several elements at once:
+<div class="example"><p>Use a list to add several elements at once:
 <pre>
 $('#comments').addFront([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -131,6 +127,7 @@ $('#comments').addFront([EE('br'), 'Some text', EE('span', {'className': 'highli
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

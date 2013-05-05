@@ -5,15 +5,16 @@ var GROUPS = ['SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'AN
 //- ##NAME() will be replaced with <code><a href="NAME.html">NAME()</a></code>
 //- #ID#NAME() will be replaced with <code><a href="ID.html">NAME()</a></code>
 //- ##ID# bla bla ## will be replaced with <a href="NAME.html"> bla bla </a>
-function parseDescription(desc) {
+function parseDescription(desc, paragraphSeparator) {
 	return _.toString(desc)
-		.replace(/#(\w*)#([\w$.]+)\(\)/, function(all, id, name) {
+		.replace(/#(\w*)#([\w$.]+)\(\)/g, function(all, id, name) {
 			var rId = id || name;
 			return "<code><a href='"+rId.toLowerCase()+".html'>"+name+"()</a></code>";
 		})
-		.replace(/##(\w+)#([^#]+)##/, function(all, id, text) {
+		.replace(/##(\w+)#([^#]+)##/g, function(all, id, text) {
 			return "<a href='"+id.toLowerCase()+".html'>"+text+"()</a>";
-		});
+		})
+		.replace(/\n\n/mg, paragraphSeparator || '');
 }
 
 //takes a section, as created by parseSourceSections(). Adds a 'htmldoc' property containing HTML doc.
@@ -59,13 +60,13 @@ function createDocs(sec) {
 	}
 	
 	s += '<h4>Description</h4>\n';
-	s += _.format('<div class="description">{DESC}</div>\n\n', {DESC: parseDescription(sec.desc)});
+	s += _.format('<div class="description"><p>{DESC}</p></div>\n\n', {DESC: parseDescription(sec.desc, '</p><p>')});
 	
 	if (sec.example.length) {
 		s += '<div class="examples">\n';
 		_.each(sec.example, function(example) {
 			s += '<h4>Example</h4>\n';
-			s += _.format('<div class="example">{EXAMPLE}</div>\n', {EXAMPLE: parseDescription(example).replace('&&', '&amp;&amp;')});
+			s += _.format('<div class="example"><p>{EXAMPLE}</p></div>\n', {EXAMPLE: parseDescription(example, '</p><p>').replace('&&', '&amp;&amp;')});
 		});
 		s += '</div>\n\n';
 	}
@@ -128,17 +129,6 @@ function sortTocOrder(sections) {
 	});
 }
 
-function createOverviewPage(sections) {
-	sortTocOrder(sections);
-	
-	// Gen
-	var html = '<h1>Minified Web API</h1>\n';
-	_.each(sections, function(sec) {
-		html += sec.htmlpreview;
-	});
-	return createPage("Reference - Minified.js", html);
-}
-
 function createToc(sections) {
 	sortTocOrder(sections);
 	
@@ -148,6 +138,20 @@ function createToc(sections) {
 	});
 	html += '</ul></div>';
 	return html;
+}
+
+function createOverviewPage(sections) {
+	sortTocOrder(sections);
+	
+	// Gen
+	var html = '<div id="docmain"><p class="docHead"><h1>Minified Web API</h1>\n</p>\n';
+	_.each(sections, function(sec) {
+		html += sec.htmlpreview;
+	});
+	html += '</div>\n';
+	html += createToc(sections);
+	html += '\n';
+	return createPage("Reference - Minified.js", html);
 }
 
 function createReferencePage(sec, toc) {

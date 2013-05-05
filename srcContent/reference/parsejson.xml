@@ -25,20 +25,19 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description">Parses a string containing JSON and returns the de-serialized object.
-If <var>JSON.parse</var> is defined (built-in in all modern browsers), it will be used; otherwise Minified's own implementation.
-If you build Minified without Internet Explorer compatibility, <var>JSON.parse</var> will always be used.
-
-</div>
+<div class="description"><p>Parses a string containing JSON and returns the de-serialized object.
+If <var>JSON.parse</var> is defined, which it is in pretty all browsers except Internet Explorer 7 and earlier, it will be used. This is mainly to
+prevent possible security problems caused by the use of <var>eval</var> in the implementation. Only in browsers without
+<var>JSON.parse</var> Minified's own implementation will be used.</p><p>If you use a Minified build without Internet Explorer 7 compatibility, <var>JSON.parse</var> will always be used.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Parsing a JSON string:
+<div class="example"><p>Parsing a JSON string:
 <pre>
 var jsonString = "{name: 'Fruits', roles: ['apple', 'banana', 'orange']}";
 var myObj = $.parseJSON(jsonString);
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -79,6 +78,7 @@ var myObj = $.parseJSON(jsonString);
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

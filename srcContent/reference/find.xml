@@ -29,29 +29,27 @@ it returns either the value returned by the callback or <var>undefined</var>.</d
 </dl>
 
 <h4>Description</h4>
-<div class="description">Finds a specific value in the list. There are two ways of calling <var>find()</var>:
+<div class="description"><p>Finds a specific value in the list. There are two ways of calling <var>find()</var>:
 <ol>
 <li>With an element as argument. Then <var>find()</var> will search for the first occurrence of that element in the list
     and return the index. If it is not found, <var>find()</var> returns <var>undefined</var>.</li>
 <li>With a callback function. <var>find()</var> will then call the given function for each list element until the function
     returns a value that is not null or undefined. This value will be returned.</li>
-</ol>
-
-</div>
+</ol></p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Determines the position of the element with the id '#wanted' among all li elements:
+<div class="example"><p>Determines the position of the element with the id '#wanted' among all li elements:
 <pre>
 var elementIndex = $('li').find($$('#wanted'));
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Goes through the elements to find the first div that has the class 'myClass', and returns this element:
+<div class="example"><p>Goes through the elements to find the first div that has the class 'myClass', and returns this element:
 <pre>
 var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) return e; });
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -92,6 +90,7 @@ var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) r
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

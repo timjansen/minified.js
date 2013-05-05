@@ -10,11 +10,11 @@
 <ul>
 <li>Tiny JavaScript framework (&lt;4kb gzipped)<ul>
 <li>Smaller than jQuery or MooTools by an order of magnitude in the default distribution</li>
-<li>Featuring a <a href="/builder">Builder</a> to create even smaller versions containing only required functions</li></ul></li> 
+<li>Featuring a <a href="/builder.html">Builder</a> tool to create even smaller versions containing only required functions</li></ul></li> 
 
 <li>Complete Feature Set<ul>
 <li>Close to jQuery or MooTools for most use cases</li>
-<li>Exceeding jQuery or MooTools in some use cases</li>
+<li>Exceeding jQuery or MooTools in some aspects</li>
 <li>Flexible enough to make up for missing features</li></ul></li>
 
 <li>No Magic<ul>
@@ -27,47 +27,42 @@
 </ul>
 
 <h2>How to include Minified.js into your project</h2>
-<ul>
-<li>The quickest way is download the distribution and refer to it in a script tag:
+<p>The quickest way is download the distribution and refer to it in a script tag:
 <pre>
 &lt;script src="path/to/minified.js">&lt;/script>
 </pre>
-This is by far the easiest way, but you can optimize it even more..</li>
-<li>Use the <a href="/builder">Builder</a> to build a customized version that contains only what you need. Then embed it using the script tag as shown above.</li>
-<li>Use the <a href="/builder">Builder</a> to create a customized version and cut&amp;paste it at the top of one of your JavaScript files, so Minified.js and your code are located in the same file. This will reduce the number of files on your pages and also allows better Gzip compression.</li>
-</ul>
+</p>
 <p>Instead of loading it with a script tag, you could also use a AMD loader 
-such as <a href="">RequireJS</a> 
-or <a href="https://github.com/timjansen/sparkplug.js</a> Sparkplug.js.
+such as <a href="http://requirejs.org">RequireJS</a> 
+or <a href="https://github.com/timjansen/sparkplug.js">Sparkplug.js</a>.
+</p>
+<p>
+If you would like to optimize the size of your site, you should consider <a href="/builder.html">build a custom version</a> and 
+<a href="embedding.html">embed Minified</a> into your JavaScript code.
 </p>
 
 <h2>How to Obtain the Reference to Minified</h2>
 <p>
-If you are including Minified with a script tag or use a synchronous loader like Sparkplug.js, it is recommended to use the following 
+No matter whether you are including Minified with a script tag or you use a synchronous loader like Sparkplug.js, it is recommended to use the following 
 line to define the three essiental variables for using Minified:
 <pre>
 var $ = require('minified'), $$=$.$$, EE=$.EE;
 </pre>
-Please note that this works even without AMD loader present, as Minified will then define a global <code>require</code> function
-only for the purpose of loading Minified. All following examples assume that you have those three variables set up like shown above.
+Please note that this works even without an AMD loader. Minified defines a global <code>require</code> function if no AMD loader is present.
 </p>
 
 
 <h2>Creating a MINI list</h2>
-<p>The first step to doing almost anything with Minified is to <b>create a MINI list</b>, an array-like class where most of Minified’s functions are stored.</p>
+<p>The first step to doing almost anything with Minified is to <b>create a <a href="/reference/list.html">Minified list</a></b>, an array-like class where most of Minified’s functions are stored.</p>
 
 <p>You can create a MINI-list using CSS selectors in the usual syntax:
 <pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+
 var listItems = <a href="/reference/dollar.html">$</a>('#myList li');
 </pre>
 In the default configuration with IE6/IE7 compatibility, you can only use CSS1 selectors without pseudo-classes. If you disable backward-compatibility, you can use the browser’s CSS engine.
 </p>
-
-<p>There as an alternative to <a href="/reference/dollar.html"><code>$</code></a> that you can use:
-<pre>
-var listItems = <a href="/reference/dollar.html">MINI</a>('#myList li');
-</pre>
-<a href="/reference/dollar.html"><code>MINI</code></a> and <a href="/reference/dollar.html"><code>$</code></a> are synonyms. In the builder you can disable the <a href="/reference/dollar.html"><code>$</code></a> symbol to allow MINI to co-exist with jQuery and other frameworks.</p>
 
 <p>Here some more examples of valid selectors:
 <pre>
@@ -81,6 +76,8 @@ var listItems = <a href="/reference/dollar.html">MINI</a>('#myList li');
 
 <p>You can also either pass a DOM node or a list of DOM nodes. Nested lists will automatically be flattened. Nulls in lists will be omitted.
 <pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+
 var singleElement = <a href="/reference/dollar.html">$</a>(document.getElementById(‘oldFashioned’));
 var threeElements = <a href="/reference/dollar.html">$</a>([e1, e2, e3]);
 var fourElements = <a href="/reference/dollar.html">$</a>([[e1, e2], [e3, e4]]);
@@ -90,6 +87,8 @@ var plus1 = <a href="/reference/dollar.html">$</a>([<a href="/reference/dollar.h
 
 <p>Selectors can have a context. If a context is set, you limit the result set to those elements whose parent is one of the context nodes.The context can be specified in the same way as the selector itself, using a selector string, a DOM node or a list of nodes:
 <pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+
 var cells = <a href="/reference/dollar.html">$</a>(‘td, th’, ‘#myTable’); // all td and th element in #myTable
 var cells1 = <a href="/reference/dollar.html">$</a>(‘td, th’, document.getElementById(‘myTable’)); // same as above
 
@@ -98,12 +97,19 @@ var cells2 = <a href="/reference/dollar.html">$</a>(‘td, th’, ‘.specialTab
 
 <p>You can limit the context to be used only for direct children by setting the third parameter to true:
 <pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+
 var listItems = <a href="/reference/dollar.html">$</a>(‘li’, ‘ol’, true); // all list items in ordered lists
 </pre>
 </p>
 
-<p>Where other frameworks have a large selection of pseudo-classes and list-functions, Minified has only few, very powerful functions. You should checkout the documentation of <a href="/reference/collect.html"><code>collect</code></a>, <a href="/reference/filter.html"><code>filter</code></a> and <a href="/reference/find.html"><code>find</code></a> for more information. Here a small example to give you an idea:
+<p>Where other frameworks have a large selection of pseudo-classes and list-functions, Minified has only few, very powerful functions. 
+You should checkout the documentation of <a href="/reference/collect.html"><code>collect</code></a>, 
+<a href="/reference/filter.html"><code>filter</code></a> and <a href="/reference/find.html"><code>find</code></a> for more information. 
+Here a small example to give you an idea:
 <pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+
 var r = <a href="/reference/dollar.html">$</a>(‘#myTable tr’)                                                            // all rows in myTable
            .<a href="/reference/filter.html">filter</a>(function(elem, index) { return index % 2 == 1; }) // filter: take only odd rows
            .<a href="/reference/collect.html">collect</a>(function(elem) { return <a href="/reference/dollar.html">$</a>(‘td’, elem).<a href="/reference/sub.html">sub</a>(-3); })   // use the last three cells per row
@@ -111,15 +117,21 @@ var r = <a href="/reference/dollar.html">$</a>(‘#myTable tr’)               
 </pre>
 </p>
 
-<p>The lists returned by the selectors behave pretty much like arrays. You can access them by index and they have a <a href="/reference/length.html"><code>length</code></a> property. Please note that you must not modify a list using the index operator (“list[i]") though. The results would be undefined.<br/>
+<p>The lists returned by the selectors behave pretty much like arrays. You can access them by index and they have a 
+<a href="/reference/length.html"><code>length</code></a> property. Please note that you must not modify a list using the index 
+operator (“list[i]") though. The results would be undefined.<br/>
 This example iterates through a list using a <code>for</code> loop:
 <pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+
 var list = <a href="/reference/dollar.html">$</a>(‘input’); 
 for (var i = 0; i &lt; <a href="/reference/length.html">length</a> ; i++)
     list[i].value = ‘’;
 </pre>
 Alternatively, you could use the Minified’s <a href="/reference/each.html"><code>each()</code></a> function:
 <pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+
 var list = <a href="/reference/dollar.html">$</a>(‘input’); 
 list.<a href="/reference/length.html">each</a>(function(element, index) {
     element.value = ‘’;
@@ -127,21 +139,31 @@ list.<a href="/reference/length.html">each</a>(function(element, index) {
 </pre>
 </p>
 
-<p>A special variant of the selector function <a href="/reference/dollar.html"><code>$</code></a> is <a href="/reference/dollardollar.html"><code>$$</code></a>. It works like <a href="/reference/dollar.html"><code>$</code></a>, but only returns only the first element of the list instead of the list itself. If the list is empty, it returns the undefined value.
+<p>A special variant of the selector function <a href="/reference/dollar.html"><code>$</code></a> is 
+<a href="/reference/dollardollar.html"><code>$$</code></a>. It works like <a href="/reference/dollar.html"><code>$</code></a>, 
+but only returns only the first element of the list instead of the list itself. If the list is empty, it returns <var>undefined</var>.
 <pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+
 var parent1 = <a href="/reference/dollardollar.html">$$</a>‘#myElement’).parentNode;
-var parent2 = <a href="/reference/dollardollar.html">MINI.$$</a>(‘#myElement’).parentNode; // alternative syntax, if ‘$$’ disabled in builder
-var parent3 = <a href="/reference/dollar.html">$</a>(‘#myElement’)[0].parentNode;      // same result: $$() is just short for $()[0]
+var parent2 = <a href="/reference/dollar.html">$</a>(‘#myElement’)[0].parentNode;      // same result: $$() is just short for $()[0]
 </pre>
 </p>
 
 <h2>Universal get() and set()</h2>
 
-<p>Whereas other frameworks have a number of different functions to access properties, attributes and CSS styles, Minified has only two: <a href="/reference/get.html"><code>get()</code></a> and <a href="/reference/set.html"><code>set()</code></a>. You define what data you access by using the right name. Several other functions, <a href="/reference/prepend.html"><code>prepend()</code></a>, <a href="/reference/append.html"><code>append()</code></a>, <a href="/reference/animate.html"><code>animate()</code></a> and <a href="/reference/toggle.html"><code>toggle()</code></a>, are built upon the universal <a href="/reference/set.html"><code>set()</code></a> function.
+<p>Whereas other frameworks have a number of different functions to access properties, attributes and CSS styles, 
+Minified has only two: <a href="/reference/get.html"><code>get()</code></a> and 
+<a href="/reference/set.html"><code>set()</code></a>. You define what data you access by using the right name. Several other 
+functions, <a href="/reference/prepend.html"><code>prepend()</code></a>, <a href="/reference/append.html"><code>append()</code></a>, 
+<a href="/reference/animate.html"><code>animate()</code></a> and <a href="/reference/toggle.html"><code>toggle()</code></a>, are 
+built upon the universal <a href="/reference/set.html"><code>set()</code></a> function.
 </p>
 
 <p>The simplest data to access is a regular JavaScript property. You only specify the property name to get or set it:
 <pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+
 var oldGreeting = <a href="/reference/dollar.html">$</a>('.greeting').<a href="/reference/get.html">get</a>('innerHTML'); // value of list’s first element!
 <a href="/reference/dollar.html">$</a>('.greeting').<a href="/reference/set.html">set</a>('innerHTML', 'Hello'); // sets innerHTML for all list elements!
 </pre>
@@ -168,14 +190,19 @@ var oldMargin = <a href="/reference/dollar.html">$</a>('.greeting').<a href="/re
 </pre>
 </p>
 
-<p>You can also retrieve a map of values by specifying a list or map of names:
+<p>You can retrieve a map of values by specifying a list or map of names:
 <pre>
 var margins = <a href="/reference/dollar.html">$</a>('.greeting').<a href="/reference/get.html">get</a>(['$marginTop', '$marginRight', '$marginBottom', '$marginLeft']);
 </pre>
 </p>
 
-<p>Minified also uses <a href="/reference/set.html"><code>set()</code></a> to modify CSS classes. If you need to overwrite the existing classes, you could always set them with the <code>className</code> property of the element. For more complex operations, <a href="/reference/set.html"><code>set()</code></a> provides you with the name <code>$</code>. But since it is the most important <a href="/reference/set.html"><code>set()</code></a> operation, you can omit it and write:
+<p>Minified also uses <a href="/reference/set.html"><code>set()</code></a> to modify CSS classes. If you need to overwrite the existing 
+classes, you could always set them with the <var>className</var> property of the element. For more complex 
+operations, <a href="/reference/set.html"><code>set()</code></a> provides you with the name <var>$</var>. But since 
+it is the most important <a href="/reference/set.html"><code>set()</code></a> operation, you can omit it and write:
 <pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+
 <a href="/reference/dollar.html">$</a>('.cnt').<a href="/reference/set.html">set</a>('+highlighted -plain'); // add / remove CSS class
 </pre>
 The argument is a space-separated list of class names. Those prefixed with ‘+’ will be added and names prefixed with ‘-’ will be removed. A class name without prefix will be toggled:
@@ -245,12 +272,14 @@ Call <a href="/reference/fill.html"><code>fill()</code></a> or <a href="/referen
 
 <p>When you want to add a new element, <a href="/reference/el.html"><code>EE()</code></a> comes into play. 
 <a href="/reference/el.html"><code>EE()</code></a> creates an <strong>Element Factory</strong>. Element Factories are simple no-argument functions to new create 
-elements. When called, the Element Factory creates the element and returns it wrapped in a MINI list. 
+elements. When called, the Element Factory creates the element and returns it wrapped in a Minfied list. 
 
 Optionally they can also add children to the new element, as well as attributes and everything else that is supported 
 by <a href="/reference/set.html"><code>set()</code></a>.
 
 <pre>
+var $ = require('minified'), $$=$.$$, EE=$.EE;
+
 <a href="/reference/dollar.html">$</a>(‘#header’).<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>(‘h2’, ‘My Title’));                                                            // creates &lt;h2>MyTitle&lt;/h2>
 <a href="/reference/dollar.html">$</a>(‘#linkContainer’).<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>(‘a’, {‘@href’: ‘http://acme.com’}, “ACME"));  // creates &lt;a href="http://acme.com">ACME&lt;/a>
 <a href="/reference/dollar.html">$</a>(‘#header’).<a href="/reference/add.html">add</a>([<a href="/reference/el.html">EE</a>(‘br’), “Single line", <a href="/reference/el.html">EE</a>(‘br’)]);                                  // add &lt;br/>Single line&lt;br/>
@@ -262,14 +291,15 @@ by <a href="/reference/set.html"><code>set()</code></a>.
 </pre>
 </p>
 
-<p>You can also write your own factory function and give it to <a href="/reference/add.html"><code>add()</code></a>
+<p>It is possible to write your own factory function and give it to <a href="/reference/add.html"><code>add()</code></a>
 or <a href="/reference/fill.html"><code>fill()</code></a>. The function will be called for each list member to create a new DOM element:
 <pre>
 <a href="/reference/dollar.html">$</a>(‘.chapter’).<a href="/reference/add.html">add</a>(function(elem, index) { 
 	return <a href="/reference/el.html">EE</a>(‘span’, {$: 'chapterFooter'}, 'This was chapter ' + index);
 });
 </pre>
-Factory functions can return everything that can be handled by <a href="/reference/add.html"><code>add()</code></a>: strings (for text nodes), DOM elements, another factory function (to be called) or lists containing these things.
+Factory functions can return everything that can be handled by <a href="/reference/add.html"><code>add()</code></a>: 
+strings (for text nodes), DOM elements, another factory function (to be called) or lists containing these things.
 </p>
 
 
@@ -286,13 +316,16 @@ Factory functions can return everything that can be handled by <a href="/referen
 <h2>Events</h2>
 
 <p>
-Events in Minified may a bit different than what you are used to. In the simplest case though, it all looks very familiar:
+Events in Minified may a bit different than what you maybe used to. In the simplest case though, it all looks very familiar:
 <pre>
 <a href="/reference/dollar.html">$</a>(‘#submitButton’).<a href="/reference/on.html">on</a>(‘click’, function() {
 	alert(‘Button pressed!’);
 });
 </pre>
-What you don’t see here is that Minified will always <b>disable the default behaviour and prevent bubbling by default</b>, by calling the browser’s <code>preventDefault()</code> and <code>stopPropagation()</code> functions or their respective Internet Explorer equivalents. This means that if you add an event handler to a form submit button, the button will not submit the form anymore, unless you explicitly allow it. Similarly, a click handler on a link would prevent the link from changing the page.
+What you don’t see here is that Minified will always <b>disable the default behaviour and prevent bubbling by default</b>, by 
+calling the browser’s <code>preventDefault()</code> and <code>stopPropagation()</code> functions or their respective Internet 
+Explorer equivalents. This means that if you add an event handler to a form submit button, the button will not submit the form 
+anymore, unless you explicitly allow it. Similarly, a click handler on a link would prevent the link from changing the page.
 </p>
 
 <p>If you want to keep the browser’s default action or allow bubbling, the handler must return <code>true</code>:
@@ -304,7 +337,7 @@ What you don’t see here is that Minified will always <b>disable the default be
 </pre>
 </p>
 
-<p>By default, Minified will supply not one two arguments to the event handler:
+<p>By default, Minified will supply two arguments to the event handler:
 <pre>
 <a href="/reference/dollar.html">$</a>(‘#myDiv’).<a href="/reference/on.html">on</a>(‘click’, function(e, index) {
 	console.log(‘Clicked x=’ + xe.pageX, ‘y=’ + xe.pageY, ‘button=‘+xe.right?’right’:’left’);
@@ -319,7 +352,8 @@ The first argument is the unmodified event object, as provided by the browser. T
 The index often makes it easy to identify which element has been clicked when you set an event handler for a whole list. <code>this</code> will still be set to the event source, as you may be used to from other frameworks.
 </p>
 
-<p>Often, all you want to do when an event has been fired is to call the right function with the corresponding arguments. Minified makes this easy by allowing you to customize the arguments being passed to an event handler:
+<p>Often, all you want to do when an event has been fired is to call the right function with the corresponding arguments. Minified makes this 
+easy by allowing you to customize the arguments being passed to an event handler:
 <pre>
 function setZoomLevel(percentage) {
    // ...
@@ -332,7 +366,9 @@ If you pass custom arguments for an event handler, its return value will be igno
 </p>
 
 <p>
-Event handlers can be removed using the function <a href="/reference/off.html"><code>off()</code></a>. <a href="/reference/off.html"><code>off()</code></a> is a global function that removes the handler function from all events and all elements is has been registered for.
+Event handlers can be removed using the function <a href="/reference/off.html"><code>off()</code></a>. 
+<a href="/reference/off.html"><code>off()</code></a> is a global function that removes the handler function from all events and 
+all elements is has been registered for.
 <pre>
 <a href="/reference/off.html">$.off</a>(setZoomLevel);
 </pre>
@@ -340,14 +376,17 @@ Event handlers can be removed using the function <a href="/reference/off.html"><
 
 <h2>Toggles</h2>
 
-<p>A toggle is a function that can switch between two states. The states are defined as two <a href="/reference/set.html"><code>set()</code></a> arguments. The following example creates a toggle that changes the background color of the &lt;body> element:
+<p>A toggle is a function that can switch between two states. The states are defined as two <a href="/reference/set.html"><code>set()</code></a> 
+arguments. The following example creates a toggle that changes the background color of the &lt;body> element:
 <pre>
 var light = <a href="/reference/dollar.html">$</a>('body').<a href="/reference/toggle.html">toggle</a>(
  {$backgroundColor: #000},   // state 1
  {$backgroundColor: #fff}    // state 2
 );
 </pre>
-Upon creation, the toggle sets the first state. When you call the toggle function with a boolean <code>true</code> as argument, it switch to the second state and set the background color accordingly. Call it with ‘false’ and it switches to the first one. Call it without arguments (or any other argument than a boolean <code>true</code> or <code>false</code>), the toggle function will toggle between the first and second state.
+Upon creation, the toggle sets the first state. When you call the toggle function with a boolean <code>true</code> as argument, 
+it switch to the second state and set the background color accordingly. Call it with ‘false’ and it switches to the first one. 
+Call it without arguments (or any other argument than a boolean <code>true</code> or <code>false</code>), the toggle function will toggle between the first and second state.
 <pre>
 light();       // toggle background color
 light(true);   // turn on the light  (state 2)
@@ -395,14 +434,17 @@ But because toggling CSS classes is so common, there is an even shorter syntax t
 <pre>
 var highlighter3 = <a href="/reference/dollar.html">$</a>(‘.marked’).<a href="/reference/toggle.html">toggle</a>(‘highlighted’);  // toggle CSS class ‘highlighted’
 </pre> 
-You can also use more than one space-separated CSS classes in the string, as you would when toggling CSS classes with <a href="/reference/set.html"><code>set()</code></a>.
+You can also use more than one space-separated CSS classes in the string, as you would when toggling CSS classes with 
+<a href="/reference/set.html"><code>set()</code></a>.
 </p>
 
 
 <h2>HTTP Requests</h2>
 
 
-<p>Minified provides you with a friendly <code>XmlHTTPRequest</code> wrapper that includes Internet Explorer backward compatibility. The function <a href="/reference/request.html"><code>MINI.request()</code></a> can be used for GET, POST and all other asynchronous HTTP requests:
+<p>Minified provides you with a friendly <code>XmlHTTPRequest</code> wrapper that includes Internet Explorer backward 
+compatibility. The function <a href="/reference/request.html"><code>MINI.request()</code></a> can be used for GET, POST and 
+all other asynchronous HTTP requests:
 <pre>
 <a href="/reference/request.html">$.request</a>('get', 'http://example.org/weatherService', {zip: 90210}, 
     function success(txt) {
@@ -412,7 +454,8 @@ You can also use more than one space-separated CSS classes in the string, as you
         alert(“Error accessing service.");
     });
 </pre>
-The third argument is a map containing parameters that, when set, will be automatically added as URL parameters. The fourth argument is the callback that will be invoked on success, and the fifth argument’s callback will be invoked on failure.</p>
+The third argument is a map containing parameters that, when set, will be automatically added as URL parameters. The fourth argument 
+is the callback that will be invoked on success, and the fifth argument’s callback will be invoked on failure.</p>
 
 <p>POST requests are very similar and use the same syntax. However, the map in the third argument will now be used in the POST’s instead of the URL:
 <pre>
@@ -440,7 +483,9 @@ The third argument is a map containing parameters that, when set, will be automa
 </pre>
 </p>
 
-<p>When users enter their data into forms, you can use Minified’s <a href="/reference/values.html"><code>values()</code></a> function to easily obtain the data. It will take data from input fields as well as complete forms and puts it into a map that can be either used as data argument for <a href="/reference/request.html"><code>request()</code></a> or be converted into a JSON string:
+<p>When users enter their data into forms, you can use Minified’s <a href="/reference/values.html"><code>values()</code></a> function 
+to easily obtain the data. It will take data from input fields as well as complete forms and puts it into a map that can be either 
+used as data argument for <a href="/reference/request.html"><code>request()</code></a> or be converted into a JSON string:
 <pre>
 var data = <a href="/reference/dollar.html">$</a>(‘#myForm, input.extra’).<a href="/reference/values.html">values</a>();
 <a href="/reference/request.html">$.request</a>('post', '/myService', data, successFunc, errorFunc);
@@ -449,9 +494,10 @@ var data = <a href="/reference/dollar.html">$</a>(‘#myForm, input.extra’).<a
 
 
 <h2>A few more things..</h2>
-<p>While I showed you all the big topics in the previous chapters, here are some random functions that may be interesting for you.</p>
+<p>After showing you all the big topics in the previous chapters, here are some random functions that may be interesting for you.</p>
 
-<p>Just like jQuery and other frameworks, Minified allows you to register a callback to be called when the document is ready (aka DOMReady). This works exactly like you are used to from jQuery:
+<p>Just like jQuery and other frameworks, Minified allows you to register a callback to be called when the document is ready (aka DOMReady). 
+This works exactly like you are used to from jQuery:
 <pre>
 <a href="/reference/dollar.html">$</a>(function() {
   // Let’s do some work
@@ -459,7 +505,11 @@ var data = <a href="/reference/dollar.html">$</a>(‘#myForm, input.extra’).<a
 </pre>
 </p>
 
-<p>When doing JavaScript animation you should avoid using a simple timeout, as this will cause unneccessary CPU load when the browser is not displaying your page and you won’t be able to have the perfect frame rate. Modern browsers support ‘requestAnimationFrame’ which allows you to provide a callback to perform animation at browser-controlled preferred pace. This will make your animation smoother and lower the CPU load. Minified’s <a href="/reference/loop.html"><code>loop()</code></a> function wraps this function while also providing backward compatibility for older browsers.</p>
+<p>When doing JavaScript animation you should avoid using a simple timeout, as this will cause unneccessary CPU load when the browser 
+is not displaying your page and you won’t be able to have the perfect frame rate. Modern browsers support ‘requestAnimationFrame’ which 
+allows you to provide a callback to perform animation at browser-controlled preferred pace. This will make your animation smoother and 
+lower the CPU load. Minified’s <a href="/reference/loop.html"><code>loop()</code></a> function wraps this function while also providing 
+backward compatibility for older browsers.</p>
 
 <p>The following example will move a div in a circular movement:
 <pre>
@@ -474,7 +524,7 @@ var r = 100;               // radius 100 px
 </pre>
 </p>
 
-<p>Minified also provides you two helper functions to read and write cookies in the browser:
+<p>Last, but not least, Minified provides you with two helper functions to read and write cookies in the browser:
 <pre>
 var visits = <a href="/reference/getcookie.html">$.getCookie</a>('numberOfVisits');
 <a href="/reference/setcookie.html">$.setCookie</a>('numberOfVisits',
@@ -482,6 +532,8 @@ var visits = <a href="/reference/getcookie.html">$.getCookie</a>('numberOfVisits
             365);                                   // store for 365 days
 </pre>
 </p>
+
+<p>back to <a href="/docs">Minified documentation</a>.</p>
 
   
   </div>

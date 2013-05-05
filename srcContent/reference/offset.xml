@@ -25,19 +25,17 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description">Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, with 0/0 being the upper left corner, independent of the user's
-current view (which depends on the user's current scroll position and zoom level).
-
-</div>
+<div class="description"><p>Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document,
+with 0/0 being the upper left corner, independent of the user's current view (which depends on the user's current scroll position and zoom level).</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Displays the position of the element with the id 'myElement' in the element 'resultElement':
+<div class="example"><p>Displays the position of the element with the id 'myElement' in the element 'resultElement':
 <pre>
 var pos = $('#myElement').offset();
 $('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.x + ' top=' + pos.y);
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -78,6 +76,7 @@ $('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.x + 
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-ready">$.ready()</a></h2>
-<div class="summary">Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).</div>
+<div class="summary">Registers a handler to be called as soon as the HTML has been fully loaded.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -23,20 +23,18 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description">Registers a handler to be called as soon as the HTML has been fully loaded (but not necessarily images and other elements).
-On older browsers, it is the same as 'window.onload'.
-
-</div>
+<div class="description"><p>Registers a handler to be called as soon as the HTML has been fully loaded. Does not necessarily wait images and other elements, only the main
+HTML document needs to be complete. On older browsers, it is the same as 'window.onload'.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Registers a handler that sets some text in an element:
+<div class="example"><p>Registers a handler that sets some text in an element:
 <pre>
 $.ready(function() {
   $$('#someElement').innerHTML = 'ready() called';
 });
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -77,6 +75,7 @@ $.ready(function() {
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

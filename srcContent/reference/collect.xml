@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-collect">.collect()</a></h2>
-<div class="summary">Creates a new <a href="list.</div>
+<div class="summary">Creates a new ##list#Minified list## from the current list using the given callback function.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -24,11 +24,11 @@
 If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls und <var>undefined</var>
 will be ignored and not added.</dd>
 <dt id="collect_RETURN" class="returnValue inSyntax0"><a name="collect_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the new <a href="list.html">list</a></dd>
+<dd class="inSyntax0">the new <a href='list.html'>list()</a></dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Creates a new <a href="list.html">Minified list</a> from the current list using the given callback function.
+<div class="description"><p>Creates a new <a href='list.html'>Minified list()</a> from the current list using the given callback function.
 The callback is invoked once for each element of the current list. The callback results will be added to the result list.
 The callback can return
 <ul>
@@ -36,14 +36,12 @@ The callback can return
 <li>a regular object which will be appended to the list</li>
 <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list.
 If you need to add null or modified to the result list, put it into a single-element array.</li>
-</ul>
-
-
-</div>
+</ul></p><p>
+</p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Goes through input elements. If they are text inputs, their value will be added to the list:
+<div class="example"><p>Goes through input elements. If they are text inputs, their value will be added to the list:
 <pre>
 var texts = $('input').collect(function(input) {
 if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') // text is default, so check for null
@@ -52,23 +50,23 @@ else
     return null; // ignore
 });
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Creates a list of all children of the selected list.
+<div class="example"><p>Creates a list of all children of the selected list.
 <pre>
 var childList = $('.mySections').collect(function(node) {
 return node.childNodes; // adds a while list of nodes
 });
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case:
+<div class="example"><p>Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case:
 <pre>
 var elements = $('input.myTexts').collect(function(item) {
     return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()];
 });
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -109,6 +107,7 @@ var elements = $('input.myTexts').collect(function(item) {
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

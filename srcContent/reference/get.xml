@@ -47,38 +47,36 @@ parsable as a number, <var>NaN</var> will be returned.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Retrieves properties, attributes and styles from the list's first element. The syntax to request those values is mostly identical with <code><a href='set.html'>set()</a></code>. You can either
-get a single value if you specify only one name, or get a name->value map when you specify several names using an array or a map.
-
-</div>
+<div class="description"><p>Retrieves properties, attributes and styles from the list's first element. The syntax to request those values is mostly identical with <code><a href='set.html'>set()</a></code>. You can either
+get a single value if you specify only one name, or get a name->value map when you specify several names using an array or a map.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Retrieves the id, title attribute and the background color of the element '#myElement':
+<div class="example"><p>Retrieves the id, title attribute and the background color of the element '#myElement':
 <pre>
 var id = $('#myElement).get('id');
 var title = $('#myElement).get('@title');
 var bgColor = $('#myElement).get('$backgroundColor');
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Retrieves the id, title attribute and the background color of the element '#myElement' as a map:
+<div class="example"><p>Retrieves the id, title attribute and the background color of the element '#myElement' as a map:
 <pre>
 var m = $('#myElement).get(['id', '@title', '$backgroundColor']);
 var id = m.id;
 var title = m['@title'];
 var bgColor = m.$backgroundColor;
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Uses <code><a href='get.html'>get()</a></code> and ##set() to reposition an element:
+<div class="example"><p>Uses <code><a href='get.html'>get()</a></code> and <code><a href='set.html'>set()</a></code> to reposition an element:
 <pre>
 var coords = $('#myElement').get({$top: 0, $left: 0}, true); // values of $top and $left values don't matter and will be ignored!
 coords.$top += 10;
 coords.$left += 20;
 $('#myElement').set(coords);
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -119,6 +117,7 @@ $('#myElement').set(coords);
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

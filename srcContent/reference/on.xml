@@ -25,14 +25,14 @@
 <dt id="on_handler" class=""><a name="on_handler"><var>handler</var></a></dt>
 <dd class="">the function(event, index) to invoke when the event has been triggered. If no new arguments have been given using
 <var>on()</var>'s second argument, the handler gets the original event object as first parameter and the index
-of the object in the current Minified list as second. 'this' is the element that caused the event, unless you override it with the
-third argument.
+of the object in the current <a href='list.html'>Minified list()</a> as second. 'this' is the element that
+caused the event, unless you override it with the third argument.
 Unless the handler returns true, all further processing of the event will be stopped and event bubbling will be disabled. If you supply
 custom arguments, the event processing and bubbling will always be disabled, no mattter what the handler returns.
 Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper
 is added to the handler in an array property called 'M'.</dd>
 <dt id="on_fThis" class=""><a name="on_fThis"><var>fThis</var></a></dt>
-<dd class="">an optional value for 'this' in the handler, as alternative to the event target</dd>
+<dd class=""><span class="optional">optional</span> an value for 'this' in the handler, as alternative to the event target</dd>
 <dt id="on_args" class=""><a name="on_args"><var>args</var></a></dt>
 <dd class=""><span class="optional">optional</span> an array of arguments to pass to the handler function instead of the event objects. If you pass custom arguments, the
 return value of the handler will always be ignored.</dd>
@@ -41,28 +41,22 @@ return value of the handler will always be ignored.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Registers the function as event handler for all items in the list.
-
-By default, handlers get a the original event object and minified's compatibility event object as arguments, and 'this' set to the source element
-of the event (e.g. the button that has been clicked). The original event object the is object given to the event or obtained
-from 'window.event'. Unless the handler returns 'true', the event will not be propagated to other handlers.
-
-Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the event handler. When you pass arguments, the
-handler's return value is always ignored and the event will always be cancelled.
-
-</div>
+<div class="description"><p>Registers the function as event handler for all items in the list.</p><p>By default, handlers are called with the original event object as first argument, the index of the source element in the
+list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked).</p><p>Minified cancels event propagation and the element's default behaviour for all elements that have an event handler.
+You can override this by returning a 'true' value, which will reinstate the original JavaScript behaviour.</p><p>Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the event handler. When you pass arguments, the
+handler's return value is always ignored and the event will always be cancelled.</p><p>Event handlers can be unregistered using <code><a href='off.html'>$.off()</a></code>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Adds a handler to all divs that paints their background color to red when clicked. The event object is not needed.
+<div class="example"><p>Adds a handler to all divs which paints the div background color to red when clicked.
 <pre>
 $('div').on('click', function() {
    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
 });
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">handler to call a method setStatus('running') using an inline function:
+<div class="example"><p>handler to call a method setStatus('running') using an inline function:
 <pre>
 $('#myButton').on('click', function() {
    myObject.setStatus('running');
@@ -72,7 +66,7 @@ The same can be written like this using on() argument and fThis parameters:
 <pre>
 $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -113,6 +107,7 @@ $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

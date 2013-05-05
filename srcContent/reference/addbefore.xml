@@ -38,20 +38,16 @@ Minified list contains more than one item.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description">Inserts the given text or element(s) as sibling in front of each element of this list.
+<div class="description"><p>Inserts the given text or element(s) as sibling in front of each element of this list.
 If a string has been given, it will be added as text node.
 If you pass a function, it will be invoked for each list element to create the new node, with the arguments function(parent, index). It can return all values
 allowed by <var>addBefore()</var>, including another function to be called.
-If you pass a list or a function returns a list, all its elements will be added using the rules above.
-
-It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
-does not allow adding it more than once.
-
-</div>
+If you pass a list or a function returns a list, all its elements will be added using the rules above.</p><p>It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
+does not allow adding it more than once.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example">Using the following HTML:
+<div class="example"><p>Using the following HTML:
 <pre>
 &lt;div>
   <div id="mainText">Here is some text</div>
@@ -68,9 +64,9 @@ This results in:
   <div id="mainText">Here is some text</div>
 &lt;/div>
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">You can also pass an Element Factory:
+<div class="example"><p>You can also pass an Element Factory:
 <pre>
 $('#mainText').addBefore(EE('span', {'className': 'important'}, 'WARNING'));
 </pre>
@@ -81,13 +77,13 @@ With the previous example's HTML, this would create this HTML:
   <div id="mainText">Here is some text</div>
 &lt;/div>
 </pre>
-</div>
+</p></div>
 <h4>Example</h4>
-<div class="example">Lists of elements and nodes are possible as well.
+<div class="example"><p>Lists of elements and nodes are possible as well.
 <pre>
 $('#status').addBefore([EE('hr'), 'WARNING']);
 </pre>
-</div>
+</p></div>
 </div>
 
 
@@ -128,6 +124,7 @@ $('#status').addBefore([EE('hr'), 'WARNING']);
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
