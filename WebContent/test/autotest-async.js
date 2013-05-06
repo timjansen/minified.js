@@ -33,7 +33,7 @@ window.miniTests.push.apply(window.miniTests, [
 		name:'MINI.request()',
 		async: 1000,
 		exec: function(setSuccess, playground) {
-			var s = MINI.request('get', '/minified.js/test/test.txt', null)
+			var s = MINI.request('get', '/test/test.txt', null)
 			.then(function(txt) {
 				checkFunc(setSuccess, function() {
 					check(txt.indexOf('Used for testing MINI.request.') > 0);
@@ -66,7 +66,7 @@ window.miniTests.push.apply(window.miniTests, [
 		name:'MINI.request() promises',
 		async: 1000,
 		exec: function(setSuccess, playground) {
-			var s = MINI.request('get', '/minified.js/test/test.txt', null)
+			var s = MINI.request('get', '/test/test.txt', null)
 			.then(function(txt) {
 				checkFunc(setSuccess, function() {
 					check(txt.indexOf('Used for testing MINI.request.') > 0);
