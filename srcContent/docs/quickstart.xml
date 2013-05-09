@@ -154,9 +154,8 @@ var parent2 = <a href="/reference/dollar.html">$</a>(‘#myElement’)[0].parent
 
 <p>Whereas other frameworks have a number of different functions to access properties, attributes and CSS styles, 
 Minified has only two: <a href="/reference/get.html"><code>get()</code></a> and 
-<a href="/reference/set.html"><code>set()</code></a>. You define what data you access by using the right name. Several other 
-functions, <a href="/reference/prepend.html"><code>prepend()</code></a>, <a href="/reference/append.html"><code>append()</code></a>, 
-<a href="/reference/animate.html"><code>animate()</code></a> and <a href="/reference/toggle.html"><code>toggle()</code></a>, are 
+<a href="/reference/set.html"><code>set()</code></a>. You define what data you access by using the right name. Other 
+functions, <a href="/reference/animate.html"><code>animate()</code></a> and <a href="/reference/toggle.html"><code>toggle()</code></a>, are 
 built upon the universal <a href="/reference/set.html"><code>set()</code></a> function.
 </p>
 

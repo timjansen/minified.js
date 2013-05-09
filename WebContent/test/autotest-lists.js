@@ -106,48 +106,6 @@ window.miniTests.push.apply(window.miniTests, [
 	},
 	
 	{
-		name: "MINI().append()",
-	 	exec: function() {
-	 		MINI().append('f', 1); // test empty set
-	 		
-	 		var ar = [{a:3}, {a:"d"}];
-	 		MINI(ar).append('a', 'b').append('b', 'd').append('c', function() {return 'x';});
-	 		check(ar[0].a, "3b");
-	 		check(ar[1].a, "db");
-	 		check(ar[0].b, "d");
-	 		check(ar[1].b, "d");
-	 		check(ar[0].c, "x");
-	 		check(ar[1].c, "x");
-	 		MINI(ar).append({a: 'w', b: 't'});
-	 		check(ar[0].a, "3bw");
-	 		check(ar[1].a, "dbw");
-	 		check(ar[0].b, "dt");
-	 		check(ar[1].b, "dt");
-		}
-	},
-	
-	{
-		name: "MINI().prepend()",
-	 	exec: function() {
-	 		MINI().prepend('f', 1); // test empty set
-	 		
-	 		var ar = [{a:3}, {a:"d"}];
-	 		MINI(ar).prepend('a', 'b').prepend('b', 'd').prepend('c', function() {return 'x';});
-	 		check(ar[0].a, "b3");
-	 		check(ar[1].a, "bd");
-	 		check(ar[0].b, "d");
-	 		check(ar[1].b, "d");
-	 		check(ar[0].c, "x");
-	 		check(ar[1].c, "x");
-	 		MINI(ar).prepend({a: 'w', b: 't'});
-	 		check(ar[0].a, "wb3");
-	 		check(ar[1].a, "wbd");
-	 		check(ar[0].b, "td");
-	 		check(ar[1].b, "td");
-		}
-	},
-	
-	{
 		name: "MINI().offset()",
 	 	exec: function() {
 	 		var r1 = MINI('#asdsd').offset();
@@ -161,3 +119,4 @@ window.miniTests.push.apply(window.miniTests, [
 	
 
 ]);
+

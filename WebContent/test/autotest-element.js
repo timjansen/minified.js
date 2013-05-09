@@ -225,7 +225,8 @@ window.miniTests.push.apply(window.miniTests, [
 			var sl = MINI('#cloneTest .cloneMe').clone();
 			check(sl.length, 1);
 			$('#container2').fill(sl);
-			check($$('#cloneTest .cloneMe').innerHTML.toLowerCase(), $$('#container2 .cloneMe').innerHTML.toLowerCase());
+console.log('content: '+$$('#container2').innerHTML);
+			check($$('#container2 .cloneMe').innerHTML.toLowerCase(), $$('#cloneTest .cloneMe').innerHTML.toLowerCase());
 		}
 	},
 	{

@@ -31,7 +31,7 @@ The special name '$$fade' and '$$slide' create fade and slide effects, and both 
 The function is called with with the old value as first argument and the index in the list as second.
 The third value is the object being modified. Functions are not possible for virtual properties ('$$fade' and '$$slide'). For the CSS style names,
 the old value given to the function is the old value of the className property containing the existing classes.
-If value is null and name specified an attribute, the value will be ignored.
+If value is null and name specified an attribute, the attribute will be removed.
 If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefix with a '+' the class will be added,
 with a '+' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.</dd>
 <dt id="set_properties" class=""><a name="set_properties"><var>properties</var></a></dt>
@@ -87,6 +87,12 @@ $('#toc').set('innerHTML', 'Content');
 <div class="example"><p>Changing attributes:
 <pre>
 $('a.someLinks').set('@href', 'http://www.example.com/');
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Removing attributes:
+<pre>
+$('a.someLinks').set('@title', null);
 </pre>
 </p></div>
 <h4>Example</h4>
@@ -169,7 +175,6 @@ $('h2').set('innerHTML', function(oldValue, index) {
 </li><li><a href="addbefore.html">.addBefore()</a>
 </li><li><a href="addfront.html">.addFront()</a>
 </li><li><a href="animate.html">.animate()</a>
-</li><li><a href="append.html">.append()</a>
 </li><li><a href="clone.html">.clone()</a>
 </li><li><a href="collect.html">.collect()</a>
 </li><li><a href="each.html">.each()</a>
@@ -181,7 +186,6 @@ $('h2').set('innerHTML', function(oldValue, index) {
 </li><li><a href="length.html">.length</a>
 </li><li><a href="offset.html">.offset()</a>
 </li><li><a href="on.html">.on()</a>
-</li><li><a href="prepend.html">.prepend()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>
 </li><li><a href="set.html">.set()</a>

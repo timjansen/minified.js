@@ -54,9 +54,6 @@
 <h3><a href="animate.html">.animate()</a></h3>
 <div class="summary">Animates the items of the list by modifying their properties, CSS styles and attributes.</div>
 
-<h3><a href="append.html">.append()</a></h3>
-<div class="summary">Appends strings to properties or attributes of list items.</div>
-
 <h3><a href="clone.html">.clone()</a></h3>
 <div class="summary">Creates a ##list#Minified list## of strings and Element Factories that return clones of the list elements.</div>
 
@@ -89,9 +86,6 @@
 
 <h3><a href="on.html">.on()</a></h3>
 <div class="summary">Registers the function as event handler for all items in the list.</div>
-
-<h3><a href="prepend.html">.prepend()</a></h3>
-<div class="summary">Prepends strings to properties or attributes of list items.</div>
 
 <h3><a href="remove.html">.remove()</a></h3>
 <div class="summary">Removes all nodes of the list from the DOM tree.</div>
@@ -147,7 +141,6 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="addbefore.html">.addBefore()</a>
 </li><li><a href="addfront.html">.addFront()</a>
 </li><li><a href="animate.html">.animate()</a>
-</li><li><a href="append.html">.append()</a>
 </li><li><a href="clone.html">.clone()</a>
 </li><li><a href="collect.html">.collect()</a>
 </li><li><a href="each.html">.each()</a>
@@ -159,7 +152,6 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="length.html">.length</a>
 </li><li><a href="offset.html">.offset()</a>
 </li><li><a href="on.html">.on()</a>
-</li><li><a href="prepend.html">.prepend()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>
 </li><li><a href="set.html">.set()</a>

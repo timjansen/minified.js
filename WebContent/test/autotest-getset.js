@@ -35,6 +35,10 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(document.getElementById('hello1').getAttribute('title'), 'hello element');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'hello element');
 	 		MINI('#hello2').add(EE('b', {'@id':'bello2'}, 'bello'));
+	 		
+	 		MINI('#hello1, #hello2').set('@title', null);
+	 		check(!document.getElementById('hello1').getAttribute('title'));
+	 		check(!document.getElementById('hello2').getAttribute('title'));
 		}
 	},
 	{
@@ -73,21 +77,8 @@ window.miniTests.push.apply(window.miniTests, [
 	 		MINI().set('f', 1); // test empty set
 	 		
 	 		var cnt = 0;
-	 		var ar = [{a:3}, {a:2}, {a:11}];
+	 		var ar = [{a:36}, {a:35}, {a:44}];
 
-	 		MINI(ar).set('a', 33, function(oldValue, index, obj, newValue) {
-	 			check(index, cnt++);
-	 			check(oldValue, ar[index].a);
-	 			check(ar[index] === obj);
-	 			check(newValue, 33);
-	 			return oldValue + newValue;
-	 		});
-	 		check(ar[0].a, 36);
-	 		check(ar[1].a, 35);
-	 		check(ar[2].a, 44);
-
-
-	 		cnt = 0;
 	 		MINI(ar).set('a', function(oldValue, index) {
 	 			check(index, cnt++);
 	 			check(oldValue, ar[index].a);
@@ -118,16 +109,6 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(ar[1].a, 8);
 	 		check(ar[2].a, 17);
 	 		
-	 		cnt = 0;
-	 		MINI(ar).set({a: 2}, undef, function(oldValue, index, obj, newValue) {
-	 			check(index, cnt++);
-	 			check(oldValue, ar[index].a);
-	 			check(newValue, 2);
-	 			return oldValue + newValue;
-	 		});
-	 		check(ar[0].a, 11);
-	 		check(ar[1].a, 10);
-	 		check(ar[2].a, 19);
 		}
 	},
 	
@@ -170,7 +151,7 @@ window.miniTests.push.apply(window.miniTests, [
 	 	exec: function() {
 			check(MINI('#a').get('$marginTop'), '5px');
 			check(MINI('#a_b').get('$marginTop'), '2px');
-			check(MINI('#c').get('$marginTop'), '0px');
+			contains(['0px', 'auto'], MINI('#c').get('$marginTop'));
 		}
 	},
 
@@ -179,9 +160,9 @@ window.miniTests.push.apply(window.miniTests, [
 	 	exec: function() {
 			check(MINI('#a').get('$marginTop', true), 5);
 			check(MINI('#a_b').get('$marginTop', true), 2);
-			check(MINI('#c').get('$marginTop', true), 0);
+			check(MINI('#c').get('$marginTop', true) == 0 || isNaN(MINI('#c').get('$marginTop', true)));
 			check(isNaN(MINI('#a').get('@id', true)));
 		}
-	},
+	}
 
 ]);

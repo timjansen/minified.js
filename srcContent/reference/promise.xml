@@ -97,7 +97,6 @@ Minified Util module will allow this though.
 </li><li><a href="addbefore.html">.addBefore()</a>
 </li><li><a href="addfront.html">.addFront()</a>
 </li><li><a href="animate.html">.animate()</a>
-</li><li><a href="append.html">.append()</a>
 </li><li><a href="clone.html">.clone()</a>
 </li><li><a href="collect.html">.collect()</a>
 </li><li><a href="each.html">.each()</a>
@@ -109,7 +108,6 @@ Minified Util module will allow this though.
 </li><li><a href="length.html">.length</a>
 </li><li><a href="offset.html">.offset()</a>
 </li><li><a href="on.html">.on()</a>
-</li><li><a href="prepend.html">.prepend()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>
 </li><li><a href="set.html">.set()</a>

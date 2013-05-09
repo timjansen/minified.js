@@ -50,7 +50,7 @@
      * If enabled, there will be fallback code to provide a require function even if no AMD framework such as 
      * require.js is available. If you always use Minified with an AMD framework, you can safely turn this off.
      */
-if (/^u/.test(typeof define)) { // no AMD support avaialble ? define a minimal version
+if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
 	var def = {};
 	this['define'] = function(name, f) {def[name] = f();};
 	this['require'] = function(name) { return def[name]; }; 
@@ -65,7 +65,7 @@ define('minified', function() {
 	/**
 	 * @const
 	 */
-	var _this = this;
+	var _window = this;
 
 	/**
 	 * @const
@@ -97,7 +97,7 @@ define('minified', function() {
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currently active
 	
 	/** @type {!function()} */
-	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _this[n+'equestAnimationFrame']; })[0] || function(callback) {
+	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _window[n+'equestAnimationFrame']; })[0] || function(callback) {
 		delay(callback, 33); // 30 fps as fallback
 	};
 	
@@ -108,7 +108,8 @@ define('minified', function() {
 	 * @configurable default
 	 * @doc no
 	 * @name Backward-Compatibility for IE8 and similar browsers
-	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8.
+	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8,
+	 * and the existence of cssText (which is used instead of the style attribute).
 	 */
 	/**
 	 * @const 
@@ -230,7 +231,7 @@ define('minified', function() {
 		return toString(s).replace(regexp, sub||'');
 	}
 	function delay(f, delayMs) {
-		_this.setTimeout(f, delayMs||0);
+		_window.setTimeout(f, delayMs||0);
 	}
 	function extractNumber(v) {
 		return parseFloat(replace(v, /^[^\d-]/));
@@ -241,7 +242,7 @@ define('minified', function() {
 		var oldStyles = elementList['get'](q);
 		elementList['set'](q);
 		var h = elementList[0].offsetHeight;
-		elementList.set(oldStyles);
+		elementList['set'](oldStyles);
 		return h;
 	}
 	
@@ -259,7 +260,7 @@ define('minified', function() {
     
     function ready(handler) {
     	// @cond debug if (typeof handler != 'function') error("First argument must be a function");
-    	if (DOMREADY_HANDLER) // if DOM ready, call immediately
+    	if (DOMREADY_HANDLER)
 			DOMREADY_HANDLER.push(handler);
 		else
 			delay(handler);
@@ -567,7 +568,7 @@ define('minified', function() {
 	 * @name Debugging Support
 	 */
 	function error(msg) {
-		if (_this.console) console.log(msg);
+		if (_window.console) console.log(msg);
 		throw Exception("Minified debug error: " + msg);
 	}
     // @cond debug MINI['debug'] = true;
@@ -635,7 +636,7 @@ define('minified', function() {
 		// @condend
 		
 		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(selector);
-		return filterElements(elements); // important: must return array!
+		return parent ? filterElements(elements) : elements;
 	};
 	
     
@@ -662,7 +663,9 @@ define('minified', function() {
 	 */	
     /** @constructor */
 	function M(array) {
-		PUSH.apply(this, array); // IMPORTANT: must be real array for backward compat
+		var len = this['length'] = array.length;
+		for (var i = 0; i < len; i++)
+			this[i] = array[i];
 	}
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -961,7 +964,7 @@ define('minified', function() {
 				else if (spec == '$$') {
 					// @condblock ie8compatibility
 					 if (IS_PRE_IE9)
-						s = element.style.cssText;
+						s = element['style']['cssText'];
 					 else
 					// @condend
 						s = element.getAttribute('style');
@@ -979,12 +982,11 @@ define('minified', function() {
 				}
 				else if (/^\$/.test(spec)) {
 					// @condblock ie8compatibility 
-					if (!_this.getComputedStyle)
-						s = element.currentStyle[name];
+					if (!_window.getComputedStyle)
+						s = (element.currentStyle||element.style)[name];
 					else 
 					// @condend
-						s = _this.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
-					
+						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 				}
 				else if (/^@/.test(spec))
 					s = element.getAttribute(name);
@@ -1051,6 +1053,11 @@ define('minified', function() {
 	 * $('a.someLinks').set('@href', 'http://www.example.com/');
 	 * </pre>
 	 * 
+	 * @example Removing attributes:
+	 * <pre>
+	 * $('a.someLinks').set('@title', null);
+	 * </pre>
+	 * 
 	 * @example Changing styles:
 	 * <pre>
 	 * $('.bigText').set('$font-size', 'x-large');
@@ -1112,7 +1119,7 @@ define('minified', function() {
 	 * The function is called with with the old value as first argument and the index in the list as second.
 	 * The third value is the object being modified. Functions are not possible for virtual properties ('$$fade' and '$$slide'). For the CSS style names,
 	 * the old value given to the function is the old value of the className property containing the existing classes.
-	 * If value is null and name specified an attribute, the value will be ignored.
+	 * If value is null and name specified an attribute, the attribute will be removed.
 	 * If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefix with a '+' the class will be added,
 	 * with a '+' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.
 	 * @param properties a map containing names as keys and the values to set as map values. See above for the name syntax.
@@ -1121,7 +1128,13 @@ define('minified', function() {
 	 *                   Instead of a string, you can also specify a function(oldValue, index, obj) to modify the existing classes. 
 	 * @return the list
 	 */
-     'set': function (name, value, defaultFunction) {
+     'set': function (name, value) {
+    	 function setAttr(obj, n, v) {
+    		 if (v != null)  
+    			 obj.setAttribute(n, v);
+			 else
+				 obj.removeAttribute(n);
+    	 }
     	 var self = this, v;
  		 // @cond debug if (name == null) error("First argument must be set!");
     	 if (value !== undef) {
@@ -1143,90 +1156,43 @@ define('minified', function() {
     		 else
     			// @condend
     			 each(self, function(obj, c) {
-    				 var f = isFunction(value) ? value : defaultFunction;
     				 var nameClean = replace(name, /^[@$]/);
-    				 var className = obj.className || '';
+    				 var className = obj['className'] || '';
     				 var newObj = /^\$/.test(name) ? obj.style : obj;
-    				 var newValue = f ? f(MINI(obj).get(name), c, obj, value) : value;
+    				 var newValue = isFunction(value) ? value(MINI(obj).get(name), c, obj) : value;
     				 if (name == '$') {
-    					 each(newValue.split(/\s+/), function(clzz) {
-    						 var cName = replace(clzz, /^[+-]/);
-    						 var oldClassName = className;
-    						 className = replace(className, new RegExp(BACKSLASHB + cName + BACKSLASHB));
-    						 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
-    							 className += ' ' + cName;
-    					 });
-    					 obj.className = replace(className, /^\s+|\s+(?=\s|$)/g);
+    					 if (newValue != null) {
+    						 each(newValue.split(/\s+/), function(clzz) {
+    							 var cName = replace(clzz, /^[+-]/);
+    							 var oldClassName = className;
+    							 className = replace(className, new RegExp(BACKSLASHB + cName + BACKSLASHB));
+    							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
+    								 className += ' ' + cName;
+    						 });
+    						 obj['className'] = replace(className, /^\s+|\s+(?=\s|$)/g);
+    					 }
     				 }
    				 	 else if (name == '$$') {
 						// @condblock ie8compatibility 
 						if (IS_PRE_IE9)
-							newObj.cssText = newValue;
+							newObj['cssText'] = newValue;
 						else
 						// @condend
-							 obj.setAttribute('style', newValue);
+							setAttr(obj, 'style', newValue);
 					 }
     				 else if (!/^@/.test(name))
     					 newObj[nameClean] = newValue;
-    				 else if (newValue != null)  
-    					 newObj.setAttribute(nameClean, newValue);
+    				 else
+    					 setAttr(newObj, nameClean, newValue);
     			 });
     	 }
     	 else if (isString(name) || isFunction(name))
     		 self.set('$', name);
     	 else
-    		 eachObj(name, function(n,v) { self.set(n, v, defaultFunction); });
+    		 eachObj(name, function(n,v) { self.set(n, v); });
     	 return self;
      },
  	
- 	/*$
- 	 * @id append
- 	 * @group SELECTORS
- 	 * @requires set
- 	 * @configurable default
- 	 * @name .append()
- 	 * @syntax $(selector).append(name, value)
- 	 * @syntax $(selector).append(properties)
- 	 * Appends strings to properties or attributes of list items. <var>append()</var> works mostly like ##set() and supports the same syntax for property names, but instead of
- 	 * overwriting the old values, it reads the old value, converts it to a string and then appends the given value.
- 	 * 
- 	 * @example Add a link after each h2 headline:
- 	 * <pre>
- 	 * $('h2').append('outerHTML', '<a href="#toc">Table of Content</a>');
- 	 * </pre>
- 	 *
- 	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
- 	 *                     A dollar ('$') is used to select a CSS style. Also supports all other names schemas of ##set(). 
- 	 * @param value the value to append. It will be converted to a string before appending it.
- 	 * @param properties a map containing names as keys and the values to append as map values. See above for the syntax.
- 	 * @return the list
- 	 */
-	'append': function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return toString(oldValue) + newValue;});},
-
-	/*$
-	 * @id prepend
-	 * @group SELECTORS
-	 * @requires set
-	 * @configurable default
-	 * @name .prepend()
-	 * @syntax $(selector).prepend(name, value)
-	 * @syntax $(selector).prepend(properties)
-	 * Prepends strings to properties or attributes of list items. <var>prepend()</var> works mostly like ##set() and supports the same syntax for property names, but instead of
-	 * overwriting the old values, it reads the old value, converts it to a string and then prepends the given value.
-	 * 
-	 * @example Put a horizontal ruler in front of each h2 headline:
-	 * <pre>
-	 * $('h2').prepend('outerHTML', '<hr />');
-	 * </pre>
-	 *
-	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
-	 *                     A dollar ('$') is used to select a CSS style. Also supports all other names schemas of ##set(). 
-	 * @param value the value to prepend. It will be converted to a string before prepending it. 
-	 * @param properties a map containing names as keys and the values to prepend as map values. See above for the syntax.
-	 * @return the list
-	 */
-	'prepend': function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return newValue + toString(oldValue);});},
-
 	
 	/*$
 	 * @id add
@@ -1708,22 +1674,30 @@ define('minified', function() {
 	 */
 	'clone': function () {
 		return new M(collect(this, function(e) {
-			var attrs = {}, attrName, nodeType = isNode(e);
+			var nodeType = isNode(e);
 			if (nodeType == 1) {
-				each(e['attributes'], function(a) {
-					attrName = a['name'];
-					if (attrName != 'id') {
+				var attrs = {
 						// @condblock ie8compatibility
-							attrs[attrName == 'style' ? '$$' : (attrName  == 'class' ? '$' : ('@'+attrName))] =
+						$: e['className'] || null,
+						$$: IS_PRE_IE9 ? e['style']['cssText'] : e.getAttribute('style')
 						// @condend
-						// @cond !ie8compatibility attrs['@'+attrName] =
-								a['value'];
+				};
+				each(e['attributes'], function(a) {
+					var attrName = a['name'], attrValue = a['value'];
+					if (attrName != 'id'
+						// @condblock ie8compatibility
+						&& attrName != 'style'
+						&& attrName != 'class'
+						&& e.getAttribute(attrName)  // getAttribute for IE8
+						// @condend
+						) {
+						attrs['@'+attrName] = attrValue;
 					}
 				});
 				return MINI['EE'](e['tagName'], attrs, MINI(e['childNodes'])['clone']());
 			}
 			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)
-				return e['textContent'];
+				return e['data'];
 			else 
 				return null;
 		}));
@@ -2054,7 +2028,7 @@ define('minified', function() {
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return each(this, function(el, index) {
 				var h = function(event) {
-					var e = event || _this.event;
+					var e = event || _window.event;
 					// @cond debug try {
 					if (!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) {
 						// @condblock ie8compatibility 
@@ -2347,7 +2321,7 @@ define('minified', function() {
 		var xhr, body = data, callbackCalled = 0, prom = promise();
 		try {
 			//@condblock ie6compatibility
-			xhr = _this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
+			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			//@condend
 			// @cond !ie6compatibility xhr = new XMLHttpRequest();
 			if (data != null) {
@@ -2444,7 +2418,7 @@ define('minified', function() {
 		return toString(value);
 	},
     // @condend
-    // @cond !ie7compatibility 'toJSON': _this.JSON && JSON.stringify,
+    // @cond !ie7compatibility 'toJSON': _window.JSON && JSON.stringify,
     
 	/*$
 	* @id parsejson
@@ -2470,7 +2444,7 @@ define('minified', function() {
 	* @return the resulting JavaScript object. <var>Undefined</var> if not valid.
 	*/
     // @condblock ie7compatibility
-    'parseJSON': _this.JSON ? _this.JSON.parse : function (text) {
+    'parseJSON': _window.JSON ? _window.JSON.parse : function (text) {
     	var t = replace(text, /[\x00\xad\u0600-\uffff]/g, ucode); // encode unsafe characters
         if (/^[[\],:{}\s]*$/                  // test that, after getting rid of literals, only allowed characters can be found
 				.test(replace(replace(t , /\\["\\\/bfnrtu]/g),             // remove all escapes
@@ -2481,7 +2455,7 @@ define('minified', function() {
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     },
     // @condend
-    // @cond !ie7compatibility 'parseJSON': _this.JSON && JSON.parse,
+    // @cond !ie7compatibility 'parseJSON': _window.JSON && JSON.parse,
     
 	/*$
     * @id ready
@@ -2700,7 +2674,7 @@ define('minified', function() {
 	 * @dependency
      */
     // @condblock ie8compatibility
-    _this.onload = triggerDomReady;
+    _window.onload = triggerDomReady;
 
     if (_document.addEventListener)
     // @condend

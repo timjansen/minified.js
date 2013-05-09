@@ -17,7 +17,7 @@
 	<script type="text/javascript">
 	// Load the right source, depending on whether 'compiled' is in the URL query
 	
-	var q = window.location.search;
+	var q = window.location.search, undefined;
 	var srcFiles = ["../minified-web-src.js", "../minified-web.js", "../minified-web-src.noie.js", "../minified-web.noie.js"];
 	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie version on old ie
 	
@@ -43,7 +43,16 @@
 			}
 			else
 				if (value != expected) {
-					if (window.console) console.log("Check failed, given:", value, " expected:", expected, extraMsg?extraMsg:'');
+					if (window.console) { 
+						console.log("Check failed, given:", value, " expected:", expected, extraMsg?extraMsg:'');
+						if (typeof value == 'string' && typeof expected == 'string' && value.length+expected.length > 15) {
+							for (var i = 0; i<value.length && i<expected.length; i++)
+								if (value.charAt(i) != expected.charAt(i)) {
+									console.log("Diff at ", i, ": '", value.charAt(i), "' != '", expected.charAt(i) + "'")
+									break;
+								}
+						}
+					}
 					fail("Value '"+value+"' given, but expected '"+expected+"'. " + (extraMsg?extraMsg:''));
 				}
 		}
@@ -91,7 +100,6 @@
 			var test = window.miniTests[testNum];
 			var msgSpan;
 			$('#results').add(EE('div', {}, [test.name + ': ', msgSpan = EE('span', 'waiting..')()]));
-			
 			var playgroundDiv;
 			if (test.async) // create playground div for async tests; they must not change anything else
 				 $('#playground').add(playgroundDiv = EE('div')[0]);
@@ -121,7 +129,7 @@
 				}
 				catch (e) {
 					success = false;
-					msg = ""+e;
+					msg = ""+(e.message||e);
 				}
 				if (!success || !test.async)
 					setSuccess(success, msg);
@@ -222,8 +230,8 @@
 			<div class="cloneMe">
 				<p>Test</p> 
 				UglyChar: &szlig;
-				<a href="http://example.com" title="Teest">Test</a>
-				<strong><span class=".bla342">abc<code>def</code>ds</span></strong>
+				<a href="http://example.com/" title="Teest">Test</a>
+				<strong><span class="bla342">abc<code>def</code>ds</span></strong>
 				<span style="margin: 1px">dd</span>
 			</div>
 			<div id="cloneId">nonono</div>
