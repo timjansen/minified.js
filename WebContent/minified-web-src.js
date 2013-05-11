@@ -184,7 +184,7 @@ define('minified', function() {
 		return isType(s, 'string');
 	}
 	function isFunction(f) {
-		return isType(f, 'function');
+		return isType(f, 'function') && !f['item']; // item check as work-around webkit bug 14547
 	}
 	function isObject(f) {
 		return isType(f, 'object');
@@ -214,9 +214,9 @@ define('minified', function() {
 		});
 		return r;
 	}
-	function collect(obj, collectFunc, iterator) {
+	function collect(obj, collectFunc) {
 		var result = [];
-		(iterator||each)(obj, function (a, b) {
+		each(obj, function (a, b) {
 			if (isList(a = collectFunc(a, b))) // caution: extreme variable re-using of 'a'
 				each(a, function(rr) { result.push(rr); });
 			else if (a != null)
@@ -224,8 +224,15 @@ define('minified', function() {
 		});
 		return result;
 	}
-	function collectObj(obj, collectFunc) {
-		return collect(obj, collectFunc, eachObj);
+	function collectObj(obj, collectFunc) { // warning: 1:1 copy of collect(), with one diff... good for gzip..
+		var result = [];
+		eachObj(obj, function (a, b) {
+			if (isList(a = collectFunc(a, b))) // caution: extreme variable re-using of 'a'
+				each(a, function(rr) { result.push(rr); });
+			else if (a != null)
+				result.push(a);
+		});
+		return result;
 	}
 	function replace(s, regexp, sub) {
 		return toString(s).replace(regexp, sub||'');
@@ -234,11 +241,11 @@ define('minified', function() {
 		_window.setTimeout(f, delayMs||0);
 	}
 	function extractNumber(v) {
-		return parseFloat(replace(v, /^[^\d-]/));
+		return parseFloat(replace(v, /^[^\d-]+/));
 	}
 	
 	function getNaturalHeight(elementList) {
-		var q = {$position: 'absolute', $visibility: 'hidden', $display: 'block', $height: null};
+		var q = {'$position': 'absolute', '$visibility': 'hidden', '$display': 'block', '$height': null};
 		var oldStyles = elementList['get'](q);
 		elementList['set'](q);
 		var h = elementList[0].offsetHeight;
@@ -555,6 +562,7 @@ define('minified', function() {
 	 */
 	function MINI(selector, context, childOnly) { 
 		// @condblock ready
+		// isList(selector) is no joke, older Webkit versions return a function for childNodes...
 		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context, childOnly));
 		// @condend
 		// @cond !ready return new M(dollarRaw(selector, context));
@@ -950,6 +958,7 @@ define('minified', function() {
  	 *                 a CSS property such as '$marginTop'  that returns a value with a unit suffix, like "21px". <var>get()</var> will convert it into a number and return 21. If the returned value is not 
  	 *                 parsable as a number, <var>NaN</var> will be returned.
  	 * @return if a string was specified as parameter, <var>get()</var> returns the corresponding value. If a list or map was given, <var>get()</var> returns a new map with the names as keys and the values as values.
+ 	 *         Always returns undefined if the list is empty.
  	 */
     'get': function(spec, toNumber) {
     	var self = this, element = self[0];
@@ -958,7 +967,6 @@ define('minified', function() {
 			if (isString(spec)) {
 				var name = replace(spec, /^[$@]/);
 				var s;
-				var isHidden = /^\$\$/.test(spec) && (self.get('$visibility') == 'hidden' || self.get('$display') == 'none');
 				if (spec == '$')
 					s = element.className;
 				else if (spec == '$$') {
@@ -969,21 +977,24 @@ define('minified', function() {
 					// @condend
 						s = element.getAttribute('style');
 				}
+				else if (/\$\$/.test(spec) && (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')) {
+					s = 0;
+				}
 				else if (spec == '$$fade') {
-					s = isNaN(s = isHidden ? 0 :
+					s = isNaN(s = 
 					// @condblock ie8compatibility
-						  IS_PRE_IE9 ? extractNumber(self.get('$filter'))/100 :
+						  IS_PRE_IE9 ? extractNumber(element['style']['filter'])/100 :
 					// @condend
-						  extractNumber(self.get('$opacity')) 
+						  extractNumber(element['style']['opacity']) 
 						 ) ? 1 : s;
 				}
 				else if (spec == '$$slide') {
-					s = (isHidden ? 0 : element.offsetHeight) + 'px';
+					s = (element['offsetHeight']) + 'px';
 				}
 				else if (/^\$/.test(spec)) {
 					// @condblock ie8compatibility 
 					if (!_window.getComputedStyle)
-						s = (element.currentStyle||element.style)[name];
+						s = (element.currentStyle||element['style'])[name];
 					else 
 					// @condend
 						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
@@ -994,11 +1005,13 @@ define('minified', function() {
 					s = element[name];
 				return toNumber ? extractNumber(s) : s;
 			}
-			var r = {};
-			(isList(spec) ? each : eachObj)(spec, function(name) {
-				r[name] = self.get(name, toNumber);
-			});
-			return r;
+			else {
+				var r = {};
+				(isList(spec) ? each : eachObj)(spec, function(name) {
+					r[name] = self.get(name, toNumber);
+				});
+				return r;
+			}
 		}
 	},
 
@@ -1142,15 +1155,15 @@ define('minified', function() {
  			
     		 // @condblock fadeslide
     		 if (name == '$$fade' || name == '$$slide') {
-    			 self.set({$visibility: (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', $display: 'block'})
+    			 self.set({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block'})
     			     .set((name == '$$fade')  ? (
     			 // @condblock ie8compatibility 
-    			    	  IS_PRE_IE9 ? {$filter: 'alpha(opacity = '+(100*v)+')', $zoom: 1} :
+    			    	  IS_PRE_IE9 ? {'$filter': 'alpha(opacity = '+(100*v)+')', '$zoom': 1} :
     			 // @condend
-    			    	  {$opacity: v})
+    			    	  {'$opacity': v})
     			        :
-    			        {$height: /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
-    			         $overflow: 'hidden'}
+    			        {'$height': /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight(MINI(element)))  + 'px';},
+    			         '$overflow': 'hidden'}
  					);
     		 }
     		 else
@@ -1678,12 +1691,12 @@ define('minified', function() {
 			if (nodeType == 1) {
 				var attrs = {
 						// @condblock ie8compatibility
-						$: e['className'] || null,
-						$$: IS_PRE_IE9 ? e['style']['cssText'] : e.getAttribute('style')
+						'$': e['className'] || null,
+						'$$': IS_PRE_IE9 ? e['style']['cssText'] : e.getAttribute('style')
 						// @condend
 				};
 				each(e['attributes'], function(a) {
-					var attrName = a['name'], attrValue = a['value'];
+					var attrName = a['name'];
 					if (attrName != 'id'
 						// @condblock ie8compatibility
 						&& attrName != 'style'
@@ -1691,12 +1704,12 @@ define('minified', function() {
 						&& e.getAttribute(attrName)  // getAttribute for IE8
 						// @condend
 						) {
-						attrs['@'+attrName] = attrValue;
+						attrs['@'+attrName] = a['value'];
 					}
 				});
 				return MINI['EE'](e['tagName'], attrs, MINI(e['childNodes'])['clone']());
 			}
-			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)
+			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
 				return e['data'];
 			else 
 				return null;
@@ -1781,16 +1794,20 @@ define('minified', function() {
 	 * $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
 	 * </pre>
 	 *
-	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
+	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
+	 *          and finally moves to 100/100.
 	 * <pre>
 	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
 	 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
 	 *    .then(function() {
 	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
 	 *    }).then(function() {
+	 *    		 return $.wait(50);
+	 *    }).then(function() {
 	 *           div.animate({$left: '100px', $top: '100px'}, 400);
 	 *    });
 	 * });
+	 * </pre>
 	 * </pre>
 	 *
 	 *
@@ -1960,12 +1977,12 @@ define('minified', function() {
 			    function(newState) {
 					if (newState === state) 
 						return;
-					state = isType(newState, 'boolean') ? newState : !state;
+					state = newState===true||newState===false ? newState : !state;
 	
 					if (durationMs) 
-						self.animate(state ? state2 : state1, animState.stop ? (animState.stop() || animState.time) : durationMs, linearity, animState);
+						self['animate'](state ? state2 : state1, animState['stop'] ? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
 					else
-						self.set(state ? state2 : state1); 
+						self['set'](state ? state2 : state1); 
 				};
 		},
 
@@ -2054,38 +2071,7 @@ define('minified', function() {
 					el.attachEvent('on'+name, h);  // IE < 9 version
 				// @condend
 			});
-		},
-
-	
-	/*$
-	 * @id offset
-	 * @group SELECTORS
-	 * @requires dollar
-	 * @configurable default
-	 * @name .offset()
-	 * @syntax $(selector).offset()
-	 * Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, 
-	 * with 0/0 being the upper left corner, independent of the user's current view (which depends on the user's current scroll position and zoom level).
-	 *
-	 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
-	 * <pre>
-	 * var pos = $('#myElement').offset();
-	 * $('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.x + ' top=' + pos.y);
-	 * </pre>
-	 *
-	 * @param element the element whose coordinates should be determined
-	 * @return an object containing pixel coordinates in two properties 'x' and 'y'
-	 */
-	'offset': function() {
-		var elem = this[0];
-		var dest = {'x': 0, 'y': 0};
-		while (elem) {
-			dest.x += elem.offsetLeft;
-			dest.y += elem.offsetTop;
-			elem = elem.offsetParent;
 		}
-		return dest;
-     }
  	/*$
  	 * @stop
  	 */
@@ -2659,6 +2645,43 @@ define('minified', function() {
 			// @condend
 		});
 		handler['M'] = null;
+	},
+	
+	/*$
+	 * @id wait
+	 * @group ANIMATION
+	 * @configurable default
+	 * @name $.wait()
+	 * @syntax $.wait()
+	 * @syntax $.wait(durationMs)
+	 *
+	 * Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
+	 * because it allows you to chain delays into your animation chain.
+	 *
+	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
+	 *          and finally moves to 100/100.
+	 * <pre>
+	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+	 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
+	 *    .then(function() {
+	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
+	 *    }).then(function() {
+	 *    		 return $.wait(50);
+	 *    }).then(function() {
+	 *           div.animate({$left: '100px', $top: '100px'}, 400);
+	 *    });
+	 * });
+	 * </pre>
+	 *
+	 *
+	 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
+	 *                   from the event loop.
+	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail.
+	 */
+	'wait': function(durationMs) {
+		var p = promise();
+		delay(p, durationMs);
+		return p;
 	}
 	
  	/*$
@@ -2718,8 +2741,8 @@ define('minified', function() {
  * @id promise
  * @name Promise
  * 
- * <i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using #request#$.request() or
- * ##animate(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
+ * <i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using #request#$.request(),
+ * ##animate() or #wait#$,wait(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
  * 
  * Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
  * be able to interoperate with most other Promises implementations.

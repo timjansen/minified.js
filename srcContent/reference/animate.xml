@@ -101,16 +101,20 @@ $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>Chained animation using <a href='promise.html'>Promise()</a> callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
+<div class="example"><p>Chained animation using <a href='promise.html'>Promise()</a> callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms
+         and finally moves to 100/100.
 <pre>
 var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
 div.animate({$left: '200px', $top: '0px'}, 600, 0)
    .then(function() {
           div.animate({$left: '200px', $top: '200px'}, 800, 0);
    }).then(function() {
+   		 return $.wait(50);
+   }).then(function() {
           div.animate({$left: '100px', $top: '100px'}, 400);
    });
 });
+</pre>
 </pre></p><p></p></div>
 </div>
 
@@ -127,6 +131,7 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="request.html">$.request()</a>
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
+</li><li><a href="wait.html">$.wait()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -141,7 +146,6 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="get.html">.get()</a>
 </li><li><a href="hasclass.html">.hasClass()</a>
 </li><li><a href="length.html">.length</a>
-</li><li><a href="offset.html">.offset()</a>
 </li><li><a href="on.html">.on()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>

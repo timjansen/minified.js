@@ -14,8 +14,8 @@
 
 <h4>Description</h4>
 <div class="description"><p>
-<i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using <code><a href='request.html'>$.request()</a></code> or
-<code><a href='animate.html'>animate()</a></code>, you will get a Promise object that allows you to get the result as soon as the operation is finished.</p><p>Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
+<i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using <code><a href='request.html'>$.request()</a></code>,
+<code><a href='animate.html'>animate()</a></code> or #wait#$,wait(), you will get a Promise object that allows you to get the result as soon as the operation is finished.</p><p>Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
 be able to interoperate with most other Promises implementations.</p><p>What may be somewhat surprising about this Promises specification is that there is no direct way to find out the state of the operation.
 There is neither a property nor a function to find out what the result is or whether it is available. Instead, you always have to
 register callbacks that will be invoked as soon as the operation is finished. Even if the operation already ended when you register the callbacks,
@@ -92,6 +92,7 @@ Minified Util module will allow this though.
 </li><li><a href="request.html">$.request()</a>
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
+</li><li><a href="wait.html">$.wait()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -106,7 +107,6 @@ Minified Util module will allow this though.
 </li><li><a href="get.html">.get()</a>
 </li><li><a href="hasclass.html">.hasClass()</a>
 </li><li><a href="length.html">.length</a>
-</li><li><a href="offset.html">.offset()</a>
 </li><li><a href="on.html">.on()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>

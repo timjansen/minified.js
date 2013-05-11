@@ -115,6 +115,15 @@
 <tr><th>Internet Explorer compatible</th> <td>yes</td> <td>yes (&lt;2.0 only)</td> <td>yes</td> <td>no</td></tr>
 </table>
 
+  <hr/>
+  
+  <h2><a name="browserCompat">Browser Compatibility</a></h2>
+  <p>Minified has been tested successfully with...</p>
+  <table>
+<tr><th>Firefox</th><th>Chrome</th><th>Internet Explorer</th><th>Safari / iOS</th><th>Safari / MacOS</th><th>Android browser</th></tr>
+<tr><td>3.6 and higher</td><td>14 and higher</td><td>6.0 and higher</td><td>iOS 3.0 and higher</td><td>4.0 and higher</td><td>Android 2.2 and higher</td></tr>
+</table>
+
 
  ]]></page:main>
 

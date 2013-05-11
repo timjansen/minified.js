@@ -3,54 +3,51 @@
    Auto-generated using docbuilder.js. Do not edit manually. 
 -->
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
-	<title>.sub() - Minified.js</title>
+	<title>$.wait() - Minified.js</title>
 	<section>reference</section>
 	<externalCss>../css/reference.css</externalCss>
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-sub">.sub()</a></h2>
-<div class="summary">Returns a new ##list#Minified list## containing only the elements in the specified range.</div>
+<h2><a name="doc-wait">$.wait()</a></h2>
+<div class="summary">
+Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">sub()</div>
+<div class="syntax">$.wait()</div>
+<div class="syntax">$.wait(durationMs)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="sub_startIndex" class=""><a name="sub_startIndex"><var>startIndex</var></a></dt>
-<dd class="">the 0-based position of the sub-list start. If negative, the list's length is added and thus it is the position
-seen from the list end.</dd>
-<dt id="sub_endIndex" class=""><a name="sub_endIndex"><var>endIndex</var></a></dt>
-<dd class=""><span class="optional">optional</span> the 0-based position of the sub-list end. If negative, the list's length is added and thus it is the position
-seen from the list end. If omitted, all elements following the <var>startIndex</var> are included in the result.</dd>
-<dt id="sub_RETURN" class="returnValue inSyntax0"><a name="sub_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">a new <a href='list.html'>list()</a> containing only the items in the index range.</dd>
+<dt id="wait_durationMs" class=""><a name="wait_durationMs"><var>durationMs</var></a></dt>
+<dd class=""><span class="optional">optional</span> the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
+from the event loop.</dd>
+<dt id="wait_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="wait_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1">a <a href='promise.html'>Promise()</a> object that will be fulfilled when the time is over. It will never fail.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Returns a new <a href='list.html'>Minified list()</a> containing only the elements in the specified range. If there are no elements in the range, an empty list is returned.
-Negative indizes are supported and will be added to the list's length, thus allowing you to specify ranged at the list's end.</p><p></p></div>
+<div class="description"><p>
+Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
+because it allows you to chain delays into your animation chain.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Removes the third to 5th list elements:
+<div class="example"><p>Chained animation using <a href='promise.html'>Promise()</a> callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms
+         and finally moves to 100/100.
 <pre>
-$('#myList li').sub(3, 6).remove();
-</pre>
-</p></div>
-<h4>Example</h4>
-<div class="example"><p>Clears all elements but the first:
-<pre>
-$('#myList li').sub(1).fill();
-</pre>
-</p></div>
-<h4>Example</h4>
-<div class="example"><p>Changes the class of the last list element:
-<pre>
-$('#myList li').sub(-1).set('+lastItem');
-</pre>
-</p></div>
+var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+div.animate({$left: '200px', $top: '0px'}, 600, 0)
+   .then(function() {
+          div.animate({$left: '200px', $top: '200px'}, 800, 0);
+   }).then(function() {
+   		 return $.wait(50);
+   }).then(function() {
+          div.animate({$left: '100px', $top: '100px'}, 400);
+   });
+});
+</pre></p><p></p></div>
 </div>
 
 

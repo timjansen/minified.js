@@ -43,7 +43,8 @@ the map will be ignored. <var>get()</var> will then return a name->value map of 
 a CSS property such as '$marginTop'  that returns a value with a unit suffix, like "21px". <var>get()</var> will convert it into a number and return 21. If the returned value is not
 parsable as a number, <var>NaN</var> will be returned.</dd>
 <dt id="get_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="get_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">if a string was specified as parameter, <var>get()</var> returns the corresponding value. If a list or map was given, <var>get()</var> returns a new map with the names as keys and the values as values.</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">if a string was specified as parameter, <var>get()</var> returns the corresponding value. If a list or map was given, <var>get()</var> returns a new map with the names as keys and the values as values.
+Always returns undefined if the list is empty.</dd>
 </dl>
 
 <h4>Description</h4>
@@ -92,6 +93,7 @@ $('#myElement').set(coords);
 </li><li><a href="request.html">$.request()</a>
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
+</li><li><a href="wait.html">$.wait()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -106,7 +108,6 @@ $('#myElement').set(coords);
 </li><li><a href="get.html">.get()</a>
 </li><li><a href="hasclass.html">.hasClass()</a>
 </li><li><a href="length.html">.length</a>
-</li><li><a href="offset.html">.offset()</a>
 </li><li><a href="on.html">.on()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>

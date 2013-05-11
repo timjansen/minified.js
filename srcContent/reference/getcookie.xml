@@ -58,6 +58,7 @@ else
 </li><li><a href="request.html">$.request()</a>
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
+</li><li><a href="wait.html">$.wait()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -72,7 +73,6 @@ else
 </li><li><a href="get.html">.get()</a>
 </li><li><a href="hasclass.html">.hasClass()</a>
 </li><li><a href="length.html">.length</a>
-</li><li><a href="offset.html">.offset()</a>
 </li><li><a href="on.html">.on()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>
