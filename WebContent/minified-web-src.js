@@ -814,9 +814,9 @@ define('minified', function() {
       * @return a new ##list#list## containing only the items in the index range. 
       */ 
 	'sub': function(startIndex, endIndex) {
-		var l = this['length'];
-	    var s = (startIndex < 0 ? l+startIndex : startIndex);
-	    var e = endIndex == null ? l : (endIndex >= 0 ? endIndex : l+endIndex);
+	    var s = (startIndex < 0 ? this['length']+startIndex : startIndex);
+	    //var e = endIndex == null ? this['length'] : (endIndex >= 0 ? endIndex : this['length']+endIndex);
+	    var e = endIndex >= 0 ? endIndex : this['length'] + (endIndex || 0);
  		return new M(filter(this, function(o, index) { 
  			return index >= s && index < e; 
  		}));
@@ -1850,7 +1850,7 @@ define('minified', function() {
 		
 		// find start values
 		each(self, function(li) {
-			var p = {o:MINI(li), s:{}, e:{}}; 
+			var p = {o:MINI(li), e:{}}; 
 			eachObj(p.s = p.o.get(properties), function(name, start) {
 				var dest = properties[name];
 				if (name == '$$slide') 
