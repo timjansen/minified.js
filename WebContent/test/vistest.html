@@ -10,13 +10,13 @@
 		#slideDiv { left: 10px;  top: 320px; }
 		#loopDiv  { left: 320px; top: 320px; }
 
-		.animD { position: absolute; width: 50px; height: 50px; top: 125px; left: 125px; background-color: black; }
+		.animD { position: absolute; width: 50px; height: 50px; top: 125px; left: 125px; background-color: #000; }
 		
 		#fadeDiv div, #slideDiv div { overflow: hidden; width: 290px; height: 290px; }
 		#fadeDiv pre, #slideDiv pre { font-size: 8pt; margin: 0; padding: 5px;}
 		
 		.looper, #loopC { position: absolute; width: 50px; height: 50px; top: 125px; left: 125px; }
-		#loopC { background-color: black;}
+		#loopC { background-color: #000;}
 		#loopD1, #loopD3 { background-color: red;}
 		#loopD2, #loopD4  { background-color: blue;}
 	</style> 
@@ -41,6 +41,7 @@
 	});
 
 	$(function() {
+		
 		function startAnim() {
 			$('.animD').each(function(div, index) {
 				function step(promise) {
@@ -64,13 +65,14 @@
 		}
 		startAnim();
 		window.setInterval(startAnim, 7000);
-		
+
 		var fadeToggle = $('#fadeDiv div').toggle({$$fade: 1}, {$$fade: 0}, 1500, 1);
 		window.setInterval(fadeToggle, 2000);
 
+
 		var slideToggle = $('#slideDiv div').toggle({$$slide: 1}, {$$slide: 0}, 900);
 		window.setInterval(slideToggle, 1500);
-		
+
 		var DURMS = 4000;
 		function startLoop() {
 			$.loop(function(ts, stop) {

@@ -733,10 +733,10 @@ define('minified', function() {
       * @return a new ##list#list## containing only the items in the index range. 
       */ 
 	'sub': function(startIndex, endIndex) {
-	    var s = (startIndex < 0 ? this['length']+startIndex : startIndex);
-	    //var e = endIndex == null ? this['length'] : (endIndex >= 0 ? endIndex : this['length']+endIndex);
-	    var e = endIndex >= 0 ? endIndex : this['length'] + (endIndex || 0);
- 		return new M(filter(this, function(o, index) { 
+		var self = this;
+	    var s = (startIndex < 0 ? self['length']+startIndex : startIndex);
+	    var e = endIndex >= 0 ? endIndex : self['length'] + (endIndex || 0);
+ 		return new M(filter(self, function(o, index) { 
  			return index >= s && index < e; 
  		}));
  	},
@@ -773,8 +773,8 @@ define('minified', function() {
      *         it returns either the value returned by the callback or <var>undefined</var>.
      */ 
 	'find': function(findFunc) {
-		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 		var self = this, r;
+		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 		for (var i = 0; i < self.length; i++)
 			if ((r = f(self[i], i)) != null)
 				return r;
@@ -1770,7 +1770,7 @@ define('minified', function() {
 								newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i), t)) + (i < 2 ? ',' : ')');
 						}
 						else 
-							newValue = replace(end, numRegExp, interpolate(extractNumber(start), extractNumber(end), t));
+							newValue = replace(end, numRegExp, toString(interpolate(extractNumber(start), extractNumber(end), t)));
 						isi.o.set(name, newValue);
 					});
 				});
@@ -1846,9 +1846,9 @@ define('minified', function() {
 		 *         If the argument is not boolean or the function is called without arguments, the function toggles between both states. 
 		 */
 		'toggle': function(state1, state2, durationMs, linearity) {
+			var self = this;
 			var animState = {};
 			var state = false, regexg = /\b(?=\w)/g;
-			var self = this;
 
 			return !state2 ?
 				self['toggle'](replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
