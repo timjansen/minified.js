@@ -4,9 +4,9 @@
 	<style type="text/css">
 		body {font-family: sans-serif;}
 	</style> 
-	<script type="text/javascript" src="../minified-src.js"></script>
+	<script type="text/javascript" src="../minified-web.js"></script>
 	<script type="text/javascript">
-	var MINI = $ = require('minified').$, $$ = $.$$, EE = $.EE;
+	var $ = require('minified').$, $$ = $.$$, EE = $.EE;
 	var POSITIONS = [{$top: '10px', $left: '10px'}, {$top: '10px', $left: '280px'}, {$top: '280px', $left: '280px'}, {$top: '280px', $left: '10px'}];
 	var COLORS = ['#f00', '#00f', '#0f0', '#0ff'];
 	var BOXES = [{id: '#box1', pos: 0, colorPos: 0}, {id: '#box2', pos: 2, colorPos: 2}];
@@ -23,7 +23,7 @@
 		$('#controllableBox').animate(props, parseFloat($$('#durationField').value), parseFloat($$('#linearityField').value)).then(enableButtons);		
 	}
 	
-	MINI.ready(function() {
+	$.ready(function() {
 		$('#moveButton').on('click', function() {
 			disableButtons();			
 			for (var i = 0; i < BOXES.length; i++) 

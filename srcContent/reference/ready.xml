@@ -24,7 +24,7 @@
 
 <h4>Description</h4>
 <div class="description"><p>Registers a handler to be called as soon as the HTML has been fully loaded. Does not necessarily wait images and other elements, only the main
-HTML document needs to be complete. On older browsers, it is the same as 'window.onload'.</p><p></p></div>
+HTML document needs to be complete. On older browsers, it is the same as 'window.onload'.</p><p>If you call ready() after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

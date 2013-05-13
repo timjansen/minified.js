@@ -807,7 +807,7 @@ define('minified', function() {
 	/*$
 	 * @id remove
 	 * @group SELECTORS
-	 * @requires dollar each
+	 * @requires dollar
 	 * @configurable default
 	 * @name .remove()
 	 * @syntax remove()
@@ -923,7 +923,7 @@ define('minified', function() {
 	/*$
 	 * @id set
 	 * @group SELECTORS
-	 * @requires dollar each get
+	 * @requires dollar get
 	 * @configurable default
 	 * @name .set()
 	 * @syntax $(selector).set(name, value)
@@ -1104,7 +1104,7 @@ define('minified', function() {
 	/*$
 	 * @id add
 	 * @group ELEMENT
-	 * @requires dollar each
+	 * @requires dollar
 	 * @configurable default
 	 * @name .add()
 	 * @syntax $(selector).add(text)
@@ -1603,7 +1603,7 @@ define('minified', function() {
 	/*$
 	 * @id animate
 	 * @group ANIMATION
-	 * @requires loop dollar each set get
+	 * @requires loop dollar set get
 	 * @configurable default
 	 * @name .animate()
 	 * @syntax $(selector).animate(properties)
@@ -1851,8 +1851,8 @@ define('minified', function() {
 			var self = this;
 
 			return !state2 ?
-				self.toggle(replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
-				self.set(state1) && 
+				self['toggle'](replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
+				self['set'](state1) && 
 			    function(newState) {
 					if (newState === state) 
 						return;
@@ -1868,7 +1868,7 @@ define('minified', function() {
 		/*$
 		 * @id on
 		 * @group EVENTS
-		 * @requires dollar each
+		 * @requires dollar
 		 * @configurable default
 		 * @name .on()
 		 * @syntax $(selector).on(name, handler)
@@ -1936,9 +1936,11 @@ define('minified', function() {
 					el.addEventListener(name, h, true); // W3C DOM
 			});
 		}
+
  	/*$
  	 * @stop
  	 */
+		// @cond !on dummy:null
 	}, function(n, v) {M.prototype[n]=v;});
 
  	//// MINI FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1978,7 +1980,7 @@ define('minified', function() {
 	/*$
 	 * @id ee
 	 * @group ELEMENT
-	 * @requires dollardollar set
+	 * @requires dollar set add
 	 * @configurable default
 	 * @name EE()
 	 * @syntax $.EE(elementName)
@@ -2283,6 +2285,8 @@ define('minified', function() {
     * @syntax $.ready(handler)
     * Registers a handler to be called as soon as the HTML has been fully loaded. Does not necessarily wait images and other elements, only the main
     * HTML document needs to be complete. On older browsers, it is the same as 'window.onload'. 
+    * 
+    * If you call ready() after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.
     *
     * @example Registers a handler that sets some text in an element:
     * <pre>
@@ -2440,7 +2444,7 @@ define('minified', function() {
     /*$
 	 * @id off
 	 * @group EVENTS
-	 * @requires dollar on each
+	 * @requires on
 	 * @configurable default
 	 * @name $.off()
 	 * @syntax $.off(handler)
@@ -2474,6 +2478,7 @@ define('minified', function() {
 	 * @id wait
 	 * @group ANIMATION
 	 * @configurable default
+	 * @requires
 	 * @name $.wait()
 	 * @syntax $.wait()
 	 * @syntax $.wait(durationMs)
@@ -2499,17 +2504,19 @@ define('minified', function() {
 	 *
 	 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
 	 *                   from the event loop.
-	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail.
+	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
+	 *         durationMs parameter as given to <var>wait()</var>.
 	 */
 	'wait': function(durationMs) {
 		var p = promise();
-		delay(p, durationMs);
+		delay(function() {p(true, [durationMs]);}, durationMs);
 		return p;
 	}
 
  	/*$
  	 * @stop
  	 */
+	// @cond !wait dummy:null
 
 	}, function(n, v) {MINI[n]=v;});
 
@@ -2561,7 +2568,7 @@ define('minified', function() {
  * @name Promise
  * 
  * <i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using #request#$.request(),
- * ##animate() or #wait#$,wait(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
+ * ##animate() or #wait#$.wait(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
  * 
  * Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
  * be able to interoperate with most other Promises implementations.

@@ -59,8 +59,8 @@
   
   <pre>&lt;script src='path/to/minified-web.js'>&lt;/script></pre></p>
 
-  <p>Iimport Minified like this in your script:
-  <pre>var MINI = require('minified'), $ = MINI.$, $$ = $.$$, EE = $.EE;</pre></p>
+  <p>Import Minified like this in your script:
+  <pre>var $ = require('minified').$, $$ = $.$$, EE = $.EE;</pre></p>
 
   <p>And then it’s time to start. With some knowledge of other libraries the basic stuff should be easy to figure out from the <a href=”/reference/”>API docs</a>:
   

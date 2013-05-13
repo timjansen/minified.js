@@ -43,10 +43,11 @@ If you would like to optimize the size of your site, you should consider <a href
 
 <h2>How to Obtain the Reference to Minified</h2>
 <p>
-No matter whether you are including Minified with a script tag or you use a synchronous loader like Sparkplug.js, it is recommended to use the following 
+No matter whether you are including Minified with a script tag or you use a synchronous loader like 
+<a href="https://github.com/timjansen/sparkplug.js">Sparkplug.js</a>, it is recommended to use the following 
 line to define the three essiental variables for using Minified:
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 </pre>
 Please note that this works even without an AMD loader. Minified defines a global <code>require</code> function if no AMD loader is present.
 </p>
@@ -57,7 +58,7 @@ Please note that this works even without an AMD loader. Minified defines a globa
 
 <p>You can create a MINI-list using CSS selectors in the usual syntax:
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 
 var listItems = <a href="/reference/dollar.html">$</a>('#myList li');
 </pre>
@@ -76,7 +77,7 @@ In the default configuration with IE6/IE7 compatibility, you can only use CSS1 s
 
 <p>You can also either pass a DOM node or a list of DOM nodes. Nested lists will automatically be flattened. Nulls in lists will be omitted.
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 
 var singleElement = <a href="/reference/dollar.html">$</a>(document.getElementById(‘oldFashioned’));
 var threeElements = <a href="/reference/dollar.html">$</a>([e1, e2, e3]);
@@ -87,7 +88,7 @@ var plus1 = <a href="/reference/dollar.html">$</a>([<a href="/reference/dollar.h
 
 <p>Selectors can have a context. If a context is set, you limit the result set to those elements whose parent is one of the context nodes.The context can be specified in the same way as the selector itself, using a selector string, a DOM node or a list of nodes:
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 
 var cells = <a href="/reference/dollar.html">$</a>(‘td, th’, ‘#myTable’); // all td and th element in #myTable
 var cells1 = <a href="/reference/dollar.html">$</a>(‘td, th’, document.getElementById(‘myTable’)); // same as above
@@ -97,7 +98,7 @@ var cells2 = <a href="/reference/dollar.html">$</a>(‘td, th’, ‘.specialTab
 
 <p>You can limit the context to be used only for direct children by setting the third parameter to true:
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 
 var listItems = <a href="/reference/dollar.html">$</a>(‘li’, ‘ol’, true); // all list items in ordered lists
 </pre>
@@ -108,7 +109,7 @@ You should checkout the documentation of <a href="/reference/collect.html"><code
 <a href="/reference/filter.html"><code>filter</code></a> and <a href="/reference/find.html"><code>find</code></a> for more information. 
 Here a small example to give you an idea:
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 
 var r = <a href="/reference/dollar.html">$</a>(‘#myTable tr’)                                                            // all rows in myTable
            .<a href="/reference/filter.html">filter</a>(function(elem, index) { return index % 2 == 1; }) // filter: take only odd rows
@@ -122,7 +123,7 @@ var r = <a href="/reference/dollar.html">$</a>(‘#myTable tr’)               
 operator (“list[i]") though. The results would be undefined.<br/>
 This example iterates through a list using a <code>for</code> loop:
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 
 var list = <a href="/reference/dollar.html">$</a>(‘input’); 
 for (var i = 0; i &lt; <a href="/reference/length.html">length</a> ; i++)
@@ -130,7 +131,7 @@ for (var i = 0; i &lt; <a href="/reference/length.html">length</a> ; i++)
 </pre>
 Alternatively, you could use the Minified’s <a href="/reference/each.html"><code>each()</code></a> function:
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 
 var list = <a href="/reference/dollar.html">$</a>(‘input’); 
 list.<a href="/reference/length.html">each</a>(function(element, index) {
@@ -143,7 +144,7 @@ list.<a href="/reference/length.html">each</a>(function(element, index) {
 <a href="/reference/dollardollar.html"><code>$$</code></a>. It works like <a href="/reference/dollar.html"><code>$</code></a>, 
 but only returns only the first element of the list instead of the list itself. If the list is empty, it returns <var>undefined</var>.
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 
 var parent1 = <a href="/reference/dollardollar.html">$$</a>‘#myElement’).parentNode;
 var parent2 = <a href="/reference/dollar.html">$</a>(‘#myElement’)[0].parentNode;      // same result: $$() is just short for $()[0]
@@ -161,7 +162,7 @@ built upon the universal <a href="/reference/set.html"><code>set()</code></a> fu
 
 <p>The simplest data to access is a regular JavaScript property. You only specify the property name to get or set it:
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 
 var oldGreeting = <a href="/reference/dollar.html">$</a>('.greeting').<a href="/reference/get.html">get</a>('innerHTML'); // value of list’s first element!
 <a href="/reference/dollar.html">$</a>('.greeting').<a href="/reference/set.html">set</a>('innerHTML', 'Hello'); // sets innerHTML for all list elements!
@@ -200,7 +201,7 @@ classes, you could always set them with the <var>className</var> property of the
 operations, <a href="/reference/set.html"><code>set()</code></a> provides you with the name <var>$</var>. But since 
 it is the most important <a href="/reference/set.html"><code>set()</code></a> operation, you can omit it and write:
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 
 <a href="/reference/dollar.html">$</a>('.cnt').<a href="/reference/set.html">set</a>('+highlighted -plain'); // add / remove CSS class
 </pre>
@@ -277,7 +278,7 @@ Optionally they can also add children to the new element, as well as attributes 
 by <a href="/reference/set.html"><code>set()</code></a>.
 
 <pre>
-var $ = require('minified'), $$=$.$$, EE=$.EE;
+var $ = require('minified').$, $$=$.$$, EE=$.EE;
 
 <a href="/reference/dollar.html">$</a>(‘#header’).<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>(‘h2’, ‘My Title’));                                                            // creates &lt;h2>MyTitle&lt;/h2>
 <a href="/reference/dollar.html">$</a>(‘#linkContainer’).<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>(‘a’, {‘@href’: ‘http://acme.com’}, “ACME"));  // creates &lt;a href="http://acme.com">ACME&lt;/a>

@@ -103,20 +103,7 @@ window.miniTests.push.apply(window.miniTests, [
 			check(MINI('#hello').length, 0);
 			check(MINI('#container2').length, 1);
 		}
-	},
-	
-	{
-		name: "MINI().offset()",
-	 	exec: function() {
-	 		var r1 = MINI('#asdsd').offset();
-	 		check(r1.x, 0);
-	 		check(r1.y, 0);
-	 		var r2 = MINI('#results').offset();
-	 		check(r2.x > 0);
-	 		check(r2.y > 0);
-		}
-	}
-	
+	}	
 
 ]);
 

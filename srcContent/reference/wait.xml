@@ -24,7 +24,8 @@ Creates a new promise that will be fulfilled as soon as the specified number of 
 <dd class=""><span class="optional">optional</span> the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
 from the event loop.</dd>
 <dt id="wait_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="wait_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">a <a href='promise.html'>Promise()</a> object that will be fulfilled when the time is over. It will never fail.</dd>
+<dd class="inSyntax0 inSyntax1">a <a href='promise.html'>Promise()</a> object that will be fulfilled when the time is over. It will never fail. The promise argument is the
+durationMs parameter as given to <var>wait()</var>.</dd>
 </dl>
 
 <h4>Description</h4>

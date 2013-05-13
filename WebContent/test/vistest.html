@@ -1,0 +1,183 @@
+<html>
+	<head><title>Minified.js Visual Test</title>
+	
+	<style type="text/css">
+		body {font-family: sans-serif;}
+		#container { position: relative; width: 630px; height: 630px;}
+		#animDiv, #fadeDiv, #slideDiv, #loopDiv { border: 1px solid black; position: absolute; width: 300px; height: 300px; } 
+		#animDiv  { left: 10px;  top: 10px; }
+		#fadeDiv  { left: 320px; top: 10px; }
+		#slideDiv { left: 10px;  top: 320px; }
+		#loopDiv  { left: 320px; top: 320px; }
+
+		.animD { position: absolute; width: 50px; height: 50px; top: 125px; left: 125px; background-color: black; }
+		
+		#fadeDiv div, #slideDiv div { overflow: hidden; width: 290px; height: 290px; }
+		#fadeDiv pre, #slideDiv pre { font-size: 8pt; margin: 0; padding: 5px;}
+		
+		.looper, #loopC { position: absolute; width: 50px; height: 50px; top: 125px; left: 125px; }
+		#loopC { background-color: black;}
+		#loopD1, #loopD3 { background-color: red;}
+		#loopD2, #loopD4  { background-color: blue;}
+	</style> 
+	<script type="text/javascript">
+	// Load the right source, depending on whether 'compiled' is in the URL query
+	
+	var q = window.location.search, undefined;
+	var srcFiles = ["../minified-web-src.js", "../minified-web.js", "../minified-web-src.noie.js", "../minified-web.noie.js"];
+	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie version on old ie
+	
+	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;
+	var file = srcFiles[srcNum] + '?rnd=' + (new Date().getTime());
+    document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
+	</script>
+	
+	<script type="text/javascript">
+	var $ = require('minified').$, $$ = $.$$, EE = $.EE;
+	
+	$(function() {
+		$('#libName').fill(srcFiles[srcNum]);
+		$$('#srcNum').value = (srcNum + 1) % srcFiles.length;
+	});
+
+	$(function() {
+		function startAnim() {
+			$('.animD').each(function(div, index) {
+				function step(promise) {
+					return promise.then(function() {
+						return $(div).animate({$top: Math.round(Math.random() * 240 + 5)+'px', 
+												   $left: Math.round(Math.random() * 240 + 5)+'px',
+												   $backgroundColor: 'rgb('+Math.round(250*Math.random())+','+Math.round(250*Math.random())+','+Math.round(250*Math.random())+')'}, 500, Math.random());
+						})
+			            .then(function() {
+		    		       	 return $.wait(100);
+		            	});
+				}
+				var p = $.wait(500);
+				for (var i = 0; i < 10; i++)
+					p = step(p);
+				
+				p = p.then(function() {
+					return $(div).animate({$top: '125px', $left: '125px', $backgroundColor: '#000'});
+				});
+			});
+		}
+		startAnim();
+		window.setInterval(startAnim, 7000);
+		
+		var fadeToggle = $('#fadeDiv div').toggle({$$fade: 1}, {$$fade: 0}, 1500, 1);
+		window.setInterval(fadeToggle, 2000);
+
+		var slideToggle = $('#slideDiv div').toggle({$$slide: 1}, {$$slide: 0}, 900);
+		window.setInterval(slideToggle, 1500);
+		
+		var DURMS = 4000;
+		function startLoop() {
+			$.loop(function(ts, stop) {
+				if (ts > DURMS)
+					return stop();
+				var a = 2 * Math.PI * ts / 1000; // 1000 ms per rotation
+				var radius = 120 * Math.sin(Math.PI * ts / DURMS);
+				$('.looper').each(function(div, index) {
+					var angle = a + index * 0.5 * Math.PI;
+					div.style.top = Math.round(125 + Math.sin(angle) * radius) + 'px';
+					div.style.left = Math.round(125 + Math.cos(angle) * radius) + 'px';
+				});
+			});
+		}
+		startLoop();
+		window.setInterval(startLoop, DURMS+1000);
+		
+	});
+	
+	</script>
+	
+	</head>
+	<body>
+	<div id="container">
+		<div id="animDiv">
+			<div class="animD"></div>
+			<div class="animD"></div>
+			<div class="animD"></div>
+			<div class="animD"></div>
+		</div>
+		<div id="fadeDiv">
+			<div><pre>Creates a name/value map from the given form. values() looks at the list's form element
+using the element name as key and the element's value as value. If there is mor
+of values. Form element without value will be written with 'null' as value. Form elem
+values() will use all elements in the list that have a name, such as input, 
+elements will be serialized.
+The map format returned by values() is exactly the format used by request().
+lease note that when you include an input element more than once, for example by having
+value will be included twice in the list.
+@example Serialize a form and send it as request parameters:
+MINI.request('get', '/exampleService', $('#myForm').values(), resultHandler);
+@example Serialize only some selected input fields:
+var data = $('#myText, input.myRadios').values();
+@param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
+@return a map containing name-value pairs as strings. If there is more than one value with the same name,
+        map value is an array of strings
+Returns the pixel page coordinates of the list's first element. Page coordinates are the
+with 0/0 being the upper left corner, independent of the user's current view (which depe
+@example Displays the position of the element with the id 'myElement' in the eleme
+var pos = $('#myElement').offset();
+$('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.x + ' top=' + pos.y);
+The second argument describes the toggles that are controlled by the events. If you pass 
+they will be simply called. You can also specify an array of parameters to the toggle() 
+The most powerful form of argument is a map containing selectors as first and toggle() arrays a
+list member.
+@syntax MINI().values()
+@syntax MINI().values(dataMap)
+The selectors given in the event and toggle maps are always executed in the context of the c
+the latter case, they will be executes in the document context. If you pass a 0 (or an
+member itself.</pre></div>
+		</div>
+		<div id="slideDiv">
+		    <div><pre>Creates a name/value map from the given form. values() looks at the list's form element
+using the element name as key and the element's value as value. If there is mor
+of values. Form element without value will be written with 'null' as value. Form elem
+values() will use all elements in the list that have a name, such as input, 
+elements will be serialized.
+The map format returned by values() is exactly the format used by request().
+lease note that when you include an input element more than once, for example by having
+value will be included twice in the list.
+@example Serialize a form and send it as request parameters:
+MINI.request('get', '/exampleService', $('#myForm').values(), resultHandler);
+@example Serialize only some selected input fields:
+var data = $('#myText, input.myRadios').values();
+@param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
+@return a map containing name-value pairs as strings. If there is more than one value with the same name,
+        map value is an array of strings
+Returns the pixel page coordinates of the list's first element. Page coordinates are the
+with 0/0 being the upper left corner, independent of the user's current view (which depe
+@example Displays the position of the element with the id 'myElement' in the eleme
+var pos = $('#myElement').offset();
+$('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.x + ' top=' + pos.y);
+The second argument describes the toggles that are controlled by the events. If you pass 
+they will be simply called. You can also specify an array of parameters to the toggle() 
+The most powerful form of argument is a map containing selectors as first and toggle() arrays a
+list member.
+@syntax MINI().values()
+@syntax MINI().values(dataMap)
+The selectors given in the event and toggle maps are always executed in the context of the c
+the latter case, they will be executes in the document context. If you pass a 0 (or an
+member itself.</pre></div></div>
+		<div id="loopDiv">
+			<div id="loopD1" class='looper'></div>
+			<div id="loopD2" class='looper'></div>
+			<div id="loopD3" class='looper'></div>
+			<div id="loopD4" class='looper'></div>
+			<div id="loopC"></div>
+		</div>
+	</div>
+	<div id="rerun" >
+		<strong>Library: </strong><span id="libName">error</span>
+		<form action="vistest.html" method="get">
+			<input id="srcNum" name="srcNum" type="hidden"/>
+			<input type="submit" value="Switch library"/>
+		</form>
+		<br/>
+		<a href="autotest.html">Start AutoTest</a>
+	</div>
+	</body>
+</html>
