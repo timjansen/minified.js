@@ -50,7 +50,7 @@
      * If enabled, there will be fallback code to provide a require function even if no AMD framework such as 
      * require.js is available. If you always use Minified with an AMD framework, you can safely turn this off.
      */
-if (/^u/.test(typeof define)) { // no AMD support avaialble ? define a minimal version
+if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
 	var def = {};
 	this['define'] = function(name, f) {def[name] = f();};
 	this['require'] = function(name) { return def[name]; }; 
@@ -61,16 +61,18 @@ if (/^u/.test(typeof define)) { // no AMD support avaialble ? define a minimal v
 
 define('minified', function() {
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * @const
 	 */
-	var _this = this;
+	var _window = this;
 
 	/**
 	 * @const
 	 */
 	var _document = document;
+	
+	var MINI = {};
 	
 	/**
 	 * @const
@@ -97,7 +99,7 @@ define('minified', function() {
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currently active
 	
 	/** @type {!function()} */
-	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _this[n+'equestAnimationFrame']; })[0] || function(callback) {
+	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _window[n+'equestAnimationFrame']; })[0] || function(callback) {
 		delay(callback, 33); // 30 fps as fallback
 	};
 	
@@ -108,7 +110,8 @@ define('minified', function() {
 	 * @configurable default
 	 * @doc no
 	 * @name Backward-Compatibility for IE8 and similar browsers
-	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8.
+	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8,
+	 * and the existence of cssText (which is used instead of the style attribute).
 	 */
 	/**
 	 * @const 
@@ -183,7 +186,7 @@ define('minified', function() {
 		return isType(s, 'string');
 	}
 	function isFunction(f) {
-		return isType(f, 'function');
+		return isType(f, 'function') && !f['item']; // item check as work-around webkit bug 14547
 	}
 	function isObject(f) {
 		return isType(f, 'object');
@@ -213,9 +216,9 @@ define('minified', function() {
 		});
 		return r;
 	}
-	function collect(obj, collectFunc, iterator) {
+	function collect(obj, collectFunc) {
 		var result = [];
-		(iterator||each)(obj, function (a, b) {
+		each(obj, function (a, b) {
 			if (isList(a = collectFunc(a, b))) // caution: extreme variable re-using of 'a'
 				each(a, function(rr) { result.push(rr); });
 			else if (a != null)
@@ -223,25 +226,32 @@ define('minified', function() {
 		});
 		return result;
 	}
-	function collectObj(obj, collectFunc) {
-		return collect(obj, collectFunc, eachObj);
+	function collectObj(obj, collectFunc) { // warning: 1:1 copy of collect(), with one diff... good for gzip..
+		var result = [];
+		eachObj(obj, function (a, b) {
+			if (isList(a = collectFunc(a, b))) // caution: extreme variable re-using of 'a'
+				each(a, function(rr) { result.push(rr); });
+			else if (a != null)
+				result.push(a);
+		});
+		return result;
 	}
 	function replace(s, regexp, sub) {
 		return toString(s).replace(regexp, sub||'');
 	}
 	function delay(f, delayMs) {
-		_this.setTimeout(f, delayMs||0);
+		_window.setTimeout(f, delayMs||0);
 	}
 	function extractNumber(v) {
-		return parseFloat(replace(v, /^[^\d-]/));
+		return parseFloat(replace(v, /^[^\d-]+/));
 	}
 	
 	function getNaturalHeight(elementList) {
-		var q = {$position: 'absolute', $visibility: 'hidden', $display: 'block', $height: null};
+		var q = {'$position': 'absolute', '$visibility': 'hidden', '$display': 'block', '$height': null};
 		var oldStyles = elementList['get'](q);
 		elementList['set'](q);
 		var h = elementList[0].offsetHeight;
-		elementList.set(oldStyles);
+		elementList['set'](oldStyles);
 		return h;
 	}
 	
@@ -259,7 +269,7 @@ define('minified', function() {
     
     function ready(handler) {
     	// @cond debug if (typeof handler != 'function') error("First argument must be a function");
-    	if (DOMREADY_HANDLER) // if DOM ready, call immediately
+    	if (DOMREADY_HANDLER)
 			DOMREADY_HANDLER.push(handler);
 		else
 			delay(handler);
@@ -293,7 +303,7 @@ define('minified', function() {
     	 *
     	 * @example Simple handler for an HTTP request. Handles only success and ignored errors.
     	 * <pre>
-    	 * $.request('get', '/weather.html')
+    	 * MINI.request('get', '/weather.html')
     	 *     .then(function(txt) {
     	 *        alert('Got response!');
     	 *     });
@@ -301,7 +311,7 @@ define('minified', function() {
     	 *
     	 * @example Including an error handler.
     	 * <pre>
-    	 * $.request('get', '/weather.html')
+    	 * MINI.request('get', '/weather.html')
     	 *     .then(function(txt) {
     	 *        alert('Got response!');
     	 *     }, function(err) {
@@ -311,12 +321,12 @@ define('minified', function() {
     	 *
     	 * @example Chained handler.
     	 * <pre>
-    	 * $.request('get', '/weather.do')
+    	 * MINI.request('get', '/weather.do')
     	 *     .then(function(txt) {
     	 *        showWeather(txt);
     	 *     }
     	 *     .then(function() {
-    	 *        return $.request('get', '/traffic.do');
+    	 *        return MINI.request('get', '/traffic.do');
     	 *     }
     	 *     .then(function(txt) {
     	 *        showTraffic(txt);
@@ -372,7 +382,7 @@ define('minified', function() {
     	 *
     	 * @example Simple handler for a HTTP request.
     	 * <pre>
-    	 * $.request('get', '/weather.html')
+    	 * MINI.request('get', '/weather.html')
     	 *     .always(function() {
     	 *        alert('Got response or error!');
     	 *     });
@@ -396,7 +406,7 @@ define('minified', function() {
     	 *
     	 * @example Simple handler for a HTTP request.
     	 * <pre>
-    	 * $.request('get', '/weather.html')
+    	 * MINI.request('get', '/weather.html')
     	 *     .error(function() {
     	 *        alert('Got error!');
     	 *     });
@@ -422,138 +432,9 @@ define('minified', function() {
     // @condend
 
     
-	/*$
-	 * @id dollar
-	 * @group SELECTORS
-	 * @requires dollarraw 
-	 * @dependency yes
-	 * @name $()
-	 * @syntax $(selector)
-	 * @syntax $(selector, context)
-	 * @syntax $(selector, context, childOnly)
-	 * @syntax $(list)
-	 * @syntax $(list, context)
-	 * @syntax $(list, context, childOnly)
-	 * @syntax $(node)
-	 * @syntax $(node, context)
-	 * @syntax $(node, context, childOnly)
-	 * @syntax $(domreadyFunction)
-	 * Creates a ##list#Minified list## of HTML nodes. 
-	 * The most common way to create the list is with a CSS-like selector. The function will then create a list containing all elements of the current HTML
-	 * document that fulfill the filter conditions. Alternatively you can also specify a list of nodes or a single node. Nested lists will automatically be flattened, and
-	 * Nulls will automatically be removed from the resulting list.
-	 * 
-	 * Additionally, you can specify a second argument to provide a context. The context limits the resulting list to include only those nodes 
-	 * that are descendants of the context nodes. The context can be either a selector, a list or a single HTML node, and will be 
-	 * processed like the first argument. A third arguments allows you to limit the list to 
-	 * only those elements that are direct children of the context nodes (so a child of a child would be filtered out).
-	 *
-	 * 
-	 * As a special shortcut, if you pass a function to <var>$()</var>, it will be registered using #ready#$.ready() to be executed 
-	 * when the DOM model is complete.
-	 *
-	 * @example A simple selector to find an element by id.
-	 * <pre>
-	 * var l1 = $('#myElementId');
-	 * </pre>
-	 * 	 
-	 * @example You can pass a reference to an DOM node to the function to receive a list containing only this node:
-	 * <pre>
-	 * var l2 = $(document.getElementById('myElementId')); 
-	 * </pre>
-	 *
-	 * @example Lists and arrays will be copied:
-	 * <pre>
-	 * var l2 = $([elementA, elementB, elementC]); 
-	 * </pre>
-	 * 	 
-	 * @example Lists will be automatically flattened and nulls removed. Thus this list <var>l3</var> has the same content as <var>l2</var>:
-	 * <pre>
-	 * var l3 = $([elementA, [elementB, null, elementC], null]); 
-	 * </pre>
-	 * 	 
-	 * @example This is a simple selector to find all elements with the given class.
-	 * <pre>
-	 * var l4 = $('.myClass');
-	 * </pre>
-	 * 	 
-	 * @example A selector to find all elements with the given name.
-	 * <pre>
-	 * var l5 = $('input'); // finds all input elements
-	 * </pre>
-	 * 	 
-	 * @example A selector to find all elements with the given name and class.
-	 * <pre>
-	 * var l6 = $('input.myRadio'); // finds all input elements wit
-	 * </pre>
-	 * 	 
-	 * @example A selector to find all elements that are descendants of the given element.
-	 * <pre>
-	 * var l7 = $('#myForm input'); // finds all input elements that are in the element with the id myForm
-	 * </pre>
-	 * 	 
-	 * @example A selector to find all elements that have either CSS class 'a' or class 'b':
-	 * <pre>
-	 * var l8 = $('.a, .b'); // finds all elements that have either the class a or class b
-	 * </pre>
-	 * 	 
-	 * @example A selector that finds all elements that are descendants of the element myDivision, are inside a .myForm class and are input elements:
-	 * <pre>
-	 * var l9 = $('#myDivision .myForm input'); 
-	 * </pre>
-	 * 	 
-	 * @example Using contexts to make it easier to specify ancestors:
-	 * <pre>
-	 * var l10 = $('.myRadio', '#formA, #formB, #formC');  // same as $('#formA .myRadio, #formB .myRadio, #formC .myRadio')
-	 * </pre>
-	 * 	 
-	 * @example Using one of the list functions, ##set(), on the list, and set the element's text color. '$' at the beginning of the property name sets a CSS value.
-	 * <pre>
-	 * $('#myElementId').set('$color', 'red');
-	 * </pre>
-	 *
-	 * @example Most list methods return the list you invoked them on, allowing you to chain them:
-	 * <pre>
-	 * $('#myForm .myRadio').addClass('uncheckedRadio')
-	 *                      .set('checked', true)
-	 *                      .on('click', function() {
-	 *                             $(this).set({@: 'uncheckedRadio');
-	 *                      });
-	 * </pre>
-	 * 
-	 * @example Using $() as a $.ready() shortcut:
-	 * <pre>
-	 * $(function() {
-	 *   // work with the DOM tree
-	 * });
-	 * </pre>
-	 * 
-	 * @param selector a simple, CSS-like selector for HTML elements. It supports '#id' (lookup by id), '.class' (lookup by class),
-	 *             'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
-	 *             You can also join two or more selectors by space to find elements which are descendants of the previous selectors.
-	 *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
-	 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
-	 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
-	 *             The selector "*" will return all elements.
-	 * @param list a list to copy. It can be an array, another Minified list, a DOM nodelist or anything else that has a <var>length</var> property and
-	 *             allows read access by index. A shallow copy of the list will be returned. Nulls will be automatically removed from the copy. Nested lists 
-	 *             will be flattened, so the result only contains nodes.
-	 * @param node a node to create a single-element list containing only the node. If the node argument is null, an empty list will be returned.
-	 * @param domreadyFunction a function to be registered using #ready#$.ready().
-	 * @param context optional an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection, using the same syntax variants as the
-	 *             first argument. If given, the returned list contains only descendants of the context nodes, all others will be filtered out. 
-	 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
-	 *             true, all descendants of the context will be included. 
-	 * @return the array-like ##list#Minified list## object containing the content specified by the selector. The returned object 
-	 *             is guaranteed to have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
-	 *             regular arrays (e.g. list[2] for the second elements). Beside that, Minified provides a large number of functions that work on the list.
-	 *             Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the first argument was a list, 
-	 *             the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. If you combined several selectors 
-	 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to form a single list. This list will, 
-	 *             not be in document order anymore. 
-	 */
-	function MINI(selector, context, childOnly) { 
+	function $(selector, context, childOnly) { 
 		// @condblock ready
+		// isList(selector) is no joke, older Webkit versions return a function for childNodes...
 		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context, childOnly));
 		// @condend
 		// @cond !ready return new M(dollarRaw(selector, context));
@@ -567,7 +448,7 @@ define('minified', function() {
 	 * @name Debugging Support
 	 */
 	function error(msg) {
-		if (_this.console) console.log(msg);
+		if (_window.console) console.log(msg);
 		throw Exception("Minified debug error: " + msg);
 	}
     // @cond debug MINI['debug'] = true;
@@ -635,7 +516,7 @@ define('minified', function() {
 		// @condend
 		
 		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(selector);
-		return filterElements(elements); // important: must return array!
+		return parent ? filterElements(elements) : elements;
 	};
 	
     
@@ -662,7 +543,9 @@ define('minified', function() {
 	 */	
     /** @constructor */
 	function M(array) {
-		PUSH.apply(this, array); // IMPORTANT: must be real array for backward compat
+		var len = this['length'] = array.length;
+		for (var i = 0; i < len; i++)
+			this[i] = array[i];
 	}
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -803,10 +686,10 @@ define('minified', function() {
       * @return a new ##list#list## containing only the items in the index range. 
       */ 
 	'sub': function(startIndex, endIndex) {
-		var l = this['length'];
-	    var s = (startIndex < 0 ? l+startIndex : startIndex);
-	    var e = endIndex == null ? l : (endIndex >= 0 ? endIndex : l+endIndex);
- 		return new M(filter(this, function(o, index) { 
+		var self = this;
+	    var s = (startIndex < 0 ? self['length']+startIndex : startIndex);
+	    var e = endIndex >= 0 ? endIndex : self['length'] + (endIndex || 0);
+ 		return new M(filter(self, function(o, index) { 
  			return index >= s && index < e; 
  		}));
  	},
@@ -844,8 +727,8 @@ define('minified', function() {
      *         it returns either the value returned by the callback or <var>undefined</var>.
      */ 
 	'find': function(findFunc) {
-		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 		var self = this, r;
+		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 		for (var i = 0; i < self.length; i++)
 			if ((r = f(self[i], i)) != null)
 				return r;
@@ -878,7 +761,7 @@ define('minified', function() {
 	/*$
 	 * @id remove
 	 * @group SELECTORS
-	 * @requires dollar each
+	 * @requires dollar
 	 * @configurable default
 	 * @name .remove()
 	 * @syntax remove()
@@ -947,6 +830,7 @@ define('minified', function() {
  	 *                 a CSS property such as '$marginTop'  that returns a value with a unit suffix, like "21px". <var>get()</var> will convert it into a number and return 21. If the returned value is not 
  	 *                 parsable as a number, <var>NaN</var> will be returned.
  	 * @return if a string was specified as parameter, <var>get()</var> returns the corresponding value. If a list or map was given, <var>get()</var> returns a new map with the names as keys and the values as values.
+ 	 *         Always returns undefined if the list is empty.
  	 */
     'get': function(spec, toNumber) {
     	var self = this, element = self[0];
@@ -955,36 +839,37 @@ define('minified', function() {
 			if (isString(spec)) {
 				var name = replace(spec, /^[$@]/);
 				var s;
-				var isHidden = /^\$\$/.test(spec) && (self.get('$visibility') == 'hidden' || self.get('$display') == 'none');
 				if (spec == '$')
 					s = element.className;
 				else if (spec == '$$') {
 					// @condblock ie8compatibility
 					 if (IS_PRE_IE9)
-						s = element.style.cssText;
+						s = element['style']['cssText'];
 					 else
 					// @condend
 						s = element.getAttribute('style');
 				}
+				else if (/\$\$/.test(spec) && (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')) {
+					s = 0;
+				}
 				else if (spec == '$$fade') {
-					s = isNaN(s = isHidden ? 0 :
+					s = isNaN(s = 
 					// @condblock ie8compatibility
-						  IS_PRE_IE9 ? extractNumber(self.get('$filter'))/100 :
+						  IS_PRE_IE9 ? extractNumber(element['style']['filter'])/100 :
 					// @condend
-						  extractNumber(self.get('$opacity')) 
+						  extractNumber(element['style']['opacity']) 
 						 ) ? 1 : s;
 				}
 				else if (spec == '$$slide') {
-					s = (isHidden ? 0 : element.offsetHeight) + 'px';
+					s = (element['offsetHeight']) + 'px';
 				}
 				else if (/^\$/.test(spec)) {
 					// @condblock ie8compatibility 
-					if (!_this.getComputedStyle)
-						s = element.currentStyle[name];
+					if (!_window.getComputedStyle)
+						s = (element.currentStyle||element['style'])[name];
 					else 
 					// @condend
-						s = _this.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
-					
+						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 				}
 				else if (/^@/.test(spec))
 					s = element.getAttribute(name);
@@ -992,18 +877,20 @@ define('minified', function() {
 					s = element[name];
 				return toNumber ? extractNumber(s) : s;
 			}
-			var r = {};
-			(isList(spec) ? each : eachObj)(spec, function(name) {
-				r[name] = self.get(name, toNumber);
-			});
-			return r;
+			else {
+				var r = {};
+				(isList(spec) ? each : eachObj)(spec, function(name) {
+					r[name] = self.get(name, toNumber);
+				});
+				return r;
+			}
 		}
 	},
 
 	/*$
 	 * @id set
 	 * @group SELECTORS
-	 * @requires dollar each get
+	 * @requires dollar get
 	 * @configurable default
 	 * @name .set()
 	 * @syntax $(selector).set(name, value)
@@ -1049,6 +936,11 @@ define('minified', function() {
 	 * @example Changing attributes:
 	 * <pre>
 	 * $('a.someLinks').set('@href', 'http://www.example.com/');
+	 * </pre>
+	 * 
+	 * @example Removing attributes:
+	 * <pre>
+	 * $('a.someLinks').set('@title', null);
 	 * </pre>
 	 * 
 	 * @example Changing styles:
@@ -1112,7 +1004,7 @@ define('minified', function() {
 	 * The function is called with with the old value as first argument and the index in the list as second.
 	 * The third value is the object being modified. Functions are not possible for virtual properties ('$$fade' and '$$slide'). For the CSS style names,
 	 * the old value given to the function is the old value of the className property containing the existing classes.
-	 * If value is null and name specified an attribute, the value will be ignored.
+	 * If value is null and name specified an attribute, the attribute will be removed.
 	 * If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefix with a '+' the class will be added,
 	 * with a '+' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.
 	 * @param properties a map containing names as keys and the values to set as map values. See above for the name syntax.
@@ -1121,7 +1013,13 @@ define('minified', function() {
 	 *                   Instead of a string, you can also specify a function(oldValue, index, obj) to modify the existing classes. 
 	 * @return the list
 	 */
-     'set': function (name, value, defaultFunction) {
+     'set': function (name, value) {
+    	 function setAttr(obj, n, v) {
+    		 if (v != null)  
+    			 obj.setAttribute(n, v);
+			 else
+				 obj.removeAttribute(n);
+    	 }
     	 var self = this, v;
  		 // @cond debug if (name == null) error("First argument must be set!");
     	 if (value !== undef) {
@@ -1129,109 +1027,62 @@ define('minified', function() {
  			
     		 // @condblock fadeslide
     		 if (name == '$$fade' || name == '$$slide') {
-    			 self.set({$visibility: (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', $display: 'block'})
+    			 self.set({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block'})
     			     .set((name == '$$fade')  ? (
     			 // @condblock ie8compatibility 
-    			    	  IS_PRE_IE9 ? {$filter: 'alpha(opacity = '+(100*v)+')', $zoom: 1} :
+    			    	  IS_PRE_IE9 ? {'$filter': 'alpha(opacity = '+(100*v)+')', '$zoom': 1} :
     			 // @condend
-    			    	  {$opacity: v})
+    			    	  {'$opacity': v})
     			        :
-    			        {$height: /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
-    			         $overflow: 'hidden'}
+    			        {'$height': /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
+    			         '$overflow': 'hidden'}
  					);
     		 }
     		 else
     			// @condend
     			 each(self, function(obj, c) {
-    				 var f = isFunction(value) ? value : defaultFunction;
     				 var nameClean = replace(name, /^[@$]/);
-    				 var className = obj.className || '';
+    				 var className = obj['className'] || '';
     				 var newObj = /^\$/.test(name) ? obj.style : obj;
-    				 var newValue = f ? f(MINI(obj).get(name), c, obj, value) : value;
+    				 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
     				 if (name == '$') {
-    					 each(newValue.split(/\s+/), function(clzz) {
-    						 var cName = replace(clzz, /^[+-]/);
-    						 var oldClassName = className;
-    						 className = replace(className, new RegExp(BACKSLASHB + cName + BACKSLASHB));
-    						 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
-    							 className += ' ' + cName;
-    					 });
-    					 obj.className = replace(className, /^\s+|\s+(?=\s|$)/g);
+    					 if (newValue != null) {
+    						 each(newValue.split(/\s+/), function(clzz) {
+    							 var cName = replace(clzz, /^[+-]/);
+    							 var oldClassName = className;
+    							 className = replace(className, new RegExp(BACKSLASHB + cName + BACKSLASHB));
+    							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
+    								 className += ' ' + cName;
+    						 });
+    						 obj['className'] = replace(className, /^\s+|\s+(?=\s|$)/g);
+    					 }
     				 }
    				 	 else if (name == '$$') {
 						// @condblock ie8compatibility 
 						if (IS_PRE_IE9)
-							newObj.cssText = newValue;
+							newObj['cssText'] = newValue;
 						else
 						// @condend
-							 obj.setAttribute('style', newValue);
+							setAttr(obj, 'style', newValue);
 					 }
     				 else if (!/^@/.test(name))
     					 newObj[nameClean] = newValue;
-    				 else if (newValue != null)  
-    					 newObj.setAttribute(nameClean, newValue);
+    				 else
+    					 setAttr(newObj, nameClean, newValue);
     			 });
     	 }
     	 else if (isString(name) || isFunction(name))
     		 self.set('$', name);
     	 else
-    		 eachObj(name, function(n,v) { self.set(n, v, defaultFunction); });
+    		 eachObj(name, function(n,v) { self.set(n, v); });
     	 return self;
      },
  	
- 	/*$
- 	 * @id append
- 	 * @group SELECTORS
- 	 * @requires set
- 	 * @configurable default
- 	 * @name .append()
- 	 * @syntax $(selector).append(name, value)
- 	 * @syntax $(selector).append(properties)
- 	 * Appends strings to properties or attributes of list items. <var>append()</var> works mostly like ##set() and supports the same syntax for property names, but instead of
- 	 * overwriting the old values, it reads the old value, converts it to a string and then appends the given value.
- 	 * 
- 	 * @example Add a link after each h2 headline:
- 	 * <pre>
- 	 * $('h2').append('outerHTML', '<a href="#toc">Table of Content</a>');
- 	 * </pre>
- 	 *
- 	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
- 	 *                     A dollar ('$') is used to select a CSS style. Also supports all other names schemas of ##set(). 
- 	 * @param value the value to append. It will be converted to a string before appending it.
- 	 * @param properties a map containing names as keys and the values to append as map values. See above for the syntax.
- 	 * @return the list
- 	 */
-	'append': function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return toString(oldValue) + newValue;});},
-
-	/*$
-	 * @id prepend
-	 * @group SELECTORS
-	 * @requires set
-	 * @configurable default
-	 * @name .prepend()
-	 * @syntax $(selector).prepend(name, value)
-	 * @syntax $(selector).prepend(properties)
-	 * Prepends strings to properties or attributes of list items. <var>prepend()</var> works mostly like ##set() and supports the same syntax for property names, but instead of
-	 * overwriting the old values, it reads the old value, converts it to a string and then prepends the given value.
-	 * 
-	 * @example Put a horizontal ruler in front of each h2 headline:
-	 * <pre>
-	 * $('h2').prepend('outerHTML', '<hr />');
-	 * </pre>
-	 *
-	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
-	 *                     A dollar ('$') is used to select a CSS style. Also supports all other names schemas of ##set(). 
-	 * @param value the value to prepend. It will be converted to a string before prepending it. 
-	 * @param properties a map containing names as keys and the values to prepend as map values. See above for the syntax.
-	 * @return the list
-	 */
-	'prepend': function (name, value) { return this.set(name, value, function(oldValue, idx, obj, newValue) { return newValue + toString(oldValue);});},
-
 	
 	/*$
 	 * @id add
 	 * @group ELEMENT
-	 * @requires dollar each
+	 * @requires dollar
 	 * @configurable default
 	 * @name .add()
 	 * @syntax $(selector).add(text)
@@ -1398,7 +1249,7 @@ define('minified', function() {
 	 * @return the current list
 	 */
 	'fill': function (children) {
-		return each(this, function(e) { MINI(e.childNodes)['remove'](); }).add(children);
+		return each(this, function(e) { $(e.childNodes)['remove'](); }).add(children);
 	},
 
 	/*$
@@ -1708,22 +1559,30 @@ define('minified', function() {
 	 */
 	'clone': function () {
 		return new M(collect(this, function(e) {
-			var attrs = {}, attrName, nodeType = isNode(e);
+			var nodeType = isNode(e);
 			if (nodeType == 1) {
-				each(e['attributes'], function(a) {
-					attrName = a['name'];
-					if (attrName != 'id') {
+				var attrs = {
 						// @condblock ie8compatibility
-							attrs[attrName == 'style' ? '$$' : (attrName  == 'class' ? '$' : ('@'+attrName))] =
+						'$': e['className'] || null,
+						'$$': IS_PRE_IE9 ? e['style']['cssText'] : e.getAttribute('style')
 						// @condend
-						// @cond !ie8compatibility attrs['@'+attrName] =
-								a['value'];
+				};
+				each(e['attributes'], function(a) {
+					var attrName = a['name'];
+					if (attrName != 'id'
+						// @condblock ie8compatibility
+						&& attrName != 'style'
+						&& attrName != 'class'
+						&& e.getAttribute(attrName)  // getAttribute for IE8
+						// @condend
+						) {
+						attrs['@'+attrName] = a['value'];
 					}
 				});
-				return MINI['EE'](e['tagName'], attrs, MINI(e['childNodes'])['clone']());
+				return MINI['EE'](e['tagName'], attrs, $(e['childNodes'])['clone']());
 			}
-			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)
-				return e['textContent'];
+			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
+				return e['data'];
 			else 
 				return null;
 		}));
@@ -1735,7 +1594,7 @@ define('minified', function() {
 	/*$
 	 * @id animate
 	 * @group ANIMATION
-	 * @requires loop dollar each set get
+	 * @requires loop dollar set get
 	 * @configurable default
 	 * @name .animate()
 	 * @syntax $(selector).animate(properties)
@@ -1748,7 +1607,7 @@ define('minified', function() {
 	 * number, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
 	 *
 	 * When you invoke the function, it will first read all old values from the object and extract their numbers and colors. These start values will be compared to 
-	 * the destination values that have been specified in the given properties. Then <var>animate()</var> will create a background task using ##loop#$.loop() that updates the 
+	 * the destination values that have been specified in the given properties. Then <var>animate()</var> will create a background task using ##loop#MINI.loop() that updates the 
 	 * specified properties in frequent intervals so that they transition to their destination values.
 	 *
 	 * The start values will be obtained using ##get(). It is recommended to set the start values using ##set() before you start the animation, even if this is not
@@ -1807,16 +1666,20 @@ define('minified', function() {
 	 * $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
 	 * </pre>
 	 *
-	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, and finally to 100/100.
+	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
+	 *          and finally moves to 100/100.
 	 * <pre>
 	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
 	 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
 	 *    .then(function() {
 	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
 	 *    }).then(function() {
+	 *    		 return MINI.wait(50);
+	 *    }).then(function() {
 	 *           div.animate({$left: '100px', $top: '100px'}, 400);
 	 *    });
 	 * });
+	 * </pre>
 	 * </pre>
 	 *
 	 *
@@ -1859,7 +1722,7 @@ define('minified', function() {
 		
 		// find start values
 		each(self, function(li) {
-			var p = {o:MINI(li), s:{}, e:{}}; 
+			var p = {o:$(li), e:{}}; 
 			eachObj(p.s = p.o.get(properties), function(name, start) {
 				var dest = properties[name];
 				if (name == '$$slide') 
@@ -1899,7 +1762,7 @@ define('minified', function() {
 								newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i), t)) + (i < 2 ? ',' : ')');
 						}
 						else 
-							newValue = replace(end, numRegExp, interpolate(extractNumber(start), extractNumber(end), t));
+							newValue = replace(end, numRegExp, toString(interpolate(extractNumber(start), extractNumber(end), t)));
 						isi.o.set(name, newValue);
 					});
 				});
@@ -1976,29 +1839,29 @@ define('minified', function() {
 		 *         If the argument is not boolean or the function is called without arguments, the function toggles between both states. 
 		 */
 		'toggle': function(state1, state2, durationMs, linearity) {
+			var self = this;
 			var animState = {};
 			var state = false, regexg = /\b(?=\w)/g;
-			var self = this;
 
 			return !state2 ?
-				self.toggle(replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
-				self.set(state1) && 
+				self['toggle'](replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
+				self['set'](state1) && 
 			    function(newState) {
 					if (newState === state) 
 						return;
-					state = isType(newState, 'boolean') ? newState : !state;
+					state = newState===true||newState===false ? newState : !state;
 	
 					if (durationMs) 
-						self.animate(state ? state2 : state1, animState.stop ? (animState.stop() || animState.time) : durationMs, linearity, animState);
+						self['animate'](state ? state2 : state1, animState['stop'] ? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
 					else
-						self.set(state ? state2 : state1); 
+						self['set'](state ? state2 : state1); 
 				};
 		},
 
 		/*$
 		 * @id on
 		 * @group EVENTS
-		 * @requires dollar each
+		 * @requires dollar
 		 * @configurable default
 		 * @name .on()
 		 * @syntax $(selector).on(name, handler)
@@ -2015,7 +1878,7 @@ define('minified', function() {
 		 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the event handler. When you pass arguments, the
 		 * handler's return value is always ignored and the event will always be cancelled.
 		 * 
-		 * Event handlers can be unregistered using #off#$.off().
+		 * Event handlers can be unregistered using #off#MINI.off().
 		 * 
 		 * @example Adds a handler to all divs which paints the div background color to red when clicked. 
 		 * <pre>
@@ -2054,7 +1917,7 @@ define('minified', function() {
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
 			return each(this, function(el, index) {
 				var h = function(event) {
-					var e = event || _this.event;
+					var e = event || _window.event;
 					// @cond debug try {
 					if (!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) {
 						// @condblock ie8compatibility 
@@ -2080,41 +1943,12 @@ define('minified', function() {
 					el.attachEvent('on'+name, h);  // IE < 9 version
 				// @condend
 			});
-		},
-
-	
-	/*$
-	 * @id offset
-	 * @group SELECTORS
-	 * @requires dollar
-	 * @configurable default
-	 * @name .offset()
-	 * @syntax $(selector).offset()
-	 * Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, 
-	 * with 0/0 being the upper left corner, independent of the user's current view (which depends on the user's current scroll position and zoom level).
-	 *
-	 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
-	 * <pre>
-	 * var pos = $('#myElement').offset();
-	 * $('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.x + ' top=' + pos.y);
-	 * </pre>
-	 *
-	 * @param element the element whose coordinates should be determined
-	 * @return an object containing pixel coordinates in two properties 'x' and 'y'
-	 */
-	'offset': function() {
-		var elem = this[0];
-		var dest = {'x': 0, 'y': 0};
-		while (elem) {
-			dest.x += elem.offsetLeft;
-			dest.y += elem.offsetTop;
-			elem = elem.offsetParent;
 		}
-		return dest;
-     }
+
  	/*$
  	 * @stop
  	 */
+		// @cond !on dummy:null
 	}, function(n, v) {M.prototype[n]=v;});
      
 
@@ -2122,21 +1956,153 @@ define('minified', function() {
 
 	eachObj({
 
+		/*$
+		 * @id dollar
+		 * @group SELECTORS
+		 * @requires dollarraw 
+		 * @dependency yes
+		 * @name $()
+		 * @syntax $(selector)
+		 * @syntax $(selector, context)
+		 * @syntax $(selector, context, childOnly)
+		 * @syntax $(list)
+		 * @syntax $(list, context)
+		 * @syntax $(list, context, childOnly)
+		 * @syntax $(node)
+		 * @syntax $(node, context)
+		 * @syntax $(node, context, childOnly)
+		 * @syntax $(domreadyFunction)
+		 * Creates a ##list#Minified list## of HTML nodes. 
+		 * The most common way to create the list is with a CSS-like selector. The function will then create a list containing all elements of the current HTML
+		 * document that fulfill the filter conditions. Alternatively you can also specify a list of nodes or a single node. Nested lists will automatically be flattened, and
+		 * Nulls will automatically be removed from the resulting list.
+		 * 
+		 * Additionally, you can specify a second argument to provide a context. The context limits the resulting list to include only those nodes 
+		 * that are descendants of the context nodes. The context can be either a selector, a list or a single HTML node, and will be 
+		 * processed like the first argument. A third arguments allows you to limit the list to 
+		 * only those elements that are direct children of the context nodes (so a child of a child would be filtered out).
+		 *
+		 * 
+		 * As a special shortcut, if you pass a function to <var>$()</var>, it will be registered using #ready#MINI.ready() to be executed 
+		 * when the DOM model is complete.
+		 *
+		 * @example A simple selector to find an element by id.
+		 * <pre>
+		 * var l1 = $('#myElementId');
+		 * </pre>
+		 * 	 
+		 * @example You can pass a reference to an DOM node to the function to receive a list containing only this node:
+		 * <pre>
+		 * var l2 = $(document.getElementById('myElementId')); 
+		 * </pre>
+		 *
+		 * @example Lists and arrays will be copied:
+		 * <pre>
+		 * var l2 = $([elementA, elementB, elementC]); 
+		 * </pre>
+		 * 	 
+		 * @example Lists will be automatically flattened and nulls removed. Thus this list <var>l3</var> has the same content as <var>l2</var>:
+		 * <pre>
+		 * var l3 = $([elementA, [elementB, null, elementC], null]); 
+		 * </pre>
+		 * 	 
+		 * @example This is a simple selector to find all elements with the given class.
+		 * <pre>
+		 * var l4 = $('.myClass');
+		 * </pre>
+		 * 	 
+		 * @example A selector to find all elements with the given name.
+		 * <pre>
+		 * var l5 = $('input'); // finds all input elements
+		 * </pre>
+		 * 	 
+		 * @example A selector to find all elements with the given name and class.
+		 * <pre>
+		 * var l6 = $('input.myRadio'); // finds all input elements wit
+		 * </pre>
+		 * 	 
+		 * @example A selector to find all elements that are descendants of the given element.
+		 * <pre>
+		 * var l7 = $('#myForm input'); // finds all input elements that are in the element with the id myForm
+		 * </pre>
+		 * 	 
+		 * @example A selector to find all elements that have either CSS class 'a' or class 'b':
+		 * <pre>
+		 * var l8 = $('.a, .b'); // finds all elements that have either the class a or class b
+		 * </pre>
+		 * 	 
+		 * @example A selector that finds all elements that are descendants of the element myDivision, are inside a .myForm class and are input elements:
+		 * <pre>
+		 * var l9 = $('#myDivision .myForm input'); 
+		 * </pre>
+		 * 	 
+		 * @example Using contexts to make it easier to specify ancestors:
+		 * <pre>
+		 * var l10 = $('.myRadio', '#formA, #formB, #formC');  // same as $('#formA .myRadio, #formB .myRadio, #formC .myRadio')
+		 * </pre>
+		 * 	 
+		 * @example Using one of the list functions, ##set(), on the list, and set the element's text color. '$' at the beginning of the property name sets a CSS value.
+		 * <pre>
+		 * $('#myElementId').set('$color', 'red');
+		 * </pre>
+		 *
+		 * @example Most list methods return the list you invoked them on, allowing you to chain them:
+		 * <pre>
+		 * $('#myForm .myRadio').addClass('uncheckedRadio')
+		 *                      .set('checked', true)
+		 *                      .on('click', function() {
+		 *                             $(this).set({@: 'uncheckedRadio');
+		 *                      });
+		 * </pre>
+		 * 
+		 * @example Using $() as a MINI.ready() shortcut:
+		 * <pre>
+		 * $(function() {
+		 *   // work with the DOM tree
+		 * });
+		 * </pre>
+		 * 
+		 * @param selector a simple, CSS-like selector for HTML elements. It supports '#id' (lookup by id), '.class' (lookup by class),
+		 *             'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
+		 *             You can also join two or more selectors by space to find elements which are descendants of the previous selectors.
+		 *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
+		 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
+		 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
+		 *             The selector "*" will return all elements.
+		 * @param list a list to copy. It can be an array, another Minified list, a DOM nodelist or anything else that has a <var>length</var> property and
+		 *             allows read access by index. A shallow copy of the list will be returned. Nulls will be automatically removed from the copy. Nested lists 
+		 *             will be flattened, so the result only contains nodes.
+		 * @param node a node to create a single-element list containing only the node. If the node argument is null, an empty list will be returned.
+		 * @param domreadyFunction a function to be registered using #ready#MINI.ready().
+		 * @param context optional an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection, using the same syntax variants as the
+		 *             first argument. If given, the returned list contains only descendants of the context nodes, all others will be filtered out. 
+		 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
+		 *             true, all descendants of the context will be included. 
+		 * @return the array-like ##list#Minified list## object containing the content specified by the selector. The returned object 
+		 *             is guaranteed to have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
+		 *             regular arrays (e.g. list[2] for the second elements). Beside that, Minified provides a large number of functions that work on the list.
+		 *             Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the first argument was a list, 
+		 *             the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. If you combined several selectors 
+		 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to form a single list. This list will, 
+		 *             not be in document order anymore. 
+		 */
+		'$': $,
+		
     /*$
 	 * @id dollardollar
 	 * @group SELECTORS
 	 * @requires dollarraw
 	 * @configurable default
 	 * @name $$()
-	 * @syntax $.$$(selector)
-	 * @shortcut $$() - It is recommended that you assign $.$$ to a variable $.
+	 * @syntax MINI.$$(selector)
+	 * @shortcut $$() - It is recommended that you assign MINI.$$ to a variable $$.
 	 * Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found. 
 	 * <var>$$</var> allows you to easily access an element directly. It is the equivalent to writing "$(selector)[0]".
 	 *
 	 * Please note that the function <var>$$</var> will not be automatically exported by Minified. You should always import it
 	 * using the recommended import statement:
 	 * <pre>
-	 * var $ = require('minified'), $$ = $.$$, EE = $.EE;
+	 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 	 * </pre>
 	 * 
 	 * @example Select the checkbox 'myCheckbox':
@@ -2156,15 +2122,15 @@ define('minified', function() {
 	/*$
 	 * @id ee
 	 * @group ELEMENT
-	 * @requires dollardollar set
+	 * @requires dollar set add
 	 * @configurable default
 	 * @name EE()
-	 * @syntax $.EE(elementName)
-	 * @syntax $.EE(elementName, attributes)
-	 * @syntax $.EE(elementName, children)
-	 * @syntax $.EE(elementName, attributes, children)
-	 * @syntax $.EE(elementName, attributes, children, onCreate)
-	 * @shortcut EE() - It is recommended that you assign $.EE to a variable EE.
+	 * @syntax MINI.EE(elementName)
+	 * @syntax MINI.EE(elementName, attributes)
+	 * @syntax MINI.EE(elementName, children)
+	 * @syntax MINI.EE(elementName, attributes, children)
+	 * @syntax MINI.EE(elementName, attributes, children, onCreate)
+	 * @shortcut EE() - It is recommended that you assign MINI.EE to a variable EE.
 	 * Creates a new Element Factory. An Element Factory is a function without arguments that returns a ##list#Minified list##
 	 * containing a newly created DOM element, optionally with attributes and children.
 	 * Typically it will be used to insert elements into the DOM tree using add() or a similar function. 
@@ -2174,7 +2140,7 @@ define('minified', function() {
 	 * Please note that the function <var>EE</var> will not be automatically exported by Minified. You should always import it
 	 * using the recommended import statement:
 	 * <pre>
-	 * var $ = require('minified'), $$ = $.$$, EE = $.EE;
+	 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 	 * </pre>
 	 * 
 	 * @example Creating a simple factory for a &lt;span> element with some text:
@@ -2261,7 +2227,7 @@ define('minified', function() {
 	
 		return function() {
 			var nu = _document.documentElement.namespaceURI; // to check whether doc is XHTML
-			var list = MINI(nu ? _document.createElementNS(nu, elementName) : _document.createElement(elementName));
+			var list = $(nu ? _document.createElementNS(nu, elementName) : _document.createElement(elementName));
 			(isList(attributes) || !isObject(attributes)) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 			if (onCreate)
 				onCreate(list);
@@ -2275,20 +2241,20 @@ define('minified', function() {
 	* @group REQUEST
 	* @requires 
 	* @configurable default
-	* @name $.request()
-	* @syntax $.request(method, url)
-	* @syntax $.request(method, url, data)
-	* @syntax $.request(method, url, data, onSuccess)
-	* @syntax $.request(method, url, data, onSuccess, onFailure)
-	* @syntax $.request(method, url, data, onSuccess, onFailure, headers)
-	* @syntax $.request(method, url, data, onSuccess, onFailure, headers, username, password)
+	* @name MINI.request()
+	* @syntax MINI.request(method, url)
+	* @syntax MINI.request(method, url, data)
+	* @syntax MINI.request(method, url, data, onSuccess)
+	* @syntax MINI.request(method, url, data, onSuccess, onFailure)
+	* @syntax MINI.request(method, url, data, onSuccess, onFailure, headers)
+	* @syntax MINI.request(method, url, data, onSuccess, onFailure, headers, username, password)
 	* Initiates a HTTP request to the given URL, using XMLHttpRequest. It returns a ##promise#Promise## object that allows you to obtain the result.
 	* 
 	* @example Invoke a REST web service and parse the resulting document using JSON:
 	* <pre>
-	* $.request('get', 'http://service.example.com/weather', {zipcode: 90210})
+	* MINI.request('get', 'http://service.example.com/weather', {zipcode: 90210})
 	*    .then(function(txt) {
-	*         var json = $.parseJSON(txt);
+	*         var json = MINI.parseJSON(txt);
 	*         $('#weatherResult').fill('Today's forecast is is: ' + json.today.forecast);
 	*    })
 	*    .error(function(status, statusText, responseText) {
@@ -2309,7 +2275,7 @@ define('minified', function() {
 	*   $('#registrationResult').fill('Registration failed');
 	* }
 	*
-	* $.request('post', 'http://service.example.com/directory', $.toJSON(myRequest))
+	* MINI.request('post', 'http://service.example.com/directory', MINI.toJSON(myRequest))
 	*     .then(function(txt) {
 	*        if (txt == 'OK')
 	*             $('#registrationResult').fill('Registration succeeded');
@@ -2347,7 +2313,7 @@ define('minified', function() {
 		var xhr, body = data, callbackCalled = 0, prom = promise();
 		try {
 			//@condblock ie6compatibility
-			xhr = _this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
+			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			//@condend
 			// @cond !ie6compatibility xhr = new XMLHttpRequest();
 			if (data != null) {
@@ -2406,8 +2372,8 @@ define('minified', function() {
     * @group JSON
     * @requires ucode 
     * @configurable default
-    * @name $.toJSON()
-    * @syntax $.toJSON(value)
+    * @name MINI.toJSON()
+    * @syntax MINI.toJSON(value)
     * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, boolean or null.
    	* If you build Minified without Internet Explorer compatibility, this is just an alias for <var>JSON.stringify</var>.
 	*
@@ -2425,7 +2391,7 @@ define('minified', function() {
     * @example Convert an object into a JSON object:
     * <pre>
     * var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
-    * var jsonString = $.toJSON(myObj);
+    * var jsonString = MINI.toJSON(myObj);
     * </pre>
     * 
     * @param value the value (map-like object, array, string, number, boolean or null)
@@ -2444,15 +2410,15 @@ define('minified', function() {
 		return toString(value);
 	},
     // @condend
-    // @cond !ie7compatibility 'toJSON': _this.JSON && JSON.stringify,
+    // @cond !ie7compatibility 'toJSON': _window.JSON && JSON.stringify,
     
 	/*$
 	* @id parsejson
 	* @group JSON
 	* @requires ucode
 	* @configurable default
-	* @name $.parseJSON()
-	* @syntax $.parseJSON(text)
+	* @name MINI.parseJSON()
+	* @syntax MINI.parseJSON(text)
 	* Parses a string containing JSON and returns the de-serialized object.
 	* If <var>JSON.parse</var> is defined, which it is in pretty all browsers except Internet Explorer 7 and earlier, it will be used. This is mainly to
 	* prevent possible security problems caused by the use of <var>eval</var> in the implementation. Only in browsers without
@@ -2463,14 +2429,14 @@ define('minified', function() {
 	* @example Parsing a JSON string:
 	* <pre>
 	* var jsonString = "{name: 'Fruits', roles: ['apple', 'banana', 'orange']}";
-	* var myObj = $.parseJSON(jsonString);
+	* var myObj = MINI.parseJSON(jsonString);
 	* </pre>
 	*
 	* @param text the JSON string
 	* @return the resulting JavaScript object. <var>Undefined</var> if not valid.
 	*/
     // @condblock ie7compatibility
-    'parseJSON': _this.JSON ? _this.JSON.parse : function (text) {
+    'parseJSON': _window.JSON ? _window.JSON.parse : function (text) {
     	var t = replace(text, /[\x00\xad\u0600-\uffff]/g, ucode); // encode unsafe characters
         if (/^[[\],:{}\s]*$/                  // test that, after getting rid of literals, only allowed characters can be found
 				.test(replace(replace(t , /\\["\\\/bfnrtu]/g),             // remove all escapes
@@ -2481,21 +2447,23 @@ define('minified', function() {
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     },
     // @condend
-    // @cond !ie7compatibility 'parseJSON': _this.JSON && JSON.parse,
+    // @cond !ie7compatibility 'parseJSON': _window.JSON && JSON.parse,
     
 	/*$
     * @id ready
     * @group EVENTS
     * @requires ready_vars ready_init
     * @configurable default
-    * @name $.ready()
-    * @syntax $.ready(handler)
+    * @name MINI.ready()
+    * @syntax MINI.ready(handler)
     * Registers a handler to be called as soon as the HTML has been fully loaded. Does not necessarily wait images and other elements, only the main
     * HTML document needs to be complete. On older browsers, it is the same as 'window.onload'. 
+    * 
+    * If you call ready() after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.
     *
     * @example Registers a handler that sets some text in an element:
     * <pre>
-    * $.ready(function() {
+    * MINI.ready(function() {
     *   $$('#someElement').innerHTML = 'ready() called';
     * });
     * </pre>
@@ -2509,25 +2477,25 @@ define('minified', function() {
      * @id setcookie
      * @group COOKIE
      * @configurable default
-     * @name $.setCookie()
-     * @syntax $.setCookie(name, value)
-     * @syntax $.setCookie(name, value, dateOrDays)
-     * @syntax $.setCookie(name, value, dateOrDays, path)
-     * @syntax $.setCookie(name, value, dateOrDays, path, domain)
+     * @name MINI.setCookie()
+     * @syntax MINI.setCookie(name, value)
+     * @syntax MINI.setCookie(name, value, dateOrDays)
+     * @syntax MINI.setCookie(name, value, dateOrDays, path)
+     * @syntax MINI.setCookie(name, value, dateOrDays, path, domain)
      * Creates, updates or deletes a cookie. If there is an an existing cookie
      * of the same name, will be overwritten with the new value and settings. 
      *
      * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
      * <pre>
-     * var visits = $.getCookie('numberOfVisits');
-     * $.setCookie('numberOfVisits', 
+     * var visits = MINI.getCookie('numberOfVisits');
+     * MINI.setCookie('numberOfVisits', 
      *                      visits ? (parseInt(visits) + 1) : 1,         // if cookie not set, start with 1
      *                      365);                                              // store for 365 days
      * </pre>
      * 
      * @example Deletes the cookie 'numberOfVisits':
      * <pre>
-     * $.setCookie('numberOfVisits', '', -1);
+     * MINI.setCookie('numberOfVisits', '', -1);
      * </pre>
      * 
      * @param name the name of the cookie. This should be ideally an alphanumeric name, as it will not be escaped by Minified and this
@@ -2560,14 +2528,14 @@ define('minified', function() {
      * @group COOKIE
      * @requires
      * @configurable default
-     * @name $.getCookie()
-     * @syntax $.getCookie(name)
-     * @syntax $.getCookie(name, dontUnescape)
+     * @name MINI.getCookie()
+     * @syntax MINI.getCookie(name)
+     * @syntax MINI.getCookie(name, dontUnescape)
      * Tries to find the cookie with the given name and returns it.
      *
      * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
      * <pre>
-     * var visits = $.getCookie('numberOfVisits');
+     * var visits = MINI.getCookie('numberOfVisits');
      * if (!visits)    // check whether cookie set. Null if not
      *     $('#myCounter').set('innerHML', 'Your first visit.');
      * else
@@ -2592,8 +2560,8 @@ define('minified', function() {
 	* @group ANIMATION
 	* @requires animation_vars 
 	* @configurable default
-	* @name $.loop()
-	* @syntax $.loop(paintCallback)
+	* @name MINI.loop()
+	* @syntax MINI.loop(paintCallback)
 	* Runs an animation loop. The given callback method will be invoked repeatedly to create a new animation frame.
 	* In modern browsers, requestAnimationFrame will be used to invoke the callback every time the browser is ready for a new 
 	* animation frame. The exact frequency is determined by the browser and may vary depending on factors such as the time needed to 
@@ -2601,7 +2569,7 @@ define('minified', function() {
 	* In older browsers, the callback function will be invoked approximately every 33 milliseconds.
 	* 
 	* An animation loop runs indefinitely. To stop it, you have two options:
-	* <ul><li><var>$.loop()</var> returns a <var>stop()</var> function. If you invoke it, the animation loops ends</li>
+	* <ul><li><var>MINI.loop()</var> returns a <var>stop()</var> function. If you invoke it, the animation loops ends</li>
 	* <li>The animation callback receives the same <var>stop()</var> function as second argument, so the callback can end the animation itself</li>
 	* </ul>
 	*
@@ -2611,7 +2579,7 @@ define('minified', function() {
 	*   var rotationsPerMs = 1000;                           // one rotation per second
 	*   var radius = 100;
 	*   var d = 3000;                                        // duration in ms
-	*   $.loop(function(t, stopFunc) {
+	*   MINI.loop(function(t, stopFunc) {
 	*     if (t > d) {                                       // time is up: call stopFunc()!
 	*       stopFunc();
 	*       return;
@@ -2650,10 +2618,10 @@ define('minified', function() {
     /*$
 	 * @id off
 	 * @group EVENTS
-	 * @requires dollar on each
+	 * @requires on
 	 * @configurable default
-	 * @name $.off()
-	 * @syntax $.off(handler)
+	 * @name MINI.off()
+	 * @syntax MINI.off(handler)
 	 * Removes the given event handler. The call will be ignored if the given handler has not registered using ##on(). If the handler has been registered
 	 * for more than one element or event, it will be removed from all instances.
 	 * 
@@ -2665,7 +2633,7 @@ define('minified', function() {
 	 * $('#myElement').on('click', myEventHandler);     // add event handler
 	 *
 	 * window.setInterval(function() {                      // after 5s, remove event handler
-	 *    $.off(myEventHandler);
+	 *    MINI.off(myEventHandler);
 	 * }, 5000);
 	 * </pre>
 	 * 
@@ -2685,12 +2653,52 @@ define('minified', function() {
 			// @condend
 		});
 		handler['M'] = null;
+	},
+	
+	/*$
+	 * @id wait
+	 * @group ANIMATION
+	 * @configurable default
+	 * @requires
+	 * @name MINI.wait()
+	 * @syntax MINI.wait()
+	 * @syntax MINI.wait(durationMs)
+	 *
+	 * Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
+	 * because it allows you to chain delays into your animation chain.
+	 *
+	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
+	 *          and finally moves to 100/100.
+	 * <pre>
+	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+	 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
+	 *    .then(function() {
+	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
+	 *    }).then(function() {
+	 *    		 return MINI.wait(50);
+	 *    }).then(function() {
+	 *           div.animate({$left: '100px', $top: '100px'}, 400);
+	 *    });
+	 * });
+	 * </pre>
+	 *
+	 *
+	 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
+	 *                   from the event loop.
+	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
+	 *         durationMs parameter as given to <var>wait()</var>.
+	 */
+	'wait': function(durationMs) {
+		var p = promise();
+		delay(function() {p(true, [durationMs]);}, durationMs);
+		return p;
 	}
 	
  	/*$
  	 * @stop
  	 */
-
+	// @cond !wait dummy:null
+	
 	}, function(n, v) {MINI[n]=v;});
 
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2700,7 +2708,7 @@ define('minified', function() {
 	 * @dependency
      */
     // @condblock ie8compatibility
-    _this.onload = triggerDomReady;
+    _window.onload = triggerDomReady;
 
     if (_document.addEventListener)
     // @condend
@@ -2708,7 +2716,7 @@ define('minified', function() {
 	/*$
 	 @stop
 	 */
-	return {'$':MINI};
+	return MINI;
 });
 
 /*$
@@ -2744,8 +2752,8 @@ define('minified', function() {
  * @id promise
  * @name Promise
  * 
- * <i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using #request#$.request() or
- * ##animate(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
+ * <i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using #request#MINI.request(),
+ * ##animate() or #wait#MINI.wait(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
  * 
  * Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
  * be able to interoperate with most other Promises implementations.
@@ -2761,7 +2769,7 @@ define('minified', function() {
  * 
  * This example shows you how to use <var>then()</var>:
  * <pre>
- * $.request('get', 'http://example.com/weather?zip=90210')
+ * MINI.request('get', 'http://example.com/weather?zip=90210')
  *  .then(function success(result) {
  *      alert('The weather is ' + result);
  *  }, function error(exception) {
@@ -2772,7 +2780,7 @@ define('minified', function() {
  * What makes Promises so special is that ##then() itself returns a new Promise, which is based on the Promise <var>then()</var> was called on, but can be
  * modified by the outcome of callbacks. Both arguments to <var>then()</var> are optional, and you can also write the code like this:
  * <pre>
- * $.request('get', 'http://example.com/weather?zip=90210')
+ * MINI.request('get', 'http://example.com/weather?zip=90210')
  *  .then(function success(result) {
  *      alert('The weather is ' + result);
  *  })
@@ -2790,7 +2798,7 @@ define('minified', function() {
  * by using ##error(), which is not part of Promises/A+, but a simple extension by Minified. It just registers the failure callback without
  * forcing you to specify <var>null</var> as first argument: 
  * <pre>
- * $.request('get', 'http://example.com/weather?zip=90210')
+ * MINI.request('get', 'http://example.com/weather?zip=90210')
  *  .then(function success(result) {
  *      alert('The weather is ' + result);
  *  })
@@ -2804,9 +2812,9 @@ define('minified', function() {
  * the new Promise will assume the state of the returned Promise. You can use the latter to create chains of asynchronous operations,
  * but you still need only a single error handler for all of them and you do not need to nest functions to achieve this:
  * <pre>
- * $.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
+ * MINI.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
  *  .then(function(resultZip) {
- *      return $.request('get', 'http://example.com/weather', {zip: resultZip});
+ *      return MINI.request('get', 'http://example.com/weather', {zip: resultZip});
  *  })
  *  .then(function(resultWeather) {
  *      alert('The weather in Beverly Hills is ' + resultWeather);
@@ -2821,7 +2829,7 @@ define('minified', function() {
  * especially when you define the handler function inline. Therefore Minified comes with a second small extension, ##always():
  * 
  * <pre>
- * $.request('post', 'http://example.com/pageHit', {pageId: 12345})
+ * MINI.request('post', 'http://example.com/pageHit', {pageId: 12345})
  *  .always(function() {   // always(callback) is equivalent to then(callback, callback)
  *      pageCountDone(); 
  *  });

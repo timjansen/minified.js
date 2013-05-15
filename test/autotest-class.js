@@ -1,12 +1,12 @@
 window.miniTests.push.apply(window.miniTests, [
   	{
-		name:'MINI().hasClass()',
+		name:'$().hasClass()',
 		exec: function() {
 			var s1, s3;
 			$('#container2').add(s1 = EE('div', {'className': 'a b c d e'}))
 					.add(EE('div', {'className': ''}, []))
 					.add(s3 = EE('div', {'className': 'a d f'}, []));
-			var m = MINI('#container2 div');
+			var m = $('#container2 div');
 			check(m.hasClass('a'), s1[0], true);
 			check(m.hasClass('b'), s1[0], true);
 			check(m.hasClass('c'), s1[0], true);
@@ -17,10 +17,10 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().set("$", "-")',
+		name:'$().set("$", "-")',
 		exec: function() {
 			var s1 = EE('div', {'className': 'a b c d e'})()[0];
-			var m = MINI(s1);
+			var m = $(s1);
 			m.set('$', '-x');
 			check(s1.className, 'a b c d e');
 			m.set('$', '-a');
@@ -38,11 +38,11 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().set("$", "+")',
+		name:'$().set("$", "+")',
 		exec: function() {
 			var s1 = EE('div')()[0];
 			var s2 = EE('div', {'className':''})()[0];
-			var m = MINI([s1, s2]);
+			var m = $([s1, s2]);
 			m.set('$', '+a');
 			check(s1.className, 'a');
 			check(s2.className, 'a');
@@ -64,11 +64,11 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().set("$", "class")',
+		name:'$().set("$", "class")',
 		exec: function() {
 			var s1 = EE('div', {'className': 'a b c'})()[0];
 			var s2 = EE('div')()[0];
-			var m = MINI([s1, s2]);
+			var m = $([s1, s2]);
 			m.set('$', 'a');
 			check(s1.className, 'b c');
 			check(s2.className, 'a');
@@ -87,11 +87,11 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().set("$", mix)',
+		name:'$().set("$", mix)',
 		exec: function() {
 			var s1 = EE('div', {'className': 'a b c'})()[0];
 			var s2 = EE('div')()[0];
-			var m = MINI([s1, s2]);
+			var m = $([s1, s2]);
 			m.set('$', 'a b c');
 			check(s1.className, '');
 			check(s2.className, 'a b c');

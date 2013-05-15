@@ -12,11 +12,11 @@
 		.green {color: green !important;}
 	</style> 
 	
-	<script type="text/javascript" src="../minified-src.js"></script>
+	<script type="text/javascript" src="../minified-web.js"></script>
 	<script type="text/javascript">
-	var $ = require('minified').$, $$ = $.$$, EE = $.EE;
+	var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 
-	$.ready(function() {
+	$(function() {
 		$('.styleCheckbox').on('change', function(e) {
 			var className = {dottedCheckbox:'dotted', redCheckbox: 'red', greenCheckbox: 'green'}[this.id];
 
