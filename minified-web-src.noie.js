@@ -422,7 +422,7 @@ define('minified', function() {
 		var elements, regexpFilter, useGEbC, className, elementName, reg;
 
 		if (context && (context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
-			return collect(context, function(ci) { return dollarRaw(selector, ci);});
+			return collect(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
 		parent = context && context[0]; // note that context may have changed in the previous two lines!! you can't move this line
 
 		if (!isString(selector))

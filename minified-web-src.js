@@ -484,7 +484,7 @@ define('minified', function() {
 		var elements, regexpFilter, useGEbC, className, elementName, reg;
 
 		if (context && (context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
-			return collect(context, function(ci) { return dollarRaw(selector, ci);});
+			return collect(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
 		parent = context && context[0]; // note that context may have changed in the previous two lines!! you can't move this line
 		
 		if (!isString(selector))
@@ -492,10 +492,10 @@ define('minified', function() {
 
 		// @condblock ie7compatibility
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
-			return collect(subSelectors, function(ssi) { return dollarRaw(ssi, parent);});
+			return collect(subSelectors, function(ssi) { return dollarRaw(ssi, parent, childOnly);});
 
 		if (steps = (/(\S+)\s+(.+)$/.exec(selector)))
-			return dollarRaw(steps[2], dollarRaw(steps[1], parent));
+			return dollarRaw(steps[2], dollarRaw(steps[1], parent), childOnly);
 
 		if (selector != (subSelectors = replace(selector, /^#/)))
 			return filterElements([_document.getElementById(subSelectors)]); 
@@ -2644,7 +2644,7 @@ define('minified', function() {
 		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
 	   	each(handler['M'], function(h) {	
 			// @condblock ie8compatibility 
-			if (h['e'].addEventListener)
+			if (h['e'].removeEventListener)
 				// @condend
 				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
 			// @condblock ie8compatibility 
