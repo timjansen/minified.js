@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page:page xmlns:page="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
+  <page:title>How to... Common Minified Tasks</page:title>
+  <page:section>docs</page:section>
+  <page:externalCss>../css/doc.css</page:externalCss>
+  <page:main><![CDATA[<div>
+  <h1>How to... Common Minified Tasks</h1>
+
+This document shows you how to do common tasks with Minified.
+
+<h2><a name="select">Work with Selectors and Lists</a></h2>
+<h3><a name="select_children">Find Elements</a></h3>
+<p>
+Creating a list containing only the element with the id 'a':
+<pre>var l = $('#a');</pre>
+Creating a list containing only the element with the class 'b':
+<pre>var l = $('.a');</pre>
+All other CSS1 selectors are also supported. In builds without IE7 support, all selectors supported by the browser are possible. 
+</p>
+<p>
+API: <a href="/reference/dollar.html">$()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Vmr6z/">Selector</a>
+</p>
+
+<h3><a name="select_children">Find All Child Elements</a></h3>
+<p>
+Finding all child elements of the element '#parent':
+<pre>var l = $('*', '#parent', true);</pre>
+The first argument specifies that you want all elements. The second is the context, which limits matches to descendants of '#parent'.
+The third states that you want only direct children of the context, instead of getting all descendants.
+</p>
+<p>
+API: <a href="/reference/dollar.html">$()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/6BHAt/">Selector</a>
+</p>
+
+
+<h3><a name="select_children">Find Child Nodes</a></h3>
+<p>
+Finding all child nodes of the element '#parent':
+<pre>var l = $('#parent').collect(function(e) { return e.childNodes; });</pre>
+To get all child nodes (and not only all elements), you can use <a href="/reference/collect.html">collect()</a>
+to put them into a list. 
+</p>
+<p>
+API: <a href="/reference/dollar.html">$()</a>, <a href="/reference/collect.html">collect()</a>.<br/>
+</p>
+
+
+<h3><a name="select_children">Find Every Second Element</a></h3>
+<p>
+Finding every second &lt;li> element in '#parent':
+<pre>var l = $('#parent li').filter(function(e, index) { return index % 2; });</pre>
+The <a href="/reference/filter.html">filter()</a> function filters all elements that have an even index.
+</p>
+<p>
+API: <a href="/reference/dollar.html">$()</a>, <a href="/reference/filter.html">filter()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/FXGce/">Selector</a>
+</p>
+
+<h3><a name="select_children">Combine Lists</a></h3>
+<p>
+<pre>var l = $([list1, list2]);</pre>
+Use the selector function to combine lists. Nested lists will automatically be flattened and null elements will be removed.
+You can also use the same syntax single elements to the list:
+<pre>var l2 = $([list1, element1, element2]);</pre>
+Again, null elementes will be automatically removed.
+</p>
+<p>
+API: <a href="/reference/dollar.html">$()</a>.<br/>
+</p>
+
+
+<h2><a name="html">Modify HTML Structure</a></h2>
+<h3><a name="html_text">Set Text Content</a></h3>
+
+<h3><a name="html_innerhtml">Set InnerHTML</a></h3>
+
+
+<h3><a name="html_create">Create HTML Elements</a></h3>
+
+<h3><a name="html_add">Add HTML Elements or Text</a></h3>
+
+<h3><a name="html_replace">Replace HTML Elements</a></h3>
+
+<h3><a name="html_remove">Remove HTML Elements or Nodes</a></h3>
+
+<h3><a name="html_attr">Set and Read Attributes</a></h3>
+
+<h3><a name="html_clone">Clone Elements</a></h3>
+
+
+
+<h2><a name="style">Modify HTML Styles</a></h2>
+<h3><a name="style_classes">Add / Remove / Toggle CSS Classes</a></h3>
+
+<h3><a name="style_hasclass">Check for CSS Classes</a></h3>
+
+<h3><a name="style_set">Set and Read CSS Style</a></h3>
+
+<h3><a name="style_prop">Set and Read Properties</a></h3>
+
+
+
+<h2><a name="anim">Animation</a></h2>
+
+<h3><a name="anim_anim">Animate Styles and Properties</a></h3>
+
+<h3><a name="anim_chain">Chain Animation Steps</a></h3>
+
+<h3><a name="anim_fade">Fade in / Fade Out (Animation)</a></h3>
+
+<h3><a name="anim_slide">Slide in / Slide Out (Animation)</a></h3>
+
+<h3><a name="anim_loop">Create Complex Animations (Loop)</a></h3>
+
+
+<h2><a name="data">Data and Events</a></h2>
+
+<h3><a name="data">Register / Unregister Event Handlers</a></h3>
+
+<h3><a name="data_get">Do HTTP GET Requests (AJAX / XHR)</a></h3>
+
+<h3><a name="data_post">Do HTTP POST Requests (AJAX / XHR)</a></h3>
+
+<h3><a name="data_json">Use JSON</a></h3>
+
+<h3><a name="data_cookie">Read / Write / Delete Cookies</a></h3>
+
+
+</div>
+ ]]></page:main>
+
+  
+</page:page>

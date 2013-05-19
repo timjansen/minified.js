@@ -78,7 +78,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().add()',
+		name:'$().add()',
 		exec: function() {
 			var sl = EE('span')();
 			sl.add('test');
@@ -102,7 +102,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().add() / function',
+		name:'$().add() / function',
 		exec: function() {
 			var sl = EE('span')();
 			sl.add(function(obj, index) {
@@ -124,7 +124,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().fill()',
+		name:'$().fill()',
 		exec: function() {
 			var sl = EE('span')();
 			sl.fill(EE('br'));
@@ -139,7 +139,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().replace()',
+		name:'$().replace()',
 		exec: function() {
 			var sl = EE('span')();
 			sl.fill(['foo', EE('br'), 'bar']);
@@ -154,7 +154,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().addFront()',
+		name:'$().addFront()',
 		exec: function() {
 			var sl = EE('span')();
 			sl.fill([EE('br'), 'bar']);
@@ -166,7 +166,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().addAfter()',
+		name:'$().addAfter()',
 		exec: function() {
 			var sl = EE('span')();
 			sl.fill([EE('br'), 'bar']);
@@ -182,7 +182,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().addBefore()',
+		name:'$().addBefore()',
 		exec: function() {
 			var sl = EE('span')();
 			sl.fill([EE('br'), 'bar']);
@@ -198,9 +198,9 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().fill() / multi',
+		name:'$().fill() / multi',
 		exec: function() {
-			var sl = MINI([EE('span')(), EE('span')(), EE('span')()]);
+			var sl = $([EE('span')(), EE('span')(), EE('span')()]);
 			sl.fill('foo');
 			check(sl[0].childNodes.length, 1);
 			check(sl[1].childNodes.length, 1);
@@ -220,18 +220,18 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI().clone()',
+		name:'$().clone()',
 		exec: function() {
-			var sl = MINI('#cloneTest .cloneMe').clone();
+			var sl = $('#cloneTest .cloneMe').clone();
 			check(sl.length, 1);
 			$('#container2').fill(sl);
 			check($$('#container2 .cloneMe').innerHTML.toLowerCase(), $$('#cloneTest .cloneMe').innerHTML.toLowerCase());
 		}
 	},
 	{
-		name:'MINI().clone() / id',
+		name:'$().clone() / id',
 		exec: function() {
-			var sl = MINI('#cloneId').clone();
+			var sl = $('#cloneId').clone();
 			check(sl.length, 1);
 			$('#container2').fill(sl);
 			check(/id=/.test($$('#container2').innerHTML), false, 'Clone() id removal');

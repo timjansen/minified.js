@@ -20,7 +20,7 @@ function triggerEvent(element, event) {
 
 window.miniTests.push.apply(window.miniTests, [
 	{
-		name:'MINI.on()',
+		name:'$().on()',
 		exec: function() {
 			var p = $('#container2');
 			var handler;
@@ -75,7 +75,7 @@ window.miniTests.push.apply(window.miniTests, [
 			triggerEvent(s2, createClick());
 			check(callNum, 2, "callNum");
 
-			$.off(handler); 
+			MINI.off(handler); 
 			check(handler.M, null, "Handler.M nulled");
 			
 			callNum = 0;

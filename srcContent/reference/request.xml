@@ -3,22 +3,22 @@
    Auto-generated using docbuilder.js. Do not edit manually. 
 -->
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
-	<title>$.request() - Minified.js</title>
+	<title>MINI.request() - Minified.js</title>
 	<section>reference</section>
 	<externalCss>../css/reference.css</externalCss>
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-request">$.request()</a></h2>
+<h2><a name="doc-request">MINI.request()</a></h2>
 <div class="summary">Initiates a HTTP request to the given URL, using XMLHttpRequest.</div>
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">$.request(method, url)</div>
-<div class="syntax">$.request(method, url, data)</div>
-<div class="syntax">$.request(method, url, data, onSuccess)</div>
-<div class="syntax">$.request(method, url, data, onSuccess, onFailure)</div>
-<div class="syntax">$.request(method, url, data, onSuccess, onFailure, headers)</div>
-<div class="syntax">$.request(method, url, data, onSuccess, onFailure, headers, username, password)</div>
+<div class="syntax">MINI.request(method, url)</div>
+<div class="syntax">MINI.request(method, url, data)</div>
+<div class="syntax">MINI.request(method, url, data, onSuccess)</div>
+<div class="syntax">MINI.request(method, url, data, onSuccess, onFailure)</div>
+<div class="syntax">MINI.request(method, url, data, onSuccess, onFailure, headers)</div>
+<div class="syntax">MINI.request(method, url, data, onSuccess, onFailure, headers, username, password)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -55,9 +55,9 @@ any (the exception as string if the browser threw it).</dd>
 <h4>Example</h4>
 <div class="example"><p>Invoke a REST web service and parse the resulting document using JSON:
 <pre>
-$.request('get', 'http://service.example.com/weather', {zipcode: 90210})
+MINI.request('get', 'http://service.example.com/weather', {zipcode: 90210})
    .then(function(txt) {
-        var json = $.parseJSON(txt);
+        var json = MINI.parseJSON(txt);
         $('#weatherResult').fill('Today's forecast is is: ' + json.today.forecast);
    })
    .error(function(status, statusText, responseText) {
@@ -75,7 +75,7 @@ var myRequest = {         // create a request object that can be serialized via 
      	    job: 'Plumber'
      }]};</p><p>function failureHandler() {
   $('#registrationResult').fill('Registration failed');
-}</p><p>$.request('post', 'http://service.example.com/directory', $.toJSON(myRequest))
+}</p><p>MINI.request('post', 'http://service.example.com/directory', MINI.toJSON(myRequest))
     .then(function(txt) {
        if (txt == 'OK')
             $('#registrationResult').fill('Registration succeeded');
@@ -91,15 +91,6 @@ var myRequest = {         // create a request object that can be serialized via 
 </div>
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
 </li><li><a href="dollardollar.html">$$()</a>
-</li><li><a href="getcookie.html">$.getCookie()</a>
-</li><li><a href="loop.html">$.loop()</a>
-</li><li><a href="off.html">$.off()</a>
-</li><li><a href="parsejson.html">$.parseJSON()</a>
-</li><li><a href="ready.html">$.ready()</a>
-</li><li><a href="request.html">$.request()</a>
-</li><li><a href="setcookie.html">$.setCookie()</a>
-</li><li><a href="tojson.html">$.toJSON()</a>
-</li><li><a href="wait.html">$.wait()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -121,6 +112,15 @@ var myRequest = {         // create a request object that can be serialized via 
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="getcookie.html">MINI.getCookie()</a>
+</li><li><a href="loop.html">MINI.loop()</a>
+</li><li><a href="off.html">MINI.off()</a>
+</li><li><a href="parsejson.html">MINI.parseJSON()</a>
+</li><li><a href="ready.html">MINI.ready()</a>
+</li><li><a href="request.html">MINI.request()</a>
+</li><li><a href="setcookie.html">MINI.setCookie()</a>
+</li><li><a href="tojson.html">MINI.toJSON()</a>
+</li><li><a href="wait.html">MINI.wait()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

@@ -15,6 +15,7 @@
 		td, th { padding: 0.3em; border: 1px solid #f8f4f0; text-align: left;  }
 		tr:not(:first-child) th { background-color: #fff; font-weight: normal;}
 		.colored { color: #ff8200; }
+		iframe { margin-top: 0.5em; margin-bottom: 0.5em; }
   </page:inlineCss>
   
   <page:main><![CDATA[<div>
@@ -54,26 +55,18 @@
  
   <hr/>
   
-  <h2>Getting Started</h2>
-  <p>Include minified-web.js on your HTML page:
-  
-  <pre>&lt;script src='path/to/minified-web.js'>&lt;/script></pre></p>
+<h2>Getting Started</h2>
+<iframe width="100%" height="300" src="http://jsfiddle.net/tjansen/tqsCg/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe> 
 
-  <p>Import Minified like this in your script:
-  <pre>var $ = require('minified').$, $$ = $.$$, EE = $.EE;</pre></p>
+<p>Check out the <a href="/docs/howto.html">How to...</a> and the <a href="/reference/">API docs</a> to explore Minified on your
+own. Or go to <a href="">this presentation</a> or the <a href="dov/quickstart.html">Tutorial</a> for some more guidance.</a></p>
+<p>Finally, here are a few JSFiddle example to get you started:
+<a href="http://jsfiddle.net/tjansen/NrGnf/">Animation</a>,
+<a href="http://jsfiddle.net/tjansen/Xu6R8/">Animation Loops</a>
+</p>
 
-  <p>And then it’s time to start. With some knowledge of other libraries the basic stuff should be easy to figure out from the <a href=”/reference/”>API docs</a>:
-  
-  <pre>$(function() {
-    $('body').set({$backgroundColor: 'red'}); 
-});</pre></p>
+<p>Have fun!</p>
 
-  
-  <p>To learn about Minified’s advanced functions, I would recommend you to read the <a href=”/docs/quickstart.html”>Tutorial</a>. But just to give you an idea what 
-  Minified can do, here’s one more snippet:
-  <pre>$('#myButton').on('click', $('body').toggle({$backgroundColor: '#fff'}, {$backgroundColor: 'red'}, 500));</pre>
-  It registers an event handler for a button. If you click on the button, the page's background color will fade from white to red.
-  If you click again, the color will fade back to white.</p>
 
 
   <hr/>

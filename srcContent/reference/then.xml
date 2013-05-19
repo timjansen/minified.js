@@ -44,7 +44,7 @@ You can chain <var>then()</var> invocations, as <var>then()</var> returns anothe
 <h4>Example</h4>
 <div class="example"><p>Simple handler for an HTTP request. Handles only success and ignored errors.
 <pre>
-$.request('get', '/weather.html')
+MINI.request('get', '/weather.html')
     .then(function(txt) {
        alert('Got response!');
     });
@@ -53,7 +53,7 @@ $.request('get', '/weather.html')
 <h4>Example</h4>
 <div class="example"><p>Including an error handler.
 <pre>
-$.request('get', '/weather.html')
+MINI.request('get', '/weather.html')
     .then(function(txt) {
        alert('Got response!');
     }, function(err) {
@@ -64,12 +64,12 @@ $.request('get', '/weather.html')
 <h4>Example</h4>
 <div class="example"><p>Chained handler.
 <pre>
-$.request('get', '/weather.do')
+MINI.request('get', '/weather.do')
     .then(function(txt) {
        showWeather(txt);
     }
     .then(function() {
-       return $.request('get', '/traffic.do');
+       return MINI.request('get', '/traffic.do');
     }
     .then(function(txt) {
        showTraffic(txt);
@@ -88,15 +88,6 @@ $.request('get', '/weather.do')
 </div>
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
 </li><li><a href="dollardollar.html">$$()</a>
-</li><li><a href="getcookie.html">$.getCookie()</a>
-</li><li><a href="loop.html">$.loop()</a>
-</li><li><a href="off.html">$.off()</a>
-</li><li><a href="parsejson.html">$.parseJSON()</a>
-</li><li><a href="ready.html">$.ready()</a>
-</li><li><a href="request.html">$.request()</a>
-</li><li><a href="setcookie.html">$.setCookie()</a>
-</li><li><a href="tojson.html">$.toJSON()</a>
-</li><li><a href="wait.html">$.wait()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -118,6 +109,15 @@ $.request('get', '/weather.do')
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="getcookie.html">MINI.getCookie()</a>
+</li><li><a href="loop.html">MINI.loop()</a>
+</li><li><a href="off.html">MINI.off()</a>
+</li><li><a href="parsejson.html">MINI.parseJSON()</a>
+</li><li><a href="ready.html">MINI.ready()</a>
+</li><li><a href="request.html">MINI.request()</a>
+</li><li><a href="setcookie.html">MINI.setCookie()</a>
+</li><li><a href="tojson.html">MINI.toJSON()</a>
+</li><li><a href="wait.html">MINI.wait()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

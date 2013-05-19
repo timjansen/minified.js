@@ -1,4 +1,4 @@
-var $ = require('minified').$, $$ = $.$$, EE = $.EE;
+var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = require('minifiedUtil')._;
 
 var SRC='minified-web-src.js';

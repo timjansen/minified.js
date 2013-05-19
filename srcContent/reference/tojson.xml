@@ -3,17 +3,17 @@
    Auto-generated using docbuilder.js. Do not edit manually. 
 -->
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
-	<title>$.toJSON() - Minified.js</title>
+	<title>MINI.toJSON() - Minified.js</title>
 	<section>reference</section>
 	<externalCss>../css/reference.css</externalCss>
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-tojson">$.toJSON()</a></h2>
+<h2><a name="doc-tojson">MINI.toJSON()</a></h2>
 <div class="summary">Converts the given value into a JSON string.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">$.toJSON(value)</div>
+<div class="syntax">MINI.toJSON(value)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -42,7 +42,7 @@ Any other types in your JSON tree, especially Dates, should be converted into St
 <div class="example"><p>Convert an object into a JSON object:
 <pre>
 var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
-var jsonString = $.toJSON(myObj);
+var jsonString = MINI.toJSON(myObj);
 </pre>
 </p></div>
 </div>
@@ -52,15 +52,6 @@ var jsonString = $.toJSON(myObj);
 </div>
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
 </li><li><a href="dollardollar.html">$$()</a>
-</li><li><a href="getcookie.html">$.getCookie()</a>
-</li><li><a href="loop.html">$.loop()</a>
-</li><li><a href="off.html">$.off()</a>
-</li><li><a href="parsejson.html">$.parseJSON()</a>
-</li><li><a href="ready.html">$.ready()</a>
-</li><li><a href="request.html">$.request()</a>
-</li><li><a href="setcookie.html">$.setCookie()</a>
-</li><li><a href="tojson.html">$.toJSON()</a>
-</li><li><a href="wait.html">$.wait()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -82,6 +73,15 @@ var jsonString = $.toJSON(myObj);
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="getcookie.html">MINI.getCookie()</a>
+</li><li><a href="loop.html">MINI.loop()</a>
+</li><li><a href="off.html">MINI.off()</a>
+</li><li><a href="parsejson.html">MINI.parseJSON()</a>
+</li><li><a href="ready.html">MINI.ready()</a>
+</li><li><a href="request.html">MINI.request()</a>
+</li><li><a href="setcookie.html">MINI.setCookie()</a>
+</li><li><a href="tojson.html">MINI.toJSON()</a>
+</li><li><a href="wait.html">MINI.wait()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

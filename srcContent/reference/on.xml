@@ -44,7 +44,7 @@ return value of the handler will always be ignored.</dd>
 <div class="description"><p>Registers the function as event handler for all items in the list.</p><p>By default, handlers are called with the original event object as first argument, the index of the source element in the
 list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked).</p><p>Minified cancels event propagation and the element's default behaviour for all elements that have an event handler.
 You can override this by returning a 'true' value, which will reinstate the original JavaScript behaviour.</p><p>Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the event handler. When you pass arguments, the
-handler's return value is always ignored and the event will always be cancelled.</p><p>Event handlers can be unregistered using <code><a href='off.html'>$.off()</a></code>.</p><p></p></div>
+handler's return value is always ignored and the event will always be cancelled.</p><p>Event handlers can be unregistered using <code><a href='off.html'>MINI.off()</a></code>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -74,15 +74,6 @@ $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 </div>
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
 </li><li><a href="dollardollar.html">$$()</a>
-</li><li><a href="getcookie.html">$.getCookie()</a>
-</li><li><a href="loop.html">$.loop()</a>
-</li><li><a href="off.html">$.off()</a>
-</li><li><a href="parsejson.html">$.parseJSON()</a>
-</li><li><a href="ready.html">$.ready()</a>
-</li><li><a href="request.html">$.request()</a>
-</li><li><a href="setcookie.html">$.setCookie()</a>
-</li><li><a href="tojson.html">$.toJSON()</a>
-</li><li><a href="wait.html">$.wait()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -104,6 +95,15 @@ $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="getcookie.html">MINI.getCookie()</a>
+</li><li><a href="loop.html">MINI.loop()</a>
+</li><li><a href="off.html">MINI.off()</a>
+</li><li><a href="parsejson.html">MINI.parseJSON()</a>
+</li><li><a href="ready.html">MINI.ready()</a>
+</li><li><a href="request.html">MINI.request()</a>
+</li><li><a href="setcookie.html">MINI.setCookie()</a>
+</li><li><a href="tojson.html">MINI.toJSON()</a>
+</li><li><a href="wait.html">MINI.wait()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

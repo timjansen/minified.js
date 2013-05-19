@@ -1,8 +1,8 @@
 window.miniTests.push.apply(window.miniTests, [
 	{
-		name: "Empty MINI()",
+		name: "Empty $()",
 	 	exec: function() {
-			var m = MINI();
+			var m = $();
 				check(m);
 				check(m.length, 0);
 				check(m.set);
@@ -10,112 +10,112 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name: "MINI(Element)",
+		name: "$(Element)",
 		 exec: function() {
 				var e = document.getElementById("container");
-				var m = MINI(e);
+				var m = $(e);
 				check(m.length, 1);
 				check(m[0] === e);
 		 }
 	},
 	{
-		name: "MINI(list)",
+		name: "$(list)",
 		exec: function() {
 			var e = [4, 2, 3];
-			var m = MINI(e);
+			var m = $(e);
 			check(m.length, 3);
 			containsAll(m, e);
 			
-	 		var m1 = MINI([document.getElementById("a")]);
+	 		var m1 = $([document.getElementById("a")]);
 			containsAll(m1, [document.getElementById("a")], true);
 		}
 	},
 	{
-		name: "MINI(null list)",
+		name: "$(null list)",
 		exec: function() {
 			var e = [null, 4, null, 2, null, 3, null];
-			var m = MINI(e);
+			var m = $(e);
 			check(m.length, 3);
 			containsAll(m, [4, 2, 3]);
 			
-	 		var m1 = MINI([document.getElementById("a"), null, document.getElementById("b"), null]);
+	 		var m1 = $([document.getElementById("a"), null, document.getElementById("b"), null]);
 			containsAll(m1, [document.getElementById("a"), document.getElementById("b")], true);
 
-	 		var m2 = MINI([null]);
+	 		var m2 = $([null]);
 			containsAll(m2, [], true);
 		}
 	},
 	{
-		name: "MINI(nested)",
+		name: "$(nested)",
 		exec: function() {
 			var e = [[[null, 5]], [[[null]]], [[[[1]]]], 4, null, [2, 7, 8], null, 3, null, [99]];
-			var m = MINI(e);
+			var m = $(e);
 			containsAll(m, [5, 1, 4, 2, 7, 8, 3, 99]);
 		}
 	},
 	{
-		name: "MINI(empty list)",
+		name: "$(empty list)",
 		exec: function() {
-			var m = MINI([]);
+			var m = $([]);
 			check(m.length, 0);
 		}
 	},
 	{
-		name: "MINI(id)",
+		name: "$(id)",
 		exec: function() {
-			var m = MINI('#container');
+			var m = $('#container');
 			check(m.length, 1);
 			check(m[0] === document.getElementById("container"));
 		}
 	},
 	{
-		name: "MINI(unknown id)",
+		name: "$(unknown id)",
 		exec: function() {
-			var m = MINI('#dfsafsdfds');
+			var m = $('#dfsafsdfds');
 			check(m.length, 0);
 		}
 	},
 	{
-		name: "MINI(id, id)",
+		name: "$(id, id)",
 		exec: function() {
-			var m = MINI('#container, #container2');
+			var m = $('#container, #container2');
 			containsAll(m, [document.getElementById("container"), document.getElementById("container2")], true);
 		}
 	},
 	{
-		name: "MINI(id, unknown id)",
+		name: "$(id, unknown id)",
 		exec: function() {
-			var m = MINI('#container, #dsfewfe');
+			var m = $('#container, #dsfewfe');
 			check(m.length, 1);
 			contains(m, document.getElementById("container"), true);
 		}
 	},
 	{
-		name: "MINI(class)",
+		name: "$(class)",
 		exec: function() {
-			var m = MINI('.x');
+			var m = $('.x');
 			containsAll(m, [document.getElementById("a"),document.getElementById("a_b"),
 					document.getElementById("b_a"),document.getElementById("b_b"),document.getElementById("c_a")], true);
 		}
 	},
 	{
-		name: "MINI(unknown class)",
+		name: "$(unknown class)",
 		exec: function() {
-			var m = MINI('.sdsada');
+			var m = $('.sdsada');
 			check(m.length, 0);
 		}
 	},
 	{
-		name: "MINI(class, id)",
+		name: "$(class, id)",
 		exec: function() {
-			var m = MINI('.z, #container2');
+			var m = $('.z, #container2');
 			containsAll(m, [document.getElementById("a_a"), document.getElementById("a_b"), document.getElementById("c_b"), document.getElementById("container2")], true);
 		}
 	},
 	{
-		name: "MINI(elementName)",
+		name: "$(elementName)",
 		exec: function() {
-			var m = MINI('b');
+			var m = $('b');
 			check(m.length, 3);
 			check(/^b$/i.test(m[0].tagName));
 			check(/^b$/i.test(m[1].tagName));
@@ -123,137 +123,140 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name: "MINI(unknown elementName)",
+		name: "$(unknown elementName)",
 		exec: function() {
-			var m = MINI('blink');
+			var m = $('blink');
 			check(m.length, 0);
 		}
 	},
 	{
-		name: "MINI(unknown elementName, unknown id, unknown class)",
+		name: "$(unknown elementName, unknown id, unknown class)",
 		exec: function() {
-			var m = MINI('blink, #dfsdj, .sddsad');
+			var m = $('blink, #dfsdj, .sddsad');
 			check(m.length, 0);
 		}
 	},
 	{
-		name: "MINI(unknown elementName, unknown id, unknown class, id)",
+		name: "$(unknown elementName, unknown id, unknown class, id)",
 		exec: function() {
-			var m = MINI('blink, #dfsdj, .sddsad, #container');
+			var m = $('blink, #dfsdj, .sddsad, #container');
 			containsAll(m, [document.getElementById("container")], true);
 		}
 	},
 	{
-		name: "MINI(id elementName)",
+		name: "$(id elementName)",
 		exec: function() {
-			var m = MINI('#a b');
+			var m = $('#a b');
 			check(m.length, 1);
 			check(/^b$/i.test(m[0].tagName));
+
+			var m2 = $('#a div');
+			check(m2.length, 2);
 		}
 	},
 	{
-		name: "MINI(id id elementName)",
+		name: "$(id id elementName)",
 		exec: function() {
-			var m = MINI('#b #b_a p');
+			var m = $('#b #b_a p');
 			check(m.length, 1);
 			check(/^p$/i.test(m[0].tagName));
 		}
 	},
 	{
-		name: "MINI(elementName class elementName elementName)",
+		name: "$(elementName class elementName elementName)",
 		exec: function() {
-			var m = MINI('div .n div p');
+			var m = $('div .n div p');
 			check(m.length, 2);
 			check(/^p$/i.test(m[0].tagName));
 			check(/^p$/i.test(m[1].tagName));
 		}
 	},
 	{
-		name: "MINI(elementName.class)",
+		name: "$(elementName.class)",
 		exec: function() {
-			var m = MINI('div.n');
+			var m = $('div.n');
 			check(m.length, 2);
 		}
 	},
 	{
-		name: "MINI(elementName.unknownclass)",
+		name: "$(elementName.unknownclass)",
 		exec: function() {
-			var m = MINI('div.xxx');
+			var m = $('div.xxx');
 			check(m.length, 0);
 		}
 	},
 	{
-		name: "MINI(unknownElementName.class)",
+		name: "$(unknownElementName.class)",
 		exec: function() {
-			var m = MINI('blink.x');
+			var m = $('blink.x');
 			check(m.length, 0);
 		}
 	},
 	{
-		name: "MINI(elementName.class elementName)",
+		name: "$(elementName.class elementName)",
 		exec: function() {
-			var m = MINI('#container div.n p');
+			var m = $('#container div.n p');
 			check(m.length == 4 || m.length == 3); // Minified's impl will return 4, native CSS 3
 		}
 	},
 	{
-		name: "MINI(Element, empty context)",
+		name: "$(Element, empty context)",
 		exec: function() {
 			var e = document.getElementById("container");
-			var m = MINI(e, []);
+			var m = $(e, []);
 			check(m.length, 0);
 		}
 	},
 	{
-		name: "MINI(id, empty context)",
+		name: "$(id, empty context)",
 		exec: function() {
-			var m = MINI("#container", []);
+			var m = $("#container", []);
 			check(m.length, 0);
 		}
 	},
 	{
-		name: "MINI(elementName, empty context)",
+		name: "$(elementName, empty context)",
 		exec: function() {
-			var m = MINI("div", []);
+			var m = $("div", []);
 			check(m.length, 0);
 		}
 	},
 		
 	{
-		name: "MINI(elementName, self context)",
+		name: "$(elementName, self context)",
 		exec: function() {
-			var m = MINI("#container", "#container");
+			var m = $("#container", "#container");
 			check(m.length, 0);
 		}
 	},
 	{
-		name: "MINI(*, context)",
+		name: "$(*, context)",
 		exec: function() {
-			var m = MINI("*", "#c");
+			var m = $("*", "#c");
 			check(m.length, 6);
 			contains(m, document.getElementById("c_b"));
 			contains(m, document.getElementById("c_a"));
 		}
 	},
 	{
-		name: "MINI(id, context)",
+		name: "$(id, context)",
 		exec: function() {
-			var m = MINI("#a", "#container");
+			var m = $("#a", "#container");
 			containsAll(m, [document.getElementById("a")], true);
 		}
 	},
 	{
-		name: "MINI(element.class, multi context)",
+		name: "$(element.class, multi context)",
 		exec: function() {
-			var m = MINI("div.z", ".x,.n,.m");
+			var m = $("div.z", ".x,.n,.m");
 			containsAll(m, [document.getElementById("a_a"), document.getElementById("a_b"), document.getElementById("c_b")], true);
 		}
 	},
 
 	{
-		name: "MINI(*, context, childOnly)",
+		name: "$(*, context, childOnly)",
 		exec: function() {
-			var m = MINI("*", "#c", true);
+			var m = $("*", "#c", true);
 			check(m.length, 3);
 			contains(m, document.getElementById("c_b"));
 			contains(m, document.getElementById("c_a"));
@@ -261,9 +264,9 @@ window.miniTests.push.apply(window.miniTests, [
 	},
 
 	{
-		name: "MINI(element name, context, childOnly)",
+		name: "$(element name, context, childOnly)",
 		exec: function() {
-			var m = MINI("div", "#c", true);
+			var m = $("div", "#c", true);
 			containsAll(m, [document.getElementById("c_a"), document.getElementById("c_b")], true);
 		}
 	},
@@ -299,23 +302,23 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name: "$$ and $",
 		exec: function() {
-			check($ === MINI);
+			check($ === MINI.$);
 			check($$ === MINI.$$);
 		}
 	},
 	
 	{
-		name: "MINI() whitespace exception (debug)",
+		name: "$() whitespace exception (debug)",
 		debugFailure: "Whitespace check did not work.",
 		exec: function() {
-			MINI(' div.n');
+			$(' div.n');
 		}
 	},
 	{
-		name: "MINI() pseudo class exception (debug)",
+		name: "$() pseudo class exception (debug)",
 		debugFailure: "pseudo check did not work.",
 		exec: function() {
-			MINI('a:visited');
+			$('a:visited');
 		}
 	}
 

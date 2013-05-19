@@ -26,7 +26,7 @@
     document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
 	</script>
 	<script type="text/javascript">
-	 	var MINI = $ = require('minified').$, $$ = $.$$, EE = $.EE;
+	 	var MINI = require('minified'), $=MINI.$, $$ = MINI.$$, EE = MINI.EE;
  		var _ = require('minifiedUtil')._;
 	 	
 		function fail(text) {
@@ -75,7 +75,7 @@
 		 	exec: function() {
 				var called = 0;
 				require(['minified'], function(minified) {
-					check(minified.$, MINI);
+					check(minified, MINI);
 				});
 				check(called, 0);
 			}

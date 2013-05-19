@@ -7,9 +7,9 @@
 	
 	<script type="text/javascript" src="../minified-web.js"></script>
 	<script type="text/javascript">
-	var $ = require('minified').$, $$ = $.$$, EE = $.EE;
+	var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 
-	$.ready(function() {
+	$(function() {
 		$('#changeButton').on('click', function() {
 			var boxStyle = $$('#boxSelect').value;
 			var textStyle = $$('#textSelect').value;

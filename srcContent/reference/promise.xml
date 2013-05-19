@@ -14,8 +14,8 @@
 
 <h4>Description</h4>
 <div class="description"><p>
-<i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using <code><a href='request.html'>$.request()</a></code>,
-<code><a href='animate.html'>animate()</a></code> or <code><a href='wait.html'>$.wait()</a></code>, you will get a Promise object that allows you to get the result as soon as the operation is finished.</p><p>Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
+<i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using <code><a href='request.html'>MINI.request()</a></code>,
+<code><a href='animate.html'>animate()</a></code> or <code><a href='wait.html'>MINI.wait()</a></code>, you will get a Promise object that allows you to get the result as soon as the operation is finished.</p><p>Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
 be able to interoperate with most other Promises implementations.</p><p>What may be somewhat surprising about this Promises specification is that there is no direct way to find out the state of the operation.
 There is neither a property nor a function to find out what the result is or whether it is available. Instead, you always have to
 register callbacks that will be invoked as soon as the operation is finished. Even if the operation already ended when you register the callbacks,
@@ -23,7 +23,7 @@ you still need a callback to get the result. The callback will then just be call
 This design forces you to handle the operation result asynchronously and disencourages 'bad' techniques such as polling.</p><p>The central method of a Promises, and indeed the only required function in Promises/A+, is <code><a href='then.html'>then()</a></code>. It allows you to register
 two callback methods, one for success (called 'fulfillment' in Promises/A+ terminology) and one for failures (called 'rejection' in Promises/A+).</p><p>This example shows you how to use <var>then()</var>:
 <pre>
-$.request('get', 'http://example.com/weather?zip=90210')
+MINI.request('get', 'http://example.com/weather?zip=90210')
  .then(function success(result) {
      alert('The weather is ' + result);
  }, function error(exception) {
@@ -32,7 +32,7 @@ $.request('get', 'http://example.com/weather?zip=90210')
 </pre></p><p>What makes Promises so special is that <code><a href='then.html'>then()</a></code> itself returns a new Promise, which is based on the Promise <var>then()</var> was called on, but can be
 modified by the outcome of callbacks. Both arguments to <var>then()</var> are optional, and you can also write the code like this:
 <pre>
-$.request('get', 'http://example.com/weather?zip=90210')
+MINI.request('get', 'http://example.com/weather?zip=90210')
  .then(function success(result) {
      alert('The weather is ' + result);
  })
@@ -46,7 +46,7 @@ returned by then. Any exception thrown in a callback causes the new Promise to b
 by using <code><a href='error.html'>error()</a></code>, which is not part of Promises/A+, but a simple extension by Minified. It just registers the failure callback without
 forcing you to specify <var>null</var> as first argument:
 <pre>
-$.request('get', 'http://example.com/weather?zip=90210')
+MINI.request('get', 'http://example.com/weather?zip=90210')
  .then(function success(result) {
      alert('The weather is ' + result);
  })
@@ -58,9 +58,9 @@ by <var>then()</var> will be marked as success (fulfilled) and this value is the
 the new Promise will assume the state of the returned Promise. You can use the latter to create chains of asynchronous operations,
 but you still need only a single error handler for all of them and you do not need to nest functions to achieve this:
 <pre>
-$.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
+MINI.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
  .then(function(resultZip) {
-     return $.request('get', 'http://example.com/weather', {zip: resultZip});
+     return MINI.request('get', 'http://example.com/weather', {zip: resultZip});
  })
  .then(function(resultWeather) {
      alert('The weather in Beverly Hills is ' + resultWeather);
@@ -71,7 +71,7 @@ $.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
 </pre></p><p>Sometimes you want to just be notified of the end of an operation but are not interested in the outcome. For these cases, if you just had
 the Promises/A+-compliants <code><a href='then.html'>then()</a></code> method, you would have to register the same callback handler twice. This is not very convenient,
 especially when you define the handler function inline. Therefore Minified comes with a second small extension, <code><a href='always.html'>always()</a></code>:</p><p><pre>
-$.request('post', 'http://example.com/pageHit', {pageId: 12345})
+MINI.request('post', 'http://example.com/pageHit', {pageId: 12345})
  .always(function() {   // always(callback) is equivalent to then(callback, callback)
      pageCountDone();
  });
@@ -84,15 +84,6 @@ Minified Util module will allow this though.
 </div>
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
 </li><li><a href="dollardollar.html">$$()</a>
-</li><li><a href="getcookie.html">$.getCookie()</a>
-</li><li><a href="loop.html">$.loop()</a>
-</li><li><a href="off.html">$.off()</a>
-</li><li><a href="parsejson.html">$.parseJSON()</a>
-</li><li><a href="ready.html">$.ready()</a>
-</li><li><a href="request.html">$.request()</a>
-</li><li><a href="setcookie.html">$.setCookie()</a>
-</li><li><a href="tojson.html">$.toJSON()</a>
-</li><li><a href="wait.html">$.wait()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -114,6 +105,15 @@ Minified Util module will allow this though.
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="getcookie.html">MINI.getCookie()</a>
+</li><li><a href="loop.html">MINI.loop()</a>
+</li><li><a href="off.html">MINI.off()</a>
+</li><li><a href="parsejson.html">MINI.parseJSON()</a>
+</li><li><a href="ready.html">MINI.ready()</a>
+</li><li><a href="request.html">MINI.request()</a>
+</li><li><a href="setcookie.html">MINI.setCookie()</a>
+</li><li><a href="tojson.html">MINI.toJSON()</a>
+</li><li><a href="wait.html">MINI.wait()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

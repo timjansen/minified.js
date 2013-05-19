@@ -7,15 +7,15 @@
 	
 	<script type="text/javascript" src="../minified-web.js"></script>
 	<script type="text/javascript">
-	var $ = require('minified').$, $$ = $.$$, EE = $.EE;
+	var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 
-	$.ready(function() {
-		var sessionCounter = $.getCookie("sessionCounter") || 0;
-		var counter = $.getCookie("counter") || 0;
+	$(function() {
+		var sessionCounter = MINI.getCookie("sessionCounter") || 0;
+		var counter = MINI.getCookie("counter") || 0;
 		sessionCounter++;
 		counter++;
-		$.setCookie("sessionCounter", sessionCounter);
-		$.setCookie("counter", counter, 5000);
+		MINI.setCookie("sessionCounter", sessionCounter);
+		MINI.setCookie("counter", counter, 5000);
 		
 		$$('#visitCounter').innerText = counter;
 		$$('#visitSessionCounter').innerText = sessionCounter;

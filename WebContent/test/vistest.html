@@ -33,7 +33,7 @@
 	</script>
 	
 	<script type="text/javascript">
-	var $ = require('minified').$, $$ = $.$$, EE = $.EE;
+	var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 	
 	$(function() {
 		$('#libName').fill(srcFiles[srcNum]);
@@ -51,10 +51,10 @@
 												   $backgroundColor: 'rgb('+Math.round(250*Math.random())+','+Math.round(250*Math.random())+','+Math.round(250*Math.random())+')'}, 500, Math.random());
 						})
 			            .then(function() {
-		    		       	 return $.wait(100);
+		    		       	 return MINI.wait(100);
 		            	});
 				}
-				var p = $.wait(500);
+				var p = MINI.wait(500);
 				for (var i = 0; i < 10; i++)
 					p = step(p);
 				
@@ -75,7 +75,7 @@
 
 		var DURMS = 4000;
 		function startLoop() {
-			$.loop(function(ts, stop) {
+			MINI.loop(function(ts, stop) {
 				if (ts > DURMS)
 					return stop();
 				var a = 2 * Math.PI * ts / 1000; // 1000 ms per rotation
