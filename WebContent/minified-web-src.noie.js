@@ -1794,7 +1794,8 @@ define('minified', function() {
 		 * $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 		 * </pre>
 		 *
-		 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
+		 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used. You can
+		 *             register the handler for more than one event by specifying several space-separated event names.
 		 * @param handler the function(event, index) to invoke when the event has been triggered. If no new arguments have been given using 
 		 *                <var>on()</var>'s second argument, the handler gets the original event object as first parameter and the index
 		 *                of the object in the current ##list#Minified list## as second. 'this' is the element that 
@@ -1808,21 +1809,23 @@ define('minified', function() {
 		 *                      return value of the handler will always be ignored.
 		 * @return the list
 		 */
-		'on': function (name, handler, fThisOrArgs, args) {
+		'on': function (eventName, handler, fThisOrArgs, args) {
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
-			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
+			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
 			return each(this, function(el, index) {
-				var h = function(event) {
-					var e = event || _window.event;
-					// @cond debug try {
-					if (!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) {
-							e.preventDefault();
-							e.stopPropagation();
-					}
-					// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
-				};
-				(handler['M'] = handler['M'] || []).push({'e':el, 'h':h, 'n': name});
-					el.addEventListener(name, h, true); // W3C DOM
+				each(eventName.split(/\s/), function(name) {
+					var h = function(event) {
+						var e = event || _window.event;
+						// @cond debug try {
+						if (!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) {
+								e.preventDefault();
+								e.stopPropagation();
+						}
+						// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
+					};
+					(handler['M'] = handler['M'] || []).push({'e':el, 'h':h, 'n': name});
+						el.addEventListener(name, h, true); // W3C DOM
+				});
 			});
 		}
 
@@ -2103,7 +2106,7 @@ define('minified', function() {
 		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':').");
 
 		return function() {
-			var list = _document.createElement(elementName);
+			var list = $(_document.createElement(elementName));
 			(isList(attributes) || !isObject(attributes)) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 			if (onCreate)
 				onCreate(list);

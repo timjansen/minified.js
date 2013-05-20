@@ -159,7 +159,7 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
 </li><li><a href="require.html">require()</a>
-</li></ul></div>
+</li><li><a href="/docs/howto.xml">How to...</a></li></ul></div>
 
 ]]></main>
 </page>

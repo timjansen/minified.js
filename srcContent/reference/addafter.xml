@@ -121,7 +121,7 @@ With the previous example's HTML, this would create this:
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
 </li><li><a href="require.html">require()</a>
-</li></ul></div>
+</li><li><a href="/docs/howto.xml">How to...</a></li></ul></div>
 
 ]]></main>
 </page>

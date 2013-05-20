@@ -165,7 +165,7 @@ API: <a href="/reference/remove.html">remove()</a>.<br/>
 
 <h3><a name="html_attr">Set and Read Attributes</a></h3>
 <p>
-<pre>$('a.someLink').set({'@href', 'http://minifiedjs.com'});</pre>
+<pre>$('a.someLink').set({'@href': 'http://minifiedjs.com'});</pre>
 Use <var>set</var> with a '@'-prefixed name to set attributes. <var>get</var> reads attributes with the same name syntax:
 <pre>var link = $('a.someLink').get('@href');</pre>
 </p>
@@ -187,19 +187,55 @@ Or just call the factory to create new instances:
 API: <a href="/reference/add.html">add()</a>, <a href="/reference/clone.html">clone()</a>, 
 <a href="/reference/ee.html">EE()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/vuyh9/">clone()</a>
-
 </p>
 
 
 <h2><a name="style">Modify HTML Styles</a></h2>
 <h3><a name="style_classes">Add / Remove / Toggle CSS Classes</a></h3>
+<p>
+<pre>$('.myClass').set('-oldClass +newClass toggleClass');</pre>
+If you call <var>set()</var> only with a string as argument, it
+will modify the elements' CSS classes. Several classes can be listed, separated by spaces.
+The prefix decides what to do: "-" removes the CSS class, "+" adds it and no prefix toggles.<br/>
+You can also call <var>set()</var> with the name "$" to do the same. This can be useful to modify
+several things at the same time:
+<pre>$('.myClass').set({$: '-oldClass', $display: 'block');</pre>
+</p>
+<p>
+API: <a href="/reference/set.html">set()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a>
+</p>
+
 
 <h3><a name="style_hasclass">Check for CSS Classes</a></h3>
+<p>
+<pre>var isMyclass = $('#elem').hasClass('myclass');</pre>
+Use <var>hasClass()</var> to check the classes of list members.
+</p>
+<p>
+API: <a href="/reference/hasclass.html">hasClass()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a>
+</p>
 
 <h3><a name="style_set">Set and Read CSS Style</a></h3>
+<p>
+<pre>$('#someSpan').set({$color: '#ff0'});</pre>
+Use <var>set</var> with a '$'-prefixed name to set CSS styles. <var>get</var> reads the effective CSS style with the same name syntax:
+<pre>var color = $('#someSpan').get('$color');</pre>
+</p>
+<p>
+API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/>
+</p>
 
 <h3><a name="style_prop">Set and Read Properties</a></h3>
-
+<p>
+<pre>$('#someTextField').set({value: 'New text...'});</pre>
+Use <var>set</var> with a unprefixed name to set properties. <var>get</var> reads properties with the same name syntax:
+<pre>var value = $('#someTextField').get('value');</pre>
+</p>
+<p>
+API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/>
+</p>
 
 
 <h2><a name="anim">Animation</a></h2>
