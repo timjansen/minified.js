@@ -136,6 +136,7 @@ function createToc(sections) {
 	_.each(sections, function(sec) {
 		html += '<li>'+sec.tocentry+'</li>';
 	});
+	html += '<li><a href="/docs/howto.xml">How to...</a></li>';
 	html += '</ul></div>';
 	return html;
 }
