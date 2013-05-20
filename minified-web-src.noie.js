@@ -55,9 +55,22 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
 	this['define'] = function(name, f) {def[name] = f();};
 	this['require'] = function(name) { return def[name]; }; 
 }
- 	/*$
- 	 * @stop
- 	 */
+/*$
+ * @id require
+ * @name require()
+ * @syntax require(name)
+ * @group OPTIONS
+ * Returns a reference to a module. If you do not use an AMD loader to load Minified, just call <var>require()</var> with the
+ * argument 'minified' to get a reference to Minified.
+ * If you do use an AMD loader, Minified will not define this function and you can use the AMD loader to obtain the
+ * reference to Minified.
+ * Minified's version of <var>require</var> is very simple and will <strong>only support other libraries</strong>. You can not
+ * use it to load other modules, and it will be incompatible with all non-AMD libraries that also define a function
+ * of the same name. If you need to work with several libraries, you need a real AMD loader.
+ * 
+ * @param name the name of the module to request. In Minified's implementation, only 'minified' is supported.
+ * @return the reference to Minified if 'minified' had been used as name. <var>undefined</var> otherwise.
+ */
 
 define('minified', function() {
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1035,12 +1048,12 @@ define('minified', function() {
 	 * $('.chapter').add(function(parent, index) { return EE('h2', 'Chapter number ' + index); });
 	 * </pre>
 	 *
-	 * @param text a string to add as text node of the list elements
+	 * @param text a string or number to add as text node of the list elements
 	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
 	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
 	 *              containing strings, lists, functions and/or DOM nodes.
-	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories
+	 * @param list a list containing text, functions, nodes or more lists. Please note that if you have DOM nodes in this list
+	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories
 	 *             if you add DOM nodes to more than one element.
 	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
 	 * @return the current list
@@ -1423,6 +1436,7 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .clone()
 	 * @syntax $(selector).clone()
+	 * @syntax $(selector).clone(onCreate)
 	 * Creates a ##list#Minified list## of strings and Element Factories that return clones of the list elements. An Element Factory is a function
 	 * that does not take arguments and returns a Minified list of DOM nodes. You can pass the list to ##add() and similar functions
 	 * to re-create the cloned nodes.
@@ -1448,9 +1462,12 @@ define('minified', function() {
 	 * $('#comments').add($('.comment').clone());
 	 * </pre> 
 	 * 
+ 	 * @param onCreate optional a function(elementList) that will be called each time a top-level element is cloned. The argument
+ 	 *                 contains only this cloned element. This allows you, for example, to add event handlers with ##on(). 
+ 	 *                 The argument <var>elementList</var> is a Minified list that contains the new element.
 	 * @return the list of Element Factory functions and strings to create clones
 	 */
-	'clone': function () {
+	'clone': function (onCreate) {
 		return new M(collect(this, function(e) {
 			var nodeType = isNode(e);
 			if (nodeType == 1) {
@@ -1463,7 +1480,7 @@ define('minified', function() {
 						attrs['@'+attrName] = a['value'];
 					}
 				});
-				return MINI['EE'](e['tagName'], attrs, $(e['childNodes'])['clone']());
+				return MINI['EE'](e['tagName'], attrs, $(e['childNodes'])['clone'](), onCreate);
 			}
 			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
 				return e['data'];
@@ -1777,7 +1794,8 @@ define('minified', function() {
 		 * $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 		 * </pre>
 		 *
-		 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used.
+		 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used. You can
+		 *             register the handler for more than one event by specifying several space-separated event names.
 		 * @param handler the function(event, index) to invoke when the event has been triggered. If no new arguments have been given using 
 		 *                <var>on()</var>'s second argument, the handler gets the original event object as first parameter and the index
 		 *                of the object in the current ##list#Minified list## as second. 'this' is the element that 
@@ -1791,21 +1809,23 @@ define('minified', function() {
 		 *                      return value of the handler will always be ignored.
 		 * @return the list
 		 */
-		'on': function (name, handler, fThisOrArgs, args) {
+		'on': function (eventName, handler, fThisOrArgs, args) {
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
-			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'"); 
+			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
 			return each(this, function(el, index) {
-				var h = function(event) {
-					var e = event || _window.event;
-					// @cond debug try {
-					if (!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) {
-							e.preventDefault();
-							e.stopPropagation();
-					}
-					// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
-				};
-				(handler['M'] = handler['M'] || []).push({'e':el, 'h':h, 'n': name});
-					el.addEventListener(name, h, true); // W3C DOM
+				each(eventName.split(/\s/), function(name) {
+					var h = function(event) {
+						var e = event || _window.event;
+						// @cond debug try {
+						if (!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) {
+								e.preventDefault();
+								e.stopPropagation();
+						}
+						// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
+					};
+					(handler['M'] = handler['M'] || []).push({'e':el, 'h':h, 'n': name});
+						el.addEventListener(name, h, true); // W3C DOM
+				});
 			});
 		}
 
@@ -1997,8 +2017,6 @@ define('minified', function() {
 	 * containing a newly created DOM element, optionally with attributes and children.
 	 * Typically it will be used to insert elements into the DOM tree using add() or a similar function. 
 	 *
-	 * The function is namespace-aware and will create XHTML nodes if called in an XHTML document.
-	 * 
 	 * Please note that the function <var>EE</var> will not be automatically exported by Minified. You should always import it
 	 * using the recommended import statement:
 	 * <pre>
@@ -2085,11 +2103,10 @@ define('minified', function() {
 	 */
 	'EE': function(elementName, attributes, children, onCreate) {
 		// @cond debug if (!elementName) error("EE() requires the element name."); 
-		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
+		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':').");
 
 		return function() {
-			var nu = _document.documentElement.namespaceURI; // to check whether doc is XHTML
-			var list = $(nu ? _document.createElementNS(nu, elementName) : _document.createElement(elementName));
+			var list = $(_document.createElement(elementName));
 			(isList(attributes) || !isObject(attributes)) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 			if (onCreate)
 				onCreate(list);

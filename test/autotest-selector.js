@@ -149,6 +149,9 @@ window.miniTests.push.apply(window.miniTests, [
 			var m = $('#a b');
 			check(m.length, 1);
 			check(/^b$/i.test(m[0].tagName));
+
+			var m2 = $('#a div');
+			check(m2.length, 2);
 		}
 	},
 	{
