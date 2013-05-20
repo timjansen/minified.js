@@ -55,9 +55,22 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
 	this['define'] = function(name, f) {def[name] = f();};
 	this['require'] = function(name) { return def[name]; }; 
 }
- 	/*$
- 	 * @stop
- 	 */
+/*$
+ * @id require
+ * @name require()
+ * @syntax require(name)
+ * @group OPTIONS
+ * Returns a reference to a module. If you do not use an AMD loader to load Minified, just call <var>require()</var> with the
+ * argument 'minified' to get a reference to Minified.
+ * If you do use an AMD loader, Minified will not define this function and you can use the AMD loader to obtain the
+ * reference to Minified.
+ * Minified's version of <var>require</var> is very simple and will <strong>only support other libraries</strong>. You can not
+ * use it to load other modules, and it will be incompatible with all non-AMD libraries that also define a function
+ * of the same name. If you need to work with several libraries, you need a real AMD loader.
+ * 
+ * @param name the name of the module to request. In Minified's implementation, only 'minified' is supported.
+ * @return the reference to Minified if 'minified' had been used as name. <var>undefined</var> otherwise.
+ */
 
 define('minified', function() {
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1530,6 +1543,7 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .clone()
 	 * @syntax $(selector).clone()
+	 * @syntax $(selector).clone(onCreate)
 	 * Creates a ##list#Minified list## of strings and Element Factories that return clones of the list elements. An Element Factory is a function
 	 * that does not take arguments and returns a Minified list of DOM nodes. You can pass the list to ##add() and similar functions
 	 * to re-create the cloned nodes.
@@ -1555,9 +1569,12 @@ define('minified', function() {
 	 * $('#comments').add($('.comment').clone());
 	 * </pre> 
 	 * 
+ 	 * @param onCreate optional a function(elementList) that will be called each time a top-level element is cloned. The argument
+ 	 *                 contains only this cloned element. This allows you, for example, to add event handlers with ##on(). 
+ 	 *                 The argument <var>elementList</var> is a Minified list that contains the new element.
 	 * @return the list of Element Factory functions and strings to create clones
 	 */
-	'clone': function () {
+	'clone': function (onCreate) {
 		return new M(collect(this, function(e) {
 			var nodeType = isNode(e);
 			if (nodeType == 1) {
@@ -1579,7 +1596,7 @@ define('minified', function() {
 						attrs['@'+attrName] = a['value'];
 					}
 				});
-				return MINI['EE'](e['tagName'], attrs, $(e['childNodes'])['clone']());
+				return MINI['EE'](e['tagName'], attrs, $(e['childNodes'])['clone'](), onCreate);
 			}
 			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
 				return e['data'];
@@ -2135,8 +2152,6 @@ define('minified', function() {
 	 * containing a newly created DOM element, optionally with attributes and children.
 	 * Typically it will be used to insert elements into the DOM tree using add() or a similar function. 
 	 *
-	 * The function is namespace-aware and will create XHTML nodes if called in an XHTML document.
-	 * 
 	 * Please note that the function <var>EE</var> will not be automatically exported by Minified. You should always import it
 	 * using the recommended import statement:
 	 * <pre>
@@ -2223,11 +2238,10 @@ define('minified', function() {
 	 */
 	'EE': function(elementName, attributes, children, onCreate) {
 		// @cond debug if (!elementName) error("EE() requires the element name."); 
-		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':'). In XML/XHTML documents, all elements are automatically in the document's namespace.");
+		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':').");
 	
 		return function() {
-			var nu = _document.documentElement.namespaceURI; // to check whether doc is XHTML
-			var list = $(nu ? _document.createElementNS(nu, elementName) : _document.createElement(elementName));
+			var list = _document.createElement(elementName);
 			(isList(attributes) || !isObject(attributes)) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 			if (onCreate)
 				onCreate(list);
