@@ -45,7 +45,7 @@ add event handlers with <code><a href='on.html'>on()</a></code>. The argument <v
 <h4>Description</h4>
 <div class="description"><p>Creates a new Element Factory. An Element Factory is a function without arguments that returns a <a href='list.html'>Minified list()</a>
 containing a newly created DOM element, optionally with attributes and children.
-Typically it will be used to insert elements into the DOM tree using add() or a similar function.</p><p>The function is namespace-aware and will create XHTML nodes if called in an XHTML document.</p><p>Please note that the function <var>EE</var> will not be automatically exported by Minified. You should always import it
+Typically it will be used to insert elements into the DOM tree using add() or a similar function.</p><p>Please note that the function <var>EE</var> will not be automatically exported by Minified. You should always import it
 using the recommended import statement:
 <pre>
 var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
@@ -165,6 +165,7 @@ var myStylesSpan = EE('input', {'@name': "myInput"}, null, function(e) {
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
+</li><li><a href="require.html">require()</a>
 </li></ul></div>
 
 ]]></main>

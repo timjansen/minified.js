@@ -126,6 +126,9 @@ Creates a new promise that will be fulfilled as soon as the specified number of 
 <div class="summary">Registers two callbacks that will be invoked when the ##promise#Promise##'s asynchronous operation finished
 successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</div>
 
+<h3><a href="require.html">require()</a></h3>
+<div class="summary">Returns a reference to a module.</div>
+
 </div>
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
 </li><li><a href="dollardollar.html">$$()</a>
@@ -164,6 +167,7 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
+</li><li><a href="require.html">require()</a>
 </li></ul></div>
 
 ]]></main>

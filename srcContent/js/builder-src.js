@@ -13,7 +13,7 @@ function closureCompile(src, advanced, cb) {
 		cb&&cb(null);
 	}
 	var URL = 'http://closure-compiler.appspot.com/compile';
-	$.request('post', URL, 
+	MINI.request('post', URL, 
 			{
 				js_code: src,
 				output_format: 'json',
@@ -161,7 +161,7 @@ function setUpConfigurationUI(s) {
 }
 
 $(function() {
-	$.request('get', SRC, null).then(function(src) {
+	MINI.request('get', SRC, null).then(function(src) {
 		setUpConfigurationUI(prepareSections(src));
 	})
 	.error(function(txt) {

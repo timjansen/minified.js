@@ -11,15 +11,20 @@
 <h2><a name="doc-clone">.clone()</a></h2>
 <div class="summary">Creates a ##list#Minified list## of strings and Element Factories that return clones of the list elements.</div>
 
-<h4>Syntax</h4>
+<h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">$(selector).clone()</div>
+<div class="syntax">$(selector).clone(onCreate)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="clone_RETURN" class="returnValue inSyntax0"><a name="clone_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the list of Element Factory functions and strings to create clones</dd>
+<dt id="clone_onCreate" class=""><a name="clone_onCreate"><var>onCreate</var></a></dt>
+<dd class=""><span class="optional">optional</span> a function(elementList) that will be called each time a top-level element is cloned. The argument
+contains only this cloned element. This allows you, for example, to add event handlers with <code><a href='on.html'>on()</a></code>.
+The argument <var>elementList</var> is a Minified list that contains the new element.</dd>
+<dt id="clone_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="clone_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1">the list of Element Factory functions and strings to create clones</dd>
 </dl>
 
 <h4>Description</h4>
@@ -88,6 +93,7 @@ $('#comments').add($('.comment').clone());
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
+</li><li><a href="require.html">require()</a>
 </li></ul></div>
 
 ]]></main>

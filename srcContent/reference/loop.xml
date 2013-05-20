@@ -98,6 +98,7 @@ In older browsers, the callback function will be invoked approximately every 33 
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
+</li><li><a href="require.html">require()</a>
 </li></ul></div>
 
 ]]></main>

@@ -71,6 +71,7 @@ will provide one though.</p><p>The Minified Web module provides a number of help
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
+</li><li><a href="require.html">require()</a>
 </li></ul></div>
 
 ]]></main>

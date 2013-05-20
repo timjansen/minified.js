@@ -1048,12 +1048,12 @@ define('minified', function() {
 	 * $('.chapter').add(function(parent, index) { return EE('h2', 'Chapter number ' + index); });
 	 * </pre>
 	 *
-	 * @param text a string to add as text node of the list elements
+	 * @param text a string or number to add as text node of the list elements
 	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
 	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
 	 *              containing strings, lists, functions and/or DOM nodes.
-	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories
+	 * @param list a list containing text, functions, nodes or more lists. Please note that if you have DOM nodes in this list
+	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories
 	 *             if you add DOM nodes to more than one element.
 	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
 	 * @return the current list

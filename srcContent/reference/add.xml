@@ -22,14 +22,14 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="add_text" class=""><a name="add_text"><var>text</var></a></dt>
-<dd class="">a string to add as text node of the list elements</dd>
+<dd class="">a string or number to add as text node of the list elements</dd>
 <dt id="add_factoryFunction" class=""><a name="add_factoryFunction"><var>factoryFunction</var></a></dt>
 <dd class="">a function(listItem, listIndex) that will be invoked for each list element to create the nodes.
 The function can return either a string for a text node, a function to invoke, an HTML element or a list
 containing strings, lists, functions and/or DOM nodes.</dd>
 <dt id="add_list" class=""><a name="add_list"><var>list</var></a></dt>
-<dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories
+<dd class="">a list containing text, functions, nodes or more lists. Please note that if you have DOM nodes in this list
+and attempt to add them to more than one element, the result is undefined. You should always use factories
 if you add DOM nodes to more than one element.</dd>
 <dt id="add_node" class=""><a name="add_node"><var>node</var></a></dt>
 <dd class="">a DOM node to add <strong>only to the first element</strong> of the list.</dd>
@@ -135,6 +135,7 @@ $('.chapter').add(function(parent, index) { return EE('h2', 'Chapter number ' + 
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
+</li><li><a href="require.html">require()</a>
 </li></ul></div>
 
 ]]></main>

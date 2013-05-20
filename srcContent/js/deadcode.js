@@ -167,9 +167,9 @@ hhEach({
 	 * @return the list
 	 */
     'wire': function(events, toggles) {
-    	return this.each(function(li) {
+    	return each(this, function(li) {
     		function select(selector) {
-    			return MINI(selector||li, (selector && !/^#/.test(selector))?li:undef);
+    			return $(selector||li, (selector && !/^#/.test(selector))?li:undef);
     		}
     		function toggleFunc(selector, args) { 
     			return isFunction(args) ? [toggles] :
@@ -179,14 +179,14 @@ hhEach({
     		}
     		var e, toggleList = toggleFunc(null, toggles);
 
-    		each(isString(events) ? {'':events} : events, function(selector, eventSpec) {
+    		eachObj(isString(events) ? {'':events} : events, function(selector, eventSpec) {
     			each(eventSpec.split(/\s+/), function(event) {
     				select(selector).on(e = replace(event, /^[+-]/), function(v) {each(toggleList, function(toggle) {toggle(v);});}, [/^\+/.test(event) || (event==e && undef)]);
     			});
     		});
     	});
     }
-}, function(n, v) {MINI.prototype[n]=v;});
+}, function(n, v) {$.prototype[n]=v;});
 	
 hhEach({	
 	

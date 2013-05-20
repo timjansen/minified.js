@@ -35,14 +35,14 @@
   	<div style="float: left; width: 20%;"><div style="font-size: 3em; transform: rotate(-90deg); -webkit-transform: rotate(-90deg); -ms-transform: rotate(-90deg);">Wh<span class="colored">y</span>?</div></div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 style="margin-top: 0;">Minified is smaller!</h3>
-  		Minified is a sub-4kb JavaScript library for client-side scripting. It is fully-featured and 
-  		<a href="#featCmp">comparable to jQuery and MooTools</a>, but its file size is over  
-  		<a href="#sizeCmp">85% smaller</a>.
+  		Minified is a sub-4kb JavaScript library for client-side scripting. Its feature set is 
+  		<a href="#featCmp">comparable to jQuery and MooTools</a>, but at
+  		<a href="#sizeCmp">1/7th</a> ot the size.
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 style="margin-top: 0;">Easy to learn!</h3>
-  		Minified has <a href="reference/">relatively few</a>, but very powerful functions. There's no need to wade through 
-  		two dozens pages filled with functions to find something.
+  		Minified has <a href="/reference/">relatively few</a>, but very powerful functions. There's no need to wade through 
+  		two dozens pages filled with functions to find what you need.
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 style="margin-top: 0;">No surprises!</h3>

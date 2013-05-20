@@ -3,53 +3,35 @@
    Auto-generated using docbuilder.js. Do not edit manually. 
 -->
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
-	<title>MINI.wait() - Minified.js</title>
+	<title>require() - Minified.js</title>
 	<section>reference</section>
 	<externalCss>../css/reference.css</externalCss>
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-wait">MINI.wait()</a></h2>
-<div class="summary">
-Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed.</div>
+<h2><a name="doc-require">require()</a></h2>
+<div class="summary">Returns a reference to a module.</div>
 
-<h4>Syntax Variants</h4>
+<h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">MINI.wait()</div>
-<div class="syntax">MINI.wait(durationMs)</div>
+<div class="syntax">require(name)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="wait_durationMs" class=""><a name="wait_durationMs"><var>durationMs</var></a></dt>
-<dd class=""><span class="optional">optional</span> the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
-from the event loop.</dd>
-<dt id="wait_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="wait_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">a <a href='promise.html'>Promise()</a> object that will be fulfilled when the time is over. It will never fail. The promise argument is the
-durationMs parameter as given to <var>wait()</var>.</dd>
+<dt id="require_name" class=""><a name="require_name"><var>name</var></a></dt>
+<dd class="">the name of the module to request. In Minified's implementation, only 'minified' is supported.</dd>
+<dt id="require_RETURN" class="returnValue inSyntax0"><a name="require_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0">the reference to Minified if 'minified' had been used as name. <var>undefined</var> otherwise.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>
-Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
-because it allows you to chain delays into your animation chain.</p><p></p></div>
-
-<div class="examples">
-<h4>Example</h4>
-<div class="example"><p>Chained animation using <a href='promise.html'>Promise()</a> callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms
-         and finally moves to 100/100.
-<pre>
-var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
-div.animate({$left: '200px', $top: '0px'}, 600, 0)
-   .then(function() {
-          div.animate({$left: '200px', $top: '200px'}, 800, 0);
-   }).then(function() {
-   		 return MINI.wait(50);
-   }).then(function() {
-          div.animate({$left: '100px', $top: '100px'}, 400);
-   });
-});
-</pre></p><p></p></div>
-</div>
+<div class="description"><p>Returns a reference to a module. If you do not use an AMD loader to load Minified, just call <var>require()</var> with the
+argument 'minified' to get a reference to Minified.
+If you do use an AMD loader, Minified will not define this function and you can use the AMD loader to obtain the
+reference to Minified.
+Minified's version of <var>require</var> is very simple and will <strong>only support other libraries</strong>. You can not
+use it to load other modules, and it will be incompatible with all non-AMD libraries that also define a function
+of the same name. If you need to work with several libraries, you need a real AMD loader.</p><p></p></div>
 
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
