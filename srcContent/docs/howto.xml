@@ -6,7 +6,47 @@
   <page:main><![CDATA[<div>
   <h1>How to... Common Minified Tasks</h1>
 
-This document shows you how to do common tasks with Minified.
+<h2>Overview</h2>
+<ul>
+<li><a href="#select">Work with Selectors and Lists</a><ul>
+ <li><a href="#select_children">Find Elements</a></li>
+ <li><a href="#select_children">Find All Child Elements</a></li>
+ <li><a href="#select_children">Find Child Nodes</a></li>
+ <li><a href="#select_children">Find Every Second Element</a></li>
+ <li><a href="#select_children">Combine Lists</a></li>
+</ul></li>
+<li><a href="#html">Modify HTML Structure</a><ul>
+ <li><a href="#html_text">Set Text Content</a></li>
+ <li><a href="#html_innerhtml">Set InnerHTML</a></li>
+ <li><a href="#html_create">Create HTML Elements</a></li>
+ <li><a href="#html_add">Add HTML Elements or Text</a></li>
+ <li><a href="#html_replace">Replace HTML Elements</a></li>
+ <li><a href="#html_remove">Remove HTML Elements or Nodes</a></li>
+ <li><a href="#html_attr">Set and Read Attributes</a></li>
+ <li><a href="#html_clone">Clone Elements</a></li>
+</ul></li>
+<li><a href="#style">Modify HTML Styles</a><ul>
+ <li><a href="#style_classes">Add / Remove / Toggle CSS Classes</a></li>
+ <li><a href="#style_hasclass">Check for CSS Classes</a></li>
+ <li><a href="#style_set">Set and Read CSS Style</a></li>
+ <li><a href="#style_prop">Set and Read Properties</a></li>
+</ul></li>
+<li><a href="#anim">Animation</a><ul>
+ <li><a href="#anim_anim">Animate Styles and Properties</a></li>
+ <li><a href="#anim_chain">Chain Animation Steps</a></li>
+ <li><a href="#anim_toggle">Toggle Styles and Properties</a></li>
+ <li><a href="#anim_fade">Fade in / Fade Out (Animation)</a></li>
+ <li><a href="#anim_slide">Slide in / Slide Out (Animation)</a></li>
+ <li><a href="#anim_loop">Create Complex Animations (Loop)</a></li>
+</ul></li>
+<li><a href="#data">Data and Events</a><ul>
+ <li><a href="#data">Register / Unregister Event Handlers</a></li>
+ <li><a href="#data_post">Do HTTP Requests (AJAX / XHR)</a></li>
+ <li><a href="#data_json">Use JSON</a></li>
+ <li><a href="#data_cookie">Read / Write / Delete Cookies</a></li>
+</ul></li>
+</ul>
+
 
 <h2><a name="select">Work with Selectors and Lists</a></h2>
 <h3><a name="select_children">Find Elements</a></h3>
@@ -21,6 +61,7 @@ All other CSS1 selectors are also supported. In builds without IE7 support, all 
 API: <a href="/reference/dollar.html">$()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Vmr6z/">Selector</a>
 </p>
+
 
 <h3><a name="select_children">Find All Child Elements</a></h3>
 <p>
@@ -57,6 +98,7 @@ The <var>filter()</var> function filters all elements that have an even index.
 API: <a href="/reference/dollar.html">$()</a>, <a href="/reference/filter.html">filter()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/FXGce/">Filter</a>
 </p>
+
 
 <h3><a name="select_children">Combine Lists</a></h3>
 <p>
@@ -154,7 +196,7 @@ If you want to replace the children of an element, instead of the element itself
 <pre>$('#container').fill("New content.");</pre>
 </p>
 <p>
-API: <a href="/reference/add.html">add()</a>,<a href="/reference/fill.html">fill()</a>, <a href="/reference/ee.html">EE()</a>, 
+API: <a href="/reference/add.html">add()</a>, <a href="/reference/fill.html">fill()</a>, <a href="/reference/ee.html">EE()</a>, 
 <a href="/reference/replace.html">replace()</a>.<br/>
 </p>
 
@@ -167,6 +209,7 @@ Just use <var>remove()</var> to remove elements from the DOM tree.
 <p>
 API: <a href="/reference/remove.html">remove()</a>.<br/>
 </p>
+
 
 <h3><a name="html_attr">Set and Read Attributes</a></h3>
 <p>
@@ -205,9 +248,15 @@ The prefix decides what to do: "-" removes the CSS class, "+" adds it and no pre
 You can also call <var>set()</var> with the name "$" to do the same. This can be useful to modify
 several things at the same time:
 <pre>$('.myClass').set({$: '-oldClass', $display: 'block');</pre>
+</p><p>
+Often it is easier to create a toggle for CSS classes, as you can directly connect it to events:
+<pre>var toggle = $('.myClass').toggle('toggleClass');
+$('#toggleButton').on('click', toggle);
+$('#onButton').on('click', toggle, [true]);
+$('#offButton').on('click', toggle, [false]);</pre>
 </p>
 <p>
-API: <a href="/reference/set.html">set()</a>.<br/>
+API: <a href="/reference/set.html">set()</a>, <a href="/reference/toggle.html">toggle()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a>
 </p>
 
@@ -222,6 +271,7 @@ API: <a href="/reference/hasclass.html">hasClass()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a>
 </p>
 
+
 <h3><a name="style_set">Set and Read CSS Style</a></h3>
 <p>
 <pre>$('#someSpan').set({$color: '#ff0'});</pre>
@@ -231,6 +281,7 @@ Use <var>set</var> with a '$'-prefixed name to set CSS styles. <var>get</var> re
 <p>
 API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/>
 </p>
+
 
 <h3><a name="style_prop">Set and Read Properties</a></h3>
 <p>
@@ -246,33 +297,171 @@ API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set(
 <h2><a name="anim">Animation</a></h2>
 
 <h3><a name="anim_anim">Animate Styles and Properties</a></h3>
-http://jsfiddle.net/tjansen/tqsCg/
+<p>
+<pre>$('.moving').animate({$width: '100px'}, 750);</pre>
+<var>animate()</var> shares the name/value syntax with <var>set()</var>, but will smoothly transition numbers and colors. You
+can specify the duration of the animation as well as the interpolation algorithm to be used.
+</p>
+<p>
+If you need to transition an object back and forth between two states, it is usually better to animate using <var>toggle</var>
+<pre>var myToggle = $('.moving').toggle({$width: '100px'}, {$width: '200px'}, 750);
+
+$('#widthToggle').on('click', myToggle);
+$('#width100').on('click', myToggle, [false]);
+$('#width200').on('click', myToggle, [true]);
+</pre>
+<p>
+API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, 
+<a href="/reference/toggle.html">toggle()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tqsCg/">Animation</a>, <a href="http://jsfiddle.net/tjansen/xw7nQ/">Toggle</a>
+</p>
+
 
 <h3><a name="anim_chain">Chain Animation Steps</a></h3>
-http://jsfiddle.net/tjansen/NrGnf/
+<p>
+<pre>
+$('.colChanger').animate({$backgroundColor: '#f00'}, 750)
+                     .then(function(list) {
+				return $('.colChanger').animate({$backgroundColor: '#0f0'}, 750)
+		     })
+                     .then(function(list) {
+				$('.colChanger').animate({$backgroundColor: '#000'}, 750)
+		     });
+</pre>
+<var>animate()</var>returns a <a href="/reference/promise.html">Promise</a> that can be used to 
+chain <var>animate()</var> invocations, so that you can start another <var>animate()</var> when 
+the previous animation ended.
+</p>
+<p>
+API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/promise.html">Promise</a>, 
+<a href="/reference/then.html">then()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/NrGnf/">Animation Chain</a>
+</p>
+
 
 <h3><a name="anim_toggle">Toggle Styles and Properties</a></h3>
-http://jsfiddle.net/tjansen/xw7nQ/
+<p>
+<pre>var myToggle = $('.resizing).toggle({$width: '100px'}, {$width: '200px'}, 750);
+
+$('#widthToggle').on('click', myToggle);
+$('#width100').on('click', myToggle, [false]);
+$('#width200').on('click', myToggle, [true]);
+</pre>
+Toggles are functions that can toggle the state of a list's elements between two sets of values. 
+You can go to a specific state by calling the toggle with a boolean, or toggle between the states
+by calling it without (or other) arguments. Toggles are animated when you set a duration, but you
+can also skip the duration to toggle instantly.
+</p>
+<p>
+API: <a href="/reference/toggle.html">toggle()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/xw7nQ/">Toggle</a>, 
+<a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a>
+</p>
+
 
 <h3><a name="anim_fade">Fade in / Fade Out (Animation)</a></h3>
+<p>
+<pre>$('.myElem1').animate({$$fade: 1}, 500); // fade in
+$('.myElem2').animate({$$fade: 0}, 500); // fade out
+var fadeToggle = $('.myElem3').toggle({$$fade: 0}, {$$fade: 1}, 500);
+</pre>
+Use the virtual property <var>$$fade</var> to fade elements in and out.
+</p>
+<p>
+API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, 
+<a href="/reference/toggle.html">toggle()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a>
+</p>
+
 
 <h3><a name="anim_slide">Slide in / Slide Out (Animation)</a></h3>
+<p>
+<pre>$('.myElem1').animate({$$slide: 1}, 500); // slide in
+$('.myElem2').animate({$$slide: 0}, 500); // slide out
+var slideToggle = $('.myElem3').toggle({$$slide: 0}, {$$slide: 1}, 500);
+</pre>
+Use the virtual property <var>$$slide</var> to slide elements in and out.
+</p>
+<p>
+API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, 
+<a href="/reference/toggle.html">toggle()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a>
+</p>
+
 
 <h3><a name="anim_loop">Create Complex Animations (Loop)</a></h3>
-http://jsfiddle.net/tjansen/Xu6R8/
+<p>
+<pre>MINI.loop(function(t) {
+	$('.swinging').set({$top: (100 + 50*Math.sin(2*Math.PI * t / 5000)) + 'px'});
+});</pre>
+For complex animations that can not be expressed with <var>animate()</var>, <var>loop()</var> allows you to
+register a function that will be invoked for each frame. It uses the browser's <var>requestAnimationFrame</var>
+function if available.
+</p>
+<p>
+API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/loop.html">loop()</a>, 
+<a href="/reference/set.html">set()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Xu6R8/">Loop Animation</a>
+</p>
+
 
 <h2><a name="data">Data and Events</a></h2>
-
 <h3><a name="data">Register / Unregister Event Handlers</a></h3>
+<p>
+<pre>function buttonHandler(e) { 
+	window.alert('Button pressed. Unregister now.');
+	MINI.off(buttonHandler);
+}
+$('#myButton').on('click', buttonHandler);</pre>
+Use <var>on()</var> to register an event handler for one or more events. <var>MINI.off()</var> unregisters event handlers.<br/>
+Please note that <var>on()</var> is a bit different than other libraries' event registration: Minified will always disable event forwarding and
+the event's default action, unless the handler returns <var>true</var>.
+</p>
+<p>
+API: <a href="/reference/on.html">on()</a>, <a href="/reference/off.html">off()</a>.<br/>
+</p>
 
-<h3><a name="data_get">Do HTTP GET Requests (AJAX / XHR)</a></h3>
-
-<h3><a name="data_post">Do HTTP POST Requests (AJAX / XHR)</a></h3>
+<h3><a name="data_post">Do HTTP Requests (AJAX / XHR)</a></h3>
+<p><pre>MINI.request('post', '/example/service', {param1: 'hello', param2: 5})
+    .then(function success(result) {
+    	$('#result').fill(result);
+    })
+    .error(function(status, statusText, responseText) {
+		$('#result').fill('Got an error.');
+	});;</pre>
+<var>request()</var> executes HTTP requests asynchronously. You can define the method and URL, as well as data to send.
+For GET requests it is map of parameters to append to the URL. For POST requests, it can either be a map of form
+parameters, a string or XML. The result is returned in the form of a promise.
+</p>
+<p>
+API: <a href="/reference/request.html">request()</a>, <a href="/reference/promise.html">Promise</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/ncQrp/">Request / JSON</a>
+</p>
 
 <h3><a name="data_json">Use JSON</a></h3>
+<p><pre>var jsonString = MINI.toJSON({a:1, b: 'test', c: [1, 2]});
+var obj = MINI.parseJSON(jsonString);</pre>
+<var>toJSON()</var> and <var>parseJSON()</var> convert between JSON strings and JavaScript structures. If you want to send
+JSON in an HTTP request, just convert the JavaScript structure into a string using <var>toJSON()</var>. To evaluate a
+JSON response, use <var>parseJSON()</var> for the conversion.
+</p>
+<p>
+API: <a href="/reference/parsejson.html">parseJSON()</a>, <a href="/reference/tojson.html">toJSON()</a>, 
+<a href="/reference/request.html">request()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/ncQrp/">Request / JSON</a>
+</p>
+
 
 <h3><a name="data_cookie">Read / Write / Delete Cookies</a></h3>
-
+<p><pre>MINI.setCookie('counter', (parseInt(MINI.getCookie('counter')) || 0) + 1, 14); // 14 days valid 
+var obj = MINI.parseJSON(jsonString);</pre>
+<var>toJSON()</var> and <var>parseJSON()</var> convert between JSON strings and JavaScript structures. If you want to send
+JSON in an HTTP request, just convert the JavaScript structure into a string using <var>toJSON()</var>. To evaluate a
+JSON response, use <var>parseJSON()</var> for the conversion.
+</p>
+<p>
+API: <a href="/reference/getcookie.html">getcookie()</a>, <a href="/reference/setcookie.html">setcookie</a>.<br/>
+</p>
 
 </div>
  ]]></page:main>

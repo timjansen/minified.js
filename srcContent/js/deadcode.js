@@ -185,7 +185,31 @@ hhEach({
     			});
     		});
     	});
-    }
+    },
+    
+    
+    // toggle variant allowing unlimited states
+	'toggle': function(states, durationMs, linearity) {
+		var self = this;
+		var animState = {};
+		var state = 0, regexg = /\b(?=\w)/g;
+
+		if (isString(states))
+			return self['toggle']([replace(a, regexg, '-'), replace(a, regexg, '+')]);
+		else {
+			return self['set'](states[0]) && 
+			    function(newState) {
+					if (newState === state) 
+						return;
+					state = isNumber(newState) ? newState : (state+1)%states.length;
+	
+					if (durationMs) 
+						self['animate'](states[state], animState['stop'] ? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
+					else
+						self['set'](states[state]); 
+				};
+		}
+	},
 }, function(n, v) {$.prototype[n]=v;});
 	
 hhEach({	

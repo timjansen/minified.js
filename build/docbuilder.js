@@ -5,14 +5,14 @@ var GROUPS = ['SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'AN
 //- ##NAME() will be replaced with <code><a href="NAME.html">NAME()</a></code>
 //- #ID#NAME() will be replaced with <code><a href="ID.html">NAME()</a></code>
 //- ##ID# bla bla ## will be replaced with <a href="NAME.html"> bla bla </a>
-function parseDescription(desc, paragraphSeparator) {
+function parseDescription(desc, paragraphSeparator, plainText) {
 	return _.toString(desc)
 		.replace(/#(\w*)#([\w$.]+)\(\)/g, function(all, id, name) {
 			var rId = id || name;
-			return "<code><a href='"+rId.toLowerCase()+".html'>"+name+"()</a></code>";
+			return plainText ? name : "<code><a href='"+rId.toLowerCase()+".html'>"+name+"()</a></code>";
 		})
 		.replace(/##(\w+)#([^#]+)##/g, function(all, id, text) {
-			return "<a href='"+id.toLowerCase()+".html'>"+text+"()</a>";
+			return plainText ? text :  "<a href='"+id.toLowerCase()+".html'>"+text+"()</a>";
 		})
 		.replace(/\n\n/mg, paragraphSeparator || '');
 }
@@ -24,7 +24,7 @@ function createDocs(sec) {
 	
 	var s = _.format('<h2><a name="doc-{ID}">{TITLE}</a></h2>\n'+
 			'<div class="summary">{SUMMARY}</div>\n\n',
-			{ID: sec.id, TITLE: sec.name, SUMMARY: sec.desc.replace(/\.[^]+$/m, '.')});
+			{ID: sec.id, TITLE: sec.name, SUMMARY: parseDescription(sec.desc.replace(/\.[^]+$/m, '.'), null, true)});
 	if (sec.syntax.length) {
 		if (sec.syntax.length == 1)
 			s += '<h4>Syntax</h4>\n';
@@ -80,7 +80,7 @@ function createPreview(sec) {
 	
 	var s = _.format('<h3><a href="{ID}.html">{TITLE}</a></h3>\n'+
 			'<div class="summary">{SUMMARY}</div>\n\n',
-			{ID: sec.id, TITLE: sec.name, SUMMARY: sec.desc.replace(/\.[^]+$/m, '.')});
+			{ID: sec.id, TITLE: sec.name, SUMMARY: parseDescription(sec.desc.replace(/\.[^]+$/m, '.'), null, true)});
 	sec.htmlpreview = s;
 }
 
@@ -136,7 +136,7 @@ function createToc(sections) {
 	_.each(sections, function(sec) {
 		html += '<li>'+sec.tocentry+'</li>';
 	});
-	html += '<li><a href="/docs/howto.xml">How to...</a></li>';
+	html += '<li><a href="/docs/howto.html">How to...</a></li>';
 	html += '</ul></div>';
 	return html;
 }

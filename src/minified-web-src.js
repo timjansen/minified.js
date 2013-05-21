@@ -1750,7 +1750,7 @@ define('minified', function() {
 			});
 			initState.push(p);
 		});
-				
+
 		// start animation
 		loopStop = MINI.loop(function(timePassedMs) { 
 			function getColorComponent(colorCode, index) {
@@ -1874,6 +1874,8 @@ define('minified', function() {
 						self['set'](state ? state2 : state1); 
 				};
 		},
+
+
 
 		/*$
 		 * @id on

@@ -10,7 +10,7 @@
 <div id="docmain"><p class="docHead"><h1>Minified Web API</h1>
 </p>
 <h3><a href="dollar.html">$()</a></h3>
-<div class="summary">Creates a ##list#Minified list## of HTML nodes.</div>
+<div class="summary">Creates a Minified list of HTML nodes.</div>
 
 <h3><a href="dollardollar.html">$$()</a></h3>
 <div class="summary">Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found.</div>
@@ -31,10 +31,10 @@
 <div class="summary">Animates the items of the list by modifying their properties, CSS styles and attributes.</div>
 
 <h3><a href="clone.html">.clone()</a></h3>
-<div class="summary">Creates a ##list#Minified list## of strings and Element Factories that return clones of the list elements.</div>
+<div class="summary">Creates a Minified list of strings and Element Factories that return clones of the list elements.</div>
 
 <h3><a href="collect.html">.collect()</a></h3>
-<div class="summary">Creates a new ##list#Minified list## from the current list using the given callback function.</div>
+<div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
 
 <h3><a href="each.html">.each()</a></h3>
 <div class="summary">Invokes the given function once for each item in the list.</div>
@@ -43,7 +43,7 @@
 <div class="summary">Sets the content of the list elements, replacing old content.</div>
 
 <h3><a href="filter.html">.filter()</a></h3>
-<div class="summary">Creates a new ##list#Minified list## that contains only those items approved by the given callback function.</div>
+<div class="summary">Creates a new Minified list that contains only those items approved by the given callback function.</div>
 
 <h3><a href="find.html">.find()</a></h3>
 <div class="summary">Finds a specific value in the list.</div>
@@ -71,7 +71,7 @@
 Modifies the list's DOM elements by setting their properties, attributes, CSS style and/or CSS classes.</div>
 
 <h3><a href="sub.html">.sub()</a></h3>
-<div class="summary">Returns a new ##list#Minified list## containing only the elements in the specified range.</div>
+<div class="summary">Returns a new Minified list containing only the elements in the specified range.</div>
 
 <h3><a href="toggle.html">.toggle()</a></h3>
 <div class="summary">
@@ -117,13 +117,13 @@ Creates a new promise that will be fulfilled as soon as the specified number of 
 <i>Promises</i> are objects that represent the result of an asynchronous operation.</div>
 
 <h3><a href="always.html">promise.always()</a></h3>
-<div class="summary">Registers a callback that will always be called when the ##promise#Promise##'s operation ended, no matter whether the operation succeeded or not.</div>
+<div class="summary">Registers a callback that will always be called when the Promise's operation ended, no matter whether the operation succeeded or not.</div>
 
 <h3><a href="error.html">promise.error()</a></h3>
 <div class="summary">Registers a callback that will be called when the operation failed.</div>
 
 <h3><a href="then.html">promise.then()</a></h3>
-<div class="summary">Registers two callbacks that will be invoked when the ##promise#Promise##'s asynchronous operation finished
+<div class="summary">Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
 successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</div>
 
 <h3><a href="require.html">require()</a></h3>
@@ -168,7 +168,7 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
 </li><li><a href="require.html">require()</a>
-</li><li><a href="/docs/howto.xml">How to...</a></li></ul></div>
+</li><li><a href="/docs/howto.html">How to...</a></li></ul></div>
 
 ]]></main>
 </page>

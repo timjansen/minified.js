@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-clone">.clone()</a></h2>
-<div class="summary">Creates a ##list#Minified list## of strings and Element Factories that return clones of the list elements.</div>
+<div class="summary">Creates a Minified list of strings and Element Factories that return clones of the list elements.</div>
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
@@ -94,7 +94,7 @@ $('#comments').add($('.comment').clone());
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
 </li><li><a href="require.html">require()</a>
-</li><li><a href="/docs/howto.xml">How to...</a></li></ul></div>
+</li><li><a href="/docs/howto.html">How to...</a></li></ul></div>
 
 ]]></main>
 </page>

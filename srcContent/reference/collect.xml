@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-collect">.collect()</a></h2>
-<div class="summary">Creates a new ##list#Minified list## from the current list using the given callback function.</div>
+<div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -110,7 +110,7 @@ var elements = $('input.myTexts').collect(function(item) {
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
 </li><li><a href="require.html">require()</a>
-</li><li><a href="/docs/howto.xml">How to...</a></li></ul></div>
+</li><li><a href="/docs/howto.html">How to...</a></li></ul></div>
 
 ]]></main>
 </page>
