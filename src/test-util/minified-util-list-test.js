@@ -11,6 +11,7 @@ var assert = require("assert");
 
 var AMD_NAME = testCommon.AMD_NAME;
 var loadInContextSrc = testCommon.loadInContextSrc;
+var undef;
 
 
 function runTests(loadInContext) {
@@ -635,6 +636,50 @@ function runTests(loadInContext) {
 			assert.equal(_.coal(0, false, '', 'abc'), 0);
 		});
 	});
+	
+	describe('_.call()', function() {
+		it('call', function() {
+			var _ = req();
+			var i = 0;
+			function a(x9) { assert.equal(x9, 9); i++; return "a";}
+			function b(x9) { assert.equal(x9, 9); i++; return "b";}
+			
+			var r1 = _().call(fThis, [3]);
+			assert(_.equals(r1, []));
+
+			var r2 = _(a, b, null).call([9]);
+			assert(_.equals(r2, ["a", "b", undef]));
+			assert.equal(i, 2);
+
+			var fThis = {a:1};
+			var r3 = _(a, null, b, null).call(fThis, [9]);
+			assert(_.equals(r3, ["a", undef, "b", undef]));
+			assert.equal(i, 4);
+
+		});
+	});
+	
+	describe('_.func()', function() {
+		it('func', function() {
+			var _ = req();
+			var i = 0;
+			function a(x9) { assert.equal(x9, 9); i++; return "a";}
+			function b(x9) { assert.equal(x9, 9); i++; return "b";}
+			
+			var r1 = _().func()([3]);
+			assert(_.equals(r1, []));
+
+			var r2 = _(a, b, null).func()([9]);
+			assert(_.equals(r2, ["a", "b", undef]));
+			assert.equal(i, 2);
+
+			var r3 = _(a, null, b, null).func()([9]);
+			assert(_.equals(r3, ["a", undef, "b", undef]));
+			assert.equal(i, 4);
+
+		});
+	});
+
 }
 
 testCommon.run(runTests);

@@ -1,8 +1,6 @@
 <!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="UTF-8"></meta><title>How to... Common Minified Tasks</title><link rel="stylesheet" type="text/css" href="../css/doc.css"></link></head><body><div id="head"><div class="container"><a href="/"><img src="/img/minified.svg"></img></a><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download/">Download</a><a class="notSelected" href="/builder.html">Build</a><a class="selected" href="/docs/">Documentation</a><a class="notSelected" href="/reference/">API</a><a class="notSelected" href="/about/">About</a></div></div></div><div id="main"><div class="container"><div>
   <h1>How to... Common Minified Tasks</h1>
 
-This document shows you how to do common tasks with Minified.
-
 <h2>Overview</h2>
 <ul>
 <li><a href="#select">Work with Selectors and Lists</a><ul>
@@ -15,6 +13,7 @@ This document shows you how to do common tasks with Minified.
 <li><a href="#html">Modify HTML Structure</a><ul>
  <li><a href="#html_text">Set Text Content</a></li>
  <li><a href="#html_innerhtml">Set InnerHTML</a></li>
+ <li><a href="#html_addhtml">Append HTML</a></li>
  <li><a href="#html_create">Create HTML Elements</a></li>
  <li><a href="#html_add">Add HTML Elements or Text</a></li>
  <li><a href="#html_replace">Replace HTML Elements</a></li>
@@ -129,6 +128,26 @@ You can use <a href="/reference/set.html">set()</a> to modify the <var>innerHTML
 If you only want to modify a single element, using the <var>innerHTML</var> property directly will be even easier:
 <pre>$$('#myElement').innerHTML = "My <b>HTML</b>";</pre>
 </p>
+<p>Please note that is generally not a good idea to modify HTML using innerHTML and other string operations, especially
+when handling user input or URL parameters. It is not only error prone, but can also lead to security issues. In most cases
+it is better to <a href="#html_create">Create HTML Elements with EE()</p> instead.
+<p>
+<p>
+API: <a href="/reference/set.html">set()</a>, <a href="/reference/dollardollar.html">$$()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
+</p>
+
+
+<h3><a name="html_addhtml">Append HTML</a></h3>
+<p>
+<pre>$$('#myElement').innerHTML += "<hr/>My Footer";</pre>
+If you only need to modify a single element, you can add text directly to the <var>innerHTML</var> property.
+This is not possible if your list has more than one element though. Then you need to write a <var>set()</var> callback like this:
+<pre>$('.display').set("innerHTML", function(old) {return old + "My <b>HTML</b>"; });</pre>
+</p>
+<p>Please note that is generally not a good idea to modify HTML using innerHTML and other string operations, especially
+when handling user input or URL parameters. It is not only error prone, but can also lead to security issues. In most cases
+it is better to <a href="#html_create">Create HTML Elements with EE()</p> instead.
 <p>
 API: <a href="/reference/set.html">set()</a>, <a href="/reference/dollardollar.html">$$()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>

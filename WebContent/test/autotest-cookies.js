@@ -2,25 +2,25 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'setCookie/getCookie/deleteCookie',
 		exec: function() {
-			check(MINI.getCookie('w'), null);
+			check($.getCookie('w'), null);
 			
-			MINI.setCookie('a', 'b');
-			check(MINI.getCookie('a'), 'b');
+			$.setCookie('a', 'b');
+			check($.getCookie('a'), 'b');
 			
-			MINI.setCookie('xx', 'a===');
-			check(MINI.getCookie('xx'), 'a===');
-			check(MINI.getCookie('a'), 'b');
+			$.setCookie('xx', 'a===');
+			check($.getCookie('xx'), 'a===');
+			check($.getCookie('a'), 'b');
 			
-			MINI.setCookie('c', 'b');
-			check(MINI.getCookie('c'), 'b');
-			check(MINI.getCookie('xx'), 'a===');
-			check(MINI.getCookie('a'), 'b');
+			$.setCookie('c', 'b');
+			check($.getCookie('c'), 'b');
+			check($.getCookie('xx'), 'a===');
+			check($.getCookie('a'), 'b');
 			
-			MINI.setCookie('a', '', -1);
-			check(MINI.getCookie('c'), 'b');
-			check(MINI.getCookie('xx'), 'a===');
+			$.setCookie('a', '', -1);
+			check($.getCookie('c'), 'b');
+			check($.getCookie('xx'), 'a===');
 
-			MINI.setCookie('c', '', -1);
-			check(MINI.getCookie('xx'), 'a===');
+			$.setCookie('c', '', -1);
+			check($.getCookie('xx'), 'a===');
 		}
 	}]);

@@ -196,7 +196,7 @@ function serializeEnabledSections(sections, enabledSections) {
 		listedIds = enabledSectionList;
 	}
 	
-	var txt = "// " + CONFIG_START + " use this comment to re-create your build configuration\n" + head;
+	var txt = "// " + CONFIG_START + " use this comment to re-create configuration in the Builder\n" + head;
 	var charsToBreak = 50;
 	_(listedIds).sort().each(function(id) {
 		if (charsToBreak < id.length) {
@@ -212,8 +212,20 @@ function serializeEnabledSections(sections, enabledSections) {
 	return txt;
 }
 
-// finds a serialized configuration in the given source, returns a map id->1 of all enabled sections. Null if no config found.
-function deserializeEnabledSections(sections, src) {
+//adds possibly missing sections to configuration
+function fixConfig(sectionMap, conf) {
+	_.eachObj(conf, function(sectionName) {
+		if (sectionMap[sectionName])
+			_.copyObj(sectionMap[sectionName].requires, conf);
+		else
+			delete conf[sectionName];
+	});
+	return conf;
+}
+
+// finds a serialized configuration in the given source, returns a map id->1 of all enabled sections.
+// The resulting config is ready to use, with all dependencies resolved. Null if no config found.
+function deserializeEnabledSections(sections, sectionMap, src) {
 	function makeRegexp(s) {
 		return new RegExp('^'+s.replace(/ /g, '\\s+'));
 	}
@@ -244,17 +256,18 @@ function deserializeEnabledSections(sections, src) {
 				s = s.replace(/\s*\.\s*$/,'');
 				if (allExceptRegexp.test(s)) {
 					var r = createDefaultConfigurationMap(sections, true);
-					_.each(s.replace(allExceptRegexp, '').split(/\s*,\s*/), function(section) {
-						delete r[section];
+					_.each(s.replace(allExceptRegexp, '').split(/\s*,\s*/), function(sectionName) {
+						delete r[sectionName];
 					});
-					return r;
+					return fixConfig(sectionMap, r);
 				}
 				if (onlyRegexp.test(s)) {
 					var r = {};
-					_.each(s.replace(onlyRegexp, '').split(/\s*,\s*/), function(section) {
-						r[section] = 1;
+					_.each(s.replace(onlyRegexp, '').split(/\s*,\s*/), function(sectionName) {
+						if (sections[sectionName])
+							r[sectionName] = 1;
 					});
-					return r;
+					return fixConfig(sectionMap, r);
 				}
 			}
 		}
@@ -263,3 +276,5 @@ function deserializeEnabledSections(sections, src) {
 	
 	return null;
 }
+
+

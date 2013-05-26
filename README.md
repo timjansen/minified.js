@@ -14,13 +14,13 @@ everything that you don't need to reduce its size even more.
 Size Comparison
 -----------------
 <table>
-<tr><th>Name</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><td>minified-web.js (with IE support)</td><td>8.9kb</td><td>&lt;4kb</td></tr>
-<tr><td>minified-web.noie.js (no IE6/7/8 compatibility)</td><td>7.6kb</td><td>3.3kb</td></tr>
-<tr><td>jQuery 1.9.0 (with IE support)</td><td>91kb</td><td>32kb</td></tr>
-<tr><td>jQuery 2.0b2 (no IE6/7/8 compatibility)</td><td>81kb</td><td>29kb</td></tr>
-<tr><td>MooTools Core NoCompat 1.4.5</td><td>88kb</td><td>29kb</td></tr>
-<tr><td>Zepto.js 1.0rc1</td><td>23kb</td><td>8.4kb</td></tr>
+<tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
+<tr><td>minified-web.js</td><td>IE6 and higher</td><td>8.9kb</td><td>&lt;4kb</td></tr>
+<tr><td>minified-web.noie.js</td><td>no</td><td>7.6kb</td><td>3.3kb</td></tr>
+<tr><td>jQuery 1.10.0</td><td>IE6 and higher</td><td>91kb</td><td>32kb</td></tr>
+<tr><td>jQuery 2.0.1</td><td>no</td><td>82kb</td><td>28kb</td></tr>
+<tr><td>MooTools Core NoCompat 1.4.5</td><td>IE6 and higher</td><td>88kb</td><td>29kb</td></tr>
+<tr><td>Zepto.js 1.0</td><td>no</td><td>27kb</td><td>9.7kb</td></tr>
 </table>
 
 Feature Comparison
@@ -62,7 +62,7 @@ What you can expect from Minified Web
 
 Background
 ------------
-Maybe I am an old-fashioned guy, but the size of JavaScript libraries like jQuery and MooTools has always bothered me. 
+Call me old-fashioned, but the size of JavaScript libraries like jQuery and MooTools has always bothered me. 
 Don't get me wrong, they are fantastic libraries and I really like to use them, but they contain about 90kb of code even after minification. 
 This code needs to be parsed and executed on every page that you include them on.  For me, that just feels too large for what that they offer, 
 and especially for what I need. The 30kb size that they have after gzipping will can also cause a significant delay on low-bandwidth networks.
@@ -72,3 +72,16 @@ and when I work on them, I usually strive for perfection. Every unnecessary kilo
 little helper functions to replace jQuery functionality without the overhead. As I worked on several other projects, I wrote more and more helper 
 functions and started sharing them between projects until they became a library of their own.  By now they are so mature that I believe that this 
 library, called Minified, became a valid alternative to jQuery and MooTools at a fraction of the size.
+
+What you see here is only the beginning, a 4kb module for building web sites. The plan is to have three modules, each under 4kb:
+<ul><li><strong>Minified Web</strong> is a browser interaction library, comparable to jQuery or MooTools. It is available now.</li>
+<li><strong>Minified Util</strong> offers utilities for lists and maps, functions, promises, string and number formatting, date handling and 
+internationalization. Its scope and size can be compared to <a href="http://underscorejs.org/">Underscore</a>, but it omits the more 
+obscure functional helpers and replaces them with date and string helpers. You can find an early version in the /src directory
+on GitHub.</li>
+<li><strong>Minified MVC</strong> will be a MVC library, somewhat similar to Backbone or Angular.js, but with a Plain-Old-JSON-Object (POJO) concept
+and templates that are closely tied to page's DOM. It requires the other two modules. A preview should be available by the end of 2013.</li>
+</ul>
+
+Thank you for checking out Minified.
+			Tim Jansen

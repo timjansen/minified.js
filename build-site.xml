@@ -22,7 +22,12 @@
  	    <arg value="--js=WebContent/minified-web-src.noie.js"/>
  	 	<arg value="--js_output_file=WebContent/minified-web-closure.noie.js"/>
     </java>
-  	
+	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
+	 	<arg value="--compilation_level=ADVANCED_OPTIMIZATIONS" />
+	    <arg value="--js=WebContent/minified-util-src.js"/>
+	 	<arg value="--js_output_file=WebContent/minified-util-closure.js"/>
+   </java>
+ 	  	
     <exec executable="/usr/local/bin/uglifyjs">
       <arg line="WebContent/minified-web-closure.js -o WebContent/minified-web.js"/>
       <env key="PATH" path="/usr/local/bin"/>
@@ -31,9 +36,14 @@
       <arg line="WebContent/minified-web-closure.noie.js -o WebContent/minified-web.noie.js"/>
       <env key="PATH" path="/usr/local/bin"/>
     </exec>
+    <exec executable="/usr/local/bin/uglifyjs">
+      <arg line="WebContent/minified-util-closure.js -o WebContent/minified-util.js"/>
+      <env key="PATH" path="/usr/local/bin"/>
+    </exec>
   	
   	<delete file="WebContent/minified-web-closure.noie.js" />
   	<delete file="WebContent/minified-web-closure.js" />
+  	<delete file="WebContent/minified-util-closure.js" />
   	
      <!-- Builder script -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">

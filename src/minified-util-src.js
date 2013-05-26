@@ -314,6 +314,9 @@ define('minifiedUtil', function() {
 	function call(f, fThisOrArgs, args) {
 		return f.apply(args && fThisOrArgs, map(args || fThisOrArgs, selfFunc));
 	}
+	function callList(list, fThisOrArgs, args) {
+		return map(list, function(f) { if (isFunction(f)) return call(f, fThisOrArgs, args); else return undef;});
+	}
 	function bind(f, fThis, beforeArgs, afterArgs) {
 		return function() {
 			return call(f, fThis, collect([beforeArgs, arguments, afterArgs], selfFunc));
@@ -323,13 +326,13 @@ define('minifiedUtil', function() {
 		return bind(f, null, beforeArgs, afterArgs);
 	}
 	function delay(delayMs, callback, fThisOrArgs, args) {
-		setTimeout(bind(callback, fThisOrArgs, args), delayMs);
+		setTimeout(function() {call(callback, fThisOrArgs, args);}, delayMs);
 	}
 	function defer(callback, fThisOrArgs, args) {
-		if (/^u/.test(typeof process) && process.nextTick)
-			process.nextTick(bind(callback, fThisOrArgs, args));
+		if (/^u/.test(typeof process) || !process.nextTick)
+			setTimeout(function() {call(callback, fThisOrArgs, args);}, delayMs);
 		else
-			delay(0, callback, fThisOrArgs, args);
+			process.nextTick(function() {call(callback, fThisOrArgs, args);});
 	}
 	function insertString(origString, index, len, newString) {
 		return origString.substr(0, index) + newString + origString.substr(index+len);
@@ -669,6 +672,87 @@ define('minifiedUtil', function() {
 		return result;
 	}
 	
+	
+	function promise() {
+		var state; // undefined/null = pending, true = fulfilled, false = rejected
+		var deferred = [];   // this function calls the functions supplied by then()
+
+		var assimilatedPromises = arguments;
+		var assimilatedNum = assimilatedPromises.length;
+		var numCompleted = 0; // number of completed, assimilated promises
+		var values = []; // array containing the result arrays of all assimilated promises
+	    
+		function set(newState, newValues) {
+			if (state == null) {
+				state = newState;
+				values = isList(newValues) ? newValues : [newValues];
+				defer(function() {
+					each(deferred, function(f) {f();});
+				});
+			}		
+		}
+
+		// use promise varargs
+		each(assimilatedPromises, function assimilate(promise, index) {
+			try {
+				promise['then'](function resolvePromise(v) {
+					if (v && isFunction(v['then'])) {
+						assimilate(v['then'], index);
+					}
+					else {
+						values[index] = map(arguments, selfFunc);
+						if (++numCompleted == assimilatedNum)
+							set(true, assimilatedNum < 2 ? values[index] : values);
+					}
+				}, 
+				function rejectPromise(e) {
+					values[index] = map(arguments, selfFunc);
+					set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
+				});
+			}
+			catch (e) {
+				set(false, [e, values, index]);
+			}
+		});
+	    
+	    set['then'] = function then(onFulfilled, onRejected) {
+			var newPromise = promise();
+			var callCallbacks = function() {
+	    		try {
+	    			var f = (state ? onFulfilled : onRejected);
+	    			if (isFunction(f)) {
+		   				var r = call(f, values);
+		   				if (r && isFunction(r['then']))
+		   					r['then'](function(value){newPromise(true,[value]);}, function(value){newPromise(false,[value]);});
+		   				else
+		   					newPromise(true, [r]);
+		   			}
+		   			else
+		   				newPromise(state, values);
+				}
+				catch (e) {
+					newPromise(false, [e]);
+				}
+			};
+			if (state != null)
+				defer(callCallbacks);
+			else
+				deferred.push(callCallbacks);    		
+			return newPromise;
+		};
+
+	   	set['always'] = function(func) { return then(func, func); };
+	   	set['error'] = function(func) { return then(0, func); };
+
+		// Takes a list of promises and registers with them by calling their then(). If all given promises succeed, this promise succeeds
+	   	// and their values are given to the fulfillment handler as array in the same order the promised were given to join().
+		// If one promise fails, this promise fails. The rejected handler will be called with the index of the failed promise as 
+	   	// first argument and an array containing all results as the second.
+		// The array has one entry per promise, containing its success value, rejection value or undefined if not completed.
+	   	return set;
+	}
+	
+	
 	/*$
 	 * @id length
 
@@ -761,8 +845,18 @@ define('minifiedUtil', function() {
  	
  	'contains': listBind(contains),
 	
+	'call': listBindArray(callList),
+
 	'array': function() {
 		return map(this, selfFunc);
+	},
+
+	// returns a function that calls all functions of the list
+	'func': function() {
+		var self = this;
+		return function() {
+			return new M(callList(self, arguments));
+		};
 	},
 	
 	'join': function(separator) {
@@ -891,85 +985,7 @@ define('minifiedUtil', function() {
 		//      the Minified implementation.
 		//    - when one of the promises is rejected, the new promise is rejected immediately. The rejection handler gets the promises rejection value (first argument is it got several)
 		//      as first argument, an array of the result values of all promises as a second (that means one array of arguments for each promise), and the index of the failed promise as third
-		'promise': function promise() {
-			var state; // undefined/null = pending, true = fulfilled, false = rejected
-			var values = [];     // an array of arguments arrays for the then() handlers
-			var deferred = [];   // this function calls the functions supplied by then()
-
-			var assimilatedPromises = arguments;
-			var assimilatedNum = assimilatedPromises.length;
-			var numCompleted = 0; // number of completed, assimilated promises
-			var values = []; // array containing the result arrays of all assimilated promises
-		    
-			function set(newState, newValues) {
-				if (state == null) {
-					state = newState;
-					values = isList(newValues) ? newValues : [newValues];
-					defer(function() {
-						each(deferred, function(f) {f();});
-					});
-				}		
-			}
-
-			// use promise varargs
-			each(assimilatedPromises, function assimilate(promise, index) {
-				try {
-					promise['then'](function resolvePromise(v) {
-						if (v && isFunction(v['then'])) {
-							assimilate(v['then'], index);
-						}
-						else {
-							values[index] = map(arguments, selfFunc);
-							if (++numCompleted == assimilatedNum)
-								set(true, assimilatedNum < 2 ? values[index] : values);
-						}
-					}, 
-					function rejectPromise(e) {
-						values[index] = map(arguments, selfFunc);
-						set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
-					});
-				}
-				catch (e) {
-					set(false, [e, values, index]);
-				}
-			});
-		    
-		    set['then'] = function then(onFulfilled, onRejected) {
-				var newPromise = promise();
-				var callCallbacks = function() {
-		    		try {
-		    			var f = (state ? onFulfilled : onRejected);
-		    			if (isFunction(f)) {
-			   				var r = call(f, values);
-			   				if (r && isFunction(r['then']))
-			   					r['then'](function(value){newPromise(true,[value]);}, function(value){newPromise(false,[value]);});
-			   				else
-			   					newPromise(true, [r]);
-			   			}
-			   			else
-			   				newPromise(state, values);
-					}
-					catch (e) {
-						newPromise(false, [e]);
-					}
-				};
-				if (state != null)
-					defer(callCallbacks);
-				else
-					deferred.push(callCallbacks);    		
-				return newPromise;
-			};
-
-		   	set['always'] = function(func) { return then(func, func); };
-		   	set['error'] = function(func) { return then(0, func); };
-
-			// Takes a list of promises and registers with them by calling their then(). If all given promises succeed, this promise succeeds
-		   	// and their values are given to the fulfillment handler as array in the same order the promised were given to join().
-			// If one promise fails, this promise fails. The rejected handler will be called with the index of the failed promise as 
-		   	// first argument and an array containing all results as the second.
-			// The array has one entry per promise, containing its success value, rejection value or undefined if not completed.
-		   	return set;
-		},
+		'promise': promise,
 		
 		'format': function(format, object) {
 			return replace(format, /{([^,}]*)(,([^}]*))?}/g, function(match, path, subFormatPart, subFormat) {
@@ -977,6 +993,44 @@ define('minifiedUtil', function() {
 				return subFormatPart ? formatValue(subFormat, value) : toString(value);
 					
 		    });
+		},
+		
+		/*$
+		 * @id wait
+		 * @configurable default
+		 * @requires
+		 * @name MINI.wait()
+		 * @syntax MINI.wait()
+		 * @syntax MINI.wait(durationMs)
+		 *
+		 * Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
+		 * because it allows you to chain delays into your animation chain.
+		 *
+		 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
+		 *          and finally moves to 100/100.
+		 * <pre>
+		 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+		 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
+		 *    .then(function() {
+		 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
+		 *    }).then(function() {
+		 *    		 return MINI.wait(50);
+		 *    }).then(function() {
+		 *           div.animate({$left: '100px', $top: '100px'}, 400);
+		 *    });
+		 * });
+		 * </pre>
+		 *
+		 *
+		 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
+		 *                   from the event loop.
+		 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
+		 *         durationMs parameter as given to <var>wait()</var>.
+		 */
+		'wait': function(durationMs) {
+			var p = promise();
+			delay(function() {p(true, [durationMs]);}, durationMs);
+			return p;
 		}
 		
 	/*$

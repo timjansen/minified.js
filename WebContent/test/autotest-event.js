@@ -53,7 +53,7 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name:'MINI.off()',
+		name:'$.off()',
 		exec: function() {
 			var p = $('#container2');
 			var handler;
@@ -75,7 +75,7 @@ window.miniTests.push.apply(window.miniTests, [
 			triggerEvent(s2, createClick());
 			check(callNum, 2, "callNum");
 
-			MINI.off(handler); 
+			$.off(handler); 
 			check(handler.M, null, "Handler.M nulled");
 			
 			callNum = 0;

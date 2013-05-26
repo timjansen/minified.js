@@ -42,7 +42,7 @@ will be flattened, so the result only contains nodes.</dd>
 <dt id="dollar_node" class=""><a name="dollar_node"><var>node</var></a></dt>
 <dd class="">a node to create a single-element list containing only the node. If the node argument is null, an empty list will be returned.</dd>
 <dt id="dollar_domreadyFunction" class=""><a name="dollar_domreadyFunction"><var>domreadyFunction</var></a></dt>
-<dd class="">a function to be registered using <code><a href='ready.html'>MINI.ready()</a></code>.</dd>
+<dd class="">a function to be registered using <code><a href='ready.html'>$.ready()</a></code>.</dd>
 <dt id="dollar_context" class=""><a name="dollar_context"><var>context</var></a></dt>
 <dd class=""><span class="optional">optional</span> an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection, using the same syntax variants as the
 first argument. If given, the returned list contains only descendants of the context nodes, all others will be filtered out.</dd>
@@ -67,7 +67,7 @@ Nulls will automatically be removed from the resulting list.</p><p>Additionally,
 that are descendants of the context nodes. The context can be either a selector, a list or a single HTML node, and will be
 processed like the first argument. A third arguments allows you to limit the list to
 only those elements that are direct children of the context nodes (so a child of a child would be filtered out).</p><p>
-As a special shortcut, if you pass a function to <var>$()</var>, it will be registered using <code><a href='ready.html'>MINI.ready()</a></code> to be executed
+As a special shortcut, if you pass a function to <var>$()</var>, it will be registered using <code><a href='ready.html'>$.ready()</a></code> to be executed
 when the DOM model is complete.</p><p></p></div>
 
 <div class="examples">
@@ -154,7 +154,7 @@ $('#myForm .myRadio').addClass('uncheckedRadio')
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>Using $() as a MINI.ready() shortcut:
+<div class="example"><p>Using $() as a $.ready() shortcut:
 <pre>
 $(function() {
   // work with the DOM tree
@@ -168,6 +168,14 @@ $(function() {
 </div>
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
 </li><li><a href="dollardollar.html">$$()</a>
+</li><li><a href="getcookie.html">$.getCookie()</a>
+</li><li><a href="loop.html">$.loop()</a>
+</li><li><a href="off.html">$.off()</a>
+</li><li><a href="parsejson.html">$.parseJSON()</a>
+</li><li><a href="ready.html">$.ready()</a>
+</li><li><a href="request.html">$.request()</a>
+</li><li><a href="setcookie.html">$.setCookie()</a>
+</li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -189,15 +197,6 @@ $(function() {
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
-</li><li><a href="getcookie.html">MINI.getCookie()</a>
-</li><li><a href="loop.html">MINI.loop()</a>
-</li><li><a href="off.html">MINI.off()</a>
-</li><li><a href="parsejson.html">MINI.parseJSON()</a>
-</li><li><a href="ready.html">MINI.ready()</a>
-</li><li><a href="request.html">MINI.request()</a>
-</li><li><a href="setcookie.html">MINI.setCookie()</a>
-</li><li><a href="tojson.html">MINI.toJSON()</a>
-</li><li><a href="wait.html">MINI.wait()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

@@ -1,6 +1,7 @@
 var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = require('minifiedUtil')._;
 
+var MAX_SIZE = 4095;
 var SRC='minified-web-src.js';
 
 var GROUPS = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'OPTIONS'];
@@ -13,7 +14,7 @@ function closureCompile(src, advanced, cb) {
 		cb&&cb(null);
 	}
 	var URL = 'http://closure-compiler.appspot.com/compile';
-	MINI.request('post', URL, 
+	$.request('post', URL, 
 			{
 				js_code: src,
 				output_format: 'json',
@@ -44,19 +45,21 @@ function setUpConfigurationUI(s) {
 			$$('#compile').disabled = true;
 			closureCompile(src, $$('#compressionAdvanced').checked, function(closureResult) {
 				$$('#compile').disabled = false;
+				$('#resultDiv').animate("$$slide", 1);
 				if (closureResult) {
-					$$('#compile').disabled = false;
 					$('#gzipRow, #downloadRow').set({$display: 'table-row'});
 					$$('#resultSrc').value = header + '\n' + closureResult.compiledCode;
 					$('#resultPlain').fill((closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedSize + ' bytes)');
-					$('#resultGzipped').fill((closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedGzipSize + ' bytes)');
+					$('#resultGzippedSize').fill((closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedGzipSize + ' bytes)');
 					$$('#resultLink').setAttribute('href', 'http://closure-compiler.appspot.com' +closureResult.outputFilePath);
+					$('#resultGzippedComment').set({$$fade: closureResult.statistics.compressedGzipSize > MAX_SIZE ? 1 : 0});
 				}
 				else
 					alert("Google Closure Service not availble. Try again later.");
 			});
 		}
 		else  {
+			$('#resultDiv').animate("$$slide", 1);
 			$$('#resultSrc').value = header + src;
 			$('#resultPlain').fill((src.length/1024).toFixed(2) + 'kb');
 			$('#gzipRow, #downloadRow').set({$display: 'none'});
@@ -88,7 +91,27 @@ function setUpConfigurationUI(s) {
 			});
 	}
 	
+	function recreateConfig() {
+		var inputSrc = $$('configSrc').value;
+		var conf = deserializeEnabledSections(s.sections, s.sectionMap, inputSrc);
+		if (conf) {
+			_(s).each(function(secName) {
+				var secCheck = $$('#sec-'+secName);
+				secCheck.checked = !!conf[secName];
+			});
+			setGroupCheckboxes();
+		}
+		else
+			alert("Can not find configuration in source."); 
+	}
+	
 	$('#compile').on('click', compileClicked);
+	
+	var configSrcToggle = $('#configSrcDiv').toggle({$$slide: 0}, {$$slide: 1});
+	$('#fromScratch').on('|click', configSrcToggle, [false]);
+	$('#loadConfig').on('|click', configSrcToggle, [true]);
+	
+	$('#recreate').on('click', recreateConfig);
 	
 	for (var i = 1; i < GROUPS.length; i++) {
 		var groupCheckBox, div;
@@ -161,7 +184,7 @@ function setUpConfigurationUI(s) {
 }
 
 $(function() {
-	MINI.request('get', SRC, null).then(function(src) {
+	$.request('get', SRC, null).then(function(src) {
 		setUpConfigurationUI(prepareSections(src));
 	})
 	.error(function(txt) {

@@ -3,18 +3,18 @@
    Auto-generated using docbuilder.js. Do not edit manually. 
 -->
 <page xmlns="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
-	<title>MINI.getCookie() - Minified.js</title>
+	<title>$.getCookie() - Minified.js</title>
 	<section>reference</section>
 	<externalCss>../css/reference.css</externalCss>
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-getcookie">MINI.getCookie()</a></h2>
+<h2><a name="doc-getcookie">$.getCookie()</a></h2>
 <div class="summary">Tries to find the cookie with the given name and returns it.</div>
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">MINI.getCookie(name)</div>
-<div class="syntax">MINI.getCookie(name, dontUnescape)</div>
+<div class="syntax">$.getCookie(name)</div>
+<div class="syntax">$.getCookie(name, dontUnescape)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -36,7 +36,7 @@ in a special way, and not with the JavaScript <var>encode()</var> method.</dd>
 <h4>Example</h4>
 <div class="example"><p>Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
 <pre>
-var visits = MINI.getCookie('numberOfVisits');
+var visits = $.getCookie('numberOfVisits');
 if (!visits)    // check whether cookie set. Null if not
     $('#myCounter').set('innerHML', 'Your first visit.');
 else
@@ -50,6 +50,14 @@ else
 </div>
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
 </li><li><a href="dollardollar.html">$$()</a>
+</li><li><a href="getcookie.html">$.getCookie()</a>
+</li><li><a href="loop.html">$.loop()</a>
+</li><li><a href="off.html">$.off()</a>
+</li><li><a href="parsejson.html">$.parseJSON()</a>
+</li><li><a href="ready.html">$.ready()</a>
+</li><li><a href="request.html">$.request()</a>
+</li><li><a href="setcookie.html">$.setCookie()</a>
+</li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -71,15 +79,6 @@ else
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
-</li><li><a href="getcookie.html">MINI.getCookie()</a>
-</li><li><a href="loop.html">MINI.loop()</a>
-</li><li><a href="off.html">MINI.off()</a>
-</li><li><a href="parsejson.html">MINI.parseJSON()</a>
-</li><li><a href="ready.html">MINI.ready()</a>
-</li><li><a href="request.html">MINI.request()</a>
-</li><li><a href="setcookie.html">MINI.setCookie()</a>
-</li><li><a href="tojson.html">MINI.toJSON()</a>
-</li><li><a href="wait.html">MINI.wait()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

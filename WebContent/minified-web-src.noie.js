@@ -85,8 +85,6 @@ define('minified', function() {
 	 */
 	var _document = document;
 
-	var MINI = {};
-
 	/**
 	 * @const
 	 * @type {!string}
@@ -235,6 +233,23 @@ define('minified', function() {
 			delay(handler);
     }
 
+    function $$(selector) {
+		return dollarRaw(selector)[0];
+	}
+
+    function EE(elementName, attributes, children, onCreate) {
+		// @cond debug if (!elementName) error("EE() requires the element name."); 
+		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':').");
+
+		return function() {
+			var list = $(_document.createElement(elementName));
+			(isList(attributes) || !isObject(attributes)) ? list['add'](attributes) : list['set'](attributes)['add'](children);
+			if (onCreate)
+				onCreate(list);
+			return list; 
+		};
+	}
+
     function promise() {
     	var state;           // undefined/null = pending, true = fulfilled, false = rejected
     	var values = [];     // an array of values as arguments for the then() handlers
@@ -263,7 +278,7 @@ define('minified', function() {
     	 *
     	 * @example Simple handler for an HTTP request. Handles only success and ignored errors.
     	 * <pre>
-    	 * MINI.request('get', '/weather.html')
+    	 * $.request('get', '/weather.html')
     	 *     .then(function(txt) {
     	 *        alert('Got response!');
     	 *     });
@@ -271,7 +286,7 @@ define('minified', function() {
     	 *
     	 * @example Including an error handler.
     	 * <pre>
-    	 * MINI.request('get', '/weather.html')
+    	 * $.request('get', '/weather.html')
     	 *     .then(function(txt) {
     	 *        alert('Got response!');
     	 *     }, function(err) {
@@ -281,12 +296,12 @@ define('minified', function() {
     	 *
     	 * @example Chained handler.
     	 * <pre>
-    	 * MINI.request('get', '/weather.do')
+    	 * $.request('get', '/weather.do')
     	 *     .then(function(txt) {
     	 *        showWeather(txt);
     	 *     }
     	 *     .then(function() {
-    	 *        return MINI.request('get', '/traffic.do');
+    	 *        return $.request('get', '/traffic.do');
     	 *     }
     	 *     .then(function(txt) {
     	 *        showTraffic(txt);
@@ -342,7 +357,7 @@ define('minified', function() {
     	 *
     	 * @example Simple handler for a HTTP request.
     	 * <pre>
-    	 * MINI.request('get', '/weather.html')
+    	 * $.request('get', '/weather.html')
     	 *     .always(function() {
     	 *        alert('Got response or error!');
     	 *     });
@@ -366,7 +381,7 @@ define('minified', function() {
     	 *
     	 * @example Simple handler for a HTTP request.
     	 * <pre>
-    	 * MINI.request('get', '/weather.html')
+    	 * $.request('get', '/weather.html')
     	 *     .error(function() {
     	 *        alert('Got error!');
     	 *     });
@@ -1480,7 +1495,7 @@ define('minified', function() {
 						attrs['@'+attrName] = a['value'];
 					}
 				});
-				return MINI['EE'](e['tagName'], attrs, $(e['childNodes'])['clone'](), onCreate);
+				return EE(e['tagName'], attrs, $(e['childNodes'])['clone'](), onCreate);
 			}
 			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
 				return e['data'];
@@ -1505,7 +1520,7 @@ define('minified', function() {
 	 * number, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
 	 *
 	 * When you invoke the function, it will first read all old values from the object and extract their numbers and colors. These start values will be compared to 
-	 * the destination values that have been specified in the given properties. Then <var>animate()</var> will create a background task using ##loop#MINI.loop() that updates the 
+	 * the destination values that have been specified in the given properties. Then <var>animate()</var> will create a background task using ##loop#$.loop() that updates the 
 	 * specified properties in frequent intervals so that they transition to their destination values.
 	 *
 	 * The start values will be obtained using ##get(). It is recommended to set the start values using ##set() before you start the animation, even if this is not
@@ -1564,15 +1579,13 @@ define('minified', function() {
 	 * $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
 	 * </pre>
 	 *
-	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
+	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200
 	 *          and finally moves to 100/100.
 	 * <pre>
 	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
 	 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
 	 *    .then(function() {
 	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
-	 *    }).then(function() {
-	 *    		 return MINI.wait(50);
 	 *    }).then(function() {
 	 *           div.animate({$left: '100px', $top: '100px'}, 400);
 	 *    });
@@ -1632,7 +1645,7 @@ define('minified', function() {
 		});
 
 		// start animation
-		loopStop = MINI.loop(function(timePassedMs) { 
+		loopStop = $.loop(function(timePassedMs) { 
 			function getColorComponent(colorCode, index) {
 				return (/^#/.test(colorCode)) ?
 					parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
@@ -1760,21 +1773,22 @@ define('minified', function() {
 		 * @requires dollar
 		 * @configurable default
 		 * @name .on()
-		 * @syntax $(selector).on(name, handler)
-		 * @syntax $(selector).on(name, handler, args)
-		 * @syntax $(selector).on(name, handler, fThis, args)
+		 * @syntax $(selector).on(names, handler)
+		 * @syntax $(selector).on(names, handler, args)
+		 * @syntax $(selector).on(names, handler, fThis, args)
 		 * Registers the function as event handler for all items in the list.
 		 * 
-		 * By default, handlers are called with the original event object as first argument, the index of the source element in the 
+		 * By default, Minified cancels event propagation and the element's default behaviour for all elements that have an event handler. 
+		 * You can override this by prefixing the event name with a '|' or by returning a 'true' value in the handler, which will reinstate 
+		 * the original JavaScript behaviour.
+		 * 
+		 * Handlers are usually called with the original event object as first argument, the index of the source element in the 
 		 * list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked). 
 		 * 
-		 * Minified cancels event propagation and the element's default behaviour for all elements that have an event handler. 
-		 * You can override this by returning a 'true' value, which will reinstate the original JavaScript behaviour.
-		 * 
 		 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the event handler. When you pass arguments, the
-		 * handler's return value is always ignored and the event will always be cancelled.
+		 * handler's return value is always ignored and the event with unnamed prefixes will always be cancelled.
 		 * 
-		 * Event handlers can be unregistered using #off#MINI.off().
+		 * Event handlers can be unregistered using #off#$.off().
 		 * 
 		 * @example Adds a handler to all divs which paints the div background color to red when clicked. 
 		 * <pre>
@@ -1794,14 +1808,23 @@ define('minified', function() {
 		 * $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 		 * </pre>
 		 *
-		 * @param name the name of the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used. You can
-		 *             register the handler for more than one event by specifying several space-separated event names.
+		 * @example Adds two handlers on an input field and keeps the original behaviour: 
+		 * <pre>
+		 * $('#myInput').on('|keypress |keydown', function() {
+		 *    // do something
+		 * });
+		 * </pre>
+		 * 
+		 * @param names the space-separated names the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used. You can
+		 *             register the handler for more than one event by specifying several space-separated event names. If the name is prefixed
+		 *             with '|', the handler's return value is ignored and the event will be passed through the event's default actions will 
+		 *             be executed by the browser. 
 		 * @param handler the function(event, index) to invoke when the event has been triggered. If no new arguments have been given using 
 		 *                <var>on()</var>'s second argument, the handler gets the original event object as first parameter and the index
 		 *                of the object in the current ##list#Minified list## as second. 'this' is the element that 
 		 *                caused the event, unless you override it with the third argument.
-		 *                Unless the handler returns true, all further processing of the event will be stopped and event bubbling will be disabled. If you supply
-		 *                custom arguments, the event processing and bubbling will always be disabled, no mattter what the handler returns.
+		 *                Unless the handler returns true or the event name is prefixed by '|', all further processing of the event will be 
+		 *                stopped and event bubbling will be disabled. If you supply custom arguments, the return value will be ignored.
 		 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
 		 *                is added to the handler in an array property called 'M'.
 		 * @param fThis optional an value for 'this' in the handler, as alternative to the event target
@@ -1813,11 +1836,12 @@ define('minified', function() {
 			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
 			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
 			return each(this, function(el, index) {
-				each(eventName.split(/\s/), function(name) {
+				each(eventName.split(/\s/), function(namePrefixed) {
+					var name = replace(namePrefixed, /\|/);
 					var h = function(event) {
 						var e = event || _window.event;
 						// @cond debug try {
-						if (!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) {
+						if ((!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) && namePrefixed==name) {
 								e.preventDefault();
 								e.stopPropagation();
 						}
@@ -1838,301 +1862,25 @@ define('minified', function() {
  	//// MINI FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	eachObj({
-
-		/*$
-		 * @id dollar
-		 * @group SELECTORS
-		 * @requires dollarraw 
-		 * @dependency yes
-		 * @name $()
-		 * @syntax $(selector)
-		 * @syntax $(selector, context)
-		 * @syntax $(selector, context, childOnly)
-		 * @syntax $(list)
-		 * @syntax $(list, context)
-		 * @syntax $(list, context, childOnly)
-		 * @syntax $(node)
-		 * @syntax $(node, context)
-		 * @syntax $(node, context, childOnly)
-		 * @syntax $(domreadyFunction)
-		 * Creates a ##list#Minified list## of HTML nodes. 
-		 * The most common way to create the list is with a CSS-like selector. The function will then create a list containing all elements of the current HTML
-		 * document that fulfill the filter conditions. Alternatively you can also specify a list of nodes or a single node. Nested lists will automatically be flattened, and
-		 * Nulls will automatically be removed from the resulting list.
-		 * 
-		 * Additionally, you can specify a second argument to provide a context. The context limits the resulting list to include only those nodes 
-		 * that are descendants of the context nodes. The context can be either a selector, a list or a single HTML node, and will be 
-		 * processed like the first argument. A third arguments allows you to limit the list to 
-		 * only those elements that are direct children of the context nodes (so a child of a child would be filtered out).
-		 *
-		 * 
-		 * As a special shortcut, if you pass a function to <var>$()</var>, it will be registered using #ready#MINI.ready() to be executed 
-		 * when the DOM model is complete.
-		 *
-		 * @example A simple selector to find an element by id.
-		 * <pre>
-		 * var l1 = $('#myElementId');
-		 * </pre>
-		 * 	 
-		 * @example You can pass a reference to an DOM node to the function to receive a list containing only this node:
-		 * <pre>
-		 * var l2 = $(document.getElementById('myElementId')); 
-		 * </pre>
-		 *
-		 * @example Lists and arrays will be copied:
-		 * <pre>
-		 * var l2 = $([elementA, elementB, elementC]); 
-		 * </pre>
-		 * 	 
-		 * @example Lists will be automatically flattened and nulls removed. Thus this list <var>l3</var> has the same content as <var>l2</var>:
-		 * <pre>
-		 * var l3 = $([elementA, [elementB, null, elementC], null]); 
-		 * </pre>
-		 * 	 
-		 * @example This is a simple selector to find all elements with the given class.
-		 * <pre>
-		 * var l4 = $('.myClass');
-		 * </pre>
-		 * 	 
-		 * @example A selector to find all elements with the given name.
-		 * <pre>
-		 * var l5 = $('input'); // finds all input elements
-		 * </pre>
-		 * 	 
-		 * @example A selector to find all elements with the given name and class.
-		 * <pre>
-		 * var l6 = $('input.myRadio'); // finds all input elements wit
-		 * </pre>
-		 * 	 
-		 * @example A selector to find all elements that are descendants of the given element.
-		 * <pre>
-		 * var l7 = $('#myForm input'); // finds all input elements that are in the element with the id myForm
-		 * </pre>
-		 * 	 
-		 * @example A selector to find all elements that have either CSS class 'a' or class 'b':
-		 * <pre>
-		 * var l8 = $('.a, .b'); // finds all elements that have either the class a or class b
-		 * </pre>
-		 * 	 
-		 * @example A selector that finds all elements that are descendants of the element myDivision, are inside a .myForm class and are input elements:
-		 * <pre>
-		 * var l9 = $('#myDivision .myForm input'); 
-		 * </pre>
-		 * 	 
-		 * @example Using contexts to make it easier to specify ancestors:
-		 * <pre>
-		 * var l10 = $('.myRadio', '#formA, #formB, #formC');  // same as $('#formA .myRadio, #formB .myRadio, #formC .myRadio')
-		 * </pre>
-		 * 	 
-		 * @example Using one of the list functions, ##set(), on the list, and set the element's text color. '$' at the beginning of the property name sets a CSS value.
-		 * <pre>
-		 * $('#myElementId').set('$color', 'red');
-		 * </pre>
-		 *
-		 * @example Most list methods return the list you invoked them on, allowing you to chain them:
-		 * <pre>
-		 * $('#myForm .myRadio').addClass('uncheckedRadio')
-		 *                      .set('checked', true)
-		 *                      .on('click', function() {
-		 *                             $(this).set({@: 'uncheckedRadio');
-		 *                      });
-		 * </pre>
-		 * 
-		 * @example Using $() as a MINI.ready() shortcut:
-		 * <pre>
-		 * $(function() {
-		 *   // work with the DOM tree
-		 * });
-		 * </pre>
-		 * 
-		 * @param selector a simple, CSS-like selector for HTML elements. It supports '#id' (lookup by id), '.class' (lookup by class),
-		 *             'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
-		 *             You can also join two or more selectors by space to find elements which are descendants of the previous selectors.
-		 *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
-		 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
-		 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
-		 *             The selector "*" will return all elements.
-		 * @param list a list to copy. It can be an array, another Minified list, a DOM nodelist or anything else that has a <var>length</var> property and
-		 *             allows read access by index. A shallow copy of the list will be returned. Nulls will be automatically removed from the copy. Nested lists 
-		 *             will be flattened, so the result only contains nodes.
-		 * @param node a node to create a single-element list containing only the node. If the node argument is null, an empty list will be returned.
-		 * @param domreadyFunction a function to be registered using #ready#MINI.ready().
-		 * @param context optional an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection, using the same syntax variants as the
-		 *             first argument. If given, the returned list contains only descendants of the context nodes, all others will be filtered out. 
-		 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
-		 *             true, all descendants of the context will be included. 
-		 * @return the array-like ##list#Minified list## object containing the content specified by the selector. The returned object 
-		 *             is guaranteed to have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
-		 *             regular arrays (e.g. list[2] for the second elements). Beside that, Minified provides a large number of functions that work on the list.
-		 *             Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the first argument was a list, 
-		 *             the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. If you combined several selectors 
-		 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to form a single list. This list will, 
-		 *             not be in document order anymore. 
-		 */
-		'$': $,
-
-    /*$
-	 * @id dollardollar
-	 * @group SELECTORS
-	 * @requires dollarraw
-	 * @configurable default
-	 * @name $$()
-	 * @syntax MINI.$$(selector)
-	 * @shortcut $$() - It is recommended that you assign MINI.$$ to a variable $$.
-	 * Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found. 
-	 * <var>$$</var> allows you to easily access an element directly. It is the equivalent to writing "$(selector)[0]".
-	 *
-	 * Please note that the function <var>$$</var> will not be automatically exported by Minified. You should always import it
-	 * using the recommended import statement:
-	 * <pre>
-	 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
-	 * </pre>
-	 * 
-	 * @example Select the checkbox 'myCheckbox':
-	 * <pre>
-	 * $$('#myCheckbox').selected = true;
-	 * </pre>
-	 * 
-	 * @param selector a simple, CSS-like selector for the element. Uses the full syntax described in #dollar#$(). The most common
-	 *                 parameter for this function is the id selector with the syntax "#id".
-	 * @return a DOM object of the first match, or <var>undefined</var> if the selector did not return at least one match
-	 */
-    '$$': function(selector) {
-		return dollarRaw(selector)[0];
-	},
-
-	/*$
-	 * @id ee
-	 * @group ELEMENT
-	 * @requires dollar set add
-	 * @configurable default
-	 * @name EE()
-	 * @syntax MINI.EE(elementName)
-	 * @syntax MINI.EE(elementName, attributes)
-	 * @syntax MINI.EE(elementName, children)
-	 * @syntax MINI.EE(elementName, attributes, children)
-	 * @syntax MINI.EE(elementName, attributes, children, onCreate)
-	 * @shortcut EE() - It is recommended that you assign MINI.EE to a variable EE.
-	 * Creates a new Element Factory. An Element Factory is a function without arguments that returns a ##list#Minified list##
-	 * containing a newly created DOM element, optionally with attributes and children.
-	 * Typically it will be used to insert elements into the DOM tree using add() or a similar function. 
-	 *
-	 * Please note that the function <var>EE</var> will not be automatically exported by Minified. You should always import it
-	 * using the recommended import statement:
-	 * <pre>
-	 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
-	 * </pre>
-	 * 
-	 * @example Creating a simple factory for a &lt;span> element with some text:
-	 * <pre>
-	 * var mySpan = EE('span', 'Hello World'); 
-	 * </pre>
-	 * creates a factory to produce this:
-	 * <pre>
-	 *  &lt;span>Hello World&lt;/span> 
-	 * </pre>
-	 * 
-	 * @example Adding the 'Hello World; &lt;span> element to all elements with the class '.greeting':
-	 * <pre>
-	 * $('.greeting').add(EE('span', 'Hello World')); 
-	 * 
-	 * @example Creating a factory for a &lt;span> element with style and some text:
-	 * <pre>
-	 * var span2 = EE('span', {'@title': 'Greetings'}, 'Hello World'); 
-	 * </pre>
-	 * The factory creates this:
-	 * <pre>
-	 *  &lt;span title="Greetings">Hello World&lt;/span> 
-	 * </pre>
-	 * 
-	 * @example Creating a &lt;form> element with two text fields, labels and a submit button:
-	 * <pre>
-	 * var myForm = EE('form', {'@method': 'post'}, [
-	 *     EE('label', {'@for': 'nameInput'}, 'Name:'),
-	 *     EE('input', {'@id': 'nameInput', '@type': 'input'}),
-	 *     EE('br'),
-	 *     EE('label', {'@for': 'ageInput'}, 'Age:'),
-	 *     EE('input', {'@id': 'ageInput', '@type': 'input'}),
-	 *     EE('br'),
-	 *     EE('input', {'@type': 'submit, '@value': 'Join'})
-	 * ]); 
-	 * </pre>
-	 * results in (newlines and indentation added for readability):
-	 * <pre>
-	 * 	&lt;form method="post>
-	 *     &lt;label for="nameInput">Name:&lt;/label>
-	 *     &lt;input id="nameInput" type="input"/>
-	 *     &lt;br/>
-	 *     &lt;label for="ageInput"/>Age:&lt;/label>
-	 *     &lt;input id="ageInput" type="input"/>
-	 *     &lt;br/>
-	 *     &lt;input value="Join" type="submit"/>
-	 *  &lt;/form>
-	 * </pre>
-	 * 
-	 * @example Null attributes often come handy when you don't always need a particular attribute. Attributes with null values will be ignored:
-	 * <pre>
-	 * var myInput = EE('input', {'@id': 'myCheckbox', '@type': 'checkbox', '@checked': shouldBeChecked() ? 'checked' : null});
-	 * </pre>
-	 * 
-	 * @example You can set styles directly using a $ prefix for the name:
-	 * <pre>
-	 * var myStylesSpan = EE('span', {$color: "red", $fontWeight: "bold"}, "I'm styled");
-	 * </pre>
-	 * 
-	 * @example To add event handlers, use the fourth argument:
-	 * <pre>
-	 * var myStylesSpan = EE('input', {'@name': "myInput"}, null, function(e) {
-	 *     e.on('change', inputChanged);
-	 * });
-	 * </pre>
-	 * 
-	 * @param elementName the element name to create (e.g. 'div')
-	 * @param attributes optional an object which contains a map of attributes and other values. The syntax is exactly like ##set(): Attribute values are prefixed with '@',
-	 *                   CSS styles with '$' and regular properties can be set without prefix.
-	 *                   If the attribute value is null, the attribute will omitted (styles and properties can be set to null). 
-	 *                   In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
-	 *                   set the property 'className' instead of '@class' and set styles using the '$' syntax.
-	 * @param children optional  an element or a list of elements to add as children. Strings will be converted as text nodes. 
-	 *                         Functions will be invoked and their return value will be used. Lists can be 
-	 *                         nested and will then automatically be flattened. Null elements in lists will be ignored. 
-	 *                         The syntax is exactly like ##add().
-	 * @param onCreate optional a function(elementList) that will be called each time an element had been created. This allows you, for example, to 
-	 *                 add event handlers with ##on(). The argument <var>elementList</var> is a Minified list that contains the new element.
-	 * @return a Element Factory function, which returns a Minified list containing the DOM HTMLElement that has been created or modified as only element
-	 */
-	'EE': function(elementName, attributes, children, onCreate) {
-		// @cond debug if (!elementName) error("EE() requires the element name."); 
-		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':').");
-
-		return function() {
-			var list = $(_document.createElement(elementName));
-			(isList(attributes) || !isObject(attributes)) ? list['add'](attributes) : list['set'](attributes)['add'](children);
-			if (onCreate)
-				onCreate(list);
-			return list; 
-		};
-	},
-
 	/*$
 	* @id request
 	* @group REQUEST
 	* @requires 
 	* @configurable default
-	* @name MINI.request()
-	* @syntax MINI.request(method, url)
-	* @syntax MINI.request(method, url, data)
-	* @syntax MINI.request(method, url, data, onSuccess)
-	* @syntax MINI.request(method, url, data, onSuccess, onFailure)
-	* @syntax MINI.request(method, url, data, onSuccess, onFailure, headers)
-	* @syntax MINI.request(method, url, data, onSuccess, onFailure, headers, username, password)
+	* @name $.request()
+	* @syntax $.request(method, url)
+	* @syntax $.request(method, url, data)
+	* @syntax $.request(method, url, data, onSuccess)
+	* @syntax $.request(method, url, data, onSuccess, onFailure)
+	* @syntax $.request(method, url, data, onSuccess, onFailure, headers)
+	* @syntax $.request(method, url, data, onSuccess, onFailure, headers, username, password)
 	* Initiates a HTTP request to the given URL, using XMLHttpRequest. It returns a ##promise#Promise## object that allows you to obtain the result.
 	* 
 	* @example Invoke a REST web service and parse the resulting document using JSON:
 	* <pre>
-	* MINI.request('get', 'http://service.example.com/weather', {zipcode: 90210})
+	* $.request('get', 'http://service.example.com/weather', {zipcode: 90210})
 	*    .then(function(txt) {
-	*         var json = MINI.parseJSON(txt);
+	*         var json = $.parseJSON(txt);
 	*         $('#weatherResult').fill('Today's forecast is is: ' + json.today.forecast);
 	*    })
 	*    .error(function(status, statusText, responseText) {
@@ -2153,7 +1901,7 @@ define('minified', function() {
 	*   $('#registrationResult').fill('Registration failed');
 	* }
 	*
-	* MINI.request('post', 'http://service.example.com/directory', MINI.toJSON(myRequest))
+	* $.request('post', 'http://service.example.com/directory', $.toJSON(myRequest))
 	*     .then(function(txt) {
 	*        if (txt == 'OK')
 	*             $('#registrationResult').fill('Registration succeeded');
@@ -2245,8 +1993,8 @@ define('minified', function() {
     * @group JSON
     * @requires ucode 
     * @configurable default
-    * @name MINI.toJSON()
-    * @syntax MINI.toJSON(value)
+    * @name $.toJSON()
+    * @syntax $.toJSON(value)
     * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, boolean or null.
    	* If you build Minified without Internet Explorer compatibility, this is just an alias for <var>JSON.stringify</var>.
 	*
@@ -2264,7 +2012,7 @@ define('minified', function() {
     * @example Convert an object into a JSON object:
     * <pre>
     * var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
-    * var jsonString = MINI.toJSON(myObj);
+    * var jsonString = $.toJSON(myObj);
     * </pre>
     * 
     * @param value the value (map-like object, array, string, number, boolean or null)
@@ -2277,8 +2025,8 @@ define('minified', function() {
 	* @group JSON
 	* @requires ucode
 	* @configurable default
-	* @name MINI.parseJSON()
-	* @syntax MINI.parseJSON(text)
+	* @name $.parseJSON()
+	* @syntax $.parseJSON(text)
 	* Parses a string containing JSON and returns the de-serialized object.
 	* If <var>JSON.parse</var> is defined, which it is in pretty all browsers except Internet Explorer 7 and earlier, it will be used. This is mainly to
 	* prevent possible security problems caused by the use of <var>eval</var> in the implementation. Only in browsers without
@@ -2289,7 +2037,7 @@ define('minified', function() {
 	* @example Parsing a JSON string:
 	* <pre>
 	* var jsonString = "{name: 'Fruits', roles: ['apple', 'banana', 'orange']}";
-	* var myObj = MINI.parseJSON(jsonString);
+	* var myObj = $.parseJSON(jsonString);
 	* </pre>
 	*
 	* @param text the JSON string
@@ -2302,8 +2050,8 @@ define('minified', function() {
     * @group EVENTS
     * @requires ready_vars ready_init
     * @configurable default
-    * @name MINI.ready()
-    * @syntax MINI.ready(handler)
+    * @name $.ready()
+    * @syntax $.ready(handler)
     * Registers a handler to be called as soon as the HTML has been fully loaded. Does not necessarily wait images and other elements, only the main
     * HTML document needs to be complete. On older browsers, it is the same as 'window.onload'. 
     * 
@@ -2311,7 +2059,7 @@ define('minified', function() {
     *
     * @example Registers a handler that sets some text in an element:
     * <pre>
-    * MINI.ready(function() {
+    * $.ready(function() {
     *   $$('#someElement').innerHTML = 'ready() called';
     * });
     * </pre>
@@ -2324,25 +2072,25 @@ define('minified', function() {
      * @id setcookie
      * @group COOKIE
      * @configurable default
-     * @name MINI.setCookie()
-     * @syntax MINI.setCookie(name, value)
-     * @syntax MINI.setCookie(name, value, dateOrDays)
-     * @syntax MINI.setCookie(name, value, dateOrDays, path)
-     * @syntax MINI.setCookie(name, value, dateOrDays, path, domain)
+     * @name $.setCookie()
+     * @syntax $.setCookie(name, value)
+     * @syntax $.setCookie(name, value, dateOrDays)
+     * @syntax $.setCookie(name, value, dateOrDays, path)
+     * @syntax $.setCookie(name, value, dateOrDays, path, domain)
      * Creates, updates or deletes a cookie. If there is an an existing cookie
      * of the same name, will be overwritten with the new value and settings. 
      *
      * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
      * <pre>
-     * var visits = MINI.getCookie('numberOfVisits');
-     * MINI.setCookie('numberOfVisits', 
+     * var visits = $.getCookie('numberOfVisits');
+     * $.setCookie('numberOfVisits', 
      *                      visits ? (parseInt(visits) + 1) : 1,         // if cookie not set, start with 1
      *                      365);                                              // store for 365 days
      * </pre>
      * 
      * @example Deletes the cookie 'numberOfVisits':
      * <pre>
-     * MINI.setCookie('numberOfVisits', '', -1);
+     * $.setCookie('numberOfVisits', '', -1);
      * </pre>
      * 
      * @param name the name of the cookie. This should be ideally an alphanumeric name, as it will not be escaped by Minified and this
@@ -2375,14 +2123,14 @@ define('minified', function() {
      * @group COOKIE
      * @requires
      * @configurable default
-     * @name MINI.getCookie()
-     * @syntax MINI.getCookie(name)
-     * @syntax MINI.getCookie(name, dontUnescape)
+     * @name $.getCookie()
+     * @syntax $.getCookie(name)
+     * @syntax $.getCookie(name, dontUnescape)
      * Tries to find the cookie with the given name and returns it.
      *
      * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
      * <pre>
-     * var visits = MINI.getCookie('numberOfVisits');
+     * var visits = $.getCookie('numberOfVisits');
      * if (!visits)    // check whether cookie set. Null if not
      *     $('#myCounter').set('innerHML', 'Your first visit.');
      * else
@@ -2407,8 +2155,8 @@ define('minified', function() {
 	* @group ANIMATION
 	* @requires animation_vars 
 	* @configurable default
-	* @name MINI.loop()
-	* @syntax MINI.loop(paintCallback)
+	* @name $.loop()
+	* @syntax $.loop(paintCallback)
 	* Runs an animation loop. The given callback method will be invoked repeatedly to create a new animation frame.
 	* In modern browsers, requestAnimationFrame will be used to invoke the callback every time the browser is ready for a new 
 	* animation frame. The exact frequency is determined by the browser and may vary depending on factors such as the time needed to 
@@ -2416,7 +2164,7 @@ define('minified', function() {
 	* In older browsers, the callback function will be invoked approximately every 33 milliseconds.
 	* 
 	* An animation loop runs indefinitely. To stop it, you have two options:
-	* <ul><li><var>MINI.loop()</var> returns a <var>stop()</var> function. If you invoke it, the animation loops ends</li>
+	* <ul><li><var>$.loop()</var> returns a <var>stop()</var> function. If you invoke it, the animation loops ends</li>
 	* <li>The animation callback receives the same <var>stop()</var> function as second argument, so the callback can end the animation itself</li>
 	* </ul>
 	*
@@ -2426,7 +2174,7 @@ define('minified', function() {
 	*   var rotationsPerMs = 1000;                           // one rotation per second
 	*   var radius = 100;
 	*   var d = 3000;                                        // duration in ms
-	*   MINI.loop(function(t, stopFunc) {
+	*   $.loop(function(t, stopFunc) {
 	*     if (t > d) {                                       // time is up: call stopFunc()!
 	*       stopFunc();
 	*       return;
@@ -2467,8 +2215,8 @@ define('minified', function() {
 	 * @group EVENTS
 	 * @requires on
 	 * @configurable default
-	 * @name MINI.off()
-	 * @syntax MINI.off(handler)
+	 * @name $.off()
+	 * @syntax $.off(handler)
 	 * Removes the given event handler. The call will be ignored if the given handler has not registered using ##on(). If the handler has been registered
 	 * for more than one element or event, it will be removed from all instances.
 	 * 
@@ -2480,7 +2228,7 @@ define('minified', function() {
 	 * $('#myElement').on('click', myEventHandler);     // add event handler
 	 *
 	 * window.setInterval(function() {                      // after 5s, remove event handler
-	 *    MINI.off(myEventHandler);
+	 *    $.off(myEventHandler);
 	 * }, 5000);
 	 * </pre>
 	 * 
@@ -2493,53 +2241,14 @@ define('minified', function() {
 				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
 		});
 		handler['M'] = null;
-	},
-
-	/*$
-	 * @id wait
-	 * @group ANIMATION
-	 * @configurable default
-	 * @requires
-	 * @name MINI.wait()
-	 * @syntax MINI.wait()
-	 * @syntax MINI.wait(durationMs)
-	 *
-	 * Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
-	 * because it allows you to chain delays into your animation chain.
-	 *
-	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
-	 *          and finally moves to 100/100.
-	 * <pre>
-	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
-	 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
-	 *    .then(function() {
-	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
-	 *    }).then(function() {
-	 *    		 return MINI.wait(50);
-	 *    }).then(function() {
-	 *           div.animate({$left: '100px', $top: '100px'}, 400);
-	 *    });
-	 * });
-	 * </pre>
-	 *
-	 *
-	 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
-	 *                   from the event loop.
-	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
-	 *         durationMs parameter as given to <var>wait()</var>.
-	 */
-	'wait': function(durationMs) {
-		var p = promise();
-		delay(function() {p(true, [durationMs]);}, durationMs);
-		return p;
 	}
 
  	/*$
  	 * @stop
  	 */
-	// @cond !wait dummy:null
+	// @cond !off dummy:null
 
-	}, function(n, v) {MINI[n]=v;});
+	}, function(n, v) {$[n]=v;});
 
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2552,7 +2261,274 @@ define('minified', function() {
 	/*$
 	 @stop
 	 */
-	return MINI;
+	return {
+		/*$
+		 * @id dollar
+		 * @group SELECTORS
+		 * @requires dollarraw 
+		 * @dependency yes
+		 * @name $()
+		 * @syntax $(selector)
+		 * @syntax $(selector, context)
+		 * @syntax $(selector, context, childOnly)
+		 * @syntax $(list)
+		 * @syntax $(list, context)
+		 * @syntax $(list, context, childOnly)
+		 * @syntax $(node)
+		 * @syntax $(node, context)
+		 * @syntax $(node, context, childOnly)
+		 * @syntax $(domreadyFunction)
+		 * Creates a ##list#Minified list## of HTML nodes. 
+		 * The most common way to create the list is with a CSS-like selector. The function will then create a list containing all elements of the current HTML
+		 * document that fulfill the filter conditions. Alternatively you can also specify a list of nodes or a single node. Nested lists will automatically be flattened, and
+		 * Nulls will automatically be removed from the resulting list.
+		 * 
+		 * Additionally, you can specify a second argument to provide a context. The context limits the resulting list to include only those nodes 
+		 * that are descendants of the context nodes. The context can be either a selector, a list or a single HTML node, and will be 
+		 * processed like the first argument. A third arguments allows you to limit the list to 
+		 * only those elements that are direct children of the context nodes (so a child of a child would be filtered out).
+		 *
+		 * 
+		 * As a special shortcut, if you pass a function to <var>$()</var>, it will be registered using #ready#$.ready() to be executed 
+		 * when the DOM model is complete.
+		 *
+		 * @example A simple selector to find an element by id.
+		 * <pre>
+		 * var l1 = $('#myElementId');
+		 * </pre>
+		 * 	 
+		 * @example You can pass a reference to an DOM node to the function to receive a list containing only this node:
+		 * <pre>
+		 * var l2 = $(document.getElementById('myElementId')); 
+		 * </pre>
+		 *
+		 * @example Lists and arrays will be copied:
+		 * <pre>
+		 * var l2 = $([elementA, elementB, elementC]); 
+		 * </pre>
+		 * 	 
+		 * @example Lists will be automatically flattened and nulls removed. Thus this list <var>l3</var> has the same content as <var>l2</var>:
+		 * <pre>
+		 * var l3 = $([elementA, [elementB, null, elementC], null]); 
+		 * </pre>
+		 * 	 
+		 * @example This is a simple selector to find all elements with the given class.
+		 * <pre>
+		 * var l4 = $('.myClass');
+		 * </pre>
+		 * 	 
+		 * @example A selector to find all elements with the given name.
+		 * <pre>
+		 * var l5 = $('input'); // finds all input elements
+		 * </pre>
+		 * 	 
+		 * @example A selector to find all elements with the given name and class.
+		 * <pre>
+		 * var l6 = $('input.myRadio'); // finds all input elements wit
+		 * </pre>
+		 * 	 
+		 * @example A selector to find all elements that are descendants of the given element.
+		 * <pre>
+		 * var l7 = $('#myForm input'); // finds all input elements that are in the element with the id myForm
+		 * </pre>
+		 * 	 
+		 * @example A selector to find all elements that have either CSS class 'a' or class 'b':
+		 * <pre>
+		 * var l8 = $('.a, .b'); // finds all elements that have either the class a or class b
+		 * </pre>
+		 * 	 
+		 * @example A selector that finds all elements that are descendants of the element myDivision, are inside a .myForm class and are input elements:
+		 * <pre>
+		 * var l9 = $('#myDivision .myForm input'); 
+		 * </pre>
+		 * 	 
+		 * @example Using contexts to make it easier to specify ancestors:
+		 * <pre>
+		 * var l10 = $('.myRadio', '#formA, #formB, #formC');  // same as $('#formA .myRadio, #formB .myRadio, #formC .myRadio')
+		 * </pre>
+		 * 	 
+		 * @example Using one of the list functions, ##set(), on the list, and set the element's text color. '$' at the beginning of the property name sets a CSS value.
+		 * <pre>
+		 * $('#myElementId').set('$color', 'red');
+		 * </pre>
+		 *
+		 * @example Most list methods return the list you invoked them on, allowing you to chain them:
+		 * <pre>
+		 * $('#myForm .myRadio').addClass('uncheckedRadio')
+		 *                      .set('checked', true)
+		 *                      .on('click', function() {
+		 *                             $(this).set({@: 'uncheckedRadio');
+		 *                      });
+		 * </pre>
+		 * 
+		 * @example Using $() as a $.ready() shortcut:
+		 * <pre>
+		 * $(function() {
+		 *   // work with the DOM tree
+		 * });
+		 * </pre>
+		 * 
+		 * @param selector a simple, CSS-like selector for HTML elements. It supports '#id' (lookup by id), '.class' (lookup by class),
+		 *             'element' (lookup by elements) and 'element.class' (combined class and element). Use commas to combine several selectors.
+		 *             You can also join two or more selectors by space to find elements which are descendants of the previous selectors.
+		 *             For example, use 'div' to find all div elements, '.header' to find all elements containing a class name called 'header', and
+		 *             'a.popup' for all a elements with the class 'popup'. To find all elements with 'header' or 'footer' class names, 
+		 *             write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
+		 *             The selector "*" will return all elements.
+		 * @param list a list to copy. It can be an array, another Minified list, a DOM nodelist or anything else that has a <var>length</var> property and
+		 *             allows read access by index. A shallow copy of the list will be returned. Nulls will be automatically removed from the copy. Nested lists 
+		 *             will be flattened, so the result only contains nodes.
+		 * @param node a node to create a single-element list containing only the node. If the node argument is null, an empty list will be returned.
+		 * @param domreadyFunction a function to be registered using #ready#$.ready().
+		 * @param context optional an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection, using the same syntax variants as the
+		 *             first argument. If given, the returned list contains only descendants of the context nodes, all others will be filtered out. 
+		 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
+		 *             true, all descendants of the context will be included. 
+		 * @return the array-like ##list#Minified list## object containing the content specified by the selector. The returned object 
+		 *             is guaranteed to have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
+		 *             regular arrays (e.g. list[2] for the second elements). Beside that, Minified provides a large number of functions that work on the list.
+		 *             Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the first argument was a list, 
+		 *             the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. If you combined several selectors 
+		 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to form a single list. This list will, 
+		 *             not be in document order anymore. 
+		 */
+		'$': $,
+
+	    /*$
+		 * @id dollardollar
+		 * @group SELECTORS
+		 * @requires dollarraw
+		 * @configurable default
+		 * @name $$()
+		 * @syntax $$(selector)
+		 * @shortcut $$() - It is recommended that you assign MINI.$$ to a variable $$.
+		 * Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found. 
+		 * <var>$$</var> allows you to easily access an element directly. It is the equivalent to writing "$(selector)[0]".
+		 *
+		 * Please note that the function <var>$$</var> will not be automatically exported by Minified. You should always import it
+		 * using the recommended import statement:
+		 * <pre>
+		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
+		 * </pre>
+		 * 
+		 * @example Select the checkbox 'myCheckbox':
+		 * <pre>
+		 * $$('#myCheckbox').selected = true;
+		 * </pre>
+		 * 
+		 * @param selector a simple, CSS-like selector for the element. Uses the full syntax described in #dollar#$(). The most common
+		 *                 parameter for this function is the id selector with the syntax "#id".
+		 * @return a DOM object of the first match, or <var>undefined</var> if the selector did not return at least one match
+		 */
+	    '$$': $$,
+
+		/*$
+		 * @id ee
+		 * @group ELEMENT
+		 * @requires dollar set add
+		 * @configurable default
+		 * @name EE()
+		 * @syntax EE(elementName)
+		 * @syntax EE(elementName, attributes)
+		 * @syntax EE(elementName, children)
+		 * @syntax EE(elementName, attributes, children)
+		 * @syntax EE(elementName, attributes, children, onCreate)
+		 * @shortcut EE() - It is recommended that you assign MINI.EE to a variable EE.
+		 * Creates a new Element Factory. An Element Factory is a function without arguments that returns a ##list#Minified list##
+		 * containing a newly created DOM element, optionally with attributes and children.
+		 * Typically it will be used to insert elements into the DOM tree using add() or a similar function. 
+		 *
+		 * Please note that the function <var>EE</var> will not be automatically exported by Minified. You should always import it
+		 * using the recommended import statement:
+		 * <pre>
+		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
+		 * </pre>
+		 * 
+		 * @example Creating a simple factory for a &lt;span> element with some text:
+		 * <pre>
+		 * var mySpan = EE('span', 'Hello World'); 
+		 * </pre>
+		 * creates a factory to produce this:
+		 * <pre>
+		 *  &lt;span>Hello World&lt;/span> 
+		 * </pre>
+		 * 
+		 * @example Adding the 'Hello World; &lt;span> element to all elements with the class '.greeting':
+		 * <pre>
+		 * $('.greeting').add(EE('span', 'Hello World')); 
+		 * 
+		 * @example Creating a factory for a &lt;span> element with style and some text:
+		 * <pre>
+		 * var span2 = EE('span', {'@title': 'Greetings'}, 'Hello World'); 
+		 * </pre>
+		 * The factory creates this:
+		 * <pre>
+		 *  &lt;span title="Greetings">Hello World&lt;/span> 
+		 * </pre>
+		 * 
+		 * @example Creating a &lt;form> element with two text fields, labels and a submit button:
+		 * <pre>
+		 * var myForm = EE('form', {'@method': 'post'}, [
+		 *     EE('label', {'@for': 'nameInput'}, 'Name:'),
+		 *     EE('input', {'@id': 'nameInput', '@type': 'input'}),
+		 *     EE('br'),
+		 *     EE('label', {'@for': 'ageInput'}, 'Age:'),
+		 *     EE('input', {'@id': 'ageInput', '@type': 'input'}),
+		 *     EE('br'),
+		 *     EE('input', {'@type': 'submit, '@value': 'Join'})
+		 * ]); 
+		 * </pre>
+		 * results in (newlines and indentation added for readability):
+		 * <pre>
+		 * 	&lt;form method="post>
+		 *     &lt;label for="nameInput">Name:&lt;/label>
+		 *     &lt;input id="nameInput" type="input"/>
+		 *     &lt;br/>
+		 *     &lt;label for="ageInput"/>Age:&lt;/label>
+		 *     &lt;input id="ageInput" type="input"/>
+		 *     &lt;br/>
+		 *     &lt;input value="Join" type="submit"/>
+		 *  &lt;/form>
+		 * </pre>
+		 * 
+		 * @example Null attributes often come handy when you don't always need a particular attribute. Attributes with null values will be ignored:
+		 * <pre>
+		 * var myInput = EE('input', {'@id': 'myCheckbox', '@type': 'checkbox', '@checked': shouldBeChecked() ? 'checked' : null});
+		 * </pre>
+		 * 
+		 * @example You can set styles directly using a $ prefix for the name:
+		 * <pre>
+		 * var myStylesSpan = EE('span', {$color: "red", $fontWeight: "bold"}, "I'm styled");
+		 * </pre>
+		 * 
+		 * @example To add event handlers, use the fourth argument:
+		 * <pre>
+		 * var myStylesSpan = EE('input', {'@name': "myInput"}, null, function(e) {
+		 *     e.on('change', inputChanged);
+		 * });
+		 * </pre>
+		 * 
+		 * @param elementName the element name to create (e.g. 'div')
+		 * @param attributes optional an object which contains a map of attributes and other values. The syntax is exactly like ##set(): Attribute values are prefixed with '@',
+		 *                   CSS styles with '$' and regular properties can be set without prefix.
+		 *                   If the attribute value is null, the attribute will omitted (styles and properties can be set to null). 
+		 *                   In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
+		 *                   set the property 'className' instead of '@class' and set styles using the '$' syntax.
+		 * @param children optional  an element or a list of elements to add as children. Strings will be converted as text nodes. 
+		 *                         Functions will be invoked and their return value will be used. Lists can be 
+		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored. 
+		 *                         The syntax is exactly like ##add().
+		 * @param onCreate optional a function(elementList) that will be called each time an element had been created. This allows you, for example, to 
+		 *                 add event handlers with ##on(). The argument <var>elementList</var> is a Minified list that contains the new element.
+		 * @return a Element Factory function, which returns a Minified list containing the DOM HTMLElement that has been created or modified as only element
+		 */
+		'EE': EE
+
+	 	/*$
+	 	 * @stop
+	 	 */
+		// @cond !ee dummy:null
+	};
 });
 
 /*$
@@ -2588,8 +2564,8 @@ define('minified', function() {
  * @id promise
  * @name Promise
  * 
- * <i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using #request#MINI.request(),
- * ##animate() or #wait#MINI.wait(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
+ * <i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using #request#$.request(),
+ * ##animate(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
  * 
  * Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
  * be able to interoperate with most other Promises implementations.
@@ -2605,7 +2581,7 @@ define('minified', function() {
  * 
  * This example shows you how to use <var>then()</var>:
  * <pre>
- * MINI.request('get', 'http://example.com/weather?zip=90210')
+ * $.request('get', 'http://example.com/weather?zip=90210')
  *  .then(function success(result) {
  *      alert('The weather is ' + result);
  *  }, function error(exception) {
@@ -2616,7 +2592,7 @@ define('minified', function() {
  * What makes Promises so special is that ##then() itself returns a new Promise, which is based on the Promise <var>then()</var> was called on, but can be
  * modified by the outcome of callbacks. Both arguments to <var>then()</var> are optional, and you can also write the code like this:
  * <pre>
- * MINI.request('get', 'http://example.com/weather?zip=90210')
+ * $.request('get', 'http://example.com/weather?zip=90210')
  *  .then(function success(result) {
  *      alert('The weather is ' + result);
  *  })
@@ -2634,7 +2610,7 @@ define('minified', function() {
  * by using ##error(), which is not part of Promises/A+, but a simple extension by Minified. It just registers the failure callback without
  * forcing you to specify <var>null</var> as first argument: 
  * <pre>
- * MINI.request('get', 'http://example.com/weather?zip=90210')
+ * $.request('get', 'http://example.com/weather?zip=90210')
  *  .then(function success(result) {
  *      alert('The weather is ' + result);
  *  })
@@ -2648,9 +2624,9 @@ define('minified', function() {
  * the new Promise will assume the state of the returned Promise. You can use the latter to create chains of asynchronous operations,
  * but you still need only a single error handler for all of them and you do not need to nest functions to achieve this:
  * <pre>
- * MINI.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
+ * $.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
  *  .then(function(resultZip) {
- *      return MINI.request('get', 'http://example.com/weather', {zip: resultZip});
+ *      return $.request('get', 'http://example.com/weather', {zip: resultZip});
  *  })
  *  .then(function(resultWeather) {
  *      alert('The weather in Beverly Hills is ' + resultWeather);
@@ -2665,7 +2641,7 @@ define('minified', function() {
  * especially when you define the handler function inline. Therefore Minified comes with a second small extension, ##always():
  * 
  * <pre>
- * MINI.request('post', 'http://example.com/pageHit', {pageId: 12345})
+ * $.request('post', 'http://example.com/pageHit', {pageId: 12345})
  *  .always(function() {   // always(callback) is equivalent to then(callback, callback)
  *      pageCountDone(); 
  *  });
