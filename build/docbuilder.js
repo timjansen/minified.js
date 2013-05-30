@@ -149,6 +149,7 @@ function createOverviewPage(sections) {
 	_.each(sections, function(sec) {
 		html += sec.htmlpreview;
 	});
+	html += '<h3><a href="howto.html">How to...</a></h3>\n<div class="summary">Can\'t find something? Try this page!</div>';
 	html += '</div>\n';
 	html += createToc(sections);
 	html += '\n';

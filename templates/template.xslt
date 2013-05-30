@@ -21,14 +21,13 @@
 <body>
 <div id="head">
 	<div class="container">
-		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png'><![endif]-->
-		<!--[if gt IE 8]><img src='/img/minified.svg'><![endif]-->
-		<!--[if !IE]> --><img src='/img/minified.svg'/><!-- <![endif]--></a>
-
+		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt="Minified"><![endif]-->
+		<!--[if gt IE 8]><img src='/img/minified.svg' alt="Minified"><![endif]-->
+		<!--[if !IE]> --><img src='/img/minified.svg' alt="Minified"/><!-- <![endif]--></a>
 		<div id="topMenu">
 			<a class="{if (/page:page/page:section='home') then 'selected' else 'notSelected'}" href="/">Home</a>
 			<a class="{if (/page:page/page:section='download') then 'selected' else 'notSelected'}" href="/download/">Download</a>
-			<a class="{if (/page:page/page:section='build') then 'selected' else 'notSelected'}" href="/builder.html">Build</a>
+			<a class="{if (/page:page/page:section='build') then 'selected' else 'notSelected'}" href="/builder/">Build</a>
 			<a class="{if (/page:page/page:section='docs') then 'selected' else 'notSelected'}" href="/docs/">Documentation</a>
 			<a class="{if (/page:page/page:section='reference') then 'selected' else 'notSelected'}" href="/reference/">API</a>
 			<a class="{if (/page:page/page:section='about') then 'selected' else 'notSelected'}" href="/about/">About</a>
@@ -43,8 +42,7 @@
 <div id="foot">
 	<div class="container">
 		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>.
-		You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>, but 
-		don't expect too much.
+		You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>.
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

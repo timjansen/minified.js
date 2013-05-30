@@ -10,11 +10,11 @@
 <ul>
 <li>Tiny JavaScript framework (&lt;4kb gzipped)<ul>
 <li>7-8 times smaller than jQuery or MooTools</li>
-<li>The<a href="/builder.html">Builder</a> tool can create even smaller versions, containing only the functions that you actually use</li></ul></li> 
+<li>allows even smaller builds using the <a href="/builder/">Builder</a> tool</li></ul></li> 
 
 <li>Complete Feature Set<ul>
-<li>Close to jQuery or MooTools for most use cases</li>
-<li>Exceeding jQuery or MooTools in some aspects</li>
+<li>Feature set is close to jQuery or MooTools</li>
+<li>Some features exceed capabilities of jQuery or MooTools</li>
 <li>Flexible enough to make up for missing features</li></ul></li>
 
 <li>No Magic<ul>

@@ -3,3 +3,11 @@
 	font-family: monospace;
 }
 
+h3, h2 {
+	margin-top: 2.5em;
+	margin-bottom: 0.5em;
+}
+
+p { margin-bottom: 0.1em; }
+
+li { margin-top: 0.5em; }

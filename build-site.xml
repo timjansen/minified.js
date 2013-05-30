@@ -64,6 +64,10 @@
 		     <fileset file="srcContent/css/minimum.css" />
 		     <fileset file="srcContent/css/doc.css" />
 		</concat>
+		<concat destfile="WebContent/css/links.css">
+		     <fileset file="srcContent/css/minimum.css" />
+		     <fileset file="srcContent/css/links.css" />
+		</concat>
 	 	<java jar="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar" failonerror="true" fork="true">
 	    	<arg line="-o WebContent/css/doc.css WebContent/css/doc.css"/>
   	 	</java>

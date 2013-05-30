@@ -29,3 +29,46 @@ pre {
 	font-family: monospace;
 	border-left: 6px solid #ff8200;
 }
+ul.links {
+	list-style-type: none;
+	margin: 0; 
+	padding: 0;
+}
+
+.links li {
+	margin: 0; 
+	padding: 0;
+}
+
+.links a {
+	display: block;
+	text-decoration: none;
+	margin: 0.3em;
+	padding: 0.5em;
+}
+
+.links li a {
+	width: 30em;
+	border-top: 1px solid black;
+}
+
+.links li:last-child a {
+	border-bottom: 1px solid black;
+}
+
+.links .summary {
+	font-size: 10pt;
+}
+
+.links .link {
+	font-size: 13pt;
+	text-decoration: underline;
+}
+
+.links tr {
+	border-bottom: 1px solid black;
+}
+
+.links tr:last-child {
+	border-bottom: none;
+}

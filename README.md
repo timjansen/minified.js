@@ -79,9 +79,12 @@ What you see here is only the beginning, a 4kb module for building web sites. Th
 internationalization. Its scope and size can be compared to <a href="http://underscorejs.org/">Underscore</a>, but it omits the more 
 obscure functional helpers and replaces them with date and string helpers. You can find an early version in the /src directory
 on GitHub.</li>
-<li><strong>Minified MVC</strong> will be a MVC library, somewhat similar to Backbone or Angular.js, but with a Plain-Old-JSON-Object (POJO) concept
-and templates that are closely tied to page's DOM. It requires the other two modules. A preview should be available by the end of 2013.</li>
+<li><strong>Minified Apps</strong> will be a MVC-oriented library for single-page applications and complex multi-page apps.
+The scope will be somewhat similar to Backbone or Angular.js, but with a Plain-Old-JSON-Object (POJO) principles and a template/binding
+concept that is closely tied to the page's DOM and is predestinated for <a href="http://www.w3.org/TR/components-intro/#template-section">HTML5 templates.
+It is built upon the other two modules. A preview should be available by the end of 2013.</li>
 </ul>
 
 Thank you for checking out Minified.
 			Tim Jansen
+s

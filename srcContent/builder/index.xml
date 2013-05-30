@@ -19,7 +19,7 @@
   		<p>Use this builder to create your own custom build of Minified. You can pick the functions that you need below. Alternatively,
   		if you already have a custom build to start with, load your own configuration.</p>
 		<form id="configurationForm">
-	  		<div>
+	  		<p>
 	  			<input id="fromScratch" name="configRadio" type="radio" checked="checked"><label for="fromScratch">Start from Scratch</label><br/>
 	  			<input id="loadConfig" name="configRadio" type="radio"><label for="loadConfig">Load existing configuration</label><br/>
 	  			<div id="configSrcDiv">
@@ -28,7 +28,7 @@
 	  			<textarea id="configSrc" rows="5" cols="140"></textarea><br/>
 	  			<button id="recreate">Load configuration</button>
 	  			</div>
-  			</div>
+  			</p>
 			<div id="sectionCheckboxes"></div>
 			<p>
 			<input id="compressionAdvanced" type="radio" name="compression" value="closure" checked="checked"/><label for="compressionAdvanced">Minify using Closure / Advanced Compression</label>
