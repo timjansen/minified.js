@@ -51,10 +51,10 @@
 												   $backgroundColor: 'rgb('+Math.round(250*Math.random())+','+Math.round(250*Math.random())+','+Math.round(250*Math.random())+')'}, 500, Math.random());
 						})
 			            .then(function() {
-		    		       	 return MINI.wait(100);
+		    		       	 return $(div).animate({}, 100); // NO WAIT AVAILABLE FOR WEB MODULE
 		            	});
 				}
-				var p = MINI.wait(500);
+				var p = $(div).animate({}, 500); // NO WAIT AVAILABLE FOR WEB MODULE
 				for (var i = 0; i < 10; i++)
 					p = step(p);
 				
@@ -75,7 +75,7 @@
 
 		var DURMS = 4000;
 		function startLoop() {
-			MINI.loop(function(ts, stop) {
+			$.loop(function(ts, stop) {
 				if (ts > DURMS)
 					return stop();
 				var a = 2 * Math.PI * ts / 1000; // 1000 ms per rotation
@@ -113,7 +113,7 @@ The map format returned by values() is exactly the format used by request().
 lease note that when you include an input element more than once, for example by having
 value will be included twice in the list.
 @example Serialize a form and send it as request parameters:
-MINI.request('get', '/exampleService', $('#myForm').values(), resultHandler);
+$.request('get', '/exampleService', $('#myForm').values(), resultHandler);
 @example Serialize only some selected input fields:
 var data = $('#myText, input.myRadios').values();
 @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
@@ -144,7 +144,7 @@ The map format returned by values() is exactly the format used by request().
 lease note that when you include an input element more than once, for example by having
 value will be included twice in the list.
 @example Serialize a form and send it as request parameters:
-MINI.request('get', '/exampleService', $('#myForm').values(), resultHandler);
+$.request('get', '/exampleService', $('#myForm').values(), resultHandler);
 @example Serialize only some selected input fields:
 var data = $('#myText, input.myRadios').values();
 @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
