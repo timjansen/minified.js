@@ -570,10 +570,10 @@ define('minified', function() {
      * @example Goes through input elements. If they are text inputs, their value will be added to the list: 
      * <pre> 
      * var texts = $('input').collect(function(input) { 
-     * if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') // text is default, so check for null 
-     *     return input.value; 
-     * else 
-     *     return null; // ignore 
+     *     if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') 
+     *         return input.value; 
+     *     else 
+     *         return null; // ignore 
      * }); 
      * </pre> 
      * 
@@ -754,11 +754,12 @@ define('minified', function() {
  	 *
  	 * @example Uses ##get() and ##set() to reposition an element:
  	 * <pre>
- 	 * var coords = $('#myElement').get({$top: 0, $left: 0}, true); // values of $top and $left values don't matter and will be ignored!
+ 	 * var coords = $('#myElement').get({$top: 0, $left: 0}, true); 
  	 * coords.$top += 10;
  	 * coords.$left += 20;
  	 * $('#myElement').set(coords);
  	 * </pre>
+ 	 * Please note that the values of $top and $left in the <var>get()</var> invocation do not matter and will be ignored!
  	 *
  	 * @param name the name of the property, attribute or style. To retrieve a JavaScript property, just use its name without prefix. To get an attribute value,
  	 *             prefix the name with a '@'. A '$' prefix will retrieve a CSS style. The syntax for the CSS styles is camel-case (e.g. "backgroundColor", not "background-color"). 
@@ -1055,7 +1056,11 @@ define('minified', function() {
 	 *
 	 * @example Use a list to add several elements at once:
 	 * <pre>
-	 * $('#comments').add([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
+	 * $('#comments').add([
+	 * 		EE('br'), 
+	 *      'Some text', 
+	 *      EE('span', {'className': 'highlight'}, 'Some highlighted text')
+	 * ]);
 	 * </pre>
 	 *
 	 * @example You can implement functions to create elements depending on the context:
@@ -1145,12 +1150,20 @@ define('minified', function() {
 	 *
 	 * @example Or a complete structure built using EE:
 	 * <pre>
-	 * $('#myListContainer').fill([EE('h2', 'My List'), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]);
+	 * $('#myListContainer').fill([
+	 *     EE('h2', 'My List'), 
+	 *     EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])
+	 * ]);
 	 * </pre>
 	 *
 	 * @example You can write a factory function that re-creates the list for every instance:
 	 * <pre>
-	 * $('.listContainers').fill(function(e, index) { return [EE('h2', 'List Number '+index), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]});
+	 * $('.listContainers').fill(function(e, index) { return [
+	 *     EE('h2', 'List Number '+index), 
+	 *     EE('ol', [EE('li', 'First Item'), 
+	 *     EE('li', 'Second Item'), 
+	 *     EE('li', 'Third Item')
+	 * ])]});
 	 * </pre>
 	 *
 	 * @example <var>fill()</var> without arguments deletes the content of the list elements:
@@ -1359,7 +1372,7 @@ define('minified', function() {
 	 * @example Use a list to add several elements at once:
 	 * <pre>
 	 * $('#comments').addFront([
-	 * 		EE('br'), 
+	 *      EE('br'), 
 	 *      'Some text', 
 	 *      EE('span', {'className': 'highlight'}, 'Some highlighted text')
 	 * ]);
@@ -2088,8 +2101,8 @@ define('minified', function() {
      * <pre>
      * var visits = $.getCookie('numberOfVisits');
      * $.setCookie('numberOfVisits', 
-     *                      visits ? (parseInt(visits) + 1) : 1,         // if cookie not set, start with 1
-     *                      365);                                              // store for 365 days
+     *                      visits ? (parseInt(visits) + 1) : 1,   // if cookie not set, start with 1
+     *                      365);                                  // store for 365 days
      * </pre>
      * 
      * @example Deletes the cookie 'numberOfVisits':
@@ -2227,11 +2240,11 @@ define('minified', function() {
 	 * @example Adds a handler to an element:
 	 * <pre>
 	 * function myEventHandler() {
-	 *    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
+	 *    this.style.backgroundColor = 'red';        // 'this' contains the element that caused the event
 	 * }
-	 * $('#myElement').on('click', myEventHandler);     // add event handler
+	 * $('#myElement').on('click', myEventHandler);  // add event handler
 	 *
-	 * window.setInterval(function() {                      // after 5s, remove event handler
+	 * window.setInterval(function() {               // after 5s, remove event handler
 	 *    $.off(myEventHandler);
 	 * }, 5000);
 	 * </pre>
@@ -2348,9 +2361,13 @@ define('minified', function() {
 		 * 	 
 		 * @example Using contexts to make it easier to specify ancestors:
 		 * <pre>
-		 * var l10 = $('.myRadio', '#formA, #formB, #formC');  // same as $('#formA .myRadio, #formB .myRadio, #formC .myRadio')
+		 * var l10 = $('.myRadio', '#formA, #formB, #formC'); 
 		 * </pre>
-		 * 	 
+		 * The result is identical to:
+		 * <pre>
+		 * var l10 = $('#formA .myRadio, #formB .myRadio, #formC .myRadio'); 
+		 * </pre>
+		 *  	 
 		 * @example Using one of the list functions, ##set(), on the list, and set the element's text color. '$' at the beginning of the property name sets a CSS value.
 		 * <pre>
 		 * $('#myElementId').set('$color', 'red');
@@ -2417,7 +2434,7 @@ define('minified', function() {
 		 * 
 		 * @example Select the checkbox 'myCheckbox':
 		 * <pre>
-		 * $$('#myCheckbox').selected = true;
+		 * $$('#myCheckbox').checked = true;
 		 * </pre>
 		 * 
 		 * @param selector a simple, CSS-like selector for the element. Uses the full syntax described in #dollar#$(). The most common

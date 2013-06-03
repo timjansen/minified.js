@@ -19,7 +19,9 @@ var l8 = $('.a, .b'); // finds all elements that have either the class a or clas
 </pre> </p></div> <h4>Example</h4> <div class="example"><p>A selector that finds all elements that are descendants of the element myDivision, are inside a .myForm class and are input elements: <pre>
 var l9 = $('#myDivision .myForm input');
 </pre> </p></div> <h4>Example</h4> <div class="example"><p>Using contexts to make it easier to specify ancestors: <pre>
-var l10 = $('.myRadio', '#formA, #formB, #formC');  // same as $('#formA .myRadio, #formB .myRadio, #formC .myRadio')
+var l10 = $('.myRadio', '#formA, #formB, #formC');
+</pre> The result is identical to: <pre>
+var l10 = $('#formA .myRadio, #formB .myRadio, #formC .myRadio');
 </pre> </p></div> <h4>Example</h4> <div class="example"><p>Using one of the list functions, <code><a href='set.html'>set()</a></code>, on the list, and set the element's text color. '$' at the beginning of the property name sets a CSS value. <pre>
 $('#myElementId').set('$color', 'red');
 </pre> </p></div> <h4>Example</h4> <div class="example"><p>Most list methods return the list you invoked them on, allowing you to chain them: <pre>
