@@ -22,14 +22,14 @@
 <dd class="">the 0-based position of the sub-list start. If negative, the list's length is added and thus it is the position
 seen from the list end.</dd>
 <dt id="sub_endIndex" class=""><a name="sub_endIndex"><var>endIndex</var></a></dt>
-<dd class=""><span class="optional">optional</span> the 0-based position of the sub-list end. If negative, the list's length is added and thus it is the position
+<dd class=""><span class="optional">optional.</span> the 0-based position of the sub-list end. If negative, the list's length is added and thus it is the position
 seen from the list end. If omitted, all elements following the <var>startIndex</var> are included in the result.</dd>
 <dt id="sub_RETURN" class="returnValue inSyntax0"><a name="sub_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">a new <a href='list.html'>list()</a> containing only the items in the index range.</dd>
+<dd class="inSyntax0">a new <a href='list.html'>list</a> containing only the items in the index range.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Returns a new <a href='list.html'>Minified list()</a> containing only the elements in the specified range. If there are no elements in the range, an empty list is returned.
+<div class="description"><p>Returns a new <a href='list.html'>Minified list</a> containing only the elements in the specified range. If there are no elements in the range, an empty list is returned.
 Negative indizes are supported and will be added to the list's length, thus allowing you to specify ranged at the list's end.</p><p></p></div>
 
 <div class="examples">

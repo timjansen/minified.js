@@ -19,11 +19,11 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="error_callback" class=""><a name="error_callback"><var>callback</var></a></dt>
-<dd class="">a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a <a href='promise.html'>Promise()</a>, that Promise will
+<dd class="">a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a <a href='promise.html'>Promise</a>, that Promise will
 be evaluated to determine the state of the returned Promise. If it returns regularly, the returned Promise will
 have success status. If it throws an error, the returned Promise will be in error state.</dd>
 <dt id="error_RETURN" class="returnValue inSyntax0"><a name="error_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">a new <a href='promise.html'>Promise()</a> object. Its state is determined by the callback.</dd>
+<dd class="inSyntax0">a new <a href='promise.html'>Promise</a> object. Its state is determined by the callback.</dd>
 </dl>
 
 <h4>Description</h4>

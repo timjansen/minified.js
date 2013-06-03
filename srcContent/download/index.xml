@@ -10,7 +10,7 @@
 <table class="links">
 	<tr><th></th><th>with IE compatibility</th><th>no IE compatibility</th></tr>
 	<tr><th>Development</th>
-		<td><a href="/minified-web-src.js"><span class="link">minified-web-sec.js</span><br/>
+		<td><a href="/minified-web-src.js"><span class="link">minified-web-src.js</span><br/>
 			<span class="summary">Version: beta1</span><br/>
 			<span class="summary">Size: 126 kBytes</span><br/>
 			<span class="summary">Sourcecode with full IE compatibility.</span></a></td>
@@ -22,7 +22,7 @@
 	<tr><th>Production</th>
 		<td><a href="/minified-web.js"><span class="link">minified-web.js</span><br/>
 			<span class="summary">Version: beta1</span><br/>
-			<span class="summary">Size: 4071 bytes (gzip'd)</span><br/>
+			<span class="summary">Size: <strong>4071 bytes</strong> (gzip'd)</span><br/>
 			<span class="summary">Compiled Version with full IE compatibility.</span></a></td>
 		<td><a href="/minified-web.noie.js"><span class="link">minified-web.noie.js</span><br/>
 			<span class="summary">Version: beta1</span><br/>
@@ -31,7 +31,7 @@
 	</tr>
 </table>
 
-<h3>More</h3>
+<h3>Other Options</h3>
 <ul class="links">
 <li><a href="/builder.html"><span class="link">Builder</span><br/>
 <span class="summary">Create your own custom-build of Minified.</span></a></li>

@@ -24,11 +24,11 @@
 If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls und <var>undefined</var>
 will be ignored and not added.</dd>
 <dt id="collect_RETURN" class="returnValue inSyntax0"><a name="collect_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the new <a href='list.html'>list()</a></dd>
+<dd class="inSyntax0">the new <a href='list.html'>list</a></dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Creates a new <a href='list.html'>Minified list()</a> from the current list using the given callback function.
+<div class="description"><p>Creates a new <a href='list.html'>Minified list</a> from the current list using the given callback function.
 The callback is invoked once for each element of the current list. The callback results will be added to the result list.
 The callback can return
 <ul>

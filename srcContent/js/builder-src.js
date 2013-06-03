@@ -2,7 +2,7 @@ var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = require('minifiedUtil')._;
 
 var MAX_SIZE = 4095;
-var SRC='minified-web-src.js';
+var SRC='/minified-web-src.js';
 
 var GROUPS = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'OPTIONS'];
 
@@ -45,7 +45,7 @@ function setUpConfigurationUI(s) {
 			$$('#compile').disabled = true;
 			closureCompile(src, $$('#compressionAdvanced').checked, function(closureResult) {
 				$$('#compile').disabled = false;
-				$('#resultDiv').animate("$$slide", 1);
+				$('#resultDiv').animate({$$slide: 1});
 				if (closureResult) {
 					$('#gzipRow, #downloadRow').set({$display: 'table-row'});
 					$$('#resultSrc').value = header + '\n' + closureResult.compiledCode;
@@ -59,7 +59,7 @@ function setUpConfigurationUI(s) {
 			});
 		}
 		else  {
-			$('#resultDiv').animate("$$slide", 1);
+			$('#resultDiv').animate({$$slide: 1});
 			$$('#resultSrc').value = header + src;
 			$('#resultPlain').fill((src.length/1024).toFixed(2) + 'kb');
 			$('#gzipRow, #downloadRow').set({$display: 'none'});
@@ -92,17 +92,24 @@ function setUpConfigurationUI(s) {
 	}
 	
 	function recreateConfig() {
-		var inputSrc = $$('configSrc').value;
-		var conf = deserializeEnabledSections(s.sections, s.sectionMap, inputSrc);
-		if (conf) {
-			_(s).each(function(secName) {
-				var secCheck = $$('#sec-'+secName);
-				secCheck.checked = !!conf[secName];
-			});
-			setGroupCheckboxes();
+		try {
+			var inputSrc = $$('#configSrc').value;
+			var conf = deserializeEnabledSections(s.sections, s.sectionMap, inputSrc);
+			if (conf) {
+console.log('loading ', conf);
+				_.eachObj(s.sectionMap, function(secName) {
+					var secCheck = $$('#sec-'+secName);
+					if (secCheck)
+						secCheck.checked = !!conf[secName];
+				});
+				setGroupCheckboxes();
+			}
+			else
+				alert("Can not find configuration in source."); 
 		}
-		else
-			alert("Can not find configuration in source."); 
+		catch (e) {
+			console.log(e);
+		}
 	}
 	
 	$('#compile').on('click', compileClicked);

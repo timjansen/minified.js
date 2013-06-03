@@ -3,6 +3,14 @@
 	font-family: monospace;
 }
 
+.optional {
+	font-style: italic;
+}
+
+.returnValue {
+	margin-top: 1em;
+}
+
 h3, h2 {
 	margin-top: 2.5em;
 	margin-bottom: 0.5em;

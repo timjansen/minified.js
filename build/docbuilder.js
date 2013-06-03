@@ -7,12 +7,12 @@ var GROUPS = ['SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'AN
 //- ##ID# bla bla ## will be replaced with <a href="NAME.html"> bla bla </a>
 function parseDescription(desc, paragraphSeparator, plainText) {
 	return _.toString(desc)
-		.replace(/#(\w*)#([\w$.]+)\(\)/g, function(all, id, name) {
+		.replace(/##(\w+)#([^#]+)##/g, function(all, id, text) { // ##id#any text##
+			return plainText ? text :  "<a href='"+id.toLowerCase()+".html'>"+text+"</a>";
+		})
+		.replace(/#(\w*)#([\w$.]+)\(\)/g, function(all, id, name) { // #id#name()  
 			var rId = id || name;
 			return plainText ? name : "<code><a href='"+rId.toLowerCase()+".html'>"+name+"()</a></code>";
-		})
-		.replace(/##(\w+)#([^#]+)##/g, function(all, id, text) {
-			return plainText ? text :  "<a href='"+id.toLowerCase()+".html'>"+text+"()</a>";
 		})
 		.replace(/\n\n/mg, paragraphSeparator || '');
 }
@@ -41,7 +41,7 @@ function createDocs(sec) {
 		s += '<h4>Parameters</h4>\n';
 		s += '<dl class="params">\n';
 		_.each(sec.params, function(param) {
-			var desc = parseDescription(param.desc).replace(/^optional/, '<span class="optional">optional</span>').replace('&&', '&amp;&amp;');
+			var desc = parseDescription(param.desc).replace(/^optional/, '<span class="optional">optional.</span>').replace('&&', '&amp;&amp;');
 			var re = RegExp('\b' + param.name + '\b');
 			var highlightClasses = [];
 			_.each(sec.syntax, function(syn, synIndex) {

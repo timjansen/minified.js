@@ -1440,7 +1440,7 @@ define('minified', function() {
 	 * </pre>
 	 * This results in:
 	 * <pre>
-	 * &lt;div id="comments">Some additional text.Here is some text.&lt;br/>&lt;/div>
+	 * &lt;div id="comments">Some additional text. Here is some text.&lt;br/>&lt;/div>
 	 * </pre> 
 	 *
 	 * @example Using the following HTML: 
@@ -1465,7 +1465,11 @@ define('minified', function() {
 	 *
 	 * @example Use a list to add several elements at once:
 	 * <pre>
-	 * $('#comments').addFront([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
+	 * $('#comments').addFront([
+	 * 		EE('br'), 
+	 *      'Some text', 
+	 *      EE('span', {'className': 'highlight'}, 'Some highlighted text')
+	 * ]);
 	 * </pre>
 	 *
 	 * @param text a string to add as text node of the list elements
@@ -2474,12 +2478,12 @@ define('minified', function() {
 		 *
 		 * @example A simple selector to find an element by id.
 		 * <pre>
-		 * var l1 = $('#myElementId');
+		 * var l0 = $('#myElementId');
 		 * </pre>
 		 * 	 
 		 * @example You can pass a reference to an DOM node to the function to receive a list containing only this node:
 		 * <pre>
-		 * var l2 = $(document.getElementById('myElementId')); 
+		 * var l1 = $(document.getElementById('myElementId')); 
 		 * </pre>
 		 *
 		 * @example Lists and arrays will be copied:
@@ -2541,7 +2545,7 @@ define('minified', function() {
 		 *                      });
 		 * </pre>
 		 * 
-		 * @example Using $() as a $.ready() shortcut:
+		 * @example Using $() as a ##ready#$.ready() shortcut:
 		 * <pre>
 		 * $(function() {
 		 *   // work with the DOM tree
@@ -2674,7 +2678,11 @@ define('minified', function() {
 		 * 
 		 * @example Null attributes often come handy when you don't always need a particular attribute. Attributes with null values will be ignored:
 		 * <pre>
-		 * var myInput = EE('input', {'@id': 'myCheckbox', '@type': 'checkbox', '@checked': shouldBeChecked() ? 'checked' : null});
+		 * var myInput = EE('input', {
+		 * 				'@id': 'myCheckbox', 
+		 * 				'@type': 'checkbox', 
+		 * 				'@checked': shouldBeChecked() ? 'checked' : null
+		 * 			});
 		 * </pre>
 		 * 
 		 * @example You can set styles directly using a $ prefix for the name:

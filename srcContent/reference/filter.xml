@@ -22,11 +22,11 @@
 <dd class="">the callback function(item, index) to invoke for each item with the item as first argument and the 0-based index as second argument.
 If the function returns false for an item, it is not included in the resulting list.</dd>
 <dt id="filter_RETURN" class="returnValue inSyntax0"><a name="filter_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the new, filtered <a href='list.html'>list()</a></dd>
+<dd class="inSyntax0">the new, filtered <a href='list.html'>list</a></dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Creates a new <a href='list.html'>Minified list()</a> that contains only those items approved by the given callback function. The function is
+<div class="description"><p>Creates a new <a href='list.html'>Minified list</a> that contains only those items approved by the given callback function. The function is
 called once for each item.
 If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.</p><p></p></div>
 

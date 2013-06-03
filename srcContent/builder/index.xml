@@ -10,6 +10,7 @@
 		#resultDiv, #configSrcDiv { display: none; }
 		#resultDiv th {text-align: left; margin-right: 2em;}
 		#resultGzippedComment {font-size: small;}
+		#resultDiv th, #resultDiv td { vertical-align: top;}
   </page:inlineCss>
   
   <page:externalJs>/js/builder.js</page:externalJs>

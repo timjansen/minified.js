@@ -35,10 +35,17 @@ ul.links {
 	text-decoration: underline;
 }
 
-.links tr {
-	border-bottom: 1px solid black;
+.links {
+	border-collapse: collapse;
 }
 
-.links tr:last-child {
-	border-bottom: none;
+.links th {
+	padding: 0.2em 0.5em;
+}
+
+.links tr:not(:last-child) th, .links tr:not(:last-child) td {
+	border-bottom: 1px solid black;
+}
+.links tr th:not(:last-child), .links tr td:not(:last-child)  {
+	border-right: 1px solid black;
 }

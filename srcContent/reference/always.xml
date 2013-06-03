@@ -20,15 +20,15 @@
 <dl class="params">
 <dt id="always_callback" class=""><a name="always_callback"><var>callback</var></a></dt>
 <dd class="">a function to be called when the operation has been finished, no matter what its result was. The exact arguments depend on the operation and may
-vary depending on whether it succeeded or not. If the function returns a <a href='promise.html'>Promise()</a>, that Promise will
+vary depending on whether it succeeded or not. If the function returns a <a href='promise.html'>Promise</a>, that Promise will
 be evaluated to determine the state of the returned Promise. If provided and it returns regularly, the returned promise will
 have success status. If it throws an error, the returned Promise will be in the error state.</dd>
 <dt id="always_RETURN" class="returnValue inSyntax0"><a name="always_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">a new <a href='promise.html'>Promise()</a> object. Its state is determined by the callback.</dd>
+<dd class="inSyntax0">a new <a href='promise.html'>Promise</a> object. Its state is determined by the callback.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Registers a callback that will always be called when the <a href='promise.html'>Promise()</a>'s operation ended, no matter whether the operation succeeded or not.
+<div class="description"><p>Registers a callback that will always be called when the <a href='promise.html'>Promise</a>'s operation ended, no matter whether the operation succeeded or not.
 This is a convenience function that will call <code><a href='then.html'>then()</a></code> with the same function for both arguments. It shares all of its semantics.</p><p></p></div>
 
 <div class="examples">

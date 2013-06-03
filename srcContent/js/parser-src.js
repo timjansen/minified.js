@@ -173,7 +173,7 @@ function prepareSections(src) {
 
 var CONFIG_START = 'minified.js config start --';
 var CONFIG_COMMENT = '// - ';
-var CONFIG_ALL = 'All sections';
+var CONFIG_ALL = 'All sections.';
 var CONFIG_ALL_EXCEPT = 'All sections except ';
 var CONFIG_ONLY = 'Only sections ';
 
@@ -187,7 +187,7 @@ function serializeEnabledSections(sections, enabledSections) {
 		head = CONFIG_COMMENT + CONFIG_ALL;
 		listedIds = [];
 	}
-	else if (enabledSectionList.length > configurableSections.length/2) {
+	else if (enabledSectionList.length/3 > configurableSections.length/2) {
 		head = CONFIG_COMMENT + CONFIG_ALL_EXCEPT;
 		listedIds = _.filter(configurableSections, function(s) { return !enabledSections[s.id]; }).collect(function(s) { return s.id; });
 	}
@@ -230,7 +230,7 @@ function deserializeEnabledSections(sections, sectionMap, src) {
 		return new RegExp('^'+s.replace(/ /g, '\\s+'));
 	}
 	var startRegexp = makeRegexp(CONFIG_START + '.*');
-	var allRegexp = makeRegexp(CONFIG_ALL + '\\s*\\.');
+	var allRegexp = makeRegexp(CONFIG_ALL.replace(/\./, '\\.'));
 	var allExceptRegexp = makeRegexp(CONFIG_ALL_EXCEPT + '\\s*');
 	var onlyRegexp = makeRegexp(CONFIG_ONLY  + '\\s*');
 	var configCmtRegexp = makeRegexp(CONFIG_COMMENT);
@@ -262,8 +262,10 @@ function deserializeEnabledSections(sections, sectionMap, src) {
 					return fixConfig(sectionMap, r);
 				}
 				if (onlyRegexp.test(s)) {
+console.log('only ' , s);
 					var r = {};
 					_.each(s.replace(onlyRegexp, '').split(/\s*,\s*/), function(sectionName) {
+console.log('sec ' , sectionName);
 						if (sections[sectionName])
 							r[sectionName] = 1;
 					});
