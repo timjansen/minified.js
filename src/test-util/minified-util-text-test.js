@@ -241,6 +241,7 @@ function runTests(loadInContext) {
 			assert(_.equals(_.parseDate("yyyy,d,n,m,h,s,S,a,w,W", "2011,6,Decem,30,1,10,501,pm,Tue,Tuesday"), d));
 			assert(_.equals(_.parseDate("yyyy,d,n,m,K,s,S,w,W", "2011,06,Dec,30,14,10,501,Wed,Wednesday"), d)); // ignored w/W
 			assert(_.equals(_.parseDate("?yyyy,d,N,m,k,s,S,a,w,W", "2011,06,December,30,2,10,501,pm,Tue,Tuesday"), d));
+			assert(_.equals(_.parseDate("yyyy+d-N(m)k,s,S,a\\w,W", "2011+06-December(30)2,10,501,pm\\Tue,Tuesday"), d));
 
 			assert(_.equals(_.parseDate("yyyy-N[M1M,M2M,M3M,M4M,M5M,M6M,M7M,M8M,M9M,M10M,M11M,M12M]-dd", "2011-M12M-06"), d0));
 			assert(_.equals(_.parseDate("?y,M,d,h,m,s,S,a[AMM,PAM]", "2011,12,6,1,30,10,501,PAM"), d));

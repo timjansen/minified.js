@@ -403,19 +403,22 @@ define('minifiedUtil', function() {
 				formatNoTZ = match[4];
 			}
 			
-			return replace(formatNoTZ, /(y+|M+|n+|N+|d+|m+|H+|h+|K+|k+|s+|S+|a+|w+|W+|z+)(?:\[([^\]]+)\])?/g, function(s, placeholder, params) {
-				var len = placeholder.length;
-				var val = map[placeholder.charAt(0)];
-				var d = date['get' + (isList(val)?val[0]:val)].call(date);
-				
-				var optionArray = params && params.split(',');
-				if (isList(val[1])) 
-					d = (optionArray || val[1])[d];
+			return replace(formatNoTZ, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
+				var val = map[placeholderChar];
+				if (val) {
+					var d = date['get' + (isList(val)?val[0]:val)].call(date);
+					
+					var optionArray = params && params.split(',');
+					if (isList(val[1])) 
+						d = (optionArray || val[1])[d];
+					else
+						d = val[1](d, optionArray);
+					if (d != null && !isString(d))
+						d = pad(placeholderDigits.length+1, d);
+					return d;
+				}
 				else
-					d = val[1](d, optionArray);
-				if (d != null && !isString(d))
-					d = pad(len, d);
-				return d;
+					return s;
 			});
 			
 		}
@@ -492,12 +495,10 @@ define('minifiedUtil', function() {
 			format = match[3];
 		}
 
-		var parser = new RegExp(format.replace(/(m+|y+|d+|h+|k+|s+|z+|\s+|n+|a+|w+)(?:\[([^\]]*)\])?/ig, function(wholeMatch, placeholder, param) {
-			var placeholderChar = placeholder.charAt(0);
-
+		var parser = new RegExp(format.replace(/(.)(\1*)(?:\[([^\]]*)\])?/g, function(wholeMatch, placeholderChar, placeholderDigits, param) {
 			if (/[dmhkyhs]/i.test(placeholderChar)) {
 				indexMap[reIndex++] = placeholderChar;
-				var plen = placeholder.length;
+				var plen = placeholderDigits.length+1;
 				return "(\\d"+(plen<2?"+":("{1,"+plen+"}"))+")";
 			}
 			else if (placeholderChar == 'z') {
@@ -514,7 +515,7 @@ define('minifiedUtil', function() {
 			else if (/\s/.test(placeholderChar))
 				return "\\s+"; 
 			else 
-				return escapeRegExp(placeholder);
+				return escapeRegExp(wholeMatch);
 		}));
 		
 		if (!(match = parser.exec(date)))
@@ -609,11 +610,11 @@ define('minifiedUtil', function() {
 	}
 	// reads / writes property in name.name.name syntax. Supports setter/getter functions
 	function prop(object, path, value) {
-		var match = /^((?:[^.]|\.\.)+)\.([^.].*)/.exec(path);
+		var match = /^(([^.]|\.\.)+)\.([^.].*)/.exec(path);
 		if (match) {
 			var name = replace(match[1], /\.\./g, '.');
 			var val = object[name];
-			return prop(isFunction(val) ? val() : val, match[2], value);
+			return prop(isFunction(val) ? val() : val, match[3], value);
 		}
 		else {
 			var name = replace(path, /\.\./g, '.');
