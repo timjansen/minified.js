@@ -31,7 +31,7 @@ such as <a href="http://requirejs.org">RequireJS</a>
 or <a href="https://github.com/timjansen/sparkplug.js">Sparkplug.js</a>.
 </p>
 <p>
-If you would like to optimize the size of your site, you should consider <a href="/builder.html">build a custom version</a> and 
+If you would like to optimize the size of your site, you should consider <a href="/builder/">build a custom version</a> and 
 <a href="embedding.html">embed Minified</a> into your JavaScript code.
 </p>
 
@@ -39,7 +39,7 @@ If you would like to optimize the size of your site, you should consider <a href
 <p>
 No matter whether you are including Minified with a script tag or you use a synchronous loader like 
 <a href="http://requirejs.org">RequireJS</a>, it is recommended to use the following 
-line to define the three essential functions:
+lines to define the three essential functions:
 <pre>
 var MINI = require('minified');
 var $ = MINI.$, $$=MINI.$$, EE=MINI.EE;
@@ -64,7 +64,7 @@ $(function() {
 
 
 <h2>Creating a MINI list</h2>
-<p>The first step to doing almost anything with Minified is to <b>create a <a href="/reference/list.html">Minified list</a></b>, an array-like class where most 
+<p>The first step to doing almost anything with Minified is to create a <a href="/reference/list.html">Minified list</a>, an array-like class where most 
 of Minified's functions are stored.</p>
 
 <p>You can create a MINI-list using CSS selectors in the usual syntax:
@@ -112,8 +112,8 @@ var listItems = <a href="/reference/dollar.html">$</a>('li', 'ol', true); // all
 </pre>
 </p>
 
-<p>Where other frameworks have a large selection of pseudo-classes and list-functions, Minified has only few, very powerful functions. 
-You should checkout the documentation of <a href="/reference/collect.html"><code>collect</code></a>, 
+<p>Other frameworks have a large selection of pseudo-classes and list-functions, but Minified has only few, powerful functions instead. 
+You should take a look at the documentation for <a href="/reference/collect.html"><code>collect</code></a>, 
 <a href="/reference/filter.html"><code>filter</code></a> and <a href="/reference/find.html"><code>find</code></a> for more information. 
 Here a small example to give you an idea:
 <pre>
@@ -126,16 +126,15 @@ var r = <a href="/reference/dollar.html">$</a>('#myTable tr')                   
 
 <p>The lists returned by the selectors behave pretty much like arrays. You can access them by index and they have a 
 <a href="/reference/length.html"><code>length</code></a> property. Please note that you must not modify a list using the index 
-operator ("list[i]") though. The results would be undefined.<br/>
+operator ("list[i]") though. The results would be <var>undefined</var>.
+</p><p>
 This example iterates through a list using a <code>for</code> loop:
-<pre>
-var list = <a href="/reference/dollar.html">$</a>('input'); 
+<pre>var list = <a href="/reference/dollar.html">$</a>('input'); 
 for (var i = 0; i &lt; list.<a href="/reference/length.html">length</a> ; i++)
     list[i].value = '';
 </pre>
 Alternatively, you could use the Minified's <a href="/reference/each.html"><code>each()</code></a> function:
-<pre>
-var list = <a href="/reference/dollar.html">$</a>('input'); 
+<pre>var list = <a href="/reference/dollar.html">$</a>('input'); 
 list.<a href="/reference/length.html">each</a>(function(element, index) {
     element.value = '';
 });
@@ -144,10 +143,10 @@ list.<a href="/reference/length.html">each</a>(function(element, index) {
 
 <p>A special variant of the selector function <a href="/reference/dollar.html"><code>$</code></a> is 
 <a href="/reference/dollardollar.html"><code>$$</code></a>. It works like <a href="/reference/dollar.html"><code>$</code></a>, 
-but only returns only the first element of the list instead of the list itself. If the list is empty, it returns <var>undefined</var>.
+but returns only the first element of the list instead of the complete list. If the list is empty, it returns <var>undefined</var>.
 <pre>
 var parent1 = <a href="/reference/dollardollar.html">$$</a>'#myElement').parentNode;
-var parent2 = <a href="/reference/dollar.html">$</a>('#myElement')[0].parentNode;      // same result: $$() is just short for $()[0]
+var parent2 = <a href="/reference/dollar.html">$</a>('#myElement')[0].parentNode;     // same result: $$() is just short for $()[0]
 </pre>
 </p>
 
@@ -160,7 +159,7 @@ functions, <a href="/reference/animate.html"><code>animate()</code></a> and <a h
 built upon the universal <a href="/reference/set.html"><code>set()</code></a> function.
 </p>
 
-<p>The simplest data to access is a regular JavaScript property. You only specify the property name to get or set it:
+<p>The easiest data to access is a regular JavaScript property. You only specify the property name to get or set it:
 <pre>
 var oldGreeting = $('.greeting').get('innerHTML'); // value of list's first element!
 alert(oldGreeting);
@@ -198,8 +197,6 @@ classes, you could always set them with the <var>className</var> property of the
 operations, <a href="/reference/set.html"><code>set()</code></a> provides you with the name <var>$</var>. But since 
 it is the most important <a href="/reference/set.html"><code>set()</code></a> operation, you can omit it and write:
 <pre>
-var MINI = require('minified'), $ = MINI.$, $$=MINI.$$, EE=MINI.EE;
-
 <a href="/reference/dollar.html">$</a>('.cnt').<a href="/reference/set.html">set</a>('+highlighted -plain'); // add / remove CSS class
 </pre>
 The argument is a space-separated list of class names. Those prefixed with '+' will be added and names prefixed with '-' will be removed. A class name without prefix will be toggled:
@@ -215,7 +212,11 @@ The argument is a space-separated list of class names. Those prefixed with '+' w
 </pre>
 </p>
 
-<p>Minified has two more 'virtual' properties called <code>$$fade</code> and <code>$$slide</code> which are mostly useful for animation (see below), but can be used by <a href="/reference/get.html"><code>get()</code></a> and <a href="/reference/set.html"><code>set()</code></a> as well. <code>$$fade</code> is a number between 0 and 1 that specified the opacity of an element, allowing you to fade elements in and out. <code>$$slide</code> is a number between 0 and 1 that represents the vertical size of an element relative to the 'natural' size, allowing you to slide elements in and out.
+<p>Minified has two more 'virtual' properties called <code>$$fade</code> and <code>$$slide</code> which are mostly useful for animation (see below), 
+but can be used by <a href="/reference/get.html"><code>get()</code></a> and <a href="/reference/set.html"><code>set()</code></a> as well. 
+<code>$$fade</code> is a number between 0 and 1 that specified the opacity of an element, allowing you to fade elements in and out. 
+<code>$$slide</code> is a number between 0 and 1 that represents the vertical size of an element relative to its 'natural' size, 
+allowing you to slide elements in and out.
 
 <pre>
 <a href="/reference/dollar.html">$</a>('#dialog').<a href="/reference/set.html">set</a>({$$fade: 0.5,    // half-transparent
@@ -223,14 +224,10 @@ The argument is a space-separated list of class names. Those prefixed with '+' w
 </pre>
 </p>
 
-<p>Instead of just setting the value with <a href="/reference/set.html"><code>set()</code></a>, you can also modify the old one. The functions <a href="/reference/append.html"><code>append()</code></a> and <a href="/reference/prepend.html"><code>prepend()</code></a> will add a string to the beginning or end of the old value. You can also pass a callback function to <a href="/reference/set.html"><code>set()</code></a> to evaluate the new value for each element:
+<p>Instead of just setting the value with <a href="/reference/set.html"><code>set()</code></a>, you can also 
+pass a callback that modifies the old value:
 <pre>
-// Modify old value using callback function:
 <a href="/reference/dollar.html">$</a>('#e1').<a href="/reference/set.html">set</a>('innerHTML', function(oldValue, index, obj) { return oldValue.replace(/hello/i, 'Hi'); });
-
-// append / prepend string
-<a href="/reference/dollar.html">$</a>('#e2').<a href="/reference/prepend.html">prepend</a>('innerHTML', '&lt;h1>Headline&lt;/h1>');
-<a href="/reference/dollar.html">$</a>('#e2').<a href="/reference/append.html">append</a>('innerHTML', '&lt;hr/>&lt;h3>Footer&lt;/h3>');
 </pre>
 </p>
 
@@ -241,7 +238,7 @@ The argument is a space-separated list of class names. Those prefixed with '+' w
 </pre>
 </p>
 
-<p>Using <code>$$fade</code> and <code>$$slide</code> you can let element appear and disappear:
+<p>Using <code>$$fade</code> and <code>$$slide</code> you can make elements appear and disappear:
 <pre>
 <a href="/reference/dollar.html">$</a>('.fading').<a href="/reference/animate.html">animate</a>({$$fade: 0}, 1000);
 </pre>
@@ -499,16 +496,6 @@ var data = <a href="/reference/dollar.html">$</a>('#myForm, input.extra').<a hre
 
 
 <h2>A few more things..</h2>
-<p>After showing you all the big topics in the previous chapters, here are some random functions that may be interesting for you.</p>
-
-<p>Just like jQuery and other frameworks, Minified allows you to register a callback to be called when the document is ready (aka DOMReady). 
-This works exactly like you are used to from jQuery:
-<pre>
-<a href="/reference/dollar.html">$</a>(function() {
-  // Let's do some work
-});
-</pre>
-</p>
 
 <p>When doing JavaScript animation you should avoid using a simple timeout, as this will cause unneccessary CPU load when the browser 
 is not displaying your page and you won't be able to have the perfect frame rate. Modern browsers support 'requestAnimationFrame' which 

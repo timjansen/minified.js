@@ -100,8 +100,8 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/FXGce/">Filter</a>
 <h3><a name="select_children">Combine Lists</a></h3>
 <p>
 <pre>var l = $([list1, list2]);</pre>
-Use the selector function to combine lists. Nested lists will automatically be flattened and null elements will be removed.
-You can also use the same syntax single elements to the list:
+Use the selector function to combine lists. Nested lists will automatically be flattened and null elements will be removed.<br/>
+You can also use the same syntax to add elements to the list:
 <pre>var l2 = $([list1, element1, element2]);</pre>
 Again, null elementes will be automatically removed.
 </p>
@@ -141,10 +141,10 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
 
 <h3><a name="html_addhtml">Append HTML</a></h3>
 <p>
-<pre>$$('#myElement').innerHTML += "<hr/>My Footer";</pre>
+<pre>$$('#myElement').innerHTML += "&lt;hr/>My Footer";</pre>
 If you only need to modify a single element, you can add text directly to the <var>innerHTML</var> property.
 This is not possible if your list has more than one element though. Then you need to write a <var>set()</var> callback like this:
-<pre>$('.display').set("innerHTML", function(old) {return old + "My <b>HTML</b>"; });</pre>
+<pre>$('.display').set("innerHTML", function(old) {return old + "My &lt;b>HTML&lt;/b>"; });</pre>
 </p>
 <p>Please note that is generally not a good idea to modify HTML using innerHTML and other string operations, especially
 when handling user input or URL parameters. It is not only error prone, but can also lead to security issues. In most cases
@@ -159,18 +159,17 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
 <p>
 <pre>var divFactory = EE('div');</pre>
 Minified makes it easy to create <strong>element factories</strong>, simple functions that create HTML structures.
-The line above creates a factory to return &lt;div> elements. To get the actual element, just call the factory and it will
-return the element wrapped in a <a href="/reference/list.html">list</a>:
+The line above creates a factory to return &lt;div> elements. To get the actual element, call the factory to get it wrapped in a <a href="/reference/list.html">list</a>:
 <pre>var newDiv = divFactory()[0];</pre>
 Element factories can be used directly to add new elements:
-<pre>$('.container').add(divFactory); // add as last child
-$('.container2').fill(divFactory); // replace all children
-$('.something').addFront(divFactory);  // add as first child
-$('.something2').addBefore(divFactory);  // add as sibling in front of..
+<pre>$('.container').add(divFactory);        // add as last child
+$('.container2').fill(divFactory);      // replace all children
+$('.something').addFront(divFactory);   // add as first child
+$('.something2').addBefore(divFactory); // add as sibling in front of..
 $('.something3').addAfter(divFactory);  // add as sibling after..
-$('.oldElement').replace(divFactory); // replace element</pre>
+$('.oldElement').replace(divFactory);   // replace element</pre>
 
-The elements created by <var>EE()</var> can receive an object map of <var>set</var> arguments to set CSS classes, styles, attributes and properties.
+The elements created by <var>EE()</var> can receive an object map of <var>set()</var> arguments to set CSS classes, styles, attributes and properties.
 You can also either pass a string to set a text node as child, add another element factory with children, or a list that mixes both:
 <pre>$('.todo').add(EE('ol', {$: 'groceries'}, [
 	EE('li', 'Milk'),
@@ -194,8 +193,8 @@ $('.container').add(EE('br')); // add &lt;br> to all .container
 $('.container').add(document.createElement('br'); // adds &lt;br> to <strong>first element only</strong>
 $('.container').add(['Some text', EE('br'), 'More text']); // add text and elements at once
 </pre>
-Beside <var>add()</var>, you can use <var>fill</var> to replace children or <var>addAfter</var>, 
-<var>addBefore()</var> and <var>addFront</var> to position the elements relative to the list elements.
+Beside <var>add()</var>, you can use <var>fill()</var> to replace children or <var>addAfter()</var>, 
+<var>addBefore()</var> and <var>addFront()</var> to position the elements relative to the list elements.
 </p>
 <p>
 API: <a href="/reference/add.html">add()</a>, <a href="/reference/addafter.html">addAfter()</a>, <a href="/reference/addbefore.html">addBefore()</a>, 
@@ -207,9 +206,9 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/uRC8Y/">EE and add()</a>
 <h3><a name="html_replace">Replace HTML Elements</a></h3>
 <p>
 <pre>$('#oldElement').replace(EE('div', 'My new div'));</pre>
-<var>replace</var> replaces the elements of the list with the given text or elements. It supports the same arguments
-as <var>set</var>.<br/>
-If you want to replace the children of an element, instead of the element itself, you can also use <var>fill</var>:
+<var>replace()</var> replaces the elements of the list with the given text or elements. It supports the same arguments
+as <var>set()</var>.<br/>
+If you want to replace the children of an element, instead of the element itself, you can also use <var>fill()</var>:
 <pre>$('#container').fill("New content.");</pre>
 </p>
 <p>
@@ -231,7 +230,7 @@ API: <a href="/reference/remove.html">remove()</a>.<br/>
 <h3><a name="html_attr">Set and Read Attributes</a></h3>
 <p>
 <pre>$('a.someLink').set({'@href': 'http://minifiedjs.com'});</pre>
-Use <var>set</var> with a '@'-prefixed name to set attributes. <var>get</var> reads attributes with the same name syntax:
+Use <var>set()</var> with a '@'-prefixed name to set attributes. <var>get()</var> reads attributes with the same name syntax:
 <pre>var link = $('a.someLink').get('@href');</pre>
 </p>
 <p>
@@ -261,12 +260,13 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/vuyh9/">clone()</a>
 <pre>$('.myClass').set('-oldClass +newClass toggleClass');</pre>
 If you call <var>set()</var> only with a string as argument, it
 will modify the elements' CSS classes. Several classes can be listed, separated by spaces.
-The prefix decides what to do: "-" removes the CSS class, "+" adds it and no prefix toggles.<br/>
+The prefix determines what to do: 
+<ul><li>"-" removes the CSS class</li><li>"+" adds it</li><li>no prefix toggles</li></ul><br/>
 You can also call <var>set()</var> with the name "$" to do the same. This can be useful to modify
 several things at the same time:
 <pre>$('.myClass').set({$: '-oldClass', $display: 'block');</pre>
 </p><p>
-Often it is easier to create a toggle for CSS classes, as you can directly connect it to events:
+Often it is simpler to create a toggle for CSS classes, as you can connect it directly to events:
 <pre>var toggle = $('.myClass').toggle('toggleClass');
 $('#toggleButton').on('click', toggle);
 $('#onButton').on('click', toggle, [true]);
@@ -292,7 +292,7 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a>
 <h3><a name="style_set">Set and Read CSS Style</a></h3>
 <p>
 <pre>$('#someSpan').set({$color: '#ff0'});</pre>
-Use <var>set</var> with a '$'-prefixed name to set CSS styles. <var>get</var> reads the effective CSS style with the same name syntax:
+Use <var>set()</var> with a '$'-prefixed name to set CSS styles. <var>get()</var> reads the effective CSS style with the same name syntax:
 <pre>var color = $('#someSpan').get('$color');</pre>
 </p>
 <p>
@@ -303,7 +303,7 @@ API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set(
 <h3><a name="style_prop">Set and Read Properties</a></h3>
 <p>
 <pre>$('#someTextField').set({value: 'New text...'});</pre>
-Use <var>set</var> with a unprefixed name to set properties. <var>get</var> reads properties with the same name syntax:
+Use <var>set()</var> with a unprefixed name to set properties. <var>get()</var> reads properties with the same name syntax:
 <pre>var value = $('#someTextField').get('value');</pre>
 </p>
 <p>
@@ -320,7 +320,7 @@ API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set(
 can specify the duration of the animation as well as the interpolation algorithm to be used.
 </p>
 <p>
-If you need to transition an object back and forth between two states, it is usually better to animate using <var>toggle</var>
+If you need to transition an object back and forth between two states, it is usually better to animate using <var>toggle()</var>
 <pre>var myToggle = $('.moving').toggle({$width: '100px'}, {$width: '200px'}, 750);
 
 $('#widthToggle').on('click', myToggle);
