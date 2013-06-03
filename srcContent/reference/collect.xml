@@ -44,10 +44,10 @@ If you need to add null or modified to the result list, put it into a single-ele
 <div class="example"><p>Goes through input elements. If they are text inputs, their value will be added to the list:
 <pre>
 var texts = $('input').collect(function(input) {
-if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') // text is default, so check for null
-    return input.value;
-else
-    return null; // ignore
+    if (input.getAttribute('type') != null || input.getAttribute('type') == 'text')
+        return input.value;
+    else
+        return null; // ignore
 });
 </pre>
 </p></div>

@@ -32,9 +32,9 @@ for more than one element or event, it will be removed from all instances.</p><p
 <div class="example"><p>Adds a handler to an element:
 <pre>
 function myEventHandler() {
-   this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
+   this.style.backgroundColor = 'red';        // 'this' contains the element that caused the event
 }
-$('#myElement').on('click', myEventHandler);     // add event handler</p><p>window.setInterval(function() {                      // after 5s, remove event handler
+$('#myElement').on('click', myEventHandler);  // add event handler</p><p>window.setInterval(function() {               // after 5s, remove event handler
    $.off(myEventHandler);
 }, 5000);
 </pre>

@@ -55,8 +55,8 @@ of the same name, will be overwritten with the new value and settings.</p><p></p
 <pre>
 var visits = $.getCookie('numberOfVisits');
 $.setCookie('numberOfVisits',
-                     visits ? (parseInt(visits) + 1) : 1,         // if cookie not set, start with 1
-                     365);                                              // store for 365 days
+                     visits ? (parseInt(visits) + 1) : 1,   // if cookie not set, start with 1
+                     365);                                  // store for 365 days
 </pre>
 </p></div>
 <h4>Example</h4>

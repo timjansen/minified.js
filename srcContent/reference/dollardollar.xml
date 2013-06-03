@@ -37,7 +37,7 @@ var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 <h4>Example</h4>
 <div class="example"><p>Select the checkbox 'myCheckbox':
 <pre>
-$$('#myCheckbox').selected = true;
+$$('#myCheckbox').checked = true;
 </pre>
 </p></div>
 </div>

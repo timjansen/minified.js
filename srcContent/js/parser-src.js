@@ -262,11 +262,9 @@ function deserializeEnabledSections(sections, sectionMap, src) {
 					return fixConfig(sectionMap, r);
 				}
 				if (onlyRegexp.test(s)) {
-console.log('only ' , s);
 					var r = {};
 					_.each(s.replace(onlyRegexp, '').split(/\s*,\s*/), function(sectionName) {
-console.log('sec ' , sectionName);
-						if (sections[sectionName])
+						if (sectionMap[sectionName])
 							r[sectionName] = 1;
 					});
 					return fixConfig(sectionMap, r);

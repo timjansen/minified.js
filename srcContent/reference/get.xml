@@ -72,11 +72,12 @@ var bgColor = m.$backgroundColor;
 <h4>Example</h4>
 <div class="example"><p>Uses <code><a href='get.html'>get()</a></code> and <code><a href='set.html'>set()</a></code> to reposition an element:
 <pre>
-var coords = $('#myElement').get({$top: 0, $left: 0}, true); // values of $top and $left values don't matter and will be ignored!
+var coords = $('#myElement').get({$top: 0, $left: 0}, true);
 coords.$top += 10;
 coords.$left += 20;
 $('#myElement').set(coords);
 </pre>
+Please note that the values of $top and $left in the <var>get()</var> invocation do not matter and will be ignored!
 </p></div>
 </div>
 

@@ -85,7 +85,7 @@ This results in
 <div class="example"><p>Use a list to add several elements at once:
 <pre>
 $('#comments').addFront([
-		EE('br'),
+     EE('br'),
      'Some text',
      EE('span', {'className': 'highlight'}, 'Some highlighted text')
 ]);

@@ -134,7 +134,11 @@ var l9 = $('#myDivision .myForm input');
 <h4>Example</h4>
 <div class="example"><p>Using contexts to make it easier to specify ancestors:
 <pre>
-var l10 = $('.myRadio', '#formA, #formB, #formC');  // same as $('#formA .myRadio, #formB .myRadio, #formC .myRadio')
+var l10 = $('.myRadio', '#formA, #formB, #formC');
+</pre>
+The result is identical to:
+<pre>
+var l10 = $('#formA .myRadio, #formB .myRadio, #formC .myRadio');
 </pre>
 </p></div>
 <h4>Example</h4>

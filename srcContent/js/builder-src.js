@@ -96,7 +96,6 @@ function setUpConfigurationUI(s) {
 			var inputSrc = $$('#configSrc').value;
 			var conf = deserializeEnabledSections(s.sections, s.sectionMap, inputSrc);
 			if (conf) {
-console.log('loading ', conf);
 				_.eachObj(s.sectionMap, function(secName) {
 					var secCheck = $$('#sec-'+secName);
 					if (secCheck)

@@ -80,13 +80,21 @@ $('#status').fill(['Here', EE('br'), 'are', EE('br'), 'four', EE('br'), 'lines.]
 <h4>Example</h4>
 <div class="example"><p>Or a complete structure built using EE:
 <pre>
-$('#myListContainer').fill([EE('h2', 'My List'), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]);
+$('#myListContainer').fill([
+    EE('h2', 'My List'),
+    EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])
+]);
 </pre>
 </p></div>
 <h4>Example</h4>
 <div class="example"><p>You can write a factory function that re-creates the list for every instance:
 <pre>
-$('.listContainers').fill(function(e, index) { return [EE('h2', 'List Number '+index), EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])]});
+$('.listContainers').fill(function(e, index) { return [
+    EE('h2', 'List Number '+index),
+    EE('ol', [EE('li', 'First Item'),
+    EE('li', 'Second Item'),
+    EE('li', 'Third Item')
+])]});
 </pre>
 </p></div>
 <h4>Example</h4>

@@ -84,7 +84,11 @@ This results in
 <h4>Example</h4>
 <div class="example"><p>Use a list to add several elements at once:
 <pre>
-$('#comments').add([EE('br'), 'Some text', EE('span', {'className': 'highlight'}, 'Some highlighted text')]);
+$('#comments').add([
+		EE('br'),
+     'Some text',
+     EE('span', {'className': 'highlight'}, 'Some highlighted text')
+]);
 </pre>
 </p></div>
 <h4>Example</h4>

@@ -584,7 +584,7 @@ define('minifiedUtil', function() {
 		var od = date || now();
 		return new Date(od.getFullYear(), od.getMonth(), od.getDate());
 	}
-	function dateDiff(property, date1, date2, console) {
+	function dateDiff(property, date1, date2) {
 		var d1t = date1.getTime();
 		var d2t = date2.getTime();
 		var dt = d2t - d1t;
@@ -976,6 +976,11 @@ define('minifiedUtil', function() {
 		'copyObj': copyObj,
 		
 		'coal': coal,
+		
+		'log': function(arg) {
+			if (/^u/.test(typeof console))
+				call(console.log, console, arguments);
+		},
 		
 		// takes vararg of other promises to assimilate
 		// if one promise is given, this promise assimilates the given promise as-is, and just forwards fulfillment and rejection with the original values.
