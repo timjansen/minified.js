@@ -508,10 +508,10 @@ define('minifiedUtil', function() {
 			}
 			else if (/[Nna]/.test(placeholderChar)) {
 				indexMap[reIndex++] = [placeholderChar, param && param.split(',')];
-				return "(\\w+)"; 
+				return "([a-zA-Z\x80Ð\u1fff]+)"; 
 			}
 			else if (/w/i.test(placeholderChar))
-				return "\\w+";
+				return "[a-zA-Z\x80Ð\u1fff]+";
 			else if (/\s/.test(placeholderChar))
 				return "\\s+"; 
 			else 
@@ -977,11 +977,6 @@ define('minifiedUtil', function() {
 		
 		'coal': coal,
 		
-		'log': function(arg) {
-			if (/^u/.test(typeof console))
-				call(console.log, console, arguments);
-		},
-		
 		// takes vararg of other promises to assimilate
 		// if one promise is given, this promise assimilates the given promise as-is, and just forwards fulfillment and rejection with the original values.
 		//
@@ -1037,6 +1032,12 @@ define('minifiedUtil', function() {
 			var p = promise();
 			delay(function() {p(true, [durationMs]);}, durationMs);
 			return p;
+		},
+		
+		'escapeHtml': function(s) {
+			return replace(s, /[<>'"&]/g, function(s) {
+				return '&#'+s.charCodeAt(0)+';';
+			});
 		}
 		
 	/*$
