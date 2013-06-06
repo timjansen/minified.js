@@ -41,7 +41,7 @@ function createDocs(sec) {
 		s += '<h4>Parameters</h4>\n';
 		s += '<dl class="params">\n';
 		_.each(sec.params, function(param) {
-			var desc = parseDescription(param.desc).replace(/^optional/, '<span class="optional">optional.</span>').replace('&&', '&amp;&amp;');
+			var desc = parseDescription(param.desc).replace(/^optional/, '<span class="optional">(optional)</span>').replace('&&', '&amp;&amp;');
 			var re = RegExp('\b' + param.name + '\b');
 			var highlightClasses = [];
 			_.each(sec.syntax, function(syn, synIndex) {

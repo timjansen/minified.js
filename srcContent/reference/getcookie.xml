@@ -23,7 +23,7 @@
 <dd class="">the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped.
 You may want to escape the name using <var>encodeURIComponent()</var> for all other characters.</dd>
 <dt id="getcookie_dontUnescape" class=""><a name="getcookie_dontUnescape"><var>dontUnescape</var></a></dt>
-<dd class=""><span class="optional">optional.</span> if set and true, the value will be returned unescaped. use this only if the value has been encoded
+<dd class=""><span class="optional">(optional)</span> if set and true, the value will be returned unescaped. use this only if the value has been encoded
 in a special way, and not with the JavaScript <var>encode()</var> method.</dd>
 <dt id="getcookie_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="getcookie_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the value of the cookie, or null if not found. Depending on the dontUnescape parameter, it may be escaped or not.</dd>

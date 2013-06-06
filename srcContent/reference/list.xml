@@ -19,16 +19,17 @@ they provide a <var>length</var> property and you can access their content using
 However, they do not provide the same methods as JavaScript's native array.</p><p>Minified lists are usually created using the <code><a href='dollar.html'>$()</a></code></a></code> function. You can
 also use  <code>$()</code> to convert a JavaScript array into a Minified list, just be aware that <code>$()</code> will
 remove nulls from the lists and will flatten nested lists.</p><p>There is currently no function to convert a Minified list into a JavaScript array. The upcoming Utility module
-will provide one though.</p><p>The Minified Web module provides a number of helper methods for working with Minified lists:
+will provide one though.</p><p>The Minified Web module provides HTML-node oriented functions like <code><a href='set.html'>set()</a></code> to modify a list of nodes. It also has a
+number of helper methods for working with Minified lists:
 <ul>
 <li><code><a href='collect.html'>collect()</a></code> creates a new list using the collect function which can
  transform list elements or collect data from them ("map() on steriods")</li>
 <li><code><a href='each.html'>each()</a></code> iterates through all list elements</li>
 <li><code><a href='filter.html'>filter()</a></code> creates a new list that contains only elements that pass the
  filter function's test</li>
-<li><code><a href='find.html'>find()</a></code> finds a list element or its position with the help of a find function</li>
+<li><code><a href='find.html'>find()</a></code> finds a list element or its position</li>
 <li><code><a href='sub.html'>sub()</a></code> creates a list that copies the elements from the specified index range </li>
-</ul></p><p>In addition to that, most methods for working with DOM and the web browser are also implemented as Minified list methods.
+</ul>
 </p></div>
 
 

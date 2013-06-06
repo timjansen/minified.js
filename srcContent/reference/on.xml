@@ -35,9 +35,9 @@ stopped and event bubbling will be disabled. If you supply custom arguments, the
 Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper
 is added to the handler in an array property called 'M'.</dd>
 <dt id="on_fThis" class=""><a name="on_fThis"><var>fThis</var></a></dt>
-<dd class=""><span class="optional">optional.</span> an value for 'this' in the handler, as alternative to the event target</dd>
+<dd class=""><span class="optional">(optional)</span> an value for 'this' in the handler, as alternative to the event target</dd>
 <dt id="on_args" class=""><a name="on_args"><var>args</var></a></dt>
-<dd class=""><span class="optional">optional.</span> an array of arguments to pass to the handler function instead of the event objects. If you pass custom arguments, the
+<dd class=""><span class="optional">(optional)</span> an array of arguments to pass to the handler function instead of the event objects. If you pass custom arguments, the
 return value of the handler will always be ignored.</dd>
 <dt id="on_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="on_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2">the list</dd>

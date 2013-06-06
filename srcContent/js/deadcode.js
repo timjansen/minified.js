@@ -213,6 +213,6 @@ hhEach({
 }, function(n, v) {$.prototype[n]=v;});
 	
 hhEach({	
-	
+
 }, function(n, v) {MINI[n]=v;});
 

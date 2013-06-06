@@ -64,7 +64,7 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
  * argument 'minified' to get a reference to Minified.
  * If you do use an AMD loader, Minified will not define this function and you can use the AMD loader to obtain the
  * reference to Minified.
- * Minified's version of <var>require</var> is very simple and will <strong>only support other libraries</strong>. You can not
+ * Minified's version of <var>require</var> is very simple and will only support Minified, but <strong>no other libraries</strong>. You can not
  * use it to load other modules, and it will be incompatible with all non-AMD libraries that also define a function
  * of the same name. If you need to work with several libraries, you need a real AMD loader.
  * 
@@ -321,6 +321,7 @@ define('minified', function() {
     	 * @id then
     	 * @group REQUEST
     	 * @name promise.then()
+    	 * @syntax promise.then()
     	 * @syntax promise.then(onSuccess)
     	 * @syntax promise.then(onSuccess, onError)
     	 * Registers two callbacks that will be invoked when the ##promise#Promise##'s asynchronous operation finished 
@@ -329,7 +330,7 @@ define('minified', function() {
     	 * Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
     	 * You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to. 
     	 *
-    	 * @example Simple handler for an HTTP request. Handles only success and ignored errors.
+    	 * @example Simple handler for an HTTP request. Handles only success and ignores errors.
     	 * <pre>
     	 * $.request('get', '/weather.html')
     	 *     .then(function(txt) {
@@ -366,13 +367,15 @@ define('minified', function() {
     	 *     });
     	 * </pre>
     	 *
-    	 * @param onSuccess optional a function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.  
+    	 * @param onSuccess optional a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.  
     	 *                           If the function returns a ##promise#Promise##, that Promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the 
     	 *                           returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
-    	 * @param onError optional a function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a ##promise#Promise##, that promise will
+    	 *                           Pass <var>null</var> or <var>undefined</var> if you do not need the success handler. 
+    	 * @param onError optional a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a ##promise#Promise##, that promise will
     	 *                           be evaluated to determine the state of the Promise returned by <var>then()</var>. If it returns anything else, the returned Promise will 
     	 *                           have success status. If the function throws an error, the returned Promise will be in the error state.
-    	 * @return a new ##promise#Promise## object. If you specified a callback for success or error, the new object's state will be determined by that callback if it is called.
+    	 *                           You can pass <var>null</var> or <var>undefined</var> if you do not need the error handler. 
+    	 * @return a new ##promise#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
     	 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
     	 */   
     	var then = set['then'] = function(onFulfilled, onRejected) {
@@ -1830,11 +1833,12 @@ define('minified', function() {
 		 * @syntax $(selector).toggle(state1, state2, durationMs, linearity)
 		 * @syntax $(selector).toggle(state1, state2, durationMs, interpolationFunction)
 		 * 
-		 * Creates a function that switches between the two given states for the list. The states use the ##set() syntax. 
+		 * Creates a function that switches between the two given states for the list. The states use the ##set() property syntax. You can also
+		 * just pass a string of CSS classes, as you do with <var>set()</var>.
 		 *
  	     * If no duration is given, the returned function changes the state immediately using ##set(). If a duration has been passed, the returned function
- 	     * uses ##animate() to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the animation and returns
- 	     * to the other state.
+ 	     * uses ##animate() to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the 
+ 	     * animation and returns to the other state.
 		 *
 		 * @example Creates a toggle function that changes the background color of the page.
 		 * <pre>
@@ -1845,7 +1849,7 @@ define('minified', function() {
 		 * light();      // toggles state to first state
 		 * </pre>
 		 * 
-		 * @example Takes the previous function, but adds it as onclick event handler that toggles the color.
+		 * @example Takes the previous function, but adds it as an onclick event handler that toggles the color.
 		 * <pre>
 		 * var light = $('body').toggle({$backgroundColor: #000}, {$backgroundColor: #fff});
 		 * $('#mySwitch').on('click', light);
@@ -1857,7 +1861,7 @@ define('minified', function() {
 		 * $('#mySwitch').on('click', dimmer);
 		 * </pre>
 		 *
-		 * @example To toggle CSS classes specify both states:
+		 * @example Toggling CSS classes using the full syntax:
 		 * <pre>
 		 * var t = $('#myElement').toggle({$: '-myClass1 -myClass2'}, {$: '+myClass1 +myClass2'});
 		 * $('#myController').on('click', t);
@@ -1868,21 +1872,18 @@ define('minified', function() {
 		 * var t = $('#myElement').toggle('myClass1 myClass2');
 		 * </pre>
 		 * 
-		 * @param cssClasses a string containing space-separated CSS class names that will be toggled. Classes are disabled in the first state
+		 * @param cssClasses a string containing space-separated CSS class names to toggle. Classes are disabled in the first state
 		 *                   and enabled in the second.
-		 * @param state1 a property map describing the initial state of the properties. The properties will automatically be set when the
-		 *                   <var>toggle()</var> function is created. The property names use the set() syntax ('@' prefix for attributes, '$' for styles). 
-		 *                   For animation, values must be either numbers, numbers with
-		 *                   units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). The properties will be set 
-		 *                   for all elements of the list.
+		 * @param state1 a property map in ##set() syntax describing the initial state of the properties. The properties will automatically be set when the
+		 *                   <var>toggle()</var> function is created. The properties will be set for all elements of the list.
 		 * @param state2 a property map describing the second state of the properties. Uses ##set() syntax, like the other state. 
-		 * @param durationMs optional if set, the duration of the animation in milliseconds. By default, there is no animation and the set will be changed
-		 *                   immediately.
+		 * @param durationMs optional if set, the duration of the animation in milliseconds. By default, there is no animation and the 
+		 * 					 properties will be changed immediately.
 		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.
-		 * @param interpolationFunc optional an interpolation function(startValue, endValue, t) which will be
-		 *             called every time an interpolated value is required. <var>t</var> is a value between 0 and 1 that specifies the state of the transition.
+		 * @param interpolationFunc optional an interpolation function(startValue, endValue, t) which will be called every time an interpolated value is required. 
+		 * <var>t</var> is a value between 0 and 1 that specifies the state of the transition. The function must return the value to assume at the given time.
 		 * @return a function(newState) that will change from the first to the second state and vice versa if called without argument or with
-		 *         newState set to null. If the argument is a boolean false or true, the first or second state will be set respectively. 
+		 *         <var>newState</var> set to <var>null</var>. If the argument is a boolean false or true, the first or second state will be set respectively. 
 		 *         If the argument is not boolean or the function is called without arguments, the function toggles between both states. 
 		 */
 		'toggle': function(state1, state2, durationMs, linearity) {
@@ -2631,14 +2632,14 @@ define('minified', function() {
 		 * @configurable default
 		 * @name EE()
 		 * @syntax EE(elementName)
-		 * @syntax EE(elementName, attributes)
+		 * @syntax EE(elementName, properties)
 		 * @syntax EE(elementName, children)
-		 * @syntax EE(elementName, attributes, children)
-		 * @syntax EE(elementName, attributes, children, onCreate)
+		 * @syntax EE(elementName, properties, children)
+		 * @syntax EE(elementName, properties, children, onCreate)
 		 * @shortcut EE() - It is recommended that you assign MINI.EE to a variable EE.
 		 * Creates a new Element Factory. An Element Factory is a function without arguments that returns a ##list#Minified list##
 		 * containing a newly created DOM element, optionally with attributes and children.
-		 * Typically it will be used to insert elements into the DOM tree using add() or a similar function. 
+		 * Typically it will be used to insert elements into the DOM tree using ##add() or a similar function. 
 		 *
 		 * Please note that the function <var>EE</var> will not be automatically exported by Minified. You should always import it
 		 * using the recommended import statement:
@@ -2669,8 +2670,7 @@ define('minified', function() {
 		 * </pre>
 		 * 
 		 * @example Creating a &lt;form> element with two text fields, labels and a submit button:
-		 * <pre>
-		 * var myForm = EE('form', {'@method': 'post'}, [
+		 * <pre>var myForm = EE('form', {'@method': 'post'}, [
 		 *     EE('label', {'@for': 'nameInput'}, 'Name:'),
 		 *     EE('input', {'@id': 'nameInput', '@type': 'input'}),
 		 *     EE('br'),
@@ -2693,7 +2693,8 @@ define('minified', function() {
 		 *  &lt;/form>
 		 * </pre>
 		 * 
-		 * @example Null attributes often come handy when you don't always need a particular attribute. Attributes with null values will be ignored:
+		 * @example If you only want to add an attribute under a certain condition, 
+		 * a simple trick is to pass null as value if you do not need it:
 		 * <pre>
 		 * var myInput = EE('input', {
 		 * 				'@id': 'myCheckbox', 
@@ -2715,12 +2716,13 @@ define('minified', function() {
 		 * </pre>
 		 * 
 		 * @param elementName the element name to create (e.g. 'div')
-		 * @param attributes optional an object which contains a map of attributes and other values. The syntax is exactly like ##set(): Attribute values are prefixed with '@',
-		 *                   CSS styles with '$' and regular properties can be set without prefix.
+		 * @param properties optional an object which contains a map of attributes and other values. Uses the ##set() syntax: 
+		 * 					 Attribute values are prefixed with '@', CSS styles with '$' and regular properties can be set without prefix.
 		 *                   If the attribute value is null, the attribute will omitted (styles and properties can be set to null). 
-		 *                   In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead
-		 *                   set the property 'className' instead of '@class' and set styles using the '$' syntax.
-		 * @param children optional  an element or a list of elements to add as children. Strings will be converted as text nodes. 
+		 *                   In order to stay compatible with Internet Explorer 7 and earlier, you should not set the 
+		 *                   attributes '@class' and '@style'. Instead set the property 'className' instead of '@class' and set 
+		 *                   styles using the '$' syntax.
+		 * @param children optional  a node or a list of nodes to be added as children. Strings will be converted to text nodes. 
 		 *                         Functions will be invoked and their return value will be used. Lists can be 
 		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored. 
 		 *                         The syntax is exactly like ##add().
@@ -2752,18 +2754,17 @@ define('minified', function() {
  * There is currently no function to convert a Minified list into a JavaScript array. The upcoming Utility module 
  * will provide one though. 
  * 
- * The Minified Web module provides a number of helper methods for working with Minified lists:
+ * The Minified Web module provides HTML-node oriented functions like ##set() to modify a list of nodes. It also has a 
+ * number of helper methods for working with Minified lists:
  * <ul>
  * <li>##collect() creates a new list using the collect function which can 
  *  transform list elements or collect data from them ("map() on steriods")</li>
  * <li>##each() iterates through all list elements</li>
  * <li>##filter() creates a new list that contains only elements that pass the 
  *  filter function's test</li>
- * <li>##find() finds a list element or its position with the help of a find function</li>
+ * <li>##find() finds a list element or its position</li>
  * <li>##sub() creates a list that copies the elements from the specified index range </li>
  * </ul>
- *
- * In addition to that, most methods for working with DOM and the web browser are also implemented as Minified list methods.
  */
         
 /*$
@@ -2778,8 +2779,9 @@ define('minified', function() {
  * 
  * What may be somewhat surprising about this Promises specification is that there is no direct way to find out the state of the operation.
  * There is neither a property nor a function to find out what the result is or whether it is available. Instead, you always have to 
- * register callbacks that will be invoked as soon as the operation is finished. Even if the operation already ended when you register the callbacks,
- * you still need a callback to get the result. The callback will then just be called immediately.
+ * register callbacks to find out the result. They will be invoked as soon as the operation is finished. 
+ * If the operation already ended when you register the callbacks, the callback will then just be called from the event loop as soon
+ * as possible (but never while the ##then() you register them with is still running).<br/>
  * This design forces you to handle the operation result asynchronously and disencourages 'bad' techniques such as polling.
  * 
  * The central method of a Promises, and indeed the only required function in Promises/A+, is ##then(). It allows you to register
@@ -2808,9 +2810,9 @@ define('minified', function() {
  * </pre>
  * 
  * Because the first ##then() returns a new Promise based on the original Promise, the second <var>then()</var> will handle errors of the request just like
- * the first one. There is only difference in the second example though: the error handler will not only be called if the request failed, but also when
- * the request succeded but the success handler threw an exception. That's one of the two differences between the original Promise and the Promise
- * returned by then. Any exception thrown in a callback causes the new Promise to be in error state. 
+ * the first one did. There is only one subtle difference in the second example: the error handler will not only be called if the request failed, 
+ * but also when the request succeded but the success handler threw an exception. That's one of the two differences between the original Promise and 
+ * the Promise returned by <var>then()</var>. Any exception thrown in a callback causes the new Promise to be in error state. 
  * 
  * Before I show you the second difference between the original Promise and the new Promise, let me make the example a bit more readable 
  * by using ##error(), which is not part of Promises/A+, but a simple extension by Minified. It just registers the failure callback without
@@ -2843,7 +2845,7 @@ define('minified', function() {
  * </pre>
  *  
  * Sometimes you want to just be notified of the end of an operation but are not interested in the outcome. For these cases, if you just had
- * the Promises/A+-compliants ##then() method, you would have to register the same callback handler twice. This is not very convenient,
+ * the Promises/A+-compliant ##then() method, you would have to register the same callback handler twice. This is not very convenient,
  * especially when you define the handler function inline. Therefore Minified comes with a second small extension, ##always():
  * 
  * <pre>
@@ -2853,7 +2855,7 @@ define('minified', function() {
  *  });
  * </pre>
  * 
- * Please note that the Minified Web module only returns Promises, but it does not allow you to create Promises in your code. The upcoming
+ * Please note that the Minified Web module only returns Promises, but it <strong>does not allow you to create Promises</strong> directly. The upcoming
  * Minified Util module will allow this though.
  */
 

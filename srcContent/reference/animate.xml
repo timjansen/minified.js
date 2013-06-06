@@ -30,14 +30,14 @@ Values must be either numbers, numbers with units (e.g. "2 px") or colors ('rgb(
 Number values, including those with units, can be prefixed with "+=" or "-=", meaning that the value is relative
 to the original value and should be added or subtracted.</dd>
 <dt id="animate_durationMs" class=""><a name="animate_durationMs"><var>durationMs</var></a></dt>
-<dd class=""><span class="optional">optional.</span> the duration of the animation in milliseconds. Default: 500ms.</dd>
+<dd class=""><span class="optional">(optional)</span> the duration of the animation in milliseconds. Default: 500ms.</dd>
 <dt id="animate_linearity" class=""><a name="animate_linearity"><var>linearity</var></a></dt>
-<dd class=""><span class="optional">optional.</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.</dd>
+<dd class=""><span class="optional">(optional)</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.</dd>
 <dt id="animate_interpolationFunc" class=""><a name="animate_interpolationFunc"><var>interpolationFunc</var></a></dt>
-<dd class=""><span class="optional">optional.</span> an interpolation function(startValue, endValue, t) which will be
+<dd class=""><span class="optional">(optional)</span> an interpolation function(startValue, endValue, t) which will be
 called every time an interpolated value is required. <var>t</var> is a value between 0 and 1 that specifies the state of the transition.</dd>
 <dt id="animate_state" class=""><a name="animate_state"><var>state</var></a></dt>
-<dd class=""><span class="optional">optional.</span> if set, the animation controller will write information about its state in this object. When <var>animate()</var> returns,
+<dd class=""><span class="optional">(optional)</span> if set, the animation controller will write information about its state in this object. When <var>animate()</var> returns,
 there will be a <var>stop()</var> function in the property <var>state.stop</var> that can be used to abort the animation.
 The property <var>state.time</var> will be continously updated
 and contains the number of milliseconds that have

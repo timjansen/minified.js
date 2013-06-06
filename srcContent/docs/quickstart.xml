@@ -453,21 +453,22 @@ You can also use more than one space-separated CSS classes in the string, as you
 compatibility. The function <a href="/reference/request.html"><code>$.request()</code></a> can be used for GET, POST and 
 all other asynchronous HTTP requests:
 <pre>
-<a href="/reference/request.html">$.request</a>('get', 'http://example.org/weatherService', {zip: 90210}, 
-    function success(txt) {
+<a href="/reference/request.html">$.request</a>('get', 'http://example.org/weatherService', {zip: 90210})
+ .then(function success(txt) {
         alert("Got from service: " + txt);
     },
     function error(status, statusText, responseText) {
         alert("Error accessing service.");
     });
 </pre>
-The third argument is a map containing parameters that, when set, will be automatically added as URL parameters. The fourth argument 
-is the callback that will be invoked on success, and the fifth argument's callback will be invoked on failure.</p>
+The third argument is a map containing parameters that, when set, will be automatically added as URL parameters. 
+<code>$.request()</code> returns a <a href="/reference/promise.html">Promise</a> that you can use to register handlers
+for success and error.</p>
 
 <p>POST requests are very similar and use the same syntax. However, the map in the third argument will now be used in the POST's instead of the URL:
 <pre>
-<a href="/reference/request.html">$.request</a>('post', 'http://example.org/weatherService', {zip: 90210}, 
-    function success(txt) {
+<a href="/reference/request.html">$.request</a>('post', 'http://example.org/weatherService', {zip: 90210})
+ .then(function success(txt) {
         alert("Got from service: " + txt);
     },
     function error(status, statusText, responseText) {
@@ -479,8 +480,8 @@ is the callback that will be invoked on success, and the fifth argument's callba
 <p>POST also allows you to specify an XML document or a string as data. The latter option can be used for transmitting JSON objects. The next example transmits the data in JSON form to the imaginary service and then treats the result also as JSON object:
 <pre>
 <a href="/reference/request.html">$.request</a>('post', 'http://example.org/weatherService', 
-    <a href="/reference/tojson.html">$.toJSON</a>({zip: 90210}), 
-    function success(txt) {
+    <a href="/reference/tojson.html">$.toJSON</a>({zip: 90210}))
+  .then(function success(txt) {
         var data = <a href="/reference/parsejson.html">$.parseJSON</a>(txt);
         alert("Today's temperature: " + data.today.temperature);
     },
@@ -495,7 +496,7 @@ to easily obtain the data. It will take data from input fields as well as comple
 used as data argument for <a href="/reference/request.html"><code>request()</code></a> or be converted into a JSON string:
 <pre>
 var data = <a href="/reference/dollar.html">$</a>('#myForm, input.extra').<a href="/reference/values.html">values</a>();
-<a href="/reference/request.html">$.request</a>('post', '/myService', data, successFunc, errorFunc);
+var promise = <a href="/reference/request.html">$.request</a>('post', '/myService', data);
 </pre>
 </p>
 

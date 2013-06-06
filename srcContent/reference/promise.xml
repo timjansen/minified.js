@@ -18,8 +18,9 @@
 <code><a href='animate.html'>animate()</a></code>, you will get a Promise object that allows you to get the result as soon as the operation is finished.</p><p>Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
 be able to interoperate with most other Promises implementations.</p><p>What may be somewhat surprising about this Promises specification is that there is no direct way to find out the state of the operation.
 There is neither a property nor a function to find out what the result is or whether it is available. Instead, you always have to
-register callbacks that will be invoked as soon as the operation is finished. Even if the operation already ended when you register the callbacks,
-you still need a callback to get the result. The callback will then just be called immediately.
+register callbacks to find out the result. They will be invoked as soon as the operation is finished.
+If the operation already ended when you register the callbacks, the callback will then just be called from the event loop as soon
+as possible (but never while the <code><a href='then.html'>then()</a></code> you register them with is still running).<br/>
 This design forces you to handle the operation result asynchronously and disencourages 'bad' techniques such as polling.</p><p>The central method of a Promises, and indeed the only required function in Promises/A+, is <code><a href='then.html'>then()</a></code>. It allows you to register
 two callback methods, one for success (called 'fulfillment' in Promises/A+ terminology) and one for failures (called 'rejection' in Promises/A+).</p><p>This example shows you how to use <var>then()</var>:
 <pre>
@@ -40,9 +41,9 @@ $.request('get', 'http://example.com/weather?zip=90210')
  	alert('Something went wrong');
  });
 </pre></p><p>Because the first <code><a href='then.html'>then()</a></code> returns a new Promise based on the original Promise, the second <var>then()</var> will handle errors of the request just like
-the first one. There is only difference in the second example though: the error handler will not only be called if the request failed, but also when
-the request succeded but the success handler threw an exception. That's one of the two differences between the original Promise and the Promise
-returned by then. Any exception thrown in a callback causes the new Promise to be in error state.</p><p>Before I show you the second difference between the original Promise and the new Promise, let me make the example a bit more readable
+the first one did. There is only one subtle difference in the second example: the error handler will not only be called if the request failed,
+but also when the request succeded but the success handler threw an exception. That's one of the two differences between the original Promise and
+the Promise returned by <var>then()</var>. Any exception thrown in a callback causes the new Promise to be in error state.</p><p>Before I show you the second difference between the original Promise and the new Promise, let me make the example a bit more readable
 by using <code><a href='error.html'>error()</a></code>, which is not part of Promises/A+, but a simple extension by Minified. It just registers the failure callback without
 forcing you to specify <var>null</var> as first argument:
 <pre>
@@ -69,13 +70,13 @@ $.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
  	alert('Something went wrong');
  });
 </pre></p><p>Sometimes you want to just be notified of the end of an operation but are not interested in the outcome. For these cases, if you just had
-the Promises/A+-compliants <code><a href='then.html'>then()</a></code> method, you would have to register the same callback handler twice. This is not very convenient,
+the Promises/A+-compliant <code><a href='then.html'>then()</a></code> method, you would have to register the same callback handler twice. This is not very convenient,
 especially when you define the handler function inline. Therefore Minified comes with a second small extension, <code><a href='always.html'>always()</a></code>:</p><p><pre>
 $.request('post', 'http://example.com/pageHit', {pageId: 12345})
  .always(function() {   // always(callback) is equivalent to then(callback, callback)
      pageCountDone();
  });
-</pre></p><p>Please note that the Minified Web module only returns Promises, but it does not allow you to create Promises in your code. The upcoming
+</pre></p><p>Please note that the Minified Web module only returns Promises, but it <strong>does not allow you to create Promises</strong> directly. The upcoming
 Minified Util module will allow this though.
 </p></div>
 

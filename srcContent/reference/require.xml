@@ -29,7 +29,7 @@
 argument 'minified' to get a reference to Minified.
 If you do use an AMD loader, Minified will not define this function and you can use the AMD loader to obtain the
 reference to Minified.
-Minified's version of <var>require</var> is very simple and will <strong>only support other libraries</strong>. You can not
+Minified's version of <var>require</var> is very simple and will only support Minified, but <strong>no other libraries</strong>. You can not
 use it to load other modules, and it will be incompatible with all non-AMD libraries that also define a function
 of the same name. If you need to work with several libraries, you need a real AMD loader.</p><p></p></div>
 
