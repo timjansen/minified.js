@@ -41,20 +41,6 @@
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
-    /*$
-     * @id amdfallback
-     * @name Fallback if AMD is not available.
-     * @configurable default
-     * @group OPTIONS
-     * @doc no
-     * If enabled, there will be fallback code to provide a require function even if no AMD framework such as 
-     * require.js is available. If you always use Minified with an AMD framework, you can safely turn this off.
-     */
-if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
-	var def = {};
-	this['define'] = function(name, f) {def[name] = f();};
-	this['require'] = function(name) { return def[name]; }; 
-}
 /*$
  * @id require
  * @name require()
@@ -72,7 +58,27 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
  * @return the reference to Minified if 'minified' had been used as name. <var>undefined</var> otherwise.
  */
 
+/*$
+ * @id amdsupport
+ * @name AMD support
+ * @configurable default
+ * @group OPTIONS
+ * @doc no
+ * If enabled, Minified will work correctly with AMD frameworks. If not, it will just provide a global 
+ * function ##require(), which can be used only to load 'minified'.
+ */
+if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
+	var def = {};
+	this['define'] = function(name, f) {def[name] = f();};
+	this['require'] = function(name) { return def[name]; }; 
+}
+
 define('minified', function() {
+/*$
+ * @stop
+ */
+// @cond !amdsupport (function() {
+
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -402,6 +408,10 @@ define('minified', function() {
     /*$
 	 * @id ucode
 	 * @dependency
+     */
+
+    /*$
+     * @stop
      */
 
 	function $(selector, context, childOnly) { 
@@ -803,7 +813,7 @@ define('minified', function() {
 						 ) ? 1 : s;
 				}
 				else if (spec == '$$slide') {
-					s = (element['offsetHeight']) + 'px';
+					s = (element['offsetHeight'] - self['get']('$paddingTop', true) - self['get']('$paddingBottom', true)) + 'px';
 				}
 				else if (/^\$/.test(spec)) {
 						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
@@ -2279,7 +2289,11 @@ define('minified', function() {
 	/*$
 	 @stop
 	 */
+
 	return {
+
+	// @cond !amdsupport var MINI = {
+
 		/*$
 		 * @id dollar
 		 * @group SELECTORS
@@ -2556,7 +2570,11 @@ define('minified', function() {
 	 	 */
 		// @cond !ee dummy:null
 	};
+	// @cond !amdsupport _window['require'] = function(n) { if (n == 'minified') return MINI; };
+
 });
+
+// @cond !amdsupport })();
 
 /*$
  * @id list
