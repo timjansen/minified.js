@@ -41,9 +41,9 @@ function setUpConfigurationUI(s) {
 		
 		var src = compile(s.sections, s.sectionMap, enabledSections);
 		var header = serializeEnabledSections(s.sections, enabledSections);
-		if ($$('#compressionAdvanced').checked || $$('#compressionSimple').checked) {
+		if ($$('#compressionAdvanced').checked) {
 			$$('#compile').disabled = true;
-			closureCompile(src, $$('#compressionAdvanced').checked, function(closureResult) {
+			closureCompile(src, true, function(closureResult) {
 				$$('#compile').disabled = false;
 				$('#resultDiv').animate({$$slide: 1});
 				if (closureResult) {
@@ -59,10 +59,13 @@ function setUpConfigurationUI(s) {
 			});
 		}
 		else  {
+try {
 			$('#resultDiv').animate({$$slide: 1});
 			$$('#resultSrc').value = header + src;
 			$('#resultPlain').fill((src.length/1024).toFixed(2) + 'kb');
 			$('#gzipRow, #downloadRow').set({$display: 'none'});
+}
+catch (e) {console.log(e);}
 		}
 		return false;
 	}

@@ -1,3 +1,6 @@
+// minified.js config start -- use this comment to re-create configuration in the Builder
+// - Only sections add, animate, each, ee, fadeslide, get, 
+// - ie6compatibility, ie7compatibility, ie8compatibility, loop, on, ready, set, toggle.
 /*
  * Minified-web.js - Complete library for JavaScript interaction in less than 4kb
  * 
@@ -59,25 +62,9 @@
  */
 
 /*$
- * @id amdsupport
- * @name AMD support
- * @configurable default
- * @group OPTIONS
- * @doc no
- * If enabled, Minified will work correctly with AMD frameworks. If not, it will just provide a global 
- * function ##require(), which can be used only to load 'minified'.
- */
-if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
-	var def = {};
-	this['define'] = function(name, f) {def[name] = f();};
-	this['require'] = function(name) { return def[name]; }; 
-}
-
-define('minified', function() {
-/*$
  * @stop
  */
-// @cond !amdsupport (function() {
+(function() {
 
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -119,6 +106,43 @@ define('minified', function() {
 	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _window[n+'equestAnimationFrame']; })[0] || function(callback) {
 		delay(callback, 33); // 30 fps as fallback
 	};
+
+	/*$
+	 * @id ie8compatibility
+	 * @group OPTIONS
+	 * @configurable default
+	 * @doc no
+	 * @name Backward-Compatibility for IE8 and similar browsers
+	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8,
+	 * and the existence of cssText (which is used instead of the style attribute).
+	 */
+	/**
+	 * @const 
+	 * @type {boolean} 
+	 */
+	 var IS_PRE_IE9 = !!_document.all && !DOMREADY_HANDLER.map;
+	 // @cond !ready_vars var IS_PRE_IE9 = !!_document.all && ![].map;
+	/*$
+	 * @id ie7compatibility
+	 * @requires ie8compatibility 
+	 * @group OPTIONS
+	 * @configurable default
+	 * @doc no
+	 * @name Backward-Compatibility for IE7 and similar browsers
+	 * The difference between IE7 and IE8 compatibility that IE7 provides neither native selector support (querySelectorAll) nor native JSON.
+	 * Disabling IE6 and IE7 will not only make Minified smaller, but give you full CSS selectors and complete JSON support. 
+	 */
+
+	/*$
+	 * @id ie6compatibility
+	 * @requires ie7compatibility 
+	 * @group OPTIONS
+	 * @configurable default
+	 * @doc no
+	 * @name Backward-Compatibility for IE6 and similar browsers
+	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6 which makes the library a tiny 
+	 * little bit larger.
+	 */
 
 	/*$
 	 * @id fadeslide
@@ -406,11 +430,6 @@ define('minified', function() {
     }
 
     /*$
-	 * @id ucode
-	 * @dependency
-     */
-
-    /*$
      * @stop
      */
 
@@ -469,14 +488,30 @@ define('minified', function() {
 		if (!isString(selector))
 		    return filterElements(isList(selector) ? selector : [selector]); 
 
+		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
+			return collect(subSelectors, function(ssi) { return dollarRaw(ssi, parent, childOnly);});
 
+		if (steps = (/(\S+)\s+(.+)$/.exec(selector)))
+			return dollarRaw(steps[2], dollarRaw(steps[1], parent), childOnly);
 
+		if (selector != (subSelectors = replace(selector, /^#/)))
+			return filterElements([_document.getElementById(subSelectors)]); 
 
+		// @cond debug if (/\s/.test(selector)) error("Selector has invalid format, please check for whitespace.");
+		// @cond debug if (/[ :\[\]]/.test(selector)) error("Only simple selectors with ids, classes and element names are allowed.");
 
+		parent = parent || _document;
 
+		elementName = (dotPos = /([^.]*)\.?([^.]*)/.exec(selector))[1];
+		className = dotPos[2];
+		elements = (useGEbC = parent.getElementsByClassName && className) ? parent.getElementsByClassName(className) : parent.getElementsByTagName(elementName || '*'); 
 
+		if (regexpFilter = useGEbC ? elementName : className) {
+			reg = new RegExp(BACKSLASHB +  regexpFilter + BACKSLASHB, 'i'); 
+			elements =  filter(elements, function(l) {return reg.test(l[useGEbC ? 'nodeName' : 'className']);});
+		}
 
-		elements = (parent || _document).querySelectorAll(selector);
+		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(selector);
 		return parent ? filterElements(elements) : elements;
 	};
 
@@ -535,205 +570,6 @@ define('minified', function() {
 	'each': function (callback) {
 		return each(this, callback);
 	},
-
-	/*$
-	 * @id filter
-	 * @group SELECTORS
-	 * @requires dollar
-	 * @configurable default
-	 * @name .filter()
-	 * @syntax filter(filterFunc)
-	 * Creates a new ##list#Minified list## that contains only those items approved by the given callback function. The function is 
-	 * called once for each item. 
-	 * If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
-	 *
-	 * @example Creates a list of all unchecked checkboxes.
-	 * <pre>
-	 * var list = $('input').filter(function(item) {
-	 *     return item.getAttribute('type') == 'checkbox' && item.checked;
-	 * });
-	 * </pre>
-	 * 
-	 * @param filterFunc the callback function(item, index) to invoke for each item with the item as first argument and the 0-based index as second argument.  
-	 *        If the function returns false for an item, it is not included in the resulting list. 
-	 * @return the new, filtered ##list#list##
-	 */
-	'filter': function(filterFunc) {
-	    return new M(filter(this, filterFunc));
-	},
-
-	/*$ 
-     * @id collect 
-     * @group SELECTORS 
-     * @requires dollar 
-     * @configurable default 
-     * @name .collect() 
-     * @syntax collect(collectFunc) 
-     * Creates a new ##list#Minified list## from the current list using the given callback function. 
-     * The callback is invoked once for each element of the current list. The callback results will be added to the result list. 
-     * The callback can return 
-     * <ul> 
-     * <li>an array or another list-like object whose elements will be appended to the result list as single elements.</li> 
-     * <li>a regular object which will be appended to the list</li> 
-     * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
-     * If you need to add null or modified to the result list, put it into a single-element array.</li> 
-     * </ul>
-     * 
-     * 
-     * @example Goes through input elements. If they are text inputs, their value will be added to the list: 
-     * <pre> 
-     * var texts = $('input').collect(function(input) { 
-     *     if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') 
-     *         return input.value; 
-     *     else 
-     *         return null; // ignore 
-     * }); 
-     * </pre> 
-     * 
-     * @example Creates a list of all children of the selected list. 
-     * <pre> 
-     * var childList = $('.mySections').collect(function(node) { 
-     * return node.childNodes; // adds a while list of nodes 
-     * }); 
-     * </pre> 
-     * 
-     * @example Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case: 
-     * <pre> 
-     * var elements = $('input.myTexts').collect(function(item) { 
-     *     return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()]; 
-     * }); 
-     * </pre> 
-     * 
-     * @param collectFunc the callback function(item, index) to invoke for each item with the item as first argument and the 
-     * 0-based index as second argument. 
-     * If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls und <var>undefined</var>
-     * will be ignored and not added. 
-     * @return the new ##list#list##
-     */ 
-	'collect': function(collectFunc) { 
-    	 return new M(collect(this, collectFunc)); 
-     },
-
-     /*$ 
-      * @id sub
-      * @group SELECTORS 
-      * @requires filter 
-      * @configurable default 
-      * @name .sub() 
-      * @syntax sub() 
-      * Returns a new ##list#Minified list## containing only the elements in the specified range. If there are no elements in the range, an empty list is returned.
-      * Negative indizes are supported and will be added to the list's length, thus allowing you to specify ranged at the list's end.
-      *
-      * @example Removes the third to 5th list elements:
-      * <pre> 
-      * $('#myList li').sub(3, 6).remove();
-      * </pre> 
-      *
-      * @example Clears all elements but the first:
-      * <pre> 
-      * $('#myList li').sub(1).fill();
-      * </pre> 
-      *
-      * @example Changes the class of the last list element:
-      * <pre> 
-      * $('#myList li').sub(-1).set('+lastItem');
-      * </pre> 
-      * 
-      * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and thus it is the position
-      *                   seen from the list end.
-      * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and thus it is the position
-      *                   seen from the list end. If omitted, all elements following the <var>startIndex</var> are included in the result.
-      * @return a new ##list#list## containing only the items in the index range. 
-      */ 
-	'sub': function(startIndex, endIndex) {
-		var self = this;
-	    var s = (startIndex < 0 ? self['length']+startIndex : startIndex);
-	    var e = endIndex >= 0 ? endIndex : self['length'] + (endIndex || 0);
- 		return new M(filter(self, function(o, index) { 
- 			return index >= s && index < e; 
- 		}));
- 	},
-
-    /*$ 
-     * @id find 
-     * @group SELECTORS 
-     * @requires
-     * @configurable default 
-     * @name .find() 
-     * @syntax find(findFunc) 
-     * @syntax find(element) 
-     * Finds a specific value in the list. There are two ways of calling <var>find()</var>:
-     * <ol>
-     * <li>With an element as argument. Then <var>find()</var> will search for the first occurrence of that element in the list
-     *     and return the index. If it is not found, <var>find()</var> returns <var>undefined</var>.</li>
-     * <li>With a callback function. <var>find()</var> will then call the given function for each list element until the function 
-     *     returns a value that is not null or undefined. This value will be returned.</li>
-     * </ol>
-     *
-     * @example Determines the position of the element with the id '#wanted' among all li elements:
-     * <pre> 
-     * var elementIndex = $('li').find($$('#wanted'));
-     * </pre> 
-     * 
-     * @example Goes through the elements to find the first div that has the class 'myClass', and returns this element:
-     * <pre> 
-     * var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) return e; });
-     * </pre> 
-     * 
-     * @param findFunc the callback function(item, index) that will be invoked for every list item until it returns a non-null value.
-     * @param element the element to search for
-     * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
-     *         it returns either the value returned by the callback or <var>undefined</var>.
-     */ 
-	'find': function(findFunc) {
-		var self = this, r;
-		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
-		for (var i = 0; i < self.length; i++)
-			if ((r = f(self[i], i)) != null)
-				return r;
-	},
-
-	/*$ 
-	 * @id hasclass 
-	 * @group SELECTORS 
-	 * @requires find
-	 * @configurable default 
-	 * @name .hasClass() 
-	 * @syntax hasClass(className) 
-	 * Checks whether at least one element in the list has the given class name. If yes, the first element that matches is returned. Otherwise
-	 * the function returns <var>undefined</var>.
-	 *
-	 * @example Checks whether the element 'myElement' has the class 'myClass'. If yes, it sets the text color to red.
-	 * <pre>
-	 * if($('#myElement').hasClass('myClass'))
-	 *     $('#myElement').set('$color', 'red');
-	 * </pre>
-	 * 
-	 * @param name the class to to find
-	 * @return the first element that has the given class, or <var>undefined</var> if not found
-	 */ 
-	'hasClass': function(name) {
-		var regexp = new RegExp(BACKSLASHB +  name + BACKSLASHB);
-		return this.find(function(e) { return regexp.test(e.className) ? e : null; });
-	},
-
-	/*$
-	 * @id remove
-	 * @group SELECTORS
-	 * @requires dollar
-	 * @configurable default
-	 * @name .remove()
-	 * @syntax remove()
-	 * Removes all nodes of the list from the DOM tree.
-	 * 
-	 * @example Removes the element with the id 'myContainer', including all children, from the DOM tree.
-	 * <pre>
-	 * $('#myContainer').remove(); 
-	 * </pre>
-	 */
-     'remove': function() {
-    	each(this, function(obj) {obj.parentNode.removeChild(obj);});
-     },
 
   	/*$
  	 * @id get
@@ -802,6 +638,9 @@ define('minified', function() {
 				if (spec == '$')
 					s = element.className;
 				else if (spec == '$$') {
+					 if (IS_PRE_IE9)
+						s = element['style']['cssText'];
+					 else
 						s = element.getAttribute('style');
 				}
 				else if (/\$\$/.test(spec) && (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')) {
@@ -809,6 +648,7 @@ define('minified', function() {
 				}
 				else if (spec == '$$fade') {
 					s = isNaN(s = 
+						  IS_PRE_IE9 ? extractNumber(element['style']['filter'])/100 :
 						  extractNumber(element['style']['opacity']) 
 						 ) ? 1 : s;
 				}
@@ -816,6 +656,9 @@ define('minified', function() {
 					s = (element['offsetHeight'] - self['get']('$paddingTop', true) - self['get']('$paddingBottom', true)) + 'px';
 				}
 				else if (/^\$/.test(spec)) {
+					if (!_window.getComputedStyle)
+						s = (element.currentStyle||element['style'])[name];
+					else 
 						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 				}
 				else if (/^@/.test(spec))
@@ -975,6 +818,7 @@ define('minified', function() {
     		 if (name == '$$fade' || name == '$$slide') {
     			 self.set({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block'})
     			     .set((name == '$$fade')  ? (
+    			    	  IS_PRE_IE9 ? {'$filter': 'alpha(opacity = '+(100*v)+')', '$zoom': 1} :
     			    	  {'$opacity': v})
     			        :
     			        {'$height': /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
@@ -1000,6 +844,9 @@ define('minified', function() {
     					 }
     				 }
    				 	 else if (name == '$$') {
+						if (IS_PRE_IE9)
+							newObj['cssText'] = newValue;
+						else
 							setAttr(obj, 'style', newValue);
 					 }
     				 else if (!/^@/.test(name))
@@ -1111,427 +958,6 @@ define('minified', function() {
 				}
 			})(isNode(children) && index ? null : children);
 		});
-	},
-
-	/*$
-	 * @id fill
-	 * @group ELEMENT
-	 * @requires dollar add remove
-	 * @configurable default
-	 * @name .fill()
-	 * @syntax $(selector).fill()
-	 * @syntax $(selector).fill(text)
-	 * @syntax $(selector).fill(factoryFunction)
-	 * @syntax $(selector).fill(list)
-	 * @syntax $(selector).fill(node)
-	 * Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list member to create a node. The function prototype is function(parent, index). It can return all values
-	 * allowed by <var>fill()</var>, including another function to be called.
-	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
-	 *
-	 * It is also possible to pass a DOM node, but it will be set <strong>only in the first element of the list</strong>, because DOM
-	 * does not allow adding it more than once.
-	 *
-	 * Call <var>fill()</var> without arguments to remove all children from a node.
-	 * 
-	 * @example Using the following HTML:
-	 * <pre>
-	 * &lt;div id="status">Done&lt;/div>
-	 * </pre> 
-	 * <var>fill()</var> with a simple string replaces the element's content with the text:
-	 * <pre>
-	 * $('#status').fill('Please Wait..');
-	 * </pre>
-	 * Results in:
-	 * <pre>
-	 * &lt;div id="status">Please Wait..&lt;/div>
-	 * </pre> 
-	 *
-	 * @example Pass an Element Factory to replace the old content with that:
-	 * <pre>
-	 * $('#status').fill(EE('span', {'className': 'bold'}, 'Please Wait...'));
-	 * </pre>
-	 * With the previous example's HTML, this would create this:
-	 * <pre>
-	 * &lt;div id="status">&lt;span class='bold'>Please Wait..&lt;/span>&lt;/div>
-	 * </pre> 
-	 *
-	 * @example You can also pass a list of elements and texts:
-	 * <pre>
-	 * $('#status').fill(['Here', EE('br'), 'are', EE('br'), 'four', EE('br'), 'lines.]);
-	 * </pre>
-	 *
-	 * @example Or a complete structure built using EE:
-	 * <pre>
-	 * $('#myListContainer').fill([
-	 *     EE('h2', 'My List'), 
-	 *     EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])
-	 * ]);
-	 * </pre>
-	 *
-	 * @example You can write a factory function that re-creates the list for every instance:
-	 * <pre>
-	 * $('.listContainers').fill(function(e, index) { return [
-	 *     EE('h2', 'List Number '+index), 
-	 *     EE('ol', [EE('li', 'First Item'), 
-	 *     EE('li', 'Second Item'), 
-	 *     EE('li', 'Third Item')
-	 * ])]});
-	 * </pre>
-	 *
-	 * @example <var>fill()</var> without arguments deletes the content of the list elements:
-	 * <pre>
-	 * $('.listContainers').fill();
-	 * </pre>
-	 *
-	 * @param text a string to set as text node of the list elements
-	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
-	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
-	 *              containing strings, lists, functions and/or DOM nodes.
-	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
-	 *             Minified list contains more than one item.
-	 * @param node a DOM node to set <strong>only in the first element</strong> of the list. 
-
-	 * @return the current list
-	 */
-	'fill': function (children) {
-		return each(this, function(e) { $(e.childNodes)['remove'](); }).add(children);
-	},
-
-	/*$
-	 * @id addbefore
-	 * @group ELEMENT
-	 * @requires dollar add
-	 * @configurable default
-	 * @name .addBefore()
-	 * @syntax $(selector).addBefore(text)
-	 * @syntax $(selector).addBefore(factoryFunction)
-	 * @syntax $(selector).addBefore(list)
-	 * @syntax $(selector).addBefore(node)
-	 * Inserts the given text or element(s) as sibling in front of each element of this list. 
-	 * If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list element to create the new node, with the arguments function(parent, index). It can return all values
-	 * allowed by <var>addBefore()</var>, including another function to be called.
-	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
-	 *
-	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
-	 * does not allow adding it more than once.
-	 *
-	 * @example Using the following HTML:
-	 * <pre>
-	 * &lt;div>
-	 *   <div id="mainText">Here is some text</div>
-	 * &lt;/div>
-	 * </pre>  
-	 * addBefore() adds text in front of the selected list items.
-	 * <pre>
-	 * $('#mainText').addBefore('COMMENT');
-	 * </pre>
-	 * This results in:
-	 * <pre>
-	 * &lt;div>
-	 *   COMMENT
-	 *   <div id="mainText">Here is some text</div>
-	 * &lt;/div>
-	 * </pre>  
-	 *
-	 * @example You can also pass an Element Factory:
-	 * <pre>
-	 * $('#mainText').addBefore(EE('span', {'className': 'important'}, 'WARNING'));
-	 * </pre>
-	 * With the previous example's HTML, this would create this HTML:
-	 * <pre>
-	 * &lt;div>
-	 *   &lt;span class="important">WARNING&lt;/span>
-	 *   <div id="mainText">Here is some text</div>
-	 * &lt;/div>
-	 * </pre> 
-	 *
-	 * @example Lists of elements and nodes are possible as well.
-	 * <pre>
-	 * $('#status').addBefore([EE('hr'), 'WARNING']);
-	 * </pre>
-	 *
-	 * @param text a string to add as text node of the list elements
-	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
-	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
-	 *              containing strings, lists, functions and/or DOM nodes.
-	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
-	 *             Minified list contains more than one item.
-	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
-	 * @return the current list
-	 */
-	'addBefore': function (children) {
-		return this.add(children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode); });
-	},
-
-	/*$
-	 * @id addafter
-	 * @group ELEMENT
-	 * @requires dollar add
-	 * @configurable default
-	 * @name .addAfter()
-	 * @syntax $(selector).addAfter(text)
-	 * @syntax $(selector).addAfter(factoryFunction)
-	 * @syntax $(selector).addAfter(list)
-	 * @syntax $(selector).addAfter(node)
-	 * Inserts the given text or element(s) as sibling after each element of this list. 
-	 * If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list element to create the node(s) to add. It can return all values
-	 * allowed by <var>addAfter()</var>, including another function to be called.
-	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
-	 *
-	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
-	 * does not allow adding it more than once.
-	 *
-	 * @example Using the following HTML:
-	 * <pre>
-	 * &lt;div>
-	 *   <div id="mainText">Here is some text</div>
-	 * &lt;/div>
-	 * </pre>   
-	 * Use addAfter() with a simple string to add a text node.
-	 * <pre>
-	 * $('#mainText').addAfter('Disclaimer: bla bla bla');
-	 * </pre>
-	 * This results in the following HTML:
-	 * <pre>
-	 * &lt;div>
-	 *   <div id="mainText">Here is some text</div>
-	 *   Disclaimer: bla bla bla
-	 * &lt;/div>
-	 * </pre>   
-	 *
-	 * @example You can also pass an Element Factory:
-	 * <pre>
-	 * $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
-	 * </pre>
-	 * With the previous example's HTML, this would create this:
-	 * <pre>
-	 * &lt;div>
-	 *   <div id="mainText">Disclaimer: bla bla bla</div>
-	 *   &lt;span class="disclaimer">WARNING&lt;/span>
-	 * &lt;/div>
-	 * </pre> 
-	 *
-	 * @param text a string to add as text node of the list elements
-	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
-	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
-	 *              containing strings, lists, functions and/or DOM nodes.
-	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
-	 *             Minified list contains more than one item.
-	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
-	 * @return the current list
-	 */
-	'addAfter': function (children) {
-		return this.add(children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode.nextSibling); });
-	},
-
-	/*$
-	 * @id addfront
-	 * @group ELEMENT
-	 * @requires dollar add
-	 * @configurable default
-	 * @name .addFront()
-	 * @syntax $(selector).addFront(text)
-	 * @syntax $(selector).addFront(factoryFunction)
-	 * @syntax $(selector).addFront(list)
-	 * @syntax $(selector).addFront(node)
-	 * Adds the given node(s) as content to the list elements as additional nodes. Unlike ##add(), the new nodes will be the first children of the list items.
-	 * If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list element to create node(s) with the arguments function(parent, index). It can return all values
-	 * allowed by <var>addFront()</var>, including another function to be called.
-	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
-	 *
-	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
-	 * does not allow adding it more than once.
-	 *
-	 * @example Using the following HTML:
-	 * <pre>
-	 * &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
-	 * </pre> 
-	 * Add a text to the given 'comment' div:
-	 * <pre>
-	 * $('#comments').addFront('Some additional text. ');
-	 * </pre>
-	 * This results in:
-	 * <pre>
-	 * &lt;div id="comments">Some additional text. Here is some text.&lt;br/>&lt;/div>
-	 * </pre> 
-	 *
-	 * @example Using the following HTML: 
-	 * <pre>
-	 * &lt;ul id="myList">
-	 *   &lt;li>First list entry&lt;/li>
-	 *   &lt;li>Second list entry&lt;/li>
-	 * &lt;/ul>
-	 * </pre>
-	 * The following Javascript adds an element to the list:
-	 * <pre>
-	 * $('#myList').addFront(EE('li', 'My extra point'));
-	 * </pre>
-	 * This results in
-	 * <pre>
-	 * &lt;ul id="myList">
-	 *   &lt;li>My extra point&lt;/li>
-	 *   &lt;li>First list entry&lt;/li>
-	 *   &lt;li>Second list entry&lt;/li>
-	 * &lt;/ul>
-	 * </pre>
-	 *
-	 * @example Use a list to add several elements at once:
-	 * <pre>
-	 * $('#comments').addFront([
-	 *      EE('br'), 
-	 *      'Some text', 
-	 *      EE('span', {'className': 'highlight'}, 'Some highlighted text')
-	 * ]);
-	 * </pre>
-	 *
-	 * @param text a string to add as text node of the list elements
-	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
-	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
-	 *              containing strings, lists, functions and/or DOM nodes.
-	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
-	 *             Minified list contains more than one item.
-	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
-	 * @return the current list
-	 */
-	'addFront': function (children) {
-		return this.add(children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
-	},
-
-	/*$
-	 * @id replace
-	 * @group ELEMENT
-	 * @requires dollar add
-	 * @configurable default
-	 * @name .replace()
-	 * @syntax $(selector).replace(text)
-	 * @syntax $(selector).replace(factoryFunction)
-	 * @syntax $(selector).replace(list)
-	 * @syntax $(selector).replace(node)
-	 * Replaces the list items with the the given node(s) in the DOM tree. 
-	 * If a string has been given, it will be set as text node.
-	 * If you pass a function, it will be invoked for each list element to create node(s) with the arguments function(parent, index). It can return all values
-	 * allowed by <var>replace()</var>, including another function to be called.
-	 * If you pass a list or a function returns a list, all its elements will be set using the rules above.
-	 *
-	 * It is also possible to pass a DOM node, but it will replace <strong>only the first element of the list</strong>, because DOM
-	 * does not allow adding it more than once.
-	 *
-	 * @example Using the following HTML:
-	 * <pre>
-	 * &lt;div id="comments">
-	 *    &lt;div id="commentOne">My old comment.&lt;/div>
-	 * &lt;/div>
-	 * </pre> 
-	 * Replaces the div 'commentOne':
-	 * <pre>
-	 * $('#commentOne').replace('Some new comment.');
-	 * </pre>
-	 * This results in:
-	 * <pre>
-	 * &lt;div id="comments">
-	 *    Some new comment.
-	 * &lt;/div>
-	 * </pre> 
-	 * Please note that not only the text has changed, but the whole &lt;div> has been replaced. If you only want to replace the element's text content
-	 * you should use ##fill() instead of <var>replace()</var>.
-	 *
-	 * @example Using the following HTML: 
-	 * <pre>
-	 * &lt;ul id="myList">
-	 *   &lt;li>First list entry&lt;/li>
-	 *   &lt;li>Second list entry&lt;/li>
-	 * &lt;/ul>
-	 * </pre>
-	 * The following example will replace <strong>only the first &lt;li> element</strong>:
-	 * <pre>
-	 * $('#myList li').sub(0, 1).replace(EE('li', 'My extra point'));
-	 * </pre>
-	 * This results in
-	 * <pre>
-	 * &lt;ul id="myList">
-	 *   &lt;li>My extra point&lt;/li>
-	 *   &lt;li>Second list entry&lt;/li>
-	 * &lt;/ul>
-	 * </pre>
-	 *
-	 *
-	 * @param text a text for the text nodes that replace the list elements
-	 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-	 *              an HTML node or a list containing strings and/or HTML node.
-	 * @param node content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
-	 *              an HTML node or a list containing strings and/or HTML node.
-	 * @return the current list
-	 */
-	'replace': function (children) {
-		return this.add(children, function(newNode, refNode, parent) { parent.replaceChild(newNode, refNode); });
-	},
-
-	/*$
-	 * @id clone
-	 * @group ELEMENT
-	 * @requires dollar ee
-	 * @configurable default
-	 * @name .clone()
-	 * @syntax $(selector).clone()
-	 * @syntax $(selector).clone(onCreate)
-	 * Creates a ##list#Minified list## of strings and Element Factories that return clones of the list elements. An Element Factory is a function
-	 * that does not take arguments and returns a Minified list of DOM nodes. You can pass the list to ##add() and similar functions
-	 * to re-create the cloned nodes.
-	 *
-	 * <var>clone()</var> is very limited in what it will clone. Only elements, their attributes, text nodes and CDATA will be cloned.
-	 * Modifications of the elements, such as event handlers, will not be cloned.
-	 *
-	 * Please note that id attributes will be automatically skipped by the Element Factory. This allows you to address the element to clone by id
-	 * without having to worry about duplicate ids in the result.
-	 * 
-	 * @example Using the following HTML:
-	 * <pre>
-	 * &lt;div id="comments">
-	 *    &lt;div class="comment">My comment.&lt;/div>
-	 * &lt;/div>
-	 * </pre> 
-	 * Creating a clone factory:
-	 * <pre>
-	 * var myCloneFactory = $('.comment').clone();
-	 * </pre>
-	 * Cloning a comment and adding it below the existing one:
-	 * <pre>
-	 * $('#comments').add($('.comment').clone());
-	 * </pre> 
-	 * 
- 	 * @param onCreate optional a function(elementList) that will be called each time a top-level element is cloned. The argument
- 	 *                 contains only this cloned element. This allows you, for example, to add event handlers with ##on(). 
- 	 *                 The argument <var>elementList</var> is a Minified list that contains the new element.
-	 * @return the list of Element Factory functions and strings to create clones
-	 */
-	'clone': function (onCreate) {
-		return new M(collect(this, function(e) {
-			var nodeType = isNode(e);
-			if (nodeType == 1) {
-				var attrs = {
-				};
-				each(e['attributes'], function(a) {
-					var attrName = a['name'];
-					if (attrName != 'id'
-						) {
-						attrs['@'+attrName] = a['value'];
-					}
-				});
-				return EE(e['tagName'], attrs, $(e['childNodes'])['clone'](), onCreate);
-			}
-			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
-				return e['data'];
-			else 
-				return null;
-		}));
 	},
 
 	/*$
@@ -1870,13 +1296,20 @@ define('minified', function() {
 						var e = event || _window.event;
 						// @cond debug try {
 						if ((!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) && namePrefixed==name) {
+							if (e.stopPropagation) {// W3C DOM3 event cancelling available?
 								e.preventDefault();
 								e.stopPropagation();
+							}
+							e.returnValue = false; // cancel for IE
+							e.cancelBubble = true; // cancel bubble for IE
 						}
 						// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 					};
 					(handler['M'] = handler['M'] || []).push({'e':el, 'h':h, 'n': name});
+					if (el.addEventListener)
 						el.addEventListener(name, h, true); // W3C DOM
+					else 
+						el.attachEvent('on'+name, h);  // IE < 9 version
 				});
 			});
 		}
@@ -1890,189 +1323,6 @@ define('minified', function() {
  	//// MINI FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	eachObj({
-	/*$
-	* @id request
-	* @group REQUEST
-	* @requires 
-	* @configurable default
-	* @name $.request()
-	* @syntax $.request(method, url)
-	* @syntax $.request(method, url, data)
-	* @syntax $.request(method, url, data, onSuccess)
-	* @syntax $.request(method, url, data, onSuccess, onFailure)
-	* @syntax $.request(method, url, data, onSuccess, onFailure, headers)
-	* @syntax $.request(method, url, data, onSuccess, onFailure, headers, username, password)
-	* Initiates a HTTP request to the given URL, using XMLHttpRequest. It returns a ##promise#Promise## object that allows you to obtain the result.
-	* 
-	* @example Invoke a REST web service and parse the resulting document using JSON:
-	* <pre>
-	* $.request('get', 'http://service.example.com/weather', {zipcode: 90210})
-	*    .then(function(txt) {
-	*         var json = $.parseJSON(txt);
-	*         $('#weatherResult').fill('Today's forecast is is: ' + json.today.forecast);
-	*    })
-	*    .error(function(status, statusText, responseText) {
-	*         $('#weatherResult').fill('The weather service was not available.');
-	*     });
-	* </pre>
-	* 
-	* @example Send a JSON object to a REST web service:
-	* <pre>
-	* var myRequest = {         // create a request object that can be serialized via JSON
-	*      request: 'register',
-	*      entries: [
-	*        {name: 'Joe',
-	*      	    job: 'Plumber'
-	*      }]};
-	* 
-	* function failureHandler() {
-	*   $('#registrationResult').fill('Registration failed');
-	* }
-	*
-	* $.request('post', 'http://service.example.com/directory', $.toJSON(myRequest))
-	*     .then(function(txt) {
-	*        if (txt == 'OK')
-	*             $('#registrationResult').fill('Registration succeeded');
-	*        else
-	*              failureHandler();
-	*        })
-	*     .error(failureHandler);
-	* </pre>
-	*
-	* 
-	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data on the server, and 'get' to only request data). Not case sensitive.
-	* @param url the server URL to request. May be a relative URL (relative to the document) or an absolute URL. Note that unless you do something 
-	*             fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only call URLs on the server your script originates from.
-	* @param data optional data to send in the request, either as POST body or as URL parameters. It can be either a map of 
-	*             parameters (all HTTP methods), a string (all methods) or a DOM document ('post' only). If the method is 'post', it will be 
-	*             sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the same name, use an array of values
-	*             in the map. Use null as value for a parameter without value.
-	* @param headers optional a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
-	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.
-	* @param username optional username to be used for HTTP authentication, together with the password parameter
-	* @param password optional password for HTTP authentication
-	* @return a ##promise#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, the success handler will be called.
-	*         Its first argument is the text sent by the server. The second argument will contain the XML sent by the server, if there was a XML response.
-	*         The failure handler will receive three arguments. The first argument is the HTTP status (never 200; 0 if no HTTP request took place), 
-	*                  the second a status text (or null, if the browser threw an exception) and the third the returned text, if there was 
-	*                  any (the exception as string if the browser threw it).
-	*/
-	'request': function (method, url, data, headers, username, password) {
-		// @cond debug if (!method) error("request() requires a HTTP method as first argument.");
-		// @cond debug if (!url) error("request() requires a url as second argument.");
-		// @cond debug if (onSuccess && typeof onSuccess != 'function') error("request()'s fourth argument is optional, but if it is set, it must be a function.");
-		// @cond debug if (onFailure && typeof onFailure != 'function') error("request()'s fifth argument is optional, but if it is set, it must be a function.");
-		// @cond debug if (username && !password) error("If the user name is set (7th argument), you must also provide a password as 8th argument.");		method = method.toUpperCase();
-		/** @const */ var ContentType = 'Content-Type';
-		var xhr, body = data, callbackCalled = 0, prom = promise();
-		try {
-			xhr = new XMLHttpRequest();
-			if (data != null) {
-				headers = headers || {};
-				if (!isString(data) && !isNode(data)) { // if data is parameter map...
-					body = collectObj(data, function processParam(paramName, paramValue) {
-						if (isList(paramValue))
-							return collect(paramValue, function(v) {return processParam(paramName, v);});
-						else
-							return encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : '');
-					}).join('&');
-				}
-
-				if (!/post/i.test(method)) {
-					url += '?' + body;
-					body = null;
-				}
-				else if (!isNode(data) && !isString(data) && !headers[ContentType])
-					headers[ContentType] = 'application/x-www-form-urlencoded';
-			}
-
-			xhr.open(method, url, true, username, password);
-			eachObj(headers, function(hdrName, hdrValue) {
-				xhr.setRequestHeader(hdrName, hdrValue);
-			});
-
-			xhr.onreadystatechange = function() {
-				if (xhr.readyState == 4 && !callbackCalled++) {
-					if (xhr.status == 200) {
-						prom(true, [xhr.responseText, xhr.responseXML]);
-					}
-					else
-						prom(false, [xhr.status, xhr.statusText, xhr.responseText]);
-				}
-			};
-
-			xhr.send(body);
-			return prom;
-		}
-		catch (e) {
-			if (!callbackCalled) 
-				prom(false, [0, null, toString(e)]);
-		}
-	},
-
-	/*
-	 * JSON Module. Uses browser built-ins or json.org implementation if available. Otherwise its own implementation,
-	 * originally based on public domain implementation http://www.JSON.org/json2.js / http://www.JSON.org/js.html.
-	 * Extremely simplified code, made variables local, removed all side-effects (especially new properties for String, Date and Number).
-	 */
-
-	/*$
-    * @id tojson
-    * @group JSON
-    * @requires ucode 
-    * @configurable default
-    * @name $.toJSON()
-    * @syntax $.toJSON(value)
-    * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, boolean or null.
-   	* If you build Minified without Internet Explorer compatibility, this is just an alias for <var>JSON.stringify</var>.
-	*
-    * The following types are supported by the built-in implementation:
-    * <ul>
-    *   <li>Objects (direct properties will be serialized)</li>
-    *   <li>Arrays</li>
-    *   <li>Strings</li>
-    *   <li>Numbers</li>
-    *   <li>Boolean</li>
-    *   <li>null</li>
-    * </ul>
-    * Any other types in your JSON tree, especially Dates, should be converted into Strings by you.
-    *
-    * @example Convert an object into a JSON object:
-    * <pre>
-    * var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
-    * var jsonString = $.toJSON(myObj);
-    * </pre>
-    * 
-    * @param value the value (map-like object, array, string, number, boolean or null)
-    * @return the JSON string
-    */
-    'toJSON': _window.JSON && JSON.stringify,
-
-	/*$
-	* @id parsejson
-	* @group JSON
-	* @requires ucode
-	* @configurable default
-	* @name $.parseJSON()
-	* @syntax $.parseJSON(text)
-	* Parses a string containing JSON and returns the de-serialized object.
-	* If <var>JSON.parse</var> is defined, which it is in pretty all browsers except Internet Explorer 7 and earlier, it will be used. This is mainly to
-	* prevent possible security problems caused by the use of <var>eval</var> in the implementation. Only in browsers without
-	* <var>JSON.parse</var> Minified's own implementation will be used.
-	* 
-	* If you use a Minified build without Internet Explorer 7 compatibility, <var>JSON.parse</var> will always be used.
-	*
-	* @example Parsing a JSON string:
-	* <pre>
-	* var jsonString = "{name: 'Fruits', roles: ['apple', 'banana', 'orange']}";
-	* var myObj = $.parseJSON(jsonString);
-	* </pre>
-	*
-	* @param text the JSON string
-	* @return the resulting JavaScript object. <var>Undefined</var> if not valid.
-	*/
-    'parseJSON': _window.JSON && JSON.parse,
-
 	/*$
     * @id ready
     * @group EVENTS
@@ -2095,88 +1345,6 @@ define('minified', function() {
     * @param handler the function to be called when the HTML is ready
     */
     'ready': ready,
-
-	/*$
-     * @id setcookie
-     * @group COOKIE
-     * @configurable default
-     * @name $.setCookie()
-     * @syntax $.setCookie(name, value)
-     * @syntax $.setCookie(name, value, dateOrDays)
-     * @syntax $.setCookie(name, value, dateOrDays, path)
-     * @syntax $.setCookie(name, value, dateOrDays, path, domain)
-     * Creates, updates or deletes a cookie. If there is an an existing cookie
-     * of the same name, will be overwritten with the new value and settings. 
-     *
-     * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
-     * <pre>
-     * var visits = $.getCookie('numberOfVisits');
-     * $.setCookie('numberOfVisits', 
-     *                      visits ? (parseInt(visits) + 1) : 1,   // if cookie not set, start with 1
-     *                      365);                                  // store for 365 days
-     * </pre>
-     * 
-     * @example Deletes the cookie 'numberOfVisits':
-     * <pre>
-     * $.setCookie('numberOfVisits', '', -1);
-     * </pre>
-     * 
-     * @param name the name of the cookie. This should be ideally an alphanumeric name, as it will not be escaped by Minified and this
-     *             guarantees compatibility with all systems.
-     *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax. 
-     * @param value the value of the cookie. All characters except alphanumeric and "*@-_+./" will be escaped using the 
-     *              JavaScript <var>escape()</var> function and thus can be used, unless you set the optional <var>dontEscape</var> parameter.
-     * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
-     *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
-     *                   browser has been closed. If the number negative or the date in the past, the cookie will be deleted.
-     * @param path optional if set, the cookie will be restricted to documents in the given path. Otherwise it is valid
-     *                       for the whole domain. This is rarely needed and defaults to '/'.
-     * @param domain optional if set, you use it to specify the domain (e.g. example.com) which can read the cookie. If you don't set it,
-     *               the domain which hosts the current document is used. This parameter is rarely used, because there are only very
-     *               few use cases in which this makes sense.
-     * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
-     *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
-     *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
-     */
-    'setCookie': function(name, value, dateOrDays, path, domain, dontEscape) {
-		// @cond debug if (!name) error('Cookie name must be set!');
-		// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
-    	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
-    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(now() + dateOrDays * 8.64E7)).toUTCString()) : '') + 
-    		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
-    },
-
-    /*$
-     * @id getcookie
-     * @group COOKIE
-     * @requires
-     * @configurable default
-     * @name $.getCookie()
-     * @syntax $.getCookie(name)
-     * @syntax $.getCookie(name, dontUnescape)
-     * Tries to find the cookie with the given name and returns it.
-     *
-     * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
-     * <pre>
-     * var visits = $.getCookie('numberOfVisits');
-     * if (!visits)    // check whether cookie set. Null if not
-     *     $('#myCounter').set('innerHML', 'Your first visit.');
-     * else
-     *     $('#myCounter').set('innerHTML', 'Visit No ' + visits);
-     * </pre>
-     *  
-     * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
-     *             You may want to escape the name using <var>encodeURIComponent()</var> for all other characters.
-     * @param dontUnescape optional if set and true, the value will be returned unescaped. use this only if the value has been encoded
-     *                     in a special way, and not with the JavaScript <var>encode()</var> method.
-     * @return the value of the cookie, or null if not found. Depending on the dontUnescape parameter, it may be escaped or not.
-     */
-    'getCookie': function(name, dontUnescape) {
-    	// @cond debug if (!name) error('Cookie name must be set!');
-    	// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
-    	var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
-    	return dontUnescape ? match : match && unescape(match);
-    },
 
 	/*$
 	* @id loop
@@ -2238,43 +1406,10 @@ define('minified', function() {
         return entry.s; 
     },
 
-    /*$
-	 * @id off
-	 * @group EVENTS
-	 * @requires on
-	 * @configurable default
-	 * @name $.off()
-	 * @syntax $.off(handler)
-	 * Removes the given event handler. The call will be ignored if the given handler has not registered using ##on(). If the handler has been registered
-	 * for more than one element or event, it will be removed from all instances.
-	 * 
-	 * @example Adds a handler to an element:
-	 * <pre>
-	 * function myEventHandler() {
-	 *    this.style.backgroundColor = 'red';        // 'this' contains the element that caused the event
-	 * }
-	 * $('#myElement').on('click', myEventHandler);  // add event handler
-	 *
-	 * window.setInterval(function() {               // after 5s, remove event handler
-	 *    $.off(myEventHandler);
-	 * }, 5000);
-	 * </pre>
-	 * 
-	 * @param handler the handler to unregister, as given to ##on(). It must be a handler that has previously been registered using ##on().
-	 *                If the handler is not registered as event handler, the function does nothing.
-     */
-	'off': function (handler) {
-		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
-	   	each(handler['M'], function(h) {	
-				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
-		});
-		handler['M'] = null;
-	}
-
  	/*$
  	 * @stop
  	 */
-	// @cond !off dummy:null
+	dummy:null
 
 	}, function(n, v) {$[n]=v;});
 
@@ -2284,15 +1419,16 @@ define('minified', function() {
 	 * @id ready_init
 	 * @dependency
      */
+    _window.onload = triggerDomReady;
 
+    if (_document.addEventListener)
     	_document.addEventListener("DOMContentLoaded", triggerDomReady, false);
 	/*$
 	 @stop
 	 */
 
-	return {
 
-	// @cond !amdsupport var MINI = {
+	var MINI = {
 
 		/*$
 		 * @id dollar
@@ -2430,34 +1566,6 @@ define('minified', function() {
 		 */
 		'$': $,
 
-	    /*$
-		 * @id dollardollar
-		 * @group SELECTORS
-		 * @requires dollarraw
-		 * @configurable default
-		 * @name $$()
-		 * @syntax $$(selector)
-		 * @shortcut $$() - It is recommended that you assign MINI.$$ to a variable $$.
-		 * Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found. 
-		 * <var>$$</var> allows you to easily access an element directly. It is the equivalent to writing "$(selector)[0]".
-		 *
-		 * Please note that the function <var>$$</var> will not be automatically exported by Minified. You should always import it
-		 * using the recommended import statement:
-		 * <pre>
-		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
-		 * </pre>
-		 * 
-		 * @example Select the checkbox 'myCheckbox':
-		 * <pre>
-		 * $$('#myCheckbox').checked = true;
-		 * </pre>
-		 * 
-		 * @param selector a simple, CSS-like selector for the element. Uses the full syntax described in #dollar#$(). The most common
-		 *                 parameter for this function is the id selector with the syntax "#id".
-		 * @return a DOM object of the first match, or <var>undefined</var> if the selector did not return at least one match
-		 */
-	    '$$': $$,
-
 		/*$
 		 * @id ee
 		 * @group ELEMENT
@@ -2570,11 +1678,10 @@ define('minified', function() {
 	 	 */
 		// @cond !ee dummy:null
 	};
-	// @cond !amdsupport _window['require'] = function(n) { if (n == 'minified') return MINI; };
+	_window['require'] = function(n) { if (n == 'minified') return MINI; };
 
-});
 
-// @cond !amdsupport })();
+})();
 
 /*$
  * @id list

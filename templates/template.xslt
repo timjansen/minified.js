@@ -15,6 +15,7 @@
 <xsl:if test="count(/page:page/page:externalCss)=0"><link rel="stylesheet" type="text/css" href="/css/minimum.css"/></xsl:if>
 <xsl:for-each select="/page:page/page:externalCss"><link rel="stylesheet" type="text/css" href="{.}"/></xsl:for-each>
 <xsl:for-each select="/page:page/page:inlineCss"><style type="text/css"><xsl:value-of select="."></xsl:value-of></style></xsl:for-each>
+<xsl:for-each select="/page:page/page:asyncJs"><script type="text/javascript" src="{.}" async="async"></script></xsl:for-each>
 <xsl:for-each select="/page:page/page:externalJs"><script type="text/javascript" src="{.}"></script></xsl:for-each>
 <xsl:for-each select="/page:page/page:inlineJs"><script type="text/javascript"><xsl:value-of select="."></xsl:value-of></script></xsl:for-each>
 </head>

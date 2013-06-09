@@ -1,342 +1,26 @@
-<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="UTF-8"></meta><title>How to... Common Minified Tasks</title><link rel="stylesheet" type="text/css" href="../css/doc.css"></link></head><body><div id="head"><div class="container"><a href="/"><img src="/img/minified.svg" alt="Minified"></img></a><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download/">Download</a><a class="notSelected" href="/builder/">Build</a><a class="selected" href="/docs/">Documentation</a><a class="notSelected" href="/reference/">API</a><a class="notSelected" href="/about/">About</a></div></div></div><div id="main"><div class="container"><div>
-  <h1>How to... Common Minified Tasks</h1>
-
-<h2>Overview</h2>
-<ul>
-<li><a href="#select">Work with Selectors and Lists</a><ul>
- <li><a href="#select_children">Find Elements</a></li>
- <li><a href="#select_children">Find All Child Elements</a></li>
- <li><a href="#select_children">Find Child Nodes</a></li>
- <li><a href="#select_children">Find Every Second Element</a></li>
- <li><a href="#select_children">Combine Lists</a></li>
-</ul></li>
-<li><a href="#html">Modify HTML Structure</a><ul>
- <li><a href="#html_text">Set Text Content</a></li>
- <li><a href="#html_innerhtml">Set InnerHTML</a></li>
- <li><a href="#html_addhtml">Append HTML</a></li>
- <li><a href="#html_create">Create HTML Elements</a></li>
- <li><a href="#html_add">Add HTML Elements or Text</a></li>
- <li><a href="#html_replace">Replace HTML Elements</a></li>
- <li><a href="#html_remove">Remove HTML Elements or Nodes</a></li>
- <li><a href="#html_attr">Set and Read Attributes</a></li>
- <li><a href="#html_clone">Clone Elements</a></li>
-</ul></li>
-<li><a href="#style">Modify HTML Styles</a><ul>
- <li><a href="#style_classes">Add / Remove / Toggle CSS Classes</a></li>
- <li><a href="#style_hasclass">Check for CSS Classes</a></li>
- <li><a href="#style_set">Set and Read CSS Style</a></li>
- <li><a href="#style_prop">Set and Read Properties</a></li>
-</ul></li>
-<li><a href="#anim">Animation</a><ul>
- <li><a href="#anim_anim">Animate Styles and Properties</a></li>
- <li><a href="#anim_chain">Chain Animation Steps</a></li>
- <li><a href="#anim_toggle">Toggle Styles and Properties</a></li>
- <li><a href="#anim_fade">Fade in / Fade Out (Animation)</a></li>
- <li><a href="#anim_slide">Slide in / Slide Out (Animation)</a></li>
- <li><a href="#anim_loop">Create Complex Animations (Loop)</a></li>
-</ul></li>
-<li><a href="#data">Data and Events</a><ul>
- <li><a href="#data">Register / Unregister Event Handlers</a></li>
- <li><a href="#data_post">Do HTTP Requests (AJAX / XHR)</a></li>
- <li><a href="#data_json">Use JSON</a></li>
- <li><a href="#data_cookie">Read / Write / Delete Cookies</a></li>
-</ul></li>
-<li><a href="#something_missing">Missing Something?</a></li>
-</ul>
-
-
-<h2><a name="select">Work with Selectors and Lists</a></h2>
-<h3><a name="select_children">Find Elements</a></h3>
-<p>
-Creating a list containing only the element with the id 'a':
-<pre>var l = $('#a');</pre>
-Creating a list containing only the element with the class 'b':
-<pre>var l = $('.a');</pre>
-All other CSS1 selectors are also supported. In builds without IE7 support, all selectors supported by the browser are possible. 
-</p>
-<p>
-API: <a href="/reference/dollar.html">$()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Vmr6z/">Selector</a>
-</p>
-
-
-<h3><a name="select_children">Find All Child Elements</a></h3>
-<p>
-Finding all child elements of the element '#parent':
-<pre>var l = $('*', '#parent', true);</pre>
-The first argument specifies that you want all elements. The second is the context, which limits matches to descendants of '#parent'.
-The third states that you want only direct children of the context, instead of getting all descendants.
-</p>
-<p>
-API: <a href="/reference/dollar.html">$()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/6BHAt/">Child Elements</a>
-</p>
-
-
-<h3><a name="select_children">Find Child Nodes</a></h3>
-<p>
-Finding all child nodes of the element '#parent':
-<pre>var l = $('#parent').collect(function(e) { return e.childNodes; });</pre>
-To get all child nodes (and not only all elements), you can use <a href="/reference/collect.html">collect()</a>
-to put them into a list. 
-</p>
-<p>
-API: <a href="/reference/dollar.html">$()</a>, <a href="/reference/collect.html">collect()</a>.<br/>
-</p>
-
-
-<h3><a name="select_children">Find Every Second Element</a></h3>
-<p>
-Finding every second &lt;li> element in '#parent':
-<pre>var l = $('#parent li').filter(function(e, index) { return index % 2; });</pre>
-The <var>filter()</var> function filters all elements that have an even index.
-</p>
-<p>
-API: <a href="/reference/dollar.html">$()</a>, <a href="/reference/filter.html">filter()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/FXGce/">Filter</a>
-</p>
-
-
-<h3><a name="select_children">Combine Lists</a></h3>
-<p>
-<pre>var l = $([list1, list2]);</pre>
-Use the selector function to combine lists. Nested lists will automatically be flattened and null elements will be removed.<br/>
-You can also use the same syntax to add elements to the list:
-<pre>var l2 = $([list1, element1, element2]);</pre>
-Again, null elementes will be automatically removed.
-</p>
-<p>
-API: <a href="/reference/dollar.html">$()</a>.<br/>
-</p>
-
-
-<h2><a name="html">Modify HTML Structure</a></h2>
-<h3><a name="html_text">Set Text Content</a></h3>
-<p>
-<pre>$('#myElement').fill("My new text");</pre>
-The <var>fill()</var> method replaces an element's content with the given argument. If you pass a string,
-it will replace the old content with a new text node. You can also use it to add other elements as new content.
-</p>
-<p>
-API: <a href="/reference/fill.html">fill()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/MKWTp/">fill()</a>
-</p>
-
-<h3><a name="html_innerhtml">Set InnerHTML</a></h3>
-<p>
-<pre>$('.display').set("innerHTML", "My <b>HTML</b>");</pre>
-You can use <a href="/reference/set.html">set()</a> to modify the <var>innerHTML</var> property of list members. 
-If you only want to modify a single element, using the <var>innerHTML</var> property directly will be even easier:
-<pre>$$('#myElement').innerHTML = "My <b>HTML</b>";</pre>
-</p>
-<p>Please note that is generally not a good idea to modify HTML using innerHTML and other string operations, especially
-when handling user input or URL parameters. It is not only error prone, but can also lead to security issues. In most cases
-it is better to <a href="#html_create">Create HTML Elements with EE()</p> instead.
-<p>
-<p>
-API: <a href="/reference/set.html">set()</a>, <a href="/reference/dollardollar.html">$$()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
-</p>
-
-
-<h3><a name="html_addhtml">Append HTML</a></h3>
-<p>
-<pre>$$('#myElement').innerHTML += "&lt;hr/>My Footer";</pre>
-If you only need to modify a single element, you can add text directly to the <var>innerHTML</var> property.
-This is not possible if your list has more than one element though. Then you need to write a <var>set()</var> callback like this:
-<pre>$('.display').set("innerHTML", function(old) {return old + "My &lt;b>HTML&lt;/b>"; });</pre>
-</p>
-<p>Please note that is generally not a good idea to modify HTML using innerHTML and other string operations, especially
-when handling user input or URL parameters. It is not only error prone, but can also lead to security issues. In most cases
-it is better to <a href="#html_create">Create HTML Elements with EE()</p> instead.
-<p>
-API: <a href="/reference/set.html">set()</a>, <a href="/reference/dollardollar.html">$$()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
-</p>
-
-
-<h3><a name="html_create">Create HTML Elements</a></h3>
-<p>
-<pre>var divFactory = EE('div');</pre>
-Minified makes it easy to create <strong>element factories</strong>, simple functions that create HTML structures.
-The line above creates a factory to return &lt;div> elements. To get the actual element, call the factory to get it wrapped in a <a href="/reference/list.html">list</a>:
-<pre>var newDiv = divFactory()[0];</pre>
-Element factories can be used directly to add new elements:
-<pre>$('.container').add(divFactory);        // add as last child
+<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="UTF-8"></meta><title>How to... Common Minified Tasks</title><link rel="stylesheet" type="text/css" href="../css/doc.css"></link></head><body><div id="head"><div class="container"><a href="/"><img src="/img/minified.svg" alt="Minified"></img></a><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download/">Download</a><a class="notSelected" href="/builder/">Build</a><a class="selected" href="/docs/">Documentation</a><a class="notSelected" href="/reference/">API</a><a class="notSelected" href="/about/">About</a></div></div></div><div id="main"><div class="container"><div> <h1>How to... Common Minified Tasks</h1> <h2>Overview</h2> <ul> <li><a href="#select">Work with Selectors and Lists</a><ul> <li><a href="#select_children">Find Elements</a></li> <li><a href="#select_children">Find All Child Elements</a></li> <li><a href="#select_children">Find Child Nodes</a></li> <li><a href="#select_children">Find Every Second Element</a></li> <li><a href="#select_children">Combine Lists</a></li> </ul></li> <li><a href="#html">Modify HTML Structure</a><ul> <li><a href="#html_text">Set Text Content</a></li> <li><a href="#html_innerhtml">Set InnerHTML</a></li> <li><a href="#html_addhtml">Append HTML</a></li> <li><a href="#html_create">Create HTML Elements</a></li> <li><a href="#html_add">Add HTML Elements or Text</a></li> <li><a href="#html_replace">Replace HTML Elements</a></li> <li><a href="#html_remove">Remove HTML Elements or Nodes</a></li> <li><a href="#html_attr">Set and Read Attributes</a></li> <li><a href="#html_clone">Clone Elements</a></li> </ul></li> <li><a href="#style">Modify HTML Styles</a><ul> <li><a href="#style_classes">Add / Remove / Toggle CSS Classes</a></li> <li><a href="#style_hasclass">Check for CSS Classes</a></li> <li><a href="#style_set">Set and Read CSS Style</a></li> <li><a href="#style_prop">Set and Read Properties</a></li> </ul></li> <li><a href="#anim">Animation</a><ul> <li><a href="#anim_anim">Animate Styles and Properties</a></li> <li><a href="#anim_chain">Chain Animation Steps</a></li> <li><a href="#anim_toggle">Toggle Styles and Properties</a></li> <li><a href="#anim_fade">Fade in / Fade Out (Animation)</a></li> <li><a href="#anim_slide">Slide in / Slide Out (Animation)</a></li> <li><a href="#anim_loop">Create Complex Animations (Loop)</a></li> </ul></li> <li><a href="#data">Data and Events</a><ul> <li><a href="#data">Register / Unregister Event Handlers</a></li> <li><a href="#data_post">Do HTTP Requests (AJAX / XHR)</a></li> <li><a href="#data_json">Use JSON</a></li> <li><a href="#data_cookie">Read / Write / Delete Cookies</a></li> </ul></li> <li><a href="#something_missing">Missing Something?</a></li> </ul> <h2><a name="select">Work with Selectors and Lists</a></h2> <h3><a name="select_children">Find Elements</a></h3> <p> Creating a list containing only the element with the id 'a': <pre>var l = $('#a');</pre> Creating a list containing only the element with the class 'b': <pre>var l = $('.a');</pre> All other CSS1 selectors are also supported. In builds without IE7 support, all selectors supported by the browser are possible. </p> <p> API: <a href="/reference/dollar.html">$()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Vmr6z/">Selector</a> </p> <h3><a name="select_children">Find All Child Elements</a></h3> <p> Finding all child elements of the element '#parent': <pre>var l = $('*', '#parent', true);</pre> The first argument specifies that you want all elements. The second is the context, which limits matches to descendants of '#parent'. The third states that you want only direct children of the context, instead of getting all descendants. </p> <p> API: <a href="/reference/dollar.html">$()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/6BHAt/">Child Elements</a> </p> <h3><a name="select_children">Find Child Nodes</a></h3> <p> Finding all child nodes of the element '#parent': <pre>var l = $('#parent').collect(function(e) { return e.childNodes; });</pre> To get all child nodes (and not only all elements), you can use <a href="/reference/collect.html">collect()</a> to put them into a list. </p> <p> API: <a href="/reference/dollar.html">$()</a>, <a href="/reference/collect.html">collect()</a>.<br/> </p> <h3><a name="select_children">Find Every Second Element</a></h3> <p> Finding every second &lt;li> element in '#parent': <pre>var l = $('#parent li').filter(function(e, index) { return index % 2; });</pre> The <var>filter()</var> function filters all elements that have an even index. </p> <p> API: <a href="/reference/dollar.html">$()</a>, <a href="/reference/filter.html">filter()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/FXGce/">Filter</a> </p> <h3><a name="select_children">Combine Lists</a></h3> <p> <pre>var l = $([list1, list2]);</pre> Use the selector function to combine lists. Nested lists will automatically be flattened and null elements will be removed.<br/> You can also use the same syntax to add elements to the list: <pre>var l2 = $([list1, element1, element2]);</pre> Again, null elementes will be automatically removed. </p> <p> API: <a href="/reference/dollar.html">$()</a>.<br/> </p> <h2><a name="html">Modify HTML Structure</a></h2> <h3><a name="html_text">Set Text Content</a></h3> <p> <pre>$('#myElement').fill("My new text");</pre> The <var>fill()</var> method replaces an element's content with the given argument. If you pass a string, it will replace the old content with a new text node. You can also use it to add other elements as new content. </p> <p> API: <a href="/reference/fill.html">fill()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/MKWTp/">fill()</a> </p> <h3><a name="html_innerhtml">Set InnerHTML</a></h3> <p> <pre>$('.display').set("innerHTML", "My <b>HTML</b>");</pre> You can use <a href="/reference/set.html">set()</a> to modify the <var>innerHTML</var> property of list members. If you only want to modify a single element, using the <var>innerHTML</var> property directly will be even easier: <pre>$$('#myElement').innerHTML = "My <b>HTML</b>";</pre> </p> <p>Please note that is generally not a good idea to modify HTML using innerHTML and other string operations, especially when handling user input or URL parameters. It is not only error prone, but can also lead to security issues. In most cases it is better to <a href="#html_create">Create HTML Elements with EE()</p> instead. <p> <p> API: <a href="/reference/set.html">set()</a>, <a href="/reference/dollardollar.html">$$()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a> </p> <h3><a name="html_addhtml">Append HTML</a></h3> <p> <pre>$$('#myElement').innerHTML += "&lt;hr/>My Footer";</pre> If you only need to modify a single element, you can add text directly to the <var>innerHTML</var> property. This is not possible if your list has more than one element though. Then you need to write a <var>set()</var> callback like this: <pre>$('.display').set("innerHTML", function(old) {return old + "My &lt;b>HTML&lt;/b>"; });</pre> </p> <p>Please note that is generally not a good idea to modify HTML using innerHTML and other string operations, especially when handling user input or URL parameters. It is not only error prone, but can also lead to security issues. In most cases it is better to <a href="#html_create">Create HTML Elements with EE()</p> instead. <p> API: <a href="/reference/set.html">set()</a>, <a href="/reference/dollardollar.html">$$()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a> </p> <h3><a name="html_create">Create HTML Elements</a></h3> <p> <pre>var divFactory = EE('div');</pre> Minified makes it easy to create <strong>element factories</strong>, simple functions that create HTML structures. The line above creates a factory to return &lt;div> elements. To get the actual element, call the factory to get it wrapped in a <a href="/reference/list.html">list</a>: <pre>var newDiv = divFactory()[0];</pre> Element factories can be used directly to add new elements: <pre>$('.container').add(divFactory);        // add as last child
 $('.container2').fill(divFactory);      // replace all children
 $('.something').addFront(divFactory);   // add as first child
 $('.something2').addBefore(divFactory); // add as sibling in front of..
 $('.something3').addAfter(divFactory);  // add as sibling after..
-$('.oldElement').replace(divFactory);   // replace element</pre>
-
-The elements created by <var>EE()</var> can receive an object map of <var>set()</var> arguments to set CSS classes, styles, attributes and properties.
-You can also either pass a string to set a text node as child, add another element factory with children, or a list that mixes both:
-<pre>$('.todo').add(EE('ol', {$: 'groceries'}, [
+$('.oldElement').replace(divFactory);   // replace element</pre> The elements created by <var>EE()</var> can receive an object map of <var>set()</var> arguments to set CSS classes, styles, attributes and properties. You can also either pass a string to set a text node as child, add another element factory with children, or a list that mixes both: <pre>$('.todo').add(EE('ol', {$: 'groceries'}, [
 	EE('li', 'Milk'),
 	EE('li', {$: 'important'}, 'Bread'},
 	EE('li', ['2x ', EE('a', {'@href': 'http://en.wikipedia.org/wiki/Twinkie'}, 'Twinkies'})])
 ]));
-</pre>
-</p>
-<p>
-API: <a href="/reference/add.html">add()</a>, <a href="/reference/addafter.html">addAfter()</a>, <a href="/reference/addbefore.html">addBefore()</a>, 
-<a href="/reference/addfront.html">addFront()</a>, <a href="/reference/ee.html">EE()</a>, <a href="/reference/fill.html">fill()</a>, 
-<a href="/reference/replace.html">replace()</a>, <a href="/reference/set.html">set()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/uRC8Y/">EE and add()</a>
-</p>
-
-
-<h3><a name="html_add">Add HTML Elements or Text</a></h3>
-<p>
-<pre>$('.container').add('Some text'); // add text node to all .container
+</pre> </p> <p> API: <a href="/reference/add.html">add()</a>, <a href="/reference/addafter.html">addAfter()</a>, <a href="/reference/addbefore.html">addBefore()</a>, <a href="/reference/addfront.html">addFront()</a>, <a href="/reference/ee.html">EE()</a>, <a href="/reference/fill.html">fill()</a>, <a href="/reference/replace.html">replace()</a>, <a href="/reference/set.html">set()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/uRC8Y/">EE and add()</a> </p> <h3><a name="html_add">Add HTML Elements or Text</a></h3> <p> <pre>$('.container').add('Some text'); // add text node to all .container
 $('.container').add(EE('br')); // add &lt;br> to all .container
 $('.container').add(document.createElement('br'); // adds &lt;br> to <strong>first element only</strong>
 $('.container').add(['Some text', EE('br'), 'More text']); // add text and elements at once
-</pre>
-Beside <var>add()</var>, you can use <var>fill()</var> to replace children or <var>addAfter()</var>, 
-<var>addBefore()</var> and <var>addFront()</var> to position the elements relative to the list elements.
-</p>
-<p>
-API: <a href="/reference/add.html">add()</a>, <a href="/reference/addafter.html">addAfter()</a>, <a href="/reference/addbefore.html">addBefore()</a>, 
-<a href="/reference/addfront.html">addFront()</a>, <a href="/reference/ee.html">EE()</a>, <a href="/reference/fill.html">fill()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/uRC8Y/">EE and add()</a>
-</p>
-
-
-<h3><a name="html_replace">Replace HTML Elements</a></h3>
-<p>
-<pre>$('#oldElement').replace(EE('div', 'My new div'));</pre>
-<var>replace()</var> replaces the elements of the list with the given text or elements. It supports the same arguments
-as <var>set()</var>.<br/>
-If you want to replace the children of an element, instead of the element itself, you can also use <var>fill()</var>:
-<pre>$('#container').fill("New content.");</pre>
-</p>
-<p>
-API: <a href="/reference/add.html">add()</a>, <a href="/reference/fill.html">fill()</a>, <a href="/reference/ee.html">EE()</a>, 
-<a href="/reference/replace.html">replace()</a>.<br/>
-</p>
-
-
-<h3><a name="html_remove">Remove HTML Elements or Nodes</a></h3>
-<p>
-<pre>$('.oldStuff').remove();</pre>
-Just use <var>remove()</var> to remove elements from the DOM tree.
-</p>
-<p>
-API: <a href="/reference/remove.html">remove()</a>.<br/>
-</p>
-
-
-<h3><a name="html_attr">Set and Read Attributes</a></h3>
-<p>
-<pre>$('a.someLink').set({'@href': 'http://minifiedjs.com'});</pre>
-Use <var>set()</var> with a '@'-prefixed name to set attributes. <var>get()</var> reads attributes with the same name syntax:
-<pre>var link = $('a.someLink').get('@href');</pre>
-</p>
-<p>
-API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/>
-</p>
-
-
-<h3><a name="html_clone">Clone Elements</a></h3>
-<p>
-<pre>var elementFactory = $('.sheep').clone();</pre>
-<var>clone()</var> create an element factory that will create the cloned list with all elements, attributes and text nodes. You
-can use the element factory with <var>add()</var> and its variants:
-<pre>$('#destination').add(elementFactory);</pre>
-Or just call the factory to create new instances:
-<pre>var clone = elementFactory();</pre>
-</p>
-<p>
-API: <a href="/reference/add.html">add()</a>, <a href="/reference/clone.html">clone()</a>, 
-<a href="/reference/ee.html">EE()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/vuyh9/">clone()</a>
-</p>
-
-
-<h2><a name="style">Modify HTML Styles</a></h2>
-<h3><a name="style_classes">Add / Remove / Toggle CSS Classes</a></h3>
-<p>
-<pre>$('.myClass').set('-oldClass +newClass toggleClass');</pre>
-If you call <var>set()</var> only with a string as argument, it
-will modify the elements' CSS classes. Several classes can be listed, separated by spaces.
-The prefix determines what to do: 
-<ul><li>"-" removes the CSS class</li><li>"+" adds it</li><li>no prefix toggles</li></ul><br/>
-You can also call <var>set()</var> with the name "$" to do the same. This can be useful to modify
-several things at the same time:
-<pre>$('.myClass').set({$: '-oldClass', $display: 'block');</pre>
-</p><p>
-Often it is simpler to create a toggle for CSS classes, as you can connect it directly to events:
-<pre>var toggle = $('.myClass').toggle('toggleClass');
+</pre> Beside <var>add()</var>, you can use <var>fill()</var> to replace children or <var>addAfter()</var>, <var>addBefore()</var> and <var>addFront()</var> to position the elements relative to the list elements. </p> <p> API: <a href="/reference/add.html">add()</a>, <a href="/reference/addafter.html">addAfter()</a>, <a href="/reference/addbefore.html">addBefore()</a>, <a href="/reference/addfront.html">addFront()</a>, <a href="/reference/ee.html">EE()</a>, <a href="/reference/fill.html">fill()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/uRC8Y/">EE and add()</a> </p> <h3><a name="html_replace">Replace HTML Elements</a></h3> <p> <pre>$('#oldElement').replace(EE('div', 'My new div'));</pre> <var>replace()</var> replaces the elements of the list with the given text or elements. It supports the same arguments as <var>set()</var>.<br/> If you want to replace the children of an element, instead of the element itself, you can also use <var>fill()</var>: <pre>$('#container').fill("New content.");</pre> </p> <p> API: <a href="/reference/add.html">add()</a>, <a href="/reference/fill.html">fill()</a>, <a href="/reference/ee.html">EE()</a>, <a href="/reference/replace.html">replace()</a>.<br/> </p> <h3><a name="html_remove">Remove HTML Elements or Nodes</a></h3> <p> <pre>$('.oldStuff').remove();</pre> Just use <var>remove()</var> to remove elements from the DOM tree. </p> <p> API: <a href="/reference/remove.html">remove()</a>.<br/> </p> <h3><a name="html_attr">Set and Read Attributes</a></h3> <p> <pre>$('a.someLink').set({'@href': 'http://minifiedjs.com'});</pre> Use <var>set()</var> with a '@'-prefixed name to set attributes. <var>get()</var> reads attributes with the same name syntax: <pre>var link = $('a.someLink').get('@href');</pre> </p> <p> API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/> </p> <h3><a name="html_clone">Clone Elements</a></h3> <p> <pre>var elementFactory = $('.sheep').clone();</pre> <var>clone()</var> create an element factory that will create the cloned list with all elements, attributes and text nodes. You can use the element factory with <var>add()</var> and its variants: <pre>$('#destination').add(elementFactory);</pre> Or just call the factory to create new instances: <pre>var clone = elementFactory();</pre> </p> <p> API: <a href="/reference/add.html">add()</a>, <a href="/reference/clone.html">clone()</a>, <a href="/reference/ee.html">EE()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/vuyh9/">clone()</a> </p> <h2><a name="style">Modify HTML Styles</a></h2> <h3><a name="style_classes">Add / Remove / Toggle CSS Classes</a></h3> <p> <pre>$('.myClass').set('-oldClass +newClass toggleClass');</pre> If you call <var>set()</var> only with a string as argument, it will modify the elements' CSS classes. Several classes can be listed, separated by spaces. The prefix determines what to do: <ul><li>"-" removes the CSS class</li><li>"+" adds it</li><li>no prefix toggles</li></ul><br/> You can also call <var>set()</var> with the name "$" to do the same. This can be useful to modify several things at the same time: <pre>$('.myClass').set({$: '-oldClass', $display: 'block');</pre> </p><p> Often it is simpler to create a toggle for CSS classes, as you can connect it directly to events: <pre>var toggle = $('.myClass').toggle('toggleClass');
 $('#toggleButton').on('click', toggle);
 $('#onButton').on('click', toggle, [true]);
-$('#offButton').on('click', toggle, [false]);</pre>
-</p>
-<p>
-API: <a href="/reference/set.html">set()</a>, <a href="/reference/toggle.html">toggle()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a>
-</p>
-
-
-<h3><a name="style_hasclass">Check for CSS Classes</a></h3>
-<p>
-<pre>var isMyclass = $('#elem').hasClass('myclass');</pre>
-Use <var>hasClass()</var> to check the classes of list members.
-</p>
-<p>
-API: <a href="/reference/hasclass.html">hasClass()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a>
-</p>
-
-
-<h3><a name="style_set">Set and Read CSS Style</a></h3>
-<p>
-<pre>$('#someSpan').set({$color: '#ff0'});</pre>
-Use <var>set()</var> with a '$'-prefixed name to set CSS styles. <var>get()</var> reads the effective CSS style with the same name syntax:
-<pre>var color = $('#someSpan').get('$color');</pre>
-</p>
-<p>
-API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/>
-</p>
-
-
-<h3><a name="style_prop">Set and Read Properties</a></h3>
-<p>
-<pre>$('#someTextField').set({value: 'New text...'});</pre>
-Use <var>set()</var> with a unprefixed name to set properties. <var>get()</var> reads properties with the same name syntax:
-<pre>var value = $('#someTextField').get('value');</pre>
-</p>
-<p>
-API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/>
-</p>
-
-
-<h2><a name="anim">Animation</a></h2>
-
-<h3><a name="anim_anim">Animate Styles and Properties</a></h3>
-<p>
-<pre>$('.moving').animate({$width: '100px'}, 750);</pre>
-<var>animate()</var> shares the name/value syntax with <var>set()</var>, but will smoothly transition numbers and colors. You
-can specify the duration of the animation as well as the interpolation algorithm to be used.
-</p>
-<p>
-If you need to transition an object back and forth between two states, it is usually better to animate using <var>toggle()</var>
-<pre>var myToggle = $('.moving').toggle({$width: '100px'}, {$width: '200px'}, 750);
+$('#offButton').on('click', toggle, [false]);</pre> </p> <p> API: <a href="/reference/set.html">set()</a>, <a href="/reference/toggle.html">toggle()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a> </p> <h3><a name="style_hasclass">Check for CSS Classes</a></h3> <p> <pre>var isMyclass = $('#elem').hasClass('myclass');</pre> Use <var>hasClass()</var> to check the classes of list members. </p> <p> API: <a href="/reference/hasclass.html">hasClass()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a> </p> <h3><a name="style_set">Set and Read CSS Style</a></h3> <p> <pre>$('#someSpan').set({$color: '#ff0'});</pre> Use <var>set()</var> with a '$'-prefixed name to set CSS styles. <var>get()</var> reads the effective CSS style with the same name syntax: <pre>var color = $('#someSpan').get('$color');</pre> </p> <p> API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/> </p> <h3><a name="style_prop">Set and Read Properties</a></h3> <p> <pre>$('#someTextField').set({value: 'New text...'});</pre> Use <var>set()</var> with a unprefixed name to set properties. <var>get()</var> reads properties with the same name syntax: <pre>var value = $('#someTextField').get('value');</pre> </p> <p> API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/> </p> <h2><a name="anim">Animation</a></h2> <h3><a name="anim_anim">Animate Styles and Properties</a></h3> <p> <pre>$('.moving').animate({$width: '100px'}, 750);</pre> <var>animate()</var> shares the name/value syntax with <var>set()</var>, but will smoothly transition numbers and colors. You can specify the duration of the animation as well as the interpolation algorithm to be used. </p> <p> If you need to transition an object back and forth between two states, it is usually better to animate using <var>toggle()</var> <pre>var myToggle = $('.moving').toggle({$width: '100px'}, {$width: '200px'}, 750);
 
 $('#widthToggle').on('click', myToggle);
 $('#width100').on('click', myToggle, [false]);
 $('#width200').on('click', myToggle, [true]);
-</pre>
-<p>
-API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, 
-<a href="/reference/toggle.html">toggle()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tqsCg/">Animation</a>, <a href="http://jsfiddle.net/tjansen/xw7nQ/">Toggle</a>
-</p>
-
-
-<h3><a name="anim_chain">Chain Animation Steps</a></h3>
-<p>
-<pre>
+</pre> <p> API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, <a href="/reference/toggle.html">toggle()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tqsCg/">Animation</a>, <a href="http://jsfiddle.net/tjansen/xw7nQ/">Toggle</a> </p> <h3><a name="anim_chain">Chain Animation Steps</a></h3> <p> <pre>
 $('.colChanger').animate({$backgroundColor: '#f00'}, 750)
                      .then(function(list) {
 				return $('.colChanger').animate({$backgroundColor: '#0f0'}, 750)
@@ -344,148 +28,29 @@ $('.colChanger').animate({$backgroundColor: '#f00'}, 750)
                      .then(function(list) {
 				$('.colChanger').animate({$backgroundColor: '#000'}, 750)
 		     });
-</pre>
-<var>animate()</var>returns a <a href="/reference/promise.html">Promise</a> that can be used to 
-chain <var>animate()</var> invocations, so that you can start another <var>animate()</var> when 
-the previous animation ended.
-</p>
-<p>
-API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/promise.html">Promise</a>, 
-<a href="/reference/then.html">then()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/NrGnf/">Animation Chain</a>
-</p>
-
-
-<h3><a name="anim_toggle">Toggle Styles and Properties</a></h3>
-<p>
-<pre>var myToggle = $('.resizing).toggle({$width: '100px'}, {$width: '200px'}, 750);
+</pre> <var>animate()</var>returns a <a href="/reference/promise.html">Promise</a> that can be used to chain <var>animate()</var> invocations, so that you can start another <var>animate()</var> when the previous animation ended. </p> <p> API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/promise.html">Promise</a>, <a href="/reference/then.html">then()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/NrGnf/">Animation Chain</a> </p> <h3><a name="anim_toggle">Toggle Styles and Properties</a></h3> <p> <pre>var myToggle = $('.resizing).toggle({$width: '100px'}, {$width: '200px'}, 750);
 
 $('#widthToggle').on('click', myToggle);
 $('#width100').on('click', myToggle, [false]);
 $('#width200').on('click', myToggle, [true]);
-</pre>
-Toggles are functions that can toggle the state of a list's elements between two sets of values. 
-You can go to a specific state by calling the toggle with a boolean, or toggle between the states
-by calling it without (or other) arguments. Toggles are animated when you set a duration, but you
-can also skip the duration to toggle instantly.
-</p>
-<p>
-API: <a href="/reference/toggle.html">toggle()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/xw7nQ/">Toggle</a>, 
-<a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a>
-</p>
-
-
-<h3><a name="anim_fade">Fade in / Fade Out (Animation)</a></h3>
-<p>
-<pre>$('.myElem1').animate({$$fade: 1}, 500); // fade in
+</pre> Toggles are functions that can toggle the state of a list's elements between two sets of values. You can go to a specific state by calling the toggle with a boolean, or toggle between the states by calling it without (or other) arguments. Toggles are animated when you set a duration, but you can also skip the duration to toggle instantly. </p> <p> API: <a href="/reference/toggle.html">toggle()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/xw7nQ/">Toggle</a>, <a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a> </p> <h3><a name="anim_fade">Fade in / Fade Out (Animation)</a></h3> <p> <pre>$('.myElem1').animate({$$fade: 1}, 500); // fade in
 $('.myElem2').animate({$$fade: 0}, 500); // fade out
 var fadeToggle = $('.myElem3').toggle({$$fade: 0}, {$$fade: 1}, 500);
-</pre>
-Use the virtual property <var>$$fade</var> to fade elements in and out.
-</p>
-<p>
-API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, 
-<a href="/reference/toggle.html">toggle()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a>
-</p>
-
-
-<h3><a name="anim_slide">Slide in / Slide Out (Animation)</a></h3>
-<p>
-<pre>$('.myElem1').animate({$$slide: 1}, 500); // slide in
+</pre> Use the virtual property <var>$$fade</var> to fade elements in and out. </p> <p> API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, <a href="/reference/toggle.html">toggle()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a> </p> <h3><a name="anim_slide">Slide in / Slide Out (Animation)</a></h3> <p> <pre>$('.myElem1').animate({$$slide: 1}, 500); // slide in
 $('.myElem2').animate({$$slide: 0}, 500); // slide out
 var slideToggle = $('.myElem3').toggle({$$slide: 0}, {$$slide: 1}, 500);
-</pre>
-Use the virtual property <var>$$slide</var> to slide elements in and out.
-</p>
-<p>
-API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, 
-<a href="/reference/toggle.html">toggle()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a>
-</p>
-
-
-<h3><a name="anim_loop">Create Complex Animations (Loop)</a></h3>
-<p>
-<pre>$.loop(function(t) {
+</pre> Use the virtual property <var>$$slide</var> to slide elements in and out. </p> <p> API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, <a href="/reference/toggle.html">toggle()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a> </p> <h3><a name="anim_loop">Create Complex Animations (Loop)</a></h3> <p> <pre>$.loop(function(t) {
 	$('.swinging').set({$top: (100 + 50*Math.sin(2*Math.PI * t / 5000)) + 'px'});
-});</pre>
-For complex animations that can not be expressed with <var>animate()</var>, <var>$.loop()</var> allows you to
-register a function that will be invoked for each frame. It uses the browser's <var>requestAnimationFrame</var>
-function if available.
-</p>
-<p>
-API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/loop.html">loop()</a>, 
-<a href="/reference/set.html">set()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Xu6R8/">Loop Animation</a>
-</p>
-
-
-<h2><a name="data">Data and Events</a></h2>
-<h3><a name="data">Register / Unregister Event Handlers</a></h3>
-<p>
-<pre>function buttonHandler(e) { 
+});</pre> For complex animations that can not be expressed with <var>animate()</var>, <var>$.loop()</var> allows you to register a function that will be invoked for each frame. It uses the browser's <var>requestAnimationFrame</var> function if available. </p> <p> API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/loop.html">loop()</a>, <a href="/reference/set.html">set()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Xu6R8/">Loop Animation</a> </p> <h2><a name="data">Data and Events</a></h2> <h3><a name="data">Register / Unregister Event Handlers</a></h3> <p> <pre>function buttonHandler(e) { 
 	window.alert('Button pressed. Unregister now.');
 	$.off(buttonHandler);
 }
-$('#myButton').on('click', buttonHandler);</pre>
-Use <var>on()</var> to register an event handler for one or more events. <var>$.off()</var> unregisters event handlers.<br/>
-Please note that <var>on()</var> is a bit different than other libraries' event registration: Minified will always disable event forwarding and
-the event's default action, unless the handler returns <var>true</var>.
-</p>
-<p>
-API: <a href="/reference/on.html">on()</a>, <a href="/reference/off.html">off()</a>.<br/>
-</p>
-
-<h3><a name="data_post">Do HTTP Requests (AJAX / XHR)</a></h3>
-<p><pre>$.request('post', '/example/service', {param1: 'hello', param2: 5})
+$('#myButton').on('click', buttonHandler);</pre> Use <var>on()</var> to register an event handler for one or more events. <var>$.off()</var> unregisters event handlers.<br/> Please note that <var>on()</var> is a bit different than other libraries' event registration: Minified will always disable event forwarding and the event's default action, unless the handler returns <var>true</var>. </p> <p> API: <a href="/reference/on.html">on()</a>, <a href="/reference/off.html">off()</a>.<br/> </p> <h3><a name="data_post">Do HTTP Requests (AJAX / XHR)</a></h3> <p><pre>$.request('post', '/example/service', {param1: 'hello', param2: 5})
     .then(function success(result) {
     	$('#result').fill(result);
     })
     .error(function(status, statusText, responseText) {
 		$('#result').fill('Got an error.');
-	});;</pre>
-<var>$.request()</var> executes HTTP requests asynchronously. You can define the method and URL, as well as data to send.
-For GET requests it is map of parameters to append to the URL. For POST requests, it can either be a map of form
-parameters, a string or XML. The result is returned in the form of a promise.
-</p>
-<p>
-API: <a href="/reference/request.html">request()</a>, <a href="/reference/promise.html">Promise</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/ncQrp/">Request / JSON</a>
-</p>
-
-<h3><a name="data_json">Use JSON</a></h3>
-<p><pre>var jsonString = $.toJSON({a:1, b: 'test', c: [1, 2]});
-var obj = $.parseJSON(jsonString);</pre>
-<var>$.toJSON()</var> and <var>$.parseJSON()</var> convert between JSON strings and JavaScript structures. If you want to send
-JSON in an HTTP request, just convert the JavaScript structure into a string using <var>$.toJSON()</var>. To evaluate a
-JSON response, use <var>$.parseJSON()</var> for the conversion.
-</p>
-<p>
-API: <a href="/reference/parsejson.html">parseJSON()</a>, <a href="/reference/tojson.html">toJSON()</a>, 
-<a href="/reference/request.html">request()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/ncQrp/">Request / JSON</a>
-</p>
-
-
-<h3><a name="data_cookie">Read / Write / Delete Cookies</a></h3>
-<p><pre>$.setCookie('counter', (parseInt($.getCookie('counter')) || 0) + 1, 14); // 14 days valid 
-</pre>
-<var>$.getCookie()</var> and <var>$.setCookie()</var> allow you to read and write cookies. To delete a cookie, set an expiration date in the
-past like this:
-<pre>$.setCookie('numberOfVisits', '', -1);</pre>
-</p>
-<p>
-API: <a href="/reference/getcookie.html">getCookie()</a>, <a href="/reference/setcookie.html">setCookie</a>.<br/>
-</p>
-
-
-<h3><a name="something_missing">Missing Something?</a></h3>
-<p>Looking for something but can't find it here? Please write a mail to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a> ('Minified' in the
-subject to get past the spam filter). Or tweet to <a href="https://twitter.com/timjansen">@timjansen</a>.</p>
-
-</div>
- </div></div><div id="foot"><div class="container"><p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>.
-		You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>.
-		<a href="/impressum.html">Legal Notice / Impressum</a>.</p></div></div></body></html>
+	});;</pre> <var>$.request()</var> executes HTTP requests asynchronously. You can define the method and URL, as well as data to send. For GET requests it is map of parameters to append to the URL. For POST requests, it can either be a map of form parameters, a string or XML. The result is returned in the form of a promise. </p> <p> API: <a href="/reference/request.html">request()</a>, <a href="/reference/promise.html">Promise</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/ncQrp/">Request / JSON</a> </p> <h3><a name="data_json">Use JSON</a></h3> <p><pre>var jsonString = $.toJSON({a:1, b: 'test', c: [1, 2]});
+var obj = $.parseJSON(jsonString);</pre> <var>$.toJSON()</var> and <var>$.parseJSON()</var> convert between JSON strings and JavaScript structures. If you want to send JSON in an HTTP request, just convert the JavaScript structure into a string using <var>$.toJSON()</var>. To evaluate a JSON response, use <var>$.parseJSON()</var> for the conversion. </p> <p> API: <a href="/reference/parsejson.html">parseJSON()</a>, <a href="/reference/tojson.html">toJSON()</a>, <a href="/reference/request.html">request()</a>.<br/> JSFiddle Example: <a href="http://jsfiddle.net/tjansen/ncQrp/">Request / JSON</a> </p> <h3><a name="data_cookie">Read / Write / Delete Cookies</a></h3> <p><pre>$.setCookie('counter', (parseInt($.getCookie('counter')) || 0) + 1, 14); // 14 days valid 
+</pre> <var>$.getCookie()</var> and <var>$.setCookie()</var> allow you to read and write cookies. To delete a cookie, set an expiration date in the past like this: <pre>$.setCookie('numberOfVisits', '', -1);</pre> </p> <p> API: <a href="/reference/getcookie.html">getCookie()</a>, <a href="/reference/setcookie.html">setCookie</a>.<br/> </p> <h3><a name="something_missing">Missing Something?</a></h3> <p>Looking for something but can't find it here? Please write a mail to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a> ('Minified' in the subject to get past the spam filter). Or tweet to <a href="https://twitter.com/timjansen">@timjansen</a>.</p> </div> </div></div><div id="foot"><div class="container"><p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>. <a href="/impressum.html">Legal Notice / Impressum</a>.</p></div></div></body></html>

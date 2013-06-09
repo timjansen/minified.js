@@ -18,8 +18,9 @@
    				</element>
    				<element name="inlineCss" type="string" minOccurs="0"/>
    				<element name="externalCss" type="string" minOccurs="0" maxOccurs="unbounded"/>
-   				<element name="inlineJs" type="string" minOccurs="0"/>
+   				<element name="asyncJs" type="string" minOccurs="0" maxOccurs="unbounded"/>
    				<element name="externalJs" type="string" minOccurs="0" maxOccurs="unbounded"/>
+   				<element name="inlineJs" type="string" minOccurs="0"/>
 
    				<element name="main"/>
    			</sequence>

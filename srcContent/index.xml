@@ -3,67 +3,10 @@
   <page:title>Minified.js - Redefining 'lightweight' for JavaScript Libraries</page:title>
   <page:section>home</page:section>
   
-    <page:inlineCss>
-		.logo { margin: auto; display: block;}
-		#subtitle { text-align: center; margin-top: 0.75em; font-size: 1.25em;}
-		a { color: black; }
-		hr { margin-top: 3em; margin-bottom: 3em; }
-		table { border-collapse: collapse; border-spacing: 0; }
-		tr:first-child {background-color: #efe8e0; color: #000; }
-		tr:nth-child(2n) {background-color: #f3f3f3;}
-		tr:first-child th {padding: 0.5em; }
-		td, th { padding: 0.3em; border: 1px solid #f8f4f0; text-align: left;  }
-		tr:not(:first-child) th { background-color: #fff; font-weight: normal;}
-		.colored { color: #ff8200; }
-		.fiddle { margin-top: 0.5em; margin-bottom: 0.5em; }
-		
-		.wword {
-			font-size: 3em; 
-		}
-		
-		.rotated {
-			transform: rotate(-90deg);
-			transform-origin: center;
-			-webkit-transform: rotate(-90deg); 
-			-webkit-transform-origin: center;
-			-ms-transform: rotate(-90deg);
-			-ms-transform-origin: center;
-			
-			vertical-align: middle;
-		}
-		
-		.actionButton, .ghButton {
-			-moz-border-radius:6px;
-			-webkit-border-radius:6px;
-			border-radius:6px;
-			display:inline-block;
-			color:#ffffff;
-			font-family:arial;
-			font-size:16px;
-			font-weight:bold;
-			padding:12px 20px;
-			text-decoration:none;
-		}
-		.ghButton {
-			background-color:#ffa000;
-			text-shadow:1px 1px 0px #cc9f52;
-		}.ghButton:hover {
-			background-color:#f09000;
-		}
-		.actionButton {
-			background-color:#60a0ff;
-			text-shadow:1px 1px 0px #528ecc;
-		}.actionButton:hover {
-			background-color:#378de5;
-		}
-		.ghButton:active, .actionButton:active {
-			position:relative;
-			top:1px;
-		}
-
-		.actionButton span { font-size: 10px; text-align: center; }
-  </page:inlineCss>
+  <page:externalCss>/css/homepage.css</page:externalCss>
   
+  <page:asyncJs>/js/homepage.js</page:asyncJs>
+    
   <page:main><![CDATA[<div>
   		<!--[if lte IE 8]><img class='logo' src='/img/minified-large.png' width="400" height="180" alt="Minified Logo"><![endif]-->
 		<!--[if gt IE 8]><img class='logo' src='/img/minified.svg' width="400" height="180" alt="Minified Logo"><![endif]-->
@@ -104,27 +47,13 @@
   <div id="nowDiv" style="margin-top: 2.5em;">
   	<div style="float: left; width: 20%; text-align: center;" class="wword">No<span class="colored">w</span>!</div>
   	<div style="float: right; width: 80%; padding-top: 0.5em;">
-  		<div style="text-align: left; margin-bottom: 2em;">
+  		<div style="text-align: left; margin-bottom: 1em;">
 	  		<a href="https://github.com/timjansen/minified.js/" class="ghButton" style="margin-right: 1em;">View on GitHub</a>
-	  		<a href="/download/" class="actionButton">Download <span>(beta 1)</span></a>
-		</div>
-		<div>
-	  		<iframe src="http://ghbtns.com/github-btn.html?user=timjansen&repo=minified.js&type=watch&count=true"
-	  			allowtransparency="true" frameborder="0" scrolling="0" width="100" height="20"></iframe>
-	
-			<iframe allowtransparency="true" frameborder="0" scrolling="no"
-	        	src="https://platform.twitter.com/widgets/tweet_button.html"
-	        	style="width:100px; height:20px;"></iframe>
-	
-			<div class="g-plusone" style="display: inline; margin-top: 0.5em; margin-bottom: 0.5em;" data-size="medium"></div>
-			<script type="text/javascript">
-			  (function() {
-			    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-			    po.src = 'https://apis.google.com/js/plusone.js';
-			    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-			  })();
-			</script>
+	  		<a href="/download/" class="actionButton" style="margin-right: 1em;">Download <span>(beta 1)</span></a>
+	  		<a href="#share" class="shareButton">Share <span>(Twitter, G+..)</span></a>
 	  		<a href="https://plus.google.com/100950045026999226880" rel="publisher"></a>
+		</div>
+		<div id="shareDiv">
 		</div>
   	</div>
   	<div style="clear: both;"/>

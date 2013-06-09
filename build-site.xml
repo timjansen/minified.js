@@ -45,7 +45,7 @@
   	<delete file="WebContent/minified-web-closure.js" />
   	<delete file="WebContent/minified-util-closure.js" />
   	
-     <!-- Builder script -->
+    <!-- Builder script -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
   	    <arg value="--js=src/minified-util-src.js"/>
   	    <arg value="--js=WebContent/minified-web.js"/>
@@ -53,7 +53,14 @@
   	    <arg value="--js=srcContent/js/builder-src.js"/>
   	 	<arg value="--js_output_file=WebContent/js/builder.js"/>
      </java>
-  </target>
+ 
+    <!-- Homepage script -->
+  	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
+  	    <arg value="--js=srcContent/js/minified-homepage.js"/>
+  	    <arg value="--js=srcContent/js/homepage-src.js"/>
+  	 	<arg value="--js_output_file=WebContent/js/homepage.js"/>
+     </java>
+ </target>
 
 	<target name="compileCss">
  		<java jar="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar" failonerror="true" fork="true">
@@ -64,12 +71,24 @@
 		     <fileset file="srcContent/css/minimum.css" />
 		     <fileset file="srcContent/css/doc.css" />
 		</concat>
+	 	<java jar="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar" failonerror="true" fork="true">
+	    	<arg line="-o WebContent/css/doc.css WebContent/css/doc.css"/>
+  	 	</java>
+		
 		<concat destfile="WebContent/css/links.css">
 		     <fileset file="srcContent/css/minimum.css" />
 		     <fileset file="srcContent/css/links.css" />
 		</concat>
 	 	<java jar="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar" failonerror="true" fork="true">
-	    	<arg line="-o WebContent/css/doc.css WebContent/css/doc.css"/>
+	    	<arg line="-o WebContent/css/links.css WebContent/css/links.css"/>
+  	 	</java>
+		
+		<concat destfile="WebContent/css/homepage.css">
+		     <fileset file="srcContent/css/minimum.css" />
+		     <fileset file="srcContent/css/homepage.css" />
+		</concat>
+	 	<java jar="thirdPartyLibs/yuicompressor/yuicompressor-2.4.2.jar" failonerror="true" fork="true">
+	    	<arg line="-o WebContent/css/homepage.css WebContent/css/homepage.css"/>
   	 	</java>
 		
 		<concat destfile="WebContent/css/reference.css">
@@ -100,7 +119,16 @@
 	    <arg line="-o WebContent/ --mask *.html WebContent/"/>
 	 </java>
 	 <java jar="thirdPartyLibs/htmlcompressor/htmlcompressor-1.5.3.jar" failonerror="true" fork="true">
-	    <arg line="-r -o WebContent/tutorial/ --mask *.html WebContent/tutorial/"/>
+	    <arg line="-r -o WebContent/download/ --mask *.html WebContent/download/"/>
+	 </java>
+	 <java jar="thirdPartyLibs/htmlcompressor/htmlcompressor-1.5.3.jar" failonerror="true" fork="true">
+	    <arg line="-r -o WebContent/docs/ --mask *.html WebContent/docs/"/>
+	 </java>
+	 <java jar="thirdPartyLibs/htmlcompressor/htmlcompressor-1.5.3.jar" failonerror="true" fork="true">
+	    <arg line="-r -o WebContent/builder/ --mask *.html WebContent/builder/"/>
+	 </java>
+	 <java jar="thirdPartyLibs/htmlcompressor/htmlcompressor-1.5.3.jar" failonerror="true" fork="true">
+	    <arg line="-r -o WebContent/about/ --mask *.html WebContent/about/"/>
 	 </java>
 	 <java jar="thirdPartyLibs/htmlcompressor/htmlcompressor-1.5.3.jar" failonerror="true" fork="true">
 	    <arg line="-r -o WebContent/reference/ --mask *.html WebContent/reference/"/>
