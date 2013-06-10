@@ -269,7 +269,7 @@ define('minified', function() {
 		var q = {'$position': 'absolute', '$visibility': 'hidden', '$display': 'block', '$height': null};
 		var oldStyles = elementList['get'](q);
 		elementList['set'](q);
-		var h = elementList[0].offsetHeight;
+		var h = elementList['get']('$height', true);
 		elementList['set'](oldStyles);
 		return h;
 	}
@@ -905,7 +905,7 @@ define('minified', function() {
 						 ) ? 1 : s;
 				}
 				else if (spec == '$$slide') {
-					s = (element['offsetHeight'] - self['get']('$paddingTop', true) - self['get']('$paddingBottom', true)) + 'px';
+					s = self['get']('$height');
 				}
 				// @condend fadeslide
 				else if (/^\$/.test(spec)) {
@@ -925,7 +925,7 @@ define('minified', function() {
 			else {
 				var r = {};
 				(isList(spec) ? each : eachObj)(spec, function(name) {
-					r[name] = self.get(name, toNumber);
+					r[name] = self['get'](name, toNumber);
 				});
 				return r;
 			}
