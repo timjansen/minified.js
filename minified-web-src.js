@@ -610,7 +610,7 @@ define('minified', function() {
      * });
      * </pre>
      *
-     * @param callback the callback function(item, index) to invoke. The first argument is the list element, and the second the zero-based index
+     * @param callback the callback <code>function(item, index)</code> to invoke. The first argument is the list element, and the second the zero-based index
      *                 of the element.
      * @return the list
      */
@@ -636,7 +636,7 @@ define('minified', function() {
 	 * });
 	 * </pre>
 	 * 
-	 * @param filterFunc the callback function(item, index) to invoke for each item with the item as first argument and the 0-based index as second argument.  
+	 * @param filterFunc the callback <code>function(item, index)</code> to invoke for each item with the item as first argument and the 0-based index as second argument.  
 	 *        If the function returns false for an item, it is not included in the resulting list. 
 	 * @return the new, filtered ##list#list##
 	 */
@@ -658,7 +658,7 @@ define('minified', function() {
      * <li>an array or another list-like object whose elements will be appended to the result list as single elements.</li> 
      * <li>a regular object which will be appended to the list</li> 
      * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
-     * If you need to add null or modified to the result list, put it into a single-element array.</li> 
+     * If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li> 
      * </ul>
      * 
      * 
@@ -686,7 +686,7 @@ define('minified', function() {
      * }); 
      * </pre> 
      * 
-     * @param collectFunc the callback function(item, index) to invoke for each item with the item as first argument and the 
+     * @param collectFunc the callback <code>function(item, index)</code> to invoke for each item with the item as first argument and the 
      * 0-based index as second argument. 
      * If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls und <var>undefined</var>
      * will be ignored and not added. 
@@ -702,13 +702,15 @@ define('minified', function() {
       * @requires filter 
       * @configurable default 
       * @name .sub() 
-      * @syntax sub() 
-      * Returns a new ##list#Minified list## containing only the elements in the specified range. If there are no elements in the range, an empty list is returned.
-      * Negative indizes are supported and will be added to the list's length, thus allowing you to specify ranged at the list's end.
+      * @syntax sub(startIndex) 
+      * @syntax sub(startIndex, endIndex) 
+      * Returns a new ##list#Minified list## containing only the elements in the specified range. If there are no elements in the range,
+      * an empty list is returned.
+      * Negative indices are supported and will be added to the list's length, thus allowing you to specify ranges at the list's end.
       *
-      * @example Removes the third to 5th list elements:
+      * @example Adds some text the 3rd to 5th list elements:
       * <pre> 
-      * $('#myList li').sub(3, 6).remove();
+      * $('#myList li').sub(3, 6).add('Hello');
       * </pre> 
       *
       * @example Clears all elements but the first:
@@ -721,10 +723,10 @@ define('minified', function() {
       * $('#myList li').sub(-1).set('+lastItem');
       * </pre> 
       * 
-      * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and thus it is the position
-      *                   seen from the list end.
-      * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and thus it is the position
-      *                   seen from the list end. If omitted, all elements following the <var>startIndex</var> are included in the result.
+      * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and the position is relative
+      *                   to the list's end.
+      * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
+      *                   to the list's end. If omitted or null, all elements following the <var>startIndex</var> are included in the result.
       * @return a new ##list#list## containing only the items in the index range. 
       */ 
 	'sub': function(startIndex, endIndex) {
@@ -763,7 +765,7 @@ define('minified', function() {
      * var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) return e; });
      * </pre> 
      * 
-     * @param findFunc the callback function(item, index) that will be invoked for every list item until it returns a non-null value.
+     * @param findFunc the callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value.
      * @param element the element to search for
      * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
      *         it returns either the value returned by the callback or <var>undefined</var>.
@@ -942,12 +944,13 @@ define('minified', function() {
 	 * @syntax $(selector).set(properties)
 	 * @syntax $(selector).set(cssClasses)
 	 * 
-	 * Modifies the list's DOM elements by setting their properties, attributes, CSS style and/or CSS classes. You can either supply a 
+	 * Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes. You can either supply a 
 	 * single name and value to set only one property, or you can provide an object that contains name/value pairs to describe more than one property.
 	 * More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will
 	 * be set.
 	 *
 	 * The name given to <var>set()</var> defines what kind of data you are setting. The following name schemes are supported:
+	 * 
 	 * <table>
 	 * <tr><th>Name Schema</th><th>Example</th><th>Sets what?</th><th>Description</th></tr>
 	 * <tr><td>name</td><td>innerHTML</td><td>Property</td><td>A name without prefix of '$' or '@' sets a property of the object.</td></tr>
@@ -956,8 +959,8 @@ define('minified', function() {
 	 * <tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <var>style</var> object.</td></tr>
 	 * <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <var>$</var> modifies the element's CSS classes using the object's <var>className</var> property. The value is a 
 	 *             space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
-	 *             The name '$' can also be omitted if set is called with class names as only argument.</td></tr>
-	 * <tr><td>$$</td><td>$$</td><td>Style</td><td>Set the element's style attribute in a browser-independent way.</td></tr>
+	 *             The name '$' can also be omitted if <var>set</var> is called with class names as only argument.</td></tr>
+	 * <tr><td>$$</td><td>$$</td><td>Style</td><td>Sets the element's style attribute in a browser-independent way.</td></tr>
 	 * <tr><td>$$fade</td><td>$$fade</td><td>Fade Effect</td><td>The name '$$fade' sets the opacity of the element in a browser-independent way. The value must be a number
 	 *              between 0 and 1. '$$fade' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0,
 	 *             the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to 
@@ -973,7 +976,7 @@ define('minified', function() {
 	 * $('input.checkbox').set('checked', false);
 	 * </pre>
 	 * 
-	 * @example Changing the inner HTML of an element:
+	 * @example Changing the <var>innerHTML</var property of an element:
 	 * <pre>
 	 * $('#toc').set('innerHTML', 'Content');
 	 * </pre>
@@ -1003,7 +1006,7 @@ define('minified', function() {
 	 * $('.myElem').set('$', 'on');
 	 * </pre>
 	 * 
-	 * @example Shortcut for CSS manipulation (omit the name - $ is the default name):
+	 * @example Shortcut for CSS manipulation:
 	 * <pre>
 	 * $('.myElem').set('+myClass -otherClass on');
 	 * </pre>
@@ -1035,27 +1038,27 @@ define('minified', function() {
 	 * @example You can specify a function as value to modify a value instead of just setting it:
 	 * <pre>
 	 * $('h2').set('innerHTML', function(oldValue, index) { 
-	 * 		return 'Chapter ' + index + ': ' + oldValue.toUpperCase(); 
+	 *     return 'Chapter ' + index + ': ' + oldValue.toUpperCase(); 
 	 * });
 	 * </pre>
 	 * 
 	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
 	 *             A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
-	 *             The special name '$$' allows you setting the style attribute in a browser independent way.
-	 *             The special name '$$fade' and '$$slide' create fade and slide effects, and both expects a value between 0 and 1. 
+	 *             The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
+	 *             The special name '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1. 
 	 *             
 	 * 
-	 * @param value the value to set. If it is a function, the function(oldValue, index, obj) will be invoked for each list element to evaluate the value. 
-	 * The function is called with with the old value as first argument and the index in the list as second.
-	 * The third value is the object being modified. Functions are not possible for virtual properties ('$$fade' and '$$slide'). For the CSS style names,
-	 * the old value given to the function is the old value of the className property containing the existing classes.
+	 * @param value the value to set. If it is a function, the <code>function(oldValue, index, obj)</code> will be invoked for each list element 
+	 * to evaluate the new value. The function is called with with the old value as first argument and the index in the list as second.
+	 * The third value is the object being modified. Functions are not allowed as values for virtual properties ('$$fade' and '$$slide'). 
+	 * For the CSS style names, the old value given to the function is the old value of the className property containing the existing classes.
 	 * If value is null and name specified an attribute, the attribute will be removed.
-	 * If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefix with a '+' the class will be added,
-	 * with a '+' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.
-	 * @param properties a map containing names as keys and the values to set as map values. See above for the name syntax.
-	 * @param cssClasses if <var>set()</var> is invoked with a string as single argument, the name "$" (CSS classes) is taken by default and the argument is the
-	 *                   value. See value above for CSS syntax.
-	 *                   Instead of a string, you can also specify a function(oldValue, index, obj) to modify the existing classes. 
+	 * If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
+	 * with a '-' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.
+	 * @param properties a Object as map containing names as keys and the values to set as map values. See above for the name syntax.
+	 * @param cssClasses if <var>set()</var> is invoked with a string as single argument, the name "$" (CSS classes) is used and the argument is the
+	 *                   value. See above for CSS syntax.
+	 *                   Instead of a string, you can also specify a <code>function(oldValue, index, obj)</code> to modify the existing classes. 
 	 * @return the list
 	 */
      'set': function (name, value) {
@@ -1191,7 +1194,7 @@ define('minified', function() {
 	 * </pre>
 	 *
 	 * @param text a string or number to add as text node of the list elements
-	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
 	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
 	 *              containing strings, lists, functions and/or DOM nodes.
 	 * @param list a list containing text, functions, nodes or more lists. Please note that if you have DOM nodes in this list
@@ -1235,8 +1238,8 @@ define('minified', function() {
 	 * @syntax $(selector).fill(list)
 	 * @syntax $(selector).fill(node)
 	 * Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list member to create a node. The function prototype is function(parent, index). It can return all values
-	 * allowed by <var>fill()</var>, including another function to be called.
+	 * If you pass a function, it will be invoked for each list member to create a node. The function prototype is <code>function(parent, index)</code>. 
+	 * It can return all values allowed by <var>fill()</var>, including another function to be called.
 	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
 	 *
 	 * It is also possible to pass a DOM node, but it will be set <strong>only in the first element of the list</strong>, because DOM
@@ -1295,7 +1298,7 @@ define('minified', function() {
 	 * </pre>
 	 *
 	 * @param text a string to set as text node of the list elements
-	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
 	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
 	 *              containing strings, lists, functions and/or DOM nodes.
 	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
@@ -1321,8 +1324,8 @@ define('minified', function() {
 	 * @syntax $(selector).addBefore(node)
 	 * Inserts the given text or element(s) as sibling in front of each element of this list. 
 	 * If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list element to create the new node, with the arguments function(parent, index). It can return all values
-	 * allowed by <var>addBefore()</var>, including another function to be called.
+	 * If you pass a function, it will be invoked for each list element to create the new node, with the arguments <code>function(parent, index)</code>. 
+	 * It can return all values allowed by <var>addBefore()</var>, including another function to be called.
 	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
 	 *
 	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
@@ -1364,7 +1367,7 @@ define('minified', function() {
 	 * </pre>
 	 *
 	 * @param text a string to add as text node of the list elements
-	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
 	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
 	 *              containing strings, lists, functions and/or DOM nodes.
 	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
@@ -1427,7 +1430,7 @@ define('minified', function() {
 	 * </pre> 
 	 *
 	 * @param text a string to add as text node of the list elements
-	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
 	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
 	 *              containing strings, lists, functions and/or DOM nodes.
 	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
@@ -1452,8 +1455,8 @@ define('minified', function() {
 	 * @syntax $(selector).addFront(node)
 	 * Adds the given node(s) as content to the list elements as additional nodes. Unlike ##add(), the new nodes will be the first children of the list items.
 	 * If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list element to create node(s) with the arguments function(parent, index). It can return all values
-	 * allowed by <var>addFront()</var>, including another function to be called.
+	 * If you pass a function, it will be invoked for each list element to create node(s) with the arguments <code>function(parent, index)</code>. 
+	 * It can return all values allowed by <var>addFront()</var>, including another function to be called.
 	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
 	 *
 	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
@@ -1502,7 +1505,7 @@ define('minified', function() {
 	 * </pre>
 	 *
 	 * @param text a string to add as text node of the list elements
-	 * @param factoryFunction a function(listItem, listIndex) that will be invoked for each list element to create the nodes. 
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
 	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
 	 *              containing strings, lists, functions and/or DOM nodes.
 	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
@@ -1527,8 +1530,8 @@ define('minified', function() {
 	 * @syntax $(selector).replace(node)
 	 * Replaces the list items with the the given node(s) in the DOM tree. 
 	 * If a string has been given, it will be set as text node.
-	 * If you pass a function, it will be invoked for each list element to create node(s) with the arguments function(parent, index). It can return all values
-	 * allowed by <var>replace()</var>, including another function to be called.
+	 * If you pass a function, it will be invoked for each list element to create node(s) with the arguments <code>function(parent, index)</code>. 
+	 * It can return all values allowed by <var>replace()</var>, including another function to be called.
 	 * If you pass a list or a function returns a list, all its elements will be set using the rules above.
 	 *
 	 * It is also possible to pass a DOM node, but it will replace <strong>only the first element of the list</strong>, because DOM
@@ -1540,11 +1543,11 @@ define('minified', function() {
 	 *    &lt;div id="commentOne">My old comment.&lt;/div>
 	 * &lt;/div>
 	 * </pre> 
-	 * Replaces the div 'commentOne':
+	 * This replaces the div 'commentOne':
 	 * <pre>
 	 * $('#commentOne').replace('Some new comment.');
 	 * </pre>
-	 * This results in:
+	 * The resulting HTML is:
 	 * <pre>
 	 * &lt;div id="comments">
 	 *    Some new comment.
@@ -1574,8 +1577,8 @@ define('minified', function() {
 	 *
 	 *
 	 * @param text a text for the text nodes that replace the list elements
-	 * @param callbackFunction a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-	 *              an HTML node or a list containing strings and/or HTML node.
+	 * @param callbackFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to determine its content. 
+	 *              The function can return either a string for a text node, an HTML node or a list containing strings and/or HTML node.
 	 * @param node content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
 	 *              an HTML node or a list containing strings and/or HTML node.
 	 * @return the current list
@@ -1617,7 +1620,7 @@ define('minified', function() {
 	 * $('#comments').add($('.comment').clone());
 	 * </pre> 
 	 * 
- 	 * @param onCreate optional a function(elementList) that will be called each time a top-level element is cloned. The argument
+ 	 * @param onCreate optional a <code>function(elementList)</code> that will be called each time a top-level element is cloned. The argument
  	 *                 contains only this cloned element. This allows you, for example, to add event handlers with ##on(). 
  	 *                 The argument <var>elementList</var> is a Minified list that contains the new element.
 	 * @return the list of Element Factory functions and strings to create clones
@@ -1682,7 +1685,7 @@ define('minified', function() {
 	 * from the start value to the end value. If you pass 1, the transition will be linear, with a sudden start and end of the animation. Any value between 0 and 1 
 	 * is also allowed and will give you a transition that is 'somewhat smooth'. 
 	 * 
-	 * Instead of the <var>linearity</var> function you can also provide your own interpolation function(startValue, endValue, t) which will be
+	 * Instead of the <var>linearity</var> function you can also provide your own interpolation <code>function(startValue, endValue, t)</code> which will be
 	 * called every time an interpolated value is required. <var>startValue</var> and <var>endValue</var> define the start and end values. <var>t</var>
 	 * is a value between 0 and 1 that specifies the state of the transition. The function should return <var>startValue</var> for 0 and 
 	 * <var>endValue</var> for 1. For values between 0 and 1, the function should return a transitional value.
@@ -1753,7 +1756,7 @@ define('minified', function() {
 	 *                   to the original value and should be added or subtracted.
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.
-	 * @param interpolationFunc optional an interpolation function(startValue, endValue, t) which will be
+	 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> which will be
 	 *             called every time an interpolated value is required. <var>t</var> is a value between 0 and 1 that specifies the state of the transition.
 	 * @param state optional if set, the animation controller will write information about its state in this object. When <var>animate()</var> returns,
 	 *                       there will be a <var>stop()</var> function in the property <var>state.stop</var> that can be used to abort the animation. 
@@ -1893,9 +1896,9 @@ define('minified', function() {
 		 * @param durationMs optional if set, the duration of the animation in milliseconds. By default, there is no animation and the 
 		 * 					 properties will be changed immediately.
 		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.
-		 * @param interpolationFunc optional an interpolation function(startValue, endValue, t) which will be called every time an interpolated value is required. 
+		 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> which will be called every time an interpolated value is required. 
 		 * <var>t</var> is a value between 0 and 1 that specifies the state of the transition. The function must return the value to assume at the given time.
-		 * @return a function(newState) that will change from the first to the second state and vice versa if called without argument or with
+		 * @return a <code>function(newState)</code> that will change from the first to the second state and vice versa if called without argument or with
 		 *         <var>newState</var> set to <var>null</var>. If the argument is a boolean false or true, the first or second state will be set respectively. 
 		 *         If the argument is not boolean or the function is called without arguments, the function toggles between both states. 
 		 */
@@ -1970,9 +1973,9 @@ define('minified', function() {
 		 * 
 		 * @param names the space-separated names the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used. You can
 		 *             register the handler for more than one event by specifying several space-separated event names. If the name is prefixed
-		 *             with '|', the handler's return value is ignored and the event will be passed through the event's default actions will 
+		 *             with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will 
 		 *             be executed by the browser. 
-		 * @param handler the function(event, index) to invoke when the event has been triggered. If no new arguments have been given using 
+		 * @param handler the <code>function(event, index)</code> to invoke when the event has been triggered. If no new arguments have been given using 
 		 *                <var>on()</var>'s second argument, the handler gets the original event object as first parameter and the index
 		 *                of the object in the current ##list#Minified list## as second. 'this' is the element that 
 		 *                caused the event, unless you override it with the third argument.
@@ -2215,11 +2218,12 @@ define('minified', function() {
 	* @name $.parseJSON()
 	* @syntax $.parseJSON(text)
 	* Parses a string containing JSON and returns the de-serialized object.
-	* If <var>JSON.parse</var> is defined, which it is in pretty all browsers except Internet Explorer 7 and earlier, it will be used. This is mainly to
-	* prevent possible security problems caused by the use of <var>eval</var> in the implementation. Only in browsers without
+	* If the browser's built-in function <var>JSON.parse</var> is defined, which it is in pretty all browsers except 
+	* Internet Explorer 7 and earlier, it will be used. This is mainly to prevent possible security problems caused 
+	* by the use of <var>eval</var> in the implementation. Only in browsers without
 	* <var>JSON.parse</var> Minified's own implementation will be used.
 	* 
-	* If you use a Minified build without Internet Explorer 7 compatibility, <var>JSON.parse</var> will always be used.
+	* If you use a Minified build without Internet Explorer 7 compatibility, n<var>JSON.parse</var> will always be used.
 	*
 	* @example Parsing a JSON string:
 	* <pre>
@@ -2386,12 +2390,12 @@ define('minified', function() {
 	*   });
 	* </pre>
 	*
-	* @param paintCallback a callback function(timestamp, stopFunc) to invoke for painting. Parameters given to callback:
+	* @param paintCallback a callback <code>function(timestamp, stopFunc)</code> to invoke for painting. Parameters given to callback:
 	* <ul>
 	*            <li><var>timestamp</var> - number of miliseconds since animation start</li>
-	*            <li><var>stop</var> - call this function() to stop the currently running animation</li>
+	*            <li><var>stop</var> - call this <code>function()</code> to stop the currently running animation</li>
 	* </ul>
-	* @return a function() that stops the currently running animation. This is the same function that is also given to the callback.
+	* @return a <code>function()</code> that stops the currently running animation. This is the same function that is also given to the callback.
 	*/
 	'loop': function(paintCallback) { 
         var entry = {c: paintCallback, t: now()};
@@ -2745,7 +2749,7 @@ define('minified', function() {
 		 *                         Functions will be invoked and their return value will be used. Lists can be 
 		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored. 
 		 *                         The syntax is exactly like ##add().
-		 * @param onCreate optional a function(elementList) that will be called each time an element had been created. This allows you, for example, to 
+		 * @param onCreate optional a <code>function(elementList)</code> that will be called each time an element had been created. This allows you, for example, to 
 		 *                 add event handlers with ##on(). The argument <var>elementList</var> is a Minified list that contains the new element.
 		 * @return a Element Factory function, which returns a Minified list containing the DOM HTMLElement that has been created or modified as only element
 		 */
