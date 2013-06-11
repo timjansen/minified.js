@@ -23,10 +23,10 @@
 <dt id="on_names" class=""><a name="on_names"><var>names</var></a></dt>
 <dd class="">the space-separated names the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used. You can
 register the handler for more than one event by specifying several space-separated event names. If the name is prefixed
-with '|', the handler's return value is ignored and the event will be passed through the event's default actions will
+with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will
 be executed by the browser.</dd>
 <dt id="on_handler" class=""><a name="on_handler"><var>handler</var></a></dt>
-<dd class="">the function(event, index) to invoke when the event has been triggered. If no new arguments have been given using
+<dd class="">the <code>function(event, index)</code> to invoke when the event has been triggered. If no new arguments have been given using
 <var>on()</var>'s second argument, the handler gets the original event object as first parameter and the index
 of the object in the current <a href='list.html'>Minified list</a> as second. 'this' is the element that
 caused the event, unless you override it with the third argument.

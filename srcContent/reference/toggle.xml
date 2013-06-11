@@ -37,10 +37,10 @@ properties will be changed immediately.</dd>
 <dt id="toggle_linearity" class=""><a name="toggle_linearity"><var>linearity</var></a></dt>
 <dd class=""><span class="optional">(optional)</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.</dd>
 <dt id="toggle_interpolationFunc" class=""><a name="toggle_interpolationFunc"><var>interpolationFunc</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> an interpolation function(startValue, endValue, t) which will be called every time an interpolated value is required.
+<dd class=""><span class="optional">(optional)</span> an interpolation <code>function(startValue, endValue, t)</code> which will be called every time an interpolated value is required.
 <var>t</var> is a value between 0 and 1 that specifies the state of the transition. The function must return the value to assume at the given time.</dd>
 <dt id="toggle_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4"><a name="toggle_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">a function(newState) that will change from the first to the second state and vice versa if called without argument or with
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">a <code>function(newState)</code> that will change from the first to the second state and vice versa if called without argument or with
 <var>newState</var> set to <var>null</var>. If the argument is a boolean false or true, the first or second state will be set respectively.
 If the argument is not boolean or the function is called without arguments, the function toggles between both states.</dd>
 </dl>

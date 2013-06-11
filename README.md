@@ -7,7 +7,7 @@ Minified Web is a universal JavaScript library for HTML applications. It gives y
 with everything that you need to work interact with the browser on an HTML page. 
 
 While the purpose and scope of Minified Web are comparable to jQuery and MooTools, its size is 
-smaller by an order of magnitude. The compressed size under 9kb, and the gzip'd size is less than 4kb. 
+smaller almost by an order of magnitude. The compressed size under 9kb, and the gzip'd size is less than 4kb. 
 You can make it even smaller if you don't require all modules of Minified Web. The build tool allows you to remove 
 everything that you don't need to reduce its size even more. 
 
@@ -59,9 +59,14 @@ What you can expect from Minified Web
 * A clean and simple, easy to use API 
 * A stable API that won't change
 
+Licensing
+-----------
+Minified has been released into the Public Domain. You can use, copy, distribute and modify Minified
+without any copyright restrictions. You may even release it under your name and call it yours, if that's your thing.
 
-Background
-------------
+
+About Minified
+---------------
 Call me old-fashioned, but the size of JavaScript libraries like jQuery and MooTools has always bothered me. 
 Don't get me wrong, they are fantastic libraries and I really like to use them, but they contain about 90kb of code even after minification. 
 This code needs to be parsed and executed on every page that you include them on.  For me, that just feels too large for what that they offer, 

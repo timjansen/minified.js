@@ -24,8 +24,8 @@
 <dt id="replace_text" class=""><a name="replace_text"><var>text</var></a></dt>
 <dd class="">a text for the text nodes that replace the list elements</dd>
 <dt id="replace_callbackFunction" class=""><a name="replace_callbackFunction"><var>callbackFunction</var></a></dt>
-<dd class="">a function that will be invoked for each list element to determine its content. The function can return either a string for a text node,
-an HTML node or a list containing strings and/or HTML node.</dd>
+<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to determine its content.
+The function can return either a string for a text node, an HTML node or a list containing strings and/or HTML node.</dd>
 <dt id="replace_node" class=""><a name="replace_node"><var>node</var></a></dt>
 <dd class="">content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
 an HTML node or a list containing strings and/or HTML node.</dd>
@@ -36,8 +36,8 @@ an HTML node or a list containing strings and/or HTML node.</dd>
 <h4>Description</h4>
 <div class="description"><p>Replaces the list items with the the given node(s) in the DOM tree.
 If a string has been given, it will be set as text node.
-If you pass a function, it will be invoked for each list element to create node(s) with the arguments function(parent, index). It can return all values
-allowed by <var>replace()</var>, including another function to be called.
+If you pass a function, it will be invoked for each list element to create node(s) with the arguments <code>function(parent, index)</code>.
+It can return all values allowed by <var>replace()</var>, including another function to be called.
 If you pass a list or a function returns a list, all its elements will be set using the rules above.</p><p>It is also possible to pass a DOM node, but it will replace <strong>only the first element of the list</strong>, because DOM
 does not allow adding it more than once.</p><p></p></div>
 
@@ -49,11 +49,11 @@ does not allow adding it more than once.</p><p></p></div>
    &lt;div id="commentOne">My old comment.&lt;/div>
 &lt;/div>
 </pre>
-Replaces the div 'commentOne':
+This replaces the div 'commentOne':
 <pre>
 $('#commentOne').replace('Some new comment.');
 </pre>
-This results in:
+The resulting HTML is:
 <pre>
 &lt;div id="comments">
    Some new comment.

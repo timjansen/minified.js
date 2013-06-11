@@ -20,7 +20,7 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="clone_onCreate" class=""><a name="clone_onCreate"><var>onCreate</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> a function(elementList) that will be called each time a top-level element is cloned. The argument
+<dd class=""><span class="optional">(optional)</span> a <code>function(elementList)</code> that will be called each time a top-level element is cloned. The argument
 contains only this cloned element. This allows you, for example, to add event handlers with <code><a href='on.html'>on()</a></code>.
 The argument <var>elementList</var> is a Minified list that contains the new element.</dd>
 <dt id="clone_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="clone_RETURN"><var>(return value)</var></a></dt>

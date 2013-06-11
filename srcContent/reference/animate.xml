@@ -34,7 +34,7 @@ to the original value and should be added or subtracted.</dd>
 <dt id="animate_linearity" class=""><a name="animate_linearity"><var>linearity</var></a></dt>
 <dd class=""><span class="optional">(optional)</span> defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.</dd>
 <dt id="animate_interpolationFunc" class=""><a name="animate_interpolationFunc"><var>interpolationFunc</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> an interpolation function(startValue, endValue, t) which will be
+<dd class=""><span class="optional">(optional)</span> an interpolation <code>function(startValue, endValue, t)</code> which will be
 called every time an interpolated value is required. <var>t</var> is a value between 0 and 1 that specifies the state of the transition.</dd>
 <dt id="animate_state" class=""><a name="animate_state"><var>state</var></a></dt>
 <dd class=""><span class="optional">(optional)</span> if set, the animation controller will write information about its state in this object. When <var>animate()</var> returns,
@@ -55,7 +55,7 @@ the destination values that have been specified in the given properties. Then <v
 specified properties in frequent intervals so that they transition to their destination values.</p><p>The start values will be obtained using </a>get(). It is recommended to set the start values using <code><a href='set.html'>set()</a></code> before you start the animation, even if this is not
 always required.</p><p>You can define the kind of transition using the <var>linearity</var> parameter. If you omit it or pass 0, animate's default algorithm will cause a smooth transition
 from the start value to the end value. If you pass 1, the transition will be linear, with a sudden start and end of the animation. Any value between 0 and 1
-is also allowed and will give you a transition that is 'somewhat smooth'.</p><p>Instead of the <var>linearity</var> function you can also provide your own interpolation function(startValue, endValue, t) which will be
+is also allowed and will give you a transition that is 'somewhat smooth'.</p><p>Instead of the <var>linearity</var> function you can also provide your own interpolation <code>function(startValue, endValue, t)</code> which will be
 called every time an interpolated value is required. <var>startValue</var> and <var>endValue</var> define the start and end values. <var>t</var>
 is a value between 0 and 1 that specifies the state of the transition. The function should return <var>startValue</var> for 0 and
 <var>endValue</var> for 1. For values between 0 and 1, the function should return a transitional value.</p><p>If the start value of a property is a string containing a number, <var>animate()</var> will always ignore all the surrounding text and use the destination value as a template

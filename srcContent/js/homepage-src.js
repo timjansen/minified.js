@@ -1,7 +1,7 @@
 var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 
 $(function() {
-	var GRADIENT_PREFIX = [/*'', '-moz-', '-ms-', */'-webkit-'];
+	var GRADIENT_PREFIX = ['', '-moz-', '-ms-', '-webkit-'];
 	var COLOR_DURATION = 2000;
 	var COLORS = ['#f00', '#0f0', '#00f', '#0ff', '#f0f', '#ff0'];
 	var CLEN = COLORS.length;

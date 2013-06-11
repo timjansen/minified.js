@@ -24,7 +24,7 @@
 <dt id="addbefore_text" class=""><a name="addbefore_text"><var>text</var></a></dt>
 <dd class="">a string to add as text node of the list elements</dd>
 <dt id="addbefore_factoryFunction" class=""><a name="addbefore_factoryFunction"><var>factoryFunction</var></a></dt>
-<dd class="">a function(listItem, listIndex) that will be invoked for each list element to create the nodes.
+<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes.
 The function can return either a string for a text node, a function to invoke, an HTML element or a list
 containing strings, lists, functions and/or DOM nodes.</dd>
 <dt id="addbefore_list" class=""><a name="addbefore_list"><var>list</var></a></dt>
@@ -40,8 +40,8 @@ Minified list contains more than one item.</dd>
 <h4>Description</h4>
 <div class="description"><p>Inserts the given text or element(s) as sibling in front of each element of this list.
 If a string has been given, it will be added as text node.
-If you pass a function, it will be invoked for each list element to create the new node, with the arguments function(parent, index). It can return all values
-allowed by <var>addBefore()</var>, including another function to be called.
+If you pass a function, it will be invoked for each list element to create the new node, with the arguments <code>function(parent, index)</code>.
+It can return all values allowed by <var>addBefore()</var>, including another function to be called.
 If you pass a list or a function returns a list, all its elements will be added using the rules above.</p><p>It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
 does not allow adding it more than once.</p><p></p></div>
 

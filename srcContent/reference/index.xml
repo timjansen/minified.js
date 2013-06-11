@@ -92,7 +92,7 @@
 
 <h3><a href="set.html">.set()</a></h3>
 <div class="summary">
-Modifies the list's DOM elements by setting their properties, attributes, CSS style and/or CSS classes.</div>
+Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes.</div>
 
 <h3><a href="sub.html">.sub()</a></h3>
 <div class="summary">Returns a new Minified list containing only the elements in the specified range.</div>

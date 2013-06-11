@@ -26,9 +26,10 @@
 
 <h4>Description</h4>
 <div class="description"><p>Parses a string containing JSON and returns the de-serialized object.
-If <var>JSON.parse</var> is defined, which it is in pretty all browsers except Internet Explorer 7 and earlier, it will be used. This is mainly to
-prevent possible security problems caused by the use of <var>eval</var> in the implementation. Only in browsers without
-<var>JSON.parse</var> Minified's own implementation will be used.</p><p>If you use a Minified build without Internet Explorer 7 compatibility, <var>JSON.parse</var> will always be used.</p><p></p></div>
+If the browser's built-in function <var>JSON.parse</var> is defined, which it is in pretty all browsers except
+Internet Explorer 7 and earlier, it will be used. This is mainly to prevent possible security problems caused
+by the use of <var>eval</var> in the implementation. Only in browsers without
+<var>JSON.parse</var> Minified's own implementation will be used.</p><p>If you use a Minified build without Internet Explorer 7 compatibility, n<var>JSON.parse</var> will always be used.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

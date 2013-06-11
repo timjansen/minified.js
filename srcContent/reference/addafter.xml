@@ -24,7 +24,7 @@
 <dt id="addafter_text" class=""><a name="addafter_text"><var>text</var></a></dt>
 <dd class="">a string to add as text node of the list elements</dd>
 <dt id="addafter_factoryFunction" class=""><a name="addafter_factoryFunction"><var>factoryFunction</var></a></dt>
-<dd class="">a function(listItem, listIndex) that will be invoked for each list element to create the nodes.
+<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes.
 The function can return either a string for a text node, a function to invoke, an HTML element or a list
 containing strings, lists, functions and/or DOM nodes.</dd>
 <dt id="addafter_list" class=""><a name="addafter_list"><var>list</var></a></dt>

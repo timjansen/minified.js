@@ -20,7 +20,7 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="find_findFunc" class=""><a name="find_findFunc"><var>findFunc</var></a></dt>
-<dd class="">the callback function(item, index) that will be invoked for every list item until it returns a non-null value.</dd>
+<dd class="">the callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value.</dd>
 <dt id="find_element" class=""><a name="find_element"><var>element</var></a></dt>
 <dd class="">the element to search for</dd>
 <dt id="find_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="find_RETURN"><var>(return value)</var></a></dt>

@@ -79,8 +79,8 @@ own. Or go to <a href="">this presentation</a> or the <a href="dov/quickstart.ht
   <h2><a name="sizeCmp">Size Comparison</a></h2>
   <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><th>minified-web.js</th><td>yes</td><td>8.9kb</td><td>&lt;4kb</td></tr>
-<tr><th>minified-web.noie.js</th><td>no</td><td>7.5kb</td><td>3.3kb</td></tr>
+<tr><th>minified-web.js</th><td>yes</td><td>8.9kb</td><td><strong>4066 bytes</strong></td></tr>
+<tr><th>minified-web.noie.js</th><td>no</td><td>7.5kb</td><td>3405 bytes</td></tr>
 <tr><th>jQuery 1.10.0</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
 <tr><th>jQuery 2.0.1</th><td>no</td><td>82kb</td><td>28kb</td></tr>
 <tr><th>MooTools Core NoCompat 1.4.5</th><td>yes</td><td>88kb</td><td>29kb</td></tr>
