@@ -573,7 +573,7 @@ define('minified', function() {
      * The callback is invoked once for each element of the current list. The callback results will be added to the result list. 
      * The callback can return 
      * <ul> 
-     * <li>an array or another list-like object whose elements will be appended to the result list as single elements.</li> 
+     * <li>an array or another list-like object. Its content will be appended to the resulting list.</li> 
      * <li>a regular object which will be appended to the list</li> 
      * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
      * If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li> 
@@ -593,7 +593,7 @@ define('minified', function() {
      * @example Creates a list of all children of the selected list. 
      * <pre> 
      * var childList = $('.mySections').collect(function(node) { 
-     * return node.childNodes; // adds a while list of nodes 
+     *     return node.childNodes; // adds a while list of nodes 
      * }); 
      * </pre> 
      * 
@@ -606,8 +606,8 @@ define('minified', function() {
      * 
      * @param collectFunc the callback <code>function(item, index)</code> to invoke for each item with the item as first argument and the 
      * 0-based index as second argument. 
-     * If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls und <var>undefined</var>
-     * will be ignored and not added. 
+     * If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls and <var>undefined</var>
+     * will be ignored and be not added to the new result list. 
      * @return the new ##list#list##
      */ 
 	'collect': function(collectFunc) { 
@@ -702,8 +702,9 @@ define('minified', function() {
 	 * @configurable default 
 	 * @name .hasClass() 
 	 * @syntax hasClass(className) 
-	 * Checks whether at least one element in the list has the given class name. If yes, the first element that matches is returned. Otherwise
-	 * the function returns <var>undefined</var>.
+	 * Checks whether at least one HTML element in the list has the given CSS class name. 
+	 * If yes, the first element that matches is returned. Otherwise the function returns <var>undefined</var>. List elements that do not
+	 * have a <var>className</var> property will be ignored.
 	 *
 	 * @example Checks whether the element 'myElement' has the class 'myClass'. If yes, it sets the text color to red.
 	 * <pre>
@@ -714,7 +715,7 @@ define('minified', function() {
 	 * @param name the class to to find
 	 * @return the first element that has the given class, or <var>undefined</var> if not found
 	 */ 
-	'hasClass': function(name) {
+	'hasClass': function(className) {
 		var regexp = new RegExp(BACKSLASHB +  name + BACKSLASHB);
 		return this.find(function(e) { return regexp.test(e.className) ? e : null; });
 	},
@@ -770,8 +771,8 @@ define('minified', function() {
  	 * @example Uses ##get() and ##set() to reposition an element:
  	 * <pre>
  	 * var coords = $('#myElement').get({$top: 0, $left: 0}, true); 
- 	 * coords.$top += 10;
- 	 * coords.$left += 20;
+ 	 * coords.$top = coords.$top + 10 + 'px';
+ 	 * coords.$left = coords.$left + 20 + 'px';
  	 * $('#myElement').set(coords);
  	 * </pre>
  	 * Please note that the values of $top and $left in the <var>get()</var> invocation do not matter and will be ignored!
@@ -784,15 +785,17 @@ define('minified', function() {
  	 *          The special name '$$' will set the element's style attribute in a browser independent way.
  	 *          '$$fade' returns a value between 0 and 1 that specifies the element's
  	 *          opacity. '$$slide' returns the height of the element in pixels, with a 'px' suffix. Both '$$fade' and '$$slide' will also check the CSS styles 'visibility' and 'display'
- 	 *          to determine whether the object is visible at all. If not, they will return 0 or '0px', respectively.
+ 	 *          to determine whether the object is visible at all. If not, they will return 0.
  	 * @param list in order to retrieve more than one value, you can specify several names in an array or list. <var>get()</var> will then return a name->value map of results.
  	 * @param map if you specify an object that is neither list nor string, <var>get()</var> will use it as a map of property names. Each property name will be requested. The values of the properties in 
  	 *                   the map will be ignored. <var>get()</var> will then return a name->value map of results.
- 	 * @param toNumber if set to 'true', converts the returned values into number. It they are strings, <var>get()</var> removes any non-numeric characters before the conversion. This is useful when you request 
- 	 *                 a CSS property such as '$marginTop'  that returns a value with a unit suffix, like "21px". <var>get()</var> will convert it into a number and return 21. If the returned value is not 
- 	 *                 parsable as a number, <var>NaN</var> will be returned.
- 	 * @return if a string was specified as parameter, <var>get()</var> returns the corresponding value. If a list or map was given, <var>get()</var> returns a new map with the names as keys and the values as values.
- 	 *         Always returns undefined if the list is empty.
+ 	 * @param toNumber if 'true', <var>get()</var> converts all returned values into numbers. If they are strings, 
+ 	 *                 <var>get()</var> removes any non-numeric characters before the conversion. This is useful when you request 
+ 	 *                 a CSS property such as '$marginTop'  that returns a value with a unit suffix, like "21px". <var>get()</var> will convert it 
+ 	 *                 into a number and return 21. If the returned value is not parsable as a number, <var>NaN</var> will be returned.
+ 	 * @return if <var>get()</var> was called with a single name, it returns the corresponding value. 
+ 	 *         If a list or map was given, <var>get()</var> returns a new map with the names as keys and the values as values.
+ 	 *         Always returns <var>undefined</var> if the list is empty.
  	 */
     'get': function(spec, toNumber) {
     	var self = this, element = self[0];
@@ -1028,7 +1031,7 @@ define('minified', function() {
 	 * @syntax $(selector).add(factoryFunction)
 	 * @syntax $(selector).add(list)
 	 * @syntax $(selector).add(node)
-	 * Adds the given node(s) as content to the list elements as additional nodes. If a string has been given, it will be added as text node.
+	 * Adds the given node(s) as content to the list's HTML elements. If a string has been given, it will be added as text node.
 	 * If you pass a function, it will be invoked for each list element to create the node to add. This is called a factory function. It can return all 
 	 * values allowed by <var>add()</var>, including another function to be called.
 	 * If you pass a list or a function returning a list, all its elements will be added using the rules above.
@@ -1084,7 +1087,7 @@ define('minified', function() {
 	 * $('.chapter').add(function(parent, index) { return EE('h2', 'Chapter number ' + index); });
 	 * </pre>
 	 *
-	 * @param text a string or number to add as text node of the list elements
+	 * @param text a string or number to add as text node
 	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
 	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
 	 *              containing strings, lists, functions and/or DOM nodes.
@@ -1127,7 +1130,7 @@ define('minified', function() {
 	 * @syntax $(selector).fill(factoryFunction)
 	 * @syntax $(selector).fill(list)
 	 * @syntax $(selector).fill(node)
-	 * Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node.
+	 * Sets the content of the list's HTML elements, replacing old content. If a string has been given, it will be added as text node.
 	 * If you pass a function, it will be invoked for each list member to create a node. The function prototype is <code>function(parent, index)</code>. 
 	 * It can return all values allowed by <var>fill()</var>, including another function to be called.
 	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
@@ -1212,7 +1215,7 @@ define('minified', function() {
 	 * @syntax $(selector).addBefore(factoryFunction)
 	 * @syntax $(selector).addBefore(list)
 	 * @syntax $(selector).addBefore(node)
-	 * Inserts the given text or element(s) as sibling in front of each element of this list. 
+	 * Inserts the given text or element(s) as sibling in front of each HTML element in the list. 
 	 * If a string has been given, it will be added as text node.
 	 * If you pass a function, it will be invoked for each list element to create the new node, with the arguments <code>function(parent, index)</code>. 
 	 * It can return all values allowed by <var>addBefore()</var>, including another function to be called.
@@ -1235,7 +1238,7 @@ define('minified', function() {
 	 * <pre>
 	 * &lt;div>
 	 *   COMMENT
-	 *   <div id="mainText">Here is some text</div>
+	 *   &lt;div id="mainText">Here is some text&lt;/div>
 	 * &lt;/div>
 	 * </pre>  
 	 *
@@ -1247,7 +1250,7 @@ define('minified', function() {
 	 * <pre>
 	 * &lt;div>
 	 *   &lt;span class="important">WARNING&lt;/span>
-	 *   <div id="mainText">Here is some text</div>
+	 *   &lt;div id="mainText">Here is some text&lt;/div>
 	 * &lt;/div>
 	 * </pre> 
 	 *
@@ -1280,7 +1283,7 @@ define('minified', function() {
 	 * @syntax $(selector).addAfter(factoryFunction)
 	 * @syntax $(selector).addAfter(list)
 	 * @syntax $(selector).addAfter(node)
-	 * Inserts the given text or element(s) as sibling after each element of this list. 
+	 * Inserts the given text or element(s) as sibling after each HTML element in the list. 
 	 * If a string has been given, it will be added as text node.
 	 * If you pass a function, it will be invoked for each list element to create the node(s) to add. It can return all values
 	 * allowed by <var>addAfter()</var>, including another function to be called.
@@ -1292,7 +1295,7 @@ define('minified', function() {
 	 * @example Using the following HTML:
 	 * <pre>
 	 * &lt;div>
-	 *   <div id="mainText">Here is some text</div>
+	 *   &lt;div id="mainText">Here is some text&lt;/div>
 	 * &lt;/div>
 	 * </pre>   
 	 * Use addAfter() with a simple string to add a text node.
@@ -1302,7 +1305,7 @@ define('minified', function() {
 	 * This results in the following HTML:
 	 * <pre>
 	 * &lt;div>
-	 *   <div id="mainText">Here is some text</div>
+	 *   &lt;div id="mainText">Here is some text&lt;/div>
 	 *   Disclaimer: bla bla bla
 	 * &lt;/div>
 	 * </pre>   
@@ -1314,7 +1317,7 @@ define('minified', function() {
 	 * With the previous example's HTML, this would create this:
 	 * <pre>
 	 * &lt;div>
-	 *   <div id="mainText">Disclaimer: bla bla bla</div>
+	 *   &lt;div id="mainText">Disclaimer: bla bla bla&lt;/div>
 	 *   &lt;span class="disclaimer">WARNING&lt;/span>
 	 * &lt;/div>
 	 * </pre> 
@@ -1343,7 +1346,7 @@ define('minified', function() {
 	 * @syntax $(selector).addFront(factoryFunction)
 	 * @syntax $(selector).addFront(list)
 	 * @syntax $(selector).addFront(node)
-	 * Adds the given node(s) as content to the list elements as additional nodes. Unlike ##add(), the new nodes will be the first children of the list items.
+	 * Adds the given node(s) as children to the list's HTML elements. Unlike ##add(), the new nodes will be the first children and not the last.
 	 * If a string has been given, it will be added as text node.
 	 * If you pass a function, it will be invoked for each list element to create node(s) with the arguments <code>function(parent, index)</code>. 
 	 * It can return all values allowed by <var>addFront()</var>, including another function to be called.
@@ -1398,9 +1401,8 @@ define('minified', function() {
 	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
 	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
 	 *              containing strings, lists, functions and/or DOM nodes.
-	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
-	 *             Minified list contains more than one item.
+	 * @param list a list containing text, functions, nodes or nested lists containing those items. Please note that if you have DOM nodes in this list
+	 *             and attempt to add them to more than one element, the result is undefined. 
 	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
 	 * @return the current list
 	 */
@@ -1485,9 +1487,8 @@ define('minified', function() {
 	 * @name .clone()
 	 * @syntax $(selector).clone()
 	 * @syntax $(selector).clone(onCreate)
-	 * Creates a ##list#Minified list## of strings and Element Factories that return clones of the list elements. An Element Factory is a function
-	 * that does not take arguments and returns a Minified list of DOM nodes. You can pass the list to ##add() and similar functions
-	 * to re-create the cloned nodes.
+	 * Creates a ##list#Minified list## of strings and Element Factories that return clones of the list's HTML elements. An Element Factory is a function
+	 * that creates a Minified list of fresh DOM nodes. You can pass the list to ##add(), ##fill() or similar functions to re-create the cloned nodes.
 	 *
 	 * <var>clone()</var> is very limited in what it will clone. Only elements, their attributes, text nodes and CDATA will be cloned.
 	 * Modifications of the elements, such as event handlers, will not be cloned.
@@ -1510,9 +1511,10 @@ define('minified', function() {
 	 * $('#comments').add($('.comment').clone());
 	 * </pre> 
 	 * 
- 	 * @param onCreate optional a <code>function(elementList)</code> that will be called each time a top-level element is cloned. The argument
- 	 *                 contains only this cloned element. This allows you, for example, to add event handlers with ##on(). 
- 	 *                 The argument <var>elementList</var> is a Minified list that contains the new element.
+ 	 * @param onCreate optional a <code>function(elementList)</code> that will be called for each top-level element created by the Element
+ 	 *                 Factory. The argument contains the result as a Minified list. This allows you, for example, 
+ 	 *                 to add event handlers with ##on(). Please note that the callback will be ignored for cloned text nodes. If you clone
+ 	 *                 more than one element, <var>onCreate</var> will be invoked for each element. 
 	 * @return the list of Element Factory functions and strings to create clones
 	 */
 	'clone': function (onCreate) {
@@ -1553,7 +1555,7 @@ define('minified', function() {
 	 * number, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
 	 *
 	 * When you invoke the function, it will first read all old values from the object and extract their numbers and colors. These start values will be compared to 
-	 * the destination values that have been specified in the given properties. Then <var>animate()</var> will create a background task using ##loop#$.loop() that updates the 
+	 * the destination values that have been specified in the given properties. Then <var>animate()</var> will create a background task using ##$.loop() that updates the 
 	 * specified properties in frequent intervals so that they transition to their destination values.
 	 *
 	 * The start values will be obtained using ##get(). It is recommended to set the start values using ##set() before you start the animation, even if this is not
@@ -1583,8 +1585,7 @@ define('minified', function() {
 	 *
 	 * To allow more complex animation, <var>animate()</var> returns a ##promise#Promise## that is fulfulled when the animation has finished. 
 	 *
-	 * @example Move an element. Note that you need to set the initial value for styles, unless they have been explicitly set
-	 * for the HTML element using the style attribute before or you set it earlier with an earlier ##set() or <var>animate()</var> invocation.
+	 * @example Move an element. 
 	 * <pre>
 	 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})                // start values
 	 *                  .animate({$left: '50px', $top: '100px'}, 1000);  // animation
@@ -1618,9 +1619,9 @@ define('minified', function() {
 	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
 	 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
 	 *    .then(function() {
-	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
+	 *           return div.animate({$left: '200px', $top: '200px'}, 800, 0);
 	 *    }).then(function() {
-	 *           div.animate({$left: '100px', $top: '100px'}, 400);
+	 *           return div.animate({$left: '100px', $top: '100px'}, 400);
 	 *    });
 	 * });
 	 * </pre>
@@ -1638,11 +1639,10 @@ define('minified', function() {
 	 *             called every time an interpolated value is required. <var>t</var> is a value between 0 and 1 that specifies the state of the transition.
 	 * @param state optional if set, the animation controller will write information about its state in this object. When <var>animate()</var> returns,
 	 *                       there will be a <var>stop()</var> function in the property <var>state.stop</var> that can be used to abort the animation. 
-	 *                       The property <var>state.time</var> will be continously updated
-	 *                       and contains the number of milliseconds that have
-	 *                       passed from the start until the last invocation of the animation loop, describing the progress of the animation. 
+	 *                       The property <var>state.time</var> will be continously updated while the animation is running
+	 *                       and contains the number of milliseconds that have passed from the start, allowing you to track the progress of the animation. 
 	 *                       If the animation finished, controller writes null into <var>state.time</var>. <var>state.stop</var> will not be 
-	 *                       modified and can be safely invoked even when the animation even after the animation's ending. 
+	 *                       modified and can still be safely invoked even when the animation ended. 
 	 * @return a ##promise#Promise## object to monitor the animation's progress. It is fulfilled when the animation ended, and rejected if the animation had been stopped.
 	 */
 	'animate': function (properties, durationMs, linearity, state) {
@@ -1804,20 +1804,21 @@ define('minified', function() {
 		 * @requires dollar
 		 * @configurable default
 		 * @name .on()
-		 * @syntax $(selector).on(names, handler)
-		 * @syntax $(selector).on(names, handler, args)
-		 * @syntax $(selector).on(names, handler, fThis, args)
+		 * @syntax $(selector).on(names, eventHandler)
+		 * @syntax $(selector).on(names, customFunc, args)
+		 * @syntax $(selector).on(names, customFunc, fThis, args)
 		 * Registers the function as event handler for all items in the list.
 		 * 
 		 * By default, Minified cancels event propagation and the element's default behaviour for all elements that have an event handler. 
 		 * You can override this by prefixing the event name with a '|' or by returning a 'true' value in the handler, which will reinstate 
 		 * the original JavaScript behaviour.
 		 * 
-		 * Handlers are usually called with the original event object as first argument, the index of the source element in the 
+		 * Handlers are called with the original event object as first argument, the index of the source element in the 
 		 * list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked). 
 		 * 
-		 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the event handler. When you pass arguments, the
-		 * handler's return value is always ignored and the event with unnamed prefixes will always be cancelled.
+		 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback. 
+		 * When you pass arguments, the handler's return value is always ignored and the event with unnamed prefixes 
+		 * will always be cancelled.
 		 * 
 		 * Event handlers can be unregistered using #off#$.off().
 		 * 
@@ -1828,39 +1829,40 @@ define('minified', function() {
 		 * });
 		 * </pre>
 		 *
-		 * @example handler to call a method setStatus('running') using an inline function:
+		 * @example Registers a handler to call a method setStatus('running') using an inline function:
 		 * <pre>
 		 * $('#myButton').on('click', function() {
 		 *    myObject.setStatus('running');
 		 * });
 		 * </pre>
-		 * The same can be written like this using on() argument and fThis parameters:
+		 * The previous example can bere written like this, using <var>on()</var>'s <var>args</var> and <var>fThis</var> parameters:
 		 * <pre>
 		 * $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 		 * </pre>
 		 *
-		 * @example Adds two handlers on an input field and keeps the original behaviour: 
+		 * @example Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behaviour: 
 		 * <pre>
 		 * $('#myInput').on('|keypress |keydown', function() {
 		 *    // do something
 		 * });
 		 * </pre>
 		 * 
-		 * @param names the space-separated names the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used. You can
-		 *             register the handler for more than one event by specifying several space-separated event names. If the name is prefixed
+		 * @param names the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
+		 *             the name must not used. You can register the handler for more than one event by specifying several 
+		 *             space-separated event names. If the name is prefixed
 		 *             with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will 
 		 *             be executed by the browser. 
-		 * @param handler the <code>function(event, index)</code> to invoke when the event has been triggered. If no new arguments have been given using 
-		 *                <var>on()</var>'s second argument, the handler gets the original event object as first parameter and the index
-		 *                of the object in the current ##list#Minified list## as second. 'this' is the element that 
-		 *                caused the event, unless you override it with the third argument.
+		 * @param eventHandler the callback <code>function(event, index)</code> to invoke when the event has been triggered. The first 
+		 *                argument for the handler is the original DOM event object and the second is the index
+		 *                of the target object in the current ##list#Minified list##. 'this' is the element that 
+		 *                caused the event.
 		 *                Unless the handler returns true or the event name is prefixed by '|', all further processing of the event will be 
-		 *                stopped and event bubbling will be disabled. If you supply custom arguments, the return value will be ignored.
-		 *                Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper 
-		 *                is added to the handler in an array property called 'M'.
-		 * @param fThis optional an value for 'this' in the handler, as alternative to the event target
-		 * @param args optional an array of arguments to pass to the handler function instead of the event objects. If you pass custom arguments, the
-		 *                      return value of the handler will always be ignored.
+		 *                stopped and event bubbling will be disabled.
+		 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>
+		 *                   and optionally the 'this' context given using <var>fThis</var>.
+		 * @param fThis optional an value for 'this' in the custom callback, as alternative to the event target
+		 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. 
+		 *                      If you pass custom arguments, the return value of the handler will always be ignored.
 		 * @return the list
 		 */
 		'on': function (eventName, handler, fThisOrArgs, args) {
