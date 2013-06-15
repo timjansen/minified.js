@@ -19,8 +19,9 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="each_callback" class=""><a name="each_callback"><var>callback</var></a></dt>
-<dd class="">the callback <code>function(item, index)</code> to invoke. The first argument is the list element, and the second the zero-based index
-of the element.</dd>
+<dd class="">The callback <code>function(item, index)</code> to invoke for each list element.
+<dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+The callback's return value will be ignored.</dd>
 <dt id="each_RETURN" class="returnValue inSyntax0"><a name="each_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0">the list</dd>
 </dl>

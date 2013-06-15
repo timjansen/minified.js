@@ -32,19 +32,21 @@ Using just '$' as name will retrieve the 'className' property of the object, a s
 The special name '$$' will set the element's style attribute in a browser independent way.
 '$$fade' returns a value between 0 and 1 that specifies the element's
 opacity. '$$slide' returns the height of the element in pixels, with a 'px' suffix. Both '$$fade' and '$$slide' will also check the CSS styles 'visibility' and 'display'
-to determine whether the object is visible at all. If not, they will return 0 or '0px', respectively.</dd>
+to determine whether the object is visible at all. If not, they will return 0.</dd>
 <dt id="get_list" class=""><a name="get_list"><var>list</var></a></dt>
 <dd class="">in order to retrieve more than one value, you can specify several names in an array or list. <var>get()</var> will then return a name->value map of results.</dd>
 <dt id="get_map" class=""><a name="get_map"><var>map</var></a></dt>
 <dd class="">if you specify an object that is neither list nor string, <var>get()</var> will use it as a map of property names. Each property name will be requested. The values of the properties in
 the map will be ignored. <var>get()</var> will then return a name->value map of results.</dd>
 <dt id="get_toNumber" class=""><a name="get_toNumber"><var>toNumber</var></a></dt>
-<dd class="">if set to 'true', converts the returned values into number. It they are strings, <var>get()</var> removes any non-numeric characters before the conversion. This is useful when you request
-a CSS property such as '$marginTop'  that returns a value with a unit suffix, like "21px". <var>get()</var> will convert it into a number and return 21. If the returned value is not
-parsable as a number, <var>NaN</var> will be returned.</dd>
+<dd class="">if 'true', <var>get()</var> converts all returned values into numbers. If they are strings,
+<var>get()</var> removes any non-numeric characters before the conversion. This is useful when you request
+a CSS property such as '$marginTop'  that returns a value with a unit suffix, like "21px". <var>get()</var> will convert it
+into a number and return 21. If the returned value is not parsable as a number, <var>NaN</var> will be returned.</dd>
 <dt id="get_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="get_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">if a string was specified as parameter, <var>get()</var> returns the corresponding value. If a list or map was given, <var>get()</var> returns a new map with the names as keys and the values as values.
-Always returns undefined if the list is empty.</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">if <var>get()</var> was called with a single name, it returns the corresponding value.
+If a list or map was given, <var>get()</var> returns a new map with the names as keys and the values as values.
+Always returns <var>undefined</var> if the list is empty.</dd>
 </dl>
 
 <h4>Description</h4>
@@ -73,8 +75,8 @@ var bgColor = m.$backgroundColor;
 <div class="example"><p>Uses <code><a href='get.html'>get()</a></code> and <code><a href='set.html'>set()</a></code> to reposition an element:
 <pre>
 var coords = $('#myElement').get({$top: 0, $left: 0}, true);
-coords.$top += 10;
-coords.$left += 20;
+coords.$top = coords.$top + 10 + 'px';
+coords.$left = coords.$left + 20 + 'px';
 $('#myElement').set(coords);
 </pre>
 Please note that the values of $top and $left in the <var>get()</var> invocation do not matter and will be ignored!

@@ -24,8 +24,8 @@ If the handler is not registered as event handler, the function does nothing.</d
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Removes the given event handler. The call will be ignored if the given handler has not registered using <code><a href='on.html'>on()</a></code>. If the handler has been registered
-for more than one element or event, it will be removed from all instances.</p><p></p></div>
+<div class="description"><p>Removes the given event handler. The call will be ignored if the given handler has not been registered using <code><a href='on.html'>on()</a></code>.
+If the handler has been registered for more than one element or event, it will be removed from all instances.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

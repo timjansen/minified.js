@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-hasclass">.hasClass()</a></h2>
-<div class="summary">Checks whether at least one element in the list has the given class name.</div>
+<div class="summary">Checks whether at least one HTML element in the list has the given CSS class name.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -25,8 +25,9 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Checks whether at least one element in the list has the given class name. If yes, the first element that matches is returned. Otherwise
-the function returns <var>undefined</var>.</p><p></p></div>
+<div class="description"><p>Checks whether at least one HTML element in the list has the given CSS class name.
+If yes, the first element that matches is returned. Otherwise the function returns <var>undefined</var>. List elements that do not
+have a <var>className</var> property will be ignored.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

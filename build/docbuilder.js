@@ -41,7 +41,8 @@ function createDocs(sec) {
 		s += '<h4>Parameters</h4>\n';
 		s += '<dl class="params">\n';
 		_.each(sec.params, function(param) {
-			var desc = parseDescription(param.desc).replace(/^optional/, '<span class="optional">(optional)</span>').replace('&&', '&amp;&amp;');
+			var isOptional = /^optional\s/.test(param.desc);
+			var desc = parseDescription(param.desc).replace(/^optional\s+/, '').replace('&&', '&amp;&amp;');
 			var re = RegExp('\b' + param.name + '\b');
 			var highlightClasses = [];
 			_.each(sec.syntax, function(syn, synIndex) {
@@ -51,7 +52,8 @@ function createDocs(sec) {
 			});
 			if (param.name != '@return')
 				s += _.format('<dt id="{PARAMREF}" class="{CLASSDEF}"><a name="{PARAMREF}"><var>{PARAM}</var></a></dt>\n<dd class="{CLASSDEF}">{DESC}</dd>\n', 
-						{PARAMREF: sec.id+'_'+param.name, PARAM: param.name, DESC: desc, CLASSDEF: highlightClasses.join(' ')});
+						{PARAMREF: sec.id+'_'+param.name, PARAM: param.name + (isOptional ? ' (optional)' : ''), 
+					     DESC: desc, CLASSDEF: highlightClasses.join(' ')});
 			else
 				s += _.format('<dt id="{RETURNREF}" class="returnValue {CLASSDEF}"><a name="{RETURNREF}"><var>(return value)</var></a></dt>\n<dd class="{CLASSDEF}">{DESC}</dd>\n',
 						{RETURNREF: sec.id+'_RETURN', DESC: desc, CLASSDEF: highlightClasses.join(' ')});

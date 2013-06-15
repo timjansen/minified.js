@@ -19,8 +19,9 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="filter_filterFunc" class=""><a name="filter_filterFunc"><var>filterFunc</var></a></dt>
-<dd class="">the callback <code>function(item, index)</code> to invoke for each item with the item as first argument and the 0-based index as second argument.
-If the function returns false for an item, it is not included in the resulting list.</dd>
+<dd class="">The filter callback <code>function(item, index)</code> that decides which elements to include:
+<dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl></dd>
 <dt id="filter_RETURN" class="returnValue inSyntax0"><a name="filter_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0">the new, filtered <a href='list.html'>list</a></dd>
 </dl>

@@ -22,8 +22,8 @@
 <dt id="sub_startIndex" class=""><a name="sub_startIndex"><var>startIndex</var></a></dt>
 <dd class="">the 0-based position of the sub-list start. If negative, the list's length is added and the position is relative
 to the list's end.</dd>
-<dt id="sub_endIndex" class=""><a name="sub_endIndex"><var>endIndex</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
+<dt id="sub_endIndex" class=""><a name="sub_endIndex"><var>endIndex (optional)</var></a></dt>
+<dd class="">the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
 to the list's end. If omitted or null, all elements following the <var>startIndex</var> are included in the result.</dd>
 <dt id="sub_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="sub_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">a new <a href='list.html'>list</a> containing only the items in the index range.</dd>

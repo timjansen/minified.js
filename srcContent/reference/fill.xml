@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-fill">.fill()</a></h2>
-<div class="summary">Sets the content of the list elements, replacing old content.</div>
+<div class="summary">Sets the content of the list's HTML elements, replacing old content.</div>
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
@@ -25,9 +25,13 @@
 <dt id="fill_text" class=""><a name="fill_text"><var>text</var></a></dt>
 <dd class="">a string to set as text node of the list elements</dd>
 <dt id="fill_factoryFunction" class=""><a name="fill_factoryFunction"><var>factoryFunction</var></a></dt>
-<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes.
-The function can return either a string for a text node, a function to invoke, an HTML element or a list
-containing strings, lists, functions and/or DOM nodes.</dd>
+<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
+<dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+<dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+<dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
+If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
+</dd>
 <dt id="fill_list" class=""><a name="fill_list"><var>list</var></a></dt>
 <dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
 and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
@@ -40,7 +44,7 @@ Minified list contains more than one item.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Sets the content of the list elements, replacing old content. If a string has been given, it will be added as text node.
+<div class="description"><p>Sets the content of the list's HTML elements, replacing old content. If a string has been given, it will be added as text node.
 If you pass a function, it will be invoked for each list member to create a node. The function prototype is <code>function(parent, index)</code>.
 It can return all values allowed by <var>fill()</var>, including another function to be called.
 If you pass a list or a function returns a list, all its elements will be added using the rules above.</p><p>It is also possible to pass a DOM node, but it will be set <strong>only in the first element of the list</strong>, because DOM

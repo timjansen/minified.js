@@ -23,9 +23,13 @@
 <dl class="params">
 <dt id="replace_text" class=""><a name="replace_text"><var>text</var></a></dt>
 <dd class="">a text for the text nodes that replace the list elements</dd>
-<dt id="replace_callbackFunction" class=""><a name="replace_callbackFunction"><var>callbackFunction</var></a></dt>
-<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to determine its content.
-The function can return either a string for a text node, an HTML node or a list containing strings and/or HTML node.</dd>
+<dt id="replace_factoryFunction" class=""><a name="replace_factoryFunction"><var>factoryFunction</var></a></dt>
+<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to determine its content:
+<dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+<dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+<dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
+If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl></dd>
 <dt id="replace_node" class=""><a name="replace_node"><var>node</var></a></dt>
 <dd class="">content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
 an HTML node or a list containing strings and/or HTML node.</dd>

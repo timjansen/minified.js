@@ -25,6 +25,7 @@
 		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt="Minified"><![endif]-->
 		<!--[if gt IE 8]><img src='/img/minified.svg' alt="Minified"><![endif]-->
 		<!--[if !IE]> --><img src='/img/minified.svg' alt="Minified"/><!-- <![endif]--></a>
+
 		<div id="topMenu">
 			<a class="{if (/page:page/page:section='home') then 'selected' else 'notSelected'}" href="/">Home</a>
 			<a class="{if (/page:page/page:section='download') then 'selected' else 'notSelected'}" href="/download/">Download</a>
@@ -43,7 +44,6 @@
 <div id="foot">
 	<div class="container">
 		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>.
-		You may follow me on Twitter, <a href="https://twitter.com/timjansen">@timjansen</a>.
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

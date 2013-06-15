@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-addfront">.addFront()</a></h2>
-<div class="summary">Adds the given node(s) as content to the list elements as additional nodes.</div>
+<div class="summary">Adds the given node(s) as children to the list's HTML elements.</div>
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
@@ -24,13 +24,16 @@
 <dt id="addfront_text" class=""><a name="addfront_text"><var>text</var></a></dt>
 <dd class="">a string to add as text node of the list elements</dd>
 <dt id="addfront_factoryFunction" class=""><a name="addfront_factoryFunction"><var>factoryFunction</var></a></dt>
-<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes.
-The function can return either a string for a text node, a function to invoke, an HTML element or a list
-containing strings, lists, functions and/or DOM nodes.</dd>
+<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
+<dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+<dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+<dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
+If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
+</dd>
 <dt id="addfront_list" class=""><a name="addfront_list"><var>list</var></a></dt>
-<dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
-Minified list contains more than one item.</dd>
+<dd class="">a list containing text, functions, nodes or nested lists containing those items. Please note that if you have DOM nodes in this list
+and attempt to add them to more than one element, the result is undefined.</dd>
 <dt id="addfront_node" class=""><a name="addfront_node"><var>node</var></a></dt>
 <dd class="">a DOM node to add <strong>only to the first element</strong> of the list.</dd>
 <dt id="addfront_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="addfront_RETURN"><var>(return value)</var></a></dt>
@@ -38,7 +41,7 @@ Minified list contains more than one item.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Adds the given node(s) as content to the list elements as additional nodes. Unlike <code><a href='add.html'>add()</a></code>, the new nodes will be the first children of the list items.
+<div class="description"><p>Adds the given node(s) as children to the list's HTML elements. Unlike <code><a href='add.html'>add()</a></code>, the new nodes will be the first children and not the last.
 If a string has been given, it will be added as text node.
 If you pass a function, it will be invoked for each list element to create node(s) with the arguments <code>function(parent, index)</code>.
 It can return all values allowed by <var>addFront()</var>, including another function to be called.

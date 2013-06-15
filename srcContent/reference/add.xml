@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-add">.add()</a></h2>
-<div class="summary">Adds the given node(s) as content to the list elements as additional nodes.</div>
+<div class="summary">Adds the given node(s) as content to the list's HTML elements.</div>
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
@@ -22,11 +22,14 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="add_text" class=""><a name="add_text"><var>text</var></a></dt>
-<dd class="">a string or number to add as text node of the list elements</dd>
+<dd class="">a string or number to add as text node</dd>
 <dt id="add_factoryFunction" class=""><a name="add_factoryFunction"><var>factoryFunction</var></a></dt>
-<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes.
-The function can return either a string for a text node, a function to invoke, an HTML element or a list
-containing strings, lists, functions and/or DOM nodes.</dd>
+<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
+<dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+<dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+<dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
+If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl></dd>
 <dt id="add_list" class=""><a name="add_list"><var>list</var></a></dt>
 <dd class="">a list containing text, functions, nodes or more lists. Please note that if you have DOM nodes in this list
 and attempt to add them to more than one element, the result is undefined. You should always use factories
@@ -38,7 +41,7 @@ if you add DOM nodes to more than one element.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Adds the given node(s) as content to the list elements as additional nodes. If a string has been given, it will be added as text node.
+<div class="description"><p>Adds the given node(s) as content to the list's HTML elements. If a string has been given, it will be added as text node.
 If you pass a function, it will be invoked for each list element to create the node to add. This is called a factory function. It can return all
 values allowed by <var>add()</var>, including another function to be called.
 If you pass a list or a function returning a list, all its elements will be added using the rules above.</p><p>It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM

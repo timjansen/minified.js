@@ -10,7 +10,7 @@
 <div id="docmain"><p class="docHead"><h1>Minified Web API</h1>
 </p>
 <h3><a href="dollar.html">$()</a></h3>
-<div class="summary">Creates a Minified list of HTML nodes.</div>
+<div class="summary">Creates a new Minified list, or register a DOMReady-handler.</div>
 
 <h3><a href="dollardollar.html">$$()</a></h3>
 <div class="summary">Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found.</div>
@@ -40,22 +40,22 @@
 <div class="summary">Converts the given value into a JSON string.</div>
 
 <h3><a href="add.html">.add()</a></h3>
-<div class="summary">Adds the given node(s) as content to the list elements as additional nodes.</div>
+<div class="summary">Adds the given node(s) as content to the list's HTML elements.</div>
 
 <h3><a href="addafter.html">.addAfter()</a></h3>
-<div class="summary">Inserts the given text or element(s) as sibling after each element of this list.</div>
+<div class="summary">Inserts the given text or element(s) as sibling after each HTML element in the list.</div>
 
 <h3><a href="addbefore.html">.addBefore()</a></h3>
-<div class="summary">Inserts the given text or element(s) as sibling in front of each element of this list.</div>
+<div class="summary">Inserts the given text or element(s) as sibling in front of each HTML element in the list.</div>
 
 <h3><a href="addfront.html">.addFront()</a></h3>
-<div class="summary">Adds the given node(s) as content to the list elements as additional nodes.</div>
+<div class="summary">Adds the given node(s) as children to the list's HTML elements.</div>
 
 <h3><a href="animate.html">.animate()</a></h3>
 <div class="summary">Animates the items of the list by modifying their properties, CSS styles and attributes.</div>
 
 <h3><a href="clone.html">.clone()</a></h3>
-<div class="summary">Creates a Minified list of strings and Element Factories that return clones of the list elements.</div>
+<div class="summary">Creates a Minified list of strings and Element Factories that return clones of the list's HTML elements.</div>
 
 <h3><a href="collect.html">.collect()</a></h3>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
@@ -64,7 +64,7 @@
 <div class="summary">Invokes the given function once for each item in the list.</div>
 
 <h3><a href="fill.html">.fill()</a></h3>
-<div class="summary">Sets the content of the list elements, replacing old content.</div>
+<div class="summary">Sets the content of the list's HTML elements, replacing old content.</div>
 
 <h3><a href="filter.html">.filter()</a></h3>
 <div class="summary">Creates a new Minified list that contains only those items approved by the given callback function.</div>
@@ -76,7 +76,7 @@
 <div class="summary">Retrieves properties, attributes and styles from the list's first element.</div>
 
 <h3><a href="hasclass.html">.hasClass()</a></h3>
-<div class="summary">Checks whether at least one element in the list has the given class name.</div>
+<div class="summary">Checks whether at least one HTML element in the list has the given CSS class name.</div>
 
 <h3><a href="length.html">.length</a></h3>
 <div class="summary">Contains the number of elements in the list.</div>

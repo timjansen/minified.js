@@ -22,32 +22,33 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="setcookie_name" class=""><a name="setcookie_name"><var>name</var></a></dt>
-<dd class="">the name of the cookie. This should be ideally an alphanumeric name, as it will not be escaped by Minified and this
+<dd class="">the name of the cookie. This should ideally be an alphanumeric name, as it will not be escaped by Minified and this
 guarantees compatibility with all systems.
 If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax.</dd>
 <dt id="setcookie_value" class=""><a name="setcookie_value"><var>value</var></a></dt>
-<dd class="">the value of the cookie. All characters except alphanumeric and "*@-_+./" will be escaped using the
-JavaScript <var>escape()</var> function and thus can be used, unless you set the optional <var>dontEscape</var> parameter.</dd>
-<dt id="setcookie_dateOrDays" class=""><a name="setcookie_dateOrDays"><var>dateOrDays</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> specifies when the cookie expires. Can be either a Date object or a number that specifies the
+<dd class="">the value of the cookie. All characters can be used. Non-Alphanumeric other than "*@-_+./" will be escaped using the
+JavaScript <var>escape()</var> function, unless you set the optional <var>dontEscape</var> parameter.</dd>
+<dt id="setcookie_dateOrDays" class=""><a name="setcookie_dateOrDays"><var>dateOrDays (optional)</var></a></dt>
+<dd class="">specifies when the cookie expires. Can be either a Date object or a number that specifies the
 amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
 browser has been closed. If the number negative or the date in the past, the cookie will be deleted.</dd>
-<dt id="setcookie_path" class=""><a name="setcookie_path"><var>path</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> if set, the cookie will be restricted to documents in the given path. Otherwise it is valid
+<dt id="setcookie_path" class=""><a name="setcookie_path"><var>path (optional)</var></a></dt>
+<dd class="">if set, the cookie will be restricted to documents in the given path. Otherwise it is valid
 for the whole domain. This is rarely needed and defaults to '/'.</dd>
-<dt id="setcookie_domain" class=""><a name="setcookie_domain"><var>domain</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> if set, you use it to specify the domain (e.g. example.com) which can read the cookie. If you don't set it,
+<dt id="setcookie_domain" class=""><a name="setcookie_domain"><var>domain (optional)</var></a></dt>
+<dd class="">if set, you use it to specify the domain (e.g. example.com) which can read the cookie. If you don't set it,
 the domain which hosts the current document is used. This parameter is rarely used, because there are only very
 few use cases in which this makes sense.</dd>
-<dt id="setcookie_dontEscape" class=""><a name="setcookie_dontEscape"><var>dontEscape</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> if set, the cookie value is not escaped. Note that without escaping you can not use every possible
+<dt id="setcookie_dontEscape" class=""><a name="setcookie_dontEscape"><var>dontEscape (optional)</var></a></dt>
+<dd class="">if set, the cookie value is not escaped. Note that without escaping you can not use every possible
 character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
 some non-alphanumeric characters unescaped or use a different escaping algorithm.</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>Creates, updates or deletes a cookie. If there is an an existing cookie
-of the same name, will be overwritten with the new value and settings.</p><p></p></div>
+of the same name, will be overwritten with the new value and settings.</p><p>To delete a cookie, overwrite it with an expiration date in the past. The easiest way to do this is to
+use <code>-1</code> as third argument.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

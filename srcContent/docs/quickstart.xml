@@ -13,8 +13,8 @@
 <li>allows even smaller builds using the <a href="/builder/">Builder</a> tool</li></ul></li> 
 
 <li>Complete Feature Set<ul>
-<li>Feature set is close to jQuery or MooTools</li>
-<li>Some features exceed capabilities of jQuery or MooTools</li>
+<li>Nearly all features that jQuery and MooTools have.</li>
+<li>Some extra features that jQuery and/or MooTools do not have.</li>
 <li>Flexible enough to make up for missing features</li></ul></li>
 
 <li>No Magic<ul>
@@ -26,7 +26,7 @@
 </ul>
 
 <h2>How to include Minified.js into your project</h2>
-<p>The quickest way is download the distribution and refer to it in a script tag:
+<p>The quickest way to start is to download the distribution and refer to it in a script tag:
 <pre>
 &lt;script src="path/to/minified.js">&lt;/script>
 </pre>
@@ -36,8 +36,8 @@ such as <a href="http://requirejs.org">RequireJS</a>
 or <a href="https://github.com/timjansen/sparkplug.js">Sparkplug.js</a>.
 </p>
 <p>
-If you would like to optimize the size of your site, you should consider <a href="/builder/">build a custom version</a> and 
-<a href="embedding.html">embed Minified</a> into your JavaScript code.
+If you would like to optimize the size of your site, you should consider <a href="/builder/">building a custom version</a> and 
+<a href="embedding.html">embedding Minified</a> into your JavaScript code.
 </p>
 
 <h2>How to Obtain the Reference to Minified</h2>
@@ -68,11 +68,11 @@ $(function() {
 </p>
 
 
-<h2>Creating a MINI list</h2>
+<h2>Creating a Minified list</h2>
 <p>The first step to doing almost anything with Minified is to create a <a href="/reference/list.html">Minified list</a>, an array-like class where most 
 of Minified's functions are stored.</p>
 
-<p>You can create a MINI-list using CSS selectors in the usual syntax:
+<p>You can create a Minified list using CSS selectors with the familiar jQuery-syntax:
 <pre>
 var MINI = require('minified'), $ = MINI.$, $$=MINI.$$, EE=MINI.EE;
 

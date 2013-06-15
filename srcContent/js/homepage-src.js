@@ -55,14 +55,25 @@ $(function() {
 	function createShareDiv() {
 		if (shareDivCreated)
 			return; 
-		$('#shareDiv').add([EE('iframe', {'@allowtransparency':'true', '@frameborder': 0, '@scrolling': 'no', $width:'100px', $height: '20px',
+		$('#shareExt').add([EE('iframe', {'@allowtransparency':'true', '@frameborder': 0, '@scrolling': 'no', $width:'100px', $height: '20px',
 										  '@src': "http://ghbtns.com/github-btn.html?user=timjansen&repo=minified.js&type=watch&count=true"}),
 						    EE('iframe', {'@allowtransparency':'true', '@frameborder': 0, '@scrolling': 'no', $width:'100px', $height: '20px',
 										  '@src': "https://platform.twitter.com/widgets/tweet_button.html"}),
 		                    EE('div', {$: 'g-plusone', $display: 'inline', '@data-size': 'medium'})
 		                    ]);
-		
 		$('head').add(EE('script', {type: 'text/javascript', async: true, src: 'https://apis.google.com/js/plusone.js'}));
+		
+		/*
+		$('#followDiv1').add([EE('iframe', {'@allowtransparency':'true', '@frameborder': 0, '@scrolling': 'no', $width:'100px', $height: '20px',
+			  				'@src': "http://ghbtns.com/github-btn.html?user=timjansen&repo=minified.js&type=follow"}),
+			  				EE('iframe', {'@allowtransparency':'true', '@frameborder': 0, '@scrolling': 'no', $width:'300px', $height: '20px',
+			  					'@src': "https://platform.twitter.com/widgets/follow_button.html?screen_name=timjansen"}),
+			  				EE('div', {$: 'g-plus', $display: 'inline', '@data-height': '20', 
+			  					      '@data-href': '//plus.google.com/100950045026999226880', '@data-rel': 'publisher'})
+			  				//<div class="g-plus" data-height="69" data-href="//plus.google.com/100950045026999226880" data-rel="publisher"></div>
+
+			  				]);
+		 */
 		shareDivCreated = true;
 	}
 

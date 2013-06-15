@@ -19,17 +19,17 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="tojson_value" class=""><a name="tojson_value"><var>value</var></a></dt>
-<dd class="">the value (map-like object, array, string, number, boolean or null)</dd>
+<dd class="">the value (map-like object, array/list, string, number, boolean or null)</dd>
 <dt id="tojson_RETURN" class="returnValue inSyntax0"><a name="tojson_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0">the JSON string</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, boolean or null.
+<div class="description"><p>Converts the given value into a JSON string. The value may be a map-like object, an array or list, a string, number, boolean or null.
 If you build Minified without Internet Explorer compatibility, this is just an alias for <var>JSON.stringify</var>.</p><p>The following types are supported by the built-in implementation:
 <ul>
   <li>Objects (direct properties will be serialized)</li>
-  <li>Arrays</li>
+  <li>Arrays/Lists (with <var>length</var> property)</li>
   <li>Strings</li>
   <li>Numbers</li>
   <li>Boolean</li>
@@ -39,7 +39,7 @@ Any other types in your JSON tree, especially Dates, should be converted into St
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Convert an object into a JSON object:
+<div class="example"><p>Converts an object into a JSON object:
 <pre>
 var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
 var jsonString = $.toJSON(myObj);

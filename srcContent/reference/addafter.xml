@@ -9,7 +9,7 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-addafter">.addAfter()</a></h2>
-<div class="summary">Inserts the given text or element(s) as sibling after each element of this list.</div>
+<div class="summary">Inserts the given text or element(s) as sibling after each HTML element in the list.</div>
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
@@ -24,9 +24,12 @@
 <dt id="addafter_text" class=""><a name="addafter_text"><var>text</var></a></dt>
 <dd class="">a string to add as text node of the list elements</dd>
 <dt id="addafter_factoryFunction" class=""><a name="addafter_factoryFunction"><var>factoryFunction</var></a></dt>
-<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes.
-The function can return either a string for a text node, a function to invoke, an HTML element or a list
-containing strings, lists, functions and/or DOM nodes.</dd>
+<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
+<dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+<dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+<dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
+If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl></dd>
 <dt id="addafter_list" class=""><a name="addafter_list"><var>list</var></a></dt>
 <dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
 and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
@@ -38,7 +41,7 @@ Minified list contains more than one item.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Inserts the given text or element(s) as sibling after each element of this list.
+<div class="description"><p>Inserts the given text or element(s) as sibling after each HTML element in the list.
 If a string has been given, it will be added as text node.
 If you pass a function, it will be invoked for each list element to create the node(s) to add. It can return all values
 allowed by <var>addAfter()</var>, including another function to be called.
@@ -50,7 +53,7 @@ does not allow adding it more than once.</p><p></p></div>
 <div class="example"><p>Using the following HTML:
 <pre>
 &lt;div>
-  <div id="mainText">Here is some text</div>
+  &lt;div id="mainText">Here is some text&lt;/div>
 &lt;/div>
 </pre>
 Use addAfter() with a simple string to add a text node.
@@ -60,7 +63,7 @@ $('#mainText').addAfter('Disclaimer: bla bla bla');
 This results in the following HTML:
 <pre>
 &lt;div>
-  <div id="mainText">Here is some text</div>
+  &lt;div id="mainText">Here is some text&lt;/div>
   Disclaimer: bla bla bla
 &lt;/div>
 </pre>
@@ -73,7 +76,7 @@ $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla
 With the previous example's HTML, this would create this:
 <pre>
 &lt;div>
-  <div id="mainText">Disclaimer: bla bla bla</div>
+  &lt;div id="mainText">Disclaimer: bla bla bla&lt;/div>
   &lt;span class="disclaimer">WARNING&lt;/span>
 &lt;/div>
 </pre>

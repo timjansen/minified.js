@@ -27,13 +27,17 @@ A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as nam
 The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
 The special name '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1.</dd>
 <dt id="set_value" class=""><a name="set_value"><var>value</var></a></dt>
-<dd class="">the value to set. If it is a function, the <code>function(oldValue, index, obj)</code> will be invoked for each list element
-to evaluate the new value. The function is called with with the old value as first argument and the index in the list as second.
-The third value is the object being modified. Functions are not allowed as values for virtual properties ('$$fade' and '$$slide').
-For the CSS style names, the old value given to the function is the old value of the className property containing the existing classes.
-If value is null and name specified an attribute, the attribute will be removed.
+<dd class="">the value to set. If value is null and name specified an attribute, the attribute will be removed.
 If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
-with a '-' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.</dd>
+with a '-' prefix the class will be removed. Without prefix, the class will be toggled.
+If <var>value</var> is a function, the <code>function(oldValue, index, obj)</code> will be invoked for each list element
+to evaluate the new value:
+<dl><dt>oldValue</dt><dd>The old value of the property to be changed, as returned by <code><a href='get.html'>get()</a></code>.
+For the CSS style names, this is the computed style of the property </dd>
+<dt>index</dt><dd>The list index of the object owning the property</dd>
+<dt>obj</dt><dd>The list element owning the property.<dd>
+<dt class="returnValue">(callback return value)</dt><dd>The value to be set.</dd></dl>
+Functions are not supported by '$'.</dd>
 <dt id="set_properties" class=""><a name="set_properties"><var>properties</var></a></dt>
 <dd class="">a Object as map containing names as keys and the values to set as map values. See above for the name syntax.</dd>
 <dt id="set_cssClasses" class=""><a name="set_cssClasses"><var>cssClasses</var></a></dt>

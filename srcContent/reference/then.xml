@@ -21,13 +21,13 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="then_onSuccess" class=""><a name="then_onSuccess"><var>onSuccess</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.
+<dt id="then_onSuccess" class=""><a name="then_onSuccess"><var>onSuccess (optional)</var></a></dt>
+<dd class="">a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.
 If the function returns a <a href='promise.html'>Promise</a>, that Promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the
 returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
 Pass <var>null</var> or <var>undefined</var> if you do not need the success handler.</dd>
-<dt id="then_onError" class=""><a name="then_onError"><var>onError</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a <a href='promise.html'>Promise</a>, that promise will
+<dt id="then_onError" class=""><a name="then_onError"><var>onError (optional)</var></a></dt>
+<dd class="">a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a <a href='promise.html'>Promise</a>, that promise will
 be evaluated to determine the state of the Promise returned by <var>then()</var>. If it returns anything else, the returned Promise will
 have success status. If the function throws an error, the returned Promise will be in the error state.
 You can pass <var>null</var> or <var>undefined</var> if you do not need the error handler.</dd>

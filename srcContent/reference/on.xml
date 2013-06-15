@@ -13,32 +13,37 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">$(selector).on(names, handler)</div>
-<div class="syntax">$(selector).on(names, handler, args)</div>
-<div class="syntax">$(selector).on(names, handler, fThis, args)</div>
+<div class="syntax">$(selector).on(names, eventHandler)</div>
+<div class="syntax">$(selector).on(names, customFunc, args)</div>
+<div class="syntax">$(selector).on(names, customFunc, fThis, args)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="on_names" class=""><a name="on_names"><var>names</var></a></dt>
-<dd class="">the space-separated names the event, e.g. 'click'. Case-sensitive. The 'on' prefix in front of the name must not used. You can
-register the handler for more than one event by specifying several space-separated event names. If the name is prefixed
+<dd class="">the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of
+the name must not used. You can register the handler for more than one event by specifying several
+space-separated event names. If the name is prefixed
 with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will
 be executed by the browser.</dd>
-<dt id="on_handler" class=""><a name="on_handler"><var>handler</var></a></dt>
-<dd class="">the <code>function(event, index)</code> to invoke when the event has been triggered. If no new arguments have been given using
-<var>on()</var>'s second argument, the handler gets the original event object as first parameter and the index
-of the object in the current <a href='list.html'>Minified list</a> as second. 'this' is the element that
-caused the event, unless you override it with the third argument.
-Unless the handler returns true or the event name is prefixed by '|', all further processing of the event will be
-stopped and event bubbling will be disabled. If you supply custom arguments, the return value will be ignored.
-Minified will not use directly add this handler to the element, but create a wrapper that will eventually invoke it. The wrapper
-is added to the handler in an array property called 'M'.</dd>
-<dt id="on_fThis" class=""><a name="on_fThis"><var>fThis</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> an value for 'this' in the handler, as alternative to the event target</dd>
-<dt id="on_args" class=""><a name="on_args"><var>args</var></a></dt>
-<dd class=""><span class="optional">(optional)</span> an array of arguments to pass to the handler function instead of the event objects. If you pass custom arguments, the
-return value of the handler will always be ignored.</dd>
+<dt id="on_eventHandler" class=""><a name="on_eventHandler"><var>eventHandler</var></a></dt>
+<dd class="">the callback <code>function(event, index)</code> to invoke when the event has been triggered:
+<dl>
+<dt>event</dt><dd>The original DOM event object.</dd>
+<dt>index</dt><dd>The index of the target object in the <a href='list.html'>Minified list</a> .</dd>
+<dt class="returnValue">(callback return value)</dt><dd>Unless the handler returns <var>true</var>
+or the event name is prefixed by '|', all further processing of the event will be
+stopped and event bubbling will be disabled.</dd>
+</dl>
+'this' is set to the element that caused the event.</dd>
+<dt id="on_customFunc" class=""><a name="on_customFunc"><var>customFunc</var></a></dt>
+<dd class="">a function to be called instead of a regular event handler with the arguments given in <var>args</var>
+and optionally the 'this' context given using <var>fThis</var>.</dd>
+<dt id="on_fThis" class=""><a name="on_fThis"><var>fThis (optional)</var></a></dt>
+<dd class="">an value for 'this' in the custom callback, as alternative to the event target</dd>
+<dt id="on_args" class=""><a name="on_args"><var>args (optional)</var></a></dt>
+<dd class="">an array of arguments to pass to the custom callback function instead of the event objects.
+If you pass custom arguments, the return value of the handler will always be ignored.</dd>
 <dt id="on_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="on_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2">the list</dd>
 </dl>
@@ -46,9 +51,10 @@ return value of the handler will always be ignored.</dd>
 <h4>Description</h4>
 <div class="description"><p>Registers the function as event handler for all items in the list.</p><p>By default, Minified cancels event propagation and the element's default behaviour for all elements that have an event handler.
 You can override this by prefixing the event name with a '|' or by returning a 'true' value in the handler, which will reinstate
-the original JavaScript behaviour.</p><p>Handlers are usually called with the original event object as first argument, the index of the source element in the
-list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked).</p><p>Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the event handler. When you pass arguments, the
-handler's return value is always ignored and the event with unnamed prefixes will always be cancelled.</p><p>Event handlers can be unregistered using <code><a href='off.html'>$.off()</a></code>.</p><p></p></div>
+the original JavaScript behaviour.</p><p>Handlers are called with the original event object as first argument, the index of the source element in the
+list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked).</p><p>Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback.
+When you pass arguments, the handler's return value is always ignored and the event with unnamed prefixes
+will always be cancelled.</p><p>Event handlers can be unregistered using <code><a href='off.html'>$.off()</a></code>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -60,19 +66,19 @@ $('div').on('click', function() {
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>handler to call a method setStatus('running') using an inline function:
+<div class="example"><p>Registers a handler to call a method setStatus('running') using an inline function:
 <pre>
 $('#myButton').on('click', function() {
    myObject.setStatus('running');
 });
 </pre>
-The same can be written like this using on() argument and fThis parameters:
+The previous example can bere written like this, using <var>on()</var>'s <var>args</var> and <var>fThis</var> parameters:
 <pre>
 $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>Adds two handlers on an input field and keeps the original behaviour:
+<div class="example"><p>Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behaviour:
 <pre>
 $('#myInput').on('|keypress |keydown', function() {
    // do something

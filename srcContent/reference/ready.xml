@@ -19,19 +19,19 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="ready_handler" class=""><a name="ready_handler"><var>handler</var></a></dt>
-<dd class="">the function to be called when the HTML is ready</dd>
+<dd class="">the <code>function()</code> to be called when the HTML is ready.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Registers a handler to be called as soon as the HTML has been fully loaded. Does not necessarily wait images and other elements, only the main
-HTML document needs to be complete. On older browsers, it is the same as 'window.onload'.</p><p>If you call ready() after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.</p><p></p></div>
+<div class="description"><p>Registers a handler to be called as soon as the HTML has been fully loaded. Does not necessarily wait for images and other elements,
+only the main HTML document needs to be complete. On older browsers, it is the same as <var>window.onload</var>.</p><p>If you call <var>ready()</var> after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
 <div class="example"><p>Registers a handler that sets some text in an element:
 <pre>
 $.ready(function() {
-  $$('#someElement').innerHTML = 'ready() called';
+  $('#someElement').fill('ready() called');
 });
 </pre>
 </p></div>

@@ -34,8 +34,12 @@ tr:not(:first-child) th { background-color: #fff; font-weight: normal;}
 	padding: 0.7em;
 	
 	overflow: hidden;
-	height: 0;
+	height: 5em;
 	display: none;
+}
+
+#shareExt {
+	margin: 0.75em 0;
 }
 
 .actionButton, .ghButton, .shareButton {
