@@ -528,8 +528,9 @@ define('minified', function() {
      * });
      * </pre>
      *
-     * @param callback the callback <code>function(item, index)</code> to invoke. The first argument is the list element, and the second the zero-based index
-     *                 of the element.
+     * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
+     *                 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+     *                 The callback's return value will be ignored.
      * @return the list
      */
 	'each': function (callback) {
@@ -554,8 +555,9 @@ define('minified', function() {
 	 * });
 	 * </pre>
 	 * 
-	 * @param filterFunc the callback <code>function(item, index)</code> to invoke for each item with the item as first argument and the 0-based index as second argument.  
-	 *        If the function returns false for an item, it is not included in the resulting list. 
+	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
+	 *        <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>  
 	 * @return the new, filtered ##list#list##
 	 */
 	'filter': function(filterFunc) {
@@ -604,10 +606,11 @@ define('minified', function() {
      * }); 
      * </pre> 
      * 
-     * @param collectFunc the callback <code>function(item, index)</code> to invoke for each item with the item as first argument and the 
-     * 0-based index as second argument. 
-     * If the function returns a list, its elements will be added to the result list. Other objects will also be added. Nulls and <var>undefined</var>
-     * will be ignored and be not added to the new result list. 
+     * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item.:
+     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
+	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and be not added to 
+	 *        the new result list. </dd></dl>
      * @return the new ##list#list##
      */ 
 	'collect': function(collectFunc) { 
@@ -669,7 +672,7 @@ define('minified', function() {
      * <li>With an element as argument. Then <var>find()</var> will search for the first occurrence of that element in the list
      *     and return the index. If it is not found, <var>find()</var> returns <var>undefined</var>.</li>
      * <li>With a callback function. <var>find()</var> will then call the given function for each list element until the function 
-     *     returns a value that is not null or undefined. This value will be returned.</li>
+     *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
      * </ol>
      *
      * @example Determines the position of the element with the id '#wanted' among all li elements:
@@ -682,7 +685,10 @@ define('minified', function() {
      * var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) return e; });
      * </pre> 
      * 
-     * @param findFunc the callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value.
+     * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
+     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
+	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
      * @param element the element to search for
      * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
      *         it returns either the value returned by the callback or <var>undefined</var>.
@@ -953,13 +959,17 @@ define('minified', function() {
 	 *             The special name '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1. 
 	 *             
 	 * 
-	 * @param value the value to set. If it is a function, the <code>function(oldValue, index, obj)</code> will be invoked for each list element 
-	 * to evaluate the new value. The function is called with with the old value as first argument and the index in the list as second.
-	 * The third value is the object being modified. Functions are not allowed as values for virtual properties ('$$fade' and '$$slide'). 
-	 * For the CSS style names, the old value given to the function is the old value of the className property containing the existing classes.
-	 * If value is null and name specified an attribute, the attribute will be removed.
+	 * @param value the value to set. If value is null and name specified an attribute, the attribute will be removed.
 	 * If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
-	 * with a '-' prefix the class will be removed. Without prefix, the class will be toggled. Functions are not supported by '$'.
+	 * with a '-' prefix the class will be removed. Without prefix, the class will be toggled.
+	 * If <var>value</var> is a function, the <code>function(oldValue, index, obj)</code> will be invoked for each list element 
+	 * to evaluate the new value: 
+	 * <dl><dt>oldValue</dt><dd>The old value of the property to be changed, as returned by ##get().
+	 * For the CSS style names, this is the computed style of the property </dd>
+	 * <dt>index</dt><dd>The list index of the object owning the property</dd>
+	 * <dt>obj</dt><dd>The list element owning the property.<dd>
+	 * <dt class="returnValue">(callback return value)</dt><dd>The value to be set.</dd></dl>
+	 * Functions are not supported by '$'.
 	 * @param properties a Object as map containing names as keys and the values to set as map values. See above for the name syntax.
 	 * @param cssClasses if <var>set()</var> is invoked with a string as single argument, the name "$" (CSS classes) is used and the argument is the
 	 *                   value. See above for CSS syntax.
@@ -1088,9 +1098,12 @@ define('minified', function() {
 	 * </pre>
 	 *
 	 * @param text a string or number to add as text node
-	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
-	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
-	 *              containing strings, lists, functions and/or DOM nodes.
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes: 
+	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
+	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @param list a list containing text, functions, nodes or more lists. Please note that if you have DOM nodes in this list
 	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories
 	 *             if you add DOM nodes to more than one element.
@@ -1191,9 +1204,13 @@ define('minified', function() {
 	 * </pre>
 	 *
 	 * @param text a string to set as text node of the list elements
-	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
-	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
-	 *              containing strings, lists, functions and/or DOM nodes.
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes: 
+	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
+	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
+
 	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
 	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
 	 *             Minified list contains more than one item.
@@ -1260,9 +1277,12 @@ define('minified', function() {
 	 * </pre>
 	 *
 	 * @param text a string to add as text node of the list elements
-	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
-	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
-	 *              containing strings, lists, functions and/or DOM nodes.
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes: 
+	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
+	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
 	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
 	 *             Minified list contains more than one item.
@@ -1323,9 +1343,12 @@ define('minified', function() {
 	 * </pre> 
 	 *
 	 * @param text a string to add as text node of the list elements
-	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
-	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
-	 *              containing strings, lists, functions and/or DOM nodes.
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
+	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
+	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
 	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
 	 *             Minified list contains more than one item.
@@ -1398,9 +1421,13 @@ define('minified', function() {
 	 * </pre>
 	 *
 	 * @param text a string to add as text node of the list elements
-	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes. 
-	 *              The function can return either a string for a text node, a function to invoke, an HTML element or a list 
-	 *              containing strings, lists, functions and/or DOM nodes.
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
+	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
+	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
+
 	 * @param list a list containing text, functions, nodes or nested lists containing those items. Please note that if you have DOM nodes in this list
 	 *             and attempt to add them to more than one element, the result is undefined. 
 	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
@@ -1469,8 +1496,12 @@ define('minified', function() {
 	 *
 	 *
 	 * @param text a text for the text nodes that replace the list elements
-	 * @param callbackFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to determine its content. 
-	 *              The function can return either a string for a text node, an HTML node or a list containing strings and/or HTML node.
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to determine its content: 
+	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
+	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @param node content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
 	 *              an HTML node or a list containing strings and/or HTML node.
 	 * @return the current list
@@ -1511,9 +1542,12 @@ define('minified', function() {
 	 * $('#comments').add($('.comment').clone());
 	 * </pre> 
 	 * 
- 	 * @param onCreate optional a <code>function(elementList)</code> that will be called for each top-level element created by the Element
- 	 *                 Factory. The argument contains the result as a Minified list. This allows you, for example, 
- 	 *                 to add event handlers with ##on(). Please note that the callback will be ignored for cloned text nodes. If you clone
+ 	 * @param onCreate optional A <code>function(elementList)</code> that will be called for each top-level element created by the Element
+ 	 *                 Factory:
+ 	 *                 <dl><dt>elementList</dt><dd>The newly created element wrapped in a Minified list. </dd></dl>
+ 	 *                 The function's return value will be ignored. 
+ 	 *                 The callback allows you, for example, to add event handlers to the element using ##on().
+ 	 *                 Please note that the callback will be not be called for cloned text nodes. If you clone
  	 *                 more than one element, <var>onCreate</var> will be invoked for each element. 
 	 * @return the list of Element Factory functions and strings to create clones
 	 */
@@ -1636,14 +1670,24 @@ define('minified', function() {
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.
 	 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> which will be
-	 *             called every time an interpolated value is required. <var>t</var> is a value between 0 and 1 that specifies the state of the transition.
+	 *             called every time an interpolated value is required:
+	 *             <dl>
+	 *             <dt>startValue</dt><dd>The start value of the transition.</dd>
+	 *             <dt>endValue</dt><dd>The end value of the transition.</dd>
+	 *             <dt>t</dt><dd>A value between 0 and 1 that specifies the state of the transition.</dd>
+	 *             <dt class="returnValue">(callback return value)</dt><dd>The value at the time <var>t</var>.</dd>
+	 *             </dl> 
 	 * @param state optional if set, the animation controller will write information about its state in this object. When <var>animate()</var> returns,
 	 *                       there will be a <var>stop()</var> function in the property <var>state.stop</var> that can be used to abort the animation. 
 	 *                       The property <var>state.time</var> will be continously updated while the animation is running
 	 *                       and contains the number of milliseconds that have passed from the start, allowing you to track the progress of the animation. 
 	 *                       If the animation finished, controller writes null into <var>state.time</var>. <var>state.stop</var> will not be 
 	 *                       modified and can still be safely invoked even when the animation ended. 
-	 * @return a ##promise#Promise## object to monitor the animation's progress. It is fulfilled when the animation ended, and rejected if the animation had been stopped.
+	 * @return a ##promise#Promise## object to monitor the animation's progress. 
+	 *         It is fulfilled when the animation ended, and rejected if the animation had been stopped.
+	 *         The fulfillment handler will be called as <code>function(list)</code>:
+	 *         <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl> 
+	 *         The rejection handler is called as <code>function()</code> without arguments. 
 	 */
 	'animate': function (properties, durationMs, linearity, state) {
 		// @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
@@ -1772,11 +1816,19 @@ define('minified', function() {
 		 * @param durationMs optional if set, the duration of the animation in milliseconds. By default, there is no animation and the 
 		 * 					 properties will be changed immediately.
 		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.
-		 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> which will be called every time an interpolated value is required. 
-		 * <var>t</var> is a value between 0 and 1 that specifies the state of the transition. The function must return the value to assume at the given time.
-		 * @return a <code>function(newState)</code> that will change from the first to the second state and vice versa if called without argument or with
-		 *         <var>newState</var> set to <var>null</var>. If the argument is a boolean false or true, the first or second state will be set respectively. 
-		 *         If the argument is not boolean or the function is called without arguments, the function toggles between both states. 
+		 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> for the animation which will be called every 
+		 *     time an interpolated value is required: 
+		 *           <dl>
+	 	 *             <dt>startValue</dt><dd>The start value of the transition.</dd>
+	 	 *             <dt>endValue</dt><dd>The end value of the transition.</dd>
+	 	 *           <dt>t</dt><dd>A value between 0 and 1 that specifies the state of the transition.</dd>
+	 	 *             <dt class="returnValue">(callback return value)</dt><dd>The value at the time <var>t</var>.</dd>
+	 	 *             </dl> 		 
+	 	 * @return a toggle function <code>function(newState)</code> that will toggle between the two states, or set a specific state.
+		 *             <dl>
+		 *             <dt>newState (optional)</dt><dd>If a boolean <var>true</var or <var>false</var> is given, 
+		 *             the toggle will set the first or second state, respectively. If called with any other value, or without a value,
+		 *             the function toggles to the other state.</dd></dl>
 		 */
 		'toggle': function(state1, state2, durationMs, linearity) {
 			var self = this;
@@ -1852,12 +1904,15 @@ define('minified', function() {
 		 *             space-separated event names. If the name is prefixed
 		 *             with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will 
 		 *             be executed by the browser. 
-		 * @param eventHandler the callback <code>function(event, index)</code> to invoke when the event has been triggered. The first 
-		 *                argument for the handler is the original DOM event object and the second is the index
-		 *                of the target object in the current ##list#Minified list##. 'this' is the element that 
-		 *                caused the event.
-		 *                Unless the handler returns true or the event name is prefixed by '|', all further processing of the event will be 
-		 *                stopped and event bubbling will be disabled.
+		 * @param eventHandler the callback <code>function(event, index)</code> to invoke when the event has been triggered:
+		 * 		  <dl>
+	 	 *             <dt>event</dt><dd>The original DOM event object.</dd>
+	 	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
+	 	 *             <dt class="returnValue">(callback return value)</dt><dd>Unless the handler returns <var>true</var> 
+	 	 *             or the event name is prefixed by '|', all further processing of the event will be 
+		 *                stopped and event bubbling will be disabled.</dd>
+	 	 *             </dl>
+		 *             'this' is set to the element that caused the event.
 		 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>
 		 *                   and optionally the 'this' context given using <var>fThis</var>.
 		 * @param fThis optional an value for 'this' in the custom callback, as alternative to the event target
@@ -1909,7 +1964,7 @@ define('minified', function() {
 	* @syntax $.request(method, url, data, onSuccess, onFailure, headers, username, password)
 	* Initiates a HTTP request to the given URL, using XMLHttpRequest. It returns a ##promise#Promise## object that allows you to obtain the result.
 	* 
-	* @example Invoke a REST web service and parse the resulting document using JSON:
+	* @example Invokes a REST web service and parse the resulting document using JSON:
 	* <pre>
 	* $.request('get', 'http://service.example.com/weather', {zipcode: 90210})
 	*    .then(function(txt) {
@@ -1921,7 +1976,7 @@ define('minified', function() {
 	*     });
 	* </pre>
 	* 
-	* @example Send a JSON object to a REST web service:
+	* @example Sending a JSON object to a REST web service:
 	* <pre>
 	* var myRequest = {         // create a request object that can be serialized via JSON
 	*      request: 'register',
@@ -1945,22 +2000,26 @@ define('minified', function() {
 	* </pre>
 	*
 	* 
-	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data on the server, and 'get' to only request data). Not case sensitive.
+	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data 
+	*             on the server, and 'get' to request data). Not case sensitive.
 	* @param url the server URL to request. May be a relative URL (relative to the document) or an absolute URL. Note that unless you do something 
 	*             fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only call URLs on the server your script originates from.
-	* @param data optional data to send in the request, either as POST body or as URL parameters. It can be either a map of 
-	*             parameters (all HTTP methods), a string (all methods) or a DOM document ('post' only). If the method is 'post', it will be 
-	*             sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the same name, use an array of values
-	*             in the map. Use null as value for a parameter without value.
+	* @param data optional data to send in the request, either as POST body or as URL parameters. It can be either an object as map of 
+	*             parameters (for all HTTP methods), a string (for all HTTP methods) or a DOM document ('post' only). If the method is 
+	*             'post', it will be sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the 
+	*             same name, use an array of values in the map. Use null as value for a parameter without value.
 	* @param headers optional a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
 	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.
 	* @param username optional username to be used for HTTP authentication, together with the password parameter
 	* @param password optional password for HTTP authentication
-	* @return a ##promise#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, the success handler will be called.
-	*         Its first argument is the text sent by the server. The second argument will contain the XML sent by the server, if there was a XML response.
-	*         The failure handler will receive three arguments. The first argument is the HTTP status (never 200; 0 if no HTTP request took place), 
-	*                  the second a status text (or null, if the browser threw an exception) and the third the returned text, if there was 
-	*                  any (the exception as string if the browser threw it).
+	* @return a ##promise#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
+	*         the success handler will be called as <code>function(text, xml)</code>:
+	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
+	*         <dt>xml</dt><dd>If the response was a XML document, the DOM <var>Document</var>. Otherwise null.</a>.</dd></dl>
+	*         The failure handler will be called as <code>function(statusCode, statusText, text)</code>:
+	*         <dl><dt>statusCode</dt><dd>The HTTP status (never 200; 0 if no HTTP request took place).</dd>
+	*         <dt>statusText</dt><dd>The HTTP status text (or null, if the browser threw an exception).</dd>
+	*         <dt>text</dt><dd>the response's body text, if there was any, or the exception as string if the browser threw one.</a>.</dd></dl>
 	*/
 	'request': function (method, url, data, headers, username, password) {
 		// @cond debug if (!method) error("request() requires a HTTP method as first argument.");
@@ -2028,13 +2087,13 @@ define('minified', function() {
     * @configurable default
     * @name $.toJSON()
     * @syntax $.toJSON(value)
-    * Converts the given value into a JSON string. The value may be a map-like object, an array, a string, number, boolean or null.
+    * Converts the given value into a JSON string. The value may be a map-like object, an array or list, a string, number, boolean or null.
    	* If you build Minified without Internet Explorer compatibility, this is just an alias for <var>JSON.stringify</var>.
 	*
     * The following types are supported by the built-in implementation:
     * <ul>
     *   <li>Objects (direct properties will be serialized)</li>
-    *   <li>Arrays</li>
+    *   <li>Arrays/Lists (with <var>length</var> property)</li>
     *   <li>Strings</li>
     *   <li>Numbers</li>
     *   <li>Boolean</li>
@@ -2042,13 +2101,13 @@ define('minified', function() {
     * </ul>
     * Any other types in your JSON tree, especially Dates, should be converted into Strings by you.
     *
-    * @example Convert an object into a JSON object:
+    * @example Converts an object into a JSON object:
     * <pre>
     * var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
     * var jsonString = $.toJSON(myObj);
     * </pre>
     * 
-    * @param value the value (map-like object, array, string, number, boolean or null)
+    * @param value the value (map-like object, array/list, string, number, boolean or null)
     * @return the JSON string
     */
     'toJSON': _window.JSON && JSON.stringify,
@@ -2066,7 +2125,7 @@ define('minified', function() {
 	* by the use of <var>eval</var> in the implementation. Only in browsers without
 	* <var>JSON.parse</var> Minified's own implementation will be used.
 	* 
-	* If you use a Minified build without Internet Explorer 7 compatibility, n<var>JSON.parse</var> will always be used.
+	* If you use a Minified build without Internet Explorer 7 compatibility, <var>JSON.parse</var> will always be used.
 	*
 	* @example Parsing a JSON string:
 	* <pre>
@@ -2086,19 +2145,19 @@ define('minified', function() {
     * @configurable default
     * @name $.ready()
     * @syntax $.ready(handler)
-    * Registers a handler to be called as soon as the HTML has been fully loaded. Does not necessarily wait images and other elements, only the main
-    * HTML document needs to be complete. On older browsers, it is the same as 'window.onload'. 
+    * Registers a handler to be called as soon as the HTML has been fully loaded. Does not necessarily wait for images and other elements, 
+    * only the main HTML document needs to be complete. On older browsers, it is the same as <var>window.onload</var>. 
     * 
-    * If you call ready() after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.
+    * If you call <var>ready()</var> after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.
     *
     * @example Registers a handler that sets some text in an element:
     * <pre>
     * $.ready(function() {
-    *   $$('#someElement').innerHTML = 'ready() called';
+    *   $('#someElement').fill('ready() called');
     * });
     * </pre>
     *
-    * @param handler the function to be called when the HTML is ready
+    * @param handler the <code>function()</code> to be called when the HTML is ready.
     */
     'ready': ready,
 
@@ -2112,7 +2171,10 @@ define('minified', function() {
      * @syntax $.setCookie(name, value, dateOrDays, path)
      * @syntax $.setCookie(name, value, dateOrDays, path, domain)
      * Creates, updates or deletes a cookie. If there is an an existing cookie
-     * of the same name, will be overwritten with the new value and settings. 
+     * of the same name, will be overwritten with the new value and settings.
+     * 
+     * To delete a cookie, overwrite it with an expiration date in the past. The easiest way to do this is to 
+     * use <code>-1</code> as third argument.
      *
      * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
      * <pre>
@@ -2127,11 +2189,11 @@ define('minified', function() {
      * $.setCookie('numberOfVisits', '', -1);
      * </pre>
      * 
-     * @param name the name of the cookie. This should be ideally an alphanumeric name, as it will not be escaped by Minified and this
+     * @param name the name of the cookie. This should ideally be an alphanumeric name, as it will not be escaped by Minified and this
      *             guarantees compatibility with all systems.
      *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax. 
-     * @param value the value of the cookie. All characters except alphanumeric and "*@-_+./" will be escaped using the 
-     *              JavaScript <var>escape()</var> function and thus can be used, unless you set the optional <var>dontEscape</var> parameter.
+     * @param value the value of the cookie. All characters can be used. Non-Alphanumeric other than "*@-_+./" will be escaped using the 
+     *              JavaScript <var>escape()</var> function, unless you set the optional <var>dontEscape</var> parameter.
      * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
      *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
      *                   browser has been closed. If the number negative or the date in the past, the cookie will be deleted.
@@ -2173,9 +2235,10 @@ define('minified', function() {
      *  
      * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
      *             You may want to escape the name using <var>encodeURIComponent()</var> for all other characters.
-     * @param dontUnescape optional if set and true, the value will be returned unescaped. use this only if the value has been encoded
+     * @param dontUnescape optional if set and true, the value will be returned unescaped. Use this parameter only if the value has been encoded
      *                     in a special way, and not with the JavaScript <var>encode()</var> method.
-     * @return the value of the cookie, or null if not found. Depending on the dontUnescape parameter, it may be escaped or not.
+     * @return the value of the cookie, or null if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
+     *         using JavaScript's <code>unescape()</code> function.
      */
     'getCookie': function(name, dontUnescape) {
     	// @cond debug if (!name) error('Cookie name must be set!');
@@ -2192,7 +2255,7 @@ define('minified', function() {
 	* @name $.loop()
 	* @syntax $.loop(paintCallback)
 	* Runs an animation loop. The given callback method will be invoked repeatedly to create a new animation frame.
-	* In modern browsers, requestAnimationFrame will be used to invoke the callback every time the browser is ready for a new 
+	* In modern browsers, <var>requestAnimationFrame</var> will be used to invoke the callback every time the browser is ready for a new 
 	* animation frame. The exact frequency is determined by the browser and may vary depending on factors such as the time needed to 
 	* render the current page, the screen's framerate and whether the page is currently visible to the user. 
 	* In older browsers, the callback function will be invoked approximately every 33 milliseconds.
@@ -2221,10 +2284,11 @@ define('minified', function() {
 	* </pre>
 	*
 	* @param paintCallback a callback <code>function(timestamp, stopFunc)</code> to invoke for painting. Parameters given to callback:
-	* <ul>
-	*            <li><var>timestamp</var> - number of miliseconds since animation start</li>
-	*            <li><var>stop</var> - call this <code>function()</code> to stop the currently running animation</li>
-	* </ul>
+	* <dl>
+	*            <dt>timestamp</dt><dd>The number of miliseconds since animation start.</dd>
+	*            <dt>stop</dt><dd>Call this <code>function()</code> to stop the currently running animation.</dd>
+	* </dl>
+	* The callback's return value will be ignored.
 	* @return a <code>function()</code> that stops the currently running animation. This is the same function that is also given to the callback.
 	*/
 	'loop': function(paintCallback) { 
@@ -2251,8 +2315,8 @@ define('minified', function() {
 	 * @configurable default
 	 * @name $.off()
 	 * @syntax $.off(handler)
-	 * Removes the given event handler. The call will be ignored if the given handler has not registered using ##on(). If the handler has been registered
-	 * for more than one element or event, it will be removed from all instances.
+	 * Removes the given event handler. The call will be ignored if the given handler has not been registered using ##on(). 
+	 * If the handler has been registered for more than one element or event, it will be removed from all instances.
 	 * 
 	 * @example Adds a handler to an element:
 	 * <pre>
@@ -2312,16 +2376,17 @@ define('minified', function() {
 		 * @syntax $(list)
 		 * @syntax $(list, context)
 		 * @syntax $(list, context, childOnly)
-		 * @syntax $(node)
-		 * @syntax $(node, context)
-		 * @syntax $(node, context, childOnly)
+		 * @syntax $(object)
+		 * @syntax $(object, context)
+		 * @syntax $(object, context, childOnly)
 		 * @syntax $(domreadyFunction)
-		 * Creates a ##list#Minified list## of HTML nodes. 
-		 * The most common way to create the list is with a CSS-like selector. The function will then create a list containing all elements of the current HTML
-		 * document that fulfill the filter conditions. Alternatively you can also specify a list of nodes or a single node. Nested lists will automatically be flattened, and
-		 * Nulls will automatically be removed from the resulting list.
+		 * Creates a new ##list#Minified list##, or register a DOMReady-handler. 
+		 * The most common usage is with a CSS-like selector. <var$()</var> will then create a list containing all elements of the current HTML
+		 * document that fulfill the filter conditions. Alternatively you can also specify a list of objects or a single object. 
+		 * Nested lists will automatically be flattened, and nulls will automatically be removed from the resulting list.
 		 * 
-		 * Additionally, you can specify a second argument to provide a context. The context limits the resulting list to include only those nodes 
+		 * Additionally, you can specify a second argument to provide a context. Contexts only make sense if you selected only
+		 * HTML nodes with the first parameter. Then the context limits the resulting list to include only those nodes 
 		 * that are descendants of the context nodes. The context can be either a selector, a list or a single HTML node, and will be 
 		 * processed like the first argument. A third arguments allows you to limit the list to 
 		 * only those elements that are direct children of the context nodes (so a child of a child would be filtered out).
@@ -2335,7 +2400,7 @@ define('minified', function() {
 		 * var l0 = $('#myElementId');
 		 * </pre>
 		 * 	 
-		 * @example You can pass a reference to an DOM node to the function to receive a list containing only this node:
+		 * @example You can pass a reference to a DOM node to the function to receive a list containing only this node:
 		 * <pre>
 		 * var l1 = $(document.getElementById('myElementId')); 
 		 * </pre>
@@ -2345,7 +2410,7 @@ define('minified', function() {
 		 * var l2 = $([elementA, elementB, elementC]); 
 		 * </pre>
 		 * 	 
-		 * @example Lists will be automatically flattened and nulls removed. Thus this list <var>l3</var> has the same content as <var>l2</var>:
+		 * @example Lists will be automatically flattened and nulls removed. So this list <var>l3</var> has the same content as <var>l2</var>:
 		 * <pre>
 		 * var l3 = $([elementA, [elementB, null, elementC], null]); 
 		 * </pre>
@@ -2362,7 +2427,7 @@ define('minified', function() {
 		 * 	 
 		 * @example A selector to find all elements with the given name and class.
 		 * <pre>
-		 * var l6 = $('input.myRadio'); // finds all input elements wit
+		 * var l6 = $('input.myRadio'); // finds all input elements with class 'myRadio'
 		 * </pre>
 		 * 	 
 		 * @example A selector to find all elements that are descendants of the given element.
@@ -2389,7 +2454,7 @@ define('minified', function() {
 		 * var l10 = $('#formA .myRadio, #formB .myRadio, #formC .myRadio'); 
 		 * </pre>
 		 *  	 
-		 * @example Using one of the list functions, ##set(), on the list, and set the element's text color. '$' at the beginning of the property name sets a CSS value.
+		 * @example Using one of the list functions, ##set(), on the list, and setting the element's text color. '$' at the beginning of the property name sets a CSS value.
 		 * <pre>
 		 * $('#myElementId').set('$color', 'red');
 		 * </pre>
@@ -2403,10 +2468,10 @@ define('minified', function() {
 		 *                      });
 		 * </pre>
 		 * 
-		 * @example Using $() as a ##ready#$.ready() shortcut:
+		 * @example Using $() as a #ready#$.ready() shortcut:
 		 * <pre>
 		 * $(function() {
-		 *   // work with the DOM tree
+		 *   // in here you can safely work with the HTML document
 		 * });
 		 * </pre>
 		 * 
@@ -2420,15 +2485,13 @@ define('minified', function() {
 		 * @param list a list to copy. It can be an array, another Minified list, a DOM nodelist or anything else that has a <var>length</var> property and
 		 *             allows read access by index. A shallow copy of the list will be returned. Nulls will be automatically removed from the copy. Nested lists 
 		 *             will be flattened, so the result only contains nodes.
-		 * @param node a node to create a single-element list containing only the node. If the node argument is null, an empty list will be returned.
+		 * @param object a object to create a single-element list containing only the object. If the object argument is null, an empty list will be returned.
 		 * @param domreadyFunction a function to be registered using #ready#$.ready().
 		 * @param context optional an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection, using the same syntax variants as the
 		 *             first argument. If given, the returned list contains only descendants of the context nodes, all others will be filtered out. 
 		 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
 		 *             true, all descendants of the context will be included. 
-		 * @return the array-like ##list#Minified list## object containing the content specified by the selector. The returned object 
-		 *             is guaranteed to have a property 'length', specifying the number of elements, and allows you to access elements with numbered properties, as in 
-		 *             regular arrays (e.g. list[2] for the second elements). Beside that, Minified provides a large number of functions that work on the list.
+		 * @return the array-like ##list#Minified list## object containing the content specified by the selector. 
 		 *             Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the first argument was a list, 
 		 *             the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. If you combined several selectors 
 		 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to form a single list. This list will, 
@@ -2565,8 +2628,10 @@ define('minified', function() {
 		 *                         Functions will be invoked and their return value will be used. Lists can be 
 		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored. 
 		 *                         The syntax is exactly like ##add().
-		 * @param onCreate optional a <code>function(elementList)</code> that will be called each time an element had been created. This allows you, for example, to 
-		 *                 add event handlers with ##on(). The argument <var>elementList</var> is a Minified list that contains the new element.
+		 * @param onCreate optional a <code>function(elementList)</code> that will be called each time an element had been created. 
+		 *                 <dl><dt>elementList</dt><dd>The newly created element wrapped in a Minified list.  </dd></dl>
+		 *                 The function's return value will be ignored. 
+		 *                 The callback allows you, for example, to add event handlers to the element using ##on().
 		 * @return a Element Factory function, which returns a Minified list containing the DOM HTMLElement that has been created or modified as only element
 		 */
 		'EE': EE

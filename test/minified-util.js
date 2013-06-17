@@ -673,6 +673,40 @@ define('minifiedUtil', function() {
 		return result;
 	}
 	
+	var JAVASCRIPT_ESCAPES = {'"': '\\"', "'": "\\'", '\n': '\\n', '\t': '\\t', '\r': '\\r'};
+	function escapeJavaScriptString(s) {
+		return replace(s, /['"\t\n\r]/, function(a) {
+			return JAVASCRIPT_ESCAPES[a];
+		});
+	}
+	
+
+	var templateCache={};
+	function template(template, escapeFunction) {
+		if (templateCache[template])
+			return templateCache[template];
+		else {
+			var f = (new Function('obj', 'out', 'esc', 'print', '_', 'with(obj){'+
+			 		map(template.split(/<%|%>/), function(chunk, index) {
+						if (index%2) { // odd means JS code
+							var unprefChunk = replace(chunk, /^=/);
+							if (chunk == unprefChunk)
+								return chunk;
+							else
+								return 'print(esc('+unprefChunk+'));\n';
+						}
+						else {
+							return 'print('+escapeJavaScriptString(chunk)+');\n';
+						}
+					})+'}'));
+			return templateCache[template] = function(obj) {
+				var result = [];
+				f(obj, result, escapeFunction || selfFunc, function() {call(result.push, result, arguments);}, UNDERSCORE);
+				result.join('');
+			};
+		}
+	}
+		
 	
 	function promise() {
 		var state; // undefined/null = pending, true = fulfilled, false = rejected
@@ -1038,7 +1072,9 @@ define('minifiedUtil', function() {
 			return replace(s, /[<>'"&]/g, function(s) {
 				return '&#'+s.charCodeAt(0)+';';
 			});
-		}
+		},
+		
+		'template': template
 		
 	/*$
 	 * @id underscorefuncdefend
