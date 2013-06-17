@@ -50,7 +50,11 @@ and contains the number of milliseconds that have passed from the start, allowin
 If the animation finished, controller writes null into <var>state.time</var>. <var>state.stop</var> will not be
 modified and can still be safely invoked even when the animation ended.</dd>
 <dt id="animate_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="animate_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">a <a href='promise.html'>Promise</a> object to monitor the animation's progress. It is fulfilled when the animation ended, and rejected if the animation had been stopped.</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">a <a href='promise.html'>Promise</a> object to monitor the animation's progress.
+It is fulfilled when the animation ended, and rejected if the animation had been stopped.
+The fulfillment handler will be called as <code>function(list)</code>:
+<dl><dt>list</dt><dd>A reference to the animated list.</dd></dl>
+The rejection handler is called as <code>function()</code> without arguments.</dd>
 </dl>
 
 <h4>Description</h4>

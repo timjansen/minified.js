@@ -42,11 +42,14 @@ header 'Content-Type', if you set it, because otherwise it may be overwritten.</
 <dt id="request_password" class=""><a name="request_password"><var>password (optional)</var></a></dt>
 <dd class="">password for HTTP authentication</dd>
 <dt id="request_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="request_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">a <a href='promise.html'>Promise</a> containing the request's status. If the request has successfully completed with HTTP status 200, the success handler will be called.
-Its first argument is the text sent by the server. The second argument will contain the XML sent by the server, if there was a XML response.
-The failure handler will receive three arguments. The first argument is the HTTP status (never 200; 0 if no HTTP request took place),
-the second a status text (or null, if the browser threw an exception) and the third the returned text, if there was
-any (the exception as string if the browser threw it).</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">a <a href='promise.html'>Promise</a> containing the request's status. If the request has successfully completed with HTTP status 200,
+the success handler will be called as <code>function(text, xml)</code>:
+<dl><dt>text</dt><dd>The response sent by the server as text.</dd>
+<dt>xml</dt><dd>If the response was a XML document, the DOM <var>Document</var>. Otherwise null.</a>.</dd></dl>
+The failure handler will be called as <code>function(statusCode, statusText, text)</code>:
+<dl><dt>statusCode</dt><dd>The HTTP status (never 200; 0 if no HTTP request took place).</dd>
+<dt>statusText</dt><dd>The HTTP status text (or null, if the browser threw an exception).</dd>
+<dt>text</dt><dd>the response's body text, if there was any, or the exception as string if the browser threw one.</a>.</dd></dl></dd>
 </dl>
 
 <h4>Description</h4>

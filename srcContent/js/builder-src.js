@@ -122,6 +122,7 @@ catch (e) {console.log(e);}
 	
 	$('#recreate').on('click', recreateConfig);
 	
+	$('#sectionCheckboxes').fill();
 	for (var i = 1; i < GROUPS.length; i++) {
 		var groupCheckBox, div;
 		$('#sectionCheckboxes').add(div = EE('div', {'@id': 'divMod-'+i}, EE('div', {'className': 'groupDescriptor'}, [

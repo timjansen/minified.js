@@ -30,7 +30,7 @@
 	  			<button id="recreate">Load configuration</button>
 	  			</div>
   			</p>
-			<div id="sectionCheckboxes"></div>
+			<div id="sectionCheckboxes">Loading &amp; parsing source code... please wait a second.</div>
 			<p>
 			<input id="compressionAdvanced" type="radio" name="compression" value="closure" checked="checked"/><label for="compressionAdvanced">Minify using Closure / Advanced Compression</label>
 			<input id="compressionNo" type="radio" name="compression" value="source"/><label for="compressionNo">Plain Source</label>

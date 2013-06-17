@@ -32,7 +32,7 @@ p.docFoot {
 }
 .container { min-width: 70em !important; } /* overrides minimum.css */
 
-dd dl { margin: 0.5em; }
+dd dl { margin: 0.5em 0.5em 1em; }
 dd dl dt { font-style: italic; }
 dt { margin-top: 0.5em; }
 dl dl dt { margin-top: 0.25em; }

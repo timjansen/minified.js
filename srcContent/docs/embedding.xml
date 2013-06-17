@@ -28,7 +28,7 @@ with a single file.</li>
 
 <h2>How can I Embed Minified.js?</h2>
 <p>Embedding Minified can be as easy as taking the content of a Minified source file and copying it at the top of your source code. 
-Usually this is not really practical though. Unless only have a few lines of code and can live with scrolling down to edit your own code,
+Usually this is not practical though. Unless only have a few lines of code and can live with scrolling down to edit your own code,
 you need to set up a small build system that combines several source files into a single result file. On the command line, a
 <code>cat</code> command should be sufficient for that. When you use a compiler like Google Closure or UglifyJS, they are usually 
 already capable of combining files. Personally, I prefer to use <a href="http://ant.apache.org">Ant</a> as build system. Combining
@@ -44,7 +44,8 @@ several source files using Ant and Google Closure is as easy as this:
 &lt;/java>
 </pre>
 Ant is perfect for using tools written in Java, such as Closure and YUI compressor, but makes it a bit difficult to use other tools.
-If you prefer UglifyJS, <a href="http://gruntjs.com/">grunt</a> may be a better choice.
+In that case, <a href="http://gruntjs.com/">Grunt</a> is another great and very popular choice for automization with a heavy 
+focus on JavaScript. 
 </p>
 
 <h2>How can I Compile Minified.js with Closure?</h2>
@@ -55,20 +56,21 @@ the annotations and thus, if you want to embed Minified and use Advanced Optimiz
 </p>
 
 <h2>How can I Compile Minified.js with UglifyJS / YUI Compressor / Closure Simple Optimization?</h2>
-<p>You can use both the compiled or the plain source versions of Minified to embed and compile. However, to get the smallest
-possible code size I recommend using the compiled version, as the other tools can't reduce the size as much as Closure's Advanced Optimization
-can. Compiling twice does not hurt as long as you don't use Closure Advanced Optimization twice. In fact, the offical Minifed releases are 
-also compiled twice.
+<p>You can embed and compile both the plain source versions and the pre-compiled release of Minified. 
+However, unless you are using Google Closure, I recommend using the pre-compiled version, as the other tools can't reduce the size as 
+much as Closure's Advanced Optimization. Compiling twice does not hurt as long as you don't use Closure Advanced Optimization twice. 
+In fact, the offical Minifed releases are also compiled twice.
 </p>
 
-<h2>How are Minified's Releases Compiled??</h2>
+<h2>How are Minified's Releases Compiled?</h2>
 <p>The compiled versions of Minified.js are first compiled with the Google Closure Compiler with Advanced Optimization, and the result
 is then compiled again using UglifyJS. In the first step, the size is reduced from over 100kb to about 9kb. In the second step, UglifyJS removes
 about 80 bytes. After GZip'ing the difference is only about 30 bytes.<br/>
-If you are using the <a href="/builder/">builder tool</a>, only Google Closure is used. That's why the builder creates slightly larger files than 
-the release versions.
+If you are using the <a href="/builder/">builder tool</a>, only Google Closure is used. That's why the builder creates slightly larger files.
 
 </p>
+
+<p>back to <a href="/docs">Minified documentation</a>.</p>
 
   </div>
  ]]></page:main>

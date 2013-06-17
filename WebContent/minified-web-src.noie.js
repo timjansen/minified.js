@@ -1683,7 +1683,11 @@ define('minified', function() {
 	 *                       and contains the number of milliseconds that have passed from the start, allowing you to track the progress of the animation. 
 	 *                       If the animation finished, controller writes null into <var>state.time</var>. <var>state.stop</var> will not be 
 	 *                       modified and can still be safely invoked even when the animation ended. 
-	 * @return a ##promise#Promise## object to monitor the animation's progress. It is fulfilled when the animation ended, and rejected if the animation had been stopped.
+	 * @return a ##promise#Promise## object to monitor the animation's progress. 
+	 *         It is fulfilled when the animation ended, and rejected if the animation had been stopped.
+	 *         The fulfillment handler will be called as <code>function(list)</code>:
+	 *         <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl> 
+	 *         The rejection handler is called as <code>function()</code> without arguments. 
 	 */
 	'animate': function (properties, durationMs, linearity, state) {
 		// @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
@@ -2008,11 +2012,14 @@ define('minified', function() {
 	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.
 	* @param username optional username to be used for HTTP authentication, together with the password parameter
 	* @param password optional password for HTTP authentication
-	* @return a ##promise#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, the success handler will be called.
-	*         Its first argument is the text sent by the server. The second argument will contain the XML sent by the server, if there was a XML response.
-	*         The failure handler will receive three arguments. The first argument is the HTTP status (never 200; 0 if no HTTP request took place), 
-	*                  the second a status text (or null, if the browser threw an exception) and the third the returned text, if there was 
-	*                  any (the exception as string if the browser threw it).
+	* @return a ##promise#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
+	*         the success handler will be called as <code>function(text, xml)</code>:
+	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
+	*         <dt>xml</dt><dd>If the response was a XML document, the DOM <var>Document</var>. Otherwise null.</a>.</dd></dl>
+	*         The failure handler will be called as <code>function(statusCode, statusText, text)</code>:
+	*         <dl><dt>statusCode</dt><dd>The HTTP status (never 200; 0 if no HTTP request took place).</dd>
+	*         <dt>statusText</dt><dd>The HTTP status text (or null, if the browser threw an exception).</dd>
+	*         <dt>text</dt><dd>the response's body text, if there was any, or the exception as string if the browser threw one.</a>.</dd></dl>
 	*/
 	'request': function (method, url, data, headers, username, password) {
 		// @cond debug if (!method) error("request() requires a HTTP method as first argument.");

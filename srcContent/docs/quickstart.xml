@@ -19,9 +19,7 @@
 
 <li>No Magic<ul>
 <li>Aims to be predictable</li>
-<li>Never changes built-ins</li>
-<li>No polyfills, no emulated properties</li>
-
+<li>Never changes built-ins, no polyfills, no emulated properties</li>
 <li>Simple, clean API without surprises</li></ul></li>
 </ul>
 
@@ -94,7 +92,7 @@ you are using browser's CSS engine directly and have access to all its features.
 </pre>
 </p>
 
-<p>You can also either pass a DOM node or a list of DOM nodes. Nested lists will automatically be flattened. Nulls in lists will be omitted.
+<p>You can also make a Minified list out of a DOM node or a list of DOM nodes. Nested lists will automatically be flattened. Nulls in lists will be omitted.
 <pre>
 var singleElement = <a href="/reference/dollar.html">$</a>(document.getElementById('oldFashioned'));
 var threeElements = <a href="/reference/dollar.html">$</a>([e1, e2, e3]);
@@ -122,16 +120,16 @@ You should take a look at the documentation for <a href="/reference/collect.html
 <a href="/reference/filter.html"><code>filter</code></a> and <a href="/reference/find.html"><code>find</code></a> for more information. 
 Here a small example to give you an idea:
 <pre>
-var r = <a href="/reference/dollar.html">$</a>('#myTable tr')                                                            // all rows in myTable
-           .<a href="/reference/filter.html">filter</a>(function(elem, index) { return index % 2 == 1; }) // filter: take only odd rows
-           .<a href="/reference/collect.html">collect</a>(function(elem) { return <a href="/reference/dollar.html">$</a>('td', elem).<a href="/reference/sub.html">sub</a>(-3); })   // use the last three cells per row
-           .<a href="/reference/find.html">find</a>(function(elem) { if (<a href="/reference/dollar.html">$</a>(elem).<a href="/reference/hasclass.html">hasClass</a>('hit')) return elem; }); // find first cell with class 'hit'
+var r = <a href="/reference/dollar.html">$</a>('#myTable tr')                                                         // all rows in myTable
+           .<a href="/reference/filter.html">filter</a>(function(elem, index) { return index % 2 == 1; })             // filter: take only odd rows
+           .<a href="/reference/collect.html">collect</a>(function(elem) { return <a href="/reference/dollar.html">$</a>('td', elem).<a href="/reference/sub.html">sub</a>(-3); })            // use the last three cells per row
+           .<a href="/reference/find.html">find</a>(function(elem) { if (<a href="/reference/dollar.html">$</a>(elem).<a href="/reference/hasclass.html">hasClass</a>('hit')) return elem; });  // find first cell with class 'hit'
 </pre>
 </p>
 
 <p>The lists returned by the selectors behave pretty much like arrays. You can access them by index and they have a 
-<a href="/reference/length.html"><code>length</code></a> property. Please note that you must not modify a list using the index 
-operator ("list[i]") though. The results would be <var>undefined</var>.
+<a href="/reference/length.html"><code>length</code></a> property. Please note that you should not modify a list using the index 
+operator ("list[i]") though. The result would be undefined.
 </p><p>
 This example iterates through a list using a <code>for</code> loop:
 <pre>var list = <a href="/reference/dollar.html">$</a>('input'); 
@@ -219,9 +217,9 @@ The argument is a space-separated list of class names. Those prefixed with '+' w
 
 <p>Minified has two more 'virtual' properties called <code>$$fade</code> and <code>$$slide</code> which are mostly useful for animation (see below), 
 but can be used by <a href="/reference/get.html"><code>get()</code></a> and <a href="/reference/set.html"><code>set()</code></a> as well. 
-<code>$$fade</code> is a number between 0 and 1 that specified the opacity of an element, allowing you to fade elements in and out. 
+<code>$$fade</code> is a number between 0 and 1 that specifies the opacity of an element, allowing you to fade elements in and out. 
 <code>$$slide</code> is a number between 0 and 1 that represents the vertical size of an element relative to its 'natural' size, 
-allowing you to slide elements in and out.
+so you can slide elements in and out.
 
 <pre>
 <a href="/reference/dollar.html">$</a>('#dialog').<a href="/reference/set.html">set</a>({$$fade: 0.5,    // half-transparent
@@ -229,8 +227,7 @@ allowing you to slide elements in and out.
 </pre>
 </p>
 
-<p>Instead of just setting the value with <a href="/reference/set.html"><code>set()</code></a>, you can also 
-pass a callback that modifies the old value:
+<p>Instead of just setting the value with <a href="/reference/set.html"><code>set()</code></a>, the old value value can also be modified with a callback:
 <pre>
 <a href="/reference/dollar.html">$</a>('#e1').<a href="/reference/set.html">set</a>('innerHTML', function(oldValue, index, obj) { return oldValue.replace(/hello/i, 'Hi'); });
 </pre>
@@ -239,7 +236,7 @@ pass a callback that modifies the old value:
 <p>The most powerful method of the <a href="/reference/set.html"><code>set()</code></a> family is <a href="/reference/animate.html"><code>animate()</code></a>. <a href="/reference/animate.html"><code>animate()</code></a> will find out the old values using <a href="/reference/get.html"><code>get()</code></a>, and then start an animation loop to transition to the given destination values. The following example moves elements from position 0px to 80px in 750 milliseconds:
 <pre>
 <a href="/reference/dollar.html">$</a>('.moving').<a href="/reference/set.html">set</a>({$left: '0px'})
-           .<a href="/reference/animate.html">animate</a>({$left: '80px'}, 750);
+            .<a href="/reference/animate.html">animate</a>({$left: '80px'}, 750);
 </pre>
 </p>
 
@@ -255,7 +252,7 @@ Please see the <a href="/reference/animate.html"><code>animate()</code></a> docu
 
 <p>The most important functions for modifying HTML are <a href="/reference/fill.html"><code>fill()</code></a> and <a href="/reference/add.html"><code>add()</code></a>. <a href="/reference/fill.html"><code>fill()</code></a> replaces the element's children with the given nodes, and <a href="/reference/add.html"><code>add()</code></a> just adds them as children.</p>
 
-<p>In the simplest case, you can call <a href="/reference/fill.html"><code>fill()</code></a> without arguments to just remove all children the elements in the list:
+<p>In the simplest case, you can call <a href="/reference/fill.html"><code>fill()</code></a> without arguments to all children from the elements in the list:
 <pre>
 <a href="/reference/dollar.html">$</a>('.myClass').<a href="/reference/fill.html">fill</a>();   // remove all children
 </pre>
@@ -264,12 +261,12 @@ Please see the <a href="/reference/animate.html"><code>animate()</code></a> docu
 <p>
 Call <a href="/reference/fill.html"><code>fill()</code></a> or <a href="/reference/add.html"><code>add()</code></a> with a string to create a new text node and add it:
 <pre>
-<a href="/reference/dollar.html">$</a>('.greetings').<a href="/reference/fill.html">fill</a>("Hello");                  // Replace children with text "Hello"
+<a href="/reference/dollar.html">$</a>('.greetings').<a href="/reference/fill.html">fill</a>("Hello");       // Replace children with text "Hello"
 <a href="/reference/dollar.html">$</a>('.greetings').<a href="/reference/add.html">add</a>("and Goodbye");  // add a second text node
 </pre>
 </p>
 
-<p>When you want to add a new element, <a href="/reference/el.html"><code>EE()</code></a> comes into play. 
+<p>If you want to add a new element, <a href="/reference/el.html"><code>EE()</code></a> comes into play. 
 <a href="/reference/el.html"><code>EE()</code></a> creates an <strong>Element Factory</strong>. Element Factories are simple no-argument functions to new create 
 elements. When called, the Element Factory creates the element and returns it wrapped in a Minfied list. 
 
@@ -279,13 +276,13 @@ by <a href="/reference/set.html"><code>set()</code></a>.
 <pre>
 var MINI = require('minified'), $ = MINI.$, $$=MINI.$$, EE=MINI.EE;
 
-<a href="/reference/dollar.html">$</a>('#header').<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>('h2', 'My Title'));                                                            // creates &lt;h2>MyTitle&lt;/h2>
+<a href="/reference/dollar.html">$</a>('#header').<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>('h2', 'My Title'));                                  // creates &lt;h2>MyTitle&lt;/h2>
 <a href="/reference/dollar.html">$</a>('#linkContainer').<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>('a', {'@href': 'http://acme.com'}, "ACME"));  // creates &lt;a href="http://acme.com">ACME&lt;/a>
-<a href="/reference/dollar.html">$</a>('#header').<a href="/reference/add.html">add</a>([<a href="/reference/el.html">EE</a>('br'), "Single line", <a href="/reference/el.html">EE</a>('br')]);                                  // add &lt;br/>Single line&lt;br/>
+<a href="/reference/dollar.html">$</a>('#header').<a href="/reference/add.html">add</a>([<a href="/reference/el.html">EE</a>('br'), "Single line", <a href="/reference/el.html">EE</a>('br')]);                        // add &lt;br/>Single line&lt;br/>
 <a href="/reference/dollar.html">$</a>('#list').<a href="/reference/fill.html">fill</a>(<a href="/reference/el.html">EE</a>('ul', [  // &lt;ul>
                                       <a href="/reference/el.html">EE</a>('li', {$: 'first'}, "First item"), // &lt;li class="first">First Item&lt;/li>
-                                      <a href="/reference/el.html">EE</a>('li', "Second item"),             // &lt;li>Second Item&lt;/li>
-                                      <a href="/reference/el.html">EE</a>('li', "Third item"),                 // &lt;li>Third Item&lt;/li>
+                                      <a href="/reference/el.html">EE</a>('li', "Second item"),              // &lt;li>Second Item&lt;/li>
+                                      <a href="/reference/el.html">EE</a>('li', "Third item"),               // &lt;li>Third Item&lt;/li>
                                    ])); // &lt;/ul>
 </pre>
 </p>
@@ -306,8 +303,8 @@ strings (for text nodes), DOM elements, another factory function (to be called) 
 <pre>
 <a href="/reference/dollar.html">$</a>('#d').<a href="/reference/addfront.html">addFront</a>('Read this first!');        // add as first child
 <a href="/reference/dollar.html">$</a>('#e').<a href="/reference/addafter.html">addAfter</a>([<a href="/reference/el.html">EE</a>('hr'), 'My Footer']);   // add directly after #e
-<a href="/reference/dollar.html">$</a>('#f').<a href="/reference/addbefore.html">addBefore</a>(<a href="/reference/el.html">EE</a>('h1', 'My Title'));    // add in front of #f
-<a href="/reference/dollar.html">$</a>('#oldH2').<a href="/reference/replace.html">replace</a>(<a href="/reference/el.html">EE</a>('h2', 'New Title')); // replace #oldH2 with the new &lt;h2>
+<a href="/reference/dollar.html">$</a>('#f').<a href="/reference/addbefore.html">addBefore</a>(<a href="/reference/el.html">EE</a>('h1', 'My Title'));     // add in front of #f
+<a href="/reference/dollar.html">$</a>('#oldH2').<a href="/reference/replace.html">replace</a>(<a href="/reference/el.html">EE</a>('h2', 'New Title'));  // replace #oldH2 with the new &lt;h2>
 <a href="/reference/dollar.html">$</a>('#oldH3').<a href="/reference/remove.html">remove</a>();                        // remove #oldH3 without substitution
 </pre>
 </p>
@@ -327,7 +324,7 @@ Explorer equivalents. This means that if you add an event handler to a form subm
 anymore, unless you explicitly allow it. Similarly, a click handler on a link would prevent the link from changing the page.
 </p>
 
-<p>If you want to keep the browser's default action or allow bubbling, you have two options. Either the handler returns <code>true</code>:
+<p>If you want to keep the browser's default action or allow bubbling, you have two options. Either let the handler return <code>true</code>:
 <pre>
 <a href="/reference/dollar.html">$</a>('#submitButton').<a href="/reference/on.html">on</a>('click', function() {
 	alert('Button pressed, will submit now!');
@@ -336,7 +333,7 @@ anymore, unless you explicitly allow it. Similarly, a click handler on a link wo
 </pre>
 </p>
 
-<p>Or you can keep the default behaviour by prefixing the name with a '|' (pipe):
+<p>Or you can keep the default behaviour by prefixing the event name with a '|' (pipe):
 <pre>
 <a href="/reference/dollar.html">$</a>('#submitButton').<a href="/reference/on.html">on</a>('|click', function() {
 	alert('Button pressed, will submit now!');
@@ -369,7 +366,8 @@ function setZoomLevel(percentage) {
 <a href="/reference/dollar.html">$</a>('#normalButton').<a href="/reference/on.html">on</a>('click', setZoomLevel, [100]);
 <a href="/reference/dollar.html">$</a>('#largeButton').<a href="/reference/on.html">on</a>('click', setZoomLevel, [150]);
 </pre>
-If you pass custom arguments for an event handler, its return value will be ignored and Minified will always disable all further event processing.
+If you pass custom arguments for an event handler, its return value will be ignored and Minified will always disable all further event processing. 
+Prefix the event name with a '|' to keep processing enabled.
 </p>
 
 <p>
@@ -384,7 +382,7 @@ all elements is has been registered for.
 <h2>Toggles</h2>
 
 <p>A toggle is a function that can switch between two states. The states are defined as two <a href="/reference/set.html"><code>set()</code></a> 
-arguments. The following example creates a toggle that changes the background color of the &lt;body> element:
+maps. The following example creates a toggle that changes the background color of the &lt;body> element:
 <pre>
 var light = <a href="/reference/dollar.html">$</a>('body').<a href="/reference/toggle.html">toggle</a>(
  {$backgroundColor: #000},   // state 1
@@ -392,8 +390,8 @@ var light = <a href="/reference/dollar.html">$</a>('body').<a href="/reference/t
 );
 </pre>
 Upon creation, the toggle sets the first state. When you call the toggle function with a boolean <code>true</code> as argument, 
-it switch to the second state and set the background color accordingly. Call it with 'false' and it switches to the first one. 
-Call it without arguments (or any other argument than a boolean <code>true</code> or <code>false</code>), the toggle function will toggle between the first and second state.
+it switches to the second state and sets the background color accordingly. Call it with <code>false</code> and it switches to the first one. 
+If you call it without arguments (or any other argument than a boolean <code>true</code> or <code>false</code>), the toggle function will toggle between the first and second state.
 <pre>
 light();       // toggle background color
 light(true);   // turn on the light  (state 2)
@@ -441,8 +439,6 @@ But because toggling CSS classes is so common, there is an even shorter syntax t
 <pre>
 var highlighter3 = <a href="/reference/dollar.html">$</a>('.marked').<a href="/reference/toggle.html">toggle</a>('highlighted');  // toggle CSS class 'highlighted'
 </pre> 
-You can also use more than one space-separated CSS classes in the string, as you would when toggling CSS classes with 
-<a href="/reference/set.html"><code>set()</code></a>.
 </p>
 
 
@@ -461,11 +457,13 @@ all other asynchronous HTTP requests:
         alert("Error accessing service.");
     });
 </pre>
-The third argument is a map containing parameters that, when set, will be automatically added as URL parameters. 
+The third argument is a map containing parameters that, when set, will be automatically added as URL parameters. So the actual URL
+being called in the previous example is <code>http://example.org/weatherService?zip=90210</code>.
 <code>$.request()</code> returns a <a href="/reference/promise.html">Promise</a> that you can use to register handlers
 for success and error.</p>
 
-<p>POST requests are very similar and use the same syntax. However, the map in the third argument will now be used in the POST's instead of the URL:
+<p>POST requests are very similar and use the same syntax. The main difference is that the map in the third argument will now be used in the POST's body 
+and not in the URL:
 <pre>
 <a href="/reference/request.html">$.request</a>('post', 'http://example.org/weatherService', {zip: 90210})
  .then(function success(txt) {
@@ -477,7 +475,8 @@ for success and error.</p>
 </pre>
 </p>
 
-<p>POST also allows you to specify an XML document or a string as data. The latter option can be used for transmitting JSON objects. The next example transmits the data in JSON form to the imaginary service and then treats the result also as JSON object:
+<p>POST also allows you to specify an XML document or a string as data. The latter option can be used for transmitting JSON objects. 
+The next example transmits the data in JSON form to the imaginary service and then treats the result also as JSON object:
 <pre>
 <a href="/reference/request.html">$.request</a>('post', 'http://example.org/weatherService', 
     <a href="/reference/tojson.html">$.toJSON</a>({zip: 90210}))
@@ -491,22 +490,13 @@ for success and error.</p>
 </pre>
 </p>
 
-<p>When users enter their data into forms, you can use Minified's <a href="/reference/values.html"><code>values()</code></a> function 
-to easily obtain the data. It will take data from input fields as well as complete forms and puts it into a map that can be either 
-used as data argument for <a href="/reference/request.html"><code>request()</code></a> or be converted into a JSON string:
-<pre>
-var data = <a href="/reference/dollar.html">$</a>('#myForm, input.extra').<a href="/reference/values.html">values</a>();
-var promise = <a href="/reference/request.html">$.request</a>('post', '/myService', data);
-</pre>
-</p>
-
 
 <h2>A few more things..</h2>
 
 <p>When doing JavaScript animation you should avoid using a simple timeout, as this will cause unneccessary CPU load when the browser 
-is not displaying your page and you won't be able to have the perfect frame rate. Modern browsers support 'requestAnimationFrame' which 
-allows you to provide a callback to perform animation at browser-controlled preferred pace. This will make your animation smoother and 
-lower the CPU load. Minified's <a href="/reference/loop.html"><code>loop()</code></a> function wraps this function while also providing 
+is not displaying your page and you also won't be able to have the perfect frame rate. Modern browsers support 'requestAnimationFrame' which 
+allows you to provide a callback to perform animation at a browser-controlled rate. This will make your animation smoother and 
+lower the CPU load. Minified's <a href="/reference/loop.html"><code>loop()</code></a> function wraps 'requestAnimationFrame' while also providing 
 backward compatibility for older browsers.</p>
 
 <p>The following example will move a div in a circular movement:

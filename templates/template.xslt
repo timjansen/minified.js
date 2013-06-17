@@ -43,7 +43,8 @@
 </div>
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates, see
+		visit my <a href="a>https://plus.google.com/100950045026999226880/posts">Google+ page</a>.
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>
