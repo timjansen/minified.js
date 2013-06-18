@@ -58,9 +58,9 @@ define('minifiedUtil', function() {
 	 * @const
 	 */
 	function val3(v) {return v.substr(0,3);}
-	var MONTH_LONG_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+	var MONTH_LONG_NAMES = 'January,February,March,April,May,June,July,August,September,October,November,December'.split(/,/);
 	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, val3); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-	var WEEK_LONG_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+	var WEEK_LONG_NAMES = 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday'.split(/,/);
 	var WEEK_SHORT_NAMES = map(WEEK_LONG_NAMES, val3); 
 	
 	/**
@@ -329,10 +329,9 @@ define('minifiedUtil', function() {
 		setTimeout(function() {call(callback, fThisOrArgs, args);}, delayMs);
 	}
 	function defer(callback, fThisOrArgs, args) {
-		if (/^u/.test(typeof process) || !process.nextTick)
-			setTimeout(function() {call(callback, fThisOrArgs, args);}, delayMs);
-		else
-			process.nextTick(function() {call(callback, fThisOrArgs, args);});
+			delay(0, callback, fThisOrArgs, args);
+			// TODO: a server version with:
+			//			process.nextTick(function() {call(callback, fThisOrArgs, args);});
 	}
 	function insertString(origString, index, len, newString) {
 		return origString.substr(0, index) + newString + origString.substr(index+len);
@@ -627,51 +626,7 @@ define('minifiedUtil', function() {
 				return object[name] = value;
 		}
 	}
-	// copies all elements of from into to, merging into existing structures.
-	// to is optional. Writes result in to if it is a non-value object.
-	// Returns the copy, which may be to if it was an object
-	function copyTree(from, to) {
-		if (isValue(from))
-			return isDate(from) ? dateClone(from) : from;
-
-		var toIsFunc = isFunction(to);
-		var oldTo = toIsFunc ? to() : to;
-		var result;
-		if (!from || equals(from, oldTo))
-			return from;
-		else if (isList(from)) {
-			result = map(from, function(v, idx) { 
-				return oldTo && equals(oldTo[idx], v) ? oldTo[idx] : copyTree(v);
-			});
-			if ((oldTo ? oldTo : from)['_'])
-				result = UNDERSCORE(result);
-		}
-		else {
-			var target = oldTo || {};
-			each(target, function(key) {
-				if (from[key] == null || (isFunction(from[key]) && from[key]() == null)) {
-					if (isFunction(target[key]))
-						target[key](null);
-					else
-						delete target[key];
-				}
-			});
-			each(from, function(key, value) {
-				var isFunc = isFunction(target[key]);
-				var oldValue = isFunc ? target[key]() : target[key];
-				if (!equals(value, oldValue)) {
-					if (isFunc)
-						target[key](copyTree(value));
-					else
-						target[key] = copyTree(value);
-				}
-			});
-		}
-			
-		if (toIsFunc)
-			to(result);
-		return result;
-	}
+	
 	
 	var JAVASCRIPT_ESCAPES = {'"': '\\"', "'": "\\'", '\n': '\\n', '\t': '\\t', '\r': '\\r'};
 	function escapeJavaScriptString(s) {
@@ -686,11 +641,11 @@ define('minifiedUtil', function() {
 		if (templateCache[template])
 			return templateCache[template];
 		else {
+			var unprefChunk;
 			var f = (new Function('obj', 'out', 'esc', 'print', '_', 'with(obj||{}){'+
 			 		map(template.split(/<%|%>/), function(chunk, index) {
 						if (index%2) { // odd means JS code
-							var unprefChunk = replace(chunk, /^=/);
-							if (chunk == unprefChunk)
+							if ((unprefChunk = replace(chunk, /^=/)) == chunk)
 								return chunk + ';\n';
 							else
 								return 'print(esc('+unprefChunk+'));\n';
@@ -809,7 +764,7 @@ define('minifiedUtil', function() {
 	 * @id listunderscore
 	 * @name ._
 	 * @syntax _
-	 * Set and true if this is a Minified list.
+	 * Set to <var>true</var> if this is a Minified list.
 	 */
 	
 	/*$
@@ -831,11 +786,7 @@ define('minifiedUtil', function() {
 		self['_'] = true;
 	}
 	
-	/*$
-	 * @id underscore
-	 * @name _()
-	 * @configurable default
-	 */
+
 	function UNDERSCORE() {
 		return new M(arguments, true);
 	}
@@ -855,10 +806,108 @@ define('minifiedUtil', function() {
 	
 	
 	copyObj({
+    /*$
+     * @id each
+     * @group SELECTORS
+     * @requires dollar
+     * @configurable default
+     * @name .each()
+     * @syntax each(callback)
+     * @module UTIL, WEB
+     * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
+     * the zero-based index as second.
+     *
+     * @example This goes through all h2 elements of the class 'section' and changes their content:
+     * <pre>
+     * $('h2.section').each(function(item, index) {
+     *     item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
+     * });
+     * </pre>
+     *
+     * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
+     *                 <dl><dt>item</dt><dd>The current list element.</dd>
+     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+     *                 The callback's return value will be ignored.
+     * @return the list
+     */
 	'each': listBind(each),
 	
+	/*$
+	 * @id filter
+	 * @group SELECTORS
+	 * @requires dollar
+	 * @configurable default
+	 * @name .filter()
+	 * @syntax filter(filterFunc)
+   	 * @module WEB, UTIL
+	 * Creates a new ##list#Minified list## that contains only those items approved by the given callback function. The function is 
+	 * called once for each item. 
+	 * If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
+	 *
+	 * @example Creates a list of all unchecked checkboxes.
+	 * <pre>
+	 * var list = $('input').filter(function(item) {
+	 *     return item.getAttribute('type') == 'checkbox' && item.checked;
+	 * });
+	 * </pre>
+	 * 
+	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
+	 *        <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>  
+	 * @return the new, filtered ##list#list##
+	 */
 	'filter': listBindArray(filter),
 	
+	/*$ 
+     * @id collect 
+     * @group SELECTORS 
+     * @requires dollar 
+     * @configurable default 
+     * @name .collect() 
+     * @syntax collect(collectFunc) 
+   	 * @module WEB, UTIL
+     * Creates a new ##list#Minified list## from the current list using the given callback function. 
+     * The callback is invoked once for each element of the current list. The callback results will be added to the result list. 
+     * The callback can return 
+     * <ul> 
+     * <li>an array or another list-like object. Its content will be appended to the resulting list.</li> 
+     * <li>a regular object which will be appended to the list</li> 
+     * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
+     * If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li> 
+     * </ul>
+     * 
+     * 
+     * @example Goes through input elements. If they are text inputs, their value will be added to the list: 
+     * <pre> 
+     * var texts = $('input').collect(function(input) { 
+     *     if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') 
+     *         return input.value; 
+     *     else 
+     *         return null; // ignore 
+     * }); 
+     * </pre> 
+     * 
+     * @example Creates a list of all children of the selected list. 
+     * <pre> 
+     * var childList = $('.mySections').collect(function(node) { 
+     *     return node.childNodes; // adds a while list of nodes 
+     * }); 
+     * </pre> 
+     * 
+     * @example Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case: 
+     * <pre> 
+     * var elements = $('input.myTexts').collect(function(item) { 
+     *     return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()]; 
+     * }); 
+     * </pre> 
+     * 
+     * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item.:
+     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
+	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and be not added to 
+	 *        the new result list. </dd></dl>
+     * @return the new ##list#list##
+     */ 
 	'collect': listBindArray(collect),
 	
 	'map': listBindArray(map),
@@ -1034,9 +1083,10 @@ define('minifiedUtil', function() {
 		 * @id wait
 		 * @configurable default
 		 * @requires
-		 * @name MINI.wait()
-		 * @syntax MINI.wait()
-		 * @syntax MINI.wait(durationMs)
+		 * @name _.wait()
+		 * @syntax _.wait()
+		 * @syntax _.wait(durationMs)
+		 * @module UTIL
 		 *
 		 * Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
 		 * because it allows you to chain delays into your animation chain.
@@ -1086,7 +1136,15 @@ define('minifiedUtil', function() {
 	/*$
 	 @stop
 	 */
-	return {_: UNDERSCORE};
+	return {
+		/*$
+		 * @id underscore
+		 * @name _()
+		 * @configurable default
+		 * @module UTIL
+		 */
+		_: UNDERSCORE
+	};
 });
 
 /*$
