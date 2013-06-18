@@ -64,7 +64,7 @@
   
  
 <h2>Getting Started</h2>
-<iframe class="fiddle" width="100%" height="270" src="http://jsfiddle.net/tjansen/tqsCg/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe> 
+<iframe class="fiddle" width="100%" height="300" src="http://jsfiddle.net/tjansen/tqsCg/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe> 
 
 <p>Check out the <a href="/docs/howto.html">How-to</a> and the <a href="/reference/">API docs</a> to explore Minified on your
 own. Or go to <a href="">this presentation</a> or the <a href="dov/quickstart.html">Tutorial</a> for some more guidance.</a></p>
@@ -72,6 +72,7 @@ own. Or go to <a href="">this presentation</a> or the <a href="dov/quickstart.ht
 <a href="http://jsfiddle.net/tjansen/tqsCg/">Animation 1</a>,
 <a href="http://jsfiddle.net/tjansen/NrGnf/">Animation 2</a>,
 <a href="http://jsfiddle.net/tjansen/Xu6R8/">Animation Loops</a>,
+<a href="http://jsfiddle.net/tjansen/kJLDN/">Animation Gradients</a>,
 <a href="http://jsfiddle.net/tjansen/6BHAt/">Child Elements</a>,
 <a href="http://jsfiddle.net/tjansen/uRC8Y/">Element Creation</a>,
 <a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggles</a>,

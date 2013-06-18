@@ -675,7 +675,7 @@ define('minifiedUtil', function() {
 	
 	var JAVASCRIPT_ESCAPES = {'"': '\\"', "'": "\\'", '\n': '\\n', '\t': '\\t', '\r': '\\r'};
 	function escapeJavaScriptString(s) {
-		return replace(s, /['"\t\n\r]/, function(a) {
+		return replace(s, /['"\t\n\r]/g, function(a) {
 			return JAVASCRIPT_ESCAPES[a];
 		});
 	}
@@ -686,23 +686,23 @@ define('minifiedUtil', function() {
 		if (templateCache[template])
 			return templateCache[template];
 		else {
-			var f = (new Function('obj', 'out', 'esc', 'print', '_', 'with(obj){'+
+			var f = (new Function('obj', 'out', 'esc', 'print', '_', 'with(obj||{}){'+
 			 		map(template.split(/<%|%>/), function(chunk, index) {
 						if (index%2) { // odd means JS code
 							var unprefChunk = replace(chunk, /^=/);
 							if (chunk == unprefChunk)
-								return chunk;
+								return chunk + ';\n';
 							else
 								return 'print(esc('+unprefChunk+'));\n';
 						}
 						else {
-							return 'print('+escapeJavaScriptString(chunk)+');\n';
+							return 'print("'+escapeJavaScriptString(chunk)+'");\n';
 						}
-					})+'}'));
+					}).join('')+'}'));
 			return templateCache[template] = function(obj) {
 				var result = [];
 				f(obj, result, escapeFunction || selfFunc, function() {call(result.push, result, arguments);}, UNDERSCORE);
-				result.join('');
+				return result.join('');
 			};
 		}
 	}

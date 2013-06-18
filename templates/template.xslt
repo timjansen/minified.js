@@ -18,13 +18,36 @@
 <xsl:for-each select="/page:page/page:asyncJs"><script type="text/javascript" src="{.}" async="async"></script></xsl:for-each>
 <xsl:for-each select="/page:page/page:externalJs"><script type="text/javascript" src="{.}"></script></xsl:for-each>
 <xsl:for-each select="/page:page/page:inlineJs"><script type="text/javascript"><xsl:value-of select="."></xsl:value-of></script></xsl:for-each>
+<!--  TEMP SPLASH SCREEN START -->
+<script src="/minified-web.js"></script>
+<script type="text/javascript">
+var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
+
+$(function() {
+	if (!$.getCookie('y'))
+		$('body').add(EE('div', {'@id': 'cover', $position: 'fixed', $left: 0, $top: 0, $width:'100%', $height: '100%', $backgroundColor: 'white'}, 
+			EE('div', {$position: 'absolute', $left: '50%', $top: '50%', $marginLeft: '-15em', $marginTop: '-4em', $width: '30em', $height: '8em', $padding: '1em', $border: '1px solid #bbb', $textAlign: 'center'}, [
+				EE('h1', {$marginTop: 0}, 'Psssst!'), 
+				EE('p', 'Minified is still a secret. Please don\'t tell anyone.'),
+				EE('button', {}, 'Alrighty', function(l) {
+					$(l).on('click', function() {
+						$.setCookie('y', 1);
+						$('#cover').animate({$$fade: 0}).then(function() {$('#cover').remove();});
+					});
+				})
+			])
+		));
+});
+</script>
+<!--  TEMP SPLASH SCREEN END -->
 </head>
 <body>
 <div id="head">
 	<div class="container">
-		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt="Minified"><![endif]-->
-		<!--[if gt IE 8]><img src='/img/minified.svg' alt="Minified"><![endif]-->
-		<!--[if !IE]> --><img src='/img/minified.svg' alt="Minified"/><!-- <![endif]--></a>
+		
+		<a href="/"><xsl:value-of select="&quot;&lt;!--[if lte IE 8]>&lt;img src='/img/minified-small.png' alt='Minified'>&lt;![endif]-->
+		&lt;!--[if gt IE 8]>&lt;img src='/img/minified.svg' alt='Minified'>&lt;![endif]-->
+		&lt;!--[if !IE]> -->&lt;img src='/img/minified.svg' alt='Minified'/>&lt;!-- &lt;![endif]-->&quot;" disable-output-escaping="yes"/></a>
 
 		<div id="topMenu">
 			<a class="{if (/page:page/page:section='home') then 'selected' else 'notSelected'}" href="/">Home</a>
@@ -43,8 +66,8 @@
 </div>
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates, see
-		visit my <a href="a>https://plus.google.com/100950045026999226880/posts">Google+ page</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
+		<a href="https://plus.google.com/100950045026999226880/posts">Google+ page</a>.
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

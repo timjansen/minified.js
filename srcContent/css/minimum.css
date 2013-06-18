@@ -3,7 +3,7 @@ img { border: 0; }
 a { color: #000; }
 
 #head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
-.container { margin: auto; min-width: 1024px; max-width: 70em; }
+.container { margin: auto; min-width: 1024px; max-width: 68em; }
 #head .container { height: 1.9em; border-bottom: 1px solid #aaa; padding: 0; }
 #head .container img { height: 1.7em; float: left; margin: 0.1em 0.5em;} 
 #topMenu { text-align: right;}

@@ -30,11 +30,12 @@ $(function() {
 		
 	function startAnim() {
 		if (!stopFunc)
-			stopFunc = $.loop(function() {
+			stopFunc = $.loop(function(t) {
 				if (!state.running)
 					stepFade();
 				
-				var gradientString = 'linear-gradient(-75deg, ' + state.preColor + ' 0%, ' 
+				var deg = Math.round((t / 360 * 10 - 75)*100)/100;
+				var gradientString = 'linear-gradient('+deg+'deg, ' + state.preColor + ' 0%, ' 
 					+COLORS[moving]+ ' ' + Math.round(100*state.percentage)/100+'%, ' 
 					+state.postColor + ' 100%); ';
 				var bgColor = '';
