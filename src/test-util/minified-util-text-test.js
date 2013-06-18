@@ -329,6 +329,55 @@ function runTests(loadInContext) {
 			assert.equal(_.format("{0,000.99} | {choice,a:x|b:y|c:z} | {date,yyyyMMdd}", {0: 15.8, choice: 'b', date: new Date(2011, 3, 2)}), "015.80 | y | 20110402");
 		});
 	});
+	
+	describe('template()', function() {
+		it('returns a function', function() {
+			assert(_.isFunction(_.template("abc")));
+		});
+		it('caches template functions', function() {
+			assert(_.template("abc") === _.template("abc"));
+		});
+		it('() returns a simple string', function() {
+			assert.equal(_.template("abc")(), "abc");
+			assert.equal(_.template("1\n2\t3\r4\n5")(), "1\n2\t3\r4\n5");
+			assert.equal(_.template("'''")(), "'''");
+			assert.equal(_.template('"""')(), '"""');
+		});
+		it('() supports <%=%>', function() {
+			assert.equal(_.template("abc<%=1%>xyz")(), "abc1xyz");
+			assert.equal(_.template("abc<%=1+2%>xyz")(), "abc3xyz");
+			assert.equal(_.template("abc<%='123'%>xyz")(), "abc123xyz");
+			assert.equal(_.template("<%=1%>xyz")(), "1xyz");
+			assert.equal(_.template("abc<%=1%>")(), "abc1");
+		});
+		it('() supports <%%>', function() {
+			assert.equal(_.template("<%if(1>2){%>sn<%=0%>w<%}else{%>ra<%=1%>n<%}%>")(), "ra1n");
+			assert.equal(_.template("no<%if(1>2){%>sn<%=0%>w<%}else{%>ra<%=1%>n<%}%>!>><< %")(), "nora1n!>><< %");
+		});
+		it('() supports print', function() {
+			assert.equal(_.template("<%print('a', 'b', '123')%>")(), "ab123");
+			assert.equal(_.template("<%print('x');%>")(), "x");
+		});
+		it('() supports out', function() {
+			assert.equal(_.template("a<%out.push('123')%>b")(), "a123b");
+			assert.equal(_.template("a<%out.length = 0%>b")(), "b");
+		});
+		it('() supports esc', function() {
+			assert.equal(_.template("<%print(esc(2))%> <%=5%>", function(a) { return a*2; })(), "4 10");
+		});
+		it('() supports _', function() {
+			assert.equal(_.template("<%=_(1, 2).join('_')%>")(), "1_2");
+		});
+		it('() supports obj', function() {
+			assert.equal(_.template("<%=obj==null%>")(), "true");
+			assert.equal(_.template("<%=obj%>")(5), "5");
+			assert.equal(_.template("<%=obj.b%>")({a:6, b:7}), "7");
+		});
+		it('() supports with(obj)', function() {
+			assert.equal(_.template("<%=b%><%=a%>")({a:6, b:7}), "76");
+		});
+	});
+
 }
 
 testCommon.run(runTests);
