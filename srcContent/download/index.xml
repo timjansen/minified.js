@@ -22,11 +22,11 @@
 	<tr><th>Production</th>
 		<td><a href="/minified-web.js"><span class="link">minified-web.js</span><br/>
 			<span class="summary">Version: beta1</span><br/>
-			<span class="summary">Size: <strong>4066 bytes</strong> (gzip'd)</span><br/>
+			<span class="summary">Size: <strong>4090 bytes</strong> (gzip'd)</span><br/>
 			<span class="summary">Compiled Version with full IE compatibility.</span></a></td>
 		<td><a href="/minified-web.noie.js"><span class="link">minified-web.noie.js</span><br/>
 			<span class="summary">Version: beta1</span><br/>
-			<span class="summary">Size: 3405 bytes (gzip'd)</span><br/>
+			<span class="summary">Size: 3431 bytes (gzip'd)</span><br/>
 			<span class="summary">Compiled Version, no full IE compatibility.</span></a></td>
 	</tr>
 </table>

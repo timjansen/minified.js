@@ -13,10 +13,10 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">$(selector).addBefore(text)</div>
-<div class="syntax">$(selector).addBefore(factoryFunction)</div>
-<div class="syntax">$(selector).addBefore(list)</div>
-<div class="syntax">$(selector).addBefore(node)</div>
+<div class="syntax">addBefore(text)</div>
+<div class="syntax">addBefore(factoryFunction)</div>
+<div class="syntax">addBefore(list)</div>
+<div class="syntax">addBefore(node)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -125,6 +125,7 @@ $('#status').addBefore([EE('hr'), 'WARNING']);
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
+</li><li><a href="wait.html">_.wait()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

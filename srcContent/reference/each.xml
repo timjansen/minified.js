@@ -77,6 +77,7 @@ $('h2.section').each(function(item, index) {
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
+</li><li><a href="wait.html">_.wait()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

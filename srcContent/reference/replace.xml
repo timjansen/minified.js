@@ -13,10 +13,10 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">$(selector).replace(text)</div>
-<div class="syntax">$(selector).replace(factoryFunction)</div>
-<div class="syntax">$(selector).replace(list)</div>
-<div class="syntax">$(selector).replace(node)</div>
+<div class="syntax">replace(text)</div>
+<div class="syntax">replace(factoryFunction)</div>
+<div class="syntax">replace(list)</div>
+<div class="syntax">replace(node)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -123,6 +123,7 @@ This results in
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
+</li><li><a href="wait.html">_.wait()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

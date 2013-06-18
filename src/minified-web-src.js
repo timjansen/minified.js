@@ -2514,6 +2514,45 @@ define('minified', function() {
         return entry.s; 
     },
     
+	/*$
+	 * @id wait
+	 * @configurable default
+	 * @requires
+	 * @name _.wait()
+	 * @syntax _.wait()
+	 * @syntax _.wait(durationMs)
+	 * @module WEB
+	 *
+	 * Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
+	 * because it allows you to chain delays into your animation chain.
+	 *
+	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
+	 *          and finally moves to 100/100.
+	 * <pre>
+	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+	 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
+	 *    .then(function() {
+	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
+	 *    }).then(function() {
+	 *    		 return MINI.wait(50);
+	 *    }).then(function() {
+	 *           div.animate({$left: '100px', $top: '100px'}, 400);
+	 *    });
+	 * });
+	 * </pre>
+	 *
+	 *
+	 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
+	 *                   from the event loop.
+	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
+	 *         durationMs parameter as given to <var>wait()</var>.
+	 */
+	'wait': function(durationMs) {
+		var p = promise();
+		delay(function() {p(true, [durationMs]);}, durationMs);
+		return p;
+	},
+    
     /*$
 	 * @id off
 	 * @group EVENTS
@@ -2554,7 +2593,8 @@ define('minified', function() {
 		});
 		handler['M'] = null;
 	}
-	
+
+    
  	/*$
  	 * @stop
  	 */
@@ -2910,7 +2950,7 @@ define('minified', function() {
  * @module WEB, UTIL
  * 
  * <i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using #request#$.request(),
- * ##animate(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
+ * ##animate(), or ##wait(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
  * 
  * Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
  * be able to interoperate with most other Promises implementations.
@@ -2994,7 +3034,7 @@ define('minified', function() {
  * </pre>
  * 
  * Please note that the Minified Web module only returns Promises, but it <strong>does not allow you to create Promises</strong> directly. The upcoming
- * Minified Util module will allow this though.
+ * Minified App module will allow this though.
  */
 
 

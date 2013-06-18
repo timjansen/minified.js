@@ -14,11 +14,11 @@ Creates a function that switches between the two given states for the list.</div
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">$(selector).toggle(cssClasses)</div>
-<div class="syntax">$(selector).toggle(state1, state2)</div>
-<div class="syntax">$(selector).toggle(state1, state2, durationMs)</div>
-<div class="syntax">$(selector).toggle(state1, state2, durationMs, linearity)</div>
-<div class="syntax">$(selector).toggle(state1, state2, durationMs, interpolationFunction)</div>
+<div class="syntax">toggle(cssClasses)</div>
+<div class="syntax">toggle(state1, state2)</div>
+<div class="syntax">toggle(state1, state2, durationMs)</div>
+<div class="syntax">toggle(state1, state2, durationMs, linearity)</div>
+<div class="syntax">toggle(state1, state2, durationMs, interpolationFunction)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -136,6 +136,7 @@ var t = $('#myElement').toggle('myClass1 myClass2');
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
+</li><li><a href="wait.html">_.wait()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

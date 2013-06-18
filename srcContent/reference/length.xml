@@ -9,7 +9,8 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-length">.length</a></h2>
-<div class="summary">Contains the number of elements in the list.</div>
+<div class="summary">
+Contains the number of elements in the list.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -17,7 +18,8 @@
 </div>
 
 <h4>Description</h4>
-<div class="description"><p>Contains the number of elements in the list.</p><p></p></div>
+<div class="description"><p>
+Contains the number of elements in the list.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -66,6 +68,7 @@ for (var i = 0; i &lt; list.length; i++)
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
+</li><li><a href="wait.html">_.wait()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>

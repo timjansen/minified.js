@@ -213,6 +213,50 @@ hhEach({
 }, function(n, v) {$.prototype[n]=v;});
 	
 hhEach({	
+	// copies all elements of from into to, merging into existing structures.
+	// to is optional. Writes result in to if it is a non-value object.
+	// Returns the copy, which may be to if it was an object
+	copyTree: function (from, to) {
+		if (isValue(from))
+			return isDate(from) ? dateClone(from) : from;
 
+		var toIsFunc = isFunction(to);
+		var oldTo = toIsFunc ? to() : to;
+		var result;
+		if (!from || equals(from, oldTo))
+			return from;
+		else if (isList(from)) {
+			result = map(from, function(v, idx) { 
+				return oldTo && equals(oldTo[idx], v) ? oldTo[idx] : copyTree(v);
+			});
+			if ((oldTo ? oldTo : from)['_'])
+				result = UNDERSCORE(result);
+		}
+		else {
+			var target = oldTo || {};
+			each(target, function(key) {
+				if (from[key] == null || (isFunction(from[key]) && from[key]() == null)) {
+					if (isFunction(target[key]))
+						target[key](null);
+					else
+						delete target[key];
+				}
+			});
+			each(from, function(key, value) {
+				var isFunc = isFunction(target[key]);
+				var oldValue = isFunc ? target[key]() : target[key];
+				if (!equals(value, oldValue)) {
+					if (isFunc)
+						target[key](copyTree(value));
+					else
+						target[key] = copyTree(value);
+				}
+			});
+		}
+			
+		if (toIsFunc)
+			to(result);
+		return result;
+	}
 }, function(n, v) {MINI[n]=v;});
 
