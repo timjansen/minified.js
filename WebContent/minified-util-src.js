@@ -635,20 +635,21 @@ define('minifiedUtil', function() {
 		});
 	}
 	
-
 	var templateCache={};
 	function template(template, escapeFunction) {
 		if (templateCache[template])
 			return templateCache[template];
 		else {
-			var unprefChunk;
+			var match;
 			var f = (new Function('obj', 'out', 'esc', 'print', '_', 'with(obj||{}){'+
 			 		map(template.split(/<%|%>/), function(chunk, index) {
 						if (index%2) { // odd means JS code
-							if ((unprefChunk = replace(chunk, /^=/)) == chunk)
-								return chunk + ';\n';
+							if (match = /^=(.*)::(.*)/.exec(chunk)) 
+								return 'print(esc(_.formatValue("'+escapeJavaScriptString(match[2])+'",'+match[1]+')));\n';
+							else if (match = /^=(.*)/.exec(chunk)) 
+								return 'print(esc('+match[1]+'));\n';
 							else
-								return 'print(esc('+unprefChunk+'));\n';
+								return chunk + ';\n';
 						}
 						else {
 							return 'print("'+escapeJavaScriptString(chunk)+'");\n';
@@ -989,15 +990,15 @@ define('minifiedUtil', function() {
 		    });
 		},
 		
-
-		
 		'escapeHtml': function(s) {
 			return replace(s, /[<>'"&]/g, function(s) {
 				return '&#'+s.charCodeAt(0)+';';
 			});
 		},
 		
-		'template': template
+		'template': template,
+		
+		 'htmlTemlplate': function(tpl) { return template(tpl, UNDERSCORE.escapeHtml); }
 		
 	/*$
 	 * @id underscorefuncdefend

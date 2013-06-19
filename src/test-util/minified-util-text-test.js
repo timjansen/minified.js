@@ -350,10 +350,15 @@ function runTests(loadInContext) {
 			assert.equal(_.template("<%=1%>xyz")(), "1xyz");
 			assert.equal(_.template("abc<%=1%>")(), "abc1");
 		});
+		it('() supports <%=::%>', function() {
+			var d3 = new Date(1362956403000); // Sun, 10 Mar 2013 23:00:03 GMT  NO DAYLIGHT SAVING
+			assert.equal(_.template("abc<%=obj::[+0000] yyyy-MM-dd HH:mm:ss zzzzz%>xyz")(d3), "abc2013-03-10 23:00:03 +0000xyz");
+		});
 		it('() supports <%%>', function() {
 			assert.equal(_.template("<%if(1>2){%>sn<%=0%>w<%}else{%>ra<%=1%>n<%}%>")(), "ra1n");
 			assert.equal(_.template("no<%if(1>2){%>sn<%=0%>w<%}else{%>ra<%=1%>n<%}%>!>><< %")(), "nora1n!>><< %");
 		});
+		
 		it('() supports print', function() {
 			assert.equal(_.template("<%print('a', 'b', '123')%>")(), "ab123");
 			assert.equal(_.template("<%print('x');%>")(), "x");
@@ -364,6 +369,7 @@ function runTests(loadInContext) {
 		});
 		it('() supports esc', function() {
 			assert.equal(_.template("<%print(esc(2))%> <%=5%>", function(a) { return a*2; })(), "4 10");
+			assert.equal(_.template("<%=5::#.999%>", function(a) { return 'x'+a+'x'; })(), "x5.000x");
 		});
 		it('() supports _', function() {
 			assert.equal(_.template("<%=_(1, 2).join('_')%>")(), "1_2");
