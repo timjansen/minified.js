@@ -663,7 +663,11 @@ define('minifiedUtil', function() {
 		}
 	}
 		
-	
+	function escapeHtml(s) {
+		return replace(s, /[<>'"&]/g, function(s) {
+			return '&#'+s.charCodeAt(0)+';';
+		});
+	}	
 	
 	/*$
 	 * @id length
@@ -990,15 +994,11 @@ define('minifiedUtil', function() {
 		    });
 		},
 		
-		'escapeHtml': function(s) {
-			return replace(s, /[<>'"&]/g, function(s) {
-				return '&#'+s.charCodeAt(0)+';';
-			});
-		},
+		'escapeHtml': escapeHtml,
 		
 		'template': template,
 		
-		 'htmlTemlplate': function(tpl) { return template(tpl, UNDERSCORE.escapeHtml); }
+		 'htmlTemlplate': function(tpl) { return template(tpl, escapeHtml); }
 		
 	/*$
 	 * @id underscorefuncdefend

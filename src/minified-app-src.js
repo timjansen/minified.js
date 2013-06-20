@@ -35,7 +35,10 @@ define('minifiedApp', function() {
 	var _this = this;
 
 		
-	
+	/*$
+	 * @id promise
+	 * @module WEB+UTIL
+	 */
 	function promise() {
 		var state; // undefined/null = pending, true = fulfilled, false = rejected
 		var deferred = [];   // this function calls the functions supplied by then()
@@ -117,6 +120,147 @@ define('minifiedApp', function() {
 	
 	var APP = {};
 	
+	
+	function createSyncConfig(maxFailedValidation) {
+		return {maxFailedValidation: maxFailedValidation || 1};
+	}
+
+	function Model(model, domCtx, syncConfig) {
+		var self = this;
+		self.ctxPrototype = {
+			'model': model,
+			'modelCtx': model,
+			'path': '',
+			'domCtx': domCtx,
+			'index': 0,
+			'indexStack': [], 
+			'isActive': true,
+			'config': syncConfig
+		};
+		self.listeners = {}; // path -> [func, func...]
+		self.mappings = []; // array of arrays containing mapping funcs
+
+	
+		// delayedUpdatePath is not null if there's a pending async update (caused by a listener
+		// calling update). It contains the string path of the update. '' for all.
+		self.delayedUpdatePath = null;
+		// self.updateRunning=undef; // true while update is running. allows preventing nested updates
+	}
+
+	function isSyncCfg(syncCfg) {
+		return (syncCfg && syncCfg.maxFailedValidation != null) ? syncCfg : null;
+	}
+
+	function modelSync(model, domCtxOrSyncCfg, syncCfg) {
+		var s = isSyncCfg(domCtxOrSyncCfg);
+		return new Model(model, s ? null : domCtxOrSyncCfg, syncCfg || s  || createSyncConfig());
+	}
+
+
+	var PROP_REGEXP = /((?=[^.]|\.\.)+)\.(.*)/; // TODO: take the existing RE if possible
+	
+	function propComponents(path) {
+		var r = [];
+		var s = path;
+		var match;
+		while (match = PROP_REGEXP.exec(s)) {
+			r.push(replace(match[1], /\.\./g, '.'));
+			s = match[2];
+		}
+		r.push(replace(s, /\.\./g, '.'));
+		return r;
+	}
+
+	function propMerge(pathComponents) {
+		return UNDERSCORE(pathComponents)
+			.map(function(s) { return replace(s, /\./g, '..'); })
+			.join('.');
+	}
+
+	function propStartsWith(fullPath, partialPath) {
+		return startsWith(fullPath, partialPath) && fullPath.substr(partialPath.length).test(/^($|(\.(\.\.)*([^.]|$)))/);
+	}
+
+
+	copyObj({
+		'addListener': function(path, listenerFunc) {
+			if (this.listeners[path])
+				this.listeners[path].push(listenerFunc);
+			else
+				this.listeners[path] = [listenerFunc];
+		}, 
+	
+		'addMapping': function(mapping) {
+			this.mappings.push(collect(mapping, selfFunc));
+		},
+		
+		'update': function(path, func) {
+			var self = this;
+			var p  = isFunction(path) ? '' : toString(path);
+			var f = func ? func : isFunction(path) ? path : null;
+			var model = this.ctxPrototype['model'];
+			var r;
+			if (f) {
+				try {
+					r = f(prop(model, path));
+				}
+				catch (e) {
+					r = false;
+				}
+			}
+			if (r === false)
+				return r;
+
+			function notifyListener(actualPath) {
+				self.updateRunning = 1;
+				eachObj(self.listeners, function(actualPath, listeners) {
+					each(listeners, function(listener) {
+						if (propStartsWith(actualPath, p))
+							listener(prop(model, actualPath), p);
+					});
+				});
+				
+				each(self.mappings, function(mappingList) {
+					var ctx = copyObj(self.ctxPrototype, {});
+					each(mappingList, function(mapping) {
+						mapping(ctx, actualPath);
+					});
+				});
+				self.updateRunning = 0;
+			}
+
+
+			if (self.updateRunning) {
+				if (self.delayedUpdatePath == null) {
+					self.delayedUpdatePath = p;
+					defer(function() {
+						var up = self.delayedUpdatePath;
+						self.delayedUpdatePath = null;
+						notifyListener(up);
+					});
+				}
+				else {
+					var c1 = propComponents(self.delayedUpdatePath);
+					var c2 = propComponents(p);
+					var c = [];
+					for (var i = 0; i < c1.length && i < c2.length; i++) {
+						if (c1[i] != c2[i])
+							break;
+						c.push(c1[i]);
+					}
+					self.delayedUpdatePath = propMerge(c);
+				}
+					
+				return;
+			}
+
+			notifyListener(p);
+			return r;
+		}
+	}, Model.prototype);
+
+		
+		
 	copyObj({
 		// takes vararg of other promises to assimilate
 		// if one promise is given, this promise assimilates the given promise as-is, and just forwards fulfillment and rejection with the original values.
