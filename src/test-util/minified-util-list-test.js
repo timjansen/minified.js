@@ -175,6 +175,20 @@ function runTests(loadInContext) {
 			assert(!_.equals(_(), null));
 			assert(!_.equals(_(2, 1), null));
 		});
+		it('compares functions', function() {
+			var _ = req();
+			assert(_.equals(function() {return null;}, null));
+			assert(_.equals(null, function() {return null;}));
+			assert(_.equals(function() {return 17;}, function() {return 17;}));
+			assert(_.equals(function() {return [17, "3", null];}, [17, "3", null]));
+			assert(_.equals([17, "3", null], function() {return [17, "3", null];}));
+			assert(!_.equals(function() {return null;}, 1));
+			assert(!_.equals(null, function() {return 1;}));
+			assert(!_.equals(function() {return 13;}, function() {return 17;}));
+			assert(!_.equals(function() {return [17, "3", 3];}, [17, "3", null]));
+			assert(!_.equals([null, "3", null], function() {return [17, "3", null];}));
+		});
+
 	});
 
 	describe('_.each()', function() {

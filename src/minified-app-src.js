@@ -26,18 +26,75 @@
 define('minifiedApp', function() {
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
- 	/*$
- 	 * @id window
- 	 */
 	/**
 	 * @const
 	 */
 	var _this = this;
 
-		
+	
+	var request = $['request'];	
+
+	// copies all elements of from into to, merging into existing structures.
+	// <var>to</var> is optional. Writes result in <var>to</var> if it is a non-value object.
+	// Returns the copy, which may be to if it was an object
+	function copyModel(from, to) {
+		if (isValue(from))
+			return isDate(from) ? dateClone(from) : from;
+
+		var toIsFunc = isFunction(to);
+		var oldTo = toIsFunc ? to() : to;
+		var result;
+		if (!from || equals(from, oldTo))
+			return from;
+		else if (isList(from)) {
+			result = map(from, function(v, idx) { 
+				return oldTo && equals(oldTo[idx], v) ? oldTo[idx] : copyTree(v);
+			});
+			if ((oldTo ? oldTo : from)['_'])
+				result = UNDERSCORE(result);
+		}
+		else {
+			var target = oldTo || {};
+			each(target, function(key) {
+				if (from[key] == null || (isFunction(from[key]) && from[key]() == null)) {
+					if (isFunction(target[key]))
+						target[key](null);
+					else
+						delete target[key];
+				}
+			});
+			each(from, function(key, value) {
+				var isFunc = isFunction(target[key]);
+				var oldValue = isFunc ? target[key]() : target[key];
+				if (!equals(value, oldValue)) {
+					if (isFunc)
+						target[key](copyTree(value));
+					else
+						target[key] = copyTree(value);
+				}
+			});
+		}
+			
+		if (toIsFunc)
+			to(result);
+		return result;
+	}
+
+	
+	
 	/*$
 	 * @id promise
 	 * @module WEB+UTIL
+	 	// takes vararg of other promises to assimilate
+		// if one promise is given, this promise assimilates the given promise as-is, and just forwards fulfillment and rejection with the original values.
+		//
+		// if more than one promise given, it will assimilate all of them with slightly different rules:
+		//    - the new promise is fulfilled if all assimilated promises have been fulfilled. The fulfillment values
+		//      of all assimilated promises are given to the handler as arguments. Note that the fulfillment values themselves are always arrays, as a promise can have several fulfillment values in
+		//      the Minified implementation.
+		//    - when one of the promises is rejected, the new promise is rejected immediately. The rejection handler gets the promises rejection value (first argument is it got several)
+		//      as first argument, an array of the result values of all promises as a second (that means one array of arguments for each promise), and the index of the failed promise as third
+
 	 */
 	function promise() {
 		var state; // undefined/null = pending, true = fulfilled, false = rejected
@@ -119,21 +176,22 @@ define('minifiedApp', function() {
 	}
 	
 	var APP = {};
-	
-	
+			
+	// public
 	function createSyncConfig(maxFailedValidation) {
 		return {maxFailedValidation: maxFailedValidation || 1};
 	}
 
-	function Model(model, domCtx, syncConfig) {
+	// private
+	function Glue(model, domCtx, syncConfig) {
 		var self = this;
 		self.ctxPrototype = {
-			'model': model,
-			'modelCtx': model,
-			'path': '',
-			'domCtx': domCtx,
-			'index': 0,
-			'indexStack': [], 
+			'model': model,      // ref to model data's root 
+			'modelCtx': model,   // ref to model's current position
+			'path': '',          // current path of the model
+			'domCtx': domCtx,    // 
+			'indexStack': [],
+			'group': null,       // name of current group, or null if no group
 			'isActive': true,
 			'config': syncConfig
 		};
@@ -147,18 +205,26 @@ define('minifiedApp', function() {
 		// self.updateRunning=undef; // true while update is running. allows preventing nested updates
 	}
 
+	// private
 	function isSyncCfg(syncCfg) {
-		return (syncCfg && syncCfg.maxFailedValidation != null) ? syncCfg : null;
+		return (syncCfg && syncCfg['maxFailedValidation'] != null) ? syncCfg : null;
 	}
 
-	function modelSync(model, domCtxOrSyncCfg, syncCfg) {
+	// public
+	// registers a model tree. Returns Glue object.
+	function glue(model, domCtxOrSyncCfg, syncCfg) {
 		var s = isSyncCfg(domCtxOrSyncCfg);
 		return new Model(model, s ? null : domCtxOrSyncCfg, syncCfg || s  || createSyncConfig());
 	}
 
+	// private
+	function readJson(txt) {
+		return $['parseJSON'](replace(txt, /^while(1);/));
+	}
 
 	var PROP_REGEXP = /((?=[^.]|\.\.)+)\.(.*)/; // TODO: take the existing RE if possible
 	
+	// private
 	function propComponents(path) {
 		var r = [];
 		var s = path;
@@ -171,29 +237,81 @@ define('minifiedApp', function() {
 		return r;
 	}
 
+	// private
 	function propMerge(pathComponents) {
 		return UNDERSCORE(pathComponents)
 			.map(function(s) { return replace(s, /\./g, '..'); })
 			.join('.');
 	}
 
+	// private
 	function propStartsWith(fullPath, partialPath) {
 		return startsWith(fullPath, partialPath) && fullPath.substr(partialPath.length).test(/^($|(\.(\.\.)*([^.]|$)))/);
 	}
 
-
 	copyObj({
+		// adds a listener to be notified about changes in the model
+		// NOTE: ideally listeners *should*not* modify the model or call update(). If they do, the listeners and mapping
+		//              will not be informed immediately, but via the event loop
+		//
+		// listeners are called as function(value, updatePath):
+		// - value: the object at the requested path
+		// - updatedPath: the exact path that has changed (may be a subpath
 		'addListener': function(path, listenerFunc) {
-			if (this.listeners[path])
-				this.listeners[path].push(listenerFunc);
+			var p, f;
+			if (isFunction(path)) {
+				f = path;
+				p = '';
+			}
+			else {
+				p = path; 
+				f = listenerFunc;
+			}
+			
+			if (this.listeners[p])
+				this.listeners[p].push(f);
 			else
-				this.listeners[path] = [listenerFunc];
+				this.listeners[p] = [f];
 		}, 
 	
+		// adds one or more mappings that will be invoked each time the model is updated. 
+		//
+		// Usually you create a mapping by calling SYNC() or similar functions to create them.
+		//
+		// A mapping is an object with the following properties:
+		// - init: optional, a function(glue, ctx) that will be called when the mapping has been added to the model
+		//  - model is 'this'
+		// 	- ctx is the MappingContext
+		//
+		// - update: required, a function(glue, ctx, updatePath) that will be called when the relevant part of the model has been updated
+		//  - model is 'this'
+		// 	- ctx is the MappingContext
+		// 	- updatePath is the string of the last sync.update() invocation relative to modelCtx, or null
+		//
+		// - read: optional, a function(indexStack, group, ctx) to make the mapping sync back and write into the model. Calling update() is not required.
+		// 	- group is the name of the group to read. If not null, the mapping should only read  if it belongs to that group. Otherwise
+		//          read() should do nothing.
+		// 	- ctx is the MappingContext
+		//    
+		// - inactive: optional, boolean. If true, update() is also called when the context is set to not active. 
+		//             By default, the function is only called when active (thus outside of the false-list of a COND). 
+		//             This is required for SHOW/HIDE.
+		//
+		//
 		'addMapping': function(mapping) {
-			this.mappings.push(collect(mapping, selfFunc));
+			var self = this;
+			var mappingList = collect(mapping, selfFunc);
+			var ctx = copyObj(self.ctxPrototype, {});
+
+			this.mappings.push(mappingList);
+			
+			each(mappingList, function(mapping) {
+				mapping['init'](self, ctx);
+			});
 		},
 		
+		// notifies MINI that the model has been updated manually. Will validate changes, and listeners and mappings will be notified
+		// The optional function(obj) allows several changes with single update. return false or throw exception to suppress update.
 		'update': function(path, func) {
 			var self = this;
 			var p  = isFunction(path) ? '' : toString(path);
@@ -223,7 +341,8 @@ define('minifiedApp', function() {
 				each(self.mappings, function(mappingList) {
 					var ctx = copyObj(self.ctxPrototype, {});
 					each(mappingList, function(mapping) {
-						mapping(ctx, actualPath);
+						if (ctx['isActive'] || mapping['inactive'])
+							mapping['update'](self, ctx, actualPath);
 					});
 				});
 				self.updateRunning = 0;
@@ -256,22 +375,87 @@ define('minifiedApp', function() {
 
 			notifyListener(p);
 			return r;
+		},
+		
+		// like _.prop(model, path)
+		'get': function(path) {
+			return prop(this.ctxPrototype['model'], path != null ? path : '');
+		},
+		
+		// Reads old value (_.prop), compares to new value. If not equal according to _.equals, 
+		// sets new value and calls update().
+		'set': function(path, value) {
+			if (!equals(_.prop(this.ctxPrototype['model'], path), value)) {
+				_.prop(this.ctxPrototype['model'], path, value);
+				this['update'](path);
+			}
+		},
+		
+		// Requests all mappings to read their data and store it in the model. The idea behind this is you do not synchronize
+		// to the model in real-time, you can use this function when the user submits the form.
+		// The function calls read() on all mappings associated with the model, and then update() without path.
+		// Optionally the mappings can be limited to the given group.
+		// Special syntax groupName[index] if group was used more than once.
+		// Then calls sync.update()
+		'read': function(indexStackOrCtx, groupName) {
+			var indexStack = (indexStackOrCtx && indexStackOrCtx['indexStack']) ? indexStackOrCtx['indexStack'] : indexStackOrCtx;
+			var actualGroup = groupName || (indexStackOrCtx && indexStackOrCtx['group']);
+			
+			each(self.mappings, function(mappingList) {
+				var ctx = copyObj(self.ctxPrototype, {});
+				each(mappingList, function(mapping) {
+					mapping['read'](indexStack, actualGroup, ctx);
+				});
+			});
+			this['update']();
+		},
+		
+		// Does a POST request to the URL, sending the JSON located at requestModelCtx, and writes the resulting JSON into 
+		// the location given by responseModelCtx. 
+		//
+		// Extra Features:
+		// - Returns request()'s promises, for full control over the HTTP request
+		// - includes CSRF protection-support for the response (ignores while(1); at beginning)
+		'postPull': function(url, requestModelCtx, responseModelCtx) {
+			return this['pull']('post', url, $['toJSON'](requestModelCtx), responseModelCtx);
+		},
+		
+		// Does a POST request to the URL, sending the JSON located at requestModelCtx.
+		//
+		// Returns request()'s promise.
+		'post': function(url, requestModelCtx)	{
+			return request('post', url, $['toJSON'](requestModelCtx));			
+		},
+		
+		// Does a POST/GET request to the URL, using the get request in $.request() format, writing into the JSON located at responseModelCtx. 
+		//
+		// Returns request()'s promise.
+		'pull': function(method, url, data, responseModelCtx) {
+			return request(method, url, data)
+				.then(function(text) {
+					copyModel(readJson(text), responseModelCtx);
+					return text;
+				});
+		},
+		
+		// Stores the given modelCtx in local storage, stringified as JSON.
+		// Returns true if successful (no exception, no IE6-7)
+		'storeLocal': function(key, srcModelCtx) {
+			// TODO
+		},
+		
+		// Reads the given modelCtx in local storage, stringified as JSON.
+		// Returns true if successful (no exception, data found, no IE6-7)
+		'fetchLocal': function(key, destModelCtx) {
+			// TODO
 		}
-	}, Model.prototype);
+		
+
+	}, Glue.prototype);
 
 		
 		
 	copyObj({
-		// takes vararg of other promises to assimilate
-		// if one promise is given, this promise assimilates the given promise as-is, and just forwards fulfillment and rejection with the original values.
-		//
-		// if more than one promise given, it will assimilate all of them with slightly different rules:
-		//    - the new promise is fulfilled if all assimilated promises have been fulfilled. The fulfillment values
-		//      of all assimilated promises are given to the handler as arguments. Note that the fulfillment values themselves are always arrays, as a promise can have several fulfillment values in
-		//      the Minified implementation.
-		//    - when one of the promises is rejected, the new promise is rejected immediately. The rejection handler gets the promises rejection value (first argument is it got several)
-		//      as first argument, an array of the result values of all promises as a second (that means one array of arguments for each promise), and the index of the failed promise as third
-		'promise': promise,
 		
 	}, APP);
 
@@ -294,6 +478,15 @@ define('minifiedApp', function() {
 /*$
  * @stop 
  */
+
+
+
+
+
+
+
+
+
 
 
 

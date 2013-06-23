@@ -63,10 +63,10 @@ function runTests(loadInContext) {
 	});
 
 	
-	describe('selfFunc()', function() {
+	describe('nonOp()', function() {
 		it('should return its first arg', function() {
 			var _ = req();
-			assert.equal(_.selfFunc(14), 14);
+			assert.equal(_.nonOp(14), 14);
 		});
 	});
 }
