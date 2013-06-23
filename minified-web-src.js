@@ -699,7 +699,7 @@ define('minified', function() {
      * }); 
      * </pre> 
      * 
-     * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item.:
+     * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
 	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and be not added to 
@@ -2518,9 +2518,9 @@ define('minified', function() {
 	 * @id wait
 	 * @configurable default
 	 * @requires
-	 * @name _.wait()
-	 * @syntax _.wait()
-	 * @syntax _.wait(durationMs)
+	 * @name $.wait()
+	 * @syntax $.wait()
+	 * @syntax $.wait(durationMs)
 	 * @module WEB
 	 *
 	 * Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
