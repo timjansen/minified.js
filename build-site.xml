@@ -131,7 +131,7 @@
 	    <arg line="-r -o WebContent/about/ --mask *.html WebContent/about/"/>
 	 </java>
 	 <java jar="thirdPartyLibs/htmlcompressor/htmlcompressor-1.5.3.jar" failonerror="true" fork="true">
-	    <arg line="-r -o WebContent/reference/ --mask *.html WebContent/reference/"/>
+	    <arg line="-r -o WebContent/api/ --mask *.html WebContent/api/"/>
 	 </java>
    </target>	
 

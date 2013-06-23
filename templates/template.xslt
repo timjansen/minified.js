@@ -54,7 +54,7 @@ $(function() {
 			<a class="{if (/page:page/page:section='download') then 'selected' else 'notSelected'}" href="/download/">Download</a>
 			<a class="{if (/page:page/page:section='build') then 'selected' else 'notSelected'}" href="/builder/">Build</a>
 			<a class="{if (/page:page/page:section='docs') then 'selected' else 'notSelected'}" href="/docs/">Documentation</a>
-			<a class="{if (/page:page/page:section='reference') then 'selected' else 'notSelected'}" href="/reference/">API</a>
+			<a class="{if (/page:page/page:section='reference') then 'selected' else 'notSelected'}" href="/api/">API</a>
 			<a class="{if (/page:page/page:section='about') then 'selected' else 'notSelected'}" href="/about/">About</a>
 		</div>
 	</div>

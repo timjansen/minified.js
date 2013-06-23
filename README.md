@@ -30,14 +30,14 @@ Specifically, it does not include polyfills, a class framework, helper for JavaS
 If you need them, <a href="http://microjs.com">microjs.com</a> is a great place to find them.
 <table>
 <tr><th>Feature</th><th>Minified</th><th>jQuery</th><th>MooTools</th><th>Zepto.js</th></tr>
-<tr><td>CSS Selector</td><td>yes (limited)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3)</td></tr>
+<tr><td>CSS Selector</td><td>yes<div class="cmpExpl">CSS1 or browser engine</div></td><td>yes<div class="cmpExpl">CSS3 subset + extensions</div></td><td>yes<div class="cmpExpl">CSS3 subset + extensions</div></td><td>yes<div class="cmpExpl">browser engine</div></td></tr>
 <tr><td>CSS Style Changes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>CSS Class Changes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>Element Creation</td><td>yes</td> <td>yes (HTML-strings only)</td> <td>yes</td> <td>yes (HTML-strings only)</td></tr>
+<tr><td>Element Creation</td><td>yes</td> <td>yes<div class="cmpExpl">HTML-strings only</div></td> <td>yes</td> <td>yes<div class="cmpExpl">HTML-strings only</div></td></tr>
 <tr><td>Element Cloning</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>DOM Manipulation</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><td>Animation (numeric)</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
-<tr><td>Animation (color)</td><td>yes</td> <td>no</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
+<tr><td>Animation (numeric)</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes<div class="cmpExpl">CSS transitions only</div></td></tr>
+<tr><td>Animation (color)</td><td>yes</td> <td>no</td> <td>yes</td> <td>yes<div class="cmpExpl">CSS transitions only</div></td></tr>
 <tr><td>Events</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>DOMReady</td><td>yes</td><td>yes</td><td>yes</td> <td>yes</td></tr>
 <tr><td>Ajax/XHR</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
@@ -47,8 +47,8 @@ If you need them, <a href="http://microjs.com">microjs.com</a> is a great place 
 <tr><td>Form Serialization</td><td>no</td> <td>yes</td> <td>no</td> <td>yes</td></tr>
 <tr><td>Array Helpers (Iteration)</td> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><td>AMD support</td> <td>yes</td> <td>yes</td> <td>no</td> <td>no</td></tr>
-<tr><td>Online Builder</td> <td>yes (modules and functions)</td> <td>no</td> <td>yes (modules)</td> <td>no</td></tr>
-<tr><td>Internet Explorer compatible</td> <td>yes</td> <td>yes (&lt;2.0 only)</td> <td>yes</td> <td>no</td></tr>
+<tr><td>Online Builder</td> <td>yes<div class="cmpExpl">modules and functions</div></td> <td>no</td> <td>yes<div class="cmpExpl">modules</div></td> <td>no</td></tr>
+<tr><td>Internet Explorer compatible</td> <td>yes</td> <td>yes<div class="cmpExpl">jQuery 1.x only</div></td> <td>yes</td> <td>no</td></tr>
 </table>
 
 

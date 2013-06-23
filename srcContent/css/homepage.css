@@ -6,8 +6,9 @@ table { border-collapse: collapse; border-spacing: 0; }
 tr:first-child {background-color: #efe8e0; color: #000; }
 tr:nth-child(2n) {background-color: #f3f3f3;}
 tr:first-child th {padding: 0.5em; }
-td, th { padding: 0.3em; border: 1px solid #f8f4f0; text-align: left;  }
+td, th { padding: 0.4em; border: 1px solid #f8f4f0; text-align: left;  }
 tr:not(:first-child) th { background-color: #fff; font-weight: normal;}
+.cmpExpl { font-size: smaller; margin-top: 0.3em; margin-right: 2em; color: #666; }
 .colored { color: #ff8200; }
 .fiddle { margin-top: 0.5em; margin-bottom: 0.5em; }
 

@@ -30,11 +30,11 @@ var docSections = parseSourceSections(src).filter(function(a) {return (a.name &&
 documentSections(docSections);
 
 // Generate ref overview
-writeFile('srcContent/reference/index.xml', createOverviewPage(docSections));
+writeFile('srcContent/api/index.xml', createOverviewPage(docSections));
 
 var tocHtml = createToc(docSections);
 
 // Generate single doc pages
 _.each(docSections, function(sec) {
-	writeFile('srcContent/reference/'+sec.id+'.xml', createReferencePage(sec, tocHtml));
+	writeFile('srcContent/api/'+sec.id+'.xml', createReferencePage(sec, tocHtml));
 });

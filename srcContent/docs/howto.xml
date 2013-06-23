@@ -62,7 +62,7 @@ You can use all valid CSS1 selectors with <var>$()</var>. If you are using a bui
 all selectors supported by the browser are possible. 
 </p>
 <p>
-API: <a href="/reference/dollar.html">$()</a>.<br/>
+API: <a href="/api/dollar.html">$()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Vmr6z/">Selector</a>
 </p>
 
@@ -77,7 +77,7 @@ content of the element '#parent'. The third argument, if true, restricts
 matches to direct children of the context nodes, instead of matching all descendants.
 </p>
 <p>
-API: <a href="/reference/dollar.html">$()</a>.<br/>
+API: <a href="/api/dollar.html">$()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/6BHAt/">Child Elements</a>
 </p>
 
@@ -91,7 +91,7 @@ direct support for getting child nodes, so you need to work with this helper fun
 
 </p>
 <p>
-API: <a href="/reference/dollar.html">$()</a>, <a href="/reference/collect.html">collect()</a>.<br/>
+API: <a href="/api/dollar.html">$()</a>, <a href="/api/collect.html">collect()</a>.<br/>
 </p>
 
 
@@ -102,7 +102,7 @@ Finding every second &lt;li> element in '#parent':
 The <var>filter()</var> function filters all elements that have an even index.
 </p>
 <p>
-API: <a href="/reference/dollar.html">$()</a>, <a href="/reference/filter.html">filter()</a>.<br/>
+API: <a href="/api/dollar.html">$()</a>, <a href="/api/filter.html">filter()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/FXGce/">Filter</a>
 </p>
 
@@ -116,7 +116,7 @@ You can also use the same syntax to add elements to the list:
 Again, null elements will be automatically removed.
 </p>
 <p>
-API: <a href="/reference/dollar.html">$()</a>.<br/>
+API: <a href="/api/dollar.html">$()</a>.<br/>
 </p>
 
 
@@ -128,14 +128,14 @@ The <var>fill()</var> method replaces an element's content with the given argume
 it will replace the old content with a new text node. You can also use it to add other elements as new content.
 </p>
 <p>
-API: <a href="/reference/fill.html">fill()</a>.<br/>
+API: <a href="/api/fill.html">fill()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/MKWTp/">fill()</a>
 </p>
 
 <h3><a name="html_innerhtml">Set InnerHTML</a></h3>
 <p>
 <pre>$('.display').set("innerHTML", "My <b>HTML</b>");</pre>
-You can use <a href="/reference/set.html">set()</a> to modify the <var>innerHTML</var> property of list members. 
+You can use <a href="/api/set.html">set()</a> to modify the <var>innerHTML</var> property of list members. 
 If you only want to modify a single element, using the <var>innerHTML</var> property directly will be even easier:
 <pre>$$('#myElement').innerHTML = "My <b>HTML</b>";</pre>
 </p>
@@ -144,7 +144,7 @@ when handling user input or URL parameters. It is not only error prone, but can 
 it is better to <a href="#html_create">Create HTML Elements with EE()</a> instead.
 <p>
 <p>
-API: <a href="/reference/set.html">set()</a>, <a href="/reference/dollardollar.html">$$()</a>.<br/>
+API: <a href="/api/set.html">set()</a>, <a href="/api/dollardollar.html">$$()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
 </p>
 
@@ -160,7 +160,7 @@ This is not possible if your list has more than one element though. Then you nee
 when handling user input or URL parameters. It is not only error prone, but can also lead to security issues. In most cases
 it is better to <a href="#html_create">Create HTML Elements with EE()</a> instead.
 <p>
-API: <a href="/reference/set.html">set()</a>, <a href="/reference/dollardollar.html">$$()</a>.<br/>
+API: <a href="/api/set.html">set()</a>, <a href="/api/dollardollar.html">$$()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
 </p>
 
@@ -170,7 +170,7 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
 <pre>var divFactory = EE('div');</pre>
 Minified makes it easy to create <strong>element factories</strong>, simple functions that create HTML structures.
 The line above creates a factory to return &lt;div> elements. To get the actual element, 
-invoke the factory. It will return the new element wrapped in a <a href="/reference/list.html">list</a>:
+invoke the factory. It will return the new element wrapped in a <a href="/api/list.html">list</a>:
 <pre>var newDiv = divFactory()[0];</pre>
 Element factories can be used directly to add new elements:
 <pre>$('.container').add(divFactory);          // add as last child
@@ -199,9 +199,9 @@ The previous snippet will add the following HTML to all elements with the class 
 
 </p>
 <p>
-API: <a href="/reference/add.html">add()</a>, <a href="/reference/addafter.html">addAfter()</a>, <a href="/reference/addbefore.html">addBefore()</a>, 
-<a href="/reference/addfront.html">addFront()</a>, <a href="/reference/ee.html">EE()</a>, <a href="/reference/fill.html">fill()</a>, 
-<a href="/reference/replace.html">replace()</a>, <a href="/reference/set.html">set()</a>.<br/>
+API: <a href="/api/add.html">add()</a>, <a href="/api/addafter.html">addAfter()</a>, <a href="/api/addbefore.html">addBefore()</a>, 
+<a href="/api/addfront.html">addFront()</a>, <a href="/api/ee.html">EE()</a>, <a href="/api/fill.html">fill()</a>, 
+<a href="/api/replace.html">replace()</a>, <a href="/api/set.html">set()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/uRC8Y/">EE and add()</a>
 </p>
 
@@ -217,8 +217,8 @@ Beside <var>add()</var>, you can use <var>fill()</var> to replace children or <v
 <var>addBefore()</var> and <var>addFront()</var> to position the elements relative to the list elements.
 </p>
 <p>
-API: <a href="/reference/add.html">add()</a>, <a href="/reference/addafter.html">addAfter()</a>, <a href="/reference/addbefore.html">addBefore()</a>, 
-<a href="/reference/addfront.html">addFront()</a>, <a href="/reference/ee.html">EE()</a>, <a href="/reference/fill.html">fill()</a>.<br/>
+API: <a href="/api/add.html">add()</a>, <a href="/api/addafter.html">addAfter()</a>, <a href="/api/addbefore.html">addBefore()</a>, 
+<a href="/api/addfront.html">addFront()</a>, <a href="/api/ee.html">EE()</a>, <a href="/api/fill.html">fill()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/uRC8Y/">EE and add()</a>
 </p>
 
@@ -232,8 +232,8 @@ If you want to replace the children of an element, instead of the element itself
 <pre>$('#container').fill("New content.");</pre>
 </p>
 <p>
-API: <a href="/reference/add.html">add()</a>, <a href="/reference/fill.html">fill()</a>, <a href="/reference/ee.html">EE()</a>, 
-<a href="/reference/replace.html">replace()</a>.<br/>
+API: <a href="/api/add.html">add()</a>, <a href="/api/fill.html">fill()</a>, <a href="/api/ee.html">EE()</a>, 
+<a href="/api/replace.html">replace()</a>.<br/>
 </p>
 
 
@@ -243,7 +243,7 @@ API: <a href="/reference/add.html">add()</a>, <a href="/reference/fill.html">fil
 Just use <var>remove()</var> to remove elements from the DOM tree.
 </p>
 <p>
-API: <a href="/reference/remove.html">remove()</a>.<br/>
+API: <a href="/api/remove.html">remove()</a>.<br/>
 </p>
 
 <h3><a name="html_removechildren">Remove Children of HTML Elements</a></h3>
@@ -252,7 +252,7 @@ API: <a href="/reference/remove.html">remove()</a>.<br/>
 Call <var>fill()</var> without arguments to remove all content of an element.
 </p>
 <p>
-API: <a href="/reference/fill.html">fill()</a>.<br/>
+API: <a href="/api/fill.html">fill()</a>.<br/>
 </p>
 
 <h3><a name="html_attr">Get and Set Attributes</a></h3>
@@ -262,7 +262,7 @@ Use <var>set()</var> with a '@'-prefixed name to set attributes. <var>get()</var
 <pre>var link = $('a.someLink').get('@href');</pre>
 </p>
 <p>
-API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/>
+API: <a href="/api/get.html">get()</a>, <a href="/api/set.html">set()</a>.<br/>
 </p>
 
 
@@ -276,8 +276,8 @@ Or just call the factory to create new instances:
 <pre>var clone = createSheep();</pre>
 </p>
 <p>
-API: <a href="/reference/add.html">add()</a>, <a href="/reference/clone.html">clone()</a>, 
-<a href="/reference/ee.html">EE()</a>.<br/>
+API: <a href="/api/add.html">add()</a>, <a href="/api/clone.html">clone()</a>, 
+<a href="/api/ee.html">EE()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/vuyh9/">clone()</a>
 </p>
 
@@ -301,7 +301,7 @@ $('#onButton').on('click', toggle, [true]);
 $('#offButton').on('click', toggle, [false]);</pre>
 </p>
 <p>
-API: <a href="/reference/set.html">set()</a>, <a href="/reference/toggle.html">toggle()</a>.<br/>
+API: <a href="/api/set.html">set()</a>, <a href="/api/toggle.html">toggle()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a>
 </p>
 
@@ -312,7 +312,7 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a>
 <var>hasClass()</var> returns <var>true</var> if at least one of the list members has the given CSS class.
 </p>
 <p>
-API: <a href="/reference/hasclass.html">hasClass()</a>.<br/>
+API: <a href="/api/hasclass.html">hasClass()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Un7QF/">CSS Classes</a>
 </p>
 
@@ -325,7 +325,7 @@ in the list:
 <pre>var color = $('#someSpan').get('$color');</pre>
 </p>
 <p>
-API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/>
+API: <a href="/api/get.html">get()</a>, <a href="/api/set.html">set()</a>.<br/>
 </p>
 
 
@@ -337,7 +337,7 @@ in the list:
 <pre>var value = $('#someTextField').get('value');</pre>
 </p>
 <p>
-API: <a href="/reference/get.html">get()</a>, <a href="/reference/set.html">set()</a>.<br/>
+API: <a href="/api/get.html">get()</a>, <a href="/api/set.html">set()</a>.<br/>
 </p>
 
 
@@ -358,8 +358,8 @@ $('#width100').on('click', myToggle, [false]);
 $('#width200').on('click', myToggle, [true]);
 </pre>
 <p>
-API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, 
-<a href="/reference/toggle.html">toggle()</a>.<br/>
+API: <a href="/api/animate.html">animate()</a>, <a href="/api/set.html">set()</a>, 
+<a href="/api/toggle.html">toggle()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tqsCg/">Animation</a>, <a href="http://jsfiddle.net/tjansen/xw7nQ/">Toggle</a>
 </p>
 
@@ -375,13 +375,13 @@ $('.colChanger').animate({$backgroundColor: '#f00'}, 750)
 				$('.colChanger').animate({$backgroundColor: '#000'}, 750)
 		     });
 </pre>
-<var>animate()</var> returns a <a href="/reference/promise.html">Promise</a> that can be used to 
+<var>animate()</var> returns a <a href="/api/promise.html">Promise</a> that can be used to 
 chain <var>animate()</var> invocations, so that you can start another <var>animate()</var> when 
 the previous animation ended.
 </p>
 <p>
-API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/promise.html">Promise</a>, 
-<a href="/reference/then.html">then()</a>.<br/>
+API: <a href="/api/animate.html">animate()</a>, <a href="/api/promise.html">Promise</a>, 
+<a href="/api/then.html">then()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/NrGnf/">Animation Chain</a>
 </p>
 
@@ -400,7 +400,7 @@ by calling it either without arguments or with a non-boolean argument. Toggles a
 can also skip the duration to toggle instantly.
 </p>
 <p>
-API: <a href="/reference/toggle.html">toggle()</a>.<br/>
+API: <a href="/api/toggle.html">toggle()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/xw7nQ/">Toggle</a>, 
 <a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a>
 </p>
@@ -415,8 +415,8 @@ var fadeToggle = $('.myElem3').toggle({$$fade: 0}, {$$fade: 1}, 500);
 Use the virtual property <var>$$fade</var> to fade elements in and out.
 </p>
 <p>
-API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, 
-<a href="/reference/toggle.html">toggle()</a>.<br/>
+API: <a href="/api/animate.html">animate()</a>, <a href="/api/set.html">set()</a>, 
+<a href="/api/toggle.html">toggle()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a>
 </p>
 
@@ -430,8 +430,8 @@ var slideToggle = $('.myElem3').toggle({$$slide: 0}, {$$slide: 1}, 500);
 Use the virtual property <var>$$slide</var> to slide elements in and out.
 </p>
 <p>
-API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/set.html">set()</a>, 
-<a href="/reference/toggle.html">toggle()</a>.<br/>
+API: <a href="/api/animate.html">animate()</a>, <a href="/api/set.html">set()</a>, 
+<a href="/api/toggle.html">toggle()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/USMfD/">Fade/Slide Toggle</a>
 </p>
 
@@ -446,8 +446,8 @@ register a function that will be invoked at a browser-controlled frame-rate. It 
 <var>requestAnimationFrame</var> function if available.
 </p>
 <p>
-API: <a href="/reference/animate.html">animate()</a>, <a href="/reference/loop.html">loop()</a>, 
-<a href="/reference/set.html">set()</a>.<br/>
+API: <a href="/api/animate.html">animate()</a>, <a href="/api/loop.html">loop()</a>, 
+<a href="/api/set.html">set()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Xu6R8/">Loop Animation</a>
 </p>
 
@@ -466,7 +466,7 @@ event forwarding and the event's default action. If you want to allow event proc
 pipe ('|') or let the handler return <var>true</var>.
 </p>
 <p>
-API: <a href="/reference/on.html">on()</a>, <a href="/reference/off.html">off()</a>.<br/>
+API: <a href="/api/on.html">on()</a>, <a href="/api/off.html">off()</a>.<br/>
 </p>
 
 <h3><a name="data_post">Do HTTP Requests (AJAX / XHR)</a></h3>
@@ -480,10 +480,10 @@ API: <a href="/reference/on.html">on()</a>, <a href="/reference/off.html">off()<
 <var>$.request()</var> executes HTTP requests asynchronously. You have to specify the method and URL to use, as well as data to send.
 For GET requests the data is either a map of parameters or a string to append to the URL. 
 For POST requests, it can either be a map of form parameters, a string or XML. The result  of the request is returned 
-as a <a href="/reference/promise.html">Promise</a>.
+as a <a href="/api/promise.html">Promise</a>.
 </p>
 <p>
-API: <a href="/reference/request.html">request()</a>, <a href="/reference/promise.html">Promise</a>.<br/>
+API: <a href="/api/request.html">request()</a>, <a href="/api/promise.html">Promise</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/ncQrp/">Request / JSON</a>
 </p>
 
@@ -495,8 +495,8 @@ JSON in an HTTP request, just convert the JavaScript structure to a string using
 JSON response, use <var>$.parseJSON()</var> for the conversion.
 </p>
 <p>
-API: <a href="/reference/parsejson.html">parseJSON()</a>, <a href="/reference/tojson.html">toJSON()</a>, 
-<a href="/reference/request.html">request()</a>.<br/>
+API: <a href="/api/parsejson.html">parseJSON()</a>, <a href="/api/tojson.html">toJSON()</a>, 
+<a href="/api/request.html">request()</a>.<br/>
 JSFiddle Example: <a href="http://jsfiddle.net/tjansen/ncQrp/">Request / JSON</a>
 </p>
 
@@ -509,7 +509,7 @@ past like this:
 <pre>$.setCookie('numberOfVisits', '', -1);</pre>
 </p>
 <p>
-API: <a href="/reference/getcookie.html">getCookie()</a>, <a href="/reference/setcookie.html">setCookie</a>.<br/>
+API: <a href="/api/getcookie.html">getCookie()</a>, <a href="/api/setcookie.html">setCookie</a>.<br/>
 </p>
 
 

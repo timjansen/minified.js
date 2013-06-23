@@ -2518,9 +2518,9 @@ define('minified', function() {
 	 * @id wait
 	 * @configurable default
 	 * @requires
-	 * @name _.wait()
-	 * @syntax _.wait()
-	 * @syntax _.wait(durationMs)
+	 * @name $.wait()
+	 * @syntax $.wait()
+	 * @syntax $.wait(durationMs)
 	 * @module WEB
 	 *
 	 * Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,

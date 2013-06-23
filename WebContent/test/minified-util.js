@@ -115,7 +115,7 @@ define('minifiedUtil', function() {
 	function isList(v) {
 		return !!v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
 	}
-	function selfFunc(v) {
+	function nonOp(v) {
 		return v;
 	}
 	function plusOne(d) { 
@@ -262,7 +262,7 @@ define('minifiedUtil', function() {
 				return r;
 	}
 	function coal() {
-		return find(arguments, selfFunc);
+		return find(arguments, nonOp);
 	}
 	function contains(list, value) {
 		if (isList(list))
@@ -271,8 +271,10 @@ define('minifiedUtil', function() {
 					return true;
 		return false;
 	}
-	// equals if a and b have the same elements and all are equal
-	function equals(a, b) {
+	// equals if a and b have the same elements and all are equal. Supports getters.
+	function equals(x, y) {
+		var a = isFunction(x) ? x() : x;
+		var b = isFunction(y) ? y() : y;
 		if (a == b)
 			return true;
 		else if (a == null || b == null)
@@ -312,14 +314,14 @@ define('minifiedUtil', function() {
 		};
 	}
 	function call(f, fThisOrArgs, args) {
-		return f.apply(args && fThisOrArgs, map(args || fThisOrArgs, selfFunc));
+		return f.apply(args && fThisOrArgs, map(args || fThisOrArgs, nonOp));
 	}
 	function callList(list, fThisOrArgs, args) {
 		return map(list, function(f) { if (isFunction(f)) return call(f, fThisOrArgs, args); else return undef;});
 	}
 	function bind(f, fThis, beforeArgs, afterArgs) {
 		return function() {
-			return call(f, fThis, collect([beforeArgs, arguments, afterArgs], selfFunc));
+			return call(f, fThis, collect([beforeArgs, arguments, afterArgs], nonOp));
 		};
 	}
 	function partial(f, beforeArgs, afterArgs) {
@@ -373,18 +375,18 @@ define('minifiedUtil', function() {
 			var formatNoTZ = format;
 			var date = value;
 			var map = {
-				'y': ['FullYear', selfFunc],
+				'y': ['FullYear', nonOp],
 				'M': ['Month', plusOne],
 				'n': ['Month', MONTH_SHORT_NAMES],
 				'N': ['Month', MONTH_LONG_NAMES],
-				'd': ['Date', selfFunc],
-				'm': ['Minutes', selfFunc],
-				'H': ['Hours', selfFunc],
+				'd': ['Date', nonOp],
+				'm': ['Minutes', nonOp],
+				'H': ['Hours', nonOp],
 				'h': ['Hours', function(d) { return (d % 12) || 12; }],
 				'K': ['Hours', plusOne],
 				'k': ['Hours', function(d) { return d % 12 + 1; }],
-				's': ['Seconds', selfFunc],
-				'S': ['Milliseconds', selfFunc],
+				's': ['Seconds', nonOp],
+				'S': ['Milliseconds', nonOp],
 				'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
 				'w': ['Day', WEEK_SHORT_NAMES],
 				'W': ['Day', WEEK_LONG_NAMES],
@@ -657,13 +659,17 @@ define('minifiedUtil', function() {
 					}).join('')+'}'));
 			return templateCache[template] = function(obj) {
 				var result = [];
-				f(obj, result, escapeFunction || selfFunc, function() {call(result.push, result, arguments);}, UNDERSCORE);
+				f(obj, result, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, UNDERSCORE);
 				return result.join('');
 			};
 		}
 	}
 		
-	
+	function escapeHtml(s) {
+		return replace(s, /[<>'"&]/g, function(s) {
+			return '&#'+s.charCodeAt(0)+';';
+		});
+	}	
 	
 	/*$
 	 * @id length
@@ -730,22 +736,41 @@ define('minifiedUtil', function() {
 	copyObj({
     /*$
      * @id each
-     * @group SELECTORS
-     * @requires dollar
+     * @group LIST
+     * @requires list
      * @configurable default
      * @name .each()
-     * @syntax each(callback)
+     * @syntax list.each(callback)
+     * @syntax _.each(list, callback)
      * @module UTIL, WEB
      * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
      * the zero-based index as second.
      *
-     * @example This goes through all h2 elements of the class 'section' and changes their content:
+     * @example Creates the sum of all list entried. 
+     * <pre>
+     * var sum = 0;
+     * _(17, 4, 22).each(function(item, index) {
+     *     sum += item;
+     * });
+     * </pre>
+     *
+     * @example The previous example with a native array:
+     * <pre>
+     * var sum = 0;
+     * _.each([17, 4, 22], function(item, index) {
+     *     sum += item;
+     * });
+     * </pre>
+     * 
+     * @example This goes through all h2 elements of the class 'section' on a web page and changes their content:
      * <pre>
      * $('h2.section').each(function(item, index) {
      *     item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
      * });
      * </pre>
-     *
+     * 
+     * @param list a list to iterate. Can be an array, a ##list#Minified list## or anything other array-like structure 
+     *             <var>length</var> property.
      * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
      *                 <dl><dt>item</dt><dd>The current list element.</dd>
      *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
@@ -756,25 +781,43 @@ define('minifiedUtil', function() {
 	
 	/*$
 	 * @id filter
-	 * @group SELECTORS
-	 * @requires dollar
+	 * @group LIST
+	 * @requires list
 	 * @configurable default
 	 * @name .filter()
-	 * @syntax filter(filterFunc)
+	 * @syntax list.filter(filterFunc)
+     * @syntax _.filter(list, filterFunc)
    	 * @module WEB, UTIL
 	 * Creates a new ##list#Minified list## that contains only those items approved by the given callback function. The function is 
 	 * called once for each item. 
 	 * If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
 	 *
-	 * @example Creates a list of all unchecked checkboxes.
+	 * @example Removing all numbers over 10 from a list:
 	 * <pre>
-	 * var list = $('input').filter(function(item) {
+	 * var list = _([4, 22, 7, 2, 19]).filter(function(item, index) {
+	 *     return item &lt;= 10;
+	 * });
+	 * </pre>
+	 * 
+	 * @example The previous example with a native array is input. Note that the result is always a ##list#Minified list##:
+	 * <pre>
+	 * var list = _.filter([4, 22, 7, 2, 19], function(item, index) {
+	 *     return item &lt;= 10;
+	 * });
+	 * </pre>
+	 * 
+	 * @example Creates a list of all unchecked checkboxes on a web page:
+	 * <pre>
+	 * var list = $('input').filter(function(item, index) {
 	 *     return item.getAttribute('type') == 'checkbox' && item.checked;
 	 * });
 	 * </pre>
 	 * 
+     * @param list a list to filter. Can be an array, a ##list#Minified list## or anything other array-like structure 
+     *             <var>length</var> property.
 	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
-	 *        <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dl><dt>item</dt><dd>The current list element.</dd>
+	 *        <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>  
 	 * @return the new, filtered ##list#list##
 	 */
@@ -782,11 +825,12 @@ define('minifiedUtil', function() {
 	
 	/*$ 
      * @id collect 
-     * @group SELECTORS 
-     * @requires dollar 
+     * @group LIST 
+     * @requires list
      * @configurable default 
      * @name .collect() 
-     * @syntax collect(collectFunc) 
+     * @syntax list.collect(collectFunc) 
+     * @syntax _.collect(list, collectFunc)
    	 * @module WEB, UTIL
      * Creates a new ##list#Minified list## from the current list using the given callback function. 
      * The callback is invoked once for each element of the current list. The callback results will be added to the result list. 
@@ -797,9 +841,21 @@ define('minifiedUtil', function() {
      * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
      * If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li> 
      * </ul>
-     * 
-     * 
-     * @example Goes through input elements. If they are text inputs, their value will be added to the list: 
+      * 
+     * @example Goes through a list of numbers. Numbers over 10 will be removed. Numbers 5 and below stay. Numbers between 6 and 
+     * 10 will be replaced by two numbers whose sum is the original value.
+     * <pre> 
+     * var texts = _(3, 7, 11, 5, 19, 3).collect(function(number, index) { 
+     *     if (number > 10)
+     *         return null;           // remove numbers >10
+     *     else if (number > 5)
+     *         return [5, number-5];  // replace with two entries
+     *     else
+     *         return number;         // keep lower numbers
+     * }); 
+     * </pre> 
+     *  
+     * @example Goes through input elements on a web page. If they are text inputs, their value will be added to the list: 
      * <pre> 
      * var texts = $('input').collect(function(input) { 
      *     if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') 
@@ -823,7 +879,9 @@ define('minifiedUtil', function() {
      * }); 
      * </pre> 
      * 
-     * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item.:
+     * @param list a list to transform. Can be an array, a ##list#Minified list## or anything other array-like structure 
+     *             <var>length</var> property
+     * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
 	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and be not added to 
@@ -832,8 +890,85 @@ define('minifiedUtil', function() {
      */ 
 	'collect': listBindArray(collect),
 	
+	/*$ 
+     * @id map 
+     * @group LIST 
+     * @requires list
+     * @configurable default 
+     * @name .map() 
+     * @syntax list.map(mapFunc) 
+     * @syntax _.map(list, mapFunc)
+   	 * @module WEB, UTIL
+     * Creates a new ##list#Minified list## from the current list using the given callback function. 
+     * The callback is invoked once for each element of the current list. The callback results will be added to the result list.
+     *  
+	 * <var>map()</var> is a simpler version of ##collect() that creates lists of the same size as the input list. It is easier to use
+	 * if the resulting list should contain nulls or nested list.
+     * 
+     * @example Goes through a list of numbers and creates a new list with each value increased by 1:
+     * <pre> 
+     * var texts = _(3, 7, 11, 5, 19, 3).map(function(number, index) { 
+     *     return number + 1;
+     * }); 
+     * </pre> 
+     * 
+	 * @example The previous example with a native array is input. Note that the result is always a ##list#Minified list##:
+     * <pre> 
+     * var texts = _.map([3, 7, 11, 5, 19, 3], function(number, index) { 
+     *     return number + 1;
+     * }); 
+     * </pre> 
+     * 
+     * @param list a list to transform. Can be an array, a ##list#Minified list## or anything other array-like structure 
+     *             <var>length</var> property
+     * @param mapFunc The callback <code>function(item, index)</code> to invoke for each item:
+     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new list.</dd></dl>
+     * @return the new ##list#list##
+     */ 
 	'map': listBindArray(map),
 	
+	/*$ 
+     * @id reduce 
+     * @group LIST 
+     * @requires list
+     * @configurable default 
+     * @name .reduce() 
+     * @syntax list.reduce(memoInit, func)
+     * @syntax _.reduce(list, memoInit, func)
+   	 * @module UTIL
+     * Reduces a list into a single value.
+     * <var>reduce()</var> allows you to create a single value from a list of values in a functional style.
+     * The callback <var>func</func> is invoked for each list member. Beside the list member and its index, it also
+     * receives a 'memo' which is the return value of the previous invocation.
+     * 
+     * @example Calculate the sum of a list of numbers:
+     * <pre> 
+     * var sum = _(3, 7, 11, 5, 19, 3).reduce(0, function(memo, value, index) { 
+     *     return memo + value;
+     * }); 
+     * </pre> 
+     * 
+	 * @example The previous example with a native array is input:
+     * <pre> 
+     * var sum = _.reduce([3, 7, 11, 5, 19, 3], 0, function(memo, value, index) { 
+     *     return memo + value;
+     * }); 
+     * </pre> 
+     * 
+     * @param list a list to use as input. Can be an array, a ##list#Minified list## or anything other array-like structure 
+     *             <var>length</var> property
+     * @param memoInit this value will be passed to the callback as <var>memo</var> the first time it is called. In all subsequent
+     *                 invocations, the <var>memo</var> will be the last invocation's return value.            
+     * @param func The callback <code>function(memo, value, index)</code> to invoke for each item:
+     * <dl><dt>memo</dt><dd>The current memo. This is <var>memoInit</var> for the first invocation. After that it is the previous
+     *      invocation's return value.</dd>
+     * <dt>value</dt><dd>The current list element.</dd>
+     * <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="returnValue">(callback return value)</dt><dd>The new memo for subsequent calls. The return
+	 *        value of the last callback invocation is also <var>reduce()</var's return value.</dd></dl>
+     * @return the value returned by the last invocation of <var>func</var>
+     */ 
 	'reduce': listBind(reduce),
 
 	'toObject': listBind(toObject),
@@ -854,7 +989,7 @@ define('minifiedUtil', function() {
 	'call': listBindArray(callList),
 
 	'array': function() {
-		return map(this, selfFunc);
+		return map(this, nonOp);
 	},
 
 	// returns a function that calls all functions of the list
@@ -866,11 +1001,11 @@ define('minifiedUtil', function() {
 	},
 	
 	'join': function(separator) {
-		return map(this, selfFunc).join(separator);
+		return map(this, nonOp).join(separator);
 	},
 	
 	'sort': function(func) {
-		return new M(map(this, selfFunc).sort(func));
+		return new M(map(this, nonOp).sort(func));
 	},
 	
 	'uniq': function() {
@@ -926,7 +1061,7 @@ define('minifiedUtil', function() {
 		'bind': bind,
 		'partial': partial,
 		'once': once,
-		'selfFunc': selfFunc,
+		'nonOp': nonOp,
 		'each': each,
 		'eachObj': eachObj,
 		'toObject': toObject,
@@ -990,15 +1125,11 @@ define('minifiedUtil', function() {
 		    });
 		},
 		
-		'escapeHtml': function(s) {
-			return replace(s, /[<>'"&]/g, function(s) {
-				return '&#'+s.charCodeAt(0)+';';
-			});
-		},
+		'escapeHtml': escapeHtml,
 		
 		'template': template,
 		
-		 'htmlTemlplate': function(tpl) { return template(tpl, UNDERSCORE.escapeHtml); }
+		 'htmlTemlplate': function(tpl) { return template(tpl, escapeHtml); }
 		
 	/*$
 	 * @id underscorefuncdefend

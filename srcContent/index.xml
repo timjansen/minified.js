@@ -33,7 +33,7 @@
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">Easy to learn!</h3>
-  		Minified has <a href="/reference/">relatively few</a>, but very powerful functions. There's no need to wade through 
+  		Minified has <a href="/api/">relatively few</a>, but very powerful functions. There's no need to wade through 
   		two dozens pages filled with functions to find what you need.
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
@@ -66,7 +66,7 @@
 <h2>Getting Started</h2>
 <iframe class="fiddle" width="100%" height="300" src="http://jsfiddle.net/tjansen/tqsCg/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe> 
 
-<p>Check out the <a href="/docs/howto.html">How-to</a> and the <a href="/reference/">API docs</a> to explore Minified on your
+<p>Check out the <a href="/docs/howto.html">How-to</a> and the <a href="/api/">API docs</a> to explore Minified on your
 own. Or go to <a href="">this presentation</a> or the <a href="dov/quickstart.html">Tutorial</a> for some more guidance.</a></p>
 <p>Here are a few JSFiddle example to get you started:<br/>
 <a href="http://jsfiddle.net/tjansen/tqsCg/">Animation 1</a>,
@@ -95,25 +95,26 @@ own. Or go to <a href="">this presentation</a> or the <a href="dov/quickstart.ht
 <h2><a name="featCmp">Feature Comparison</a></h2>
 <table>
 <tr><th>Feature</th><th>Minified</th><th>jQuery</th><th>MooTools</th><th>Zepto.js</th></tr>
-<tr><th>CSS Selector</th><td>yes (limited)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3 + extensions)</td><td>yes (CSS3)</td></tr>
+<tr><th>CSS Selector</th><td>yes<div class="cmpExpl">CSS1 or browser engine</div></td><td>yes<div class="cmpExpl">CSS3 subset + extensions</div></td><td>yes<div class="cmpExpl">CSS3 subset + extensions</div></td><td>yes<div class="cmpExpl">browser engine</div></td></tr>
 <tr><th>CSS Style Changes</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>CSS Class Changes</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><th>Element Creation</th><td>yes</td> <td>yes (HTML-strings only)</td> <td>yes</td> <td>yes (HTML-strings only)</td></tr>
+<tr><th>Element Creation</th><td>yes</td> <td>yes<div class="cmpExpl">HTML-strings only</div></td> <td>yes</td> <td>yes<div class="cmpExpl">HTML-strings only</div></td></tr>
 <tr><th>Element Cloning</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>DOM Manipulation</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><th>Animation (numeric)</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
-<tr><th>Animation (color)</th><td>yes</td> <td>no</td> <td>yes</td> <td>yes (using CSS transitions only)</td></tr>
+<tr><th>Animation (numeric)</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes<div class="cmpExpl">CSS transitions only</div></td></tr>
+<tr><th>Animation (color)</th><td>yes</td> <td>no</td> <td>yes</td> <td>yes<div class="cmpExpl">CSS transitions only</div></td></tr>
 <tr><th>Events</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>DOMReady</th><td>yes</td><td>yes</td><td>yes</td> <td>yes</td></tr>
 <tr><th>Ajax/XHR</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>Promises/A+-compatible</th><td>yes</td> <td>yes</td> <td>no</td> <td>no</td></tr>
 <tr><th>JSON</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><th>Cookies</td><td>yes</th> <td>no</td> <td>yes</td> <td>no</td></tr>
+<tr><th>Cookies</th><td>yes</td> <td>no</td> <td>yes</td> <td>no</td></tr>
 <tr><th>Form Serialization</th><td>no</td> <td>yes</td> <td>no</td> <td>yes</td></tr>
 <tr><th>Array Helpers (Iteration)</th> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>AMD support</th> <td>yes</td> <td>yes</td> <td>no</td> <td>no</td></tr>
-<tr><th>Online Builder</th> <td>yes (modules and functions)</td> <td>no</td> <td>yes (modules)</td> <td>no</td></tr>
-<tr><th>Internet Explorer compatible</th> <td>yes</td> <td>yes (&lt;2.0 only)</td> <td>yes</td> <td>no</td></tr>
+<tr><th>Online Builder</th> <td>yes<div class="cmpExpl">modules and functions</div></td> <td>no</td> <td>yes<div class="cmpExpl">modules</div></td> <td>no</td></tr>
+<tr><th>Internet Explorer compatible</th> <td>yes</td> <td>yes<div class="cmpExpl">jQuery 1.x only</div></td> <td>yes</td> <td>no</td></tr>
+
 </table>
 
  
