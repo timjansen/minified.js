@@ -3,9 +3,9 @@ window.miniTests.push.apply(window.miniTests, [
 		name:'$().hasClass()',
 		exec: function() {
 			var s1, s3;
-			$('#container2').add(s1 = EE('div', {'className': 'a b c d e'}))
+			$('#container2').add(s1 = EE('div', {'className': 'a b c d e'})())
 					.add(EE('div', {'className': ''}, []))
-					.add(s3 = EE('div', {'className': 'a d f'}, []));
+					.add(s3 = EE('div', {'className': 'a d f'}, [])());
 			var m = $('#container2 div');
 			check(m.hasClass('a'), s1[0], true);
 			check(m.hasClass('b'), s1[0], true);

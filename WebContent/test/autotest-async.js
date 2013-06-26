@@ -59,7 +59,7 @@ window.miniTests.push.apply(window.miniTests, [
 			
 			check(!!s);
 		}
-	},
+	}/*,
 	{
 		name:'$.request() promises',
 		async: 1000,
@@ -94,5 +94,5 @@ window.miniTests.push.apply(window.miniTests, [
 			});
 			check(!!s);
 		}
-	}
+	}*/
 ]);
