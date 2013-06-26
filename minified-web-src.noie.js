@@ -119,7 +119,7 @@ define('minified', function() {
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currently active
 
 	/** @type {!function()} */
-	var REQUEST_ANIMATION_FRAME = collect(['msR', 'webkitR', 'mozR', 'r'], function(n) { return _window[n+'equestAnimationFrame']; })[0] || function(callback) {
+	var REQUEST_ANIMATION_FRAME = _window['requestAnimationFrame'] || function(callback) {
 		delay(callback, 33); // 30 fps as fallback
 	};
 
@@ -732,12 +732,12 @@ define('minified', function() {
 	 *     $('#myElement').set('$color', 'red');
 	 * </pre>
 	 * 
-	 * @param name the class to to find
+	 * @param className the class to to find
 	 * @return the first element that has the given class, or <var>undefined</var> if not found
 	 */ 
 	'hasClass': function(className) {
-		var regexp = new RegExp(BACKSLASHB +  name + BACKSLASHB);
-		return this.find(function(e) { return regexp.test(e.className) ? e : null; });
+		var regexp = new RegExp(BACKSLASHB +  className + BACKSLASHB);
+		return this['find'](function(e) { return regexp.test(e.className) ? e : null; });
 	},
 
 	/*$
@@ -758,6 +758,38 @@ define('minified', function() {
      'remove': function() {
     	each(this, function(obj) {obj.parentNode.removeChild(obj);});
      },
+
+ 	/*$
+ 	 * @id text
+ 	 * @group SELECTORS
+ 	 * @requires dollar
+ 	 * @configurable default
+ 	 * @name .text()
+ 	 * @syntax text()
+     * @module WEB
+ 	 * Returns the concatenated text content of all nodes in the list. 
+ 	 * This is done by going recursively through all elements and their children. The values of text and CDATA nodes
+ 	 * will be appended to the resulting string.
+ 	 * 
+ 	 * Please note that, unlike jQuery's <var>text()</var>, Minified's will not set text content. Use ##fill() to do this.
+ 	 * 
+ 	 * @example Returns the text of the element with the id 'myContainer'.
+ 	 * <pre>
+ 	 * var content = $('#myContainer').text(); 
+ 	 * </pre>
+ 	 */
+ 	'text': function () {
+		function extractString(e) {
+			var nodeType = isNode(e);
+			if (nodeType == 1)
+				return collect(e['childNodes'], extractString);
+			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
+				return e['data'];
+			else 
+				return null;
+		}
+		return collect(this, extractString)['join']('');
+	},
 
   	/*$
  	 * @id get
@@ -2290,7 +2322,8 @@ define('minified', function() {
     * @module WEB
 	* Runs an animation loop. The given callback method will be invoked repeatedly to create a new animation frame.
 	* In modern browsers, <var>requestAnimationFrame</var> will be used to invoke the callback every time the browser is ready for a new 
-	* animation frame. The exact frequency is determined by the browser and may vary depending on factors such as the time needed to 
+	* animation frame. 
+	* The exact frequency is determined by the browser and may vary depending on factors such as the time needed to 
 	* render the current page, the screen's framerate and whether the page is currently visible to the user. 
 	* In older browsers, the callback function will be invoked approximately every 33 milliseconds.
 	* 
@@ -2570,7 +2603,7 @@ define('minified', function() {
 		 *             Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the first argument was a list, 
 		 *             the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. If you combined several selectors 
 		 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to form a single list. This list will, 
-		 *             not be in document order anymore. 
+		 *             not be in document order anymore, unless you use a build without legacy IE support.
 		 */
 		'$': $,
 

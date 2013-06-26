@@ -103,6 +103,15 @@ window.miniTests.push.apply(window.miniTests, [
 			check($('#hello').length, 0);
 			check($('#container2').length, 1);
 		}
+	},
+	{
+		name: "$().text()",
+	 	exec: function() {
+			check($('#cloneId').text(), 'nonono');
+			check($('.cloneMe a').text(), 'Test');
+			check($('.cloneMe strong').text(), 'abcdefds');
+			check(($('#cloneId, .cloneMe a').text() == 'nononoTest') || ($('#cloneId, .cloneMe a').text() == 'Testnonono'));
+		}
 	}	
 
 ]);
