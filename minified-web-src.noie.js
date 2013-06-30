@@ -280,6 +280,7 @@ define('minified', function() {
     	 * @syntax promise.then()
     	 * @syntax promise.then(onSuccess)
     	 * @syntax promise.then(onSuccess, onError)
+    	 * 
     	 * @module WEB, UTIL
     	 * Registers two callbacks that will be invoked when the ##promise#Promise##'s asynchronous operation finished 
     	 * successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after  
@@ -2126,12 +2127,12 @@ define('minified', function() {
 			};
 
 			xhr.send(body);
-			return prom;
 		}
 		catch (e) {
 			if (!callbackCalled) 
 				prom(false, [0, null, toString(e)]);
 		}
+		return prom;
 	},
 
 	/*
