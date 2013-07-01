@@ -1,4 +1,4 @@
-// tests for minified-util-src.js
+// tests for minified-app-src.js
 //
 // Instructions:
 // - requires node.js installation
@@ -6,7 +6,7 @@
 // - run (mocha minified-util-prop-test.js)
 //
 
-var testCommon = require("./minified-util-common.js");
+var testCommon = require("./minified-app-common.js");
 var assert = require("assert");
 
 var AMD_NAME = testCommon.AMD_NAME;

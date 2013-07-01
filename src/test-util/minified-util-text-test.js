@@ -314,19 +314,16 @@ function runTests(loadInContext) {
 	
 	describe('format()', function() {
 		it('replaces the main object', function() {
-			assert.equal(_.format("abc{}def", 5), "abc5def");
+			assert.equal(_.format("abc{{}}def", 5), "abc5def");
 		});
 		it('supports string properties', function() {
-			assert.equal(_.format("{ABC}{XXX}def{DOESNOTEXIST}={_ODD+NAME}", {XXX:5, ABC:'abc', '_ODD+NAME':'0202'}), "abc5def=0202");
-		});
-		it('supports numberic properties', function() {
-			assert.equal(_.format("{0} - {1} - {2} - {3} - {4} - ", [4, 5, 6, null]), "4 - 5 - 6 -  -  - ");
+			assert.equal(_.format("{{ABC}}{{XXX}}def{{null}}={{obj['_ODD+NAME']}}", {XXX:5, ABC:'abc', '_ODD+NAME':'0202'}), "abc5def=0202");
 		});
 		it('supports complex properties', function() {
-			assert.equal(_.format("a.b={a.b}, e.e._32.42={e.e._32.42.1}", {a:{b:2}, e:{e:{_32:{'42':[1, 5]}}}}), "a.b=2, e.e._32.42=5");
+			assert.equal(_.format("a.b={{a.b}}, e.e._32.42={{e.e._32[42][1]}}", {a:{b:2}, e:{e:{_32:{'42':[1, 5]}}}}), "a.b=2, e.e._32.42=5");
 		});
 		it('supports sub formats', function() {
-			assert.equal(_.format("{0,000.99} | {choice,a:x|b:y|c:z} | {date,yyyyMMdd}", {0: 15.8, choice: 'b', date: new Date(2011, 3, 2)}), "015.80 | y | 20110402");
+			assert.equal(_.format("{{ a ::000.99}} | {{choice::a:x|b:y|c:z}} | {{date::yyyyMMdd}}", {a: 15.8, choice: 'b', date: new Date(2011, 3, 2)}), "015.80 | y | 20110402");
 		});
 	});
 	
@@ -343,44 +340,52 @@ function runTests(loadInContext) {
 			assert.equal(_.template("'''")(), "'''");
 			assert.equal(_.template('"""')(), '"""');
 		});
-		it('() supports <%=%>', function() {
-			assert.equal(_.template("abc<%=1%>xyz")(), "abc1xyz");
-			assert.equal(_.template("abc<%=1+2%>xyz")(), "abc3xyz");
-			assert.equal(_.template("abc<%='123'%>xyz")(), "abc123xyz");
-			assert.equal(_.template("<%=1%>xyz")(), "1xyz");
-			assert.equal(_.template("abc<%=1%>")(), "abc1");
+		it('() supports {{expression}}', function() {
+			assert.equal(_.template("abc{{1}}xyz")(), "abc1xyz");
+			assert.equal(_.template("abc{{1+2}}xyz")(), "abc3xyz");
+			assert.equal(_.template("abc{{'123'}}xyz")(), "abc123xyz");
+			assert.equal(_.template("{{1}}xyz")(), "1xyz");
+			assert.equal(_.template("abc{{1}}")(), "abc1");
+			assert.equal(_.template("abc{{a}}")({a:1}), "abc1");
+			assert.equal(_.template("abc{{}}")(1), "abc1");
 		});
-		it('() supports <%=::%>', function() {
+		it('() supports {{expression::format}}>', function() {
 			var d3 = new Date(1362956403000); // Sun, 10 Mar 2013 23:00:03 GMT  NO DAYLIGHT SAVING
-			assert.equal(_.template("abc<%=obj::[+0000] yyyy-MM-dd HH:mm:ss zzzzz%>xyz")(d3), "abc2013-03-10 23:00:03 +0000xyz");
-		});
-		it('() supports <%%>', function() {
-			assert.equal(_.template("<%if(1>2){%>sn<%=0%>w<%}else{%>ra<%=1%>n<%}%>")(), "ra1n");
-			assert.equal(_.template("no<%if(1>2){%>sn<%=0%>w<%}else{%>ra<%=1%>n<%}%>!>><< %")(), "nora1n!>><< %");
+			assert.equal(_.template("abc{{obj::[+0000] yyyy-MM-dd HH:mm:ss zzzzz}}xyz")(d3), "abc2013-03-10 23:00:03 +0000xyz");
 		});
 		
-		it('() supports print', function() {
-			assert.equal(_.template("<%print('a', 'b', '123')%>")(), "ab123");
-			assert.equal(_.template("<%print('x');%>")(), "x");
+		it('() supports {{#if expression}}', function() {
+			assert.equal(_.template("{{#if 1>2 }}sn{{0}}w{{#else}}ra{{1}}n{{/if}}")(), "ra1n");
+			assert.equal(_.template("no{{#if 1>2}}sn{{0}}w{{#else}}ra{{1}}n{{/if}}!>><< %{}")(), "nora1n!>><< %{}");
+			assert.equal(_.template("{{#if}}x{{/if}}")(false), "");
+			assert.equal(_.template("{{#if}}x{{/if}}")(true), "x");
+			assert.equal(_.template("{{#if}}x{{#else}}y{{/if}}")(false), "y");
 		});
-		it('() supports out', function() {
-			assert.equal(_.template("a<%out.push('123')%>b")(), "a123b");
-			assert.equal(_.template("a<%out.length = 0%>b")(), "b");
+		
+		it('() supports {{#each expression}}', function() {
+			assert.equal(_.template("{{#each}}{{this}}{{/each}}")([1, 2, 3]), "123");
+			assert.equal(_.template("{{#each}}{{value}}-{{index}};{{/each}}")([1, 2, 3]), "1-0;2-1;3-2;");
+			assert.equal(_.template("{{#each obj}}{{this}}{{/each}}")([1, 2, 3]), "123");
+			assert.equal(_.template("{{#each obj}}{{#if this%2==0}}{{this}}{{/if}}{{/each}}")([1, 2, 3, 4, 5, 6]), "246");
+
+			var eachResult =_.template("{{#each}}{{value}}-{{key}};{{/each}}")({a:1, b:7});
+			assert(eachResult == "1-a;7-b;" || eachResult == "7-b;1-a;");
 		});
-		it('() supports esc', function() {
-			assert.equal(_.template("<%print(esc(2))%> <%=5%>", function(a) { return a*2; })(), "4 10");
-			assert.equal(_.template("<%=5::#.999%>", function(a) { return 'x'+a+'x'; })(), "x5.000x");
+		
+		it('() supports {{{ }}} and esc', function() {
+			assert.equal(_.template("{{esc(2)}} {{{esc(2)}}} {{5}}", function(a) { return a*2; })(), "8 4 10");
+			assert.equal(_.template("{{5::#.999}}", function(a) { return 'x'+a+'x'; })(), "x5.000x");
 		});
 		it('() supports _', function() {
-			assert.equal(_.template("<%=_(1, 2).join('_')%>")(), "1_2");
+			assert.equal(_.template("{{_(1, 2).join('_')}}")(), "1_2");
 		});
 		it('() supports obj', function() {
-			assert.equal(_.template("<%=obj==null%>")(), "true");
-			assert.equal(_.template("<%=obj%>")(5), "5");
-			assert.equal(_.template("<%=obj.b%>")({a:6, b:7}), "7");
+			assert.equal(_.template("{{obj==null}}")(), "true");
+			assert.equal(_.template("{{obj}}")(5), "5");
+			assert.equal(_.template("{{obj.b}}")({a:6, b:7}), "7");
 		});
 		it('() supports with(obj)', function() {
-			assert.equal(_.template("<%=b%><%=a%>")({a:6, b:7}), "76");
+			assert.equal(_.template("{{b}}{{{a}}}")({a:6, b:7}), "76");
 		});
 	});
 

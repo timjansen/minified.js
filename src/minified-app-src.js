@@ -34,6 +34,26 @@ define('minifiedApp', function() {
 	
 	var request = $['request'];	
 
+	// reads / writes property in name.name.name syntax. Supports setter/getter functions
+	function prop(object, path, value) {
+		var match = /^(([^.]|\.\.)+)\.([^.].*)/.exec(path);
+		if (match) {
+			var name = replace(match[1], /\.\./g, '.');
+			var val = object[name];
+			return prop(isFunction(val) ? val() : val, match[3], value);
+		}
+		else {
+			var name = replace(path, /\.\./g, '.');
+			var val = object[name];
+			if (value === undef)
+				return isFunction(val) ? val() : val;
+			else if (isFunction(val))
+				return val(value);
+			else
+				return object[name] = value;
+		}
+	}
+	
 	// copies all elements of from into to, merging into existing structures.
 	// <var>to</var> is optional. Writes result in <var>to</var> if it is a non-value object.
 	// Returns the copy, which may be to if it was an object
@@ -183,13 +203,13 @@ define('minifiedApp', function() {
 	}
 
 	// private
-	function Glue(model, domCtx, syncConfig) {
+	function Controller(model, viewCtx, syncConfig) {
 		var self = this;
 		self.ctxPrototype = {
 			'model': model,      // ref to model data's root 
 			'modelCtx': model,   // ref to model's current position
 			'path': '',          // current path of the model
-			'domCtx': domCtx,    // 
+			'viewCtx': viewCtx,  // 
 			'indexStack': [],
 			'group': null,       // name of current group, or null if no group
 			'isActive': true,
@@ -211,10 +231,10 @@ define('minifiedApp', function() {
 	}
 
 	// public
-	// registers a model tree. Returns Glue object.
-	function glue(model, domCtxOrSyncCfg, syncCfg) {
-		var s = isSyncCfg(domCtxOrSyncCfg);
-		return new Model(model, s ? null : domCtxOrSyncCfg, syncCfg || s  || createSyncConfig());
+	// registers a model tree. Returns Controller object.
+	function controller(model, viewCtxOrSyncCfg, syncCfg) {
+		var s = isSyncCfg(viewCtxOrSyncCfg);
+		return new Model(model, s ? null : viewCtxOrSyncCfg, syncCfg || s  || createSyncConfig());
 	}
 
 	// private
@@ -279,11 +299,11 @@ define('minifiedApp', function() {
 		// Usually you create a mapping by calling SYNC() or similar functions to create them.
 		//
 		// A mapping is an object with the following properties:
-		// - init: optional, a function(glue, ctx) that will be called when the mapping has been added to the model
+		// - init: optional, a function(Controller, ctx) that will be called when the mapping has been added to the model
 		//  - model is 'this'
 		// 	- ctx is the MappingContext
 		//
-		// - update: required, a function(glue, ctx, updatePath) that will be called when the relevant part of the model has been updated
+		// - update: required, a function(Controller, ctx, updatePath) that will be called when the relevant part of the model has been updated
 		//  - model is 'this'
 		// 	- ctx is the MappingContext
 		// 	- updatePath is the string of the last sync.update() invocation relative to modelCtx, or null
@@ -451,13 +471,21 @@ define('minifiedApp', function() {
 		}
 		
 
-	}, Glue.prototype);
+	}, Controller.prototype);
 
 		
 		
 	copyObj({
-		
-	}, APP);
+		'onInput': function(handler) {
+			var oldValues = map(this, function(input) { return input.value; });
+			this['on']("|input |change |keypress", function(e, index) {
+				if (this.value != oldValues[index]) {
+					handler(this.value, oldValues[index], index);
+					oldValues[index] = this.value;
+				}
+			});
+		}
+	}, M);
 
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
