@@ -19,7 +19,7 @@
 <xsl:for-each select="/page:page/page:externalJs"><script type="text/javascript" src="{.}"></script></xsl:for-each>
 <xsl:for-each select="/page:page/page:inlineJs"><script type="text/javascript"><xsl:value-of select="."></xsl:value-of></script></xsl:for-each>
 <!--  TEMP SPLASH SCREEN START -->
-<script src="/minified-web.js"></script>
+<script src="/minified-web-src.js"></script>
 <script type="text/javascript">
 var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 

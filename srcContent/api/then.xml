@@ -9,7 +9,8 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-then">promise.then()</a></h2>
-<div class="summary">Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
+<div class="summary">
+Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
 successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</div>
 
 <h4>Syntax Variants</h4>
@@ -37,7 +38,8 @@ If no callback has been provided and the original Promise changes to that state,
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Registers two callbacks that will be invoked when the <a href='promise.html'>Promise</a>'s asynchronous operation finished
+<div class="description"><p>
+Registers two callbacks that will be invoked when the <a href='promise.html'>Promise</a>'s asynchronous operation finished
 successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after
 <var>then()</var> returned, from the browser's event loop.
 Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks.
@@ -119,6 +121,7 @@ $.request('get', '/weather.do')
 </li><li><a href="replace.html">.replace()</a>
 </li><li><a href="set.html">.set()</a>
 </li><li><a href="sub.html">.sub()</a>
+</li><li><a href="text.html">.text()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>

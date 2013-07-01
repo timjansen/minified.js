@@ -194,12 +194,19 @@ catch (e) {console.log(e);}
 }
 
 $(function() {
-	$.request('get', SRC, null).then(function(src) {
-		setUpConfigurationUI(prepareSections(src));
-	})
-	.error(function(txt) {
-		window.console && console.log(txt);
-	});;
+	var IEVersion = /MSIE\s([\d.]+)/i.exec(navigator.userAgent);
+	if (IEVersion && parseInt(IEVersion[1]) < 10) {
+		$('#builderDiv').fill('Sorry, the Builder tool requires at least Internet Explorer 10 (or, alternatively, Chrome or Firefox). '+
+				'Earlier versions lack CORS support required to use Google Closure\'s web service.');
+	}
+	else {
+		$.request('get', SRC, null).then(function(src) {
+			setUpConfigurationUI(prepareSections(src));
+		})
+		.error(function(txt) {
+			window.console && console.log(txt);
+		});
+	}
 });
 
 

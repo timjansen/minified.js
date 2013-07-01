@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page:page xmlns:page="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
-  <page:title>Minified.js - Redefining "small" for JavaScript</page:title>
+  <page:title>About Minified.js</page:title>
   <page:section>about</page:section>
   <page:main><![CDATA[<div>
 <h1 class="nonInverted">About Minified</h1>
 <p>Call me old-fashioned, but the size of JavaScript libraries like jQuery and MooTools has always bothered me. 
-Don't get me wrong, they are fantastic libraries and I really like to use them, but they contain about 90kb of code even after compilation. 
+They are fantastic libraries and I really like to use them, but they contain about 90kb of code even after compilation. 
 This code needs to be parsed and executed on every page that you include them on.  For me, that just feels too large for what that they offer, 
-and especially for what I need. The 30kb size that remain after gzipping can also cause a significant delay on low-bandwidth networks.</p>
+and especially for what I need. The 30kb that remain after gzipping can also cause a significant delay on low-bandwidth networks.</p>
 
 <p>In the last years I worked on some personal projects (<a href="http://jarfiller.org">jarfiller.org</a> is the only one that has been published), 
 and when I work on them, I usually try to make everything perfect. That means that I try to optimize the pages, make
 them as small as possible, and then every kilobyte hurts.  So instead of using jQuery, I started writing my own 
 little helper functions to replace jQuery functionality without the overhead. As I worked on several other projects, I wrote more and more helper 
 functions and started sharing them between projects until they became a library of their own.  By now they are so mature that I believe that this 
-library, called Minified, became a valid alternative to jQuery and MooTools at a fraction of the size.</p>
+library, called Minified, has become a valid alternative to jQuery and MooTools at a fraction of the size.</p>
 
 <p>What you see here is only the beginning, a 4kb module for building web sites. The plan is to have three modules, each under 4kb:
 <ul><li><strong>Minified Web</strong> is a browser interaction library, comparable to jQuery or MooTools. It is available now.</li>

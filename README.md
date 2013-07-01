@@ -15,8 +15,8 @@ Size Comparison
 -----------------
 <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><td>minified-web.js</td><td>IE6 and higher</td><td>9.0kb</td><td>4092 bytes</td></tr>
-<tr><td>minified-web.noie.js</td><td>no</td><td>7.6kb</td><td>3429 bytes</td></tr>
+<tr><td>minified-web.js</td><td>IE6 and higher</td><td>9.0kb</td><td>4090 bytes</td></tr>
+<tr><td>minified-web.noie.js</td><td>no</td><td>7.6kb</td><td>3428 bytes</td></tr>
 <tr><td>jQuery 1.10.0</td><td>IE6 and higher</td><td>91kb</td><td>32kb</td></tr>
 <tr><td>jQuery 2.0.1</td><td>no</td><td>82kb</td><td>28kb</td></tr>
 <tr><td>MooTools Core NoCompat 1.4.5</td><td>IE6 and higher</td><td>88kb</td><td>29kb</td></tr>
@@ -92,4 +92,3 @@ It is built upon the other two modules. A preview should be available by the end
 
 Thank you for checking out Minified.
 			Tim Jansen
-s

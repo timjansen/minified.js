@@ -102,6 +102,9 @@ Modifies the list's elements by setting their properties, attributes, CSS styles
 <h3><a href="sub.html">.sub()</a></h3>
 <div class="summary">Returns a new Minified list containing only the elements in the specified range.</div>
 
+<h3><a href="text.html">.text()</a></h3>
+<div class="summary">Returns the concatenated text content of all nodes in the list.</div>
+
 <h3><a href="toggle.html">.toggle()</a></h3>
 <div class="summary">
 Creates a function that switches between the two given states for the list.</div>
@@ -124,7 +127,8 @@ Creates a function that switches between the two given states for the list.</div
 <div class="summary">Registers a callback that will be called when the operation failed.</div>
 
 <h3><a href="then.html">promise.then()</a></h3>
-<div class="summary">Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
+<div class="summary">
+Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
 successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</div>
 
 <h3><a href="require.html">require()</a></h3>
@@ -162,6 +166,7 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="replace.html">.replace()</a>
 </li><li><a href="set.html">.set()</a>
 </li><li><a href="sub.html">.sub()</a>
+</li><li><a href="text.html">.text()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>

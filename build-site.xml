@@ -48,12 +48,12 @@
     <!-- Builder script -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
   	    <arg value="--js=src/minified-util-src.js"/>
-  	    <arg value="--js=WebContent/minified-web.js"/>
+  	    <arg value="--js=src/minified-web-src.js"/>
   	    <arg value="--js=srcContent/js/parser-src.js"/>
   	    <arg value="--js=srcContent/js/builder-src.js"/>
   	 	<arg value="--js_output_file=WebContent/js/builder.js"/>
      </java>
- 
+  	
     <!-- Homepage script -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
   	    <arg value="--js=srcContent/js/minified-homepage.js"/>

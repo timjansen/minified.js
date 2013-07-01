@@ -122,6 +122,7 @@ $('#status').addBefore([EE('hr'), 'WARNING']);
 </li><li><a href="replace.html">.replace()</a>
 </li><li><a href="set.html">.set()</a>
 </li><li><a href="sub.html">.sub()</a>
+</li><li><a href="text.html">.text()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>

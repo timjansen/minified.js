@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page:page xmlns:page="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
-  <page:title>Minified.js - Redefining 'lightweight' for JavaScript Libraries</page:title>
+  <page:title>Minified.js - A Truly Lightweight JavaScript Library</page:title>
   <page:section>home</page:section>
   
   <page:externalCss>/css/homepage.css</page:externalCss>
@@ -12,11 +12,12 @@
 		<!--[if gt IE 8]><img class='logo' src='/img/minified.svg' width="400" height="180" alt="Minified Logo"><![endif]-->
 		<!--[if !IE]> --><img class='logo' src='/img/minified.svg' width="400" height="180" alt="Minified Logo"/><!-- <![endif]-->
   </div>
-  <div id="subtitle">Redefining 'lightweight' for JavaScript Libraries</div>
+  <div id="subtitle">A Truly Lightweight JavaScript Library</div>
   <div id="whatDiv" style="margin-top: 3em;">
   	<div style="float: left; width: 20%; text-align: center;" class="wword">Wh<span class="colored">a</span>t?</div>
-  	<div style="float: right; width: 80%; padding-top: 0.5em;"><div style="max-width: 45em;">Minified is a client-side JavaScript library, comparable to jQuery and MooTools 
-  	in scope. Its features include DOM manipulation, animation, events, cookies and HTTP requests.</div></div>
+  	<div style="float: right; width: 80%; padding-top: 0.5em;"><div style="max-width: 45em;">Minified.js is a client-side JavaScript 
+  	library, comparable to jQuery and MooTools in scope. Its features include DOM manipulation, animation, events, cookies and 
+  	HTTP requests.</div></div>
   	<div style="clear: both;"></div>
   </div>
 
@@ -84,7 +85,7 @@ own. Or go to <a href="">this presentation</a> or the <a href="dov/quickstart.ht
   <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
 <tr><th>minified-web.js</th><td>yes</td><td>9.0kb</td><td><strong>4090 bytes</strong></td></tr>
-<tr><th>minified-web.noie.js</th><td>no</td><td>7.6kb</td><td>3431 bytes</td></tr>
+<tr><th>minified-web.noie.js</th><td>no</td><td>7.6kb</td><td>3428 bytes</td></tr>
 <tr><th>jQuery 1.10.0</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
 <tr><th>jQuery 2.0.1</th><td>no</td><td>82kb</td><td>28kb</td></tr>
 <tr><th>MooTools Core NoCompat 1.4.5</th><td>yes</td><td>88kb</td><td>29kb</td></tr>
@@ -113,7 +114,7 @@ own. Or go to <a href="">this presentation</a> or the <a href="dov/quickstart.ht
 <tr><th>Array Helpers (Iteration)</th> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>AMD support</th> <td>yes</td> <td>yes</td> <td>no</td> <td>no</td></tr>
 <tr><th>Online Builder</th> <td>yes<div class="cmpExpl">modules and functions</div></td> <td>no</td> <td>yes<div class="cmpExpl">modules</div></td> <td>no</td></tr>
-<tr><th>Internet Explorer compatible</th> <td>yes</td> <td>yes<div class="cmpExpl">jQuery 1.x only</div></td> <td>yes</td> <td>no</td></tr>
+<tr><th>Internet Explorer 6-8 compatible</th> <td>yes<div class="cmpExpl">IE-support optional</div></td> <td>yes<div class="cmpExpl">jQuery 1.x only</div></td> <td>yes</td> <td>no</td></tr>
 
 </table>
 

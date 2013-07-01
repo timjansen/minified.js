@@ -54,7 +54,7 @@ true, all descendants of the context will be included.</dd>
 Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the first argument was a list,
 the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. If you combined several selectors
 using commas, only the individual results of the selectors will keep the document order, but will then be joined to form a single list. This list will,
-not be in document order anymore.</dd>
+not be in document order anymore, unless you use a build without legacy IE support.</dd>
 </dl>
 
 <h4>Description</h4>
@@ -199,6 +199,7 @@ $(function() {
 </li><li><a href="replace.html">.replace()</a>
 </li><li><a href="set.html">.set()</a>
 </li><li><a href="sub.html">.sub()</a>
+</li><li><a href="text.html">.text()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>

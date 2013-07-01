@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page:page xmlns:page="http://tjansen.de/minifiedPage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tjansen.de/minifiedPage ../schemas/page.xsd ">
-  <page:title>Minified.js - Redefining "small" for JavaScript</page:title>
+  <page:title>Downloads - Minified.js</page:title>
   <page:section>download</page:section>
   <page:externalCss>../css/links.css</page:externalCss>
   <page:main><![CDATA[<div>
@@ -8,7 +8,7 @@
 
 <h3>Standard Builds</h3>
 <table class="links">
-	<tr><th></th><th>with IE compatibility</th><th>no IE compatibility</th></tr>
+	<tr><th></th><th>with IE 6+ compatibility</th><th>with IE9+ compatibility</th></tr>
 	<tr><th>Development</th>
 		<td><a href="/minified-web-src.js"><span class="link">minified-web-src.js</span><br/>
 			<span class="summary">Version: beta1</span><br/>
@@ -17,7 +17,7 @@
 		<td><a href="/minified-web-src.noie.js"><span class="link">minified-web-src.noie.js</span><br/>
 			<span class="summary">Version: beta1</span><br/>
 			<span class="summary">Size: 120 kBytes</span><br/>
-			<span class="summary">Sourcecode, IE support removed.</span></a></td>
+			<span class="summary">Sourcecode, IE6-8 support removed.</span></a></td>
 	</tr>
 	<tr><th>Production</th>
 		<td><a href="/minified-web.js"><span class="link">minified-web.js</span><br/>
@@ -26,8 +26,8 @@
 			<span class="summary">Compiled Version with full IE compatibility.</span></a></td>
 		<td><a href="/minified-web.noie.js"><span class="link">minified-web.noie.js</span><br/>
 			<span class="summary">Version: beta1</span><br/>
-			<span class="summary">Size: 3431 bytes (gzip'd)</span><br/>
-			<span class="summary">Compiled Version, no full IE compatibility.</span></a></td>
+			<span class="summary">Size: 3428 bytes (gzip'd)</span><br/>
+			<span class="summary">Compiled Version, no IE6-8 compatibility.</span></a></td>
 	</tr>
 </table>
 

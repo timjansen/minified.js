@@ -2,9 +2,9 @@ body {margin: 0; font-family: helvetica, verdana, arial, freesans, clean, sans-s
 img { border: 0; }
 a { color: #000; }
 
-#head, #foot, #main {margin: 0; width: 100%; padding: 0.2em;  vertical-align: middle;}
-.container { margin: auto; min-width: 1024px; max-width: 68em; }
-#head .container { height: 1.9em; border-bottom: 1px solid #aaa; padding: 0; }
+#head, #foot, #main {margin: auto; width: 98%; padding: 0;  vertical-align: middle;}
+.container { margin: auto; min-width: 950px; max-width: 67em; }
+#head .container { height: 1.9em; border-bottom: 1px solid #aaa;}
 #head .container img { height: 1.7em; float: left; margin: 0.1em 0.5em;} 
 #topMenu { text-align: right;}
 #topMenu a { display: inline-block; height: 1.4em; padding: 0.5em 1em 0em; color: black; text-decoration: none; vertical-align: middle;}

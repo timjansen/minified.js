@@ -18,7 +18,7 @@
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="hasclass_name" class=""><a name="hasclass_name"><var>name</var></a></dt>
+<dt id="hasclass_className" class=""><a name="hasclass_className"><var>className</var></a></dt>
 <dd class="">the class to to find</dd>
 <dt id="hasclass_RETURN" class="returnValue inSyntax0"><a name="hasclass_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0">the first element that has the given class, or <var>undefined</var> if not found</dd>
@@ -72,6 +72,7 @@ if($('#myElement').hasClass('myClass'))
 </li><li><a href="replace.html">.replace()</a>
 </li><li><a href="set.html">.set()</a>
 </li><li><a href="sub.html">.sub()</a>
+</li><li><a href="text.html">.text()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="list.html">Minified Lists</a>

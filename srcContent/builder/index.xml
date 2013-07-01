@@ -17,6 +17,7 @@
   
   <page:main><![CDATA[<div>
   		<h1>Minified Builder</h1>
+  		<div id="builderDiv">
   		<p>Use this builder to create your own custom build of Minified. You can pick the functions that you need below. Alternatively,
   		if you already have a custom build to start with, load your own configuration.</p>
 		<form id="configurationForm">
@@ -49,6 +50,7 @@
 				<tr id="downloadRow"><th>Download</th><td><a id="resultLink" href="#">minified-custom.js</a></td></tr>
 			</table>
 			<textarea id="resultSrc" rows="12" cols="140"></textarea>
+		</div>
 		</div>
 		 
 	</div>]]></page:main>
