@@ -22,8 +22,8 @@ function createDocs(sec) {
 	if (!sec.name || !sec.desc || sec.doc == 'no')
 		return;
 	
-	var s = _.format('<h2><a name="doc-{ID}">{TITLE}</a></h2>\n'+
-			'<div class="summary">{SUMMARY}</div>\n\n',
+	var s = _.format('<h2><a name="doc-{{ID}}">{{TITLE}}</a></h2>\n'+
+			'<div class="summary">{{SUMMARY}}</div>\n\n',
 			{ID: sec.id, TITLE: sec.name, SUMMARY: parseDescription(sec.desc.replace(/\.[^]+$/m, '.'), null, true)});
 	if (sec.syntax.length) {
 		if (sec.syntax.length == 1)
@@ -32,7 +32,7 @@ function createDocs(sec) {
 			s += '<h4>Syntax Variants</h4>\n';
 		s += '<div class="syntaxVariant">\n';
 		_.each(sec.syntax, function(syn, synIndex) {
-			s += _.format('<div class="syntax">{SYNTAX}</div>\n', {SYNTAX: syn});
+			s += _.format('<div class="syntax">{{SYNTAX}}</div>\n', {SYNTAX: syn});
 		});
 		s += '</div>\n\n';
 	}
@@ -51,24 +51,24 @@ function createDocs(sec) {
 				
 			});
 			if (param.name != '@return')
-				s += _.format('<dt id="{PARAMREF}" class="{CLASSDEF}"><a name="{PARAMREF}"><var>{PARAM}</var></a></dt>\n<dd class="{CLASSDEF}">{DESC}</dd>\n', 
+				s += _.format('<dt id="{{PARAMREF}}" class="{{CLASSDEF}}"><a name="{{PARAMREF}}"><var>{{PARAM}}</var></a></dt>\n<dd class="{{CLASSDEF}}">{{DESC}}</dd>\n', 
 						{PARAMREF: sec.id+'_'+param.name, PARAM: param.name + (isOptional ? ' (optional)' : ''), 
 					     DESC: desc, CLASSDEF: highlightClasses.join(' ')});
 			else
-				s += _.format('<dt id="{RETURNREF}" class="returnValue {CLASSDEF}"><a name="{RETURNREF}"><var>(return value)</var></a></dt>\n<dd class="{CLASSDEF}">{DESC}</dd>\n',
+				s += _.format('<dt id="{{RETURNREF}}" class="returnValue {{CLASSDEF}}"><a name="{{RETURNREF}}"><var>(return value)</var></a></dt>\n<dd class="{{CLASSDEF}}">{{DESC}}</dd>\n',
 						{RETURNREF: sec.id+'_RETURN', DESC: desc, CLASSDEF: highlightClasses.join(' ')});
 		});
 		s += '</dl>\n\n';
 	}
 	
 	s += '<h4>Description</h4>\n';
-	s += _.format('<div class="description"><p>{DESC}</p></div>\n\n', {DESC: parseDescription(sec.desc, '</p><p>')});
+	s += _.format('<div class="description"><p>{{DESC}}</p></div>\n\n', {DESC: parseDescription(sec.desc, '</p><p>')});
 	
 	if (sec.example.length) {
 		s += '<div class="examples">\n';
 		_.each(sec.example, function(example) {
 			s += '<h4>Example</h4>\n';
-			s += _.format('<div class="example"><p>{EXAMPLE}</p></div>\n', {EXAMPLE: parseDescription(example, '</p><p>').replace('&&', '&amp;&amp;')});
+			s += _.format('<div class="example"><p>{{EXAMPLE}}</p></div>\n', {EXAMPLE: parseDescription(example, '</p><p>').replace('&&', '&amp;&amp;')});
 		});
 		s += '</div>\n\n';
 	}
@@ -80,8 +80,8 @@ function createPreview(sec) {
 	if (!sec.name || !sec.desc || sec.doc == 'no')
 		return;
 	
-	var s = _.format('<h3><a href="{ID}.html">{TITLE}</a></h3>\n'+
-			'<div class="summary">{SUMMARY}</div>\n\n',
+	var s = _.format('<h3><a href="{{ID}}.html">{{TITLE}}</a></h3>\n'+
+			'<div class="summary">{{SUMMARY}}</div>\n\n',
 			{ID: sec.id, TITLE: sec.name, SUMMARY: parseDescription(sec.desc.replace(/\.[^]+$/m, '.'), null, true)});
 	sec.htmlpreview = s;
 }
@@ -92,7 +92,7 @@ function createTOCEntry(sec) {
 	if (!sec.name || !sec.desc || sec.doc == 'no')
 		return;
 	
-	sec.tocentry = _.format('<a href="{ID}.html">{TITLE}</a>\n',	{ID: sec.id, TITLE: sec.name});
+	sec.tocentry = _.format('<a href="{{ID}}.html">{{TITLE}}</a>\n',	{ID: sec.id, TITLE: sec.name});
 }
 
 function documentSections(docSections) {

@@ -68,6 +68,14 @@ define('minifiedUtil', function() {
 	 */
 	var MERIDIAN_NAMES = ['am', 'pm'];
 
+	/**
+	 * @const
+	 */
+	var JAVASCRIPT_ESCAPES = {'"': '\\"', "'": "\\'", '\n': '\\n', '\t': '\\t', '\r': '\\r'};
+	
+	var templateCache={};
+
+	
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	
@@ -282,9 +290,7 @@ define('minifiedUtil', function() {
 		else if (isValue(a) || isValue(b))
 			return isDate(a) && isDate(b) && a.getTime()==b.getTime();
 		else if (isList(a)) {
-			if (!isList(b))
-				return false;
-			else if (a.length != b.length)
+			if (a.length != b.length)
 				return false;
 			else
 				return !find(a, function(val, index) {
@@ -326,14 +332,6 @@ define('minifiedUtil', function() {
 	}
 	function partial(f, beforeArgs, afterArgs) {
 		return bind(f, null, beforeArgs, afterArgs);
-	}
-	function delay(delayMs, callback, fThisOrArgs, args) {
-		setTimeout(function() {call(callback, fThisOrArgs, args);}, delayMs);
-	}
-	function defer(callback, fThisOrArgs, args) {
-			delay(0, callback, fThisOrArgs, args);
-			// TODO: a server version with:
-			//			process.nextTick(function() {call(callback, fThisOrArgs, args);});
 	}
 	function insertString(origString, index, len, newString) {
 		return origString.substr(0, index) + newString + origString.substr(index+len);
@@ -609,35 +607,14 @@ define('minifiedUtil', function() {
 		}
 		// should never ever be reached
 	}
-	// reads / writes property in name.name.name syntax. Supports setter/getter functions
-	function prop(object, path, value) {
-		var match = /^(([^.]|\.\.)+)\.([^.].*)/.exec(path);
-		if (match) {
-			var name = replace(match[1], /\.\./g, '.');
-			var val = object[name];
-			return prop(isFunction(val) ? val() : val, match[3], value);
-		}
-		else {
-			var name = replace(path, /\.\./g, '.');
-			var val = object[name];
-			if (value === undef)
-				return isFunction(val) ? val() : val;
-			else if (isFunction(val))
-				return val(value);
-			else
-				return object[name] = value;
-		}
-	}
 	
 	
-	var JAVASCRIPT_ESCAPES = {'"': '\\"', "'": "\\'", '\n': '\\n', '\t': '\\t', '\r': '\\r'};
 	function escapeJavaScriptString(s) {
 		return replace(s, /['"\t\n\r]/g, function(a) {
 			return JAVASCRIPT_ESCAPES[a];
 		});
 	}
-	
-	var templateCache={};
+	/*
 	function template(template, escapeFunction) {
 		if (templateCache[template])
 			return templateCache[template];
@@ -664,7 +641,50 @@ define('minifiedUtil', function() {
 			};
 		}
 	}
-		
+	
+	*/
+	 
+	var templateCache={};
+	function template(template, escapeFunction) {
+		if (templateCache[template])
+			return templateCache[template];
+		else {
+			var f = (new Function('obj', 'each', 'esc', 'print', '_', 'with(_.isObject(obj)?obj:{}){'+
+			 		map(template.split(/{{|}}}?/), function(chunk, index) {
+						var match, c2, escapeSnippet  = (chunk==(c2 = replace(chunk, /^{/))) ? 'esc(' : '';
+						if (index%2) { // odd means JS code
+							if (match = /^#each\b(.*)/.exec(c2))
+								return 'each('+(match[1]||'obj')+', function(key, value, index){with(_.isObject(value)?value:{}){';
+							else if (match = /^#(else\s*)?(if\b)?(.*)/.exec(c2))
+								return (match[1]?'}else':'') + (match[2] ? 'if('+(match[3]||'obj')+')' : '')+'{';
+							else if (match = /^\/(if)?/.exec(c2))
+								return match[1] ? '}\n' : '}});\n';
+							else if (match = /(.*)::(.*)/.exec(c2)) 
+								return 'print('+escapeSnippet+'_.formatValue("'+escapeJavaScriptString(match[2])+'",'+(trim(match[1])==''?'obj':match[1])+(escapeSnippet&&')')+'));\n';
+							else
+								return 'print('+escapeSnippet+(trim(c2)=='' ? 'obj' : c2)+(escapeSnippet&&')')+');\n';
+						}
+						else {
+							return 'print("'+escapeJavaScriptString(chunk)+'");\n';
+						}
+					}).join('')+'}'));
+
+			return templateCache[template] = function(obj) {
+				var result = [];
+				f(obj, function(obj, func) {
+					if (isList(obj))
+						each(obj, function(value, index) { func.call(value, index, value, index); });
+					else
+						eachObj(obj, func);
+				}, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, UNDERSCORE);
+				return result.join('');
+			};
+		}
+
+	}
+
+	
+	
 	function escapeHtml(s) {
 		return replace(s, /[<>'"&]/g, function(s) {
 			return '&#'+s.charCodeAt(0)+';';
@@ -1032,13 +1052,7 @@ define('minifiedUtil', function() {
 	'tap': function(func) {
 		func(this);
 		return this;
-	},
-	
-	'toString': function() {
-		return '[' + this['map'](function(v) { if (isString(v)) return "'" + replace(v, /'/g, "\\'") + "'"; else return v;})['join'](', ') + ']';
 	}
-	
-	
 
 	
  	/*$
@@ -1080,7 +1094,6 @@ define('minifiedUtil', function() {
 	 	'endsWith': endsWith,
 		'equals': equals,
 
-		'toString': toString,
 		'isList': isList,
 		'isFunction': isFunction,
 		'isObject': isObject,
@@ -1091,12 +1104,9 @@ define('minifiedUtil', function() {
 		'isString': isString,
 		'toString': toString,
 
-		'prop': prop,
+		//'prop': prop,
 		'escapeRegExp': escapeRegExp,
 		'trim': trim,
-		
-		'defer': defer,
-		'delay': delay,
 		
 		'dateClone': dateClone,
 		'dateAdd': dateAdd,
@@ -1118,12 +1128,17 @@ define('minifiedUtil', function() {
 		'coal': coal,
 		
 		'format': function(format, object) {
+			return template(format)(object);
+		},
+
+/*		'format': function(format, object) {
 			return replace(format, /{([^,}]*)(,([^}]*))?}/g, function(match, path, subFormatPart, subFormat) {
 				var value = path=='' ? object : prop(object, path);
 				return subFormatPart ? formatValue(subFormat, value) : toString(value);
 					
 		    });
 		},
+*/
 		
 		'escapeHtml': escapeHtml,
 		

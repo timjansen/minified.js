@@ -1587,19 +1587,27 @@ define('minified', function() {
 	 * @example Using the following HTML:
 	 * <pre>
 	 * &lt;div id="comments">
-	 *    &lt;div class="comment">My comment.&lt;/div>
+	 *    &lt;div id="comment1">My comment.&lt;/div>
 	 * &lt;/div>
 	 * </pre> 
 	 * Creating a clone factory:
 	 * <pre>
-	 * var myCloneFactory = $('.comment').clone();
+	 * var myCloneFactory = $('#comment1').clone();
 	 * </pre>
-	 * Cloning a comment and adding it below the existing one:
+	 * Cloning  and adding it below the existing one:
 	 * <pre>
-	 * $('#comments').add($('.comment').clone());
+	 * $('#comments').add($('#comment1').clone());
 	 * </pre> 
-	 * 
- 	 * @param onCreate optional A <code>function(elementList)</code> that will be called for each top-level element created by the Element
+	 *
+ 	 * @example Creating an event handler for a clone:
+	 * <pre>
+	 * var buttonCloner = $('#myButton').clone(function(newButton) {
+	 *     newButton.on('click', function() { alert('Cloned button clicked'); });
+	 * });
+	 * $('#buttonContainer').add(buttonCloner);
+	 * </pre> 
+	 *
+	 * @param onCreate optional A <code>function(elementList)</code> that will be called for each top-level element created by the Element
  	 *                 Factory:
  	 *                 <dl><dt>elementList</dt><dd>The newly created element wrapped in a Minified list. </dd></dl>
  	 *                 The function's return value will be ignored. 
