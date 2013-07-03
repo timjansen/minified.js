@@ -614,37 +614,10 @@ define('minifiedUtil', function() {
 			return JAVASCRIPT_ESCAPES[a];
 		});
 	}
-	/*
-	function template(template, escapeFunction) {
-		if (templateCache[template])
-			return templateCache[template];
-		else {
-			var match;
-			var f = (new Function('obj', 'out', 'esc', 'print', '_', 'with(obj||{}){'+
-			 		map(template.split(/<%|%>/), function(chunk, index) {
-						if (index%2) { // odd means JS code
-							if (match = /^=(.*)::(.*)/.exec(chunk)) 
-								return 'print(esc(_.formatValue("'+escapeJavaScriptString(match[2])+'",'+match[1]+')));\n';
-							else if (match = /^=(.*)/.exec(chunk)) 
-								return 'print(esc('+match[1]+'));\n';
-							else
-								return chunk + ';\n';
-						}
-						else {
-							return 'print("'+escapeJavaScriptString(chunk)+'");\n';
-						}
-					}).join('')+'}'));
-			return templateCache[template] = function(obj) {
-				var result = [];
-				f(obj, result, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, UNDERSCORE);
-				return result.join('');
-			};
-		}
-	}
+
 	
-	*/
-	 
-	var templateCache={};
+	/*
+	 	var templateCache={};
 	function template(template, escapeFunction) {
 		if (templateCache[template])
 			return templateCache[template];
@@ -683,6 +656,53 @@ define('minifiedUtil', function() {
 
 	}
 
+	 */
+	 
+	var templateCache={};
+	function template(template, escapeFunction) {
+		if (templateCache[template])
+			return templateCache[template];
+		else {
+			var funcBody = 'with(_.isObject(obj)?obj:{}){'+
+				map(template.split(/{{|}}}?/), function(chunk, index) {
+					var match, c1 = trim(chunk), c2 = replace(c1, /^{/), escapeSnippet  = (c1==c2) ? 'esc(' : '';
+					if (index%2) { // odd means JS code
+						if (match = /^each\b(.*)/.exec(c2))
+							return 'each('+(trim(match[1])==''?'this':match[1])+', function(key, value, index){';
+						else if (match = /^if\b(.*)/.exec(c2))
+							return 'if('+match[1]+'){';
+						else if (match = /^else\b\s*(if\b(.*))?/.exec(c2))
+							return '}else ' + (match[1]  ? 'if('+match[2] +')' : '')+'{';
+						else if (match = /^\/(if)?/.exec(c2))
+							return match[1] ? '}\n' : '});\n';
+						else if (match = /^#(.*)/.exec(c2))
+							return match[1];
+						else if (match = /(.*)::(.*)/.exec(c2))
+							return 'print('+escapeSnippet+'_.formatValue("'+escapeJavaScriptString(match[2])+'",'+(trim(match[1])==''?'this':match[1])+(escapeSnippet&&')')+'));\n';
+						else
+							return 'print('+escapeSnippet+(trim(c2)=='' ? 'this' : c2)+(escapeSnippet&&')')+');\n';
+					}
+					else if (chunk != ''){
+						return 'print("'+escapeJavaScriptString(chunk)+'");\n';
+					}
+				}).join('')+'}';
+if (template =="{{if this<3}}x{{else if this<30}}y{{else   if this<300}}z{{/if}}") console.log(funcBody);
+			var f = (new Function('obj', 'each', 'esc', 'print', '_', funcBody));
+			return templateCache[template] = function(obj) {
+				var result = [];
+				f.call(obj, obj, function(obj, func) {
+					if (isList(obj))
+						each(obj, function(value, index) { func.call(value, index, value, index); });
+					else
+						eachObj(obj, function(key, value) { func.call(value, key, value, key); });
+				}, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, UNDERSCORE);
+				return result.join('');
+			};
+		}
+	}
+
+	
+	
 	
 	
 	function escapeHtml(s) {

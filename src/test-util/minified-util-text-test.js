@@ -352,24 +352,25 @@ function runTests(loadInContext) {
 		it('() supports {{expression::format}}>', function() {
 			var d3 = new Date(1362956403000); // Sun, 10 Mar 2013 23:00:03 GMT  NO DAYLIGHT SAVING
 			assert.equal(_.template("abc{{obj::[+0000] yyyy-MM-dd HH:mm:ss zzzzz}}xyz")(d3), "abc2013-03-10 23:00:03 +0000xyz");
+			assert.equal(_.template("abc{{::[+0000] yyyy-MM-dd HH:mm:ss zzzzz}}xyz")(d3), "abc2013-03-10 23:00:03 +0000xyz");
 		});
 		
-		it('() supports {{#if expression}}', function() {
-			assert.equal(_.template("{{#if 1>2 }}sn{{0}}w{{#else}}ra{{1}}n{{/if}}")(), "ra1n");
-			assert.equal(_.template("no{{#if 1>2}}sn{{0}}w{{#else}}ra{{1}}n{{/if}}!>><< %{}")(), "nora1n!>><< %{}");
-			assert.equal(_.template("{{#if}}x{{/if}}")(false), "");
-			assert.equal(_.template("{{#if}}x{{/if}}")(true), "x");
-			assert.equal(_.template("{{#if}}x{{#else}}y{{/if}}")(false), "y");
+		it('() supports {{if expression}}', function() {
+			assert.equal(_.template("{{if 1>2 }}sn{{0}}w{{else}}ra{{1}}n{{/if}}")(), "ra1n");
+			assert.equal(_.template("no{{if 1>2}}sn{{0}}w{{else}}ra{{1}}n{{/if}}!>><< %{}")(), "nora1n!>><< %{}");
+			assert.equal(_.template("{{if this>3}}x{{{/if}}")(4), "x");
+			assert.equal(_.template("{{if this<3}}x{{{/if}}")(4),  "");
+			assert.equal(_.template("{{if this<3}}x{{else if this<30}}y{{else   if this<300}}z{{/if}}")(10), "y");
 		});
 		
-		it('() supports {{#each expression}}', function() {
-			assert.equal(_.template("{{#each}}{{this}}{{/each}}")([1, 2, 3]), "123");
-			assert.equal(_.template("{{#each}}{{value}}-{{index}};{{/each}}")([1, 2, 3]), "1-0;2-1;3-2;");
-			assert.equal(_.template("{{#each obj}}{{this}}{{/each}}")([1, 2, 3]), "123");
-			assert.equal(_.template("{{#each obj}}{{#if this%2==0}}{{this}}{{/if}}{{/each}}")([1, 2, 3, 4, 5, 6]), "246");
+		it('() supports {{each expression}}', function() {
+			assert.equal(_.template("{{each}}{{this}}{{/each}}")([1, 2, 3]), "123");
+			assert.equal(_.template("{{each}}{{value}}-{{index}};{{/each}}")([1, 2, 3]), "1-0;2-1;3-2;");
+			assert.equal(_.template("{{each obj}}{{this}}{{/each}}")([1, 2, 3]), "123");
+			assert.equal(_.template("{{each obj}}{{if this%2==0}}{{this}}{{/if}}{{/each}}")([1, 2, 3, 4, 5, 6]), "246");
 
-			var eachResult =_.template("{{#each}}{{value}}-{{key}};{{/each}}")({a:1, b:7});
-			assert(eachResult == "1-a;7-b;" || eachResult == "7-b;1-a;");
+			var eachResult =_.template("{{each}}{{this}}-{{value}}-{{key}};{{/each}}")({a:1, b:7});
+			assert(eachResult == "1-1-a;7-7-b;" || eachResult == "7-7-b;1-1-a;");
 		});
 		
 		it('() supports {{{ }}} and esc', function() {
@@ -386,6 +387,16 @@ function runTests(loadInContext) {
 		});
 		it('() supports with(obj)', function() {
 			assert.equal(_.template("{{b}}{{{a}}}")({a:6, b:7}), "76");
+		});
+		it('() supports this', function() {
+			assert.equal(_.template("{{this}}}")('lalala'), "lalala");
+		});
+		it('() supports {{# code }}', function() {
+			assert.equal(_.template("{{#var a = 2, b = 4;}}{{a}}*{{b}}={{a*b}}")(), "2*4=8");
+			assert.equal(_.template("{{# if (a > b) { }}x{{#} }}")({a:3, b:1}), "x");
+		});
+		it('() supports print()', function() {
+			assert.equal(_.template("a{{#print('b', 'c');}}de")(), "abcde");
 		});
 	});
 
