@@ -22,8 +22,8 @@ $(function() {
 &lt;/div>
 </pre> Creating a clone factory: <pre>
 var myCloneFactory = $('#comment1').clone();
-</pre> Cloning and adding it below the existing one: <pre>
-$('#comments').add($('#comment1').clone());
+</pre> Creating a clone and adding it below the existing one: <pre>
+$('#comments').add(myCloneFactory);
 </pre> </p></div> <h4>Example</h4> <div class="example"><p>Creating an event handler for a clone: <pre>
 var buttonCloner = $('#myButton').clone(function(newButton) {
     newButton.on('click', function() { alert('Cloned button clicked'); });

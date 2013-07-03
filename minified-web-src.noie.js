@@ -1594,9 +1594,9 @@ define('minified', function() {
 	 * <pre>
 	 * var myCloneFactory = $('#comment1').clone();
 	 * </pre>
-	 * Cloning  and adding it below the existing one:
+	 * Creating a clone and adding it below the existing one:
 	 * <pre>
-	 * $('#comments').add($('#comment1').clone());
+	 * $('#comments').add(myCloneFactory);
 	 * </pre> 
 	 *
  	 * @example Creating an event handler for a clone:
