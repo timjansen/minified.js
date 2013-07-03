@@ -616,47 +616,7 @@ define('minifiedUtil', function() {
 	}
 
 	
-	/*
-	 	var templateCache={};
-	function template(template, escapeFunction) {
-		if (templateCache[template])
-			return templateCache[template];
-		else {
-			var f = (new Function('obj', 'each', 'esc', 'print', '_', 'with(_.isObject(obj)?obj:{}){'+
-			 		map(template.split(/{{|}}}?/), function(chunk, index) {
-						var match, c2, escapeSnippet  = (chunk==(c2 = replace(chunk, /^{/))) ? 'esc(' : '';
-						if (index%2) { // odd means JS code
-							if (match = /^#each\b(.*)/.exec(c2))
-								return 'each('+(match[1]||'obj')+', function(key, value, index){with(_.isObject(value)?value:{}){';
-							else if (match = /^#(else\s*)?(if\b)?(.*)/.exec(c2))
-								return (match[1]?'}else':'') + (match[2] ? 'if('+(match[3]||'obj')+')' : '')+'{';
-							else if (match = /^\/(if)?/.exec(c2))
-								return match[1] ? '}\n' : '}});\n';
-							else if (match = /(.*)::(.*)/.exec(c2)) 
-								return 'print('+escapeSnippet+'_.formatValue("'+escapeJavaScriptString(match[2])+'",'+(trim(match[1])==''?'obj':match[1])+(escapeSnippet&&')')+'));\n';
-							else
-								return 'print('+escapeSnippet+(trim(c2)=='' ? 'obj' : c2)+(escapeSnippet&&')')+');\n';
-						}
-						else {
-							return 'print("'+escapeJavaScriptString(chunk)+'");\n';
-						}
-					}).join('')+'}'));
-
-			return templateCache[template] = function(obj) {
-				var result = [];
-				f(obj, function(obj, func) {
-					if (isList(obj))
-						each(obj, function(value, index) { func.call(value, index, value, index); });
-					else
-						eachObj(obj, func);
-				}, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, UNDERSCORE);
-				return result.join('');
-			};
-		}
-
-	}
-
-	 */
+	
 	 
 	var templateCache={};
 	function template(template, escapeFunction) {
@@ -686,7 +646,6 @@ define('minifiedUtil', function() {
 						return 'print("'+escapeJavaScriptString(chunk)+'");\n';
 					}
 				}).join('')+'}';
-if (template =="{{if this<3}}x{{else if this<30}}y{{else   if this<300}}z{{/if}}") console.log(funcBody);
 			var f = (new Function('obj', 'each', 'esc', 'print', '_', funcBody));
 			return templateCache[template] = function(obj) {
 				var result = [];
@@ -996,9 +955,9 @@ if (template =="{{if this<3}}x{{else if this<30}}y{{else   if this<300}}z{{/if}}
      * }); 
      * </pre> 
      * 
-     * @param list a list to use as input. Can be an array, a ##list#Minified list## or anything other array-like structure 
+     * @param list A list to use as input. Can be an array, a ##list#Minified list## or anything other array-like structure 
      *             <var>length</var> property
-     * @param memoInit this value will be passed to the callback as <var>memo</var> the first time it is called. In all subsequent
+     * @param memoInit This value will be passed to the callback as <var>memo</var> the first time it is called. In all subsequent
      *                 invocations, the <var>memo</var> will be the last invocation's return value.            
      * @param func The callback <code>function(memo, value, index)</code> to invoke for each item:
      * <dl><dt>memo</dt><dd>The current memo. This is <var>memoInit</var> for the first invocation. After that it is the previous
@@ -1151,17 +1110,107 @@ if (template =="{{if this<3}}x{{else if this<30}}y{{else   if this<300}}z{{/if}}
 			return template(format)(object);
 		},
 
-/*		'format': function(format, object) {
-			return replace(format, /{([^,}]*)(,([^}]*))?}/g, function(match, path, subFormatPart, subFormat) {
-				var value = path=='' ? object : prop(object, path);
-				return subFormatPart ? formatValue(subFormat, value) : toString(value);
-					
-		    });
-		},
-*/
-		
 		'escapeHtml': escapeHtml,
-		
+	
+		/*$ 
+	     * @id template 
+	     * @group TEMPLATE
+	     * @requires 
+	     * @configurable default 
+	     * @name _.template() 
+	     * @syntax _.template(template)
+	     * @syntax _.template(template, escapeFunction)
+	   	 * @module UTIL
+	     * Parses a Handlebars-like template to create a reusable template function.
+	     * 
+	     * The syntax of the template uses a syntax that superficially looks like 
+	     * <a href="http://handlebarsjs.com/">Handlebars</a>. Unlike Handlebars, it is based on raw JavaScript expressions and thus gives you
+	     * complete freedom, but also offers you shortcuts for formatting, iteration and conditionals. 
+	     * 
+	     * Every template can receive exactly one object as input. If you need more than one value as input, put all requires values
+	     * into an object.
+	     * 
+	     * Use double curly braces to embed a JavaScript expression and insert its result:
+	     * <pre>{{a}} plus {{b}} is {{a+b}}</pre>
+	     * 
+	     * To use such a template, create it with <var>template()</var> and then execute the resulting function:
+	     * <pre>var myTemplate = _.template('{{a}} plus {{b}} is {{a+b}}');
+	     * var result = myTemplate({a: 5, b: 7});</pre>
+	     * If you pass an object as input, its properties will be mapped using JavaScript's <code>with</code>
+	     * statement and are available as variables throughout the template.
+	     * 
+	     * If you have only a simple value to render, you can pass it directly and access it through the pre-defined
+	     * variable <var>obj</var>:
+	     * <pre>var myTemplate = _.template('The result is {{obj}}.');
+	     * var result = myTemplate(17);</pre>	     
+	     * Alternatively, you could also access the input as <var>this</var>, but be aware that JavaScript wraps simples types
+	     * such as Number and Boolean. <var>this</var> is the default, so you can omit it to get the same result:
+	     * <pre>var myTemplate = _.template('The result is {{ }}.');
+	     * var result = myTemplate(17);</pre>
+	     * 
+	     * Minified templates can use ##_.formatValue() formats directly. Just separate them from the expression by
+	     * a double-colon:
+	     * <pre>The price is {{obj::#.00}}.</pre>	     
+	     * 
+	     * Conditions can be expressed using <code>if</code> and <code>else</code>:
+	     * <pre>Hello {{if visits==0}}New{{else if visits<10}}Returning{{else}}Regular{{/if}} Customer.<pre>
+	     * You can use any JavaScript expression as condition.
+	     * 
+	     * Use <code>each</code> to iterate through a list:
+	     * <pre>var myTemplate = _.template(
+	     * 	   '{{each names}}{{index}}. {{this.firstName}} {{this.lastName}}{{/each}}');
+	     * var result = myTemplate({names: [{firstName: 'Joe', lastName: 'Jones'}, 
+	     *                                  {firstName: 'Marc', lastName: 'Meyer'}]});</pre>
+	     * <code>each</code> will, by default, iterate through the object that's currently in <var>this</var>. It will then
+	     * call its body for each item and put a reference to the item into <var>this</var> and the variable <var>value</var>.
+	     * A counter is stored in <var>index</var>.  
+	     *  
+	     * If you do not pass an expression to <code>each</var>, it will take the list from <var>this</var>:
+	     * <pre>var myTemplate = _.template('{{each}}{{value}};{{/each}}');
+	     * var result = myTemplate([1, 2, 3]);</pre>
+	     *  
+	     * Beside lists, you can also iterate through the properties of an object. The property name will be stored
+	     * in <var>key</var> and the value in <var>value</var> and <var>this</var>:
+	     * <pre>var myTemplate = _.template('{{each nicknames}}{{key}}: {{value}}{{/each}}');
+	     * var result = myTemplate({nicknames: {Matt: 'Matthew', John: 'Jonathan'} });</pre>
+	     * 
+	     * In some situations, it may be inevitable to embed raw JavaScript in the template. You need it, for example,
+	     * if you nest loops and want to access the outer loop's data from the inner loop. To embed JavaScript code, prefix the
+	     * code with a '#':
+	     * <pre>var myTemplate = _.template(
+	     *     '{{each}}{{#var outerIndex = index;}}'+
+	     *             '{{each}{{outerIndex}}.{{index}} {{this.title}}\n'{{/each}}'+
+	     *     '{{/each}}');
+	     * var result = myTemplate([['Foreword', 'Intro'], ['Something', 'Something else']]);</pre>
+	     * 
+	     * 
+	     * By default, all output will be escaped. You can prevent this by using triple-curly-braces:
+	     * <pre>Here's the original: {{{rawText}}}</pre>.
+	     * 
+	     * The template's JavaScript code is executed in a sandbox without access to global variables. Minified defines the
+	     * following variables for you:
+	     * <table>
+	     * <tr><th>Name</th><th>Desciption</th></tr>
+	     * <tr><td>this</td><td>The template object outside of <code>each</code>. Inside eachs, the current value.</td></tr>
+	     * <tr><td>obj</td><td>The parameter given to the template function.</td></tr>
+	     * <tr><td>_</td><td>A reference to Minified Util.</td></tr>
+	     * <tr><td>esc</td><td>The escape function given when the template has been defined. If no function has been given,
+	     *                     a default function that returns the input unmodified.</td></tr>
+	     * <tr><td>print</td><td>A <code>function(text,...)</code> that appends one or more strings to the template result.</td></tr>
+	     * <tr><td>each</td><td>A <code>function(listOrObject, eachCallback)</code> that can iterate over lists or object properties.
+	     * The <var>eachCallback</var> is a <code>function(key, value, index)</code> that will be invoked for each item.
+	     * </table> 
+	     * 
+	     *  
+	     * @param template The template as a string using the syntax described above. 
+	     * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
+	     *        to escape all output:
+	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
+	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
+	     *        If no escapeFunction has been given, the output will not be escaped. See ##_.htmlTemplate() for a 
+	     *        version of <var>template()</var> that already includes HTML escaping.
+	     * @return the value returned by the last invocation of <var>func</var>
+	     */ 
 		'template': template,
 		
 		 'htmlTemlplate': function(tpl) { return template(tpl, escapeHtml); }

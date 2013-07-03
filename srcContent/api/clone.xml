@@ -49,9 +49,9 @@ Creating a clone factory:
 <pre>
 var myCloneFactory = $('#comment1').clone();
 </pre>
-Cloning  and adding it below the existing one:
+Creating a clone and adding it below the existing one:
 <pre>
-$('#comments').add($('#comment1').clone());
+$('#comments').add(myCloneFactory);
 </pre>
 </p></div>
 <h4>Example</h4>

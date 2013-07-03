@@ -28,9 +28,9 @@
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">Minified is smaller!</h3>
-  		Minified is a sub-4kb JavaScript library for client-side scripting. Its feature set is 
-  		<a href="#featCmp">comparable to jQuery and MooTools</a>, but at
-  		<a href="#sizeCmp">1/7th</a> of the size.
+  		Minified is a sub-4kb JavaScript library for client-side scripting. Minified's feature set is 
+  		<a href="#featCmp">comparable to jQuery and MooTools</a>, but its size is 
+  		<a href="#sizeCmp">only a fraction</a> of the competition's.
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">Easy to learn!</h3>
