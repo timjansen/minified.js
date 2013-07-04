@@ -351,7 +351,7 @@ function runTests(loadInContext) {
 		});
 		it('() supports {{expression::format}}>', function() {
 			var d3 = new Date(1362956403000); // Sun, 10 Mar 2013 23:00:03 GMT  NO DAYLIGHT SAVING
-			assert.equal(_.template("abc{{obj::[+0000] yyyy-MM-dd HH:mm:ss zzzzz}}xyz")(d3), "abc2013-03-10 23:00:03 +0000xyz");
+			assert.equal(_.template("abc{{obj :: [+0000] yyyy-MM-dd HH:mm:ss zzzzz}}xyz")(d3), "abc2013-03-10 23:00:03 +0000xyz");
 			assert.equal(_.template("abc{{::[+0000] yyyy-MM-dd HH:mm:ss zzzzz}}xyz")(d3), "abc2013-03-10 23:00:03 +0000xyz");
 		});
 		

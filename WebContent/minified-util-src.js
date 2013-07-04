@@ -637,7 +637,7 @@ define('minifiedUtil', function() {
 							return match[1] ? '}\n' : '});\n';
 						else if (match = /^#(.*)/.exec(c2))
 							return match[1];
-						else if (match = /(.*)::(.*)/.exec(c2))
+						else if (match = /(.*)::\s*(.*)/.exec(c2))
 							return 'print('+escapeSnippet+'_.formatValue("'+escapeJavaScriptString(match[2])+'",'+(trim(match[1])==''?'this':match[1])+(escapeSnippet&&')')+'));\n';
 						else
 							return 'print('+escapeSnippet+(trim(c2)=='' ? 'this' : c2)+(escapeSnippet&&')')+');\n';
