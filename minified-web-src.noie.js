@@ -416,6 +416,9 @@ define('minified', function() {
 	 * @id ucode
 	 * @dependency
      */
+    function ucode(a) {
+        return STRING_SUBSTITUTIONS[a] ||  ('\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4));
+    }
 
     /*$
      * @stop
@@ -476,12 +479,28 @@ define('minified', function() {
 		if (!isString(selector))
 		    return filterElements(isList(selector) ? selector : [selector]); 
 
+		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
+			return collect(subSelectors, function(ssi) { return dollarRaw(ssi, parent, childOnly);});
 
+		if (steps = (/(\S+)\s+(.+)$/.exec(selector)))
+			return dollarRaw(steps[2], dollarRaw(steps[1], parent), childOnly);
 
+		if (selector != (subSelectors = replace(selector, /^#/)))
+			return filterElements([_document.getElementById(subSelectors)]); 
 
+		// @cond debug if (/\s/.test(selector)) error("Selector has invalid format, please check for whitespace.");
+		// @cond debug if (/[ :\[\]]/.test(selector)) error("Only simple selectors with ids, classes and element names are allowed.");
 
+		parent = parent || _document;
 
+		elementName = (dotPos = /([^.]*)\.?([^.]*)/.exec(selector))[1];
+		className = dotPos[2];
+		elements = (useGEbC = parent.getElementsByClassName && className) ? parent.getElementsByClassName(className) : parent.getElementsByTagName(elementName || '*'); 
 
+		if (regexpFilter = useGEbC ? elementName : className) {
+			reg = new RegExp(BACKSLASHB +  regexpFilter + BACKSLASHB, 'i'); 
+			elements =  filter(elements, function(l) {return reg.test(l[useGEbC ? 'nodeName' : 'className']);});
+		}
 
 		elements = (parent || _document).querySelectorAll(selector);
 		return parent ? filterElements(elements) : elements;
@@ -862,6 +881,9 @@ define('minified', function() {
 				if (spec == '$')
 					s = element.className;
 				else if (spec == '$$') {
+					 if (IS_PRE_IE9)
+						s = element['style']['cssText'];
+					 else
 						s = element.getAttribute('style');
 				}
 				else if (/\$\$/.test(spec) && (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')) {
@@ -869,6 +891,7 @@ define('minified', function() {
 				}
 				else if (spec == '$$fade') {
 					s = isNaN(s = 
+						  IS_PRE_IE9 ? extractNumber(element['style']['filter'])/100 :
 						  extractNumber(element['style']['opacity']) 
 						 ) ? 1 : s;
 				}
@@ -876,6 +899,9 @@ define('minified', function() {
 					s = self['get']('$height');
 				}
 				else if (/^\$/.test(spec)) {
+					if (!_window.getComputedStyle)
+						s = (element.currentStyle||element['style'])[name];
+					else 
 						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 				}
 				else if (/^@/.test(spec))
@@ -1041,6 +1067,7 @@ define('minified', function() {
     		 if (name == '$$fade' || name == '$$slide') {
     			 self.set({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block'})
     			     .set((name == '$$fade')  ? (
+    			    	  IS_PRE_IE9 ? {'$filter': 'alpha(opacity = '+(100*v)+')', '$zoom': 1} :
     			    	  {'$opacity': v})
     			        :
     			        {'$height': /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
@@ -1066,6 +1093,9 @@ define('minified', function() {
     					 }
     				 }
    				 	 else if (name == '$$') {
+						if (IS_PRE_IE9)
+							newObj['cssText'] = newValue;
+						else
 							setAttr(obj, 'style', newValue);
 					 }
     				 else if (!/^@/.test(name))
@@ -1621,10 +1651,15 @@ define('minified', function() {
 			var nodeType = isNode(e);
 			if (nodeType == 1) {
 				var attrs = {
+						'$': e['className'] || null,
+						'$$': IS_PRE_IE9 ? e['style']['cssText'] : e.getAttribute('style')
 				};
 				each(e['attributes'], function(a) {
 					var attrName = a['name'];
 					if (attrName != 'id'
+						&& attrName != 'style'
+						&& attrName != 'class'
+						&& e.getAttribute(attrName)  // getAttribute for IE8
 						) {
 						attrs['@'+attrName] = a['value'];
 					}
@@ -1998,13 +2033,20 @@ define('minified', function() {
 						var e = event || _window.event;
 						// @cond debug try {
 						if ((!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) && namePrefixed==name) {
+							if (e.stopPropagation) {// W3C DOM3 event cancelling available?
 								e.preventDefault();
 								e.stopPropagation();
+							}
+							e.returnValue = false; // cancel for IE
+							e.cancelBubble = true; // cancel bubble for IE
 						}
 						// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 					};
 					(handler['M'] = handler['M'] || []).push({'e':el, 'h':h, 'n': name});
+					if (el.addEventListener)
 						el.addEventListener(name, h, true); // W3C DOM
+					else 
+						el.attachEvent('on'+name, h);  // IE < 9 version
 				});
 			});
 		}
@@ -2099,6 +2141,7 @@ define('minified', function() {
 		/** @const */ var ContentType = 'Content-Type';
 		var xhr, body = data, callbackCalled = 0, prom = promise();
 		try {
+			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			xhr = new XMLHttpRequest();
 			if (data != null) {
 				headers = headers || {};
@@ -2180,6 +2223,17 @@ define('minified', function() {
     * @param value the value (map-like object, array/list, string, number, boolean or null)
     * @return the JSON string
     */
+    'toJSON': function toJSON(value) {
+		if (value == null)
+			return ""+value;                  //result: "null"; toString(value) is not possible, because it returns an empty string for null
+		if (isString(value = value.valueOf()))
+			return '"' + replace(value, /[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
+		if (isList(value)) 
+			return '[' + collect(value, toJSON).join() + ']';
+		if (isObject(value))
+			return '{' + collectObj(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
+		return toString(value);
+	},
     'toJSON': _window.JSON && JSON.stringify,
 
 	/*$
@@ -2207,6 +2261,16 @@ define('minified', function() {
 	* @param text the JSON string
 	* @return the resulting JavaScript object. <var>Undefined</var> if not valid.
 	*/
+    'parseJSON': _window.JSON ? _window.JSON.parse : function (text) {
+    	var t = replace(text, /[\x00\xad\u0600-\uffff]/g, ucode); // encode unsafe characters
+        if (/^[[\],:{}\s]*$/                  // test that, after getting rid of literals, only allowed characters can be found
+				.test(replace(replace(t , /\\["\\\/bfnrtu]/g),             // remove all escapes
+						/"[^"\\\n\r]*"|true|false|null|[\d.eE+-]+/g))      // remove all literals
+				)
+        	return eval('(' + t + ')');
+        // fall through if not valid
+        // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
+    },
     'parseJSON': _window.JSON && JSON.parse,
 
 	/*$
@@ -2452,7 +2516,10 @@ define('minified', function() {
 	'off': function (handler) {
 		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
 	   	each(handler['M'], function(h) {	
+			if (h['e'].removeEventListener)
 				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
+			else 
+				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
 		});
 		handler['M'] = null;
 	}
@@ -2470,7 +2537,9 @@ define('minified', function() {
 	 * @id ready_init
 	 * @dependency
      */
+    _window.onload = triggerDomReady;
 
+    if (_document.addEventListener)
     	_document.addEventListener("DOMContentLoaded", triggerDomReady, false);
 	/*$
 	 @stop
