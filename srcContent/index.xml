@@ -28,9 +28,9 @@
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">Minified is smaller!</h3>
-  		Minified is a sub-4kb JavaScript library for client-side scripting. Minified's feature set is 
-  		<a href="#featCmp">comparable to jQuery and MooTools</a>, but its size is 
-  		<a href="#sizeCmp">only a fraction</a> of the competition's.
+  		Minified's size is less than 4kb, <a href="#sizeCmp">a fraction of other libraries' size</a>. 
+  		Yet its feature set is roughly <a href="#featCmp">comparable to jQuery and MooTools</a>, and even 
+  		includes some additional features.
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">Easy to learn!</h3>
@@ -40,7 +40,8 @@
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">No surprises!</h3>
   		Minified has no polyfills and does not try too hard to hide browser differences. 
-  		Your JavaScript can, for better or worse, work with the same features as your HTML.
+  		Your JavaScript can, for better or worse, work with the same features as your HTML
+  		and CSS.
   	</div>
   	<div style="clear: both;"></div>
   </div>
@@ -111,7 +112,7 @@ own. Or go to <a href="">this presentation</a> or the <a href="dov/quickstart.ht
 <tr><th>JSON</th><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>Cookies</th><td>yes</td> <td>no</td> <td>yes</td> <td>no</td></tr>
 <tr><th>Form Serialization</th><td>no</td> <td>yes</td> <td>no</td> <td>yes</td></tr>
-<tr><th>Array Helpers (Iteration)</th> <td>no</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
+<tr><th>Array Helpers (Iteration)</th> <td>no<div class="cmpExpl">will be in Util module</div></td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>AMD support</th> <td>yes</td> <td>yes</td> <td>no</td> <td>no</td></tr>
 <tr><th>Online Builder</th> <td>yes<div class="cmpExpl">modules and functions</div></td> <td>no</td> <td>yes<div class="cmpExpl">modules</div></td> <td>no</td></tr>
 <tr><th>Internet Explorer 6-8 compatible</th> <td>yes<div class="cmpExpl">IE-support optional</div></td> <td>yes<div class="cmpExpl">jQuery 1.x only</div></td> <td>yes</td> <td>no</td></tr>
