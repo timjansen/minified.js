@@ -1142,7 +1142,7 @@ define('minified', function() {
     			     .set((name == '$$fade')  ? (
     			 // @condblock ie8compatibility 
     			    	  IS_PRE_IE9 ? {'$filter': 'alpha(opacity = '+(100*v)+')', '$zoom': 1} :
-    			 // @condend
+    			 // @condend ie8compatibility
     			    	  {'$opacity': v})
     			        :
     			        {'$height': /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
@@ -1150,7 +1150,7 @@ define('minified', function() {
  					);
     		 }
     		 else
-    			// @condend
+    			// @condend fadeslide
     			 each(self, function(obj, c) {
     				 var nameClean = replace(name, /^[@$]/);
     				 var className = obj['className'] || '';
