@@ -146,9 +146,9 @@ function compile(sections, sectionMap, enabledSections) {
 					src += m[1] + m[5] + '\n';
 				else if (m && m[2] == 'condblock')
 					condBlock.unshift(!!enabledSectionsWithDeps[m[4]] != (m[3] == '!'));
-				else if (condBlock.length && /^\s*\/\/\s*@condend(\s|$)/.test(line))
+				else if (condBlock.length && /^\s*\/\/\s*@condend\b/.test(line))
 					condBlock.shift();
-				else if (condBlock.length == 0 || condBlock[0])
+				else if (!_.find(condBlock, false))
 					src += line + '\n';
 				lastLineEmpty = false;
 			}
