@@ -192,11 +192,15 @@ define('minifiedUtil', function() {
 		eachObj(obj, function(key) { list.push(key); });
 		return list;
 	}
-	function values(obj) {
+	function values(obj, keys) {
 		var list = [];
-		eachObj(obj, function(key, value) { list.push(value); });
+		if (keys)
+			each(keys, function(value) { list.push(obj[value]); });
+		else
+			eachObj(obj, function(key, value) { list.push(value); });
 		return list;
-	}
+	}	
+	
 	function mapObj(list, mapFunc) {
 		var result = {};
 		eachObj(list, function(key, value) {
@@ -239,8 +243,6 @@ define('minifiedUtil', function() {
 		return map(list, function() { return list[--i]; });
 	}
 	function sub(list, startIndex, endIndex) {
-		if (!isList(list))
-			return [];
 		var l = list.length;
 	    var s = startIndex < 0 ? l+startIndex : startIndex;
 	    var e = endIndex == null ? l : (endIndex >= 0 ? endIndex : l+endIndex);
@@ -647,9 +649,9 @@ define('minifiedUtil', function() {
 					}
 				}).join('')+'}';
 			var f = (new Function('obj', 'each', 'esc', 'print', '_', funcBody));
-			return templateCache[template] = function(obj) {
+			return templateCache[template] = function(obj, thisContext) {
 				var result = [];
-				f.call(obj, obj, function(obj, func) {
+				f.call(thisContext || obj, obj, function(obj, func) {
 					if (isList(obj))
 						each(obj, function(value, index) { func.call(value, index, value, index); });
 					else
@@ -768,7 +770,7 @@ define('minifiedUtil', function() {
      * });
      * </pre>
      * 
-     * @param list a list to iterate. Can be an array, a ##list#Minified list## or anything other array-like structure 
+     * @param list a list to iterate. A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
      *             <var>length</var> property.
      * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
      *                 <dl><dt>item</dt><dd>The current list element.</dd>
@@ -812,7 +814,7 @@ define('minifiedUtil', function() {
 	 * });
 	 * </pre>
 	 * 
-     * @param list a list to filter. Can be an array, a ##list#Minified list## or anything other array-like structure 
+     * @param list a list to filter. A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
      *             <var>length</var> property.
 	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
 	 *        <dl><dt>item</dt><dd>The current list element.</dd>
@@ -878,8 +880,8 @@ define('minifiedUtil', function() {
      * }); 
      * </pre> 
      * 
-     * @param list a list to transform. Can be an array, a ##list#Minified list## or anything other array-like structure 
-     *             <var>length</var> property
+     * @param list a list to transform. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
      * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
@@ -918,8 +920,8 @@ define('minifiedUtil', function() {
      * }); 
      * </pre> 
      * 
-     * @param list a list to transform. Can be an array, a ##list#Minified list## or anything other array-like structure 
-     *             <var>length</var> property
+     * @param list a list to transform. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
      * @param mapFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new list.</dd></dl>
@@ -955,8 +957,8 @@ define('minifiedUtil', function() {
      * }); 
      * </pre> 
      * 
-     * @param list A list to use as input. Can be an array, a ##list#Minified list## or anything other array-like structure 
-     *             <var>length</var> property
+     * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
      * @param memoInit This value will be passed to the callback as <var>memo</var> the first time it is called. In all subsequent
      *                 invocations, the <var>memo</var> will be the last invocation's return value.            
      * @param func The callback <code>function(memo, value, index)</code> to invoke for each item:
@@ -970,14 +972,216 @@ define('minifiedUtil', function() {
      */ 
 	'reduce': listBind(reduce),
 
+	/*$ 
+	 * @id toobject
+	 * @group LIST 
+	 * @requires list
+	 * @configurable default 
+	 * @name .toObject() 
+	 * @syntax list.toObject(valueList)
+	 * @syntax _.toObject(keyList, valueList)
+	 * @module UTIL
+	 * Creates an object map from a list of keys and a list of values.
+	 * <var>toObject()</var> goes through all values of the key list and adds a property with this key and a value taken from the
+	 * value list at the same index. If you call toObject as method on a list, this list is the key list.
+	 * 
+	 * If the key list is longer than the value list, the remaining properties will use <var>undefined</var> as value.
+	 * If the value list is longer, the remaining values will be ignored.
+	 * 
+	 * @example Create a simple object map:
+	 *  <pre> 
+	 *  var map = _.toObject(['a', 'b', 'c'], [1, 2, 3]);  // creates {a:1, b:2, c:3}
+	 * </pre> 
+	 * 
+	 * @example Same result, but with a list method:
+	 *  <pre> 
+	 *  var map = _('a', 'b', 'c').toObject([1, 2, 3]);  // creates {a:1, b:2, c:3}
+	 * </pre> 
+	 * 
+	 * @param keyList A list or array to use for the keys of the new object.
+	 * @param valueList A list or array to use for the values of the new object. There should be a value for each key. Otherwise the value will be
+	 *                           <var>undefined</var>.
+     * @return the new object
+     */ 
 	'toObject': listBind(toObject),
 	
+	/*$ 
+	 * @id equals
+	 * @group LIST 
+	 * @requires list
+	 * @configurable default 
+	 * @name .equals() 
+	 * @syntax list.equals(otherObject)
+	 * @syntax _.equals(thisObject, otherObject)
+	 * @module UTIL
+	 * Checks whether two values, lists or objects are equal in a deep comparison.
+	 * 
+	 * First equals checks whether it got a function as parameter. If yes, it will be invoked without arguments and the function is called recursively with the function's result.
+	 * 
+	 * Once both values are no functions anymore, the values will be evaluated, If the first value is...
+	 * <ul><li>...<var>null</var> or <var>undefined</var>, they are only equal if the other one is also either <var>null</var> or <var>undefined</var>.</li>
+	 * <li>...a value as defined by #_.isValue(), but not a Date, they are equal if the other value is the same type and is equal according to the '==' operator.</li>
+	 * <li>...a Date, they are equal if the other value is a Date representing the same time.</li>
+	 * <li>...a list or array, they are equal if the other value is also either a list or an array, has the same number of items and all items equal the items of the other
+	 *         list at the same position. The equality of list items is determined recursively using the same rules, so you can also nest lists.</li>
+	 * <li>...a function, it will be invoked without arguments and its return value is evaluated using these rules as if the value has been passed. </li>
+	 * <li>...any other object, they are equal if they contain exactly the same keys (as defined by #_.eachObj()) and all values are equal as determined using these rules
+	 *      recursively.</li>
+	 * </ul>
+	 * 
+	 * Please note that, according to the rules, a ##list#Minified list# is equal to an array, as long as their content is equal. <var>equals</var> does not 
+	 * differentiate between <var>null</var> and <var>undefined</var>.
+	 *
+	 * <var>equals</var> is commutative. If you swap the parameters, the result should be the same.
+	 * 
+	 * @example Compare a list and an array:
+	 *  <pre> 
+	 *  _.equals([1, 2, 3], _(1, 2, 3));  // returns true
+	 * </pre> 
+	 * 
+	 * @example Same result, but with a list method:
+	 *  <pre> 
+	 *  _(1, 2, 3).equals([1, 2, 3]);  // returns true
+	 * </pre> 
+	 * 
+	 * @param thisObject The first reference to evaluate.
+	 * @param otherObject The second reference to evaluate.
+	 * @return true if both references are equal. False otherwise.
+     */ 
 	'equals': listBind(equals),
 
+    /*$ 
+     * @id sub
+     * @group LIST 
+     * @requires  
+     * @configurable default 
+     * @name .sub() 
+     * @syntax list.sub(startIndex) 
+     * @syntax list.sub(startIndex, endIndex) 
+     * @syntax _.sub(list, startIndex) 
+     * @syntax _.sub(list, startIndex, endIndex) 
+     * @module WEB, UTIL
+     * Returns a new ##list#Minified list## containing only the elements in the specified range. If there are no elements in the range,
+     * an empty list is returned.
+     * Negative indices are supported and will be added to the list's length, thus allowing you to specify ranges at the list's end.
+     *
+     * @example Takes only the second and third element:
+     * <pre> 
+     * var secndAndThird = _(5, 6, 7, 8, 9).sub(2, 4);
+     * </pre> 
+     *
+     * @example The same using an array:
+     * <pre> 
+     * var secndAndThird = _.sub([5, 6, 7, 8, 9], 2, 4);
+     * </pre> 
+     *
+     * @example Adds some text the 3rd to 5th list elements:
+     * <pre> 
+     * $('#myList li').sub(3, 6).add('Hello');
+     * </pre> 
+     *
+     * @example Clears all elements but the first:
+     * <pre> 
+     * $('#myList li').sub(1).fill();
+     * </pre> 
+     *
+     * @example Changes the class of the last list element:
+     * <pre> 
+     * $('#myList li').sub(-1).set('+lastItem');
+     * </pre> 
+     * 
+     * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and the position is relative
+     *                   to the list's end.
+     * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
+     *                   to the list's end. If omitted or null, all elements following the <var>startIndex</var> are included in the result.
+     * @return a new ##list#list## containing only the items in the index range. 
+     */ 
 	'sub': listBindArray(sub),
 	
+    /*$ 
+     * @id reverse
+     * @group LIST 
+     * @requires  
+     * @configurable default 
+     * @name .sub() 
+     * @syntax list.reverse() 
+     * @syntax _.reverse(list) 
+     * @module WEB, UTIL
+     * Returns a new ##list#Minified list## with the input list's elements in reverse order. So the first element is swapped 
+     * with the last, the second with the second to last and so on.
+     *
+     * @example Changes the order of a list:
+     * <pre> 
+     * var rev = _('a', 'b', 'c').reverse(); // returns _('c', 'b', 'a')
+     * </pre> 
+     * 
+     * @example The same with an array:
+     * <pre> 
+     * var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
+     * </pre> 
+     * 
+     * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and the position is relative
+     *                   to the list's end.
+     * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
+     *                   to the list's end. If omitted or null, all elements following the <var>startIndex</var> are included in the result.
+     * @return a new ##list#list## containing only the items in the index range. 
+     */ 
 	'reverse': listBindArray(reverse),
  	
+    /*$ 
+     * @id find 
+     * @group LIST 
+     * @requires
+     * @configurable default 
+     * @name .find() 
+     * @syntax list.find(findFunc) 
+     * @syntax list.find(element) 
+     * @syntax _.find(list, findFunc) 
+     * @syntax _.find(list, element) 
+     * @module WEB, UTIL
+     * Finds a specific value in the list. There are two ways of calling <var>find()</var>:
+     * <ol>
+     * <li>With a value as argument. Then <var>find()</var> will search for the first occurrence of an identical value in the list,
+     *     using the '===' operator for comparisons, and return the index. If it is not found,
+     *     <var>find()</var> returns <var>undefined</var>.</li>
+     * <li>With a callback function. <var>find()</var> will then call the given function for each list element until the function 
+     *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
+     * </ol>
+     *
+     * @example Finds the first negative number in the list:
+     * <pre> 
+     * var i = _(1, 2, -4, 5, 2, -1).find(function(value, index) { if (value < 0) return index; }); // returns 2
+     * </pre> 
+
+     * @example Finds the index of the first 5 in the array:
+     * <pre> 
+     * var i = _.find([3, 6, 7, 6, 5, 4, 5], 5); // returns 4 (index of first 5)
+     * </pre> 
+	 *
+     * @example Determines the position of the element with the id '#wanted' among all li elements:
+     * <pre> 
+     * var elementIndex = $('li').find($$('#wanted'));
+     * </pre> 
+     * 
+     * @example Goes through the elements to find the first div that has the class 'myClass', and returns this element:
+     * <pre> 
+     * var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) return e; });
+     * </pre> 
+     * 
+     * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
+     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
+	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
+     * @param element the element to search for
+     * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
+     *         it returns either the value returned by the callback or <var>undefined</var>.
+     */ 
  	'find': listBind(find),
  	
  	'startsWith': listBind(startsWith),
@@ -1051,27 +1255,62 @@ define('minifiedUtil', function() {
 		};
 	}
 	copyObj({
+		 // @condblock filter
+		'filter': funcArrayBind(filter),
+		 // @condend
+		 // @condblock collect
+		'collect': funcArrayBind(collect),
+		 // @condend
+		 // @condblock collectobj
+		'collectObj': funcArrayBind(collectObj),
+		 // @condend
+		 // @condblock map
+		'map': funcArrayBind(map),
+		 // @condend
+		 // @condblock sub
+		'sub': funcArrayBind(sub),
+		 // @condend
+		 // @condblock reverse
+		'reverse': funcArrayBind(reverse),
+		 // @condend
+		 // @condblock each
+		'each': each,
+		 // @condend
+		 // @condblock each
+		'toObject': toObject,
+		 // @condend
+		 // @condblock reduce
+		'reduce': reduce,
+		 // @condend
+		 // @condblock find
+		'find': find,
+		 // @condend
+		 // @condblock contains
+		'contains': contains,
+		 // @condend
+		 // @condblock startswith
+	 	'startsWith': startsWith,
+		 // @condend
+		 // @condblock endswith
+	 	'endsWith': endsWith,
+		 // @condend
+		 // @condblock equals
+		'equals': equals,
+		 // @condend
+		 // @condblock keys
+		'keys': funcArrayBind(keys),
+		 // @condend
+		 // @condblock values
+		'values': funcArrayBind(values),
+		 // @condend
+		
 		'bind': bind,
 		'partial': partial,
 		'once': once,
 		'nonOp': nonOp,
-		'each': each,
 		'eachObj': eachObj,
-		'toObject': toObject,
-		'filter': funcArrayBind(filter),
-		'filterObj': filterObj,
-		'collect': funcArrayBind(collect),
-		'collectObj': funcArrayBind(collectObj),
-		'map': funcArrayBind(map),
 		'mapObj': mapObj,
-		'reduce': reduce,
-		'find': find,
-		'contains': contains,
-		'sub': funcArrayBind(sub),
-		'reverse': funcArrayBind(reverse),
-	 	'startsWith': startsWith,
-	 	'endsWith': endsWith,
-		'equals': equals,
+		'filterObj': filterObj,
 
 		'isList': isList,
 		'isFunction': isFunction,
@@ -1083,10 +1322,6 @@ define('minifiedUtil', function() {
 		'isString': isString,
 		'toString': toString,
 
-		//'prop': prop,
-		'escapeRegExp': escapeRegExp,
-		'trim': trim,
-		
 		'dateClone': dateClone,
 		'dateAdd': dateAdd,
 		'dateDiff': dateDiff,
@@ -1099,18 +1334,18 @@ define('minifiedUtil', function() {
 		'parseDate': parseDate,
 		'parseNumber': parseNumber,
 
-		'keys': funcArrayBind(keys),
-		'values': funcArrayBind(values),
-		
 		'copyObj': copyObj,
 		
 		'coal': coal,
+
+		'trim': trim,
+		'escapeRegExp': escapeRegExp,
+		'escapeHtml': escapeHtml,
 		
 		'format': function(format, object) {
 			return template(format)(object);
 		},
 
-		'escapeHtml': escapeHtml,
 	
 		/*$ 
 	     * @id template 
