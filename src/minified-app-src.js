@@ -397,16 +397,16 @@ define('minifiedApp', function() {
 			return r;
 		},
 		
-		// like _.prop(model, path)
+		// like prop(model, path)
 		'get': function(path) {
 			return prop(this.ctxPrototype['model'], path != null ? path : '');
 		},
 		
-		// Reads old value (_.prop), compares to new value. If not equal according to _.equals, 
+		// Reads old value (prop), compares to new value. If not equal according to _.equals, 
 		// sets new value and calls update().
 		'set': function(path, value) {
-			if (!equals(_.prop(this.ctxPrototype['model'], path), value)) {
-				_.prop(this.ctxPrototype['model'], path, value);
+			if (!equals(prop(this.ctxPrototype['model'], path), value)) {
+				prop(this.ctxPrototype['model'], path, value);
 				this['update'](path);
 			}
 		},

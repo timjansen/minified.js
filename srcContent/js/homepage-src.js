@@ -9,7 +9,7 @@ $(function() {
 	var state = {percentage: 0, preColor: COLORS[moving], postColor: COLORS[next], running: false};
 	var targets = $('.shareButton');
 	var stopFunc;
-	var shareDivCreated;
+	var shareDivCreated = 0;
 	
 	function findColor() {
 		var f = Math.max(0, Math.min(Math.round(Math.random() * CLEN - 0.5), CLEN));
@@ -54,8 +54,9 @@ $(function() {
 	}
 	
 	function createShareDiv() {
-		if (shareDivCreated)
+		if (shareDivCreated++)
 			return; 
+
 		$('#shareExt').add([EE('iframe', {'@allowtransparency':'true', '@frameborder': 0, '@scrolling': 'no', $width:'100px', $height: '20px',
 										  '@src': "http://ghbtns.com/github-btn.html?user=timjansen&repo=minified.js&type=watch&count=true"}),
 						    EE('iframe', {'@allowtransparency':'true', '@frameborder': 0, '@scrolling': 'no', $width:'100px', $height: '20px',
@@ -63,19 +64,6 @@ $(function() {
 		                    EE('div', {$: 'g-plusone', $display: 'inline', '@data-size': 'medium'})
 		                    ]);
 		$('head').add(EE('script', {type: 'text/javascript', async: true, src: 'https://apis.google.com/js/plusone.js'}));
-		
-		/*
-		$('#followDiv1').add([EE('iframe', {'@allowtransparency':'true', '@frameborder': 0, '@scrolling': 'no', $width:'100px', $height: '20px',
-			  				'@src': "http://ghbtns.com/github-btn.html?user=timjansen&repo=minified.js&type=follow"}),
-			  				EE('iframe', {'@allowtransparency':'true', '@frameborder': 0, '@scrolling': 'no', $width:'300px', $height: '20px',
-			  					'@src': "https://platform.twitter.com/widgets/follow_button.html?screen_name=timjansen"}),
-			  				EE('div', {$: 'g-plus', $display: 'inline', '@data-height': '20', 
-			  					      '@data-href': '//plus.google.com/100950045026999226880', '@data-rel': 'publisher'})
-			  				//<div class="g-plus" data-height="69" data-href="//plus.google.com/100950045026999226880" data-rel="publisher"></div>
-
-			  				]);
-		 */
-		shareDivCreated = true;
 	}
 
 	var shareDivToggle = $('#shareDiv').toggle({$$fade: 0, $$slide: 0}, {$$fade: 1, $$slide: 1}, 700, 1);
@@ -89,7 +77,8 @@ $(function() {
 		createShareDiv();
 		shareDivToggle(true);
 	}
-		
+	
+	window.setTimeout(createShareDiv, 2500);
 });
 
 

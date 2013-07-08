@@ -2,7 +2,7 @@ var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = require('minifiedUtil')._;
 
 var MAX_SIZE = 4095;
-var SRC='/minified-web-src.js';
+var SRC='/download/minified-web-src.js';
 
 var GROUPS = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'OPTIONS'];
 

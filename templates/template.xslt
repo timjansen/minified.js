@@ -18,28 +18,6 @@
 <xsl:for-each select="/page:page/page:asyncJs"><script type="text/javascript" src="{.}" async="async"></script></xsl:for-each>
 <xsl:for-each select="/page:page/page:externalJs"><script type="text/javascript" src="{.}"></script></xsl:for-each>
 <xsl:for-each select="/page:page/page:inlineJs"><script type="text/javascript"><xsl:value-of select="."></xsl:value-of></script></xsl:for-each>
-<!--  TEMP SPLASH SCREEN START -->
-<script src="/minified-web-src.js"></script>
-<script type="text/javascript">
-var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
-
-$(function() {
-	if (!$.getCookie('y'))
-		$('body').add(EE('div', {'@id': 'cover', $position: 'fixed', $left: 0, $top: 0, $width:'100%', $height: '100%', $backgroundColor: 'white'}, 
-			EE('div', {$position: 'absolute', $left: '50%', $top: '50%', $marginLeft: '-15em', $marginTop: '-4em', $width: '30em', $height: '8em', $padding: '1em', $border: '1px solid #bbb', $textAlign: 'center'}, [
-				EE('h1', {$marginTop: 0}, 'Psssst!'), 
-				EE('p', 'Minified is still a secret. Please don\'t tell anyone.'),
-				EE('button', {}, 'Alrighty', function(l) {
-					$(l).on('click', function() {
-						$.setCookie('y', 1);
-						$('#cover').animate({$$fade: 0}).then(function() {$('#cover').remove();});
-					});
-				})
-			])
-		));
-});
-</script>
-<!--  TEMP SPLASH SCREEN END -->
 </head>
 <body>
 <div id="head">

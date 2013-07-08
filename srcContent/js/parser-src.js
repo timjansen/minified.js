@@ -144,12 +144,24 @@ function compile(sections, sectionMap, enabledSections) {
 				var m = line.match(/^(\s*)\/\/\s*@(cond|condblock)\s+(\!?)(\w*)\s*(.*)$/);
 				if (m && m[2] == 'cond' && (!!enabledSectionsWithDeps[m[4]] != (m[3] == '!')))
 					src += m[1] + m[5] + '\n';
-				else if (m && m[2] == 'condblock')
-					condBlock.unshift(!!enabledSectionsWithDeps[m[4]] != (m[3] == '!'));
-				else if (condBlock.length && /^\s*\/\/\s*@condend\b/.test(line))
-					condBlock.shift();
-				else if (!_.find(condBlock, false))
-					src += line + '\n';
+				else { 
+					var condEnds = false, incLine = true;
+					if (m && m[2] == 'condblock')
+						condBlock.push((!!enabledSectionsWithDeps[m[4]]) != (m[3] == '!'));
+					else if (/^\s*\/\/\s*@condend\b/.test(line))
+						condEnds = true;
+					for (var i = 0; i < condBlock.length; i++) 
+						if (!condBlock[i]) {
+							incLine = false;
+							break;
+						}
+
+					if (incLine)
+						src += line + '\n';
+					
+					if (condEnds)
+						condBlock.pop();
+				}
 				lastLineEmpty = false;
 			}
 		});
