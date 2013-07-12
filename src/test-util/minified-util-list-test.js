@@ -342,17 +342,7 @@ function runTests(loadInContext) {
 		});
 	});
 
-	describe('_.reduce()', function() {
-		it('reduce lists', function() {
-			var _ = req();
-			var a = _(5, 6, 7, 8, 9);
-			var c = 0;
-			var flt = a.reduce(17, function(memo, v, index) { assert.equal(index, c++); assert.equal(a[index], index+5); return v+memo; });
-			assert.equal(flt, 52);
-		});
-	});
 
-	
 	describe('_.sub()', function() {
 		it('slices lists', function() {
 			var _ = req();
@@ -673,21 +663,21 @@ function runTests(loadInContext) {
 		});
 	});
 	
-	describe('_.func()', function() {
-		it('func', function() {
+	describe('_.unite()', function() {
+		it('unite', function() {
 			var _ = req();
 			var i = 0;
 			function a(x9) { assert.equal(x9, 9); i++; return "a";}
 			function b(x9) { assert.equal(x9, 9); i++; return "b";}
 			
-			var r1 = _().func()([3]);
+			var r1 = _().unite()([3]);
 			assert(_.equals(r1, []));
 
-			var r2 = _(a, b, null).func()([9]);
+			var r2 = _(a, b, null).unite()([9]);
 			assert(_.equals(r2, ["a", "b", undef]));
 			assert.equal(i, 2);
 
-			var r3 = _(a, null, b, null).func()([9]);
+			var r3 = _(a, null, b, null).unite()([9]);
 			assert(_.equals(r3, ["a", undef, "b", undef]));
 			assert.equal(i, 4);
 

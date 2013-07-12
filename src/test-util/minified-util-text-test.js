@@ -365,11 +365,16 @@ function runTests(loadInContext) {
 		
 		it('() supports {{each expression}}', function() {
 			assert.equal(_.template("{{each}}{{this}}{{/each}}")([1, 2, 3]), "123");
-			assert.equal(_.template("{{each}}{{value}}-{{index}};{{/each}}")([1, 2, 3]), "1-0;2-1;3-2;");
+			assert.equal(_.template("{{each value , index:}}{{value}}-{{index}};{{/each}}")([1, 2, 3]), "1-0;2-1;3-2;");
+			assert.equal(_.template("{{each value : }}{{value}}-{{/each}}")([1, 2, 3]), "1-2-3-");
+			assert.equal(_.template("{{each value , index:obj}}{{value}}-{{index}};{{/each}}")([1, 2, 3]), "1-0;2-1;3-2;");
+			assert.equal(_.template("{{each value : obj}}{{value}}-{{/each}}")([1, 2, 3]), "1-2-3-");
 			assert.equal(_.template("{{each obj}}{{this}}{{/each}}")([1, 2, 3]), "123");
 			assert.equal(_.template("{{each obj}}{{if this%2==0}}{{this}}{{/if}}{{/each}}")([1, 2, 3, 4, 5, 6]), "246");
 
-			var eachResult =_.template("{{each}}{{this}}-{{value}}-{{key}};{{/each}}")({a:1, b:7});
+			var eachResult =_.template("{{each key, value:}}{{this}}-{{value}}-{{key}};{{/each}}")({a:1, b:7});
+			assert(eachResult == "1-1-a;7-7-b;" || eachResult == "7-7-b;1-1-a;");
+			eachResult =_.template("{{each key, value: obj}}{{this}}-{{value}}-{{key}};{{/each}}")({a:1, b:7});
 			assert(eachResult == "1-1-a;7-7-b;" || eachResult == "7-7-b;1-1-a;");
 		});
 		

@@ -209,8 +209,9 @@ define('minifiedApp', function() {
 			'model': model,      // ref to model data's root 
 			'modelCtx': model,   // ref to model's current position
 			'path': '',          // current path of the model
-			'viewCtx': viewCtx,  // 
-			'indexStack': [],
+			'viewCtx': viewCtx,  // DOM reference to current HTML element
+			'indexStack': [],    // stack containing all indexes, with the most recent at position 0
+			'index': 0,          // most recent index
 			'group': null,       // name of current group, or null if no group
 			'isActive': true,
 			'config': syncConfig
@@ -299,12 +300,10 @@ define('minifiedApp', function() {
 		// Usually you create a mapping by calling SYNC() or similar functions to create them.
 		//
 		// A mapping is an object with the following properties:
-		// - init: optional, a function(Controller, ctx) that will be called when the mapping has been added to the model
-		//  - model is 'this'
+		// - init: optional, a function(modelCtx, ctx, Controller) that will be called when the mapping has been added to the model
 		// 	- ctx is the MappingContext
 		//
-		// - update: required, a function(Controller, ctx, updatePath) that will be called when the relevant part of the model has been updated
-		//  - model is 'this'
+		// - update: required, a function(modelCtx, ctx, Controller, updatePath) that will be called when the relevant part of the model has been updated
 		// 	- ctx is the MappingContext
 		// 	- updatePath is the string of the last sync.update() invocation relative to modelCtx, or null
 		//
@@ -326,7 +325,7 @@ define('minifiedApp', function() {
 			this.mappings.push(mappingList);
 			
 			each(mappingList, function(mapping) {
-				mapping['init'](self, ctx);
+				mapping['init'](ctx['modelCtx'], ctx, self);
 			});
 		},
 		
@@ -362,7 +361,7 @@ define('minifiedApp', function() {
 					var ctx = copyObj(self.ctxPrototype, {});
 					each(mappingList, function(mapping) {
 						if (ctx['isActive'] || mapping['inactive'])
-							mapping['update'](self, ctx, actualPath);
+							mapping['update'](ctx['modelCtx'], ctx, self, actualPath);
 					});
 				});
 				self.updateRunning = 0;
@@ -473,10 +472,55 @@ define('minifiedApp', function() {
 
 	}, Controller.prototype);
 
+	function numberMapping(format) {
+		return {'render': function(s) {
+			return formatValue(format, s);
+		}, 'parse': function(s) {
+			return parseNumber(format, s);
+		}};
+	}
+	function dateMapping(format) {
+		return {'render': function(s) {
+			return formatValue(format, s);
+		}, 'parse': function(s) {
+			return parseDate(format, s);
+		}};
+	}
+	function stringMapping(regExp) {
+		return {'render': nonOp, 'parse': function(s) {
+			var r = replace(s, isString(regExp) ? (new RegExp(regExo)) : regExp);
+			return r != s && !r;
+		}};
+	}
+	var asIsMapping = {'render':nonOp, 'parse': nonOp};
+	
+	APP['mappings'] = {
+			'number': numberMapping,
+			'date': dateMapping,
+			'string': stringMapping,
+			
+			'FIELD' : function(fieldSelector, valuePath, translator, parserFailToggleList) {
+				var toggleList = (isFunction(translator) || isList(translator)) ? translator : parserFailToggleList;
+				var tl = isString(translator) ? (/[09_#]/.test(translator) ? numberMapping(translator) : dateMapping(translator)) : 
+					(translator instanceof RegExp ? stringMapping(translator) : asIsMapping);
+				return {
+					'init': function(modelCtx, ctx, controller) {
+						var field = $(fieldSelector, ctx['viewCtx'])['sub'](0, 1);
+						
+					},
+					'update': function(modelCtx, ctx, controller, updatePath){
+						
+					}
+				};				
+			}
+	};
 		
-		
+	function getCheckedValue(inputElement) {
+		 return inputElement.checked ? inputElement.value : null;
+	}
+	
 	copyObj({
-		'onInput': function(handler) {
+		'onText': function(handler) {
 			var oldValues = map(this, function(input) { return input.value; });
 			this['on']("|input |change |keypress", function(e, index) {
 				if (this.value != oldValues[index]) {
@@ -484,6 +528,45 @@ define('minifiedApp', function() {
 					oldValues[index] = this.value;
 				}
 			});
+		},
+		
+		'onCheck': function(handler) {
+			var oldValues = map(this, getCheckedValue);
+			this['on']("|click", function(e, index) {
+				if (getCheckedValue(this) != oldValues[index]) {
+					handler(this.checked, getCheckedValue(this), index);
+					oldValues[index] = getCheckedValue(this);
+				}
+			});
+		},
+		
+		'dial': function(states, initState, durationMs, linearity) {
+			var self = this;
+			var animState = {};
+			var state, prevState, prevPrevState;
+				
+			if (isString(initState))
+				state = initState;
+			else { // re-map arguments if initState not set
+				linearity = durationMs;
+				durationMs = initState; 
+			}
+			
+			if (state)
+				self['set'](states[state]);
+
+			return function(newState) {
+				if (newState === state) 
+					return;
+				prevPrevState = prevState;
+				prevState = state;
+				state = newState;
+
+				if (durationMs) 
+					self['animate'](states[state], animState['stop'] && prevPrevState == newState? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
+				else
+					self['set'](states[state]); 
+			};
 		}
 	}, M);
 
