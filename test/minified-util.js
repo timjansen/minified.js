@@ -123,6 +123,10 @@ define('minifiedUtil', function() {
 	function isList(v) {
 		return !!v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
 	}
+	function toList(l) {
+		return isList(l) ? l : (l != null ? [l] : []);
+	}
+
 	function nonOp(v) {
 		return v;
 	}
@@ -215,13 +219,6 @@ define('minifiedUtil', function() {
 		});
 		return result;
 	}
-	function reduce(list, memoInit, func) {
-		var memo = memoInit;
-		each(list, function(value, index) {
-			memo = func(memo, value, index);
-		});
-		return memo;
-	}
 	function startsWith(base, start) {
 		if (isList(base)) {
 			var s2 = UNDERSCORE(start); // convert start as we don't know whether it is a list yet
@@ -243,6 +240,8 @@ define('minifiedUtil', function() {
 		return map(list, function() { return list[--i]; });
 	}
 	function sub(list, startIndex, endIndex) {
+		if (!list)
+			return [];
 		var l = list.length;
 	    var s = startIndex < 0 ? l+startIndex : startIndex;
 	    var e = endIndex == null ? l : (endIndex >= 0 ? endIndex : l+endIndex);
@@ -275,10 +274,9 @@ define('minifiedUtil', function() {
 		return find(arguments, nonOp);
 	}
 	function contains(list, value) {
-		if (isList(list))
-			for (var i = 0; i < list.length; i++)
-				if (list[i] == value)
-					return true;
+		for (var i = 0; i < list.length; i++)
+			if (list[i] == value)
+				return true;
 		return false;
 	}
 	// equals if a and b have the same elements and all are equal. Supports getters.
@@ -463,6 +461,7 @@ define('minifiedUtil', function() {
 					return numFmtOrResult;
 			});
 	}
+	// returns date; null if optional and not set; undefined if parsing failed
 	function parseDate(format, date) {
 		var mapping = {
 			'y': 0,      // placeholder -> ctorIndex
@@ -551,6 +550,8 @@ define('minifiedUtil', function() {
 		var d = new Date(ctorArgs[0], ctorArgs[1], ctorArgs[2], ctorArgs[3], ctorArgs[4], ctorArgs[5], ctorArgs[6]);
 		return dateAdd(d, 'minutes', -getTimezone(timezoneOffsetMatch, 1, d) - getTimezone(match, timezoneIndex, d));
 	}
+	// format ?##00,00__
+	// returns number; null if optional and not set; undefined if parsing failed
 	function parseNumber(format, value) {
 		if (arguments.length == 1)
 			return parseNumber(null, format);
@@ -620,7 +621,6 @@ define('minifiedUtil', function() {
 	
 	
 	 
-	var templateCache={};
 	function template(template, escapeFunction) {
 		if (templateCache[template])
 			return templateCache[template];
@@ -629,8 +629,8 @@ define('minifiedUtil', function() {
 				map(template.split(/{{|}}}?/), function(chunk, index) {
 					var match, c1 = trim(chunk), c2 = replace(c1, /^{/), escapeSnippet  = (c1==c2) ? 'esc(' : '';
 					if (index%2) { // odd means JS code
-						if (match = /^each\b(.*)/.exec(c2))
-							return 'each('+(trim(match[1])==''?'this':match[1])+', function(key, value, index){';
+						if (match = /^each\b(\s+([\w_]+(\s*,\s*[\w_]+)?)\s*:)?(.*)/.exec(c2))
+							return 'each('+(trim(match[4])==''?'this':match[4])+', function('+match[2]+'){';
 						else if (match = /^if\b(.*)/.exec(c2))
 							return 'if('+match[1]+'){';
 						else if (match = /^else\b\s*(if\b(.*))?/.exec(c2))
@@ -653,9 +653,9 @@ define('minifiedUtil', function() {
 				var result = [];
 				f.call(thisContext || obj, obj, function(obj, func) {
 					if (isList(obj))
-						each(obj, function(value, index) { func.call(value, index, value, index); });
+						each(obj, function(value, index) { func.call(value, value, index); });
 					else
-						eachObj(obj, function(key, value) { func.call(value, key, value, key); });
+						eachObj(obj, function(key, value) { func.call(value, key, value); });
 				}, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, UNDERSCORE);
 				return result.join('');
 			};
@@ -929,48 +929,6 @@ define('minifiedUtil', function() {
      */ 
 	'map': listBindArray(map),
 	
-	/*$ 
-     * @id reduce 
-     * @group LIST 
-     * @requires list
-     * @configurable default 
-     * @name .reduce() 
-     * @syntax list.reduce(memoInit, func)
-     * @syntax _.reduce(list, memoInit, func)
-   	 * @module UTIL
-     * Reduces a list into a single value.
-     * <var>reduce()</var> allows you to create a single value from a list of values in a functional style.
-     * The callback <var>func</func> is invoked for each list member. Beside the list member and its index, it also
-     * receives a 'memo' which is the return value of the previous invocation.
-     * 
-     * @example Calculate the sum of a list of numbers:
-     * <pre> 
-     * var sum = _(3, 7, 11, 5, 19, 3).reduce(0, function(memo, value, index) { 
-     *     return memo + value;
-     * }); 
-     * </pre> 
-     * 
-	 * @example The previous example with a native array is input:
-     * <pre> 
-     * var sum = _.reduce([3, 7, 11, 5, 19, 3], 0, function(memo, value, index) { 
-     *     return memo + value;
-     * }); 
-     * </pre> 
-     * 
-     * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param memoInit This value will be passed to the callback as <var>memo</var> the first time it is called. In all subsequent
-     *                 invocations, the <var>memo</var> will be the last invocation's return value.            
-     * @param func The callback <code>function(memo, value, index)</code> to invoke for each item:
-     * <dl><dt>memo</dt><dd>The current memo. This is <var>memoInit</var> for the first invocation. After that it is the previous
-     *      invocation's return value.</dd>
-     * <dt>value</dt><dd>The current list element.</dd>
-     * <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	 *        <dt class="returnValue">(callback return value)</dt><dd>The new memo for subsequent calls. The return
-	 *        value of the last callback invocation is also <var>reduce()</var's return value.</dd></dl>
-     * @return the value returned by the last invocation of <var>func</var>
-     */ 
-	'reduce': listBind(reduce),
 
 	/*$ 
 	 * @id toobject
@@ -1184,9 +1142,124 @@ define('minifiedUtil', function() {
      */ 
  	'find': listBind(find),
  	
+    /*$ 
+     * @id startswith 
+     * @group LIST 
+     * @requires
+     * @configurable default 
+     * @name .startsWith() 
+     * @syntax list.startsWith(otherList) 
+     * @syntax _.startsWith(list, otherList) 
+     * @syntax _.startsWith(baseString, otherString) 
+     * @module UTIL
+     * Checks whether the list or string starts with the other string or list.
+	 *
+	 * If you compare lists, each item of the other list is compared with the item at the same position of the
+	 * base list using ##_.equals(). Arrays can be used interchangably with lists.
+	 * 
+	 * If you compare strings, each character of the other string is compared with the character at the same position of the
+	 * base string.
+	 * 
+     *
+     * @example Checks whether a list starts with [1, 2]:
+     * <pre> 
+     * var r = _(1, 2, 3, 4, 5).startsWith([1, 2]);   // returns true
+     * </pre> 
+
+     * @example The same using an array as base list:
+     * <pre> 
+     * var r = _.startsWith([1, 2, 3, 4, 5], [1, 2]); // returns true
+     * </pre> 
+
+     * @example Checks a string:
+     * <pre> 
+     * var r = _.startsWith("Cookie", "C"); // returns true
+     * </pre> 
+	 *
+     * @param list A list to check. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @param otherList A list to find at the beginning of the other string. Can be an array, a ##list#Minified list## or any other 
+     *             array-like structure with <var>length</var> property.
+     * @param baseString a string to check
+     * @param otherString the string to find at the beginning of the other string
+     * @return true if the base list or string starts with the other list/string. False otherwise.
+     */ 
  	'startsWith': listBind(startsWith),
+ 	
+    /*$ 
+     * @id endswith 
+     * @group LIST 
+     * @requires
+     * @configurable default 
+     * @name .endsWith() 
+     * @syntax list.endsWith(otherList) 
+     * @syntax _.endsWith(list, otherList) 
+     * @syntax _.endsWith(baseString, otherString) 
+     * @module UTIL
+     * Checks whether the list or string ends with the other string or list.
+	 *
+	 * If you compare lists, each item of the other list is compared with the item at the same position relative to the end of the
+	 * base list using ##_.equals(). Arrays can be used interchangably with lists.
+	 * 
+	 * If you compare strings, each character of the other string is compared with the character at the same position relative to the end 
+	 * of the base string.
+	 * 
+     *
+     * @example Checks whether a list ends with [4, 5]:
+     * <pre> 
+     * var r = _(1, 2, 3, 4, 5).startsWith([4, 5]);   // returns true
+     * </pre> 
+
+     * @example The same using an array as base list:
+     * <pre> 
+     * var r = _.startsWith([1, 2, 3, 4, 5], [4, 5]); // returns true
+     * </pre> 
+
+     * @example Checks a string:
+     * <pre> 
+     * var r = _.startsWith("Cookie", "okie"); // returns true
+     * </pre> 
+	 *
+     * @param list A list to check. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @param otherList A list to find at the end of the other string. Can be an array, a ##list#Minified list## or any other 
+     *             array-like structure with <var>length</var> property.
+     * @param baseString a string to check
+     * @param otherString the string to find at the end of the other string
+     * @return true if the base list or string ends with the other list/string. False otherwise.
+     */ 
  	'endsWith': listBind(endsWith),
  	
+    /*$ 
+     * @id contains 
+     * @group LIST 
+     * @requires
+     * @configurable default 
+     * @name .contains() 
+     * @syntax list.contains(item) 
+     * @syntax _.contains(list, item) 
+     * @module UTIL
+     * Checks whether the list contains the given item.
+	 *
+	 * Each item of the other list is compared with the item using ##_.equals(). The function
+	 * returns <var>true</var> as soon as one list item equals the requested item.
+	 * 
+     *
+     * @example Checks whether a list contains a 5:
+     * <pre> 
+     * var r = _(1, 2, 3, 4, 5).contains(5);   // returns true
+     * </pre> 
+     *
+     * @example The same using an array:
+     * <pre> 
+     * var r = _.contains([1, 2, 3, 4, 5], 5); // returns true
+     * </pre> 
+     *
+     * @param list A list to check. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @param item The item to search.
+     * @return true if the list contains the item. False otherwise.
+     */ 
  	'contains': listBind(contains),
 	
 	'call': listBindArray(callList),
@@ -1196,7 +1269,7 @@ define('minifiedUtil', function() {
 	},
 
 	// returns a function that calls all functions of the list
-	'func': function() {
+	'unite': function() {
 		var self = this;
 		return function() {
 			return new M(callList(self, arguments));
@@ -1279,9 +1352,6 @@ define('minifiedUtil', function() {
 		 // @condblock each
 		'toObject': toObject,
 		 // @condend
-		 // @condblock reduce
-		'reduce': reduce,
-		 // @condend
 		 // @condblock find
 		'find': find,
 		 // @condend
@@ -1321,6 +1391,7 @@ define('minifiedUtil', function() {
 		'isValue': isValue,
 		'isString': isString,
 		'toString': toString,
+		'toList': toList,
 
 		'dateClone': dateClone,
 		'dateAdd': dateAdd,
@@ -1393,24 +1464,34 @@ define('minifiedUtil', function() {
 	     * 
 	     * Use <code>each</code> to iterate through a list:
 	     * <pre>var myTemplate = _.template(
-	     * 	   '{{each names}}{{index}}. {{this.firstName}} {{this.lastName}}{{/each}}');
+	     * 	   '{{each names}}{{this.firstName}} {{this.lastName}}{{/each}}');
 	     * var result = myTemplate({names: [{firstName: 'Joe', lastName: 'Jones'}, 
 	     *                                  {firstName: 'Marc', lastName: 'Meyer'}]});</pre>
-	     * <code>each</code> will, by default, iterate through the object that's currently in <var>this</var>. It will then
-	     * call its body for each item and put a reference to the item into <var>this</var> and the variable <var>value</var>.
-	     * A counter is stored in <var>index</var>.  
-	     *  
+	     * <code>each</code> will iterate through the members of the given object. It 
+	     * calls its body for each item and put a reference to the item into <var>this</var>.
+	     * Optionally, you can specify up to two variables to store the value in (instead of this) and
+	     * the zero-based index of the current item:
+	     * <pre>var myTemplate = _.template(
+	     * 	   '{{each value, index: names}}{{index}}. {{value.firstName}} {{value.lastName}}{{/each}}');
+		 * </pre>
+	     *
 	     * If you do not pass an expression to <code>each</var>, it will take the list from <var>this</var>:
-	     * <pre>var myTemplate = _.template('{{each}}{{value}};{{/each}}');
+	     * <pre>var myTemplate = _.template('{{each value:}}{{value}};{{/each}}');
 	     * var result = myTemplate([1, 2, 3]);</pre>
 	     *  
 	     * Beside lists, you can also iterate through the properties of an object. The property name will be stored
-	     * in <var>key</var> and the value in <var>value</var> and <var>this</var>:
-	     * <pre>var myTemplate = _.template('{{each nicknames}}{{key}}: {{value}}{{/each}}');
+	     * in the first given parameter and the value in <var>this</var> and the second parameter:
+	     * <pre>var myTemplate = _.template('{{each key, value: nicknames}}{{key}}: {{value}}{{/each}}');
 	     * var result = myTemplate({nicknames: {Matt: 'Matthew', John: 'Jonathan'} });</pre>
 	     * 
+	     * Shorter version of the previous example that uses <var>this</var> for the value:
+	     * <pre>var myTemplate = _.template('{{each key: nicknames}}{{key}}: {{this}}{{/each}}');</pre>
+	     * 
+	     * If you do not need the key, you can omit the variable specification:
+	     * <pre>var myTemplate = _.template('{{each nicknames}}{{this}}{{/each}}');</pre>
+		 *
 	     * In some situations, it may be inevitable to embed raw JavaScript in the template. You need it, for example,
-	     * if you nest loops and want to access the outer loop's data from the inner loop. To embed JavaScript code, prefix the
+	     * if you need to . To embed JavaScript code, prefix the
 	     * code with a '#':
 	     * <pre>var myTemplate = _.template(
 	     *     '{{each}}{{#var outerIndex = index;}}'+
@@ -1433,7 +1514,8 @@ define('minifiedUtil', function() {
 	     *                     a default function that returns the input unmodified.</td></tr>
 	     * <tr><td>print</td><td>A <code>function(text,...)</code> that appends one or more strings to the template result.</td></tr>
 	     * <tr><td>each</td><td>A <code>function(listOrObject, eachCallback)</code> that can iterate over lists or object properties.
-	     * The <var>eachCallback</var> is a <code>function(key, value, index)</code> that will be invoked for each item.
+	     * The <var>eachCallback</var> is a <code>function(key, value)</code> for objects or <code>function(value, index)</code>
+	     * for arrays that will be invoked for each item.
 	     * </table> 
 	     * 
 	     *  
