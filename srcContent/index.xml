@@ -28,7 +28,7 @@
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">Minified is smaller!</h3>
-  		Minified's size is less than 4kb, <a href="#sizeCmp">a fraction of other libraries' size</a>. 
+  		Minified's size is less than 4kB, <a href="#sizeCmp">a fraction of other libraries' size</a>. 
   		Yet its feature set is roughly <a href="#featCmp">comparable to jQuery and MooTools</a>, and even 
   		includes some additional features.
   	</div>
@@ -63,13 +63,15 @@
   	</div>
   	<div style="clear: both;"/>
   </div>
-  
+
+<h2>News</h2>
+ <div><strong>July 13, 2013</strong>: <a href="https://plus.google.com/u/0/b/100950045026999226880/100950045026999226880">Minified Web beta 1 released!</a></div>
  
 <h2>Getting Started</h2>
 <iframe class="fiddle" width="100%" height="300" src="http://jsfiddle.net/tjansen/tqsCg/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe> 
 
 <p>Check out the <a href="/docs/howto.html">How-to</a> and the <a href="/api/">API docs</a> to explore Minified on your
-own. Or go to <a href="">this presentation</a> or the <a href="dov/quickstart.html">Tutorial</a> for some more guidance.</a></p>
+own. Or go to <a href="https://docs.google.com/presentation/d/1tN0d7etQVdFV_CJ1ucfOs5ma_4PZcejQ88Oq7KTJ3s8/edit?usp=sharing">this presentation</a> or the <a href="dov/quickstart.html">Tutorial</a> for some more guidance.</a></p>
 <p>Here are a few JSFiddle example to get you started:<br/>
 <a href="http://jsfiddle.net/tjansen/tqsCg/">Animation 1</a>,
 <a href="http://jsfiddle.net/tjansen/NrGnf/">Animation 2</a>,
@@ -85,10 +87,10 @@ own. Or go to <a href="">this presentation</a> or the <a href="dov/quickstart.ht
   <h2><a name="sizeCmp">Size Comparison</a></h2>
   <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><th>minified-web.js</th><td>yes</td><td>9.0kb</td><td><strong>4090 bytes</strong></td></tr>
-<tr><th>minified-web.noie.js</th><td>no</td><td>7.6kb</td><td>3428 bytes</td></tr>
-<tr><th>jQuery 1.10.0</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
-<tr><th>jQuery 2.0.1</th><td>no</td><td>82kb</td><td>28kb</td></tr>
+<tr><th>minified-web.js</th><td>yes</td><td>9.1kb</td><td><strong>4089 bytes</strong></td></tr>
+<tr><th>minified-web.noie.js</th><td>no</td><td>7.7kb</td><td>3429 bytes</td></tr>
+<tr><th>jQuery 1.10.2</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
+<tr><th>jQuery 2.0.3</th><td>no</td><td>82kb</td><td>29kb</td></tr>
 <tr><th>MooTools Core NoCompat 1.4.5</th><td>yes</td><td>88kb</td><td>29kb</td></tr>
 <tr><th>Zepto.js 1.0</th><td>no</td><td>27kb</td><td>9.7kb</td></tr>
 </table>

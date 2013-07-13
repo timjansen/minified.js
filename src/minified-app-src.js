@@ -19,6 +19,15 @@
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
+
+
+///////////////////////////
+//// WARNING - this file is currently not much more than a collection of code snippets. 
+////           It is months away from a usable version.
+///////////////////////////
+
+
+
  	/*$
  	 * @id minifieddefine
  	 */

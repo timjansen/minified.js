@@ -5,9 +5,9 @@
   <page:main><![CDATA[<div>
 <h1 class="nonInverted">About Minified</h1>
 <p>Call me old-fashioned, but the size of JavaScript libraries like jQuery and MooTools has always bothered me. 
-They are fantastic libraries and I really like to use them, but they contain about 90kb of code even after compilation. 
+They are fantastic libraries and I really like to use them, but they contain about 90kB of code even after compilation. 
 This code needs to be parsed and executed on every page that you include them on.  For me, that just feels too large for what that they offer, 
-and especially for what I need. The 30kb that remain after gzipping can also cause a significant delay on low-bandwidth networks.</p>
+and especially for what I need. The 30kB that remain after gzipping can also cause a significant delay on low-bandwidth networks.</p>
 
 <p>In the last years I worked on some personal projects (<a href="http://jarfiller.org">jarfiller.org</a> is the only one that has been published), 
 and when I work on them, I usually try to make everything perfect. That means that I try to optimize the pages, make
@@ -16,7 +16,7 @@ little helper functions to replace jQuery functionality without the overhead. As
 functions and started sharing them between projects until they became a library of their own.  By now they are so mature that I believe that this 
 library, called Minified, has become a valid alternative to jQuery and MooTools at a fraction of the size.</p>
 
-<p>What you see here is only the beginning, a 4kb module for building web sites. The plan is to have three modules, each under 4kb:
+<p>What you see here is only the beginning, a 4kB module for building web sites. The plan is to have three modules, each under 4kB:
 <ul><li><strong>Minified Web</strong> is a browser interaction library, comparable to jQuery or MooTools. It is available now.</li>
 <li><strong>Minified Util</strong> offers utilities for lists and maps, functions, promises, string and number formatting, date handling and 
 internationalization. Its scope and size can be compared to <a href="http://underscorejs.org/">Underscore</a>, but it omits the more 

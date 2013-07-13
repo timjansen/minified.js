@@ -621,7 +621,6 @@ define('minifiedUtil', function() {
 	
 	
 	 
-	var templateCache={};
 	function template(template, escapeFunction) {
 		if (templateCache[template])
 			return templateCache[template];
@@ -1465,24 +1464,34 @@ define('minifiedUtil', function() {
 	     * 
 	     * Use <code>each</code> to iterate through a list:
 	     * <pre>var myTemplate = _.template(
-	     * 	   '{{each names}}{{index}}. {{this.firstName}} {{this.lastName}}{{/each}}');
+	     * 	   '{{each names}}{{this.firstName}} {{this.lastName}}{{/each}}');
 	     * var result = myTemplate({names: [{firstName: 'Joe', lastName: 'Jones'}, 
 	     *                                  {firstName: 'Marc', lastName: 'Meyer'}]});</pre>
-	     * <code>each</code> will, by default, iterate through the object that's currently in <var>this</var>. It will then
-	     * call its body for each item and put a reference to the item into <var>this</var> and the variable <var>value</var>.
-	     * A counter is stored in <var>index</var>.  
-	     *  
+	     * <code>each</code> will iterate through the members of the given object. It 
+	     * calls its body for each item and put a reference to the item into <var>this</var>.
+	     * Optionally, you can specify up to two variables to store the value in (instead of this) and
+	     * the zero-based index of the current item:
+	     * <pre>var myTemplate = _.template(
+	     * 	   '{{each value, index: names}}{{index}}. {{value.firstName}} {{value.lastName}}{{/each}}');
+		 * </pre>
+	     *
 	     * If you do not pass an expression to <code>each</var>, it will take the list from <var>this</var>:
-	     * <pre>var myTemplate = _.template('{{each}}{{value}};{{/each}}');
+	     * <pre>var myTemplate = _.template('{{each value:}}{{value}};{{/each}}');
 	     * var result = myTemplate([1, 2, 3]);</pre>
 	     *  
 	     * Beside lists, you can also iterate through the properties of an object. The property name will be stored
-	     * in <var>key</var> and the value in <var>value</var> and <var>this</var>:
-	     * <pre>var myTemplate = _.template('{{each nicknames}}{{key}}: {{value}}{{/each}}');
+	     * in the first given parameter and the value in <var>this</var> and the second parameter:
+	     * <pre>var myTemplate = _.template('{{each key, value: nicknames}}{{key}}: {{value}}{{/each}}');
 	     * var result = myTemplate({nicknames: {Matt: 'Matthew', John: 'Jonathan'} });</pre>
 	     * 
+	     * Shorter version of the previous example that uses <var>this</var> for the value:
+	     * <pre>var myTemplate = _.template('{{each key: nicknames}}{{key}}: {{this}}{{/each}}');</pre>
+	     * 
+	     * If you do not need the key, you can omit the variable specification:
+	     * <pre>var myTemplate = _.template('{{each nicknames}}{{this}}{{/each}}');</pre>
+		 *
 	     * In some situations, it may be inevitable to embed raw JavaScript in the template. You need it, for example,
-	     * if you nest loops and want to access the outer loop's data from the inner loop. To embed JavaScript code, prefix the
+	     * if you need to . To embed JavaScript code, prefix the
 	     * code with a '#':
 	     * <pre>var myTemplate = _.template(
 	     *     '{{each}}{{#var outerIndex = index;}}'+
@@ -1505,7 +1514,8 @@ define('minifiedUtil', function() {
 	     *                     a default function that returns the input unmodified.</td></tr>
 	     * <tr><td>print</td><td>A <code>function(text,...)</code> that appends one or more strings to the template result.</td></tr>
 	     * <tr><td>each</td><td>A <code>function(listOrObject, eachCallback)</code> that can iterate over lists or object properties.
-	     * The <var>eachCallback</var> is a <code>function(key, value, index)</code> that will be invoked for each item.
+	     * The <var>eachCallback</var> is a <code>function(key, value)</code> for objects or <code>function(value, index)</code>
+	     * for arrays that will be invoked for each item.
 	     * </table> 
 	     * 
 	     *  

@@ -8,17 +8,20 @@
 <ul class="links">
 <li><a href="quickstart.html"><span class="link">Minified.js Quickstart Tutorial</span><br/>
 <span class="summary">A short overview over all Minified Web features.</span></a></li>
-<li><a href="embedding.html"><span class="link">Embedding Minified.js</span><br/>
-<span class="summary">Describes how to embed and compile Minified into your JavaScript.</span></a></li>
 <li><a href="howto.html"><span class="link">How to... Common Minified Tasks</span><br/>
 <span class="summary">Shows you common tasks implemented with Minified.</span></a></li>
 <li><a href="https://docs.google.com/presentation/d/1tN0d7etQVdFV_CJ1ucfOs5ma_4PZcejQ88Oq7KTJ3s8/edit?usp=sharing"><span class="link">Slideshow: Minified.js in 20 Slides</span><br/>
 <span class="summary">Shows you all Minified Web features in 20 Slides.</span></a></li>
+<li><a href="fiddles.html"><span class="link">JSFiddle Examples</span><br/>
+<span class="summary">Experiment with Minified instantly.</span></a></li>
 <li><a href="/api/"><span class="link">API Reference</span><br/>
 <span class="summary">All Minified functions and objects.</span></a></li>
+<li><a href="embedding.html"><span class="link">Embedding Minified.js</span><br/>
+<span class="summary">Describes how to embed and compile Minified into your JavaScript.</span></a></li>
 </ul>
   </div>
  ]]></page:main>
 
   
 </page:page>
+

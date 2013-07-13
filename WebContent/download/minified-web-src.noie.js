@@ -2410,7 +2410,7 @@ define('minified', function() {
 	 *    .then(function() {
 	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
 	 *    }).then(function() {
-	 *    		 return MINI.wait(50);
+	 *    		 return $.wait(50);
 	 *    }).then(function() {
 	 *           div.animate({$left: '100px', $top: '100px'}, 400);
 	 *    });
@@ -2420,12 +2420,13 @@ define('minified', function() {
 	 *
 	 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
 	 *                   from the event loop.
+	 * @param args optional an array of arguments to pass to the promise handler
 	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
-	 *         durationMs parameter as given to <var>wait()</var>.
+	 *         <var>args</var> parameter as given to <var>wait()</var>.
 	 */
-	'wait': function(durationMs) {
+	'wait': function(durationMs, args) {
 		var p = promise();
-		delay(function() {p(true, [durationMs]);}, durationMs);
+		delay(function() {p(true, args);}, durationMs);
 		return p;
 	},
 
