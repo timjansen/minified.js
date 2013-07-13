@@ -270,6 +270,34 @@ define('minifiedUtil', function() {
 			if ((r = f(list[i], i)) != null)
 				return r;
 	}
+	function array(list) {
+		return map(list, nonOp);
+	}
+	function unite() {
+		var self = this;
+		return function() {
+			return new M(callList(self, arguments));
+		};
+	}
+	function uniq(list) {
+		var found = {};
+		return filter(list, function(item) {
+			if (found[item])
+				return false;
+			else {
+				found[item] = 1;
+				return true;
+			}
+		});
+	}
+	function intersection(list, otherList) {
+		var keys = toObject(otherList, 1);
+		return filter(list, function(item) {
+			var r = keys[item];
+			keys[item] = 0;
+			return r;
+		});
+	}
 	function coal() {
 		return find(arguments, nonOp);
 	}
@@ -1262,19 +1290,116 @@ define('minifiedUtil', function() {
      */ 
  	'contains': listBind(contains),
 	
+    /*$ 
+     * @id call 
+     * @group LIST 
+     * @requires
+     * @configurable default 
+     * @name .call() 
+     * @syntax list.call() 
+     * @syntax list.call(fThis) 
+     * @syntax list.call(args) 
+     * @syntax list.call(fThis, args) 
+     * @syntax _.call(list) 
+     * @syntax _.call(list, fThis) 
+     * @syntax _.call(list, args) 
+     * @syntax _.call(list, fThis, args) 
+     * @module UTIL
+     * Calls all function in the list.
+	 *
+	 * <var>call</var> goes through all list items and, if they are functions, calls them with the specified arguments. 
+	 * Elements that are not functions will be ignored. The return values of the functions will be written into a list
+	 * in the same order as the functions. If a input list item is not a function, the value in the result list will
+	 * be <var>undefined</var>.
+     *
+     * @param list A list containing the functions to call. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @param fThis optional If set, a value to pass as <var>this</var>. Please note that if you use a list as <var>fThis</var>,
+     *              you must set <var>args</var> also to an (possibly empty) array.
+     * @param args optional A list or array of arguments to pass to the functions.
+     * @return A list containing the return values of the called functions, or <var>undefined</var> for list items that were not 
+     *         functions.
+     */ 
 	'call': listBindArray(callList),
 
-	'array': function() {
-		return map(this, nonOp);
-	},
+    /*$ 
+     * @id array 
+     * @group LIST 
+     * @requires
+     * @configurable default 
+     * @name .array() 
+     * @syntax list.array() 
+     * @syntax _.array(list) 
+     * @module UTIL
+     * Converts a ##list#Minified list## or other array-like structure into a native JavaScript array.
+	 *
+     * @param list The list to convert. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @return A native array containing a shallow copy of the input array's values.
+     */
+	'array': listBind(array),
 
-	// returns a function that calls all functions of the list
-	'unite': function() {
-		var self = this;
-		return function() {
-			return new M(callList(self, arguments));
-		};
-	},
+    /*$ 
+     * @id unite 
+     * @group LIST 
+     * @requires
+     * @configurable default 
+     * @name .unite() 
+     * @syntax list.unite() 
+     * @syntax _.unite(list) 
+     * @module UTIL
+     * Takes a list of functions as input to create a new function that calls all input functions with the same
+     * arguments. 
+	 *
+     * @param list The list of functions. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @return A function that will invoke all underlying functions with the arguments is has been called with. The function
+     *         returns a ##list#Minified list## of result values, using the same mechanics as ##_.call().
+     */
+	'unite': listBind(unite), 
+
+    /*$ 
+     * @id uniq 
+     * @group LIST 
+     * @requires
+     * @configurable default 
+     * @name .uniq() 
+     * @syntax list.uniq() 
+     * @syntax _.uniq(list) 
+     * @module UTIL
+     * Takes a list of values and removes all duplicates. If a value occurs more than once in the input list, only the first occurrence
+     * will be kept and all following occurrences will be filtered out.
+     * 
+     * Uses object properties to keep track which values already occurred. This means that it only works with simple values that can
+     * be converted to strings.  
+	 *
+     * @param list The list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @return A ##list#Minified list## where duplicated had been filtered out.
+     */
+	'uniq': listBindArray(uniq),
+	
+    /*$ 
+     * @id intersection 
+     * @group LIST 
+     * @requires
+     * @configurable default 
+     * @name .intersection() 
+     * @syntax list.intersection(otherList) 
+     * @syntax _.intersection(list, otherList) 
+     * @module UTIL
+     * Takes two input lists to create a new list containing only those values that exist in both input lists.
+     * 
+     * Uses object properties to keep track which values exist. This means that it only works with simple values that can
+     * be converted to strings.  
+	 *
+     * @param list The list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @param otherList The other list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @return A ##list#Minified list## containing only the duplicate values.
+     */
+	'intersection': listBindArray(intersection), 
 	
 	'join': function(separator) {
 		return map(this, nonOp).join(separator);
@@ -1282,27 +1407,6 @@ define('minifiedUtil', function() {
 	
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
-	},
-	
-	'uniq': function() {
-		var found = {};
-		return this['filter'](function(item) {
-			if (found[item])
-				return false;
-			else {
-				found[item] = 1;
-				return true;
-			}
-		});
-	},
-	
-	'intersection': function(otherList) {
-		var keys = toObject(otherList, 1);
-		return this['filter'](function(item) {
-			var r = keys[item];
-			keys[item] = 0;
-			return r;
-		});
 	},
 
 	'tap': function(func) {
@@ -1372,6 +1476,21 @@ define('minifiedUtil', function() {
 		 // @condend
 		 // @condblock values
 		'values': funcArrayBind(values),
+		 // @condend
+		 // @condblock call
+		'call': funcArrayBind(callList),
+		 // @condend
+		 // @condblock array
+		'array': array,
+		 // @condend
+		 // @condblock unite
+		'unite': unite,
+		 // @condend
+		 // @condblock uniq
+		'uniq': funcArrayBind(uniq),
+		 // @condend
+		 // @condblock intersection
+		'intersection': funcArrayBind(intersection),
 		 // @condend
 		
 		'bind': bind,
