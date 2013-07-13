@@ -2,7 +2,8 @@
  * Minified-web.js - Complete library for JavaScript interaction in less than 4kb
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
- *
+ * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
+ * Please see http://creativecommons.org/publicdomain/zero/1.0/.
  * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
  * 
  * Contains code based on https://github.com/douglascrockford/JSON-js (also Public Domain).

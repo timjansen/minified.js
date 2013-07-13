@@ -56,13 +56,14 @@ What you can expect from Minified Web
 --------------------------------------
 * General purpose functions to effectively write HTML-based web applications
 * A very small footprint. It will always be smaller than 4kb.
-* A clean and simple, easy to use API 
-* A stable API that won't change
+* A clean and simple, easy to use API.
+* A stable API that won't change.
 
 Licensing
 -----------
-Minified has been released into the Public Domain. You can use, copy, distribute and modify Minified
-without any copyright restrictions. You may even release it under your name and call it yours, if that's your thing.
+Public Domain. Use, modify and distribute it any way you like. No attribution required.
+To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
+Please see http://creativecommons.org/publicdomain/zero/1.0/
 
 
 About Minified
