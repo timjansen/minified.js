@@ -2,7 +2,8 @@
  * Minified-util.js - Collections, formatting and other helpers.
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
- *
+ * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
+ * Please see http://creativecommons.org/publicdomain/zero/1.0/.
  * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
  * 
  * https://github.com/timjansen/minified.js
