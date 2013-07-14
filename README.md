@@ -1,6 +1,8 @@
 Minified Web
 =============
 
+Quick Links: <a href="http://minifiedjs.com/">Main Site</a> - <a href="http://minifiedjs.com/api/">API</a> - <a href="http://minifiedjs.com/docs/">Docs</a>
+
 Overview
 ----------
 Minified Web is a universal JavaScript library for HTML applications. It gives you a clean and simple API that provides you 
@@ -87,7 +89,7 @@ obscure functional helpers and replaces them with date and string helpers. You c
 on GitHub.</li>
 <li><strong>Minified Apps</strong> will be a MVC-oriented library for single-page applications and complex multi-page apps.
 The scope will be somewhat similar to Backbone or Angular.js, but with a Plain-Old-JSON-Object (POJO) principles and a template/binding
-concept that is closely tied to the page's DOM and is predestinated for <a href="http://www.w3.org/TR/components-intro/#template-section">HTML5 templates.
+concept that is closely tied to the page's DOM and is predestinated for <a href="http://www.w3.org/TR/components-intro/#template-section">HTML5 templates</a>.
 It is built upon the other two modules. A preview should be available by the end of 2013.</li>
 </ul>
 
