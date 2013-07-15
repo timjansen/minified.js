@@ -47,7 +47,7 @@ list.<a href="/api/length.html">each</a>(function(element, index) {
     element.value = '';
 });
 </pre> </p> <p>A special variant of the selector function <a href="/api/dollar.html"><code>$</code></a> is <a href="/api/dollardollar.html"><code>$$</code></a>. It works like <a href="/api/dollar.html"><code>$</code></a>, but returns only the first element of the list instead of the complete list. If the list is empty, it returns <var>undefined</var>. <pre>
-var parent1 = <a href="/api/dollardollar.html">$$</a>'#myElement').parentNode;
+var parent1 = <a href="/api/dollardollar.html">$$</a>('#myElement').parentNode;
 var parent2 = <a href="/api/dollar.html">$</a>('#myElement')[0].parentNode;     // same result: $$() is just short for $()[0]
 </pre> </p> <h2>Universal get() and set()</h2> <p>Whereas other frameworks have a number of different functions to access properties, attributes and CSS styles, Minified has only two: <a href="/api/get.html"><code>get()</code></a> and <a href="/api/set.html"><code>set()</code></a>. You define what data you access by using the right name. Other functions, <a href="/api/animate.html"><code>animate()</code></a> and <a href="/api/toggle.html"><code>toggle()</code></a>, are built upon the universal <a href="/api/set.html"><code>set()</code></a> function. </p> <p>The easiest data to access is a regular JavaScript property. You only specify the property name to get or set it: <pre>
 var oldGreeting = $('.greeting').get('innerHTML'); // value of list's first element!
