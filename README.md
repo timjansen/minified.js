@@ -1,7 +1,7 @@
 Minified Web
 =============
 
-Quick Links: <a href="http://minifiedjs.com/">Main Site</a> - <a href="http://minifiedjs.com/api/">API</a> - <a href="http://minifiedjs.com/docs/">Docs</a>
+Quick Links: <a href="http://minifiedjs.com/">minifiedjs.com</a> - <a href="http://minifiedjs.com/api/">API</a> - <a href="http://minifiedjs.com/docs/">Docs</a>
 
 Overview
 ----------
@@ -60,6 +60,7 @@ What you can expect from Minified Web
 * A very small footprint. It will always be smaller than 4kb.
 * A clean and simple, easy to use API.
 * A stable API that won't change.
+
 
 Licensing
 -----------

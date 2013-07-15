@@ -530,26 +530,26 @@ define('minifiedApp', function() {
 	}
 	
 	copyObj({
-		'onText': function(handler) {
-			var oldValues = map(this, function(input) { return input.value; });
-			this['on']("|input |change |keypress", function(e, index) {
-				if (this.value != oldValues[index]) {
-					handler(this.value, oldValues[index], index);
-					oldValues[index] = this.value;
-				}
+		'onChange': function(handler) {
+			var oldValues = [];
+			function register(eventNames, property, index) {
+				oldValues[index] = el[property];
+				$(el)['on'](eventNames, function() {
+					var newValue = el[eventNames]; 
+					if (newValue != oldValues[index]) {
+						handler(newValue, index);
+						oldValues[index] = newValue;
+					}
+				});
+			}
+			each(this, function(el, index) {
+				if (/kbox|dio/i.test(el['type']))
+					register('|click', 'checked', index);
+				else 
+					register('|input |change |keyup', 'value', index);
 			});
 		},
-		
-		'onCheck': function(handler) {
-			var oldValues = map(this, getCheckedValue);
-			this['on']("|click", function(e, index) {
-				if (getCheckedValue(this) != oldValues[index]) {
-					handler(this.checked, getCheckedValue(this), index);
-					oldValues[index] = getCheckedValue(this);
-				}
-			});
-		},
-		
+
 		'dial': function(states, initState, durationMs, linearity) {
 			var self = this;
 			var animState = {};

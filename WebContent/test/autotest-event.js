@@ -53,6 +53,43 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
+		name:'$().on(selectors)',
+		exec: function() {
+			var p = $('#container2');
+			var s, c1, c2, c3;
+			var proofEek1 = 0, proofBoo = 0, proofClonk = 0;
+			p.add(s = EE('div')()[0]);
+			$(s).add(c1 = EE('p','bla')()[0]);
+			$(s).add(c2 = EE('span', 'x')()[0]);
+			$(s).add(c3 = EE('span', {$: 'superClass'} ,'x')()[0]);
+			
+			$(s).on('eek', 'span.superClass', function(e, index, selectedIndex) { if (e.success && index==0 && selectedIndex==0 && this===c3) proofEek1++; });
+			$(s).trigger('eek', {success:1});
+			check(proofEek1, 0, "eek not triggered / selector does not match parent");
+			$(c1).trigger('eek', {success:1});
+			check(proofEek1, 0, "eek not triggered / selector does not match first child");
+			$(c2).trigger('eek', {success:1});
+			check(proofEek1, 0, "eek not triggered / selector does not match second child");
+			$(c3).trigger('eek', {success:1});
+			check(proofEek1, 1, "eek triggered");
+			$(c3).trigger('eek', {success:1});
+			check(proofEek1, 2, "eek triggered again");
+
+			$(s).on('boo', 'span', function(e, index, selectedIndex) { if (e.success && index==0 && selectedIndex==1 && this===c3) proofBoo++; });
+			$(c3).trigger('boo', {success:1});
+			check(proofBoo, 1, "boo triggered");
+
+			$(s).on('clonk', 'span', function(e, index, selectedIndex) { if (e.success && index==0 && selectedIndex<2 && (this===c3 || this == c2)) proofClonk++; });
+			$(c3).trigger('clonk', {success:1});
+			check(proofClonk, 1, "clonk triggered");
+			$(c2).trigger('clonk', {success:1});
+			check(proofClonk, 2, "clonk triggered again");
+			$(c1).trigger('clonk', {success:1});
+			check(proofClonk, 2, "clonk not triggered");
+		}
+	},
+
+	{
 		name:'$.off()',
 		exec: function() {
 			var p = $('#container2');
@@ -82,6 +119,53 @@ window.miniTests.push.apply(window.miniTests, [
 			triggerEvent(s, createClick());
 			triggerEvent(s2, createClick());
 			check(callNum, 0, "after off");
+		}
+	},
+	{
+		name:'$().trigger()',
+		exec: function() {
+			var p = $('#container2');
+			var s, s2, s3;
+			var proofEek1 = 0, proofEek2 = 0;
+			var proofBoo1 = 0, proofBoo2 = 0, proofBoo3 = 0, proofBoo4 = 0;
+			p.add(s = EE('div', {$width: '30px', $height: '10px'})()[0]);
+			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})()[0]);
+			$(s).add(s3 = EE('div', {$width: '1px', $height: '10px'})()[0]);
+
+			$(p).trigger('boo'); // nop
+			
+			$(s).on('|eek', function(e) { if (e.success) proofEek1++; });
+			$(s).trigger('eek', {success:1});
+			check(proofEek1, 1, "eek triggered");
+
+			$(s3).trigger('eek', {success:1});
+			check(proofEek1, 2, "eek bubbled");
+			
+			$(s3).on('eek', function(e) { if (e.success) proofEek2++; return false; });
+			$(s3).trigger('eek', {success:1});
+			check(proofEek2, 1, "eek triggered again");
+			check(proofEek1, 2, "event consumed");
+			$(s3).trigger('eek', {success:1});
+			check(proofEek2, 2, "again 2");
+			check(proofEek1, 2, "event consumed again");
+			
+			$(s).on('|boo', function(e) { if (e.success) proofBoo1++; });
+			$(s2).on('|boo', function(e) { if (e.success) proofBoo2++; });
+			$(s3).on('|boo', function(e) { if (e.success) proofBoo3++; });
+			$(s3).trigger('boo', {success:1});
+			check(proofBoo1, 1, "got boo 1");
+			check(proofBoo2, 0, "got no boo 2");
+			check(proofBoo3, 1, "got boo 3");
+
+			$(s).on('|boo', function(e) { if (e.success) proofBoo4++; }); // second handler on same element
+			$([s, s2, s3]).trigger('boo', {success:1});
+			check(proofBoo1, 3, "got dupe boo twice 1");
+			check(proofBoo2, 1, "got dupe boo 2");
+			check(proofBoo3, 2, "got dupe boo 3");
+			check(proofBoo4, 2, "got dupe boo 4 all three times");
+
+			check(proofEek1, 2, "final eek check");
+			check(proofEek2, 2, "final eek check 2");
 		}
 	}
 ]);

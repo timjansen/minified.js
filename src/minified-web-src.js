@@ -104,8 +104,14 @@ define('minified', function() {
 	var BACKSLASHB = '\\b';
 	/** @const */
 	var undef;
+	/** @const */
+	var MINIFIED_MAGIC = 'minifieD';
 
-	var PUSH = [].push;
+	// @condblock ie8compatibility
+	var nodeId = 1;
+	var registeredEvents = {}; // nodeId -> [handler objects]
+	// @condend
+
 	
     /*$
 	 * @id ready_vars
@@ -125,6 +131,7 @@ define('minified', function() {
 	var REQUEST_ANIMATION_FRAME = _window['requestAnimationFrame'] || function(callback) {
 		delay(callback, 33); // 30 fps as fallback
 	};
+
 	
 	
 	/*$
@@ -231,11 +238,12 @@ define('minified', function() {
 			cb(list[i], i);
 		return list;
 	}
-	function filter(list, filterFunc) {
+	function filter(list, filterFuncOrObject) {
 		var r = []; 
-		each(list, function(node,index) {
-			if (filterFunc(node,index))
-				r.push(node);
+		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(value) { return filterFuncOrObject != value; }
+		each(list, function(value,index) {
+			if (f(value,index))
+				r.push(value);
 		});
 		return r;
 	}
@@ -276,6 +284,37 @@ define('minified', function() {
 		var h = elementList['get']('$height', true);
 		elementList['set'](oldStyles);
 		return h;
+	}
+	
+	// event handler creation for on(). Outside of on() to prevent unneccessary circular refs
+	function createEventHandler(handler, selector, selectorBase, fThis, args, index, unprefixed) {
+		
+		// triggerMagic is set to MINIFIED_MAGIC if the event handler is called by trigger()!! 
+		// originalTarget is only used in this special case.
+		return function(event, originalTarget, triggerMagic) {
+			var e = event || _window.event, selectedIndex, stopPropagation;
+			var isTriggered = (triggerMagic == MINIFIED_MAGIC);
+			var triggerOriginalTarget = isTriggered && originalTarget;
+			if (selector && (selectedIndex = $(selector, selectorBase).find(triggerOriginalTarget || e['target'])) == null) 
+				return;
+			
+			// @cond debug try {
+			if ((stopPropagation = (((!handler.apply(fThis || triggerOriginalTarget || e['target'], args || [e, index, selectedIndex])) || args) && unprefixed)) && !isTriggered) {
+				// @condblock ie8compatibility 
+				if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
+				// @condend
+					e['preventDefault']();
+					e['stopPropagation']();
+				// @condblock ie8compatibility 
+				}
+				e.returnValue = false; // cancel for IE
+				e.cancelBubble = true; // cancel bubble for IE
+				// @condend
+			}
+			// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
+			if (isTriggered)
+				return stopPropagation; // if called by trigger, return propagation result 
+		};
 	}
 	
     function now() {
@@ -637,10 +676,14 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .filter()
 	 * @syntax filter(filterFunc)
+	 * @syntax filter(value)
    	 * @module WEB, UTIL
-	 * Creates a new ##list#Minified list## that contains only those items approved by the given callback function. The function is 
-	 * called once for each item. 
+	 * Creates a new ##list#Minified list## by taking an existing list and omitting certain elements from it. You
+	 * can either specify a callback function to approve those items that will be in the new list, or 
+	 * you can pass a value to remove from the new list.
+	 *  
 	 * If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
+	 * For values, a simple equality operation (<code>==</code>) will be used.
 	 *
 	 * @example Creates a list of all unchecked checkboxes.
 	 * <pre>
@@ -651,7 +694,9 @@ define('minified', function() {
 	 * 
 	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
 	 *        <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>  
+	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>
+	 * @param value a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
+	 *              be a function. 
 	 * @return the new, filtered ##list#list##
 	 */
 	'filter': function(filterFunc) {
@@ -792,11 +837,13 @@ define('minified', function() {
      *         it returns either the value returned by the callback or <var>undefined</var>.
      */ 
 	'find': function(findFunc) {
+console.log('finding ', findFunc, ' in ', this);
 		var self = this, r;
 		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 		for (var i = 0; i < self.length; i++)
 			if ((r = f(self[i], i)) != null)
 				return r;
+console.log('failed..');
 	},
 	
 	/*$ 
@@ -841,7 +888,20 @@ define('minified', function() {
 	 * </pre>
 	 */
      'remove': function() {
-    	each(this, function(obj) {obj.parentNode.removeChild(obj);});
+    	each(this, function(obj) {
+    		// @condblock ie8compatibility
+    		if (IS_PRE_IE9) {
+	    		function removeEvents(node) {
+	    			each(registeredEvents[node[MINIFIED_MAGIC]], function(h) {node.detachEvent('on'+h['n'], h['h']);});
+	    			delete registeredEvents[node[MINIFIED_MAGIC]];
+	    		}
+	    		each(dollarRaw('*', obj), removeEvents);
+	    		removeEvents(obj);
+    		}
+    		// @condend
+
+    		obj.parentNode.removeChild(obj);
+    	});
      },
 
  	/*$
@@ -2042,6 +2102,56 @@ define('minified', function() {
 				};
 		},
 
+		/*$
+		 * @id values
+		 * @module REQUEST
+		 * @requires each
+		 * @configurable default
+		 * @name .values()
+		 * @syntax values()
+		 * @syntax values(dataMap)
+		 * Creates a name/value map from the given form. values() looks at the list's form elements and writes each element's name into the map,
+		 * using the element name as key and the element's value as value. If there is more than one value with the same name, the map will contain an array
+		 * of values. Form element without value will be written with 'null' as value. Form elements without name will be ignored.
+		 *
+		 * values() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
+		 * elements will be serialized.
+		 * 
+		 * The map format returned by values() is exactly the format used by request().
+		 * 
+		 * Please note that when you include an input element more than once, for example by having the input itself and its form in the list, the
+		 * value will be included twice in the list.
+		 *
+		 * @example Serialize a form and send it as request parameters:
+		 * <pre>
+		 * $.request('get', '/exampleService', $('#myForm').values(), resultHandler);
+		 * </pre>
+		 * 
+		 * @example Serialize only some selected input fields:
+		 * <pre>
+		 * var data = $('#myText, input.myRadios').values();
+		 * </pre>
+		 * 
+		 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
+		 * @return a map containing name->value pairs as strings. If there is more than one value with the same name,
+		 *         map value is an array of strings
+		 */
+		'values': function(data) {
+			var r = data || {};
+			this['each'](function(el) {
+				var n = el['name'], v = toString(el['value']), o=r[n];
+				if (/form/i.test(el['tagName']))
+					$(el['elements'])['values'](r);
+				else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
+					if (isList(o))
+						o.push(v);
+					else
+						r[n] = (o == null) ? v : [o, v];
+				}
+			});
+			return r;
+		},
+
 
 		/*$
 		 * @id on
@@ -2050,8 +2160,11 @@ define('minified', function() {
 		 * @configurable default
 		 * @name .on()
 		 * @syntax on(names, eventHandler)
+		 * @syntax on(names, selector, eventHandler)
 		 * @syntax on(names, customFunc, args)
 		 * @syntax on(names, customFunc, fThis, args)
+		 * @syntax on(names, selector, customFunc, args)
+		 * @syntax on(names, selector, customFunc, fThis, args)
 		 * @module WEB
 		 * Registers the function as event handler for all items in the list.
 		 * 
@@ -2065,6 +2178,9 @@ define('minified', function() {
 		 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback. 
 		 * When you pass arguments, the handler's return value is always ignored and the event with unnamed prefixes 
 		 * will always be cancelled.
+		 * 
+		 * You can filter the events that you actually receive using the <var>selector</var>. If set, you only receive events that bubbled
+		 * up from one of the elements described by the <var>selector</var>. You can find out the event that 
 		 * 
 		 * Event handlers can be unregistered using #off#$.off().
 		 * 
@@ -2093,20 +2209,31 @@ define('minified', function() {
 		 * });
 		 * </pre>
 		 * 
+		 * @example Adds listeners for all clicks on 
+		 * <pre>
+		 * $('#table').on('change', 'tr', function(event, index, selectedIndex) {
+		 *    alert("Click on table row number: " + selectedIndex);
+		 * });
+		 * </pre>
+		 * 
 		 * @param names the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
 		 *             the name must not used. You can register the handler for more than one event by specifying several 
 		 *             space-separated event names. If the name is prefixed
 		 *             with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will 
 		 *             be executed by the browser. 
-		 * @param eventHandler the callback <code>function(event, index)</code> to invoke when the event has been triggered:
+		 * @param selector optional a selector to filter for events whose actual target is a descendant matched with the given selector.
+		 *                 Uses the selector syntax of ##dollar#$()##. This is mostly useful for performance reasons, as it allows you to 
+		 *                 reduce the number of event handlers registered on the page. You only need a single event handler at a parent object. 
+		 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 		 * 		  <dl>
 	 	 *             <dt>event</dt><dd>The original DOM event object.</dd>
 	 	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
+	 	 *             <dt>selectedIndex</dt><dd>The index of the target object in the <var>selector</var>. <var>undefined</var> if there is no <var>selector</var>.</dd>
 	 	 *             <dt class="returnValue">(callback return value)</dt><dd>Unless the handler returns <var>true</var> 
 	 	 *             or the event name is prefixed by '|', all further processing of the event will be 
 		 *                stopped and event bubbling will be disabled.</dd>
 	 	 *             </dl>
-		 *             'this' is set to the element that caused the event.
+		 *             'this' is set to the target element that caused the event (the same as <var>event.target</var>).
 		 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>
 		 *                   and optionally the 'this' context given using <var>fThis</var>.
 		 * @param fThis optional an value for 'this' in the custom callback, as alternative to the event target
@@ -2114,39 +2241,97 @@ define('minified', function() {
 		 *                      If you pass custom arguments, the return value of the handler will always be ignored.
 		 * @return the list
 		 */
-		'on': function (eventName, handler, fThisOrArgs, args) {
-			// @cond debug if (!(name && handler)) error("Both parameters to on() are required!"); 
-			// @cond debug if (/^on/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
+		'on': function (eventName, p1, p2, p3, p4) {
+			var args, fThis, handler, selector;
+			if (isFunction(p1)) {
+				args = p3 || p2;
+				fThis = p3 && p2;
+				handler = p1;
+			}
+			else {
+				args = p4 || p3;
+				fThis = p4 && p3;
+				selector = p1;
+				handler = p2;
+			}
+			// @cond debug if (!(name && handler)) error("eventName and handler parameters are required!"); 
+			// @cond debug if (/\bon/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
 			return each(this, function(el, index) {
 				each(eventName.split(/\s/), function(namePrefixed) {
 					var name = replace(namePrefixed, /\|/);
-					var h = function(event) {
-						var e = event || _window.event;
-						// @cond debug try {
-						if ((!handler.apply(args ? fThisOrArgs : e.target, args || fThisOrArgs || [e, index]) || args) && namePrefixed==name) {
-							// @condblock ie8compatibility 
-							if (e.stopPropagation) {// W3C DOM3 event cancelling available?
-							// @condend
-								e.preventDefault();
-								e.stopPropagation();
-							// @condblock ie8compatibility 
-							}
-							e.returnValue = false; // cancel for IE
-							e.cancelBubble = true; // cancel bubble for IE
-							// @condend
-						}
-						// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
-					};
-					(handler['M'] = handler['M'] || []).push({'e':el, 'h':h, 'n': name});
+					var miniHandler = createEventHandler(handler, selector, selector && el, // only pass el ref if selectors are used 
+							fThis, args, index, name == namePrefixed);
+
+					var handlerDescriptor = {'e': el,          // the element  
+							                 'h': miniHandler, // minified's handler 
+							                 'n': name         // event type        
+							                };       
+					(handler['M'] = handler['M'] || []).push(handlerDescriptor);
 					// @condblock ie8compatibility 
-					if (el.addEventListener)
+					if (IS_PRE_IE9) {
+						el.attachEvent('on'+name, miniHandler);  // IE < 9 version
+						(registeredEvents[el[MINIFIED_MAGIC]] = registeredEvents[el[MINIFIED_MAGIC] = el[MINIFIED_MAGIC] || ++nodeId] || []).push(handlerDescriptor);
+					}
+					else {
 					// @condend
-						el.addEventListener(name, h, true); // W3C DOM
-					// @condblock ie8compatibility 
-					else 
-						el.attachEvent('on'+name, h);  // IE < 9 version
+						el.addEventListener(name, miniHandler, true); // W3C DOM
+						(el[MINIFIED_MAGIC] = el[MINIFIED_MAGIC] || []).push(handlerDescriptor); 
+					// @condblock ie8compatibility
+					}
 					// @condend
 				});
+			});
+		},
+		
+		/*$
+		 * @id trigger
+		 * @group EVENTS
+		 * @requires on
+		 * @configurable default
+		 * @name .trigger()
+		 * @syntax trigger(name)
+		 * @syntax trigger(name, eventObject)
+		 * @module WEB
+		 * 
+		 * Triggers event handlers registered with ##on() on all list members.
+		 * Any event that has been previously registered using ##on() can be invoked with <var>trigger()</var>. Please note that 
+		 * it will not simulate default behaviour on the elements, such as a form submit when you click on a button. Event bubbling
+		 * is supported, thus unless there's an event handler that cancels the event, the event will be triggered on all parent elements.
+		 * 
+		 * 
+		 * @example Simulates a 'click' event on the button. 
+		 * <pre>
+		 * $('#myButton').trigger('click');
+		 * </pre>
+		 * 
+		 * @example Simulates a 'click' event on the button. 
+		 * <pre>
+		 * $('#myButton').trigger('click');
+		 * </pre>
+		 * 
+		 * @param name a single event name to trigger
+		 * @param eventObj optional an object to pass to the event handler, provided the handler does not have custom arguments.
+		 * @return the list
+		 */
+		'trigger': function (eventName, eventObj) {
+			var e = eventObj || {};
+			return each(this, function trigger(el, index, originEl) {
+				var stopBubble=false, evList;
+				// @condblock ie8compatibility 
+				if (IS_PRE_IE9)
+					evList = registeredEvents[el[MINIFIED_MAGIC]];
+				else
+				//@condend
+					evList = el[MINIFIED_MAGIC];
+
+				each(evList, function(hDesc) {
+					if (hDesc['n'] == eventName)
+						stopBubble = stopBubble || hDesc['h'](e, originEl || el, MINIFIED_MAGIC);
+				});
+
+				if (el['parentNode'] && !stopBubble)
+					trigger(el['parentNode'], index, originEl || el);
+
 			});
 		}
 
@@ -2626,14 +2811,18 @@ define('minified', function() {
      */
 	'off': function (handler) {
 		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
-	   	each(handler['M'], function(h) {	
+	   	each(handler['M'], function(h) {
 			// @condblock ie8compatibility 
-			if (h['e'].removeEventListener)
-				// @condend
-				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
-			// @condblock ie8compatibility 
-			else 
+			if (IS_PRE_IE9) {
 				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
+				registeredEvents[h['e'][MINIFIED_MAGIC]] = filter(registeredEvents[h['e'][MINIFIED_MAGIC]], h);
+			}
+			else {
+			// @condend
+				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
+				h['e'][MINIFIED_MAGIC] = filter(h['e'][MINIFIED_MAGIC], h);
+			// @condblock ie8compatibility 
+			}
 			// @condend
 		});
 		handler['M'] = null;
@@ -2943,12 +3132,30 @@ define('minified', function() {
 		 *                 The callback allows you, for example, to add event handlers to the element using ##on().
 		 * @return a Element Factory function, which returns a Minified list containing the DOM HTMLElement that has been created or modified as only element
 		 */
-		'EE': EE
+		'EE': EE,
+		
+	    /*$
+		 * @id M
+		 * @group SELECTORS
+		 * @requires dollarraw
+		 * @configurable no
+		 * @name M
+		 * @syntax MINI.M
+         * @module WEB, UTIL
+		 * 
+		 * Exposes the internal class used by all  ##list#Minified lists##. This is mainly intended to allow you adding your
+		 * own functions.
+		 * 
+		 * @example Adding a function printLength() to <var>M</var>:
+		 * <pre>
+		 * MINI.M.prototype.printLength = function() { console.log(this.length); };
+		 * </pre>
+		 */
+		'M': M
 	
 	 	/*$
 	 	 * @stop
 	 	 */
-		// @cond !ee dummy:null
 	};
 	// @cond !amdsupport _window['require'] = function(n) { if (n == 'minified') return MINI; };
 

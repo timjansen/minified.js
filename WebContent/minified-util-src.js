@@ -155,18 +155,20 @@ define('minifiedUtil', function() {
 				cb(list[i], i);
 		return list;
 	}
-	function filterObj(obj, filterFunc) {
+	function filterObj(obj, filterFuncOrObject) {
 		var r = {};
-		eachObj(obj, function(key, value) {
-			if (filterFunc(key, value))
+		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(key) { return filterFuncOrObject != key; };
+			eachObj(obj, function(key, value) {
+			if (f(key, value))
 				r[key] = value;
 		});
 		return r;
 	}
-	function filter(list, filterFunc) {
+	function filter(list, filterFuncOrObject) {
 		var r = []; 
+		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(value) { return filterFuncOrObject != value; };
 		each(list, function(value, index) {
-			if (filterFunc(value, index))
+			if (f(value, index))
 				r.push(value);
 		});
 		return r;
@@ -816,12 +818,22 @@ define('minifiedUtil', function() {
 	 * @configurable default
 	 * @name .filter()
 	 * @syntax list.filter(filterFunc)
+	 * @syntax list.filter(value)
      * @syntax _.filter(list, filterFunc)
+     * @syntax _.filter(list, value)
    	 * @module WEB, UTIL
-	 * Creates a new ##list#Minified list## that contains only those items approved by the given callback function. The function is 
-	 * called once for each item. 
+	 * Creates a new ##list#Minified list## by taking an existing list and omitting certain elements from it. You
+	 * can either specify a callback function to approve those items that will be in the new list, or 
+	 * you can pass a value to remove from the new list.
+	 *  
 	 * If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
-	 *
+	 * For values, a simple equality operation (<code>==</code>) will be used.
+     *
+     * @example Removing all instances of the number 10 from a list:
+	 * <pre>
+	 * var list = _([4, 10, 22, 7, 2, 19, 10]).filter(10);
+	 * </pre>
+     *
 	 * @example Removing all numbers over 10 from a list:
 	 * <pre>
 	 * var list = _([4, 22, 7, 2, 19]).filter(function(item, index) {
@@ -849,6 +861,8 @@ define('minifiedUtil', function() {
 	 *        <dl><dt>item</dt><dd>The current list element.</dd>
 	 *        <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>  
+	 * @param value a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
+	 *              be a function. 
 	 * @return the new, filtered ##list#list##
 	 */
 	'filter': listBindArray(filter),
