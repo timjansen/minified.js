@@ -148,7 +148,7 @@ list.<a href="/api/length.html">each</a>(function(element, index) {
 <a href="/api/dollardollar.html"><code>$$</code></a>. It works like <a href="/api/dollar.html"><code>$</code></a>, 
 but returns only the first element of the list instead of the complete list. If the list is empty, it returns <var>undefined</var>.
 <pre>
-var parent1 = <a href="/api/dollardollar.html">$$</a>'#myElement').parentNode;
+var parent1 = <a href="/api/dollardollar.html">$$</a>('#myElement').parentNode;
 var parent2 = <a href="/api/dollar.html">$</a>('#myElement')[0].parentNode;     // same result: $$() is just short for $()[0]
 </pre>
 </p>
