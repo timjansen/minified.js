@@ -33,7 +33,7 @@
 
 <h3>Other Options</h3>
 <ul class="links">
-<li><a href="/builder.html"><span class="link">Builder</span><br/>
+<li><a href="/builder/"><span class="link">Builder</span><br/>
 <span class="summary">Create your own custom-build of Minified.</span></a></li>
 <li><a href="https://github.com/timjansen/minified.js/"><span class="link">Minified on GitHub</span><br/>
 <span class="summary">Complete source code for Minified, unit tests, this site and more.</span></a></li>

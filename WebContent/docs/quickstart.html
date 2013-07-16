@@ -140,8 +140,8 @@ function setZoomLevel(percentage) {
 <a href="/api/off.html">$.off</a>(setZoomLevel);
 </pre> </p> <h2>Toggles</h2> <p>A toggle is a function that can switch between two states. The states are defined as two <a href="/api/set.html"><code>set()</code></a> maps. The following example creates a toggle that changes the background color of the &lt;body> element: <pre>
 var light = <a href="/api/dollar.html">$</a>('body').<a href="/api/toggle.html">toggle</a>(
- {$backgroundColor: #000},   // state 1
- {$backgroundColor: #fff}    // state 2
+ {$backgroundColor: '#000'},   // state 1
+ {$backgroundColor: '#fff'}    // state 2
 );
 </pre> Upon creation, the toggle sets the first state. When you call the toggle function with a boolean <code>true</code> as argument, it switches to the second state and sets the background color accordingly. Call it with <code>false</code> and it switches to the first one. If you call it without arguments (or any other argument than a boolean <code>true</code> or <code>false</code>), the toggle function will toggle between the first and second state. <pre>
 light();       // toggle background color
@@ -154,8 +154,8 @@ light(false);  // turn the light off (state 1)
 <a href="/api/dollar.html">$</a>('#switchOff').on('click', light, [false]);
 </pre> </p> <p>Toggles can also be animated. Just pass the duration as additional parameter: <pre>
 var dimmer = <a href="/api/dollar.html">$</a>('body').toggle(
- {$backgroundColor: #000},  // light off
- {$backgroundColor: #fff},  // light on
+ {$backgroundColor: '#000'},  // light off
+ {$backgroundColor: '#fff'},  // light on
  750                        // 750ms
 );
 </pre> </p> <p>All properties supported by <a href="/api/set.html"><code>set()</code></a> can be toggled, including CSS classes: <pre>
