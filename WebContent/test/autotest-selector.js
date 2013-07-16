@@ -308,6 +308,23 @@ window.miniTests.push.apply(window.miniTests, [
 	},
 	
 	{
+		name: "$().select()",
+		exec: function() {
+			var m = $("#c").select("div", true);
+			containsAll(m, [document.getElementById("c_a"), document.getElementById("c_b")], true);
+		}
+	},
+
+	{
+		name: "$().trav()",
+		exec: function() {
+			var m = $("#a_a, #b_b").trav('parentNode');
+			containsAll(m, [document.getElementById("a"), document.getElementById("b")], true);
+		}
+	},
+
+	
+	{
 		name: "$() whitespace exception (debug)",
 		debugFailure: "Whitespace check did not work.",
 		exec: function() {

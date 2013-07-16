@@ -14,3 +14,6 @@ Ongoing Development
 * Added 'selected' parameter to on()
 * New method trigger() to fire custom events.
 * New method values() to read form data.
+* New prefix '%' for get() and set(): used to access data attributes ('%myattr' is short for '@data-myattr')
+* New method trav() to traverse properties
+* New method select() to execute a selector in the list's context 

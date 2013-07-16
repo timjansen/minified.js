@@ -837,13 +837,11 @@ define('minified', function() {
      *         it returns either the value returned by the callback or <var>undefined</var>.
      */ 
 	'find': function(findFunc) {
-console.log('finding ', findFunc, ' in ', this);
 		var self = this, r;
 		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 		for (var i = 0; i < self.length; i++)
 			if ((r = f(self[i], i)) != null)
 				return r;
-console.log('failed..');
 	},
 	
 	/*$ 
@@ -922,6 +920,8 @@ console.log('failed..');
  	 * <pre>
  	 * var content = $('#myContainer').text(); 
  	 * </pre>
+ 	 * 
+ 	 * @return the concatenated text content of the nodes
  	 */
  	'text': function () {
 		function extractString(e) {
@@ -934,6 +934,66 @@ console.log('failed..');
 				return null;
 		}
 		return collect(this, extractString)['join']('');
+	},
+	
+ 	/*$
+ 	 * @id trav
+ 	 * @group SELECTORS
+ 	 * @requires collect
+ 	 * @configurable default
+ 	 * @name .trav()
+ 	 * @syntax trav(property)
+     * @module WEB
+ 	 * Traverses each node in the list using the given property, and creates a new list from the results.
+ 	 * If the property contains a list, all list items are added to the new list. If the property contains a single
+ 	 * object, only the object will be added. If the property null or undefined, nothing will be added. 
+ 	 * 
+ 	 * @example Returns a list of parent nodes:
+ 	 * <pre>
+ 	 * var parents = $('.myElements').trav('parentNode'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @example Returns a list of all child elements nodes:
+ 	 * <pre>
+ 	 * var children = $('.myElements').trav('children'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @parm property the name of the property to traverse.
+ 	 * @return the new list containing the flattened property values.
+ 	 */
+	'trav': function(property) {
+		return this['collect'](function(node) { return node[property]; });
+	},
+	
+ 	/*$
+ 	 * @id select
+ 	 * @group SELECTORS
+ 	 * @requires collect
+ 	 * @configurable default
+ 	 * @name .select()
+ 	 * @syntax trav(selector)
+ 	 * @syntax trav(selector, childOnly)
+     * @module WEB
+ 	 * Executes a selector with the list as context. <code>list.select(selector, childOnly)</code> is just syntactic sugar
+ 	 * for <code>$(selector, list, childOnly)</code>. 
+ 	 * 
+ 	 * @example Returns a list of all list elements:
+ 	 * <pre>
+ 	 * var parents = $('ol.myList').selector('li', true); 
+ 	 * </pre>
+ 	 * 
+ 	 * @example Returns a list of all child elements:
+ 	 * <pre>
+ 	 * var children = $('.myElements').select('*', true); 
+ 	 * </pre>
+ 	 * 
+ 	 * @parm selector a selector or any other valid first argument for  ##dollar#$()##.
+ 	 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
+ 	 *             true, all descendants of the context will be included. 
+ 	 * @return the new list containing the flattened property values.
+ 	 */
+	'select': function(selector, childOnly) {
+		return $(selector, this, childOnly);
 	},
      
   	/*$
@@ -977,7 +1037,8 @@ console.log('failed..');
  	 * Please note that the values of $top and $left in the <var>get()</var> invocation do not matter and will be ignored!
  	 *
  	 * @param name the name of the property, attribute or style. To retrieve a JavaScript property, just use its name without prefix. To get an attribute value,
- 	 *             prefix the name with a '@'. A '$' prefix will retrieve a CSS style. The syntax for the CSS styles is camel-case (e.g. "backgroundColor", not "background-color"). 
+ 	 *             prefix the name with a '@' for regular attributes or '%' to add a 'data-' prefix. 
+ 	 *             A '$' prefix will retrieve a CSS style. The syntax for the CSS styles is camel-case (e.g. "backgroundColor", not "background-color"). 
  	 *             Shorthand properties like "border" or "margin" are not supported. You must use the full name, e.g. "marginTop". Minified will try to determine the effective style
  	 *             and thus will return the value set in style sheets if not overwritten using a regular style.
  	 * 	  	    Using just '$' as name will retrieve the 'className' property of the object, a space-separated list of all CSS classes.
@@ -1001,7 +1062,7 @@ console.log('failed..');
 
 		if (element) {
 			if (isString(spec)) {
-				var name = replace(spec, /^[$@]/);
+				var name = replace(replace(spec, /^%/, 'data-'), /^[$@]/);
 				var s;
 				if (spec == '$')
 					s = element.className;
@@ -1037,7 +1098,7 @@ console.log('failed..');
 					// @condend
 						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 				}
-				else if (/^@/.test(spec))
+				else if (/^[@%]/.test(spec))
 					s = element.getAttribute(name);
 				else
 					s = element[name];
@@ -1076,6 +1137,9 @@ console.log('failed..');
 	 * <tr><td>name</td><td>innerHTML</td><td>Property</td><td>A name without prefix of '$' or '@' sets a property of the object.</td></tr>
 	 * <tr><td>@name</td><td>@href</td><td>Attribute</td><td>Sets the HTML attribute using setAttribute(). In order to stay compatible with Internet Explorer 7 and earlier, 
 	 *             you should not set the attributes '@class' and '@style'. Instead use '$' and '$$' as shown below.</td></tr>
+	 * <tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Sets a data attribute using setAttribute(). Data attributes are
+	 *         attributes whose names start with 'data-'. '%' works like '@' and uses setAttribute(), but adds a 'data-' to the
+	 *         name. So '%myattr' and '@data-myattr' are equivalent.</td></tr>
 	 * <tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <var>style</var> object.</td></tr>
 	 * <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <var>$</var> modifies the element's CSS classes using the object's <var>className</var> property. The value is a 
 	 *             space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
@@ -1162,7 +1226,8 @@ console.log('failed..');
 	 * });
 	 * </pre>
 	 * 
-	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. 
+	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
+	 *             '%' also is used to set attributes, but automatically adds 'data-' to the name. 
 	 *             A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
 	 *             The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
 	 *             The special name '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1. 
@@ -1213,7 +1278,7 @@ console.log('failed..');
     		 else
     			// @condend fadeslide
     			 each(self, function(obj, c) {
-    				 var nameClean = replace(name, /^[@$]/);
+    				 var nameClean = replace(replace(name, /^%/,'data-'), /^[@$]/);
     				 var className = obj['className'] || '';
     				 var newObj = /^\$/.test(name) ? obj.style : obj;
     				 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
@@ -1237,7 +1302,7 @@ console.log('failed..');
 						// @condend
 							setAttr(obj, 'style', newValue);
 					 }
-    				 else if (!/^@/.test(name))
+    				 else if (!/^[@%]/.test(name))
     					 newObj[nameClean] = newValue;
     				 else
     					 setAttr(newObj, nameClean, newValue);
@@ -2006,7 +2071,6 @@ console.log('failed..');
 			});
 			return prom;		
 		},
-		
 		
 		/*$
 		 * @id toggle
@@ -3117,7 +3181,8 @@ console.log('failed..');
 		 * 
 		 * @param elementName the element name to create (e.g. 'div')
 		 * @param properties optional an object which contains a map of attributes and other values. Uses the ##set() syntax: 
-		 * 					 Attribute values are prefixed with '@', CSS styles with '$' and regular properties can be set without prefix.
+		 * 					 Attribute values are prefixed with '@', data attributes with '%', CSS styles with '$' and 
+		 *                   regular properties can be set without prefix.
 		 *                   If the attribute value is null, the attribute will omitted (styles and properties can be set to null). 
 		 *                   In order to stay compatible with Internet Explorer 7 and earlier, you should not set the 
 		 *                   attributes '@class' and '@style'. Instead set the property 'className' instead of '@class' and set 
