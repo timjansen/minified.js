@@ -1,11 +1,11 @@
 /*
  * Minified-app.js - Application framework
- * 
+ *
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
  * Please see http://creativecommons.org/publicdomain/zero/1.0/.
  * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
- * 
+ *
  * https://github.com/timjansen/minified.js
  */
 
@@ -23,7 +23,7 @@
 
 
 ///////////////////////////
-//// WARNING - this file is currently not much more than a collection of code snippets. 
+//// WARNING - this file is currently not much more than a collection of code snippets.
 ////           It is months away from a usable version.
 ///////////////////////////
 
@@ -35,14 +35,14 @@
 
 define('minifiedApp', function() {
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * @const
 	 */
 	var _this = this;
 
-	
-	var request = $['request'];	
+
+	var request = $.request;
 
 	// reads / writes property in name.name.name syntax. Supports setter/getter functions
 	function prop(object, path, value) {
@@ -63,7 +63,7 @@ define('minifiedApp', function() {
 				return object[name] = value;
 		}
 	}
-	
+
 	// copies all elements of from into to, merging into existing structures.
 	// <var>to</var> is optional. Writes result in <var>to</var> if it is a non-value object.
 	// Returns the copy, which may be to if it was an object
@@ -77,7 +77,7 @@ define('minifiedApp', function() {
 		if (!from || equals(from, oldTo))
 			return from;
 		else if (isList(from)) {
-			result = map(from, function(v, idx) { 
+			result = map(from, function(v, idx) {
 				return oldTo && equals(oldTo[idx], v) ? oldTo[idx] : copyTree(v);
 			});
 			if ((oldTo ? oldTo : from)['_'])
@@ -104,14 +104,14 @@ define('minifiedApp', function() {
 				}
 			});
 		}
-			
+
 		if (toIsFunc)
 			to(result);
 		return result;
 	}
 
-	
-	
+
+
 	/*$
 	 * @id promise
 	 * @module WEB+UTIL
@@ -134,7 +134,7 @@ define('minifiedApp', function() {
 		var assimilatedNum = assimilatedPromises.length;
 		var numCompleted = 0; // number of completed, assimilated promises
 		var values = []; // array containing the result arrays of all assimilated promises
-	    
+
 		function set(newState, newValues) {
 			if (state == null) {
 				state = newState;
@@ -142,22 +142,22 @@ define('minifiedApp', function() {
 				defer(function() {
 					each(deferred, function(f) {f();});
 				});
-			}		
+			}
 		}
 
 		// use promise varargs
 		each(assimilatedPromises, function assimilate(promise, index) {
 			try {
-				promise['then'](function resolvePromise(v) {
-					if (v && isFunction(v['then'])) {
-						assimilate(v['then'], index);
+				promise.then(function resolvePromise(v) {
+					if (v && isFunction(v.then)) {
+						assimilate(v.then, index);
 					}
 					else {
 						values[index] = map(arguments, selfFunc);
 						if (++numCompleted == assimilatedNum)
 							set(true, assimilatedNum < 2 ? values[index] : values);
 					}
-				}, 
+				},
 				function rejectPromise(e) {
 					values[index] = map(arguments, selfFunc);
 					set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
@@ -167,16 +167,16 @@ define('minifiedApp', function() {
 				set(false, [e, values, index]);
 			}
 		});
-	    
-	    set['then'] = function then(onFulfilled, onRejected) {
+
+	    set.then = function then(onFulfilled, onRejected) {
 			var newPromise = promise();
 			var callCallbacks = function() {
 	    		try {
 	    			var f = (state ? onFulfilled : onRejected);
 	    			if (isFunction(f)) {
 		   				var r = call(f, values);
-		   				if (r && isFunction(r['then']))
-		   					r['then'](function(value){newPromise(true,[value]);}, function(value){newPromise(false,[value]);});
+		   				if (r && isFunction(r.then))
+		   					r.then(function(value){newPromise(true,[value]);}, function(value){newPromise(false,[value]);});
 		   				else
 		   					newPromise(true, [r]);
 		   			}
@@ -190,23 +190,23 @@ define('minifiedApp', function() {
 			if (state != null)
 				defer(callCallbacks);
 			else
-				deferred.push(callCallbacks);    		
+				deferred.push(callCallbacks);
 			return newPromise;
 		};
 
-	   	set['always'] = function(func) { return then(func, func); };
-	   	set['error'] = function(func) { return then(0, func); };
+	   	set.always = function(func) { return then(func, func); };
+	   	set.error = function(func) { return then(0, func); };
 
 		// Takes a list of promises and registers with them by calling their then(). If all given promises succeed, this promise succeeds
 	   	// and their values are given to the fulfillment handler as array in the same order the promised were given to join().
-		// If one promise fails, this promise fails. The rejected handler will be called with the index of the failed promise as 
+		// If one promise fails, this promise fails. The rejected handler will be called with the index of the failed promise as
 	   	// first argument and an array containing all results as the second.
 		// The array has one entry per promise, containing its success value, rejection value or undefined if not completed.
 	   	return set;
 	}
-	
+
 	var APP = {};
-			
+
 	// public
 	function createSyncConfig(maxFailedValidation) {
 		return {maxFailedValidation: maxFailedValidation || 1};
@@ -216,7 +216,7 @@ define('minifiedApp', function() {
 	function Controller(model, viewCtx, syncConfig) {
 		var self = this;
 		self.ctxPrototype = {
-			'model': model,      // ref to model data's root 
+			'model': model,      // ref to model data's root
 			'modelCtx': model,   // ref to model's current position
 			'path': '',          // current path of the model
 			'viewCtx': viewCtx,  // DOM reference to current HTML element
@@ -229,7 +229,7 @@ define('minifiedApp', function() {
 		self.listeners = {}; // path -> [func, func...]
 		self.mappings = []; // array of arrays containing mapping funcs
 
-	
+
 		// delayedUpdatePath is not null if there's a pending async update (caused by a listener
 		// calling update). It contains the string path of the update. '' for all.
 		self.delayedUpdatePath = null;
@@ -238,7 +238,7 @@ define('minifiedApp', function() {
 
 	// private
 	function isSyncCfg(syncCfg) {
-		return (syncCfg && syncCfg['maxFailedValidation'] != null) ? syncCfg : null;
+		return (syncCfg && syncCfg.maxFailedValidation != null) ? syncCfg : null;
 	}
 
 	// public
@@ -250,11 +250,11 @@ define('minifiedApp', function() {
 
 	// private
 	function readJson(txt) {
-		return $['parseJSON'](replace(txt, /^while(1);/));
+		return $.parseJSON.(replace(txt, /^while(1);/));
 	}
 
 	var PROP_REGEXP = /((?=[^.]|\.\.)+)\.(.*)/; // TODO: take the existing RE if possible
-	
+
 	// private
 	function propComponents(path) {
 		var r = [];
@@ -295,17 +295,17 @@ define('minifiedApp', function() {
 				p = '';
 			}
 			else {
-				p = path; 
+				p = path;
 				f = listenerFunc;
 			}
-			
+
 			if (this.listeners[p])
 				this.listeners[p].push(f);
 			else
 				this.listeners[p] = [f];
-		}, 
-	
-		// adds one or more mappings that will be invoked each time the model is updated. 
+		},
+
+		// adds one or more mappings that will be invoked each time the model is updated.
 		//
 		// Usually you create a mapping by calling SYNC() or similar functions to create them.
 		//
@@ -321,9 +321,9 @@ define('minifiedApp', function() {
 		// 	- group is the name of the group to read. If not null, the mapping should only read  if it belongs to that group. Otherwise
 		//          read() should do nothing.
 		// 	- ctx is the MappingContext
-		//    
-		// - inactive: optional, boolean. If true, update() is also called when the context is set to not active. 
-		//             By default, the function is only called when active (thus outside of the false-list of a COND). 
+		//
+		// - inactive: optional, boolean. If true, update() is also called when the context is set to not active.
+		//             By default, the function is only called when active (thus outside of the false-list of a COND).
 		//             This is required for SHOW/HIDE.
 		//
 		//
@@ -333,19 +333,19 @@ define('minifiedApp', function() {
 			var ctx = copyObj(self.ctxPrototype, {});
 
 			this.mappings.push(mappingList);
-			
+
 			each(mappingList, function(mapping) {
-				mapping['init'](ctx['modelCtx'], ctx, self);
+				mapping.init(ctx.modelCtx, ctx, self);
 			});
 		},
-		
+
 		// notifies MINI that the model has been updated manually. Will validate changes, and listeners and mappings will be notified
 		// The optional function(obj) allows several changes with single update. return false or throw exception to suppress update.
 		'update': function(path, func) {
 			var self = this;
 			var p  = isFunction(path) ? '' : toString(path);
 			var f = func ? func : isFunction(path) ? path : null;
-			var model = this.ctxPrototype['model'];
+			var model = this.ctxPrototype.model;
 			var r;
 			if (f) {
 				try {
@@ -366,12 +366,12 @@ define('minifiedApp', function() {
 							listener(prop(model, actualPath), p);
 					});
 				});
-				
+
 				each(self.mappings, function(mappingList) {
 					var ctx = copyObj(self.ctxPrototype, {});
 					each(mappingList, function(mapping) {
-						if (ctx['isActive'] || mapping['inactive'])
-							mapping['update'](ctx['modelCtx'], ctx, self, actualPath);
+						if (ctx.isActive || mapping.inactive)
+							mapping.update(ctx.modelCtx, ctx, self, actualPath);
 					});
 				});
 				self.updateRunning = 0;
@@ -398,28 +398,28 @@ define('minifiedApp', function() {
 					}
 					self.delayedUpdatePath = propMerge(c);
 				}
-					
+
 				return;
 			}
 
 			notifyListener(p);
 			return r;
 		},
-		
+
 		// like prop(model, path)
 		'get': function(path) {
-			return prop(this.ctxPrototype['model'], path != null ? path : '');
+			return prop(this.ctxPrototype.model, path != null ? path : '');
 		},
-		
-		// Reads old value (prop), compares to new value. If not equal according to _.equals, 
+
+		// Reads old value (prop), compares to new value. If not equal according to _.equals,
 		// sets new value and calls update().
 		'set': function(path, value) {
-			if (!equals(prop(this.ctxPrototype['model'], path), value)) {
-				prop(this.ctxPrototype['model'], path, value);
-				this['update'](path);
+			if (!equals(prop(this.ctxPrototype.model, path), value)) {
+				prop(this.ctxPrototype.model, path, value);
+				this.update(path);
 			}
 		},
-		
+
 		// Requests all mappings to read their data and store it in the model. The idea behind this is you do not synchronize
 		// to the model in real-time, you can use this function when the user submits the form.
 		// The function calls read() on all mappings associated with the model, and then update() without path.
@@ -427,36 +427,36 @@ define('minifiedApp', function() {
 		// Special syntax groupName[index] if group was used more than once.
 		// Then calls sync.update()
 		'read': function(indexStackOrCtx, groupName) {
-			var indexStack = (indexStackOrCtx && indexStackOrCtx['indexStack']) ? indexStackOrCtx['indexStack'] : indexStackOrCtx;
-			var actualGroup = groupName || (indexStackOrCtx && indexStackOrCtx['group']);
-			
+			var indexStack = (indexStackOrCtx && indexStackOrCtx.indexStack) ? indexStackOrCtx.indexStack : indexStackOrCtx;
+			var actualGroup = groupName || (indexStackOrCtx && indexStackOrCtx.group);
+
 			each(self.mappings, function(mappingList) {
 				var ctx = copyObj(self.ctxPrototype, {});
 				each(mappingList, function(mapping) {
-					mapping['read'](indexStack, actualGroup, ctx);
+					mapping.read(indexStack, actualGroup, ctx);
 				});
 			});
-			this['update']();
+			this.update();
 		},
-		
-		// Does a POST request to the URL, sending the JSON located at requestModelCtx, and writes the resulting JSON into 
-		// the location given by responseModelCtx. 
+
+		// Does a POST request to the URL, sending the JSON located at requestModelCtx, and writes the resulting JSON into
+		// the location given by responseModelCtx.
 		//
 		// Extra Features:
 		// - Returns request()'s promises, for full control over the HTTP request
 		// - includes CSRF protection-support for the response (ignores while(1); at beginning)
 		'postPull': function(url, requestModelCtx, responseModelCtx) {
-			return this['pull']('post', url, $['toJSON'](requestModelCtx), responseModelCtx);
+			return this.pull('post', url, $.toJSON(requestModelCtx), responseModelCtx);
 		},
-		
+
 		// Does a POST request to the URL, sending the JSON located at requestModelCtx.
 		//
 		// Returns request()'s promise.
 		'post': function(url, requestModelCtx)	{
-			return request('post', url, $['toJSON'](requestModelCtx));			
+			return request('post', url, $.toJSON(requestModelCtx));
 		},
-		
-		// Does a POST/GET request to the URL, using the get request in $.request() format, writing into the JSON located at responseModelCtx. 
+
+		// Does a POST/GET request to the URL, using the get request in $.request() format, writing into the JSON located at responseModelCtx.
 		//
 		// Returns request()'s promise.
 		'pull': function(method, url, data, responseModelCtx) {
@@ -466,19 +466,19 @@ define('minifiedApp', function() {
 					return text;
 				});
 		},
-		
+
 		// Stores the given modelCtx in local storage, stringified as JSON.
 		// Returns true if successful (no exception, no IE6-7)
 		'storeLocal': function(key, srcModelCtx) {
 			// TODO
 		},
-		
+
 		// Reads the given modelCtx in local storage, stringified as JSON.
 		// Returns true if successful (no exception, data found, no IE6-7)
 		'fetchLocal': function(key, destModelCtx) {
 			// TODO
 		}
-		
+
 
 	}, Controller.prototype);
 
@@ -503,39 +503,39 @@ define('minifiedApp', function() {
 		}};
 	}
 	var asIsMapping = {'render':nonOp, 'parse': nonOp};
-	
-	APP['mappings'] = {
+
+	APP.mappings = {
 			'number': numberMapping,
 			'date': dateMapping,
 			'string': stringMapping,
-			
+
 			'FIELD' : function(fieldSelector, valuePath, translator, parserFailToggleList) {
 				var toggleList = (isFunction(translator) || isList(translator)) ? translator : parserFailToggleList;
-				var tl = isString(translator) ? (/[09_#]/.test(translator) ? numberMapping(translator) : dateMapping(translator)) : 
+				var tl = isString(translator) ? (/[09_#]/.test(translator) ? numberMapping(translator) : dateMapping(translator)) :
 					(translator instanceof RegExp ? stringMapping(translator) : asIsMapping);
 				return {
 					'init': function(modelCtx, ctx, controller) {
-						var field = $(fieldSelector, ctx['viewCtx'])['sub'](0, 1);
-						
+						var field = $(fieldSelector, ctx.viewCtx).sub(0, 1);
+
 					},
 					'update': function(modelCtx, ctx, controller, updatePath){
-						
+
 					}
-				};				
+				};
 			}
 	};
-		
+
 	function getCheckedValue(inputElement) {
 		 return inputElement.checked ? inputElement.value : null;
 	}
-	
+
 	copyObj({
 		'onChange': function(handler) {
 			var oldValues = [];
 			function register(eventNames, property, index) {
 				oldValues[index] = el[property];
-				$(el)['on'](eventNames, function() {
-					var newValue = el[eventNames]; 
+				$(el).on(eventNames, function() {
+					var newValue = el[eventNames];
 					if (newValue != oldValues[index]) {
 						handler(newValue, index);
 						oldValues[index] = newValue;
@@ -543,9 +543,9 @@ define('minifiedApp', function() {
 				});
 			}
 			each(this, function(el, index) {
-				if (/kbox|dio/i.test(el['type']))
+				if (/kbox|dio/i.test(el.type))
 					register('|click', 'checked', index);
-				else 
+				else
 					register('|input |change |keyup', 'value', index);
 			});
 		},
@@ -554,34 +554,34 @@ define('minifiedApp', function() {
 			var self = this;
 			var animState = {};
 			var state, prevState, prevPrevState;
-				
+
 			if (isString(initState))
 				state = initState;
 			else { // re-map arguments if initState not set
 				linearity = durationMs;
-				durationMs = initState; 
+				durationMs = initState;
 			}
-			
+
 			if (state)
-				self['set'](states[state]);
+				self.set(states[state]);
 
 			return function(newState) {
-				if (newState === state) 
+				if (newState === state)
 					return;
 				prevPrevState = prevState;
 				prevState = state;
 				state = newState;
 
-				if (durationMs) 
-					self['animate'](states[state], animState['stop'] && prevPrevState == newState? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
+				if (durationMs)
+					self.animate(states[state], animState.stop && prevPrevState == newState? (animState.stop() || animState.time) : durationMs, linearity, animState);
 				else
-					self['set'](states[state]); 
+					self.set(states[state]);
 			};
 		}
 	}, M);
 
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
 	/*$
 	 @stop
 	 */
@@ -597,7 +597,7 @@ define('minifiedApp', function() {
 });
 
 /*$
- * @stop 
+ * @stop
  */
 
 
