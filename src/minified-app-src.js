@@ -250,7 +250,7 @@ define('minifiedApp', function() {
 
 	// private
 	function readJson(txt) {
-		return $.parseJSON.(replace(txt, /^while(1);/));
+		return $.parseJSON(replace(txt, /^while(1);/));
 	}
 
 	var PROP_REGEXP = /((?=[^.]|\.\.)+)\.(.*)/; // TODO: take the existing RE if possible
