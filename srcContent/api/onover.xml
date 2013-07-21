@@ -22,7 +22,7 @@
 <dd class="">the callback <code>function(isOver, index)</code> to invoke when the event has been triggered:
 <dl>
 <dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
-<dt>index</dt><dd>The index of the target object in the <a href='list.html'>Minified list</a> .</dd>
+<dt>index</dt><dd>The index of the target element in the <a href='list.html'>Minified list</a> .</dd>
 </dl>
 'this' is set to the target element that caused the event.</dd>
 <dt id="onover_RETURN" class="returnValue inSyntax0"><a name="onover_RETURN"><var>(return value)</var></a></dt>

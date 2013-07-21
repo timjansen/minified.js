@@ -4,9 +4,9 @@
 	<style type="text/css">
 		body {font-family: sans-serif;}
 		#container { position: relative; width: 630px; height: 630px;}
-		#overDiv, #u1Div, #u2Div, #u3Div { border: 1px solid black; position: absolute; width: 300px; height: 300px; } 
+		#container .test { border: 1px solid black; position: absolute; width: 300px; height: 300px; } 
 		#overDiv  { left: 10px;  top: 10px; }
-		#u1Div  { left: 320px; top: 10px; }
+		#memLeakDiv  { left: 320px; top: 10px; }
 		#u2Div { left: 10px;  top: 320px; }
 		#u3Div  { left: 320px; top: 320px; }
 		
@@ -14,7 +14,8 @@
 		#overInner1 { position: absolute; width: 200px; height: 200px; left: 50px; top: 50px; background-color: #f00;}
 		#overInner2 { position: absolute; width: 200px; height: 120px; left: 40px; top: 40px; background-color: #0ff;}
 		#overInner3 { position: absolute; width: 60px;  height: 60px;  left: 30px; top: 30px; background-color: #00f;}
-
+		.counter { position: absolute; left: 0; top: 0; font-size: 10px; padding: 2px; }
+		.desc  { position: absolute; left: 0; bottom: 0; font-size: 10px; padding: 5px; }
 	</style> 
 	<script type="text/javascript">
 	// Load the right source, depending on whether 'compiled' is in the URL query
@@ -37,9 +38,31 @@
 	});
 
 	$(function() {
-		$('#overDiv').onOver($('#overDiv').toggle({$backgroundColor:'#fff'}, {$backgroundColor:'#555'}, 500));
-		$('#overInner1').onOver($('#overInner1').toggle({$backgroundColor:'#f00'}, {$backgroundColor:'#555'}, 500));
-		$('#overInner2').onOver($('#overInner2').toggle({$backgroundColor:'#0ff'}, {$backgroundColor:'#555'}, 500));
+		// Test 1 / onOver()
+		var counter0 = 0, overToggle0 = $('#overDiv').toggle({$backgroundColor:'#fff'}, {$backgroundColor:'#555'}, 500);
+		var counter1 = 0, overToggle1 = $('#overInner1').toggle({$backgroundColor:'#f00'}, {$backgroundColor:'#555'}, 500);
+		var counter2 = 0, overToggle2 = $('#overInner2').toggle({$backgroundColor:'#0ff'}, {$backgroundColor:'#555'}, 500);
+		$('#overDiv').onOver(function(v) { overToggle0(v); counter0++; $('#overDiv .counter').sub(0, 1).fill(counter0+''); });
+		$('#overInner1').onOver(function(v) { overToggle1(v); counter1++; $('#overInner1 .counter').sub(0, 1).fill(counter1+''); });
+		$('#overInner2').onOver(function(v) { overToggle2(v); counter2++; $('#overInner2 .counter').sub(0, 1).fill(counter2+''); });
+		
+		// Test 2 / Event Handler Mem Leaks
+		var timeoutId;
+		var creationCount = 0; 
+		$('#memLeakStartStop').on('click', function() {
+			if (timeoutId)  {
+				window.clearInterval(timeoutId);
+				timeoutId = null;
+			}
+			else {
+				function createOne() {
+					$('#memLeakCounter').fill(EE('div', {}, creationCount++ + '', function(list) {
+						list.on('click', function() {});
+					}));
+				}
+				timeoutId = window.setInterval(createOne, 1);
+			}
+		});
 	});
 	
 	</script>
@@ -47,12 +70,19 @@
 	</head>
 	<body>
 	<div id="container">
-		<div id="overDiv">
-			<div id="overInner1"><div id="overInner2"><div id="overInner3"></div></div></div>
+		<div id="overDiv" class="test"><span class="counter">0</span>
+			<div id="overInner1"><span class="counter">0</span><div id="overInner2"><span class="counter">0</span><div id="overInner3"></div></div></div>
+			<span class="desc">onOver() test of nexted &lt;divs>. Counters increase for each event.</span>
 		</div>
-		<div id="u1Div"></div>
-		<div id="u2Div"></div>
-		<div id="u3Div"></div>
+		<div id="memLeakDiv" class="test">
+			<div style="margin: 10px;">
+				<button id="memLeakStartStop">Start/Stop Creation</button><br/><br/>
+				Elements created: <div id="memLeakCounter">0</div>		
+				<span class="desc">Quickly create elements, adds events to them and removes them. Monitor browser to find memory leaks.</span>
+			</div>
+		</div>
+		<div id="u2Div" class="test"></div>
+		<div id="u3Div" class="test"></div>
 	</div>
 	<div id="rerun" >
 		<strong>Library: </strong><span id="libName">error</span>

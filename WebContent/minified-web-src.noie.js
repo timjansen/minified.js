@@ -513,7 +513,7 @@ define('minified', function() {
 			if (parent)
 				return filter(retList, function(node) {
 					var a = node;
-					while (a = a.parentNode) {
+					while (a = a['parentNode']) {
 						if (a === parent)
 							return true;
 						if (childOnly)
@@ -2318,7 +2318,7 @@ define('minified', function() {
 		/*$
 		 * @id onover
 		 * @group EVENTS
-		 * @requires on
+		 * @requires on dollar trav find
 		 * @configurable default
 		 * @name .onOver()
 		 * @syntax on(handler)
@@ -2335,18 +2335,21 @@ define('minified', function() {
 		 * @param toggle the callback <code>function(isOver, index)</code> to invoke when the event has been triggered:
 		 * 		  <dl>
 	 	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
-	 	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
+	 	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
 	 	 *             </dl>
 		 *             'this' is set to the target element that caused the event.
 		 * @return the list
 		 */
 		'onOver': function(toggle) {
-			var curState = [];
-			return this['on']('|mouseover |mouseout', function(ev, index) {
-				var newState = ev['type'] != 'mouseout';
-				if (curState[index] !== newState) {
-					curState[index] = newState;
-					toggle.call(this, newState, index);
+			var curOverState = [], self = this;
+			return self['on']('|mouseover |mouseout', function(ev, index) {
+				var overState = ev['type'] != 'mouseout';
+				var relatedTarget = ev['relatedTarget'];
+				if (curOverState[index] !== overState) {
+					if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['trav']('parentNode', self[index]).length)) {
+						curOverState[index] = overState;
+						toggle.call(this, overState, index);
+					}
 				}
 			});
 		},
