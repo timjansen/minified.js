@@ -23,6 +23,7 @@ Modifies the list's elements by setting their properties, attributes, CSS styles
 <dl class="params">
 <dt id="set_name" class=""><a name="set_name"><var>name</var></a></dt>
 <dd class="">the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
+'%' also is used to set attributes, but automatically adds 'data-' to the name.
 A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
 The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
 The special name '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1.</dd>
@@ -58,6 +59,9 @@ be set.</p><p>The name given to <var>set()</var> defines what kind of data you a
 <tr><td>name</td><td>innerHTML</td><td>Property</td><td>A name without prefix of '$' or '@' sets a property of the object.</td></tr>
 <tr><td>@name</td><td>@href</td><td>Attribute</td><td>Sets the HTML attribute using setAttribute(). In order to stay compatible with Internet Explorer 7 and earlier,
             you should not set the attributes '@class' and '@style'. Instead use '$' and '$$' as shown below.</td></tr>
+<tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Sets a data attribute using setAttribute(). Data attributes are
+        attributes whose names start with 'data-'. '%' works like '@' and uses setAttribute(), but adds a 'data-' to the
+        name. So '%myattr' and '@data-myattr' are equivalent.</td></tr>
 <tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <var>style</var> object.</td></tr>
 <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <var>$</var> modifies the element's CSS classes using the object's <var>className</var> property. The value is a
             space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
@@ -186,16 +190,23 @@ $('h2').set('innerHTML', function(oldValue, index) {
 </li><li><a href="filter.html">.filter()</a>
 </li><li><a href="find.html">.find()</a>
 </li><li><a href="get.html">.get()</a>
-</li><li><a href="hasclass.html">.hasClass()</a>
+</li><li><a href="is.html">.is()</a>
 </li><li><a href="length.html">.length</a>
 </li><li><a href="on.html">.on()</a>
+</li><li><a href="onover.html">.onOver()</a>
+</li><li><a href="only.html">.only()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>
+</li><li><a href="select.html">.select()</a>
 </li><li><a href="set.html">.set()</a>
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="text.html">.text()</a>
 </li><li><a href="toggle.html">.toggle()</a>
+</li><li><a href="trav.html">.trav()</a>
+</li><li><a href="trigger.html">.trigger()</a>
+</li><li><a href="values.html">.values()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

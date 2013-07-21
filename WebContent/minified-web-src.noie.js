@@ -102,8 +102,18 @@ define('minified', function() {
 	var BACKSLASHB = '\\b';
 	/** @const */
 	var undef;
-	/** @const */
-	var MINIFIED_MAGIC = 'minifieD';
+	/**
+	 * @const
+	 * @type {!string}
+	 */
+	var MINIFIED_MAGIC_NODEID = 'minified';
+	/**
+	 * @const
+	 * @type {!string}
+	 */
+	var MINIFIED_MAGIC_EVENTS = 'minified2';
+
+	var nodeId = 1;
 
 
     /*$
@@ -179,7 +189,7 @@ define('minified', function() {
 	}
 	function filter(list, filterFuncOrObject) {
 		var r = []; 
-		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(value) { return filterFuncOrObject != value; }
+		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(value) { return filterFuncOrObject != value; };
 		each(list, function(value,index) {
 			if (f(value,index))
 				r.push(value);
@@ -216,6 +226,37 @@ define('minified', function() {
 		return parseFloat(replace(v, /^[^\d-]+/));
 	}
 
+	// retrieves the node id of the element, create one if needed.
+	function getNodeId(el) {
+		return el[MINIFIED_MAGIC_NODEID] = el[MINIFIED_MAGIC_NODEID] || ++nodeId;
+	}
+
+	// collect variant that filters out duplicate nodes from the given list, returns a new array
+	function collectUniqNodes(list, func) {
+		var result = [];
+		var nodeIds = {};
+		var currentNodeId;
+
+		function processNode(node) {
+			if (isNode(node)) {
+				if (!nodeIds[currentNodeId = getNodeId(node)]) {
+					result.push(node);
+					nodeIds[currentNodeId] = true;
+				}
+			}
+		}
+
+		each(list, function(value) {
+			var fv = func(value);
+			if (isList(fv))
+				each(fv, processNode);
+			else
+				processNode(fv);
+		});
+		return result;
+	}
+
+	// finds out the 'natural' height of the first element, the one if $$slide=1
 	function getNaturalHeight(elementList) {
 		var q = {'$position': 'absolute', '$visibility': 'hidden', '$display': 'block', '$height': null};
 		var oldStyles = elementList['get'](q);
@@ -226,25 +267,19 @@ define('minified', function() {
 	}
 
 	// event handler creation for on(). Outside of on() to prevent unneccessary circular refs
-	function createEventHandler(handler, selector, selectorBase, fThis, args, index, unprefixed) {
+	function createEventHandler(handler, fThis, args, index, unprefixed) {
 
-		// triggerMagic is set to MINIFIED_MAGIC if the event handler is called by trigger()!! 
-		// originalTarget is only used in this special case.
-		return function(event, originalTarget, triggerMagic) {
-			var e = event || _window.event, selectedIndex, stopPropagation;
-			var isTriggered = (triggerMagic == MINIFIED_MAGIC);
-			var triggerOriginalTarget = isTriggered && originalTarget;
-			if (selector && (selectedIndex = $(selector, selectorBase).find(triggerOriginalTarget || e['target'])) == null) 
-				return;
+		// triggerOriginalTarget is set only if the event handler is called by trigger()!! 
+		return function(event, triggerOriginalTarget) {
+			var e = event || _window.event, stopPropagation;
 
 			// @cond debug try {
-			if ((stopPropagation = (((!handler.apply(fThis || triggerOriginalTarget || e['target'], args || [e, index, selectedIndex])) || args) && unprefixed)) && !isTriggered) {
+			if ((stopPropagation = (((!handler.apply(fThis || triggerOriginalTarget || e['target'], args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget) {
 					e['preventDefault']();
 					e['stopPropagation']();
 			}
 			// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
-			if (isTriggered)
-				return stopPropagation; // if called by trigger, return propagation result 
+			return stopPropagation; // if called by trigger, return propagation result 
 		};
 	}
 
@@ -468,11 +503,7 @@ define('minified', function() {
 	}
     // @cond debug MINI['debug'] = true;
 
-    /*$
-     * @id dollarraw
-     * @requires 
-     * @dependency yes
-     */
+	// implementation of $ that does not produce a Minified list, but just an array
     function dollarRaw(selector, context, childOnly) { 
 
 		function filterElements(list) { // converts into array, makes sure context is respected
@@ -498,7 +529,7 @@ define('minified', function() {
 		var elements, regexpFilter, useGEbC, className, elementName, reg;
 
 		if (context && (context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
-			return collect(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
+			return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
 		parent = context && context[0]; // note that context may have changed in the previous two lines!! you can't move this line
 
 		if (!isString(selector))
@@ -514,6 +545,31 @@ define('minified', function() {
 		elements = (parent || _document).querySelectorAll(selector);
 		return parent ? filterElements(elements) : elements;
 	};
+
+    // finds a filter func for is() and only()
+	function getFilterFunc(selector) {
+		var dotPos;
+		if (isFunction(selector))
+			return selector;
+		else if (!selector || 
+				 (isString(selector) && 
+						 (selector == '*' || ((dotPos = /^([\w-]*)\.([\w-]+)$/.exec(selector)) || (dotPos = /^([\w-]+)$/.exec(selector)))))) {
+			var nodeNameFilter = dotPos && dotPos[1] && new RegExp(dotPos[1], 'i');
+			var classNameFilter = dotPos && dotPos[2] && new RegExp(BACKSLASHB +  dotPos[2] + BACKSLASHB, 'i');
+			return function(v) { 
+				return isNode(v) == 1 &&
+					((!nodeNameFilter)  || nodeNameFilter.test(v['nodeName'])) &&
+					((!classNameFilter) || classNameFilter.test(v['className']));
+			};
+		}
+		else {
+			var nodeSet = {};
+			$(selector)['each'](function(node) {
+				nodeSet[getNodeId(node)] = true;
+			});
+			return function(v) { return nodeSet[getNodeId(v)]; };
+		}
+	}
 
  	/*$
 	 * @id length
@@ -605,8 +661,8 @@ define('minified', function() {
 	 *              be a function. 
 	 * @return the new, filtered ##list#list##
 	 */
-	'filter': function(filterFunc) {
-	    return new M(filter(this, filterFunc));
+	'filter': function(filterFuncOrValue) {
+	    return new M(filter(this, filterFuncOrValue));
 	},
 
 	/*$ 
@@ -730,7 +786,7 @@ define('minified', function() {
      * 
      * @example Goes through the elements to find the first div that has the class 'myClass', and returns this element:
      * <pre> 
-     * var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) return e; });
+     * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
      * </pre> 
      * 
      * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
@@ -747,32 +803,6 @@ define('minified', function() {
 		for (var i = 0; i < self.length; i++)
 			if ((r = f(self[i], i)) != null)
 				return r;
-	},
-
-	/*$ 
-	 * @id hasclass 
-	 * @group SELECTORS 
-	 * @requires find
-	 * @configurable default 
-	 * @name .hasClass() 
-	 * @syntax hasClass(className) 
-     * @module WEB
-	 * Checks whether at least one HTML element in the list has the given CSS class name. 
-	 * If yes, the first element that matches is returned. Otherwise the function returns <var>undefined</var>. List elements that do not
-	 * have a <var>className</var> property will be ignored.
-	 *
-	 * @example Checks whether the element 'myElement' has the class 'myClass'. If yes, it sets the text color to red.
-	 * <pre>
-	 * if($('#myElement').hasClass('myClass'))
-	 *     $('#myElement').set('$color', 'red');
-	 * </pre>
-	 * 
-	 * @param className the class to to find
-	 * @return the first element that has the given class, or <var>undefined</var> if not found
-	 */ 
-	'hasClass': function(className) {
-		var regexp = new RegExp(BACKSLASHB +  className + BACKSLASHB);
-		return this['find'](function(e) { return regexp.test(e.className) ? e : null; });
 	},
 
 	/*$
@@ -834,36 +864,68 @@ define('minified', function() {
  	/*$
  	 * @id trav
  	 * @group SELECTORS
- 	 * @requires collect
+ 	 * @requires each
  	 * @configurable default
  	 * @name .trav()
  	 * @syntax trav(property)
+ 	 * @syntax trav(property, selector)
+ 	 * @syntax trav(property, selector, maxDepth)
      * @module WEB
- 	 * Traverses each node in the list using the given property, and creates a new list from the results.
- 	 * If the property contains a list, all list items are added to the new list. If the property contains a single
- 	 * object, only the object will be added. If the property null or undefined, nothing will be added. 
+ 	 * Traverses each DOM node in the list using the given property, and creates a new list that includes each visited node,
+ 	 * optionally filtered by the given selector.
  	 * 
- 	 * @example Returns a list of parent nodes:
+ 	 * <var>trav()</var> uses each element in the list and then traverses the DOM tree using that property until it finds null or 
+ 	 * a DOM document, while adding all visited nodes that match the given selector to the result list. If no selector is given,
+ 	 * only elements will be added.
+ 	 * 
+ 	 * @example Returns a list of all parent nodes, direct and indirect:
  	 * <pre>
  	 * var parents = $('.myElements').trav('parentNode'); 
  	 * </pre>
- 	 * 
- 	 * @example Returns a list of all child elements nodes:
+ 	 *
+ 	 * @example Returns a list of all direct siblings of the original list:
  	 * <pre>
- 	 * var children = $('.myElements').trav('children'); 
+ 	 * var parents = $('.sibs').trav('nextSibling', '*', 1); 
  	 * </pre>
  	 * 
- 	 * @parm property the name of the property to traverse.
- 	 * @return the new list containing the flattened property values.
+ 	 * @example Returns a list of all parent nodes, direct and indirect, that have the class 'specialParent':
+ 	 * <pre>
+ 	 * var parents = $('.myElements').trav('parentNode', '.specialParent'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @example Returns a list of all direct parent nodes that are tables and have the class 'specialParent':
+ 	 * <pre>
+ 	 * var parents = $('.myElements').trav('parentNode', 'table.specialParent', 1); 
+ 	 * </pre>
+ 	 *
+  	 * @parm property the name of the property to traverse.
+ 	 * @param selector optional any selector valid for ##dollar#$(), including CSS selectors and lists. Additionally you can
+ 	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
+ 	 *        Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements
+ 	 *        (but no other nodes such as text nodes).
+ 	 * @param maxDepth optional the maximum number of steps to traverse. Defaults to unlimited.
+ 	 * @return the new list containing all visited nodes. Nodes of the original list are not included, unless they
+ 	 *         have been visited when traversing another node. Duplicate nodes will be automatically removed.
  	 */
-	'trav': function(property) {
-		return this['collect'](function(node) { return node[property]; });
+	'trav': function(property, selector, maxDepth) {
+		var f = getFilterFunc(selector);
+		var max = maxDepth || 1e9;
+		return new M(collectUniqNodes(this, function(node) {
+				var r = [];
+				var c = node;
+				while ((c = c[property]) && c['nodeType']!=9 && r.length < max)
+					if (f(c))
+						r.push(c);
+				return r;
+			} 
+		));
 	},
 
  	/*$
  	 * @id select
  	 * @group SELECTORS
- 	 * @requires collect
+ 	 * @requires dollar
  	 * @configurable default
  	 * @name .select()
  	 * @syntax trav(selector)
@@ -889,6 +951,80 @@ define('minified', function() {
  	 */
 	'select': function(selector, childOnly) {
 		return $(selector, this, childOnly);
+	},
+
+ 	/*$
+ 	 * @id is
+ 	 * @group SELECTORS
+ 	 * @requires find each
+ 	 * @configurable default
+ 	 * @name .is()
+ 	 * @syntax is()
+ 	 * @syntax is(selector)
+     * @module WEB
+ 	 * Checks whether all elements in the list match the given selector. Returns true if they all do, or false
+ 	 * if at least one does not.
+ 	 * 
+ 	 * Please note that this method is optimized for the four simple selector forms '*', '.classname', 'tagname' 
+ 	 * and 'tagname.classname'. If you use any other kind of selector, please be aware that selectors that match
+ 	 * many elements can be slow.
+ 	 * 
+ 	 * @example Checks whether the element has the class 'myClass':
+ 	 * <pre>
+ 	 * var isMyClass = $('li').is('.myClass'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @example Checks whether the list contains only table rows:
+ 	 * <pre>
+ 	 * var areRows = $('.myRows').is('tr'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @param selector optional any selector valid for ##dollar#$(), including CSS selectors and lists. Additionally you can
+ 	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
+ 	 *        Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        is relative to the number of matches for the selector in the document. Default is '*', which checks whether all list nodes
+ 	 *        are elements.
+ 	 * @return true if all list elements match the selector. false otherwise.
+ 	 */
+	'is': function(selector) {
+		var f = getFilterFunc(selector);
+		return !this['find'](function(v) {if (!f(v)) return true;});
+	},
+
+ 	/*$
+ 	 * @id only
+ 	 * @group SELECTORS
+ 	 * @requires filter each
+ 	 * @configurable default
+ 	 * @name .only()
+ 	 * @syntax only()
+ 	 * @syntax only(selector)
+     * @module WEB
+ 	 * Returns a new list that contains only those elements that match the given selector.
+ 	 * 
+ 	 * Please note that this method is optimized for the four simple selector forms '*', '.classname', 'tagname' 
+ 	 * and 'tagname.classname'. If you use any other kind of selector, please be aware that selectors that match
+ 	 * many elements can be slow.
+ 	 * 
+ 	 * @example Returns only those list elements of the class 'myClass':
+ 	 * <pre>
+ 	 * var myLis = $('li').only('.myClass'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @example Returns a list of all forms:
+ 	 * <pre>
+ 	 * var forms = $('#content *').only('form'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @param selector optional any selector valid for ##dollar#$(), including CSS selectors and lists. Additionally you can
+ 	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
+ 	 *        Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        is relative to the number of matches for the selector in the document. Default is '*', which keeps all elements
+ 	 *        (but no other nodes such as text nodes).
+ 	 * @return a new list containing only elements matched by the selector.
+ 	 */
+	'only': function(selector) {
+		return this['filter'](getFilterFunc(selector));
 	},
 
   	/*$
@@ -2003,26 +2139,33 @@ define('minified', function() {
 		 *             <dl>
 		 *             <dt>newState (optional)</dt><dd>If a boolean <var>true</var or <var>false</var> is given, 
 		 *             the toggle will set the first or second state, respectively. If called with any other value, or without a value,
-		 *             the function toggles to the other state.</dd></dl>
+		 *             the function toggles to the other state.</dd>
+		 *             <dt class="returnValue">(return value)</dt><dd>A ##promise#Promise## that is fulfilled when the toggle operation ended, or
+		 *             <var>null</var>/<var>undefined</var> if the toggle finished its work during the invocation. Promises are mostly
+		 *             used for animations, so you can track when the animation is done.</dd>
+		 *             </dl>
 		 */
-		'toggle': function(state1, state2, durationMs, linearity) {
+		'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
 			var self = this;
 			var animState = {};
-			var state = false, regexg = /\b(?=\w)/g;
+			var state = false, regexg = /\b(?=\w)/g, stateDesc;
 
-			return !state2 ?
-				self['toggle'](replace(state1, regexg, '-'), replace(state1, regexg, '+')) :			
-				self['set'](state1) && 
-			    function(newState) {
-					if (newState === state) 
-						return;
-					state = newState===true||newState===false ? newState : !state;
+			if (stateDesc2)
+				return self['set'](stateDesc1) && 
+				    function(newState) {
+						if (newState !== state) {
+							stateDesc = (state = newState===true||newState===false ? newState : !state) ? stateDesc2 : stateDesc1;
 
-					if (durationMs) 
-						self['animate'](state ? state2 : state1, animState['stop'] ? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
-					else
-						self['set'](state ? state2 : state1); 
-				};
+							if (isFunction(stateDesc)) 
+								return stateDesc(self, durationMs, linearity);
+							else if (durationMs) 
+								return self['animate'](stateDesc, animState['stop'] ? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
+							else
+								return self['set'](stateDesc) && undef;
+						}
+					};
+			else
+				return self['toggle'](replace(stateDesc1, regexg, '-'), replace(stateDesc1, regexg, '+'));
 		},
 
 		/*$
@@ -2078,15 +2221,12 @@ define('minified', function() {
 		/*$
 		 * @id on
 		 * @group EVENTS
-		 * @requires dollar
+		 * @requires dollar each
 		 * @configurable default
 		 * @name .on()
 		 * @syntax on(names, eventHandler)
-		 * @syntax on(names, selector, eventHandler)
 		 * @syntax on(names, customFunc, args)
 		 * @syntax on(names, customFunc, fThis, args)
-		 * @syntax on(names, selector, customFunc, args)
-		 * @syntax on(names, selector, customFunc, fThis, args)
 		 * @module WEB
 		 * Registers the function as event handler for all items in the list.
 		 * 
@@ -2100,9 +2240,6 @@ define('minified', function() {
 		 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback. 
 		 * When you pass arguments, the handler's return value is always ignored and the event with unnamed prefixes 
 		 * will always be cancelled.
-		 * 
-		 * You can filter the events that you actually receive using the <var>selector</var>. If set, you only receive events that bubbled
-		 * up from one of the elements described by the <var>selector</var>. You can find out the event that 
 		 * 
 		 * Event handlers can be unregistered using #off#$.off().
 		 * 
@@ -2143,14 +2280,10 @@ define('minified', function() {
 		 *             space-separated event names. If the name is prefixed
 		 *             with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will 
 		 *             be executed by the browser. 
-		 * @param selector optional a selector to filter for events whose actual target is a descendant matched with the given selector.
-		 *                 Uses the selector syntax of ##dollar#$()##. This is mostly useful for performance reasons, as it allows you to 
-		 *                 reduce the number of event handlers registered on the page. You only need a single event handler at a parent object. 
 		 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 		 * 		  <dl>
 	 	 *             <dt>event</dt><dd>The original DOM event object.</dd>
 	 	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
-	 	 *             <dt>selectedIndex</dt><dd>The index of the target object in the <var>selector</var>. <var>undefined</var> if there is no <var>selector</var>.</dd>
 	 	 *             <dt class="returnValue">(callback return value)</dt><dd>Unless the handler returns <var>true</var> 
 	 	 *             or the event name is prefixed by '|', all further processing of the event will be 
 		 *                stopped and event bubbling will be disabled.</dd>
@@ -2163,26 +2296,13 @@ define('minified', function() {
 		 *                      If you pass custom arguments, the return value of the handler will always be ignored.
 		 * @return the list
 		 */
-		'on': function (eventName, p1, p2, p3, p4) {
-			var args, fThis, handler, selector;
-			if (isFunction(p1)) {
-				args = p3 || p2;
-				fThis = p3 && p2;
-				handler = p1;
-			}
-			else {
-				args = p4 || p3;
-				fThis = p4 && p3;
-				selector = p1;
-				handler = p2;
-			}
-			// @cond debug if (!(name && handler)) error("eventName and handler parameters are required!"); 
-			// @cond debug if (/\bon/i.test(name)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
-			return each(this, function(el, index) {
+		'on': function (eventName, handler, fThisOrArgs, optArgs) {
+			// @cond debug if (!(eventName && handler)) error("eventName and handler parameters are required!"); 
+			// @cond debug if (/\bon/i.test(eventName)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
+			return this['each'](function(el, index) {
 				each(eventName.split(/\s/), function(namePrefixed) {
 					var name = replace(namePrefixed, /\|/);
-					var miniHandler = createEventHandler(handler, selector, selector && el, // only pass el ref if selectors are used 
-							fThis, args, index, name == namePrefixed);
+					var miniHandler = createEventHandler(handler, optArgs && fThisOrArgs, optArgs || fThisOrArgs, index, name == namePrefixed);
 
 					var handlerDescriptor = {'e': el,          // the element  
 							                 'h': miniHandler, // minified's handler 
@@ -2190,15 +2310,51 @@ define('minified', function() {
 							                };       
 					(handler['M'] = handler['M'] || []).push(handlerDescriptor);
 						el.addEventListener(name, miniHandler, true); // W3C DOM
-						(el[MINIFIED_MAGIC] = el[MINIFIED_MAGIC] || []).push(handlerDescriptor); 
+						(el[MINIFIED_MAGIC_EVENTS] = el[MINIFIED_MAGIC_EVENTS] || []).push(handlerDescriptor); 
 				});
+			});
+		},
+
+		/*$
+		 * @id onover
+		 * @group EVENTS
+		 * @requires on
+		 * @configurable default
+		 * @name .onOver()
+		 * @syntax on(handler)
+		 * @module WEB
+		 * Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.
+		 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
+		 * which allows you to use any ##toggle() function as handler.
+		 * 
+		 * @example Creates a toggle that animates the element on mouse over:
+		 * <pre>
+		 * $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 500));
+		 * </pre>
+		 * 
+		 * @param toggle the callback <code>function(isOver, index)</code> to invoke when the event has been triggered:
+		 * 		  <dl>
+	 	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
+	 	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
+	 	 *             </dl>
+		 *             'this' is set to the target element that caused the event.
+		 * @return the list
+		 */
+		'onOver': function(toggle) {
+			var curState = [];
+			return this['on']('|mouseover |mouseout', function(ev, index) {
+				var newState = ev['type'] != 'mouseout';
+				if (curState[index] !== newState) {
+					curState[index] = newState;
+					toggle.call(this, newState, index);
+				}
 			});
 		},
 
 		/*$
 		 * @id trigger
 		 * @group EVENTS
-		 * @requires on
+		 * @requires on each
 		 * @configurable default
 		 * @name .trigger()
 		 * @syntax trigger(name)
@@ -2227,13 +2383,13 @@ define('minified', function() {
 		 */
 		'trigger': function (eventName, eventObj) {
 			var e = eventObj || {};
-			return each(this, function trigger(el, index, originEl) {
-				var stopBubble=false, evList;
-					evList = el[MINIFIED_MAGIC];
+			return this['each'](function trigger(el, index, originEl) {
+				var stopBubble, evList;
+					evList = el[MINIFIED_MAGIC_EVENTS];
 
 				each(evList, function(hDesc) {
 					if (hDesc['n'] == eventName)
-						stopBubble = stopBubble || hDesc['h'](e, originEl || el, MINIFIED_MAGIC);
+						stopBubble = stopBubble || hDesc['h'](e, originEl || el);
 				});
 
 				if (el['parentNode'] && !stopBubble)
@@ -2688,7 +2844,7 @@ define('minified', function() {
 		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
 	   	each(handler['M'], function(h) {
 				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
-				h['e'][MINIFIED_MAGIC] = filter(h['e'][MINIFIED_MAGIC], h);
+				h['e'][MINIFIED_MAGIC_EVENTS] = filter(h['e'][MINIFIED_MAGIC_EVENTS], h);
 		});
 		handler['M'] = null;
 	}
@@ -2721,7 +2877,7 @@ define('minified', function() {
 		/*$
 		 * @id dollar
 		 * @group SELECTORS
-		 * @requires dollarraw 
+		 * @requires  
 		 * @dependency yes
 		 * @name $()
 		 * @syntax $(selector)
@@ -2847,17 +3003,18 @@ define('minified', function() {
 		 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
 		 *             true, all descendants of the context will be included. 
 		 * @return the array-like ##list#Minified list## object containing the content specified by the selector. 
-		 *             Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the first argument was a list, 
+		 *             Please note that that the first argument was a list, 
 		 *             the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. If you combined several selectors 
 		 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to form a single list. This list will, 
 		 *             not be in document order anymore, unless you use a build without legacy IE support.
+		 *             Duplicate nodes will be removed from selectors, but not from lists.
 		 */
 		'$': $,
 
 	    /*$
 		 * @id dollardollar
 		 * @group SELECTORS
-		 * @requires dollarraw
+		 * @requires 
 		 * @configurable default
 		 * @name $$()
 		 * @syntax $$(selector)
@@ -2997,7 +3154,7 @@ define('minified', function() {
 	    /*$
 		 * @id M
 		 * @group SELECTORS
-		 * @requires dollarraw
+		 * @requires 
 		 * @configurable no
 		 * @name M
 		 * @syntax MINI.M

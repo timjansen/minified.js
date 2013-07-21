@@ -25,7 +25,8 @@
 <dl class="params">
 <dt id="get_name" class=""><a name="get_name"><var>name</var></a></dt>
 <dd class="">the name of the property, attribute or style. To retrieve a JavaScript property, just use its name without prefix. To get an attribute value,
-prefix the name with a '@'. A '$' prefix will retrieve a CSS style. The syntax for the CSS styles is camel-case (e.g. "backgroundColor", not "background-color").
+prefix the name with a '@' for regular attributes or '%' to add a 'data-' prefix.
+A '$' prefix will retrieve a CSS style. The syntax for the CSS styles is camel-case (e.g. "backgroundColor", not "background-color").
 Shorthand properties like "border" or "margin" are not supported. You must use the full name, e.g. "marginTop". Minified will try to determine the effective style
 and thus will return the value set in style sheets if not overwritten using a regular style.
 Using just '$' as name will retrieve the 'className' property of the object, a space-separated list of all CSS classes.
@@ -109,16 +110,23 @@ Please note that the values of $top and $left in the <var>get()</var> invocation
 </li><li><a href="filter.html">.filter()</a>
 </li><li><a href="find.html">.find()</a>
 </li><li><a href="get.html">.get()</a>
-</li><li><a href="hasclass.html">.hasClass()</a>
+</li><li><a href="is.html">.is()</a>
 </li><li><a href="length.html">.length</a>
 </li><li><a href="on.html">.on()</a>
+</li><li><a href="onover.html">.onOver()</a>
+</li><li><a href="only.html">.only()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>
+</li><li><a href="select.html">.select()</a>
 </li><li><a href="set.html">.set()</a>
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="text.html">.text()</a>
 </li><li><a href="toggle.html">.toggle()</a>
+</li><li><a href="trav.html">.trav()</a>
+</li><li><a href="trigger.html">.trigger()</a>
+</li><li><a href="values.html">.values()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

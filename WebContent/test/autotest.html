@@ -64,10 +64,10 @@
 			fail("Can not find '"+value+"' in list. " + extraMsg?extraMsg:'');
 		}
 		
-		function containsAll(list, expectedValueList, checkIdentity) {
-			check(list.length, expectedValueList.length, 'Testing for array length.');
+		function containsAll(list, expectedValueList, checkIdentity, extraMsg) {
+			check(list.length, expectedValueList.length, 'Testing for array length' + (extraMsg?(': '+extraMsg):''));
 			for (var i = 0; i < expectedValueList.length; i++)
-				contains(list, expectedValueList[i], checkIdentity, 'Checked index='+i+'.');
+				contains(list, expectedValueList[i], checkIdentity, 'Checked index='+i+'.' + (extraMsg?(': '+extraMsg):''));
 		}
 
 		window.miniTests = [	{

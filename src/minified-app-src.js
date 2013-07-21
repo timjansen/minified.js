@@ -227,7 +227,7 @@ define('minifiedApp', function() {
 			'config': syncConfig
 		};
 		self.listeners = {}; // path -> [func, func...]
-		self.mappings = []; // array of arrays containing mapping funcs
+		self.bindings = []; // array of arrays containing binding funcs
 
 	
 		// delayedUpdatePath is not null if there's a pending async update (caused by a listener
@@ -282,7 +282,7 @@ define('minifiedApp', function() {
 
 	copyObj({
 		// adds a listener to be notified about changes in the model
-		// NOTE: ideally listeners *should*not* modify the model or call update(). If they do, the listeners and mapping
+		// NOTE: ideally listeners *should*not* modify the model or call update(). If they do, the listeners and binding
 		//              will not be informed immediately, but via the event loop
 		//
 		// listeners are called as function(value, updatePath):
@@ -305,41 +305,41 @@ define('minifiedApp', function() {
 				this.listeners[p] = [f];
 		}, 
 	
-		// adds one or more mappings that will be invoked each time the model is updated. 
+		// adds one or more bindings that will be invoked each time the model is updated. 
 		//
-		// Usually you create a mapping by calling SYNC() or similar functions to create them.
+		// Usually you create a binding by calling SYNC() or similar functions to create them.
 		//
-		// A mapping is an object with the following properties:
-		// - init: optional, a function(modelCtx, ctx, Controller) that will be called when the mapping has been added to the model
-		// 	- ctx is the MappingContext
+		// A binding is an object with the following properties:
+		// - init: optional, a function(modelCtx, ctx, Controller) that will be called when the binding has been added to the model
+		// 	- ctx is the BindingContext
 		//
 		// - update: required, a function(modelCtx, ctx, Controller, updatePath) that will be called when the relevant part of the model has been updated
-		// 	- ctx is the MappingContext
+		// 	- ctx is the BindingContext
 		// 	- updatePath is the string of the last sync.update() invocation relative to modelCtx, or null
 		//
-		// - read: optional, a function(indexStack, group, ctx) to make the mapping sync back and write into the model. Calling update() is not required.
-		// 	- group is the name of the group to read. If not null, the mapping should only read  if it belongs to that group. Otherwise
+		// - read: optional, a function(indexStack, group, ctx) to make the binding sync back and write into the model. Calling update() is not required.
+		// 	- group is the name of the group to read. If not null, the binding should only read  if it belongs to that group. Otherwise
 		//          read() should do nothing.
-		// 	- ctx is the MappingContext
+		// 	- ctx is the BindingContext
 		//    
 		// - inactive: optional, boolean. If true, update() is also called when the context is set to not active. 
 		//             By default, the function is only called when active (thus outside of the false-list of a COND). 
 		//             This is required for SHOW/HIDE.
 		//
 		//
-		'addMapping': function(mapping) {
+		'addBinding': function(binding) {
 			var self = this;
-			var mappingList = collect(mapping, selfFunc);
+			var bindingList = collect(binding, selfFunc);
 			var ctx = copyObj(self.ctxPrototype, {});
 
-			this.mappings.push(mappingList);
+			this.bindings.push(bindingList);
 			
-			each(mappingList, function(mapping) {
-				mapping['init'](ctx['modelCtx'], ctx, self);
+			each(bindingList, function(binding) {
+				binding['init'](ctx['modelCtx'], ctx, self);
 			});
 		},
 		
-		// notifies MINI that the model has been updated manually. Will validate changes, and listeners and mappings will be notified
+		// notifies MINI that the model has been updated manually. Will validate changes, and listeners and bindings will be notified
 		// The optional function(obj) allows several changes with single update. return false or throw exception to suppress update.
 		'update': function(path, func) {
 			var self = this;
@@ -367,11 +367,11 @@ define('minifiedApp', function() {
 					});
 				});
 				
-				each(self.mappings, function(mappingList) {
+				each(self.bindings, function(bindingList) {
 					var ctx = copyObj(self.ctxPrototype, {});
-					each(mappingList, function(mapping) {
-						if (ctx['isActive'] || mapping['inactive'])
-							mapping['update'](ctx['modelCtx'], ctx, self, actualPath);
+					each(bindingList, function(binding) {
+						if (ctx['isActive'] || binding['inactive'])
+							binding['update'](ctx['modelCtx'], ctx, self, actualPath);
 					});
 				});
 				self.updateRunning = 0;
@@ -420,20 +420,20 @@ define('minifiedApp', function() {
 			}
 		},
 		
-		// Requests all mappings to read their data and store it in the model. The idea behind this is you do not synchronize
+		// Requests all bindings to read their data and store it in the model. The idea behind this is you do not synchronize
 		// to the model in real-time, you can use this function when the user submits the form.
-		// The function calls read() on all mappings associated with the model, and then update() without path.
-		// Optionally the mappings can be limited to the given group.
+		// The function calls read() on all bindings associated with the model, and then update() without path.
+		// Optionally the bindings can be limited to the given group.
 		// Special syntax groupName[index] if group was used more than once.
 		// Then calls sync.update()
 		'read': function(indexStackOrCtx, groupName) {
 			var indexStack = (indexStackOrCtx && indexStackOrCtx['indexStack']) ? indexStackOrCtx['indexStack'] : indexStackOrCtx;
 			var actualGroup = groupName || (indexStackOrCtx && indexStackOrCtx['group']);
 			
-			each(self.mappings, function(mappingList) {
+			each(self.bindings, function(bindingList) {
 				var ctx = copyObj(self.ctxPrototype, {});
-				each(mappingList, function(mapping) {
-					mapping['read'](indexStack, actualGroup, ctx);
+				each(bindingList, function(binding) {
+					binding['read'](indexStack, actualGroup, ctx);
 				});
 			});
 			this['update']();
@@ -482,37 +482,37 @@ define('minifiedApp', function() {
 
 	}, Controller.prototype);
 
-	function numberMapping(format) {
+	function numberBinding(format) {
 		return {'render': function(s) {
 			return formatValue(format, s);
 		}, 'parse': function(s) {
 			return parseNumber(format, s);
 		}};
 	}
-	function dateMapping(format) {
+	function dateBinding(format) {
 		return {'render': function(s) {
 			return formatValue(format, s);
 		}, 'parse': function(s) {
 			return parseDate(format, s);
 		}};
 	}
-	function stringMapping(regExp) {
+	function stringBinding(regExp) {
 		return {'render': nonOp, 'parse': function(s) {
 			var r = replace(s, isString(regExp) ? (new RegExp(regExo)) : regExp);
 			return r != s && !r;
 		}};
 	}
-	var asIsMapping = {'render':nonOp, 'parse': nonOp};
+	var asIsBinding = {'render':nonOp, 'parse': nonOp};
 	
-	APP['mappings'] = {
-			'number': numberMapping,
-			'date': dateMapping,
-			'string': stringMapping,
+	APP['bindings'] = {
+			'number': numberBinding,
+			'date': dateBinding,
+			'string': stringBinding,
 			
 			'FIELD' : function(fieldSelector, valuePath, translator, parserFailToggleList) {
 				var toggleList = (isFunction(translator) || isList(translator)) ? translator : parserFailToggleList;
-				var tl = isString(translator) ? (/[09_#]/.test(translator) ? numberMapping(translator) : dateMapping(translator)) : 
-					(translator instanceof RegExp ? stringMapping(translator) : asIsMapping);
+				var tl = isString(translator) ? (/[09_#]/.test(translator) ? numberBinding(translator) : dateBinding(translator)) : 
+					(translator instanceof RegExp ? stringBinding(translator) : asIsBinding);
 				return {
 					'init': function(modelCtx, ctx, controller) {
 						var field = $(fieldSelector, ctx['viewCtx'])['sub'](0, 1);
@@ -550,6 +550,22 @@ define('minifiedApp', function() {
 			});
 		},
 
+		'onOver': function(toggle) {
+			var curState = [];
+			this['on']('|mouseover |mouseout', function(ev, index) {
+				var newState = /ov/.test(ev.type);
+				if (ev['target'] == ev['currentTarget'] && curState[index] !== newState) {
+					curState[index] = newState;
+					toggle.call(this, newState, index);
+				}
+			});
+		},
+		
+		'onAction': function(handler) {
+			this['on']('click submit', handler, []);
+		},
+
+		
 		'dial': function(states, initState, durationMs, linearity) {
 			var self = this;
 			var animState = {};

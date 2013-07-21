@@ -1170,7 +1170,7 @@ define('minifiedUtil', function() {
      * 
      * @example Goes through the elements to find the first div that has the class 'myClass', and returns this element:
      * <pre> 
-     * var myClassElement = $('div').find(function(e) { if ($(e).hasClass('myClass')) return e; });
+     * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
      * </pre> 
      * 
      * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 

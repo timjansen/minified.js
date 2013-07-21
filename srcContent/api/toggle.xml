@@ -50,7 +50,11 @@ time an interpolated value is required:
 <dl>
 <dt>newState (optional)</dt><dd>If a boolean <var>true</var or <var>false</var> is given,
 the toggle will set the first or second state, respectively. If called with any other value, or without a value,
-the function toggles to the other state.</dd></dl></dd>
+the function toggles to the other state.</dd>
+<dt class="returnValue">(return value)</dt><dd>A <a href='promise.html'>Promise</a> that is fulfilled when the toggle operation ended, or
+<var>null</var>/<var>undefined</var> if the toggle finished its work during the invocation. Promises are mostly
+used for animations, so you can track when the animation is done.</dd>
+</dl></dd>
 </dl>
 
 <h4>Description</h4>
@@ -126,16 +130,23 @@ var t = $('#myElement').toggle('myClass1 myClass2');
 </li><li><a href="filter.html">.filter()</a>
 </li><li><a href="find.html">.find()</a>
 </li><li><a href="get.html">.get()</a>
-</li><li><a href="hasclass.html">.hasClass()</a>
+</li><li><a href="is.html">.is()</a>
 </li><li><a href="length.html">.length</a>
 </li><li><a href="on.html">.on()</a>
+</li><li><a href="onover.html">.onOver()</a>
+</li><li><a href="only.html">.only()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>
+</li><li><a href="select.html">.select()</a>
 </li><li><a href="set.html">.set()</a>
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="text.html">.text()</a>
 </li><li><a href="toggle.html">.toggle()</a>
+</li><li><a href="trav.html">.trav()</a>
+</li><li><a href="trigger.html">.trigger()</a>
+</li><li><a href="values.html">.values()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

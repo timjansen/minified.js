@@ -1,0 +1,67 @@
+<html>
+	<head><title>Minified.js Event Test</title>
+	
+	<style type="text/css">
+		body {font-family: sans-serif;}
+		#container { position: relative; width: 630px; height: 630px;}
+		#overDiv, #u1Div, #u2Div, #u3Div { border: 1px solid black; position: absolute; width: 300px; height: 300px; } 
+		#overDiv  { left: 10px;  top: 10px; }
+		#u1Div  { left: 320px; top: 10px; }
+		#u2Div { left: 10px;  top: 320px; }
+		#u3Div  { left: 320px; top: 320px; }
+		
+		#overDiv { background-color: #fff; }
+		#overInner1 { position: absolute; width: 200px; height: 200px; left: 50px; top: 50px; background-color: #f00;}
+		#overInner2 { position: absolute; width: 200px; height: 120px; left: 40px; top: 40px; background-color: #0ff;}
+		#overInner3 { position: absolute; width: 60px;  height: 60px;  left: 30px; top: 30px; background-color: #00f;}
+
+	</style> 
+	<script type="text/javascript">
+	// Load the right source, depending on whether 'compiled' is in the URL query
+	
+	var q = window.location.search, undefined;
+	var srcFiles = ["../minified-web-src.js", "../minified-web.js", "../minified-web-src.noie.js", "../minified-web.noie.js"];
+	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie version on old ie
+	
+	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;
+	var file = srcFiles[srcNum] + '?rnd=' + (new Date().getTime());
+    document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
+	</script>
+	
+	<script type="text/javascript">
+	var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
+	
+	$(function() {
+		$('#libName').fill(srcFiles[srcNum]);
+		$$('#srcNum').value = (srcNum + 1) % srcFiles.length;
+	});
+
+	$(function() {
+		$('#overDiv').onOver($('#overDiv').toggle({$backgroundColor:'#fff'}, {$backgroundColor:'#555'}, 500));
+		$('#overInner1').onOver($('#overInner1').toggle({$backgroundColor:'#f00'}, {$backgroundColor:'#555'}, 500));
+		$('#overInner2').onOver($('#overInner2').toggle({$backgroundColor:'#0ff'}, {$backgroundColor:'#555'}, 500));
+	});
+	
+	</script>
+	
+	</head>
+	<body>
+	<div id="container">
+		<div id="overDiv">
+			<div id="overInner1"><div id="overInner2"><div id="overInner3"></div></div></div>
+		</div>
+		<div id="u1Div"></div>
+		<div id="u2Div"></div>
+		<div id="u3Div"></div>
+	</div>
+	<div id="rerun" >
+		<strong>Library: </strong><span id="libName">error</span>
+		<form action="eventtest.html" method="get">
+			<input id="srcNum" name="srcNum" type="hidden"/>
+			<input type="submit" value="Switch library"/>
+		</form>
+		<br/>
+		<a href="autotest.html">Start AutoTest</a>
+	</div>
+	</body>
+</html>

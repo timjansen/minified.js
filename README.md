@@ -15,6 +15,7 @@ everything that you don't need to reduce its size even more.
 
 Size Comparison
 -----------------
+For beta 1:
 <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
 <tr><td>minified-web.js</td><td>IE6 and higher</td><td>9.1kb</td><td>4089 bytes</td></tr>

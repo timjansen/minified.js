@@ -27,7 +27,7 @@ space-separated event names. If the name is prefixed
 with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will
 be executed by the browser.</dd>
 <dt id="on_eventHandler" class=""><a name="on_eventHandler"><var>eventHandler</var></a></dt>
-<dd class="">the callback <code>function(event, index)</code> to invoke when the event has been triggered:
+<dd class="">the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 <dl>
 <dt>event</dt><dd>The original DOM event object.</dd>
 <dt>index</dt><dd>The index of the target object in the <a href='list.html'>Minified list</a> .</dd>
@@ -35,7 +35,7 @@ be executed by the browser.</dd>
 or the event name is prefixed by '|', all further processing of the event will be
 stopped and event bubbling will be disabled.</dd>
 </dl>
-'this' is set to the element that caused the event.</dd>
+'this' is set to the target element that caused the event (the same as <var>event.target</var>).</dd>
 <dt id="on_customFunc" class=""><a name="on_customFunc"><var>customFunc</var></a></dt>
 <dd class="">a function to be called instead of a regular event handler with the arguments given in <var>args</var>
 and optionally the 'this' context given using <var>fThis</var>.</dd>
@@ -85,6 +85,14 @@ $('#myInput').on('|keypress |keydown', function() {
 });
 </pre>
 </p></div>
+<h4>Example</h4>
+<div class="example"><p>Adds listeners for all clicks on
+<pre>
+$('#table').on('change', 'tr', function(event, index, selectedIndex) {
+   alert("Click on table row number: " + selectedIndex);
+});
+</pre>
+</p></div>
 </div>
 
 
@@ -113,16 +121,23 @@ $('#myInput').on('|keypress |keydown', function() {
 </li><li><a href="filter.html">.filter()</a>
 </li><li><a href="find.html">.find()</a>
 </li><li><a href="get.html">.get()</a>
-</li><li><a href="hasclass.html">.hasClass()</a>
+</li><li><a href="is.html">.is()</a>
 </li><li><a href="length.html">.length</a>
 </li><li><a href="on.html">.on()</a>
+</li><li><a href="onover.html">.onOver()</a>
+</li><li><a href="only.html">.only()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>
+</li><li><a href="select.html">.select()</a>
 </li><li><a href="set.html">.set()</a>
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="text.html">.text()</a>
 </li><li><a href="toggle.html">.toggle()</a>
+</li><li><a href="trav.html">.trav()</a>
+</li><li><a href="trigger.html">.trigger()</a>
+</li><li><a href="values.html">.values()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

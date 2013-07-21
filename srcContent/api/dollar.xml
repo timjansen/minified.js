@@ -51,10 +51,11 @@ first argument. If given, the returned list contains only descendants of the con
 true, all descendants of the context will be included.</dd>
 <dt id="dollar_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5 inSyntax6 inSyntax7 inSyntax8 inSyntax9"><a name="dollar_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5 inSyntax6 inSyntax7 inSyntax8 inSyntax9">the array-like <a href='list.html'>Minified list</a> object containing the content specified by the selector.
-Please note that duplicates (e.g. created using the comma-syntax or several context nodes) will not be removed. If the first argument was a list,
+Please note that that the first argument was a list,
 the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. If you combined several selectors
 using commas, only the individual results of the selectors will keep the document order, but will then be joined to form a single list. This list will,
-not be in document order anymore, unless you use a build without legacy IE support.</dd>
+not be in document order anymore, unless you use a build without legacy IE support.
+Duplicate nodes will be removed from selectors, but not from lists.</dd>
 </dl>
 
 <h4>Description</h4>
@@ -192,16 +193,23 @@ $(function() {
 </li><li><a href="filter.html">.filter()</a>
 </li><li><a href="find.html">.find()</a>
 </li><li><a href="get.html">.get()</a>
-</li><li><a href="hasclass.html">.hasClass()</a>
+</li><li><a href="is.html">.is()</a>
 </li><li><a href="length.html">.length</a>
 </li><li><a href="on.html">.on()</a>
+</li><li><a href="onover.html">.onOver()</a>
+</li><li><a href="only.html">.only()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>
+</li><li><a href="select.html">.select()</a>
 </li><li><a href="set.html">.set()</a>
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="text.html">.text()</a>
 </li><li><a href="toggle.html">.toggle()</a>
+</li><li><a href="trav.html">.trav()</a>
+</li><li><a href="trigger.html">.trigger()</a>
+</li><li><a href="values.html">.values()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>

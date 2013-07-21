@@ -71,7 +71,7 @@ Creates a new promise that will be fulfilled as soon as the specified number of 
 <div class="summary">Sets the content of the list's HTML elements, replacing old content.</div>
 
 <h3><a href="filter.html">.filter()</a></h3>
-<div class="summary">Creates a new Minified list that contains only those items approved by the given callback function.</div>
+<div class="summary">Creates a new Minified list by taking an existing list and omitting certain elements from it.</div>
 
 <h3><a href="find.html">.find()</a></h3>
 <div class="summary">Finds a specific value in the list.</div>
@@ -79,8 +79,8 @@ Creates a new promise that will be fulfilled as soon as the specified number of 
 <h3><a href="get.html">.get()</a></h3>
 <div class="summary">Retrieves properties, attributes and styles from the list's first element.</div>
 
-<h3><a href="hasclass.html">.hasClass()</a></h3>
-<div class="summary">Checks whether at least one HTML element in the list has the given CSS class name.</div>
+<h3><a href="is.html">.is()</a></h3>
+<div class="summary">Checks whether all elements in the list match the given selector.</div>
 
 <h3><a href="length.html">.length</a></h3>
 <div class="summary">
@@ -89,11 +89,20 @@ Contains the number of elements in the list.</div>
 <h3><a href="on.html">.on()</a></h3>
 <div class="summary">Registers the function as event handler for all items in the list.</div>
 
+<h3><a href="onover.html">.onOver()</a></h3>
+<div class="summary">Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.</div>
+
+<h3><a href="only.html">.only()</a></h3>
+<div class="summary">Returns a new list that contains only those elements that match the given selector.</div>
+
 <h3><a href="remove.html">.remove()</a></h3>
 <div class="summary">Removes all nodes of the list from the DOM tree.</div>
 
 <h3><a href="replace.html">.replace()</a></h3>
 <div class="summary">Replaces the list items with the the given node(s) in the DOM tree.</div>
+
+<h3><a href="select.html">.select()</a></h3>
+<div class="summary">Executes a selector with the list as context.</div>
 
 <h3><a href="set.html">.set()</a></h3>
 <div class="summary">
@@ -109,8 +118,23 @@ Modifies the list's elements by setting their properties, attributes, CSS styles
 <div class="summary">
 Creates a function that switches between the two given states for the list.</div>
 
+<h3><a href="trav.html">.trav()</a></h3>
+<div class="summary">Traverses each DOM node in the list using the given property, and creates a new list that includes each visited node,
+optionally filtered by the given selector.</div>
+
+<h3><a href="trigger.html">.trigger()</a></h3>
+<div class="summary">
+Triggers event handlers registered with on on all list members.</div>
+
+<h3><a href="values.html">.values()</a></h3>
+<div class="summary">Creates a name/value map from the given form.</div>
+
 <h3><a href="ee.html">EE()</a></h3>
 <div class="summary">Creates a new Element Factory.</div>
+
+<h3><a href="M.html">M</a></h3>
+<div class="summary">
+Exposes the internal class used by all  Minified lists.</div>
 
 <h3><a href="list.html">Minified Lists</a></h3>
 <div class="summary">
@@ -159,16 +183,23 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="filter.html">.filter()</a>
 </li><li><a href="find.html">.find()</a>
 </li><li><a href="get.html">.get()</a>
-</li><li><a href="hasclass.html">.hasClass()</a>
+</li><li><a href="is.html">.is()</a>
 </li><li><a href="length.html">.length</a>
 </li><li><a href="on.html">.on()</a>
+</li><li><a href="onover.html">.onOver()</a>
+</li><li><a href="only.html">.only()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>
+</li><li><a href="select.html">.select()</a>
 </li><li><a href="set.html">.set()</a>
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="text.html">.text()</a>
 </li><li><a href="toggle.html">.toggle()</a>
+</li><li><a href="trav.html">.trav()</a>
+</li><li><a href="trigger.html">.trigger()</a>
+</li><li><a href="values.html">.values()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
 </li><li><a href="always.html">promise.always()</a>
