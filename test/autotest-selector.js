@@ -76,10 +76,17 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
-		name: "$(id, id)",
+		name: "$(id, id2)",
 		exec: function() {
 			var m = $('#container, #container2');
 			containsAll(m, [document.getElementById("container"), document.getElementById("container2")], true);
+		}
+	},
+	{
+		name: "$(id, id) - dupe elimination",
+		exec: function() {
+			var m = $('#container, #container');
+			containsAll(m, [document.getElementById("container")], true);
 		}
 	},
 	{
@@ -239,6 +246,15 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	{
+		name: "$(*, [context,context]) - dupe elimination",
+		exec: function() {
+			var m = $("*", "#c, #c");
+			check(m.length, 6);
+			contains(m, document.getElementById("c_b"));
+			contains(m, document.getElementById("c_a"));
+		}
+	},
+	{
 		name: "$(id, context)",
 		exec: function() {
 			var m = $("#a", "#container");
@@ -306,6 +322,155 @@ window.miniTests.push.apply(window.miniTests, [
 			check($$ === MINI.$$);
 		}
 	},
+	
+	{
+		name: "$().select()",
+		exec: function() {
+			var m = $("#c").select("div", true);
+			containsAll(m, [document.getElementById("c_a"), document.getElementById("c_b")], true);
+		}
+	},
+
+	{
+		name: "$().trav(prop)",
+		exec: function() {
+			m = $('#a').trav('nextSibling');
+			containsAll(m, [document.getElementById("b"), document.getElementById("c")], true, 'two siblings');
+			_.each(m, function(v, index) {
+				if (v.nodeType != 1)
+					fail("Node is not element: " + v);
+			});
+
+			m = $('#c').trav('nextSibling');
+			containsAll(m, [], true, 'no sibling');
+
+			m = $('#a_a, #b_a, #c_b').trav('nextSibling');
+			containsAll(m, [document.getElementById("a_b"), document.getElementById("b_b")], true, 'multi-list');
+
+			m = $('#b_b').trav('parentNode');
+			contains(m, document.getElementById("b"), true, 'parent 1');
+			contains(m, document.getElementById("container"), true, 'parent 2');
+		}
+	},
+	
+	{
+		name: "$().trav(prop, selector)",
+		exec: function() {
+			var m = $('#a').trav('nextSibling', '.n');
+			containsAll(m, [document.getElementById("b")], true, 'class selector');
+
+			m = $('#a').trav('nextSibling', 'div');
+			containsAll(m, [document.getElementById("b"), document.getElementById("c")], true, 'tagname selector');
+
+			m = $('#a').trav('nextSibling', 'div.m');
+			containsAll(m, [document.getElementById("c")], true, 'class+tag selector');
+
+			m = $('#b_a, #b_b').trav('parentNode', '.n');
+			containsAll(m, [document.getElementById("b")], true, 'list input');
+
+			m = $('#b_a, #b_b').trav('parentNode', '#b');
+			containsAll(m, [document.getElementById("b")], true, 'id selector');
+
+			m = $('#b_a, #b_b').trav('parentNode', '#container .n');
+			containsAll(m, [document.getElementById("b")], true, 'complex selector');
+
+			m = $('#b_a, #b_b').trav('parentNode', '#container div');
+			containsAll(m, [document.getElementById("b")], true, 'multi-hit selector');
+			
+			m = $('#a').trav('nextSibling', function(v) { return v.nodeType == 1 && v !== document.getElementById("b"); });
+			containsAll(m, [document.getElementById("c")], true, 'tagname selector');
+		}
+	},
+
+	{
+		name: "$().trav(prop, selector, count)",
+		exec: function() {
+			var m = $('#a').trav('nextSibling', 'div', 1);
+			containsAll(m, [document.getElementById("b")], true, 'single step');
+
+			m = $("#a_a, #b_b, #a_a").trav('parentNode', '*', 1);
+			containsAll(m, [document.getElementById("a"), document.getElementById("b")], true, 'dupe list input with single step');
+
+			m = $('#a_a, #b_a, #b_b, #c_b').trav('parentNode', '*', 1);
+			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c")], true, 'list input, partial merge');
+
+			m = $('#a').trav('nextSibling', '*', 11);
+			containsAll(m, [document.getElementById("b"), document.getElementById("c")], true, 'large max');
+			
+			m = $('#b_a, #b_b').trav('parentNode', 'div', 1);
+			containsAll(m, [document.getElementById("b")], true, 'merged single step');
+
+			m = $('#b_a, #b_b').trav('parentNode', '*', 2);
+			containsAll(m, [document.getElementById("b"), document.getElementById("container")], true, 'double step');
+
+			m = $('#a_a, #b_a, #b_b, #c_b').trav('parentNode', '*', 2);
+			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c"), document.getElementById("container")], true, 'double steps list input');
+		}
+	},
+
+	
+	{
+		name: "$().is()",
+		exec: function() {
+			check($('#a').is(), true, 'default');
+			check($(document).is(), false, '!default');
+			check($('#a').is('*'), true, '*');
+			check($(document).is('*'), false, '!*');
+			check($('#a').is('.x'), true, 'class');
+			check($('#b').is('.x'), false, '!class');
+			check($('#a').is('div'), true, 'tag');
+			check($('#a p').is('div'), false, '!tag');
+			check($('#a').is('div.x'), true, 'tag+class');
+			check($('#b').is('div.x'), false, 'tag+!class');
+			check($('#a').is('p.x'), false, '!tag+class');
+			check($('#a').is(function(v) { return v == document.getElementById('a');}), true, 'func');
+			check($('#b').is(function(v) { return v == document.getElementById('a');}), false, '!func');
+
+			check($('#a, #b').is(), true, 'multi default');
+			check($([$('#a'), document]).is(), false, 'multi !default');
+			check($('#a, #b').is('*'), true, 'multi *');
+			check($([$('#a'), document]).is('*'), false, 'multi !*');
+			check($('#b_a, #b_b').is('.x'), true, 'multi class');
+			check($('#a_a, #b_a, #b_b').is('.x'), false, 'multi !class');
+			check($('#a, #b').is(function(v) { return v == document.getElementById('a');}), false, 'multi !func');
+			
+			check($('#a, #b').is('span, div, p'), true, 'complex');
+			check($('#a, #b').is('#a, #b'), true, 'complex 2');
+			check($('#a, #b').is('span, a, p'), false, '!complex');
+		}
+	},
+	
+	{
+		name: "$().only()",
+		exec: function() {
+			containsAll($('#a').only(), [document.getElementById('a')], 'default');
+			containsAll($(document).only(), [], '!default');
+			containsAll($('#a').only('*'), [document.getElementById('a')], '*');
+			containsAll($(document).only('*'), [], '!*');
+			containsAll($('#a').only('.x'), [document.getElementById('a')], 'class');
+			containsAll($('#b').only('.x'), [], '!class');
+			containsAll($('#a').only('div'), [document.getElementById('a')], 'tag');
+			containsAll($('#a p').only('div'), [], '!tag');
+			containsAll($('#a').only('div.x'), [document.getElementById('a')], 'tag+class');
+			containsAll($('#b').only('div.x'), [], 'tag+!class');
+			containsAll($('#a').only('p.x'), [], '!tag+class');
+			containsAll($('#a').only(function(v) { return v == document.getElementById('a');}), [document.getElementById('a')], 'func');
+			containsAll($('#b').only(function(v) { return v == document.getElementById('a');}), [], '!func');
+
+			containsAll($('#a, #b').only(), [document.getElementById('a'), document.getElementById('b')], 'multi default');
+			containsAll($([$('#a'), document]).only(), [document.getElementById('a')], 'multi !default');
+			containsAll($('#a, #b').only('*'), [document.getElementById('a'), document.getElementById('b')], 'multi *');
+			containsAll($([$('#a'), document]).only('*'), [document.getElementById('a')], 'multi !*');
+			containsAll($('#b_a, #b_b').only('.x'), [document.getElementById('b_a'), document.getElementById('b_b')], 'multi class');
+			containsAll($('#a_a, #b_a, #b_b').only('.x'), [document.getElementById('b_a'), document.getElementById('b_b')], 'multi !class');
+			containsAll($('#a, #b').only(function(v) { return v == document.getElementById('a');}), [document.getElementById('a')], 'multi !func');
+			
+			containsAll($('#a, #b').only('span, div, p'), [document.getElementById('a'), document.getElementById('b')], 'complex');
+			containsAll($('#a, #b').only('#a, #b'), [document.getElementById('a'), document.getElementById('b')], 'complex 2');
+			containsAll($('#a, #b').only('span, a, p'), [], '!complex');
+		}
+	},
+	
 	
 	{
 		name: "$() whitespace exception (debug)",

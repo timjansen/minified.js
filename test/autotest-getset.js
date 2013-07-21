@@ -62,11 +62,12 @@ window.miniTests.push.apply(window.miniTests, [
 	 		
 	 		$('#container2').add(EE('span', {'@id':'hello1', 'className':'hello'}, 'hello'))
 	 			.add(EE('span', {'@id':'hello2', 'className':'hello'}, 'hello'));
-	 		$('#container2 span').set({'className': 'hi', '@title': 'hello element'});
+	 		$('#container2 span').set({'className': 'hi', '@title': 'hello element', '%xy': 'fooo'});
 	 		check(document.getElementById('hello1').getAttribute('class') == 'hi' || document.getElementById('hello1').getAttribute('className') == 'hi');
 	 		check(document.getElementById('hello2').getAttribute('class') == 'hi' || document.getElementById('hello2').getAttribute('className') == 'hi');
 	 		check(document.getElementById('hello1').getAttribute('title'), 'hello element');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'hello element');
+	 		check(document.getElementById('hello2').getAttribute('data-xy'), 'fooo');
 		}
 	},
 
@@ -143,6 +144,14 @@ window.miniTests.push.apply(window.miniTests, [
 			check($('#a').get('@title'), 'tititi');
 			check($('#a').get('@id'), 'a');
 			check($('#a').get('@ddsffdsf'), null);
+		}
+	},
+	
+	{
+		name: "$().get(data-attribute)",
+	 	exec: function() {
+			check($('#a').get('%x'), 'bar');
+			check($('#a').get('%yy'), 'foo');
 		}
 	},
 
