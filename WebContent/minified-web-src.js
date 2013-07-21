@@ -916,7 +916,7 @@ define('minified', function() {
      'remove': function() {
     	each(this, function(obj) {
     		// @condblock ie8compatibility
-    		if (IS_PRE_IE9) {
+    		if (IS_PRE_IE9 && isNode(obj) == 1) {
 	    		function removeEvents(node) {
 	    			each(registeredEvents[node[MINIFIED_MAGIC_NODEID]], function(h) {node.detachEvent('on'+h['n'], h['h']);});
 	    			delete registeredEvents[node[MINIFIED_MAGIC_NODEID]];
