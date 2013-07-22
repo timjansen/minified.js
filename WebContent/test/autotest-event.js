@@ -98,7 +98,7 @@ window.miniTests.push.apply(window.miniTests, [
 
 			$(p).trigger('boo'); // nop
 			
-			$(s).on('|eek', function(e) { if (e.success) proofEek1++; });
+			$(s).on('|eek', function(e) { if (e.success) proofEek1++;});
 			$(s).trigger('eek', {success:1});
 			check(proofEek1, 1, "eek triggered");
 

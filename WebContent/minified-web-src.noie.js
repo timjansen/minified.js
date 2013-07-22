@@ -173,8 +173,14 @@ define('minified', function() {
 	function isNode(n) {
 		return n && n['nodeType'];
 	}
+	function isNumber(n) {
+		return isType(n, 'number');
+	}
 	function isList(v) {
 		return v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
+	}
+	function nonOp(v) {
+		return v;
 	}
 	function eachObj(obj, cb) {
 		for (var n in obj)
@@ -288,6 +294,13 @@ define('minified', function() {
     }
 
 	function callArg(f) {f();}
+
+	// for remove & window.unload
+    function detachHandlerList(dummy, handlerList) {
+    	each(handlerList, function(h) {
+    		h['e'].detachEvent('on'+h['n'], h['h']);
+    	});
+    }
 
     // for ready()
     function triggerDomReady() {
@@ -870,6 +883,7 @@ define('minified', function() {
  	 * @syntax trav(property)
  	 * @syntax trav(property, selector)
  	 * @syntax trav(property, selector, maxDepth)
+ 	 * @syntax trav(property, maxDepth)
      * @module WEB
  	 * Traverses each DOM node in the list using the given property, and creates a new list that includes each visited node,
  	 * optionally filtered by the given selector.
@@ -909,8 +923,8 @@ define('minified', function() {
  	 *         have been visited when traversing another node. Duplicate nodes will be automatically removed.
  	 */
 	'trav': function(property, selector, maxDepth) {
-		var f = getFilterFunc(selector);
-		var max = maxDepth || 1e9;
+		var f = getFilterFunc(isNumber(selector) ? null : selector);
+		var max = isNumber(selector) ? selector : maxDepth || 1e9;
 		return new M(collectUniqNodes(this, function(node) {
 				var r = [];
 				var c = node;
@@ -2207,7 +2221,7 @@ define('minified', function() {
 			this['each'](function(el) {
 				var n = el['name'], v = toString(el['value']), o=r[n];
 				if (/form/i.test(el['tagName']))
-					$(el['elements'])['values'](r);
+					$(collect(el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
 				else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
 					if (isList(o))
 						o.push(v);
@@ -2307,10 +2321,10 @@ define('minified', function() {
 					var handlerDescriptor = {'e': el,          // the element  
 							                 'h': miniHandler, // minified's handler 
 							                 'n': name         // event type        
-							                };       
+							                };
 					(handler['M'] = handler['M'] || []).push(handlerDescriptor);
 						el.addEventListener(name, miniHandler, true); // W3C DOM
-						(el[MINIFIED_MAGIC_EVENTS] = el[MINIFIED_MAGIC_EVENTS] || []).push(handlerDescriptor); 
+						(el[MINIFIED_MAGIC_EVENTS] = (el[MINIFIED_MAGIC_EVENTS] || [])).push(handlerDescriptor); 
 				});
 			});
 		},
@@ -2397,7 +2411,6 @@ define('minified', function() {
 
 				if (el['parentNode'] && !stopBubble)
 					trigger(el['parentNode'], index, originEl || el);
-
 			});
 		}
 
@@ -2870,6 +2883,7 @@ define('minified', function() {
 	/*$
 	 @stop
 	 */
+
 
     // @condblock amdsupport
 	return {

@@ -407,6 +407,23 @@ window.miniTests.push.apply(window.miniTests, [
 			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c"), document.getElementById("container")], true, 'double steps list input');
 		}
 	},
+	
+	{
+		name: "$().trav(prop, count)",
+		exec: function() {
+			var m = $("#a_a, #b_b, #a_a").trav('parentNode', 1);
+			containsAll(m, [document.getElementById("a"), document.getElementById("b")], true, 'dupe list input with single step');
+
+			m = $('#a_a, #b_a, #b_b, #c_b').trav('parentNode', 1);
+			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c")], true, 'list input, partial merge');
+
+			m = $('#b_a, #b_b').trav('parentNode', 2);
+			containsAll(m, [document.getElementById("b"), document.getElementById("container")], true, 'double step');
+
+			m = $('#a_a, #b_a, #b_b, #c_b').trav('parentNode', 2);
+			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c"), document.getElementById("container")], true, 'double steps list input');
+		}
+	},
 
 	
 	{

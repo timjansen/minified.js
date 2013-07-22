@@ -17,6 +17,7 @@ optionally filtered by the given selector.</div>
 <div class="syntax">trav(property)</div>
 <div class="syntax">trav(property, selector)</div>
 <div class="syntax">trav(property, selector, maxDepth)</div>
+<div class="syntax">trav(property, maxDepth)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -29,8 +30,8 @@ is relative to the number of matches for the selector in the document. Default i
 (but no other nodes such as text nodes).</dd>
 <dt id="trav_maxDepth" class=""><a name="trav_maxDepth"><var>maxDepth (optional)</var></a></dt>
 <dd class="">the maximum number of steps to traverse. Defaults to unlimited.</dd>
-<dt id="trav_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="trav_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">the new list containing all visited nodes. Nodes of the original list are not included, unless they
+<dt id="trav_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="trav_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the new list containing all visited nodes. Nodes of the original list are not included, unless they
 have been visited when traversing another node. Duplicate nodes will be automatically removed.</dd>
 </dl>
 
