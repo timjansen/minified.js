@@ -2355,10 +2355,10 @@ define('minified', function() {
 		 * @return the list
 		 */
 		'onOver': function(toggle) {
-			var curOverState = [], self = this;
+			var self = this, curOverState = [];
 			return self['on']('|mouseover |mouseout', function(ev, index) {
 				var overState = ev['type'] != 'mouseout';
-				var relatedTarget = ev['relatedTarget'];
+				var relatedTarget = ev['relatedTarget'] || ev['toElement'];
 				if (curOverState[index] !== overState) {
 					if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['trav']('parentNode', self[index]).length)) {
 						curOverState[index] = overState;
@@ -2399,18 +2399,18 @@ define('minified', function() {
 		 * @return the list
 		 */
 		'trigger': function (eventName, eventObj) {
-			var e = eventObj || {};
-			return this['each'](function trigger(el, index, originEl) {
-				var stopBubble, evList;
-					evList = el[MINIFIED_MAGIC_EVENTS];
+			return this['each'](function(element, index) {
+				var stopBubble, evList, el = element, originEl = el;
 
-				each(evList, function(hDesc) {
-					if (hDesc['n'] == eventName)
-						stopBubble = stopBubble || hDesc['h'](e, originEl || el);
-				});
+				while(el && !stopBubble) {
+						evList = el[MINIFIED_MAGIC_EVENTS];
 
-				if (el['parentNode'] && !stopBubble)
-					trigger(el['parentNode'], index, originEl || el);
+					each(evList, function(hDesc) {
+						if (hDesc['n'] == eventName)
+							stopBubble = stopBubble || hDesc['h'](eventObj || {}, originEl);
+					});
+					el = el['parentNode'];
+				}
 			});
 		}
 

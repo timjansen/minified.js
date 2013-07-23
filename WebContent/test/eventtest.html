@@ -45,6 +45,11 @@
 		$('#overDiv').onOver(function(v) { overToggle0(v); counter0++; $('#overDiv .counter').sub(0, 1).fill(counter0+''); });
 		$('#overInner1').onOver(function(v) { overToggle1(v); counter1++; $('#overInner1 .counter').sub(0, 1).fill(counter1+''); });
 		$('#overInner2').onOver(function(v) { overToggle2(v); counter2++; $('#overInner2 .counter').sub(0, 1).fill(counter2+''); });
+
+		function dump(d) { var s = []; for (var i in d) s.push(i+ '='+ d[i]); return s.join(', '); }
+		function dumpE(n, name) { var d = n[name]; if (d) return name + '=' + (d.id || d.tagName || d); }
+		$('#overDiv').on('mouseout', function(ev) { console.log(ev, [dumpE(ev, 'fromElement'), dumpE(ev, 'toElement'), dumpE(ev, 'srcElement')].join(', ') /*, ' -> ', dump(ev)*/); });
+
 		
 		// Test 2 / Event Handler Mem Leaks
 		var timeoutId;
