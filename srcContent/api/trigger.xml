@@ -23,7 +23,8 @@ Triggers event handlers registered with on on all list members.</div>
 <dt id="trigger_name" class=""><a name="trigger_name"><var>name</var></a></dt>
 <dd class="">a single event name to trigger</dd>
 <dt id="trigger_eventObj" class=""><a name="trigger_eventObj"><var>eventObj (optional)</var></a></dt>
-<dd class="">an object to pass to the event handler, provided the handler does not have custom arguments.</dd>
+<dd class="">an object to pass to the event handler, provided the handler does not have custom arguments.
+Anything you pass here will be directly given to event handlers so you need to know what they expect.</dd>
 <dt id="trigger_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="trigger_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the list</dd>
 </dl>

@@ -38,16 +38,8 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
  	 * @id minifieddefine
  	 */
 
-define('minifiedUtil', function() {
+define('minified', function() { // MINIUTIL is needed by autotest.html
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
- 	/*$
- 	 * @id window
- 	 */
-	/**
-	 * @const
-	 */
-	var _this = this;
 
  	/*$
  	 * @id undef
@@ -55,6 +47,7 @@ define('minifiedUtil', function() {
 	/** @const */
 	var undef;
 
+	///#definesnippet utilVars
 	/**
 	 * @const
 	 */
@@ -76,13 +69,13 @@ define('minifiedUtil', function() {
 	
 	var templateCache={};
 
+	///#endsnippet utilVars
+	
+	
 	
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	
-	/*$
-	 * @id globalfuncs
-	 */
+	///#definesnippet commonFuncs
 	
 	/** @param s {?} */
 	function toString(s) { 
@@ -98,9 +91,6 @@ define('minifiedUtil', function() {
 	/** @param s {?} */
 	function isString(s) {
 		return isType(s, 'string');
-	}
-	function isFunction(f) {
-		return isType(f, 'function');
 	}
 	function isObject(f) {
 		return !!f && isType(f, 'object');
@@ -224,16 +214,16 @@ define('minifiedUtil', function() {
 	}
 	function startsWith(base, start) {
 		if (isList(base)) {
-			var s2 = UNDERSCORE(start); // convert start as we don't know whether it is a list yet
-			return equals(UNDERSCORE(base).sub(0, s2.length), s2);
+			var s2 = _(start); // convert start as we don't know whether it is a list yet
+			return equals(_(base).sub(0, s2.length), s2);
 		}
 		else
 			return start != null && base.substr(0, start.length) == start;
 	}
 	function endsWith(base, end) {
 		if (isList(base)) {
-			var e2 = UNDERSCORE(end);
-			return UNDERSCORE(base).sub(-e2.length).equals(e2) || !e2.length;
+			var e2 = _(end);
+			return _(base).sub(-e2.length).equals(e2) || !e2.length;
 		}
 		else
 			return end != null && base.substr(base.length - end.length) == end;
@@ -687,21 +677,41 @@ define('minifiedUtil', function() {
 						each(obj, function(value, index) { func.call(value, value, index); });
 					else
 						eachObj(obj, function(key, value) { func.call(value, key, value); });
-				}, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, UNDERSCORE);
+				}, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, _);
 				return result.join('');
 			};
 		}
 	}
 
-	
-	
-	
-	
+		
 	function escapeHtml(s) {
 		return replace(s, /[<>'"&]/g, function(s) {
 			return '&#'+s.charCodeAt(0)+';';
 		});
 	}	
+
+	function listBindArray(func) {
+		return function(arg1, arg2) {
+			return new M(func(this, arg1, arg2));
+		};
+	}
+	function listBind(func) {
+		return function(arg1, arg2) {
+			return func(this, arg1, arg2);
+		};
+	}
+	function funcArrayBind(func) {
+		return function(arg1, arg2, arg3) {
+			return new M(func(arg1, arg2, arg3));
+		};
+	}
+	
+	///#endsnippet commonFuncs
+	
+	// NOT a common function: web has a webkit fix in here
+	function isFunction(f) {
+		return isType(f, 'function');
+	}
 	
 	/*$
 	 * @id length
@@ -720,6 +730,7 @@ define('minifiedUtil', function() {
 	 */
 	// always defined below
 
+	///#definesnippet utilM
 	/*$
 	 * @id listunderscore
 	 * @name ._
@@ -747,25 +758,17 @@ define('minifiedUtil', function() {
 	}
 	
 
-	function UNDERSCORE() {
+	function _() {
 		return new M(arguments, true);
 	}
+
+	///#endsnippet utilM
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	function listBindArray(func) {
-		return function(arg1, arg2) {
-			return new M(func(this, arg1, arg2));
-		};
-	}
-	function listBind(func) {
-		return function(arg1, arg2) {
-			return func(this, arg1, arg2);
-		};
-	}
 	
 	
 	copyObj({
+		///#definesnippet utilListFuncs
     /*$
      * @id each
      * @group LIST
@@ -1428,7 +1431,7 @@ define('minifiedUtil', function() {
 		func(this);
 		return this;
 	}
-
+	///#endsnippet utilListFuncs
 	
  	/*$
  	 * @stop
@@ -1438,15 +1441,9 @@ define('minifiedUtil', function() {
 
  	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/*$
-	 * @id underscorefuncdef
-	 */
-	function funcArrayBind(func) {
-		return function(arg1, arg2, arg3) {
-			return new M(func(arg1, arg2, arg3));
-		};
-	}
-	copyObj({
+	///#definesnippet utilUnderscoreFuncs
+
+	var _ = {
 		 // @condblock filter
 		'filter': funcArrayBind(filter),
 		 // @condend
@@ -1666,11 +1663,11 @@ define('minifiedUtil', function() {
 		
 		 'htmlTemlplate': function(tpl) { return template(tpl, escapeHtml); }
 		
-	/*$
-	 * @id underscorefuncdefend
-	 */
-	}, UNDERSCORE);
+	};
 
+	///#endsnippet utilUnderscoreFuncs
+
+	
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
 	/*$
@@ -1683,7 +1680,7 @@ define('minifiedUtil', function() {
 		 * @configurable default
 		 * @module UTIL
 		 */
-		'_': UNDERSCORE
+		'_': _
 	};
 });
 

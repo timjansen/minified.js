@@ -26,11 +26,11 @@ Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'
 is relative to the number of matches for the selector in the document. Default is '*', which checks whether all list nodes
 are elements.</dd>
 <dt id="is_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="is_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">true if all list elements match the selector. false otherwise.</dd>
+<dd class="inSyntax0 inSyntax1"><var>true</var> if all list elements match the selector. <var>false</var> otherwise.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Checks whether all elements in the list match the given selector. Returns true if they all do, or false
+<div class="description"><p>Checks whether all elements in the list match the given selector. Returns <var>true</var> if they all do, or <var>false</var>
 if at least one does not.</p><p>Please note that this method is optimized for the four simple selector forms '*', '.classname', 'tagname'
 and 'tagname.classname'. If you use any other kind of selector, please be aware that selectors that match
 many elements can be slow.</p><p></p></div>

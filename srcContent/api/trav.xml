@@ -37,8 +37,8 @@ have been visited when traversing another node. Duplicate nodes will be automati
 
 <h4>Description</h4>
 <div class="description"><p>Traverses each DOM node in the list using the given property, and creates a new list that includes each visited node,
-optionally filtered by the given selector.</p><p><var>trav()</var> uses each element in the list and then traverses the DOM tree using that property until it finds null or
-a DOM document, while adding all visited nodes that match the given selector to the result list. If no selector is given,
+optionally filtered by the given selector.</p><p><var>trav()</var> uses each element in the list and then traverses the DOM tree using that property until it finds null, while
+adding all visited nodes that match the given selector to the result list. If no selector is given,
 only elements will be added.</p><p></p></div>
 
 <div class="examples">

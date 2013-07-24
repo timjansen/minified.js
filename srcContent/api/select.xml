@@ -23,7 +23,7 @@
 <dd class="">if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not
 true, all descendants of the context will be included.</dd>
 <dt id="select_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="select_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the new list containing the flattened property values.</dd>
+<dd class="inSyntax0 inSyntax1">the new list containing the selected descendants.</dd>
 </dl>
 
 <h4>Description</h4>

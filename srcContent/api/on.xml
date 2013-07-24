@@ -14,6 +14,7 @@
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">on(names, eventHandler)</div>
+<div class="syntax">on(names, eventHandler, selector)</div>
 <div class="syntax">on(names, customFunc, args)</div>
 <div class="syntax">on(names, customFunc, fThis, args)</div>
 </div>
@@ -36,16 +37,19 @@ or the event name is prefixed by '|', all further processing of the event will b
 stopped and event bubbling will be disabled.</dd>
 </dl>
 'this' is set to the target element that caused the event (the same as <var>event.target</var>).</dd>
+<dt id="on_selector" class=""><a name="on_selector"><var>selector (optional)</var></a></dt>
+<dd class="">a selector string for <a href='dollar.html'>$() to receive only events that match the selector. Analog to </a>is(),
+the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.</dd>
 <dt id="on_customFunc" class=""><a name="on_customFunc"><var>customFunc</var></a></dt>
 <dd class="">a function to be called instead of a regular event handler with the arguments given in <var>args</var>
 and optionally the 'this' context given using <var>fThis</var>.</dd>
 <dt id="on_fThis" class=""><a name="on_fThis"><var>fThis (optional)</var></a></dt>
-<dd class="">an value for 'this' in the custom callback, as alternative to the event target</dd>
+<dd class="">a value for 'this' in the custom callback, as alternative to the event target</dd>
 <dt id="on_args" class=""><a name="on_args"><var>args (optional)</var></a></dt>
 <dd class="">an array of arguments to pass to the custom callback function instead of the event objects.
 If you pass custom arguments, the return value of the handler will always be ignored.</dd>
-<dt id="on_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="on_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">the list</dd>
+<dt id="on_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="on_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the list</dd>
 </dl>
 
 <h4>Description</h4>
@@ -54,7 +58,9 @@ You can override this by prefixing the event name with a '|' or by returning a '
 the original JavaScript behaviour.</p><p>Handlers are called with the original event object as first argument, the index of the source element in the
 list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked).</p><p>Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback.
 When you pass arguments, the handler's return value is always ignored and the event with unnamed prefixes
-will always be cancelled.</p><p>Event handlers can be unregistered using <code><a href='off.html'>$.off()</a></code>.</p><p></p></div>
+will always be cancelled.</p><p>Optionally you can specify a selector string to receive only events that bubbled up from elements matching the
+selector. The selector is executed in the context of the element you registered on to identify whether the
+original target of the event qualifies. If not, the handler is not called.</p><p>Event handlers can be unregistered using <code><a href='off.html'>$.off()</a></code>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

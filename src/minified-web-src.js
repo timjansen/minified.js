@@ -43,6 +43,8 @@
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
+///#definesnippet commonAmdStart
+
 /*$
  * @id require
  * @name require()
@@ -84,9 +86,12 @@ define('minified', function() {
  */
 // @cond !amdsupport (function() {
 	
+///#endsnippet commonAmdStart
+	
 	
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	///#definesnippet webVars
 	/**
 	 * @const
 	 */
@@ -97,11 +102,6 @@ define('minified', function() {
 	 */
 	var _document = document;
 	
-	/**
-	 * @const
-	 * @type {!string}
-	 */
-	var BACKSLASHB = '\\b';
 	/** @const */
 	var undef;
 	/**
@@ -184,6 +184,9 @@ define('minified', function() {
         };
     // @condend
 
+	///#endsnippet webVars
+
+	
 	/*$
 	 * @id ie6compatibility
 	 * @requires ie7compatibility 
@@ -223,9 +226,6 @@ define('minified', function() {
 	/** @param s {?} */
 	function isString(s) {
 		return isType(s, 'string');
-	}
-	function isFunction(f) {
-		return isType(f, 'function') && !f['item']; // item check as work-around webkit bug 14547
 	}
 	function isObject(f) {
 		return isType(f, 'object');
@@ -285,6 +285,17 @@ define('minified', function() {
 	function replace(s, regexp, sub) {
 		return toString(s).replace(regexp, sub||'');
 	}
+	function wordRegExp(name) {
+		return RegExp('\\b' + name + '\\b', 'i');
+	}
+	
+	///#definesnippet webFunctions
+
+	// note: only the web version has the f.item check
+	function isFunction(f) {
+		return isType(f, 'function') && !f['item']; // item check as work-around webkit bug 14547
+	}
+	
 	function delay(f, delayMs) {
 		_window.setTimeout(f, delayMs||0);
 	}
@@ -333,31 +344,33 @@ define('minified', function() {
 	}
 	
 	// event handler creation for on(). Outside of on() to prevent unneccessary circular refs
-	function createEventHandler(handler, fThis, args, index, unprefixed) {
+	function createEventHandler(handler, fThis, args, index, unprefixed, filterFunc) {
 		
 		// triggerOriginalTarget is set only if the event handler is called by trigger()!! 
 		return function(event, triggerOriginalTarget) {
 			var e = event || _window.event, stopPropagation;
-		
-			// @cond debug try {
-			if ((stopPropagation = (((!handler.apply(fThis || triggerOriginalTarget || e['target'], args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget) {
-				// @condblock ie8compatibility 
-				if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
-				// @condend
-					e['preventDefault']();
-					e['stopPropagation']();
-				// @condblock ie8compatibility 
+			var target = e['target'];
+			if ((!filterFunc) || filterFunc(target)) {
+				// @cond debug try {
+				if ((stopPropagation = (((!handler.apply(fThis || triggerOriginalTarget || target, args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget) {
+					// @condblock ie8compatibility 
+					if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
+					// @condend
+						e['preventDefault']();
+						e['stopPropagation']();
+					// @condblock ie8compatibility 
+					}
+					e.returnValue = false; // cancel for IE
+					e.cancelBubble = true; // cancel bubble for IE
+					// @condend
 				}
-				e.returnValue = false; // cancel for IE
-				e.cancelBubble = true; // cancel bubble for IE
-				// @condend
+				// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 			}
-			// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
 			return stopPropagation; // if called by trigger, return propagation result 
 		};
 	}
 	
-    function now() {
+    function nowAsTime() {
     	return new Date().getTime();
     }
 
@@ -400,6 +413,134 @@ define('minified', function() {
 			return list; 
 		};
 	}
+
+   
+    /*$
+	 * @id ucode
+	 * @dependency
+     */
+    // @condblock ie7compatibility
+    function ucode(a) {
+        return STRING_SUBSTITUTIONS[a] ||  ('\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4));
+    }
+    // @condend
+
+    /*$
+     * @stop
+     */
+    
+	function $(selector, context, childOnly) { 
+		// @condblock ready
+		// isList(selector) is no joke, older Webkit versions return a function for childNodes...
+		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context, childOnly));
+		// @condend
+		// @cond !ready return new M(dollarRaw(selector, context));
+	}
+	
+	/*$
+	 * @id debug
+	 * @group OPTIONS
+	 * (TBD) @configurable optional
+	 * @doc no
+	 * @name Debugging Support
+	 */
+	function error(msg) {
+		if (_window.console) console.log(msg);
+		throw Exception("Minified debug error: " + msg);
+	}
+    // @cond debug MINI['debug'] = true;
+	
+  
+	// implementation of $ that does not produce a Minified list, but just an array
+    function dollarRaw(selector, context, childOnly) { 
+		
+		function filterElements(list) { // converts into array, makes sure context is respected
+			var retList = (function flatten(a) { // flatten list, keep non-lists, remove nulls
+				return isList(a) ? collect(a, flatten) : a; 
+			})(list);
+			if (parent)
+				return filter(retList, function(node) {
+					var a = node;
+					while (a = a['parentNode']) {
+						if (a === parent)
+							return true;
+						if (childOnly)
+							return false;
+					}
+					// fall through to return undef
+				});
+			else
+				return retList;
+		}
+		
+		var parent, steps, dotPos, subSelectors;
+		var elements, regexpFilter, useGEbC, className, elementName, reg;
+
+		if (context && (context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
+			return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
+		parent = context && context[0]; // note that context may have changed in the previous two lines!! you can't move this line
+		
+		if (!isString(selector))
+		    return filterElements(isList(selector) ? selector : [selector]); 
+
+		// @condblock ie7compatibility
+		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
+			return collectUniqNodes(subSelectors, function(ssi) { return dollarRaw(ssi, parent, childOnly);});
+
+		if (steps = (/(\S+)\s+(.+)$/.exec(selector)))
+			return dollarRaw(steps[2], dollarRaw(steps[1], parent), childOnly);
+
+		if (selector != (subSelectors = replace(selector, /^#/)))
+			return filterElements([_document.getElementById(subSelectors)]); 
+
+		// @cond debug if (/\s/.test(selector)) error("Selector has invalid format, please check for whitespace.");
+		// @cond debug if (/[ :\[\]]/.test(selector)) error("Only simple selectors with ids, classes and element names are allowed.");
+
+		parent = parent || _document;
+
+		elementName = (dotPos = /([\w-]*)\.?([\w-]*)/.exec(selector))[1];
+		className = dotPos[2];
+		elements = (useGEbC = parent.getElementsByClassName && className) ? parent.getElementsByClassName(className) : parent.getElementsByTagName(elementName || '*'); 
+
+		if (regexpFilter = useGEbC ? elementName : className) {
+			reg = wordRegExp(regexpFilter); 
+			elements =  filter(elements, function(l) {return reg.test(l[useGEbC ? 'nodeName' : 'className']);});
+		}
+		// @condend
+		
+		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(selector);
+		return parent ? filterElements(elements) : elements;
+	};
+	
+    // finds a filter func for on(), is() and only().
+	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because it is used only
+	// by on() and in on() only nodes in the right context will be checked
+	function getFilterFunc(selector, context) {
+		var dotPos;
+		if (isFunction(selector))
+			return selector;
+		else if (!selector || 
+				 (isString(selector) && 
+						 (selector == '*' || ((dotPos = /^([\w-]*)\.([\w-]+)$/.exec(selector)) || (dotPos = /^([\w-]+)$/.exec(selector)))))) {
+			var nodeNameFilter = dotPos && dotPos[1] && wordRegExp(dotPos[1]);
+			var classNameFilter = dotPos && dotPos[2] && wordRegExp(dotPos[2]);
+			return function(v) { 
+				return isNode(v) == 1 &&
+					((!nodeNameFilter)  || nodeNameFilter.test(v['nodeName'])) &&
+					((!classNameFilter) || classNameFilter.test(v['className']));
+			};
+		}
+		else {
+			var nodeSet = {};
+			$(selector, context)['each'](function(node) {
+				nodeSet[getNodeId(node)] = true;
+			});
+			return function(v) { return nodeSet[getNodeId(v)]; };
+		}
+	}
+
+	///#endsnippet webFunctions
+
     
     function promise() {
     	var state;           // undefined/null = pending, true = fulfilled, false = rejected
@@ -553,128 +694,7 @@ define('minified', function() {
      	set['error'] = function(func) { return then(0, func); };
     	return set;
     }
-    
-    /*$
-	 * @id ucode
-	 * @dependency
-     */
-    // @condblock ie7compatibility
-    function ucode(a) {
-        return STRING_SUBSTITUTIONS[a] ||  ('\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4));
-    }
-    // @condend
-
-    /*$
-     * @stop
-     */
-    
-	function $(selector, context, childOnly) { 
-		// @condblock ready
-		// isList(selector) is no joke, older Webkit versions return a function for childNodes...
-		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context, childOnly));
-		// @condend
-		// @cond !ready return new M(dollarRaw(selector, context));
-	}
 	
-	/*$
-	 * @id debug
-	 * @group OPTIONS
-	 * (TBD) @configurable optional
-	 * @doc no
-	 * @name Debugging Support
-	 */
-	function error(msg) {
-		if (_window.console) console.log(msg);
-		throw Exception("Minified debug error: " + msg);
-	}
-    // @cond debug MINI['debug'] = true;
-	
-  
-	// implementation of $ that does not produce a Minified list, but just an array
-    function dollarRaw(selector, context, childOnly) { 
-		
-		function filterElements(list) { // converts into array, makes sure context is respected
-			var retList = (function flatten(a) { // flatten list, keep non-lists, remove nulls
-				return isList(a) ? collect(a, flatten) : a; 
-			})(list);
-			if (parent)
-				return filter(retList, function(node) {
-					var a = node;
-					while (a = a['parentNode']) {
-						if (a === parent)
-							return true;
-						if (childOnly)
-							return false;
-					}
-					// fall through to return undef
-				});
-			else
-				return retList;
-		}
-		
-		var parent, steps, dotPos, subSelectors;
-		var elements, regexpFilter, useGEbC, className, elementName, reg;
-
-		if (context && (context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
-			return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
-		parent = context && context[0]; // note that context may have changed in the previous two lines!! you can't move this line
-		
-		if (!isString(selector))
-		    return filterElements(isList(selector) ? selector : [selector]); 
-
-		// @condblock ie7compatibility
-		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
-			return collectUniqNodes(subSelectors, function(ssi) { return dollarRaw(ssi, parent, childOnly);});
-
-		if (steps = (/(\S+)\s+(.+)$/.exec(selector)))
-			return dollarRaw(steps[2], dollarRaw(steps[1], parent), childOnly);
-
-		if (selector != (subSelectors = replace(selector, /^#/)))
-			return filterElements([_document.getElementById(subSelectors)]); 
-
-		// @cond debug if (/\s/.test(selector)) error("Selector has invalid format, please check for whitespace.");
-		// @cond debug if (/[ :\[\]]/.test(selector)) error("Only simple selectors with ids, classes and element names are allowed.");
-
-		parent = parent || _document;
-
-		elementName = (dotPos = /([\w-]*)\.?([\w-]*)/.exec(selector))[1];
-		className = dotPos[2];
-		elements = (useGEbC = parent.getElementsByClassName && className) ? parent.getElementsByClassName(className) : parent.getElementsByTagName(elementName || '*'); 
-
-		if (regexpFilter = useGEbC ? elementName : className) {
-			reg = new RegExp(BACKSLASHB +  regexpFilter + BACKSLASHB, 'i'); 
-			elements =  filter(elements, function(l) {return reg.test(l[useGEbC ? 'nodeName' : 'className']);});
-		}
-		// @condend
-		
-		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(selector);
-		return parent ? filterElements(elements) : elements;
-	};
-	
-    // finds a filter func for is() and only()
-	function getFilterFunc(selector) {
-		var dotPos;
-		if (isFunction(selector))
-			return selector;
-		else if (!selector || 
-				 (isString(selector) && 
-						 (selector == '*' || ((dotPos = /^([\w-]*)\.([\w-]+)$/.exec(selector)) || (dotPos = /^([\w-]+)$/.exec(selector)))))) {
-			var nodeNameFilter = dotPos && dotPos[1] && new RegExp(dotPos[1], 'i');
-			var classNameFilter = dotPos && dotPos[2] && new RegExp(BACKSLASHB +  dotPos[2] + BACKSLASHB, 'i');
-			return function(v) { 
-				return isNode(v) == 1 &&
-					((!nodeNameFilter)  || nodeNameFilter.test(v['nodeName'])) &&
-					((!classNameFilter) || classNameFilter.test(v['className']));
-			};
-		}
-		else {
-			var nodeSet = {};
-			$(selector)['each'](function(node) {
-				nodeSet[getNodeId(node)] = true;
-			});
-			return function(v) { return nodeSet[getNodeId(v)]; };
-		}
-	}
 	
  	/*$
 	 * @id length
@@ -862,9 +882,9 @@ define('minified', function() {
 		var self = this;
 	    var s = (startIndex < 0 ? self['length']+startIndex : startIndex);
 	    var e = endIndex >= 0 ? endIndex : self['length'] + (endIndex || 0);
- 		return new M(filter(self, function(o, index) { 
+ 		return self['filter'](function(o, index) { 
  			return index >= s && index < e; 
- 		}));
+ 		});
  	},
  	
      
@@ -911,6 +931,8 @@ define('minified', function() {
 				return r;
 	},
 	
+	///#definesnippet webListFuncs
+
 	/*$
 	 * @id remove
 	 * @group SELECTORS
@@ -991,8 +1013,8 @@ define('minified', function() {
  	 * Traverses each DOM node in the list using the given property, and creates a new list that includes each visited node,
  	 * optionally filtered by the given selector.
  	 * 
- 	 * <var>trav()</var> uses each element in the list and then traverses the DOM tree using that property until it finds null or 
- 	 * a DOM document, while adding all visited nodes that match the given selector to the result list. If no selector is given,
+ 	 * <var>trav()</var> uses each element in the list and then traverses the DOM tree using that property until it finds null, while 
+ 	 * adding all visited nodes that match the given selector to the result list. If no selector is given,
  	 * only elements will be added.
  	 * 
  	 * @example Returns a list of all parent nodes, direct and indirect:
@@ -1031,7 +1053,7 @@ define('minified', function() {
 		return new M(collectUniqNodes(this, function(node) {
 				var r = [];
 				var c = node;
-				while ((c = c[property]) && c['nodeType']!=9 && r.length < max)
+				while ((c = c[property]) && r.length < max)
 					if (f(c))
 						r.push(c);
 				return r;
@@ -1064,7 +1086,7 @@ define('minified', function() {
  	 * @parm selector a selector or any other valid first argument for  ##dollar#$()##.
  	 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
  	 *             true, all descendants of the context will be included. 
- 	 * @return the new list containing the flattened property values.
+ 	 * @return the new list containing the selected descendants.
  	 */
 	'select': function(selector, childOnly) {
 		return $(selector, this, childOnly);
@@ -1079,7 +1101,7 @@ define('minified', function() {
  	 * @syntax is()
  	 * @syntax is(selector)
      * @module WEB
- 	 * Checks whether all elements in the list match the given selector. Returns true if they all do, or false
+ 	 * Checks whether all elements in the list match the given selector. Returns <var>true</var> if they all do, or <var>false</var>
  	 * if at least one does not.
  	 * 
  	 * Please note that this method is optimized for the four simple selector forms '*', '.classname', 'tagname' 
@@ -1101,7 +1123,7 @@ define('minified', function() {
  	 *        Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which checks whether all list nodes
  	 *        are elements.
- 	 * @return true if all list elements match the selector. false otherwise.
+ 	 * @return <var>true</var> if all list elements match the selector. <var>false</var> otherwise.
  	 */
 	'is': function(selector) {
 		var f = getFilterFunc(selector);
@@ -1437,7 +1459,7 @@ define('minified', function() {
     						 each(newValue.split(/\s+/), function(clzz) {
     							 var cName = replace(clzz, /^[+-]/);
     							 var oldClassName = className;
-    							 className = replace(className, new RegExp(BACKSLASHB + cName + BACKSLASHB));
+    							 className = replace(className, wordRegExp(cName));
     							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
     								 className += ' ' + cName;
     						 });
@@ -1729,7 +1751,7 @@ define('minified', function() {
 	 * @return the current list
 	 */
 	'addBefore': function (children) {
-		return this.add(children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode); });
+		return this['add'](children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode); });
 	},
 	
 	/*$
@@ -1796,7 +1818,7 @@ define('minified', function() {
 	 * @return the current list
 	 */
 	'addAfter': function (children) {
-		return this.add(children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode.nextSibling); });
+		return this['add'](children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode.nextSibling); });
 	},
 	
 	/*$
@@ -1875,7 +1897,7 @@ define('minified', function() {
 	 * @return the current list
 	 */
 	'addFront': function (children) {
-		return this.add(children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
+		return this['add'](children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
 	},
 	
 	/*$
@@ -1949,7 +1971,7 @@ define('minified', function() {
 	 * @return the current list
 	 */
 	'replace': function (children) {
-		return this.add(children, function(newNode, refNode, parent) { parent.replaceChild(newNode, refNode); });
+		return this['add'](children, function(newNode, refNode, parent) { parent.replaceChild(newNode, refNode); });
 	},
 
 	/*$
@@ -2381,6 +2403,7 @@ define('minified', function() {
 		 * @configurable default
 		 * @name .on()
 		 * @syntax on(names, eventHandler)
+		 * @syntax on(names, eventHandler, selector)
 		 * @syntax on(names, customFunc, args)
 		 * @syntax on(names, customFunc, fThis, args)
 		 * @module WEB
@@ -2396,6 +2419,10 @@ define('minified', function() {
 		 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback. 
 		 * When you pass arguments, the handler's return value is always ignored and the event with unnamed prefixes 
 		 * will always be cancelled.
+		 * 
+		 * Optionally you can specify a selector string to receive only events that bubbled up from elements matching the
+		 * selector. The selector is executed in the context of the element you registered on to identify whether the
+		 * original target of the event qualifies. If not, the handler is not called.
 		 * 
 		 * Event handlers can be unregistered using #off#$.off().
 		 * 
@@ -2445,20 +2472,26 @@ define('minified', function() {
 		 *                stopped and event bubbling will be disabled.</dd>
 	 	 *             </dl>
 		 *             'this' is set to the target element that caused the event (the same as <var>event.target</var>).
+		 * @param selector optional a selector string for ##dollar#$() to receive only events that match the selector. Analog to ##is(), 
+		 *                 the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 		 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>
 		 *                   and optionally the 'this' context given using <var>fThis</var>.
-		 * @param fThis optional an value for 'this' in the custom callback, as alternative to the event target
+		 * @param fThis optional a value for 'this' in the custom callback, as alternative to the event target
 		 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. 
 		 *                      If you pass custom arguments, the return value of the handler will always be ignored.
 		 * @return the list
 		 */
-		'on': function (eventName, handler, fThisOrArgs, optArgs) {
+		'on': function (eventName, handler, fThisOrArgsOrSelector, optArgs) {
 			// @cond debug if (!(eventName && handler)) error("eventName and handler parameters are required!"); 
 			// @cond debug if (/\bon/i.test(eventName)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
 			return this['each'](function(el, index) {
 				each(eventName.split(/\s/), function(namePrefixed) {
 					var name = replace(namePrefixed, /\|/);
-					var miniHandler = createEventHandler(handler, optArgs && fThisOrArgs, optArgs || fThisOrArgs, index, name == namePrefixed);
+					var selector = isString(fThisOrArgsOrSelector) && fThisOrArgsOrSelector;
+					var miniHandler = createEventHandler(handler, 
+							selector && optArgs && fThisOrArgsOrSelector, // fThis (false means default this) 
+							selector && (optArgs || fThisOrArgsOrSelector), // args (false means event obj)
+							index, name == namePrefixed, selector && getFilterFunc(selector, el));
 
 					var handlerDescriptor = {'e': el,          // the element  
 							                 'h': miniHandler, // minified's handler 
@@ -2550,23 +2583,21 @@ define('minified', function() {
 		 * 
 		 * @param name a single event name to trigger
 		 * @param eventObj optional an object to pass to the event handler, provided the handler does not have custom arguments.
+		 *                 Anything you pass here will be directly given to event handlers so you need to know what they expect.
 		 * @return the list
 		 */
 		'trigger': function (eventName, eventObj) {
 			return this['each'](function(element, index) {
-				var stopBubble, evList, el = element, originEl = el;
+				var stopBubble, el = element;
 				
 				while(el && !stopBubble) {
-					// @condblock ie8compatibility 
-					if (IS_PRE_IE9)
-						evList = registeredEvents[el[MINIFIED_MAGIC_NODEID]];
-					else
-					//@condend
-						evList = el[MINIFIED_MAGIC_EVENTS];
-	
-					each(evList, function(hDesc) {
+					each(
+							// @condblock ie8compatibility 
+							IS_PRE_IE9 ? registeredEvents[el[MINIFIED_MAGIC_NODEID]] :
+							//@condend
+							el[MINIFIED_MAGIC_EVENTS], function(hDesc) {
 						if (hDesc['n'] == eventName)
-							stopBubble = stopBubble || hDesc['h'](eventObj || {}, originEl);
+							stopBubble = stopBubble || hDesc['h'](eventObj, element);
 					});
 					el = el['parentNode'];
 				}
@@ -2576,12 +2607,16 @@ define('minified', function() {
  	/*$
  	 * @stop
  	 */
-		// @cond !on dummy:null
+		// @cond !trigger dummy:null
+		///#endsnippet webListFuncs
+		
+		
 	}, function(n, v) {M.prototype[n]=v;});
      
 
- 	//// MINI FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 	//// DOLLAR FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	///#definesnippet webDollarFuncs
 	eachObj({
 	/*$
 	* @id request
@@ -2879,7 +2914,7 @@ define('minified', function() {
 		// @cond debug if (!name) error('Cookie name must be set!');
 		// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
     	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
-    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(now() + dateOrDays * 8.64E7)).toUTCString()) : '') + 
+    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(nowAsTime() + dateOrDays * 8.64E7)).toUTCString()) : '') + 
     		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
     },
     
@@ -2964,7 +2999,7 @@ define('minified', function() {
 	* @return a <code>function()</code> that stops the currently running animation. This is the same function that is also given to the callback.
 	*/
 	'loop': function(paintCallback) { 
-        var entry = {c: paintCallback, t: now()};
+        var entry = {c: paintCallback, t: nowAsTime()};
         entry.s = function() {
     		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // can't use each() or filter() here, list may be modified during run!!
     			if (ANIMATION_HANDLERS[i] === entry) 
@@ -2973,7 +3008,7 @@ define('minified', function() {
         
         if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
 			(function raFunc() {
-				if (each(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, now() - a.t), a.s);}).length) // check len after run, in case the callback invoked stop func
+				if (each(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, nowAsTime() - a.t), a.s);}).length) // check len after run, in case the callback invoked stop func
 					REQUEST_ANIMATION_FRAME(raFunc); 
 			})(); 
         } 
@@ -3074,8 +3109,12 @@ define('minified', function() {
 	
 	}, function(n, v) {$[n]=v;});
 
+	///#endsnippet webDollarFuncs
+			
+				
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
+	///#definesnippet webInit
     /*$
 	 * @id ready_init
 	 * @dependency
@@ -3097,12 +3136,17 @@ define('minified', function() {
     };
     // @condend
     
+	///#endsnippet webInit
+
+    
     // @condblock amdsupport
 	return {
 	// @condend amdsupport
 	
 	// @cond !amdsupport var MINI = {
 	
+	///#definesnippet webExports
+
 		/*$
 		 * @id dollar
 		 * @group SELECTORS
@@ -3399,6 +3443,8 @@ define('minified', function() {
 		 * </pre>
 		 */
 		'M': M
+
+		///#endsnippet webExports
 	
 	 	/*$
 	 	 * @stop
@@ -3406,13 +3452,17 @@ define('minified', function() {
 	};
 	// @cond !amdsupport _window['require'] = function(n) { if (n == 'minified') return MINI; };
 
-	
+///#definesnippet commonAmdEnd
 // @condblock amdsupport
 });
 // @condend amdsupport
 
 // @cond !amdsupport })();
+///#endsnippet commonAmdEnd
         
+        
+///#definesnippet  webDocs
+
         
 /*$
  * @id list
@@ -3536,6 +3586,7 @@ define('minified', function() {
  * Minified App module will allow this though.
  */
 
+///#endsnippet  webDocs
 
 
         

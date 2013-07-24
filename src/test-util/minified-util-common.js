@@ -4,7 +4,7 @@
 var vm = require("vm");
 var fs = require("fs");
 
-exports.AMD_NAME = 'minifiedUtil';
+exports.AMD_NAME = 'minified';
 
 exports.files = ['minified-util-src.js'];
 
