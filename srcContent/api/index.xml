@@ -39,10 +39,6 @@
 <h3><a href="tojson.html">$.toJSON()</a></h3>
 <div class="summary">Converts the given value into a JSON string.</div>
 
-<h3><a href="wait.html">$.wait()</a></h3>
-<div class="summary">
-Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed.</div>
-
 <h3><a href="add.html">.add()</a></h3>
 <div class="summary">Adds the given node(s) as content to the list's HTML elements.</div>
 
@@ -170,7 +166,6 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="request.html">$.request()</a>
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
-</li><li><a href="wait.html">$.wait()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>

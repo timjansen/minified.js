@@ -193,8 +193,8 @@ define('minified', function() {
 	function filter(list, filterFuncOrObject) {
 		var r = []; 
 		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(value) { return filterFuncOrObject != value; };
-		each(list, function(value,index) {
-			if (f(value,index))
+		each(list, function(value, index) {
+			if (f(value, index))
 				r.push(value);
 		});
 		return r;
@@ -282,14 +282,13 @@ define('minified', function() {
 
 	// event handler creation for on(). Outside of on() to prevent unneccessary circular refs
 	function createEventHandler(handler, fThis, args, index, unprefixed, filterFunc) {
-
 		// triggerOriginalTarget is set only if the event handler is called by trigger()!! 
 		return function(event, triggerOriginalTarget) {
 			var e = event || _window.event, stopPropagation;
-			var target = e['target'];
+			var target = triggerOriginalTarget || e['target'];
 			if ((!filterFunc) || filterFunc(target)) {
 				// @cond debug try {
-				if ((stopPropagation = (((!handler.apply(fThis || triggerOriginalTarget || target, args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget) {
+				if ((stopPropagation = (((!handler.apply(fThis || target, args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget) {
 						e['preventDefault']();
 						e['stopPropagation']();
 				}
@@ -852,7 +851,7 @@ define('minified', function() {
      'remove': function() {
     	each(this, function(obj) {
 
-    		obj.parentNode.removeChild(obj);
+    		obj['parentNode'].removeChild(obj);
     	});
      },
 
@@ -948,8 +947,7 @@ define('minified', function() {
 					if (f(c))
 						r.push(c);
 				return r;
-			} 
-		));
+			}));
 	},
 
  	/*$
@@ -1187,7 +1185,7 @@ define('minified', function() {
 	 *             you should not set the attributes '@class' and '@style'. Instead use '$' and '$$' as shown below.</td></tr>
 	 * <tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Sets a data attribute using setAttribute(). Data attributes are
 	 *         attributes whose names start with 'data-'. '%' works like '@' and uses setAttribute(), but adds a 'data-' to the
-	 *         name. So '%myattr' and '@data-myattr' are equivalent.</td></tr>
+	 *         name. '%myattr' and '@data-myattr' are equivalent.</td></tr>
 	 * <tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <var>style</var> object.</td></tr>
 	 * <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <var>$</var> modifies the element's CSS classes using the object's <var>className</var> property. The value is a 
 	 *             space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
@@ -1316,7 +1314,7 @@ define('minified', function() {
     			     .set((name == '$$fade')  ? (
     			    	  {'$opacity': v})
     			        :
-    			        {'$height': /px$/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
+    			        {'$height': /px/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
     			         '$overflow': 'hidden'}
  					);
     		 }
@@ -1349,9 +1347,9 @@ define('minified', function() {
     			 });
     	 }
     	 else if (isString(name) || isFunction(name))
-    		 self.set('$', name);
+    		 self['set']('$', name);
     	 else
-    		 eachObj(name, function(n,v) { self.set(n, v); });
+    		 eachObj(name, function(n,v) { self['set'](n, v); });
     	 return self;
      },
 
@@ -2255,7 +2253,7 @@ define('minified', function() {
 		 * @configurable default
 		 * @name .on()
 		 * @syntax on(names, eventHandler)
-		 * @syntax on(names, eventHandler, selector)
+		 * @syntax on(names, selector, eventHandler)
 		 * @syntax on(names, customFunc, args)
 		 * @syntax on(names, customFunc, fThis, args)
 		 * @module WEB
@@ -2275,6 +2273,8 @@ define('minified', function() {
 		 * Optionally you can specify a selector string to receive only events that bubbled up from elements matching the
 		 * selector. The selector is executed in the context of the element you registered on to identify whether the
 		 * original target of the event qualifies. If not, the handler is not called.
+		 * 
+		 * Minified always registers event handlers with event bubbling enabled. Event capture is not supported.
 		 * 
 		 * Event handlers can be unregistered using #off#$.off().
 		 * 
@@ -2315,6 +2315,9 @@ define('minified', function() {
 		 *             space-separated event names. If the name is prefixed
 		 *             with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will 
 		 *             be executed by the browser. 
+		 * @param selector optional a selector string for ##dollar#$() to receive only events that match the selector. 
+		 *                Supports all valid parameters for ##dollar#$() except functions. Analog to ##is(), 
+		 *                 the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 		 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 		 * 		  <dl>
 	 	 *             <dt>event</dt><dd>The original DOM event object.</dd>
@@ -2324,8 +2327,6 @@ define('minified', function() {
 		 *                stopped and event bubbling will be disabled.</dd>
 	 	 *             </dl>
 		 *             'this' is set to the target element that caused the event (the same as <var>event.target</var>).
-		 * @param selector optional a selector string for ##dollar#$() to receive only events that match the selector. Analog to ##is(), 
-		 *                 the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 		 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>
 		 *                   and optionally the 'this' context given using <var>fThis</var>.
 		 * @param fThis optional a value for 'this' in the custom callback, as alternative to the event target
@@ -2333,24 +2334,26 @@ define('minified', function() {
 		 *                      If you pass custom arguments, the return value of the handler will always be ignored.
 		 * @return the list
 		 */
-		'on': function (eventName, handler, fThisOrArgsOrSelector, optArgs) {
-			// @cond debug if (!(eventName && handler)) error("eventName and handler parameters are required!"); 
+		'on': function (eventName, handlerOrSelector, fThisOrArgsOrHandler, optArgs) {
+			// @cond debug if (!(eventName)) error("eventName and handler parameters are required!"); 
 			// @cond debug if (/\bon/i.test(eventName)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
 			return this['each'](function(el, index) {
 				each(eventName.split(/\s/), function(namePrefixed) {
 					var name = replace(namePrefixed, /\|/);
-					var selector = isString(fThisOrArgsOrSelector) && fThisOrArgsOrSelector;
+					var noSelector = isFunction(handlerOrSelector) || null;
+					var handler = noSelector ? handlerOrSelector : fThisOrArgsOrHandler;
+
 					var miniHandler = createEventHandler(handler, 
-							selector && optArgs && fThisOrArgsOrSelector, // fThis (false means default this) 
-							selector && (optArgs || fThisOrArgsOrSelector), // args (false means event obj)
-							index, name == namePrefixed, selector && getFilterFunc(selector, el));
+							noSelector && optArgs && fThisOrArgsOrHandler, // fThis (false means default this) 
+							noSelector && (optArgs || fThisOrArgsOrHandler), // args (false means event obj)
+							index, name == namePrefixed, noSelector ? null : getFilterFunc(handlerOrSelector, el));
 
 					var handlerDescriptor = {'e': el,          // the element  
 							                 'h': miniHandler, // minified's handler 
 							                 'n': name         // event type        
 							                };
 					(handler['M'] = handler['M'] || []).push(handlerDescriptor);
-						el.addEventListener(name, miniHandler, true); // W3C DOM
+						el.addEventListener(name, miniHandler, false); // W3C DOM
 						(el[MINIFIED_MAGIC_EVENTS] = (el[MINIFIED_MAGIC_EVENTS] || [])).push(handlerDescriptor); 
 				});
 			});
@@ -2554,22 +2557,22 @@ define('minified', function() {
 					headers[ContentType] = 'application/x-www-form-urlencoded';
 			}
 
-			xhr.open(method, url, true, username, password);
+			xhr['open'](method, url, true, username, password);
 			eachObj(headers, function(hdrName, hdrValue) {
-				xhr.setRequestHeader(hdrName, hdrValue);
+				xhr['setRequestHeader'](hdrName, hdrValue);
 			});
 
 			xhr.onreadystatechange = function() {
-				if (xhr.readyState == 4 && !callbackCalled++) {
-					if (xhr.status == 200) {
-						prom(true, [xhr.responseText, xhr.responseXML]);
+				if (xhr['readyState'] == 4 && !callbackCalled++) {
+					if (xhr['status'] == 200) {
+						prom(true, [xhr['responseText'], xhr['responseXML']]);
 					}
 					else
-						prom(false, [xhr.status, xhr.statusText, xhr.responseText]);
+						prom(false, [xhr['status'], xhr['statusText'], xhr['responseText']]);
 				}
 			};
 
-			xhr.send(body);
+			xhr['send'](body);
 		}
 		catch (e) {
 			if (!callbackCalled) 
@@ -2819,47 +2822,6 @@ define('minified', function() {
         return entry.s; 
     },
 
-	/*$
-	 * @id wait
-	 * @configurable default
-	 * @requires
-	 * @name $.wait()
-	 * @syntax $.wait()
-	 * @syntax $.wait(durationMs)
-	 * @syntax $.wait(durationMs, args)
-	 * @module WEB
-	 *
-	 * Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
-	 * because it allows you to chain delays into your animation chain.
-	 *
-	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
-	 *          and finally moves to 100/100.
-	 * <pre>
-	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
-	 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
-	 *    .then(function() {
-	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
-	 *    }).then(function() {
-	 *    		 return $.wait(50);
-	 *    }).then(function() {
-	 *           div.animate({$left: '100px', $top: '100px'}, 400);
-	 *    });
-	 * });
-	 * </pre>
-	 *
-	 *
-	 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
-	 *                   from the event loop.
-	 * @param args optional an array of arguments to pass to the promise handler
-	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
-	 *         <var>args</var> parameter as given to <var>wait()</var>.
-	 */
-	'wait': function(durationMs, args) {
-		var p = promise();
-		delay(function() {p(true, args);}, durationMs);
-		return p;
-	},
-
     /*$
 	 * @id off
 	 * @group EVENTS
@@ -2889,7 +2851,7 @@ define('minified', function() {
 	'off': function (handler) {
 		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
 	   	each(handler['M'], function(h) {
-				h['e'].removeEventListener(h['n'], h['h'], true); // W3C DOM
+				h['e'].removeEventListener(h['n'], h['h'], false); // W3C DOM
 				h['e'][MINIFIED_MAGIC_EVENTS] = filter(h['e'][MINIFIED_MAGIC_EVENTS], h);
 		});
 		handler['M'] = null;

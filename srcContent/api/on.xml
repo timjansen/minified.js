@@ -14,7 +14,7 @@
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">on(names, eventHandler)</div>
-<div class="syntax">on(names, eventHandler, selector)</div>
+<div class="syntax">on(names, selector, eventHandler)</div>
 <div class="syntax">on(names, customFunc, args)</div>
 <div class="syntax">on(names, customFunc, fThis, args)</div>
 </div>
@@ -27,6 +27,10 @@ the name must not used. You can register the handler for more than one event by 
 space-separated event names. If the name is prefixed
 with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will
 be executed by the browser.</dd>
+<dt id="on_selector" class=""><a name="on_selector"><var>selector (optional)</var></a></dt>
+<dd class="">a selector string for <a href='dollar.html'>$() to receive only events that match the selector.
+Supports all valid parameters for </a>dollar#$() except functions. Analog to <code><a href='is.html'>is()</a></code>,
+the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.</dd>
 <dt id="on_eventHandler" class=""><a name="on_eventHandler"><var>eventHandler</var></a></dt>
 <dd class="">the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 <dl>
@@ -37,9 +41,6 @@ or the event name is prefixed by '|', all further processing of the event will b
 stopped and event bubbling will be disabled.</dd>
 </dl>
 'this' is set to the target element that caused the event (the same as <var>event.target</var>).</dd>
-<dt id="on_selector" class=""><a name="on_selector"><var>selector (optional)</var></a></dt>
-<dd class="">a selector string for <a href='dollar.html'>$() to receive only events that match the selector. Analog to </a>is(),
-the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.</dd>
 <dt id="on_customFunc" class=""><a name="on_customFunc"><var>customFunc</var></a></dt>
 <dd class="">a function to be called instead of a regular event handler with the arguments given in <var>args</var>
 and optionally the 'this' context given using <var>fThis</var>.</dd>
@@ -60,7 +61,7 @@ list as second argument and 'this' set to the source element of the event (e.g. 
 When you pass arguments, the handler's return value is always ignored and the event with unnamed prefixes
 will always be cancelled.</p><p>Optionally you can specify a selector string to receive only events that bubbled up from elements matching the
 selector. The selector is executed in the context of the element you registered on to identify whether the
-original target of the event qualifies. If not, the handler is not called.</p><p>Event handlers can be unregistered using <code><a href='off.html'>$.off()</a></code>.</p><p></p></div>
+original target of the event qualifies. If not, the handler is not called.</p><p>Minified always registers event handlers with event bubbling enabled. Event capture is not supported.</p><p>Event handlers can be unregistered using <code><a href='off.html'>$.off()</a></code>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -114,7 +115,6 @@ $('#table').on('change', 'tr', function(event, index, selectedIndex) {
 </li><li><a href="request.html">$.request()</a>
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
-</li><li><a href="wait.html">$.wait()</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>

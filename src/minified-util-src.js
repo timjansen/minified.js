@@ -1674,6 +1674,7 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 	 @stop
 	 */
 	return {
+		///#definesnippet utilExports
 		/*$
 		 * @id underscore
 		 * @name _()
@@ -1681,6 +1682,7 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 		 * @module UTIL
 		 */
 		'_': _
+		///#endsnippet utilExports
 	};
 });
 

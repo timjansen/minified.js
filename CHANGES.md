@@ -21,5 +21,6 @@ Ongoing Development
 * New method onOver() for mouse over effects.
 * $() will now automatically remove duplicates when using selectors
 * toggle() returns Promise for animated toggles; supports functions as state.
-* on() has option 'selector' for delegated events
+* on() got a new parameter 'selector' for delegated events
 * Removed hasClass(). Use is() instead.
+* Removed wait(). It will re-appear in the util module soon.

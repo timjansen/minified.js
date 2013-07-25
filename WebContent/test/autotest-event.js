@@ -52,7 +52,42 @@ window.miniTests.push.apply(window.miniTests, [
 			check(error, null);
 		}
 	},
+	{
+		name:'$().on(selectors)',
+		exec: function() {
+			var p = $('#container2');
+			var s, c1, c2, c3;
+			var proofEek1 = 0, proofBoo = 0, proofClonk = 0;
+			p.add(s = EE('div')()[0]);
+			$(s).add(c1 = EE('p','bla')()[0]);
+			$(s).add(c2 = EE('span', 'x')()[0]);
+			$(s).add(c3 = EE('span', {$: 'supiClass'} ,'x')()[0]);
+			
+			$(s).on('eek', 'span.supiClass', function(e, index) { if (e.success && index==0 && this===c3) proofEek1++; });
+			$(s).trigger('eek', {success:1});
+			check(proofEek1, 0, "eek not triggered / selector does not match parent");
+			$(c1).trigger('eek', {success:1});
+			check(proofEek1, 0, "eek not triggered / selector does not match first child");
+			$(c2).trigger('eek', {success:1});
+			check(proofEek1, 0, "eek not triggered / selector does not match second child");
+			$(c3).trigger('eek', {success:1});
+			check(proofEek1, 1, "eek triggered");
+			$(c3).trigger('eek', {success:1});
+			check(proofEek1, 2, "eek triggered again");
 
+			$(s).on('boo', 'span', function(e, index) { if (e.success && index==0 && this===c3) proofBoo++; });
+			$(c3).trigger('boo', {success:1});
+			check(proofBoo, 1, "boo triggered");
+
+			$(s).on('clonk', 'span', function(e, index) { if (e.success && index==0 && (this===c3 || this == c2)) proofClonk++; });
+			$(c3).trigger('clonk', {success:1});
+			check(proofClonk, 1, "clonk triggered");
+			$(c2).trigger('clonk', {success:1});
+			check(proofClonk, 2, "clonk triggered again");
+			$(c1).trigger('clonk', {success:1});
+			check(proofClonk, 2, "clonk not triggered");
+		}
+	},
 	{
 		name:'$.off()',
 		exec: function() {
