@@ -24,3 +24,5 @@ Ongoing Development
 * on() got a new parameter 'selector' for delegated events
 * Removed hasClass(). Use is() instead.
 * Removed wait(). It will re-appear in the util module soon.
+* Removed Promise.always(). It will re-appear in the util module soon.
+

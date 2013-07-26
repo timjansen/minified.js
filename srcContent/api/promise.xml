@@ -69,14 +69,8 @@ $.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
  .error(function(exception) {
  	alert('Something went wrong');
  });
-</pre></p><p>Sometimes you want to just be notified of the end of an operation but are not interested in the outcome. For these cases, if you just had
-the Promises/A+-compliant <code><a href='then.html'>then()</a></code> method, you would have to register the same callback handler twice. This is not very convenient,
-especially when you define the handler function inline. Therefore Minified comes with a second small extension, <code><a href='always.html'>always()</a></code>:</p><p><pre>
-$.request('post', 'http://example.com/pageHit', {pageId: 12345})
- .always(function() {   // always(callback) is equivalent to then(callback, callback)
-     pageCountDone();
- });
-</pre></p><p>Please note that the Minified Web module only returns Promises, but it <strong>does not allow you to create Promises</strong> directly. The upcoming
+</pre></p><p>
+Please note that the Minified Web module only returns Promises, but it <strong>does not allow you to create Promises</strong> directly. The upcoming
 Minified App module will allow this though.
 </p></div>
 
@@ -124,7 +118,6 @@ Minified App module will allow this though.
 </li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
-</li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
 </li><li><a href="require.html">require()</a>

@@ -222,8 +222,11 @@ define('minified', function() {
 	function replace(s, regexp, sub) {
 		return toString(s).replace(regexp, sub||'');
 	}
-	function wordRegExp(name) {
-		return RegExp('\\b' + name + '\\b', 'i');
+	function wordRegExpTester(name, prop) {
+		var re = name != null && RegExp('\\b' + name + '\\b', 'i');
+		return function(obj) {
+			return (!re) || re.test(obj[prop]);
+		};
 	}
 
 	///#definesnippet webFunctions
@@ -395,7 +398,7 @@ define('minified', function() {
 		}
 
 		var parent, steps, dotPos, subSelectors;
-		var elements, regexpFilter, useGEbC, className, elementName, reg;
+		var elements, regexpFilter, useGEbC, className, elementName;
 
 		if (context && (context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
 			return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
@@ -415,9 +418,9 @@ define('minified', function() {
 		return parent ? filterElements(elements) : elements;
 	};
 
-    // finds a filter func for on(), is() and only().
+	// If context is set, live updates will be possible. 
 	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because it is used only
-	// by on() and in on() only nodes in the right context will be checked
+	// by on(), and in on() only nodes in the right context will be checked
 	function getFilterFunc(selector, context) {
 		var dotPos;
 		if (isFunction(selector))
@@ -425,23 +428,22 @@ define('minified', function() {
 		else if (!selector || 
 				 (isString(selector) && 
 						 (selector == '*' || ((dotPos = /^([\w-]*)\.([\w-]+)$/.exec(selector)) || (dotPos = /^([\w-]+)$/.exec(selector)))))) {
-			var nodeNameFilter = dotPos && dotPos[1] && wordRegExp(dotPos[1]);
-			var classNameFilter = dotPos && dotPos[2] && wordRegExp(dotPos[2]);
+			var nodeNameFilter = wordRegExpTester(dotPos && dotPos[1], 'nodeName');
+			var classNameFilter = wordRegExpTester(dotPos && dotPos[2], 'className');
 			return function(v) { 
-				return isNode(v) == 1 &&
-					((!nodeNameFilter)  || nodeNameFilter.test(v['nodeName'])) &&
-					((!classNameFilter) || classNameFilter.test(v['className']));
-			};
+						return isNode(v) == 1 && nodeNameFilter(v) && classNameFilter(v);
+					};
 		}
 		else {
 			var nodeSet = {};
 			$(selector, context)['each'](function(node) {
 				nodeSet[getNodeId(node)] = true;
 			});
-			return function(v) { return nodeSet[getNodeId(v)]; };
+			return function(v) { 
+				return context ? $(selector, context)['find'](v)!=null : nodeSet[getNodeId(v)]; 
+			};
 		}
 	}
-
 	///#endsnippet webFunctions
 
     function promise() {
@@ -546,30 +548,6 @@ define('minified', function() {
 				deferred.push(callCallbacks);    		
     		return newPromise;
     	};
-    	/*$
-    	 * @id always
-    	 * @group REQUEST
-    	 * @name promise.always()
-    	 * @syntax promise.always(callback)
-    	 * @module WEB, UTIL
-    	 * Registers a callback that will always be called when the ##promise#Promise##'s operation ended, no matter whether the operation succeeded or not.
-    	 * This is a convenience function that will call ##then() with the same function for both arguments. It shares all of its semantics.
-    	 *
-    	 * @example Simple handler for a HTTP request.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .always(function() {
-    	 *        alert('Got response or error!');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @param callback a function to be called when the operation has been finished, no matter what its result was. The exact arguments depend on the operation and may
-    	 *                 vary depending on whether it succeeded or not. If the function returns a ##promise#Promise##, that Promise will
-    	 *                 be evaluated to determine the state of the returned Promise. If provided and it returns regularly, the returned promise will 
-    	 *                 have success status. If it throws an error, the returned Promise will be in the error state.
-    	 * @return a new ##promise#Promise## object. Its state is determined by the callback.
-    	 */
-      	set['always'] = function(func) { return then(func, func); };
 
     	/*$
     	 * @id error
@@ -1330,7 +1308,7 @@ define('minified', function() {
     						 each(newValue.split(/\s+/), function(clzz) {
     							 var cName = replace(clzz, /^[+-]/);
     							 var oldClassName = className;
-    							 className = replace(className, wordRegExp(cName));
+    							 className = replace(className, RegExp('\\b' + cName + '\\b', 'i'));
     							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
     								 className += ' ' + cName;
     						 });
@@ -3311,16 +3289,6 @@ define('minified', function() {
  *  });
  * </pre>
  *  
- * Sometimes you want to just be notified of the end of an operation but are not interested in the outcome. For these cases, if you just had
- * the Promises/A+-compliant ##then() method, you would have to register the same callback handler twice. This is not very convenient,
- * especially when you define the handler function inline. Therefore Minified comes with a second small extension, ##always():
- * 
- * <pre>
- * $.request('post', 'http://example.com/pageHit', {pageId: 12345})
- *  .always(function() {   // always(callback) is equivalent to then(callback, callback)
- *      pageCountDone(); 
- *  });
- * </pre>
  * 
  * Please note that the Minified Web module only returns Promises, but it <strong>does not allow you to create Promises</strong> directly. The upcoming
  * Minified App module will allow this though.

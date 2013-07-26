@@ -198,7 +198,7 @@
     	 * @group REQUEST
     	 * @name promise.always()
     	 * @syntax promise.always(callback)
-    	 * @module WEB, UTIL
+    	 * @module WEB+UTIL
     	 * Registers a callback that will always be called when the ##promise#Promise##'s operation ended, no matter whether the operation succeeded or not.
     	 * This is a convenience function that will call ##then() with the same function for both arguments. It shares all of its semantics.
     	 *
@@ -340,9 +340,8 @@
 
 	
 	return {
-		///#include minified-web-src.js webExports
-		,
 		///#include minified-util-src.js utilExports
+		///#include minified-web-src.js webExports
 	};
 	
 ///#include minified-web-src.js  commonAmdEnd

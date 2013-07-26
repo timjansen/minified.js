@@ -85,7 +85,6 @@ $('h2.section').each(function(item, index) {
 </li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
-</li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
 </li><li><a href="require.html">require()</a>

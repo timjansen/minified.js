@@ -140,9 +140,6 @@ Exposes the internal class used by all  Minified lists.</div>
 <div class="summary">
 <i>Promises</i> are objects that represent the result of an asynchronous operation.</div>
 
-<h3><a href="always.html">promise.always()</a></h3>
-<div class="summary">Registers a callback that will always be called when the Promise's operation ended, no matter whether the operation succeeded or not.</div>
-
 <h3><a href="error.html">promise.error()</a></h3>
 <div class="summary">Registers a callback that will be called when the operation failed.</div>
 
@@ -197,7 +194,6 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promise.html">Promise</a>
-</li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
 </li><li><a href="require.html">require()</a>

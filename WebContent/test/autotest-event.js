@@ -103,7 +103,7 @@ window.miniTests.push.apply(window.miniTests, [
 			$(s).add(c3 = EE('span', {$: 'supiClass'} ,'x')()[0]);
 			$(s).on('|eek', 'span', function(e, index) { if (e.success && index==0) proofTag++; });
 			$(s).on('|eek', '.supiClass', function(e, index) { if (e.success && index==0) proofClass++; });
-			$(s).on('|eek', '.supiClass,form,.whatever', function(e, index) { if (e.success && index==0) proofComplexMatch++; });
+			$(s).on('|eek', 'a,.supiClass,form,.whatever', function(e, index) { if (e.success && index==0) proofComplexMatch++; });
 			$(s).on('|eek', 'form,.whatever,#nada', function(e, index) { if (e.success && index==0) proofComplexNonMatch++; });
 			
 			$(c3).trigger('eek', {success:1});
@@ -112,18 +112,18 @@ window.miniTests.push.apply(window.miniTests, [
 			check(proofComplexMatch, 1, "eek selector test / complex");
 			check(proofComplexNonMatch, 0, "eek selector test / complex non");
 
-			$(s).add(c4 = EE('span','x')()[0]);
-			$(s).add(c5 = EE('span', {$: 'supiClass'} ,'x')()[0]);
-			
-			$(c4).trigger('|eek', {success:1});
+			$(s).add(c4 = EE('span','y')()[0]);
+			$(s).add(c5 = EE('span', {$: 'supiClass'} ,'z')()[0]);
+
+			$(c4).trigger('eek', {success:1});
 			check(proofTag, 2, "live test, span only / tag");
-			check(proofClass, 2, "live test, span only / class");
+			check(proofClass, 1, "live test, span only / class");
 			check(proofComplexMatch, 1, "live test, span only / complex");
 			check(proofComplexNonMatch, 0, "live test, span only / complex non");
 
-			$(c5).trigger('|eek', {success:1});
+			$(c5).trigger('eek', {success:1});
 			check(proofTag, 3, "live test, span and class / tag");
-			check(proofClass, 3, "live test, span and class / class");
+			check(proofClass, 2, "live test, span and class / class");
 			check(proofComplexMatch, 2, "live test, span and class / complex");
 			check(proofComplexNonMatch, 0, "live test, span and class / complex non");
 		}

@@ -1681,8 +1681,27 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 		 * @configurable default
 		 * @module UTIL
 		 */
-		'_': _
+		'_': _,
 		///#endsnippet utilExports
+		
+	    /*$
+		 * @id M
+		 * @group SELECTORS
+		 * @requires 
+		 * @configurable no
+		 * @name M
+		 * @syntax MINI.M
+         * @module WEB, UTIL
+		 * 
+		 * Exposes the internal class used by all  ##list#Minified lists##. This is mainly intended to allow you adding your
+		 * own functions.
+		 * 
+		 * @example Adding a function printLength() to <var>M</var>:
+		 * <pre>
+		 * MINI.M.prototype.printLength = function() { console.log(this.length); };
+		 * </pre>
+		 */
+		'M': M
 	};
 });
 

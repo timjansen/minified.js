@@ -1681,8 +1681,9 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 		 * @configurable default
 		 * @module UTIL
 		 */
-		'_': _
+		'_': _,
 		///#endsnippet utilExports
+		'M': M
 	};
 });
 
