@@ -457,17 +457,6 @@ define('minifiedApp', function() {
 			});
 		},
 
-		'onOver': function(toggle) {
-			var curState = [];
-			this['on']('|mouseover |mouseout', function(ev, index) {
-				var newState = /ov/.test(ev.type);
-				if (ev['target'] == ev['currentTarget'] && curState[index] !== newState) {
-					curState[index] = newState;
-					toggle.call(this, newState, index);
-				}
-			});
-		},
-		
 		'onAction': function(handler) {
 			this['on']('click submit', handler, []);
 		},
@@ -500,6 +489,10 @@ define('minifiedApp', function() {
 				else
 					self['set'](states[state]); 
 			};
+		},
+		
+		'toggles': function(s1, s2, s3, s4) {
+			return this['collect'](function(el) { return $(el)['toggle'](s1, s2, s3, s4); });
 		}
 	}, M);
 
