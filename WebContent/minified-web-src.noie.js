@@ -136,6 +136,16 @@ define('minified', function() {
 	};
 
 	/*$
+	 * @id ie9compatibility
+	 * @group OPTIONS
+	 * @configurable default
+	 * @doc no
+	 * @name Backward-Compatibility for IE9 and similar browsers
+	 * The only difference between IE9 and IE10 for Minified are the lack of a 'relatedTarget' property in events
+	 * and the 'elements' property of forms, which is a node in IE9.  
+	 */
+
+	/*$
 	 * @id fadeslide
 	 * @requires animate set 
 	 * @group ANIMATION
@@ -245,7 +255,7 @@ define('minified', function() {
 
 	// retrieves the node id of the element, create one if needed.
 	function getNodeId(el) {
-		return el[MINIFIED_MAGIC_NODEID] = el[MINIFIED_MAGIC_NODEID] || ++nodeId;
+		return (el[MINIFIED_MAGIC_NODEID] = (el[MINIFIED_MAGIC_NODEID] || ++nodeId));
 	}
 
 	// collect variant that filters out duplicate nodes from the given list, returns a new array
@@ -2213,7 +2223,10 @@ define('minified', function() {
 			this['each'](function(el) {
 				var n = el['name'], v = toString(el['value']), o=r[n];
 				if (/form/i.test(el['tagName']))
+					// @condblock ie9compatibility 
 					$(collect(el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
+					// @condend
+					// @cond !ie9compatibility $(el['elements'])['values'](r);
 				else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
 					if (isList(o))
 						o.push(v);
@@ -2366,7 +2379,10 @@ define('minified', function() {
 			var self = this, curOverState = [];
 			return self['on']('|mouseover |mouseout', function(ev, index) {
 				var overState = ev['type'] != 'mouseout';
+				// @condblock ie9compatibility 
 				var relatedTarget = ev['relatedTarget'] || ev['toElement'];
+				// @condend
+				// @cond !ie9compatibility var relatedTarget = ev['relatedTarget'];
 				if (curOverState[index] !== overState) {
 					if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['trav']('parentNode', self[index]).length)) {
 						curOverState[index] = overState;

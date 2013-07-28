@@ -123,7 +123,7 @@ Here a small example to give you an idea:
 var r = <a href="/api/dollar.html">$</a>('#myTable tr')                                                         // all rows in myTable
            .<a href="/api/filter.html">filter</a>(function(elem, index) { return index % 2 == 1; })             // filter: take only odd rows
            .<a href="/api/collect.html">collect</a>(function(elem) { return <a href="/api/dollar.html">$</a>('td', elem).<a href="/api/sub.html">sub</a>(-3); })            // use the last three cells per row
-           .<a href="/api/find.html">find</a>(function(elem) { if (<a href="/api/dollar.html">$</a>(elem).<a href="/api/hasclass.html">hasClass</a>('hit')) return elem; });  // find first cell with class 'hit'
+           .<a href="/api/find.html">find</a>(function(elem) { if (<a href="/api/dollar.html">$</a>(elem).<a href="/api/is.html">is</a>('.hit')) return elem; });  // find first cell with class 'hit'
 </pre>
 </p>
 

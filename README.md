@@ -2,6 +2,7 @@ Minified Web
 =============
 
 Quick Links: <a href="http://minifiedjs.com/">minifiedjs.com</a> - <a href="http://minifiedjs.com/api/">API</a> - <a href="http://minifiedjs.com/docs/">Docs</a>
+Latest version: <a href="http://minifiedjs.com/docs/beta2.html">beta 2</a> (<a href="CHANGES.md">changelog</a>)
 
 Overview
 ----------
@@ -15,11 +16,11 @@ everything that you don't need to reduce its size even more.
 
 Size Comparison
 -----------------
-For beta 1:
+For beta 2:
 <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><td>minified-web.js</td><td>IE6 and higher</td><td>9.1kb</td><td>4089 bytes</td></tr>
-<tr><td>minified-web.noie.js</td><td>no</td><td>7.7kb</td><td>3429 bytes</td></tr>
+<tr><td>minified-web.js</td><td>IE6 and higher</td><td>10.8kb</td><td>4838 bytes</td></tr>
+<tr><td>minified-web.noie.js</td><td>no</td><td>9.3kb</td><td>4092 bytes</td></tr>
 <tr><td>jQuery 1.10.2</td><td>IE6 and higher</td><td>91kb</td><td>32kb</td></tr>
 <tr><td>jQuery 2.0.3</td><td>no</td><td>82kb</td><td>29kb</td></tr>
 <tr><td>MooTools Core NoCompat 1.4.5</td><td>IE6 and higher</td><td>88kb</td><td>29kb</td></tr>
