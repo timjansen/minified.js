@@ -13,18 +13,18 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">is()</div>
-<div class="syntax">is(selector)</div>
+<div class="syntax">list.is()</div>
+<div class="syntax">list.is(selector)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="is_selector" class=""><a name="is_selector"><var>selector (optional)</var></a></dt>
-<dd class="">any selector valid for #<code><a href='dollar.html'>$()</a></code>, including CSS selectors and lists. Additionally you can
+<dd class="">any selector valid for <code><a href='dollar.html'>$()</a></code>, including CSS selectors and lists. Alternatively uou can pass
 a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
-Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
-is relative to the number of matches for the selector in the document. Default is '*', which checks whether all list nodes
-are elements.</dd>
+<br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+is relative to the number of matches for the selector in the document. Default is '*', which checks whether all list items
+are HTML elements.</dd>
 <dt id="is_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="is_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1"><var>true</var> if all list elements match the selector. <var>false</var> otherwise.</dd>
 </dl>
@@ -32,14 +32,14 @@ are elements.</dd>
 <h4>Description</h4>
 <div class="description"><p>Checks whether all elements in the list match the given selector. Returns <var>true</var> if they all do, or <var>false</var>
 if at least one does not.</p><p>Please note that this method is optimized for the four simple selector forms '*', '.classname', 'tagname'
-and 'tagname.classname'. If you use any other kind of selector, please be aware that selectors that match
-many elements can be slow.</p><p></p></div>
+and 'tagname.classname'. If you use any other kind of selector, be aware that selectors that match
+many elements in the document can be slow.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
 <div class="example"><p>Checks whether the element has the class 'myClass':
 <pre>
-var isMyClass = $('li').is('.myClass');
+var isMyClass = $('#myElement').is('.myClass');
 </pre>
 </p></div>
 <h4>Example</h4>

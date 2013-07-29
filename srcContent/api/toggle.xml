@@ -14,11 +14,11 @@ Creates a function that switches between the two given states for the list.</div
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">toggle(cssClasses)</div>
-<div class="syntax">toggle(state1, state2)</div>
-<div class="syntax">toggle(state1, state2, durationMs)</div>
-<div class="syntax">toggle(state1, state2, durationMs, linearity)</div>
-<div class="syntax">toggle(state1, state2, durationMs, interpolationFunction)</div>
+<div class="syntax">list.toggle(cssClasses)</div>
+<div class="syntax">list.toggle(state1, state2)</div>
+<div class="syntax">list.toggle(state1, state2, durationMs)</div>
+<div class="syntax">list.toggle(state1, state2, durationMs, linearity)</div>
+<div class="syntax">list.toggle(state1, state2, durationMs, interpolationFunction)</div>
 </div>
 
 <h4>Parameters</h4>

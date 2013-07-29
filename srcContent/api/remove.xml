@@ -13,11 +13,12 @@
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">remove()</div>
+<div class="syntax">list.remove()</div>
 </div>
 
 <h4>Description</h4>
-<div class="description"><p>Removes all nodes of the list from the DOM tree.</p><p></p></div>
+<div class="description"><p>Removes all nodes of the list from the DOM tree.</p><p>On Minified builds with IE compatibility, <var>remove()</var> will auto remove all event handlers in the
+removed DOM nodes to prevent memory leaks.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

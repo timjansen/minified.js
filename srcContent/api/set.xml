@@ -14,9 +14,9 @@ Modifies the list's elements by setting their properties, attributes, CSS styles
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">set(name, value)</div>
-<div class="syntax">set(properties)</div>
-<div class="syntax">set(cssClasses)</div>
+<div class="syntax">list.set(name, value)</div>
+<div class="syntax">list.set(properties)</div>
+<div class="syntax">list.set(cssClasses)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -60,8 +60,7 @@ be set.</p><p>The name given to <var>set()</var> defines what kind of data you a
 <tr><td>@name</td><td>@href</td><td>Attribute</td><td>Sets the HTML attribute using setAttribute(). In order to stay compatible with Internet Explorer 7 and earlier,
             you should not set the attributes '@class' and '@style'. Instead use '$' and '$$' as shown below.</td></tr>
 <tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Sets a data attribute using setAttribute(). Data attributes are
-        attributes whose names start with 'data-'. '%' works like '@' and uses setAttribute(), but adds a 'data-' to the
-        name. '%myattr' and '@data-myattr' are equivalent.</td></tr>
+        attributes whose names start with 'data-'. '%myattr' and '@data-myattr' are equivalent.</td></tr>
 <tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <var>style</var> object.</td></tr>
 <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <var>$</var> modifies the element's CSS classes using the object's <var>className</var> property. The value is a
             space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
@@ -85,7 +84,7 @@ $('input.checkbox').set('checked', false);
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>Changing the <var>innerHTML</var property of an element:
+<div class="example"><p>Changing the <var>innerHTML</var> property of an element:
 <pre>
 $('#toc').set('innerHTML', 'Content');
 </pre>

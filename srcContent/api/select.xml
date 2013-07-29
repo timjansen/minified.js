@@ -13,12 +13,14 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">trav(selector)</div>
-<div class="syntax">trav(selector, childOnly)</div>
+<div class="syntax">list.select(selector)</div>
+<div class="syntax">list.select(selector, childOnly)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
+<dt id="select_selector" class=""><a name="select_selector"><var>selector</var></a></dt>
+<dd class="">a selector or any other valid first argument for <code><a href='dollar.html'>$()</a></code>.</dd>
 <dt id="select_childOnly" class=""><a name="select_childOnly"><var>childOnly (optional)</var></a></dt>
 <dd class="">if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not
 true, all descendants of the context will be included.</dd>
@@ -27,8 +29,8 @@ true, all descendants of the context will be included.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Executes a selector with the list as context. <code>list.select(selector, childOnly)</code> is just syntactic sugar
-for <code>$(selector, list, childOnly)</code>.</p><p></p></div>
+<div class="description"><p>Executes a selector with the list as context. <code>list.select(selector, childOnly)</code> is equivalent
+to <code>$(selector, list, childOnly)</code>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

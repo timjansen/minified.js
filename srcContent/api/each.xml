@@ -13,7 +13,7 @@
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">each(callback)</div>
+<div class="syntax">list.each(callback)</div>
 </div>
 
 <h4>Parameters</h4>

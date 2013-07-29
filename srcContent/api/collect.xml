@@ -13,7 +13,7 @@
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">collect(collectFunc)</div>
+<div class="syntax">list.collect(collectFunc)</div>
 </div>
 
 <h4>Parameters</h4>

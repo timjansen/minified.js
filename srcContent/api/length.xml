@@ -14,7 +14,7 @@ Contains the number of elements in the list.</div>
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">length</div>
+<div class="syntax">list.length</div>
 </div>
 
 <h4>Description</h4>

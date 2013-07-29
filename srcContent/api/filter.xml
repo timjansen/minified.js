@@ -13,8 +13,8 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">filter(filterFunc)</div>
-<div class="syntax">filter(value)</div>
+<div class="syntax">list.filter(filterFunc)</div>
+<div class="syntax">list.filter(value)</div>
 </div>
 
 <h4>Parameters</h4>

@@ -689,7 +689,7 @@ define('minified', function() {
 	 * @group SELECTORS
 	 * @requires dollar
 	 * @name .length
-	 * @syntax length
+	 * @syntax list.length
    	 * @module WEB, UTIL
 	 * 
 	 * Contains the number of elements in the list.
@@ -723,7 +723,7 @@ define('minified', function() {
      * @requires dollar
      * @configurable default
      * @name .each()
-     * @syntax each(callback)
+     * @syntax list.each(callback)
      * @module WEB, UTIL
      * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
      * the zero-based index as second.
@@ -750,8 +750,8 @@ define('minified', function() {
 	 * @requires dollar
 	 * @configurable default
 	 * @name .filter()
-	 * @syntax filter(filterFunc)
-	 * @syntax filter(value)
+	 * @syntax list.filter(filterFunc)
+	 * @syntax list.filter(value)
    	 * @module WEB, UTIL
 	 * Creates a new ##list#Minified list## by taking an existing list and omitting certain elements from it. You
 	 * can either specify a callback function to approve those items that will be in the new list, or 
@@ -784,7 +784,7 @@ define('minified', function() {
      * @requires dollar 
      * @configurable default 
      * @name .collect() 
-     * @syntax collect(collectFunc) 
+     * @syntax list.collect(collectFunc) 
    	 * @module WEB, UTIL
      * Creates a new ##list#Minified list## from the current list using the given callback function. 
      * The callback is invoked once for each element of the current list. The callback results will be added to the result list. 
@@ -838,8 +838,8 @@ define('minified', function() {
       * @requires filter 
       * @configurable default 
       * @name .sub() 
-      * @syntax sub(startIndex) 
-      * @syntax sub(startIndex, endIndex) 
+      * @syntax list.sub(startIndex) 
+      * @syntax list.sub(startIndex, endIndex) 
       * @module WEB, UTIL
       * Returns a new ##list#Minified list## containing only the elements in the specified range. If there are no elements in the range,
       * an empty list is returned.
@@ -882,8 +882,8 @@ define('minified', function() {
      * @requires
      * @configurable default 
      * @name .find() 
-     * @syntax find(findFunc) 
-     * @syntax find(element) 
+     * @syntax list.find(findFunc) 
+     * @syntax list.find(element) 
      * @module WEB, UTIL
      * Finds a specific value in the list. There are two ways of calling <var>find()</var>:
      * <ol>
@@ -927,9 +927,12 @@ define('minified', function() {
 	 * @requires dollar
 	 * @configurable default
 	 * @name .remove()
-	 * @syntax remove()
+	 * @syntax list.remove()
      * @module WEB
 	 * Removes all nodes of the list from the DOM tree.
+	 * 
+	 * On Minified builds with IE compatibility, <var>remove()</var> will auto remove all event handlers in the
+	 * removed DOM nodes to prevent memory leaks.
 	 * 
 	 * @example Removes the element with the id 'myContainer', including all children, from the DOM tree.
 	 * <pre>
@@ -959,7 +962,7 @@ define('minified', function() {
  	 * @requires dollar
  	 * @configurable default
  	 * @name .text()
- 	 * @syntax text()
+ 	 * @syntax list.text()
      * @module WEB
  	 * Returns the concatenated text content of all nodes in the list. 
  	 * This is done by going recursively through all elements and their children. The values of text and CDATA nodes
@@ -993,16 +996,16 @@ define('minified', function() {
  	 * @requires each
  	 * @configurable default
  	 * @name .trav()
- 	 * @syntax trav(property)
- 	 * @syntax trav(property, selector)
- 	 * @syntax trav(property, selector, maxDepth)
- 	 * @syntax trav(property, maxDepth)
+ 	 * @syntax list.trav(property)
+ 	 * @syntax list.trav(property, selector)
+ 	 * @syntax list.trav(property, selector, maxDepth)
+ 	 * @syntax list.trav(property, maxDepth)
      * @module WEB
- 	 * Traverses each DOM node in the list using the given property, and creates a new list that includes each visited node,
+ 	 * Traverses each DOM node in the list using the given property; creates a new list that includes each visited node,
  	 * optionally filtered by the given selector.
  	 * 
- 	 * <var>trav()</var> uses each element in the list and then traverses the DOM tree using that property until it finds null, while 
- 	 * adding all visited nodes that match the given selector to the result list. If no selector is given,
+ 	 * <var>trav()</var> traverses the DOM tree for each list element it finds a <var>null</var>.  
+ 	 * All visited nodes that match the given selector are added to the result list. If no selector is given,
  	 * only elements will be added.
  	 * 
  	 * @example Returns a list of all parent nodes, direct and indirect:
@@ -1026,9 +1029,9 @@ define('minified', function() {
  	 * </pre>
  	 *
   	 * @parm property the name of the property to traverse.
- 	 * @param selector optional any selector valid for ##dollar#$(), including CSS selectors and lists. Additionally you can
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists. Alternatively you can pass
  	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
- 	 *        Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements
  	 *        (but no other nodes such as text nodes).
  	 * @param maxDepth optional the maximum number of steps to traverse. Defaults to unlimited.
@@ -1054,11 +1057,11 @@ define('minified', function() {
  	 * @requires dollar
  	 * @configurable default
  	 * @name .select()
- 	 * @syntax trav(selector)
- 	 * @syntax trav(selector, childOnly)
+ 	 * @syntax list.select(selector)
+ 	 * @syntax list.select(selector, childOnly)
      * @module WEB
- 	 * Executes a selector with the list as context. <code>list.select(selector, childOnly)</code> is just syntactic sugar
- 	 * for <code>$(selector, list, childOnly)</code>. 
+ 	 * Executes a selector with the list as context. <code>list.select(selector, childOnly)</code> is equivalent 
+ 	 * to <code>$(selector, list, childOnly)</code>. 
  	 * 
  	 * @example Returns a list of all list elements:
  	 * <pre>
@@ -1070,7 +1073,7 @@ define('minified', function() {
  	 * var children = $('.myElements').select('*', true); 
  	 * </pre>
  	 * 
- 	 * @parm selector a selector or any other valid first argument for  ##dollar#$()##.
+ 	 * @param selector a selector or any other valid first argument for #dollar#$().
  	 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
  	 *             true, all descendants of the context will be included. 
  	 * @return the new list containing the selected descendants.
@@ -1085,19 +1088,19 @@ define('minified', function() {
  	 * @requires find each
  	 * @configurable default
  	 * @name .is()
- 	 * @syntax is()
- 	 * @syntax is(selector)
+ 	 * @syntax list.is()
+ 	 * @syntax list.is(selector)
      * @module WEB
  	 * Checks whether all elements in the list match the given selector. Returns <var>true</var> if they all do, or <var>false</var>
  	 * if at least one does not.
  	 * 
  	 * Please note that this method is optimized for the four simple selector forms '*', '.classname', 'tagname' 
- 	 * and 'tagname.classname'. If you use any other kind of selector, please be aware that selectors that match
- 	 * many elements can be slow.
+ 	 * and 'tagname.classname'. If you use any other kind of selector, be aware that selectors that match
+ 	 * many elements in the document can be slow.
  	 * 
  	 * @example Checks whether the element has the class 'myClass':
  	 * <pre>
- 	 * var isMyClass = $('li').is('.myClass'); 
+ 	 * var isMyClass = $('#myElement').is('.myClass'); 
  	 * </pre>
  	 * 
  	 * @example Checks whether the list contains only table rows:
@@ -1105,11 +1108,11 @@ define('minified', function() {
  	 * var areRows = $('.myRows').is('tr'); 
  	 * </pre>
  	 * 
- 	 * @param selector optional any selector valid for ##dollar#$(), including CSS selectors and lists. Additionally you can
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists. Alternatively uou can pass
  	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
- 	 *        Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
- 	 *        is relative to the number of matches for the selector in the document. Default is '*', which checks whether all list nodes
- 	 *        are elements.
+ 	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        is relative to the number of matches for the selector in the document. Default is '*', which checks whether all list items
+ 	 *        are HTML elements.
  	 * @return <var>true</var> if all list elements match the selector. <var>false</var> otherwise.
  	 */
 	'is': function(selector) {
@@ -1123,8 +1126,8 @@ define('minified', function() {
  	 * @requires filter each
  	 * @configurable default
  	 * @name .only()
- 	 * @syntax only()
- 	 * @syntax only(selector)
+ 	 * @syntax list.only()
+ 	 * @syntax list.only(selector)
      * @module WEB
  	 * Returns a new list that contains only those elements that match the given selector.
  	 * 
@@ -1132,9 +1135,9 @@ define('minified', function() {
  	 * and 'tagname.classname'. If you use any other kind of selector, please be aware that selectors that match
  	 * many elements can be slow.
  	 * 
- 	 * @example Returns only those list elements of the class 'myClass':
+ 	 * @example Returns only those list elements have the classes 'listItem' and 'myClass':
  	 * <pre>
- 	 * var myLis = $('li').only('.myClass'); 
+ 	 * var myLis = $('li.listItem').only('.myClass'); 
  	 * </pre>
  	 * 
  	 * @example Returns a list of all forms:
@@ -1142,9 +1145,9 @@ define('minified', function() {
  	 * var forms = $('#content *').only('form'); 
  	 * </pre>
  	 * 
- 	 * @param selector optional any selector valid for ##dollar#$(), including CSS selectors and lists. Additionally you can
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists. Alternatively you can pass
  	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
- 	 *        Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which keeps all elements
  	 *        (but no other nodes such as text nodes).
  	 * @return a new list containing only elements matched by the selector.
@@ -1161,12 +1164,12 @@ define('minified', function() {
  	 * @requires dollar
  	 * @configurable default
  	 * @name .get()
- 	 * @syntax get(name)
- 	 * @syntax get(name, toNumber)
- 	 * @syntax get(list)
- 	 * @syntax get(list, toNumber)
- 	 * @syntax get(map)
- 	 * @syntax get(map, toNumber)
+ 	 * @syntax list.get(name)
+ 	 * @syntax list.get(name, toNumber)
+ 	 * @syntax list.get(list)
+ 	 * @syntax list.get(list, toNumber)
+ 	 * @syntax list.get(map)
+ 	 * @syntax list.get(map, toNumber)
      * @module WEB
  	 * Retrieves properties, attributes and styles from the list's first element. The syntax to request those values is mostly identical with ##set(). You can either
  	 * get a single value if you specify only one name, or get a name->value map when you specify several names using an array or a map.
@@ -1279,9 +1282,9 @@ define('minified', function() {
 	 * @requires dollar get
 	 * @configurable default
 	 * @name .set()
-	 * @syntax set(name, value)
-	 * @syntax set(properties)
-	 * @syntax set(cssClasses)
+	 * @syntax list.set(name, value)
+	 * @syntax list.set(properties)
+	 * @syntax list.set(cssClasses)
      * @module WEB
 	 * 
 	 * Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes. You can either supply a 
@@ -1297,8 +1300,7 @@ define('minified', function() {
 	 * <tr><td>@name</td><td>@href</td><td>Attribute</td><td>Sets the HTML attribute using setAttribute(). In order to stay compatible with Internet Explorer 7 and earlier, 
 	 *             you should not set the attributes '@class' and '@style'. Instead use '$' and '$$' as shown below.</td></tr>
 	 * <tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Sets a data attribute using setAttribute(). Data attributes are
-	 *         attributes whose names start with 'data-'. '%' works like '@' and uses setAttribute(), but adds a 'data-' to the
-	 *         name. '%myattr' and '@data-myattr' are equivalent.</td></tr>
+	 *         attributes whose names start with 'data-'. '%myattr' and '@data-myattr' are equivalent.</td></tr>
 	 * <tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <var>style</var> object.</td></tr>
 	 * <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <var>$</var> modifies the element's CSS classes using the object's <var>className</var> property. The value is a 
 	 *             space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
@@ -1319,7 +1321,7 @@ define('minified', function() {
 	 * $('input.checkbox').set('checked', false);
 	 * </pre>
 	 * 
-	 * @example Changing the <var>innerHTML</var property of an element:
+	 * @example Changing the <var>innerHTML</var> property of an element:
 	 * <pre>
 	 * $('#toc').set('innerHTML', 'Content');
 	 * </pre>
@@ -1481,10 +1483,10 @@ define('minified', function() {
 	 * @requires dollar
 	 * @configurable default
 	 * @name .add()
-	 * @syntax add(text)
-	 * @syntax add(factoryFunction)
-	 * @syntax add(list)
-	 * @syntax add(node)
+	 * @syntax list.add(text)
+	 * @syntax list.add(factoryFunction)
+	 * @syntax list.add(list)
+	 * @syntax list.add(node)
      * @module WEB
 	 * Adds the given node(s) as content to the list's HTML elements. If a string has been given, it will be added as text node.
 	 * If you pass a function, it will be invoked for each list element to create the node to add. This is called a factory function. It can return all 
@@ -1584,11 +1586,11 @@ define('minified', function() {
 	 * @requires dollar add remove
 	 * @configurable default
 	 * @name .fill()
-	 * @syntax fill()
-	 * @syntax fill(text)
-	 * @syntax fill(factoryFunction)
-	 * @syntax fill(list)
-	 * @syntax fill(node)
+	 * @syntax list.fill()
+	 * @syntax list.fill(text)
+	 * @syntax list.fill(factoryFunction)
+	 * @syntax list.fill(list)
+	 * @syntax list.fill(node)
      * @module WEB
 	 * Sets the content of the list's HTML elements, replacing old content. If a string has been given, it will be added as text node.
 	 * If you pass a function, it will be invoked for each list member to create a node. The function prototype is <code>function(parent, index)</code>. 
@@ -1675,10 +1677,10 @@ define('minified', function() {
 	 * @requires dollar add
 	 * @configurable default
 	 * @name .addBefore()
-	 * @syntax addBefore(text)
-	 * @syntax addBefore(factoryFunction)
-	 * @syntax addBefore(list)
-	 * @syntax addBefore(node)
+	 * @syntax list.addBefore(text)
+	 * @syntax list.addBefore(factoryFunction)
+	 * @syntax list.addBefore(list)
+	 * @syntax list.addBefore(node)
      * @module WEB
 	 * Inserts the given text or element(s) as sibling in front of each HTML element in the list. 
 	 * If a string has been given, it will be added as text node.
@@ -1747,10 +1749,10 @@ define('minified', function() {
 	 * @requires dollar add
 	 * @configurable default
 	 * @name .addAfter()
-	 * @syntax addAfter(text)
-	 * @syntax addAfter(factoryFunction)
-	 * @syntax addAfter(list)
-	 * @syntax addAfter(node)
+	 * @syntax list.addAfter(text)
+	 * @syntax list.addAfter(factoryFunction)
+	 * @syntax list.addAfter(list)
+	 * @syntax list.addAfter(node)
      * @module WEB
 	 * Inserts the given text or element(s) as sibling after each HTML element in the list. 
 	 * If a string has been given, it will be added as text node.
@@ -1814,10 +1816,10 @@ define('minified', function() {
 	 * @requires dollar add
 	 * @configurable default
 	 * @name .addFront()
-	 * @syntax addFront(text)
-	 * @syntax addFront(factoryFunction)
-	 * @syntax addFront(list)
-	 * @syntax addFront(node)
+	 * @syntax list.addFront(text)
+	 * @syntax list.addFront(factoryFunction)
+	 * @syntax list.addFront(list)
+	 * @syntax list.addFront(node)
      * @module WEB
 	 * Adds the given node(s) as children to the list's HTML elements. Unlike ##add(), the new nodes will be the first children and not the last.
 	 * If a string has been given, it will be added as text node.
@@ -1893,10 +1895,10 @@ define('minified', function() {
 	 * @requires dollar add
 	 * @configurable default
 	 * @name .replace()
-	 * @syntax replace(text)
-	 * @syntax replace(factoryFunction)
-	 * @syntax replace(list)
-	 * @syntax replace(node)
+	 * @syntax list.replace(text)
+	 * @syntax list.replace(factoryFunction)
+	 * @syntax list.replace(list)
+	 * @syntax list.replace(node)
      * @module WEB
 	 * Replaces the list items with the the given node(s) in the DOM tree. 
 	 * If a string has been given, it will be set as text node.
@@ -1967,8 +1969,8 @@ define('minified', function() {
 	 * @requires dollar ee
 	 * @configurable default
 	 * @name .clone()
-	 * @syntax clone()
-	 * @syntax clone(onCreate)
+	 * @syntax list.clone()
+	 * @syntax list.clone(onCreate)
      * @module WEB
 	 * Creates a ##list#Minified list## of strings and Element Factories that return clones of the list's HTML elements. An Element Factory is a function
 	 * that creates a Minified list of fresh DOM nodes. You can pass the list to ##add(), ##fill() or similar functions to re-create the cloned nodes.
@@ -2051,12 +2053,12 @@ define('minified', function() {
 	 * @requires loop dollar set get
 	 * @configurable default
 	 * @name .animate()
-	 * @syntax animate(properties)
-	 * @syntax animate(properties, durationMs)
-	 * @syntax animate(properties, durationMs, linearity)
-	 * @syntax animate(properties, durationMs, interpolationFunc)
-	 * @syntax animate(properties, durationMs, linearity, state)
-	 * @syntax animate(properties, durationMs, interpolationFunc, state)
+	 * @syntax list.animate(properties)
+	 * @syntax list.animate(properties, durationMs)
+	 * @syntax list.animate(properties, durationMs, linearity)
+	 * @syntax list.animate(properties, durationMs, interpolationFunc)
+	 * @syntax list.animate(properties, durationMs, linearity, state)
+	 * @syntax list.animate(properties, durationMs, interpolationFunc, state)
      * @module WEB
 	 * Animates the items of the list by modifying their properties, CSS styles and attributes. <var>animate()</var> can work with numbers, strings that contain exactly one
 	 * number, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
@@ -2237,11 +2239,11 @@ define('minified', function() {
 		 * @requires animate set
 		 * @configurable default
 		 * @name .toggle()
-		 * @syntax toggle(cssClasses)
-		 * @syntax toggle(state1, state2)
-		 * @syntax toggle(state1, state2, durationMs)
-		 * @syntax toggle(state1, state2, durationMs, linearity)
-		 * @syntax toggle(state1, state2, durationMs, interpolationFunction)
+		 * @syntax list.toggle(cssClasses)
+		 * @syntax list.toggle(state1, state2)
+		 * @syntax list.toggle(state1, state2, durationMs)
+		 * @syntax list.toggle(state1, state2, durationMs, linearity)
+		 * @syntax list.toggle(state1, state2, durationMs, interpolationFunction)
 		 * @module WEB
 		 * 
 		 * Creates a function that switches between the two given states for the list. The states use the ##set() property syntax. You can also
@@ -2338,8 +2340,8 @@ define('minified', function() {
 		 * @requires each
 		 * @configurable default
 		 * @name .values()
-		 * @syntax values()
-		 * @syntax values(dataMap)
+		 * @syntax list.values()
+		 * @syntax list.values(dataMap)
 		 * Creates a name/value map from the given form. values() looks at the list's form elements and writes each element's name into the map,
 		 * using the element name as key and the element's value as value. If there is more than one value with the same name, the map will contain an array
 		 * of values. Form element without value will be written with 'null' as value. Form elements without name will be ignored.
@@ -2392,10 +2394,10 @@ define('minified', function() {
 		 * @requires dollar each
 		 * @configurable default
 		 * @name .on()
-		 * @syntax on(names, eventHandler)
-		 * @syntax on(names, selector, eventHandler)
-		 * @syntax on(names, customFunc, args)
-		 * @syntax on(names, customFunc, fThis, args)
+		 * @syntax list.on(names, eventHandler)
+		 * @syntax list.on(names, selector, eventHandler)
+		 * @syntax list.on(names, customFunc, args)
+		 * @syntax list.on(names, customFunc, fThis, args)
 		 * @module WEB
 		 * Registers the function as event handler for all items in the list.
 		 * 
@@ -2517,7 +2519,7 @@ define('minified', function() {
 		 * @requires on dollar trav find
 		 * @configurable default
 		 * @name .onOver()
-		 * @syntax on(handler)
+		 * @syntax list.onOver(handler)
 		 * @module WEB
 		 * Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.
 		 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
@@ -2559,13 +2561,13 @@ define('minified', function() {
 		 * @requires on each
 		 * @configurable default
 		 * @name .trigger()
-		 * @syntax trigger(name)
-		 * @syntax trigger(name, eventObject)
+		 * @syntax list.trigger(name)
+		 * @syntax list.trigger(name, eventObject)
 		 * @module WEB
 		 * 
-		 * Triggers event handlers registered with ##on() on all list members.
+		 * Triggers event handlers registered with ##on().
 		 * Any event that has been previously registered using ##on() can be invoked with <var>trigger()</var>. Please note that 
-		 * it will not simulate default behaviour on the elements, such as a form submit when you click on a button. Event bubbling
+		 * it will not simulate the default behaviour on the elements, such as a form submit when you click on a submit button. Event bubbling
 		 * is supported, thus unless there's an event handler that cancels the event, the event will be triggered on all parent elements.
 		 * 
 		 * 
@@ -2574,14 +2576,10 @@ define('minified', function() {
 		 * $('#myButton').trigger('click');
 		 * </pre>
 		 * 
-		 * @example Simulates a 'click' event on the button. 
-		 * <pre>
-		 * $('#myButton').trigger('click');
-		 * </pre>
-		 * 
 		 * @param name a single event name to trigger
 		 * @param eventObj optional an object to pass to the event handler, provided the handler does not have custom arguments.
-		 *                 Anything you pass here will be directly given to event handlers so you need to know what they expect.
+		 *                 Anything you pass here will be directly given to event handlers as event object, so you need to know what 
+		 *                 they expect.
 		 * @return the list
 		 */
 		'trigger': function (eventName, eventObj) {

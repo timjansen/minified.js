@@ -13,7 +13,7 @@
 
 <h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">text()</div>
+<div class="syntax">list.text()</div>
 </div>
 
 <h4>Parameters</h4>

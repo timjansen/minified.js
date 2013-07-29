@@ -13,10 +13,10 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">replace(text)</div>
-<div class="syntax">replace(factoryFunction)</div>
-<div class="syntax">replace(list)</div>
-<div class="syntax">replace(node)</div>
+<div class="syntax">list.replace(text)</div>
+<div class="syntax">list.replace(factoryFunction)</div>
+<div class="syntax">list.replace(list)</div>
+<div class="syntax">list.replace(node)</div>
 </div>
 
 <h4>Parameters</h4>

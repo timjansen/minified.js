@@ -13,8 +13,8 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">values()</div>
-<div class="syntax">values(dataMap)</div>
+<div class="syntax">list.values()</div>
+<div class="syntax">list.values(dataMap)</div>
 </div>
 
 <h4>Parameters</h4>

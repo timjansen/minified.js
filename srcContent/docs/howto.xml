@@ -13,7 +13,6 @@
  <li><a href="#select_allchildren">Find All Child Elements</a></li>
  <li><a href="#select_childnodes">Find Child Nodes</a></li>
  <li><a href="#select_otherchildren">Find Every Second Element</a></li>
- <li><a href="#select_children">Combine Lists</a></li>
  <li><a href="#select_combinechildren">Combine Lists</a></li>
  <li><a href="#select_findparent">Find a Specific Parent</a></li>
  <li><a href="#select_checkparent">Check Whether an Element is a Parent</a></li>
@@ -36,7 +35,7 @@
 <li><a href="#style">Modify HTML Styles</a><ul>
  <li><a href="#style_classes">Add / Remove / Toggle CSS Classes</a></li>
  <li><a href="#style_hasclass">Check for CSS Classes</a></li>
- <li><a href="#style_set">Set and Read CSS Style</a></li>
+ <li><a href="#style_set">Set and Read CSS Styles</a></li>
  <li><a href="#style_prop">Set and Read Properties</a></li>
 </ul></li>
 <li><a href="#anim">Animation</a><ul>
@@ -55,8 +54,8 @@
  <li><a href="#event_custom">Create Custom Events</a></li>
 </ul></li>
 <li><a href="#data">Forms and Data</a><ul>
- <li><a href="#data_values">Read and Submit a Form</a></li>
  <li><a href="#data_post">Do HTTP Requests (AJAX / XHR)</a></li>
+ <li><a href="#data_values">Read and Submit a Form</a></li>
  <li><a href="#data_json">Use JSON</a></li>
  <li><a href="#data_cookie">Read / Write / Delete Cookies</a></li>
 </ul></li>
@@ -70,7 +69,7 @@
 Creating a list containing only the element with the id 'a':
 <pre>var l = $('#a');</pre>
 Creating a list containing only the element with the class 'b':
-<pre>var l = $('.a');</pre>
+<pre>var l = $('.b');</pre>
 You can use all valid CSS1 selectors with <var>$()</var>. If you are using a build without IE7 support, 
 all selectors supported by the browser are possible. 
 </p>
@@ -84,9 +83,9 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Vmr6z/">Selector</a>
 <p>
 Finding all child elements of the element '#parent':
 <pre>var l = $('*', '#parent', true);</pre>
-The selector '*' is used to select all child elements. The third argument, if true, restricts 
+The selector '*' is used to select all child elements. The third argument, if <var>true</var>, limits 
 matches to direct children of the context nodes, instead of matching all descendants.<br/>
-If you have an existing list, <var>select()</var> makes it a bit easier:
+If you have an existing list, you can alternatively use <var>select()</var>:
 <pre>var l = myList.select('*', true);</pre>
 </p>
 <p>
@@ -122,7 +121,8 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/FXGce/">Filter</a>
 <h3><a name="select_combinechildren">Combine Lists</a></h3>
 <p>
 <pre>var l = $([list1, list2]);</pre>
-Use the selector function to combine lists. Nested lists will automatically be flattened and null elements will be removed.<br/>
+Use the selector function <var>$()</var> to combine lists. Nested lists will automatically be flattened and <var>null</var> elements 
+will be removed.<br/>
 You can also use the same syntax to add elements to the list:
 <pre>var l2 = $([list1, element1, element2]);</pre>
 Again, null elements will be automatically removed.
@@ -149,7 +149,7 @@ API: <a href="/api/trav.html">trav()</a>.<br/>
 <pre>var isParent = $(child).trav('parentNode', parent).length > 0;</pre>
 The easiest way to find out whether an element is a parent node is to use <var>trav()</var> to travel up the parent chain.
 The second parameter specifies that only <var>parent</var> matches. Thus you get an empty list if <var>parent</var> is not
-the parent of <var>child</var>, or a list containing <var>parent</var> if it is.<br/>
+the parent of <var>child</var>, or a list containing <var>parent</var> if it is.</p><p>
 There is an alternative way to do this, by selecting all children of the parent, but it is much slower in most
 situations:
 <pre>var isParent = $('*', parent).find(child) != null;</pre>
@@ -556,13 +556,7 @@ you <var>onOver()</var> as a convenient way to handle mouseover and mouseleave-l
 <var>true</var> if the mouse enters the element, and <var>false</var> when it leaves. <var>onOver()</var> prevents flickering -
 it is guaranteed that the handler is not called twice with the same value for the same element.<br/>
 As a bonus, because of the way the event handler is called, you can pass a toggle directly to <var>onOver()</var>:
-<pre>function mouseoverHandler(isOver, index) { 
-	if (isOver)
-		console.log('is over element ', index);
-	else
-		console.log('left element ', index);
-}
-$('#mySpot').onOver($('#mySpot').toggle({$color: 'white'}, {$color: 'red'}));</pre>
+<pre>$('#mySpot').onOver($('#mySpot').toggle({$color: 'white'}, {$color: 'red'}));</pre>
 </p><p>
 API: <a href="/api/onover.html">onOver()</a>, <a href="/api/toggle.html">toggle()</a>.<br/>
 </p>
@@ -572,7 +566,7 @@ API: <a href="/api/onover.html">onOver()</a>, <a href="/api/toggle.html">toggle(
 <p>
 <pre>
 $('#container').on('click', 'div.monitored', myHandler);</pre>
-Using an extra selector you can make <var>on()</var> filter events to those that bubbled up from elements
+Using an extra selector you can make <var>on()</var> limit events to those that bubbled up from elements
 described by the selector. This allows you to set up event handlers in parent elements and let events bubble up, 
 so you need less (potentially resource-hungry) event handlers. Also, you may not need to add new event handlers 
 when you add child elements to a monitored parent element, which is mostly useful if you work with <var>innerHTML</var>
@@ -630,7 +624,8 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/ncQrp/">Request / JSON</a
 <h3><a name="data_values">Read and Send a Form</a></h3>
 <p><pre>var result = $.request('post', '/example/service', $('#myForm').values());</pre>
 <var>values()</var> reads a HTML form and returns its data in a format that it can be send using a 
-POST request with <var>$.request()</var>. Unlike actually submitting form, the browser will not leave the page.
+POST request with <var>$.request()</var>. Unlike real form submission, the browser will not leave the page
+when you use <var>values()</var>.
 </p>
 <p>
 API: <a href="/api/request.html">request()</a>, <a href="/api/values.html">values()</a>.<br/>
@@ -665,7 +660,7 @@ API: <a href="/api/getcookie.html">getCookie()</a>, <a href="/api/setcookie.html
 
 <h3><a name="something_missing">Missing Something?</a></h3>
 <p>Looking for something but can't find it here? Please write a mail to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a> ('Minified' in the
-subject to get past the spam filter). Or tweet to <a href="https://twitter.com/timjansen">@timjansen</a>.</p>
+subject to gets you past the spam filter).</p>
 
 </div>
  ]]></page:main>

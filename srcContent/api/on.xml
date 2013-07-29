@@ -13,10 +13,10 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">on(names, eventHandler)</div>
-<div class="syntax">on(names, selector, eventHandler)</div>
-<div class="syntax">on(names, customFunc, args)</div>
-<div class="syntax">on(names, customFunc, fThis, args)</div>
+<div class="syntax">list.on(names, eventHandler)</div>
+<div class="syntax">list.on(names, selector, eventHandler)</div>
+<div class="syntax">list.on(names, customFunc, args)</div>
+<div class="syntax">list.on(names, customFunc, fThis, args)</div>
 </div>
 
 <h4>Parameters</h4>

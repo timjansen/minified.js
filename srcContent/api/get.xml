@@ -13,12 +13,12 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">get(name)</div>
-<div class="syntax">get(name, toNumber)</div>
-<div class="syntax">get(list)</div>
-<div class="syntax">get(list, toNumber)</div>
-<div class="syntax">get(map)</div>
-<div class="syntax">get(map, toNumber)</div>
+<div class="syntax">list.get(name)</div>
+<div class="syntax">list.get(name, toNumber)</div>
+<div class="syntax">list.get(list)</div>
+<div class="syntax">list.get(list, toNumber)</div>
+<div class="syntax">list.get(map)</div>
+<div class="syntax">list.get(map, toNumber)</div>
 </div>
 
 <h4>Parameters</h4>

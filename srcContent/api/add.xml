@@ -13,10 +13,10 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">add(text)</div>
-<div class="syntax">add(factoryFunction)</div>
-<div class="syntax">add(list)</div>
-<div class="syntax">add(node)</div>
+<div class="syntax">list.add(text)</div>
+<div class="syntax">list.add(factoryFunction)</div>
+<div class="syntax">list.add(list)</div>
+<div class="syntax">list.add(node)</div>
 </div>
 
 <h4>Parameters</h4>

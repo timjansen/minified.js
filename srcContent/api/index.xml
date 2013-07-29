@@ -115,12 +115,12 @@ Modifies the list's elements by setting their properties, attributes, CSS styles
 Creates a function that switches between the two given states for the list.</div>
 
 <h3><a href="trav.html">.trav()</a></h3>
-<div class="summary">Traverses each DOM node in the list using the given property, and creates a new list that includes each visited node,
+<div class="summary">Traverses each DOM node in the list using the given property; creates a new list that includes each visited node,
 optionally filtered by the given selector.</div>
 
 <h3><a href="trigger.html">.trigger()</a></h3>
 <div class="summary">
-Triggers event handlers registered with on on all list members.</div>
+Triggers event handlers registered with on.</div>
 
 <h3><a href="values.html">.values()</a></h3>
 <div class="summary">Creates a name/value map from the given form.</div>

@@ -13,11 +13,11 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">fill()</div>
-<div class="syntax">fill(text)</div>
-<div class="syntax">fill(factoryFunction)</div>
-<div class="syntax">fill(list)</div>
-<div class="syntax">fill(node)</div>
+<div class="syntax">list.fill()</div>
+<div class="syntax">list.fill(text)</div>
+<div class="syntax">list.fill(factoryFunction)</div>
+<div class="syntax">list.fill(list)</div>
+<div class="syntax">list.fill(node)</div>
 </div>
 
 <h4>Parameters</h4>

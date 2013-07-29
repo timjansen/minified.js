@@ -13,12 +13,12 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">animate(properties)</div>
-<div class="syntax">animate(properties, durationMs)</div>
-<div class="syntax">animate(properties, durationMs, linearity)</div>
-<div class="syntax">animate(properties, durationMs, interpolationFunc)</div>
-<div class="syntax">animate(properties, durationMs, linearity, state)</div>
-<div class="syntax">animate(properties, durationMs, interpolationFunc, state)</div>
+<div class="syntax">list.animate(properties)</div>
+<div class="syntax">list.animate(properties, durationMs)</div>
+<div class="syntax">list.animate(properties, durationMs, linearity)</div>
+<div class="syntax">list.animate(properties, durationMs, interpolationFunc)</div>
+<div class="syntax">list.animate(properties, durationMs, linearity, state)</div>
+<div class="syntax">list.animate(properties, durationMs, interpolationFunc, state)</div>
 </div>
 
 <h4>Parameters</h4>

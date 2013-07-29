@@ -13,16 +13,16 @@
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">only()</div>
-<div class="syntax">only(selector)</div>
+<div class="syntax">list.only()</div>
+<div class="syntax">list.only(selector)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="only_selector" class=""><a name="only_selector"><var>selector (optional)</var></a></dt>
-<dd class="">any selector valid for #<code><a href='dollar.html'>$()</a></code>, including CSS selectors and lists. Additionally you can
+<dd class="">any selector valid for <code><a href='dollar.html'>$()</a></code>, including CSS selectors and lists. Alternatively you can pass
 a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
-Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+<br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
 is relative to the number of matches for the selector in the document. Default is '*', which keeps all elements
 (but no other nodes such as text nodes).</dd>
 <dt id="only_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="only_RETURN"><var>(return value)</var></a></dt>
@@ -36,9 +36,9 @@ many elements can be slow.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Returns only those list elements of the class 'myClass':
+<div class="example"><p>Returns only those list elements have the classes 'listItem' and 'myClass':
 <pre>
-var myLis = $('li').only('.myClass');
+var myLis = $('li.listItem').only('.myClass');
 </pre>
 </p></div>
 <h4>Example</h4>

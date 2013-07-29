@@ -9,23 +9,23 @@
 	<main><![CDATA[
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-trav">.trav()</a></h2>
-<div class="summary">Traverses each DOM node in the list using the given property, and creates a new list that includes each visited node,
+<div class="summary">Traverses each DOM node in the list using the given property; creates a new list that includes each visited node,
 optionally filtered by the given selector.</div>
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">trav(property)</div>
-<div class="syntax">trav(property, selector)</div>
-<div class="syntax">trav(property, selector, maxDepth)</div>
-<div class="syntax">trav(property, maxDepth)</div>
+<div class="syntax">list.trav(property)</div>
+<div class="syntax">list.trav(property, selector)</div>
+<div class="syntax">list.trav(property, selector, maxDepth)</div>
+<div class="syntax">list.trav(property, maxDepth)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="trav_selector" class=""><a name="trav_selector"><var>selector (optional)</var></a></dt>
-<dd class="">any selector valid for #<code><a href='dollar.html'>$()</a></code>, including CSS selectors and lists. Additionally you can
+<dd class="">any selector valid for <code><a href='dollar.html'>$()</a></code>, including CSS selectors and lists. Alternatively you can pass
 a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
-Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+<br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
 is relative to the number of matches for the selector in the document. Default is '*', which includes all elements
 (but no other nodes such as text nodes).</dd>
 <dt id="trav_maxDepth" class=""><a name="trav_maxDepth"><var>maxDepth (optional)</var></a></dt>
@@ -36,9 +36,9 @@ have been visited when traversing another node. Duplicate nodes will be automati
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Traverses each DOM node in the list using the given property, and creates a new list that includes each visited node,
-optionally filtered by the given selector.</p><p><var>trav()</var> uses each element in the list and then traverses the DOM tree using that property until it finds null, while
-adding all visited nodes that match the given selector to the result list. If no selector is given,
+<div class="description"><p>Traverses each DOM node in the list using the given property; creates a new list that includes each visited node,
+optionally filtered by the given selector.</p><p><var>trav()</var> traverses the DOM tree for each list element it finds a <var>null</var>.
+All visited nodes that match the given selector are added to the result list. If no selector is given,
 only elements will be added.</p><p></p></div>
 
 <div class="examples">
