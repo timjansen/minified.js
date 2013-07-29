@@ -145,10 +145,9 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 				cb(list[i], i);
 		return list;
 	}
-	function filterObj(obj, filterFuncOrObject) {
+	function filterObj(obj, f) {
 		var r = {};
-		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(key) { return filterFuncOrObject != key; };
-			eachObj(obj, function(key, value) {
+		eachObj(obj, function(key, value) {
 			if (f(key, value))
 				r[key] = value;
 		});
@@ -266,10 +265,9 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 	function array(list) {
 		return map(list, nonOp);
 	}
-	function unite() {
-		var self = this;
+	function unite(list) {
 		return function() {
-			return new M(callList(self, arguments));
+			return new M(callList(list, arguments));
 		};
 	}
 	function uniq(list) {
@@ -290,9 +288,6 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 			keys[item] = 0;
 			return r;
 		});
-	}
-	function coal() {
-		return find(arguments, nonOp);
 	}
 	function contains(list, value) {
 		for (var i = 0; i < list.length; i++)
@@ -781,7 +776,7 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
      * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
      * the zero-based index as second.
      *
-     * @example Creates the sum of all list entried. 
+     * @example Creates the sum of all list entries. 
      * <pre>
      * var sum = 0;
      * _(17, 4, 22).each(function(item, index) {
@@ -1418,18 +1413,55 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
      * @return A ##list#Minified list## containing only the duplicate values.
      */
 	'intersection': listBindArray(intersection), 
-	
+
+	/*$ 
+	 * @id join 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .join() 
+	 * @syntax list.join() 
+	 * @syntax list.join(separator) 
+	 * @module UTIL
+	 * Converts list elements into strings and joins them into a single string, optionally separated with the given separator.
+	 * This method is identical to Array's built-in <var>join()</var> method and also uses it internally.
+	 *
+	 * @example Join a few string:
+	 * <pre>var sorted = _('Harry', 'Bert', 'Tom', 'Bo').join(', '); // returns 'Harry, Bert, Tom, Bo'</pre>
+	 *
+	 * @param separator optional a separator to put between the joined strings. If omitted, the string "," (comma) will be used.
+	 * @param otherList The other list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @return the resulting string
+	 */
 	'join': function(separator) {
 		return map(this, nonOp).join(separator);
 	},
-	
+
+	/*$ 
+	 * @id sort 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .sort() 
+	 * @syntax list.sort() 
+	 * @syntax list.sort(cmpFunc) 
+	 * @module UTIL
+	 * Sorts the list elements and returns a new, sorted list. You can specify a function to compare two elements.
+	 * If you don't, the list elements will be converted into strings and sorted lexicographically.
+	 * 
+	 * <var>sort()</var> uses Array's method of the same name internally and shares its properties.
+	 *    
+	 * @example Sort a few names:
+	 * <pre>var sorted = _('Harry', 'Bert', 'Tom', 'Bo').sort(); // returns _('Bo', 'Bert', 'Harry', 'Tom')</pre>
+	 *    
+	 * @param cmpFunc optional an optional <code>function(a, b)</code> to compare two list elements. It must return a number &lt;0 if <var>a</var> is smaller, than <var>b</var> 
+	 *                         &gt;0 if <var>b</var> is larger and 0 if both are equal. If the function is omitted, the list elements will be converted into strings and compared 
+	 *                        lexicographically.
+	 * @return a new, sorted list
+	 */
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
-	},
-
-	'tap': function(func) {
-		func(this);
-		return this;
 	}
 	///#endsnippet utilListFuncs
 	
@@ -1443,7 +1475,7 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 
 	///#definesnippet utilUnderscoreFuncs
 
-	var _ = {
+	copyObj({
 		 // @condblock filter
 		'filter': funcArrayBind(filter),
 		 // @condend
@@ -1504,29 +1536,428 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 		 // @condblock intersection
 		'intersection': funcArrayBind(intersection),
 		 // @condend
+		/*$ 
+		 * @id range 
+		 * @group FUNC 
+		 * @requires
+		 * @configurable default 
+		 * @name _.range() 
+		 * @syntax _.range(end) 
+		 * @syntax _.range(start, end) 
+		 * @module LIST
+		 * Creates a new ##list#Minified list## containing an interval of numbers from <var>start</var> (inclusive)
+		 * until <var>end</var> (exclusive). <var>start</var> can also be omitted to start at 0.
+		 *
+		 * @example Creates some ranges
+		 * <pre>var l123 = _.range(1, 4); // same as _(1, 2, 3)
+		 * var l0123 = _.range(3); // same as _(0, 1, 2)
+		 * var neg123 = _.range(-3, 0); // same as _(-3, -2, -1)
+		 * var empty = _.range(2,1); // same as _()</pre>	
+		 *
+		 * @param start optional the start number. If omitted, the range starts at 0.
+		 * @param end the end of the range (exclusive)
+		 * @return the new Minfied list containing the numbers. Empty is <var>start</var> is not smaller than <var>end</var>.
+		 */		
+		'range': function(start, end) {
+			var r = [], e = (end==null) ? start : end;
+			for (var i = (end!=null)?start:0; i < e; i++)
+				r.push(i);
+			return new M(r);
+		},
 		
+		/*$ 
+		 * @id bind 
+		 * @group FUNC 
+		 * @requires
+		 * @configurable default 
+		 * @name _.bind() 
+		 * @syntax _.bind(f, fThis) 
+		 * @syntax _.bind(f, fThis, beforeArgs) 
+		 * @syntax _.bind(f, fThis, beforeArgs, afterArgs) 
+		 * @module UTIL
+		 * Creates a new function that calls the given function bound to the given object as 'this', and optionally with the specified 'pre-filled' arguments
+		 * to be appended or prepended to the arguments you all the new function with.
+		 *
+		 * See also ##_.partial(), if you do not need to set 'this'.
+		 *
+		 * @example Create a method that multiplies all list elements:
+		 * <pre>function mul(factor) { return this.map(function(v) { return v * factor; }; }
+		 * var myList = _(1, 2, 3);
+		 * var mulMyList = _.bind(mul, myList);        // binding only 'this'
+		 * var mulMyList5 = _.bind(mul, myList, 5);   // binding 'this' and prepending a parameter
+		 * 
+		 * var myList4 = mulMyList(4); // returns _(4, 8, 12)
+		 * var myList5 = mulMyList(); // returns _(5, 10, 15)</pre>	
+		 *
+		 * @param f the function to bind
+		 * @param fThis the object to pass as 'this'
+		 * @param beforeArgs optional either a list of values to insert in front of the arguments, or a single non-list value to put in front. If null or not set,
+		 *                             there won't be any arguments inserted. If you need to insert a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
+		 *                             (e.g. <code>[null]</code>).
+		 * @param afterArgs optional either a list of values to append to the end of the arguments, or a single non-list value to append. If null or not set,
+		 *                             there won't be any arguments appended. If you need to append a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
+		 *                             (e.g. <code>[null]</code>).
+		 * @return the new function that will invoke <var>f</var> with its arguments modified as specified about.
+		 */
 		'bind': bind,
+		
+		/*$ 
+	 	 * @id partial 
+		 * @group FUNC 
+		 * @requires
+		 * @configurable default 
+		 * @name _.partial() 
+		 * @syntax _.partial(f, beforeArgs) 
+		 * @syntax _.partial(f, beforeArgs, afterArgs) 
+		 * @module UTIL
+		 * Creates a new function that calls the given function with some arguments pre-filled. You can specify one or more arguments to 
+		 * be put in front of the arguments list as well as arguments that will be appended to the argument list.
+		 *
+		 * See also ##_.bind(), if you want to set 'this' as well.
+		 * 
+		 * @example Create functions that divide:
+		 * <pre>function div(a, b) { return a / b; }
+		 * var div5 = _.partial(add, 5); // like function(a) { return 5 / a; }
+		 * var divBy5 = _.partial(add, null, 5); // like function(a) { return a / 5; }
+		 * </pre>
+		 *
+		 * @example Create functions that remove characters from the beginning and/or end of a string:
+		 * <pre>// This function multiplies the first <var>count</var> items of the <var>list</var> by <var>factor</var>
+		 * function multiply(list, count, factor) { return list.map(function(v, index) { return index < count ? factor * v : v; }); }
+		 * 
+		 * var mul3by2 = _.partial(multiply, null, [3, 2]); 
+		 * var r1 = mul10by2(_(1, 2, 3, 4, 5)); // returns _(2, 4, 6, 4, 5)
+		 * 
+		 * var mul123 = _.partial(multiply, [_(1, 2, 3)]);  // array wrapper required to pass a list!
+		 * var r2 = mul123(2, 5);                 // returns _(5, 10, 3)
+		 * 
+		 * var mul12345By2 = _.partial(multiply, [_(1, 2, 3, 4, 5)], 2);  // array wrapper required!
+		 * var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
+		 * </pre>
+		 *
+		 * @param f the function to bind
+		 * @param beforeArgs either a list of values to insert in front of the arguments, or a single non-list value to put in front. If null or not set,
+		 *                             there won't be any arguments inserted. If you need to insert a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
+		 *                             (e.g. <code>[null]</code>).
+		 * @param afterArgs optional either a list of values to append to the end of the arguments, or a single non-list value to append. If null or not set,
+		 *                             there won't be any arguments appended. If you need to append a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
+		 *                             (e.g. <code>[null]</code>).
+		 * @return the resulting string
+		 */
 		'partial': partial,
-		'once': once,
-		'nonOp': nonOp,
+
+		/*$
+		 * @id eachobj
+		 * @group OBJECT
+		 * @requires 
+		 * @configurable default
+		 * @name _.eachObj()
+		 * @syntax _.eachObj(obj, callback)
+		 * @module UTIL
+		 * Invokes the given function once for each property of the given object. 
+		 *
+		 * @example Dumps all properties of an object.
+		 * <pre>
+		 * var s = '';
+		 * _.eachObj({a: 1, b: 5, c: 2}, function(key, value) {
+		 *     s += 'key=' + key + ' value=' + value + '\n';
+		 * });
+		 * </pre>
+		 * 
+		 * @param obj the object to use
+		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
+		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
+		 *                 <dt>value</dt><dd>The value of the current property.</dd></dl>
+		 *                 The callback's return value will be ignored.
+		 * @return the object
+		 */
 		'eachObj': eachObj,
+		
+		/*$
+		 * @id mapobj
+		 * @group OBJECT
+		 * @requires 
+		 * @configurable default
+		 * @name _.mapObj()
+		 * @syntax _.mapObj(obj, callback)
+		 * @module UTIL
+		 * Creates a new object with the same properties but different values using the given callback function. The function is called
+		 * for each property of the input object to provice a new value for the property.
+		 *
+		 * @example Increases the values of all properties.
+		 * <pre>
+		 * var r = _.mapObj({a: 1, b: 5, c: 2}, function(key, value) {
+		 *     return value + 1;
+		 * });
+		 * // r is now {a: 2, b: 6, c: 2}
+		 * </pre>
+		 * 
+		 * @param obj the object to use
+		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
+		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
+		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new object.</dd></dl>
+		 * @return the new object
+		 */
 		'mapObj': mapObj,
+		
+
+
+		/*$
+		 * @id filterobj
+		 * @group OBJECT
+		 * @requires 
+		 * @configurable default
+		 * @name _.filterObj()
+		 * @syntax _.filterObj(obj, filterFunc)
+		 * @module UTIL
+		 * Creates a new object that contains only those properties of the input object that have been approved by the filter function.
+		 *  
+		 * If the callback function returns true, the property and its value are shallow-copied in the new object, otherwise it will be removed.
+		 *
+		 * @example Removing all values over 10 from an object:
+		 * <pre>
+		 * var list = _.filterObj({a: 4, b: 22, c: 7, d: 2, e: 19}, function(key, value) {
+		 *     return value &lt;= 10;
+		 * });
+		 * </pre>
+		 * 
+		 * @param obj the object to use
+		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
+		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
+		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the property in the new object, <var>false</var> to omit it.</dd></dl>
+		 * @return the new object
+		 */
 		'filterObj': filterObj,
 
+		/*$
+		 * @id islist
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isList()
+		 * @syntax _.isList(obj)
+		 * @module UTIL
+		 * Checks whether the given object resembles a list or array. To qualify, it must have a <var>length</var> property, but must not be a string, a function or have a 
+		 * <var>nodeType</var> property.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a list or array, <var>false</var> otherwise.
+		 */
 		'isList': isList,
+		
+		/*$
+		 * @id isfunction
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isFunction()
+		 * @syntax _.isFunction(obj)
+		 * @module UTIL
+		 * Checks whether the given object is a function.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a function, <var>false</var> otherwise.
+		 */
 		'isFunction': isFunction,
+		
+		/*$
+		 * @id isobject
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isObject()
+		 * @syntax _.isObject(obj)
+		 * @module UTIL
+		 * Checks whether the given reference is an object as defined by <var>typeof</var>.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is an object, <var>false</var> otherwise.
+		 */
 		'isObject': isObject,
+		
+		/*$
+		 * @id isnumber
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isNumber()
+		 * @syntax _.isNumber(obj)
+		 * @module UTIL
+		 * Checks whether the given reference is a number as defined by <var>typeof</var>.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a number, <var>false</var> otherwise.
+		 */
 		'isNumber': isNumber,
+		
+		/*$
+		 * @id isbool
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isBool()
+		 * @syntax _.isBool(obj)
+		 * @module UTIL
+		 * Checks whether the given reference is a boolean <var>true</var>  or <var>false</var>.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a boolean, <var>false</var> otherwise.
+		 */
 		'isBool': isBool,
+		
+		/*$
+		 * @id isdate
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isDate()
+		 * @syntax _.isDate(obj)
+		 * @module UTIL
+		 * Checks whether the given object is a <var>Date</var>. To be recognized as a date, the object
+		 * must pass #_.isObject() and have a <var>getDate</var> property.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a <var>Date</var>, <var>false</var> otherwise.
+		 */
 		'isDate': isDate,
+		
+		/*$
+		 * @id isvalue
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isValue()
+		 * @syntax _.isValue(obj)
+		 * @module UTIL
+		 * Checks whether the given object is a value. Minified defines values as all basic types (strings, booleans and numbers)
+		 * and Dates.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a value, <var>false</var> otherwise.
+		 */
 		'isValue': isValue,
+		
+		/*$
+		 * @id isstring
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isString()
+		 * @syntax _.isString(object)
+		 * @module UTIL
+		 * Checks whether the given reference is a string as defined by <var>typeof</var>.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a string, <var>false</var> otherwise.
+		 */
 		'isString': isString,
+		
+		/*$
+		 * @id tostring
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.toString()
+		 * @syntax _.toString(obj)
+		 * @module UTIL
+		 * Converts the given object to a string. <var>null</var> and <var>undefined</var> will be converted to an empty string.
+		 *
+		 * @param obj the object to convert
+		 * @return the resulting string
+		 */
 		'toString': toString,
-		'toList': toList,
 
+		
+		/*$
+		 * @id dateclone
+		 * @group DATE
+		 * @requires 
+		 * @configurable default
+		 * @name _.dateClone()
+		 * @syntax _.dateClone(date)
+		 * @module UTIL
+		 * Creates a new <var>Date</var> object that represents the same time as the given date.
+		 *
+		 * @param date the <var>Date</var> to clone
+		 * @return the new <var>Date</var> copy
+		 */
 		'dateClone': dateClone,
+		
+		/*$
+		 * @id dateadd
+		 * @group DATE
+		 * @requires 
+		 * @configurable default
+		 * @name _.dateAdd()
+		 * @syntax _.dateAdd(date, property, value)
+		 * @module UTIL
+		 * Adds the specified time to the given <var>Date</var> and returns the result as a new <var>Date</var> .  The unit for the <var>value</var> can be any <var>Date</var>
+		 * property that has get and set methods: 'fullYear', 'month', 'date', 'hours', 'minutes', 'seconds' or 'milliseconds'.
+		 * 
+		 * @example Calculate some dates based on the current time:
+		 * <pre>var now = new Date();
+		 *  var yesterday = _.dateAdd(now, 'date', -1);
+		 *  var inOneHour = _.dateAdd(now, 'hours', 1);
+		 *  var tomorrow = _.dateAdd(now, 'date', 1);
+		 *  var inThreeMonths = _.dateAdd(now, 'month', 3);</pre>
+		 *
+		 * @param date the <var>Date</var> to add to
+		 * @param property a property name to represent the unit of the <var>value</var>. Can be 'fullYear', 'month', 'date', 'hours', 'minutes', 'seconds' or 'milliseconds'.
+		 * @param value the amount to add
+		 * @return the new <var>Date</var> copy
+		 */
 		'dateAdd': dateAdd,
+		
+		/*$
+		 * @id datediff
+		 * @group DATE
+		 * @requires 
+		 * @configurable default
+		 * @name _.dateDiff()
+		 * @syntax _.dateDiff(property, date1, date2)
+		 * @module UTIL
+		 * 
+		 * Calculates the time difference between both dates, using in the unit determined by the <var>property</var>.
+		 * 
+		 * If the unit is not calendar-based ('hours', 'minutes', 'seconds' or 'milliseconds')
+		 * the result is calculated with full precision and not rounded. 
+		 * If the unit is calendar-based ('fullYear', 'month', 'date'),
+		 * the result is the amount of full units between those dates in the current time zone.
+		 * 
+		 * If <var>date2</var> is earlier than <var>date1</var>, the result is negative.
+		 * 
+		 * @example Calculate duration between two dates:
+		 * <pre>function diff(d1, d2) {
+		 *     return _.dateDiff('fullYears', d1, d2) + ' years,' +
+		 *            _.dateDiff('months', d1, d2) + ' months and' +
+		 *            _.dateDiff('date', d1, d2) + ' days';
+		 * }</pre>
+		 *
+		 * @param date1 the first <var>Date</var>
+		 * @param date2 the first <var>Date</var>
+		 * @param property a property name to represent the unit of the <var>value</var>. Can be 'fullYear', 'month', 'date', 'hours', 'minutes', 'seconds' or 'milliseconds'.
+		 * @return the time difference between the two dates. Negative if <var>date2</var> is earlier than <var>date1</var>.
+		 */
 		'dateDiff': dateDiff,
+		
+		/*$
+		 * @id datemidnight
+		 * @group DATE
+		 * @requires 
+		 * @configurable default
+		 * @name _.dateMidnight()
+		 * @syntax _.dateMidnight()
+		 * @syntax _.dateMidnight(date)
+		 * @module UTIL
+		 * 
+		 * Returns a new <var>Date</var> object with the same calendar date, but at midnight in the current time zone. If no parameter 
+		 * is given, it returns the current day at midnight.
+		 *
+		 * @param date optional the <var>Date</var>. If omitted, the current date is used.
+		 * @return a new <var>Date</var> representing midnight in the current time zone
+		 */
 		'dateMidnight': dateMidnight,
 		
 		'formatNumber' : formatNumber,
@@ -1538,8 +1969,6 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 
 		'copyObj': copyObj,
 		
-		'coal': coal,
-
 		'trim': trim,
 		'escapeRegExp': escapeRegExp,
 		'escapeHtml': escapeHtml,
@@ -1547,6 +1976,7 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 		'format': function(format, object) {
 			return template(format)(object);
 		},
+		
 
 	
 		/*$ 
@@ -1663,7 +2093,7 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 		
 		 'htmlTemlplate': function(tpl) { return template(tpl, escapeHtml); }
 		
-	};
+	}, _);
 
 	///#endsnippet utilUnderscoreFuncs
 

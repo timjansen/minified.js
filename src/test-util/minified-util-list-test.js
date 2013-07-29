@@ -513,15 +513,13 @@ function runTests(loadInContext) {
 		});
 	});
 	
-	describe('_.tap()', function() {
-		it('taps', function() {
+	describe('_.range()', function() {
+		it('creates ranges', function() {
 			var _ = req();
-			var a = _(3, 111, 111, -1, 5, 7, 2, 5, 3, 9);
-			var c = 0;
-			function f(v) { assert(a === v); c++; }
-			
-			a.tap(f).tap(f).tap(f);
-			assert.equal(c, 3);
+
+			assert(_.equals(_.range(2, 4), _(2, 3)));
+			assert(_.equals(_.range(4, 2), _()));
+			assert(_.equals(_.range(2), _(0, 1)));
 		});
 	});
 	
@@ -630,17 +628,6 @@ function runTests(loadInContext) {
 		});
 	});
 	
-	describe('_.coal()', function() {
-		it('coalesced', function() {
-			var _ = req();
-			assert.equal(_.coal(), null);
-			assert.equal(_.coal(2), 2);
-			assert.equal(_.coal(null, null, null, 3, null, null), 3);
-			assert.equal(_.coal(null, null, null, null, null), null);
-			assert.equal(_.coal(0, false, '', 'abc'), 0);
-		});
-	});
-	
 	describe('_.call()', function() {
 		it('call', function() {
 			var _ = req();
@@ -663,26 +650,6 @@ function runTests(loadInContext) {
 		});
 	});
 	
-	describe('_.unite()', function() {
-		it('unite', function() {
-			var _ = req();
-			var i = 0;
-			function a(x9) { assert.equal(x9, 9); i++; return "a";}
-			function b(x9) { assert.equal(x9, 9); i++; return "b";}
-			
-			var r1 = _().unite()([3]);
-			assert(_.equals(r1, []));
-
-			var r2 = _(a, b, null).unite()([9]);
-			assert(_.equals(r2, ["a", "b", undef]));
-			assert.equal(i, 2);
-
-			var r3 = _(a, null, b, null).unite()([9]);
-			assert(_.equals(r3, ["a", undef, "b", undef]));
-			assert.equal(i, 4);
-
-		});
-	});
 
 }
 
