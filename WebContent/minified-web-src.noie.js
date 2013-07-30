@@ -2322,7 +2322,7 @@ define('minified', function() {
 		 *             'this' is set to the target element that caused the event (the same as <var>event.target</var>).
 		 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>
 		 *                   and optionally the 'this' context given using <var>fThis</var>.
-		 * @param fThis optional a value for 'this' in the custom callback, as alternative to the event target
+		 * @param fThis optional a value for 'this' in the custom callback, instead of the event target
 		 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. 
 		 *                      If you pass custom arguments, the return value of the handler will always be ignored.
 		 * @return the list
@@ -3161,9 +3161,6 @@ define('minified', function() {
 
 	    /*$
 		 * @id M
-		 * @group SELECTORS
-		 * @requires 
-		 * @configurable no
 		 * @name M
 		 * @syntax MINI.M
          * @module WEB, UTIL
@@ -3183,6 +3180,7 @@ define('minified', function() {
 	 	/*$
 	 	 * @stop
 	 	 */
+
 	};
 	// @cond !amdsupport _window['require'] = function(n) { if (n == 'minified') return MINI; };
 

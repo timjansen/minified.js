@@ -1,4 +1,4 @@
-var _ = require('minified')._;
+var _ = (require('minifiedUtil') || require('minified'))._;
 
 // parses the source, returns an array of objects describing sections that can be enabled/disabled
 function parseSourceSections(src) {

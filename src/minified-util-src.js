@@ -38,7 +38,7 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
  	 * @id minifieddefine
  	 */
 
-define('minified', function() { // MINIUTIL is needed by autotest.html
+define('minifiedUtil', function() { 
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  	/*$

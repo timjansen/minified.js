@@ -6,7 +6,7 @@
   <page:main><![CDATA[<div>
   <h1>Minified.js beta 2: Features and Changes</h1>
 
-<p>Minified's beta 2 is mainly about adding new features, as a result of the feedback I received for beta 1.
+<p>I got a lot of great feedback for beta 1, and many feature requests. So Minified's beta 2 is mostly about adding new features. 
 Here's a short overview of the API changes: 
 </p>
 
@@ -173,7 +173,9 @@ disabling IE9 in the builder. The main reason for this change is to make sure fi
 marked in the source and can be removed at some point in the far future.</p>
 
 
-<p>back to <a href="/docs">Minified documentation</a>.</p>
+<h2>Download</h2>
+<p>You can download beta 2 on the <a href="/download">download page</a>.</p>
+
 
   </div> ]]></page:main>
 

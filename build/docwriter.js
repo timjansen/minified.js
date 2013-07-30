@@ -22,7 +22,7 @@ eval(readFile('src/minified-util-src.js'));
 eval(readFile('srcContent/js/parser-src.js'));
 eval(readFile('build/docbuilder.js'));
 
-var _ = require('minified')._;
+var _ = (require('minifiedUtil') || require('minified'))._;
 
 var src = readFile(project.getProperty('src'));
 

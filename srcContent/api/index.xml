@@ -151,8 +151,8 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 <h3><a href="require.html">require()</a></h3>
 <div class="summary">Returns a reference to a module.</div>
 
-<h3><a href="howto.html">How to...</a></h3>
-<div class="summary">Can't find something? Try this page!</div></div>
+<h3><a href="/docs/howto.html">How to...</a></h3>
+<div class="summary">Can't find something? Try this page!</div><p><br/></p></div>
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
 </li><li><a href="dollardollar.html">$$()</a>
 </li><li><a href="getcookie.html">$.getCookie()</a>

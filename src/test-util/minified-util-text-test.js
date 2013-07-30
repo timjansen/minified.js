@@ -26,53 +26,6 @@ function runTests(loadInContext) {
 
 	});
 
-	describe('formatNumber()', function() {
-		it('formats numbers', function() {
-			// _.formatNumber(1, afterDecimalPoint, omitZerosAfter, decimalPoint, beforeDecimalPoint, groupingSeparator, groupingSize)
-			assert.equal(_.formatNumber(1), "1");
-			assert.equal(_.formatNumber(-1), "-1");
-			assert.equal(_.formatNumber(1, 0, false, null, 5), "00001");
-			assert.equal(_.formatNumber(-1, 0, false, null, 5), "-00001");
-			
-			assert.equal(_.formatNumber(1, 1), "1.0");
-			assert.equal(_.formatNumber(1, 2), "1.00");
-			assert.equal(_.formatNumber(1, 4), "1.0000");
-			assert.equal(_.formatNumber(1, 1, true), "1");
-			assert.equal(_.formatNumber(1, 4, true), "1");
-			assert.equal(_.formatNumber(-1, 4), "-1.0000");
-			assert.equal(_.formatNumber(-1, 1, true), "-1");
-			
-			assert.equal(_.formatNumber(1.5, 0), "2");
-			assert.equal(_.formatNumber(1.5, 1), "1.5");
-			assert.equal(_.formatNumber(1.5, 2), "1.50");
-			assert.equal(_.formatNumber(1.5, 3), "1.500");
-			assert.equal(_.formatNumber(1.5, 3, true), "1.5");
-			
-			assert.equal(_.formatNumber(1.667, 1), "1.7");
-			assert.equal(_.formatNumber(1.667, 2), "1.67");
-			assert.equal(_.formatNumber(1.667, 3), "1.667");
-			assert.equal(_.formatNumber(1.667, 4), "1.6670");
-			assert.equal(_.formatNumber(1.667, 1, true), "1.7");
-			assert.equal(_.formatNumber(1.667, 2, true), "1.67");
-			assert.equal(_.formatNumber(1.667, 3, true), "1.667");
-			assert.equal(_.formatNumber(1.667, 4, true), "1.667");
-
-			assert.equal(_.formatNumber(1.5, 3, false, 'X'),   "1X500");
-			assert.equal(_.formatNumber(1.667, 1, false, ','), "1,7");
-			assert.equal(_.formatNumber(1.667, 2, true, '#'),  "1#67");
-
-			assert.equal(_.formatNumber(1.667, 4, false, null, 2), "01.6670");
-			assert.equal(_.formatNumber(10.667, 1, true, null, 1), "10.7");
-			assert.equal(_.formatNumber(1.667, 2, true, ',', 9), "000000001,67");
-			assert.equal(_.formatNumber(777.667, 2, true, null, 9), "000000777.67");
-			
-			assert.equal(_.formatNumber(9999999999, 0, true, ',', 9, '.', 3), "9.999.999.999");
-			assert.equal(_.formatNumber(9999999999, 2, true, null, 9, null, 3), "9,999,999,999");
-			assert.equal(_.formatNumber(9999999999, 2, false, null, 9, null, 3), "9,999,999,999.00");
-			assert.equal(_.formatNumber(123456.256, 2, false, null, 9, null, 3), "000,123,456.26");
-			assert.equal(_.formatNumber(123456.256, 2, false, null, 2, null, 3), "123,456.26");
-		});
-	});
 	describe('pad()', function() {
 		it('pads numbers', function() {
 			assert.equal(_.pad(1, 0), "0");
@@ -195,8 +148,8 @@ function runTests(loadInContext) {
 			assert.equal(_.formatValue("yyyyyyMMMMMddd", d), "00201100012006");
 			assert.equal(_.formatValue("?yyyyyyMMMMMddd", d), "00201100012006");
 
-			assert.equal(_.formatValue("yyyyMMdd,n,N,m,H,h,K,k,s,S,a,w,W", d), "20111206,Dec,December,30,13,1,14,2,10,501,pm,Tue,Tuesday");
-			assert.equal(_.formatValue("yyyyMMdd,n,N,m,H,h,K,k,s,SSS,a,w,W", d2), "20130105,Jan,January,0,2,2,3,3,0,000,am,Sat,Saturday");
+			assert.equal(_.formatValue("yyyyYYMMdd,n,N,m,H,h,k,K,s,S,a,w,W", d), "2011111206,Dec,December,30,13,1,14,1,10,501,pm,Tue,Tuesday");
+			assert.equal(_.formatValue("yyyyYYMMdd,n,N,m,H,h,k,K,s,SSS,a,w,W", d2), "2013130105,Jan,January,0,2,2,3,2,0,000,am,Sat,Saturday");
 			assert.equal(_.formatValue("n[a,b,c,d,e,f,g,h,i,j,k,l],N[01,02,03,04,05,06,07,08,09,10,11,12]", d), "l,12");
 			assert.equal(_.formatValue("w[a,b,c,d,e,f,g],W[01,02,03,04,05,06,07]", d), "c,03");
 
@@ -233,9 +186,10 @@ function runTests(loadInContext) {
 			assert(_.equals(_.parseDate("yyyy,MM,dd", "2011,12,06"), d0));
 			assert(_.equals(_.parseDate("y,M,d", "2011,12,06"), d0));
 			assert(_.equals(_.parseDate("y,M,d", "2011,12,6"), d0));
+			assert(_.equals(_.parseDate("Y,M,d", "11,12,6"), d0));
 			assert(_.equals(_.parseDate("yyyyMMddhhmmssaa", "20130105020000am"), d2));
 			assert(_.equals(_.parseDate("y,M,d,h,m,s,a", "2013,1,5,2,0,0,am"), d2));
-			assert(_.equals(_.parseDate("y,M,d,h,m,s,a", "2013,1,5,2,0,0,AM"), d2));
+			assert(_.equals(_.parseDate("Y,M,d,h,m,s,a", "13,1,5,2,0,0,AM"), d2));
 
 			assert(_.equals(_.parseDate("yyyy,d,n,m,H,s,S,w,W", "2011,6,Dec,30,13,10,501,Tue,Tuesday"), d));
 			assert(_.equals(_.parseDate("yyyy,d,n,m,h,s,S,a,w,W", "2011,6,Decem,30,1,10,501,pm,Tue,Tuesday"), d));

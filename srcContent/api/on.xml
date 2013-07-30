@@ -45,7 +45,7 @@ stopped and event bubbling will be disabled.</dd>
 <dd class="">a function to be called instead of a regular event handler with the arguments given in <var>args</var>
 and optionally the 'this' context given using <var>fThis</var>.</dd>
 <dt id="on_fThis" class=""><a name="on_fThis"><var>fThis (optional)</var></a></dt>
-<dd class="">a value for 'this' in the custom callback, as alternative to the event target</dd>
+<dd class="">a value for 'this' in the custom callback, instead of the event target</dd>
 <dt id="on_args" class=""><a name="on_args"><var>args (optional)</var></a></dt>
 <dd class="">an array of arguments to pass to the custom callback function instead of the event objects.
 If you pass custom arguments, the return value of the handler will always be ignored.</dd>
