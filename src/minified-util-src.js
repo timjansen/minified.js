@@ -355,6 +355,7 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 	function pad(digits, number) {
 		return formatNumber(number, 0, 0, 0, digits);
 	}
+	
 	function formatNumber(number, afterDecimalPoint, omitZerosAfter, decimalPoint, beforeDecimalPoint, groupingSeparator, groupingSize) {
 		var signed = number < 0;
 		var match = /(\d+)(\.(.*))?/.exec((signed?-number:number).toFixed(afterDecimalPoint));
@@ -390,6 +391,7 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 			var date = value;
 			var map = {
 				'y': ['FullYear', nonOp],
+				'Y': ['FullYear', function(d) { return d % 100; }],
 				'M': ['Month', plusOne],
 				'n': ['Month', MONTH_SHORT_NAMES],
 				'N': ['Month', MONTH_LONG_NAMES],
@@ -397,8 +399,8 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 				'm': ['Minutes', nonOp],
 				'H': ['Hours', nonOp],
 				'h': ['Hours', function(d) { return (d % 12) || 12; }],
-				'K': ['Hours', plusOne],
-				'k': ['Hours', function(d) { return d % 12 + 1; }],
+				'k': ['Hours', plusOne],
+				'K': ['Hours', function(d) { return d % 12; }],
 				's': ['Seconds', nonOp],
 				'S': ['Milliseconds', nonOp],
 				'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
@@ -481,6 +483,7 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 	function parseDate(format, date) {
 		var mapping = {
 			'y': 0,      // placeholder -> ctorIndex
+			'Y': [0, -2000],
 			'M': [1,1], // placeholder -> [ctorIndex, offset|value array]
 			'n': [1, MONTH_SHORT_NAMES], 
 			'N': [1, MONTH_LONG_NAMES],
@@ -1388,7 +1391,7 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 	 *
      * @param list The list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
      *             <var>length</var> property.
-     * @return A ##list#Minified list## where duplicated had been filtered out.
+     * @return A ##list#Minified list## without duplicates.
      */
 	'uniq': listBindArray(uniq),
 	
@@ -1960,8 +1963,127 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 		 */
 		'dateMidnight': dateMidnight,
 		
-		'formatNumber' : formatNumber,
+		/*$
+		 * @id pad
+		 * @group FORMAT
+		 * @requires 
+		 * @configurable default
+		 * @name _.pad()
+		 * @syntax _.pad(digits, number)
+		 * @module UTIL
+		 * 
+		 * Converts a number into a string by 'padding' it with leading zeros until it has at least the given number of digits.
+		 *
+		 * @param digits the minimum number of digits for the number
+		 * @param number the number to format
+		 * @return the number converted to a string and padded with zeros
+		 */
 		'pad' : pad,
+		
+		/*$
+		 * @id formatvalue
+		 * @group FORMAT
+		 * @requires 
+		 * @configurable default
+		 * @name _.formatValue()
+		 * @syntax _.formatValue(format, value)
+		 * @module UTIL
+		 * 
+		 * Formats a single value as a string, using the given format template.  It has support for numbers, dates, booleans and strings.
+		 * 
+		 * <b>Choice Formatting</b><br/>
+		 * With a choice format, you can map input values into output values. In the format string the choices are separated by pipes ('|')
+		 * and each choice has the format <code>&ltcmp>&ltvalue>:&lt;result></code>:
+		 * <ul><li>&lt;cmp> is a comparison operator ('=', '>', '<', '>=', '<=') and can be omitted for equality.</li>
+		 * <li>&lt;value> is the value as string.</li>
+		 * <li>&lt;result> is the result, either a string or a number format</li></ul>
+		 * You can have a default choice at the end without &lt;cmp> or &lt;value>.
+		 * 
+		 * <b>Examples</b> 
+		 * <pre>_.formatValue('true:is True|isFalse', value);
+		 * _.formatValue('<5:under 5|>=15:at least 15|=7:is seven|some other number', value);
+		 * _.formatValue('1:one item|2:two items|>3:many items', value);
+		 * _.formatValue('ERR:error|WARN:warning|INFO:info|debug', value);
+		 * </pre>
+		 *
+		 * <b>Number Formatting</b><br/> 
+		 * Number formatting allows you to specify the number of digits before and optionally after the decimal separator, the decimal separator itself
+		 * as well as how to group digits. The following characters are used in the format:
+		 * <table>
+		 * <tr><th>Character</th><th>Description</th></tr>
+		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
+		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
+		 * <tr><td>_</td><td>Optional digit after decimal separator.</td></tr>
+		 * <tr><td>9</td><td>Required digit after decimal separator (0 if number is smaller).</td></tr>
+		 * <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+		 * <tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+		 * </table>
+		 * 
+		 * <b>Examples</b> 
+		 * <pre>var v1  = _.formatValue('#', 15); // '15'
+		 * var v2  = _.formatValue('####', 15);   // '15' (same as '#')
+		 * var v3  = _.formatValue('0000', 15);   // '0015'
+		 * var v4  = _.formatValue('#.___', 15.14274); // '15.143'
+		 * var v5  = _.formatValue('#.999', 15.14274); // '15.143'
+		 * var v6  = _.formatValue('#.___', 15.1);     // '15.1'
+		 * var v7  = _.formatValue('#.999', 15.1);     // '15.100'
+		 * var v8  = _.formatValue('000,999', 15.1);   // '015,100'
+		 * var v9 = _.formatValue('#.___', 15);     // '15'
+		 * var v10 = _.formatValue('#.999', 15);    // '15.000'
+		 * var v11 = _.formatValue('#,___', 15.1);  // '15,1' (comma as decimal separator)
+		 * var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
+		 * var v13 = _.formatValue('000,000.___', 92548.42); // '92,548.42'
+		 * var v14 = _.formatValue('000.000,___', 92548.42); // '92.548,42' (comma as separator)
+		 * var v15 = _.formatValue('<10:#.99|<100:#.9|#', 7.356); // '7.36' (choice format)
+		 * var v16 = _.formatValue('<10:#.99|<100:#.9|#', 25.04); // '25.0' 
+		 * var v17 = _.formatValue('<10:#.99|<100:#.9|#', 71.51); // '72' 
+		 * </pre>
+		 *
+		 * <b>Date Formatting</b><br/> 
+		 * In a date format, there are a number of reserved characters that represent parts of the date. If you repeat the same character, you
+		 * specify the minimum number of digits. Some elements allow a comma-separated list of translations in angular brackets, see below.
+		 * <table>
+		 * <tr><th>Character</th><th>Description</th></tr>
+		 * <tr><td>y</td><td>Year (4 digits)</td></tr>
+		 * <tr><td>Y</td><td>Year (2 digits)</td></tr>
+		 * <tr><td>M</td><td>Month (1-12)</td></tr>
+		 * <tr><td>n/td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
+		 * <tr><td>N</td><td>Month as long name ('January', 'February'...). Supports translations.</td></tr>
+		 * <tr><td>d</td><td>Day of month (1-31)</td></tr>
+		 * <tr><td>m</td><td>Minutes (0-59)</td></tr> 
+		 * <tr><td>H</td><td>Hours in 24h format (0-23)</td></tr>
+		 * <tr><td>h</td><td>Hours in 12h format (1-12)</td></tr> 
+		 * <tr><td>K</td><td>Hours in 0-based 12h format (0-11)</td></tr>
+		 * <tr><td>k</td><td>Hours in 1-based 24h format (1-24)</td></tr> 
+		 * <tr><td>s</td><td>Seconds (0-59)</td></tr>
+		 * <tr><td>S</td><td>Milliseconds (0-999)</td></tr>
+		 * <tr><td>a</td><td>Either 'am' or 'pm'. Supports translations.</td></tr>
+		 * <tr><td>w</td><td>Day of week as short name ('Sun', 'Mon'...). Supports translations.</td></tr>
+		 * <tr><td>W</td><td>Day of week as long name ('Sunday', 'Monday'...). Supports translations.</td></tr>
+		 * <tr><td>z</td><td>Timezone offset, e.g. '+0700'</td></tr>
+		 * </table>
+		 * <var>formatValue</var> also supports formatting a date in a different timezone. You only need to put the timezone in brackets at the front of
+		 * the format, e.g. '[+0100]'.
+		 *
+		 * <b>Examples</b> 
+		 * <pre>var now = new Date();
+		 * var v1  = _.formatValue('y-M-d', );       // e.g. '2013-7-9'
+		 * var v2  = _.formatValue('yyyy-MM-dd', );  // e.g. '2013-07-09'
+		 * var v3  = _.formatValue('yyyy-MM-ddTHH:mm:ss.SS z', ); // e.g. '2013-07-09T23:07:38.472 +0700'
+		 * var v4  = _.formatValue('MM/dd/YY h:mm:ss a', );       // e.g. '07/09/13 11:07:38 pm'
+		 * var v5  = _.formatValue('dd.MM.yyyy HH:mm:ss', );      // e.g. '09.07.2013 23:07:38'
+		 * var v6  = _.formatValue('H:mm', );                // e.g. '23:07'
+		 * var v7  = _.formatValue('W, N d y', );            // e.g. 'Tuesday, July 9 2013'
+		 * var v8  = _.formatValue('Nd', );                  // e.g. 'July9'
+		 * var v9  = _.formatValue('d.N[Januar,Februar,MŠrz,April,Mai,Juni,Juli,'+
+		 *             'August,September,Oktober,November,Dezember]', ); // German translation: '9. Juli'
+		 * var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', );  // different timezone: '2013-07-09 5:07 pm' 
+		 * </pre>
+		 *
+		 * @param format the format that describes the output
+		 * @param number the number to format
+		 * @return the string-formatted value
+		 */
 		'formatValue': formatValue,
 		
 		'parseDate': parseDate,
@@ -1981,7 +2103,7 @@ define('minified', function() { // MINIUTIL is needed by autotest.html
 	
 		/*$ 
 	     * @id template 
-	     * @group TEMPLATE
+	     * @group FORMAT
 	     * @requires 
 	     * @configurable default 
 	     * @name _.template() 
