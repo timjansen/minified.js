@@ -6,11 +6,11 @@
   <page:main><![CDATA[<div>
   <h1>Minified.js beta 2: Features and Changes</h1>
 
-<p>Minified's beta 2 contains several new features that have been requested from people who tried out beta 1. Here's a short overview
-of the changes in the API: 
+<p>Minified's beta 2 is mainly about adding new features, as a result of the feedback I received for beta 1.
+Here's a short overview of the API changes: 
 </p>
 
-<h2>New: Property-based traversal in DOM trees with trav()</h2>
+<h2>New: Property-based DOM tree traversal with trav()</h2>
 <p>
 The new method <var><a href="/api/trav.html">trav()</a></var> lets you traverse the DOM tree for each element 
 in a <a href="/api/list.html">Minified list</a> and puts the result into a new list. You can specify a selector 
@@ -27,9 +27,9 @@ to limit the type of elements to include and a maximum number of elements to ret
 <pre>var followLi = $('li.marker').trav('nextSibling', 'li');</pre>
 
 
-<h2>New: Selector-based test for elements with is()</h2>
+<h2>New: Checking list elements against a selector with is()</h2>
 <p><var><a href="/api/is.html">is()</a></var> executes a selector on the <a href="/api/list.html">list</a> elements and 
-returns true only if all list members match. It is optimized for checking for classes and/or tag names, but will work 
+returns <var>true</var> only if all list members match. It is optimized for checking for classes and/or tag names, but will work 
 with any selector.</p>
 
 <h3>Example: Check whether list members have a class</h3>
@@ -44,7 +44,7 @@ with any selector.</p>
 you had a list and wanted to find all &lt;p> elements in it, you had to write</p>
 <pre>var paras = $('p', list);</pre>
 <p>Having to write the list element inside the <var><a href="/api/dollar.html">$()</a></var> is a bit inconvenient when you
-are chaining methods, so select does exactly the same with a different syntax:
+are chaining methods, so <var>select()</var> does exactly the same with a different syntax:
 <pre>var paras = list.select('p');</pre>
 
 
@@ -57,11 +57,11 @@ and/or tag names, but will work with any selector. </p>
 <pre>var areMyElements = $('td.myFirstClass').only('.mySecondClass');</pre>
 
 
-<h2>New: Registering events for mouse over</h2>
+<h2>New: Registering for mouse-over events using onOver()</h2>
 <p><var><a href="/api/onover.html">onOver()</a></var> registers event listeners to be invoked when the mouse
-cursor enters or leaves the list's HTML elements. As first parameter it receives a boolean that's true when the
-mouse is over the element and false when it left the element. This makes <var>onOver</var> compatible with
-<var><a href="/api/toggles.html">toggles</a></var>.</p>
+cursor enters or leaves the list's HTML elements. As first parameter it receives a boolean that's <var>true</var> when the
+mouse is over the element and <var>false</var> when it left the element. This makes <var>onOver()</var> compatible with
+<var><a href="/api/toggle.html">toggles</a></var>.</p>
 
 <h3>Example: Creating your own mouseover handler</h3>
 <pre>$('.monitored').onOver(function(isOver, index) {
@@ -78,7 +78,7 @@ mouse is over the element and false when it left the element. This makes <var>on
 <h2>New: Triggering existing and custom events with trigger()</h2>
 <p>The new method <var><a href="/api/trigger.html">trigger()</a></var> can call any event previously registered
 with  <var><a href="/api/on.html">on()</a></var>. You can call regular event handlers such as 'click', but also
-create your event handler names and call them. <var>trigger()</var> emulates event bubbling, but will not send a DOM
+create your own event handler names and call them. <var>trigger()</var> emulates event bubbling, but will not send a DOM
 event to the browser and thus does not emulate the event default behaviour.
 </p>
 
@@ -90,7 +90,7 @@ event to the browser and thus does not emulate the event default behaviour.
 
 
 
-<h2>New: Reading formes with values()</h2>
+<h2>New: Reading forms with values()</h2>
 <p><var><a href="/api/values.html">values()</a></var> will read forms or individual input elements and
 store them in a format that's compatible with <var><a href="/api/request.html">$.request()</a></var>.</p>
 
@@ -123,7 +123,7 @@ methods that share the syntax. The prefix '%' is now equivalent to '@data-'.
 <h2>New: Selectors for on() (live/delegated events)</h2>
 <p>Due to popuplar demand, <var><a href="/api/on.html">on()</a></var> now has an optional <var>selector</var>
 parameter that can be used to filter events that bubbled up from child elements. This allows you to set up
-event handlers in parent elements and let events bubble up, so you need less (potentially resource-hungry)
+event handlers in parent elements and let events bubble up, so you need fewer (potentially resource-hungry)
 event handlers. Also, you may not need to add new event handlers when you add child elements to a monitored
 parent element, which is mostly useful if you work with <var>innerHTML</var>.
 </p>
@@ -139,7 +139,7 @@ In beta 2, duplicates caused by selectors or having multiple elements in the con
 removed.</p>
 
 
-<h2>Change: Toggle animation return their Promise</h2>
+<h2>Change: Animated toggles return their Promise</h2>
 <p><var><a href="/api/toggle.html">Toggle functions</a></var> with animations will now return the animation's
 <a href="/api/promise.html">Promise</a>. This allows compositing more complex animations with toggles,
 which may be part of the upcoming App module.</p>
@@ -169,7 +169,7 @@ using <var><a href="/api/remove.html">remove()</a></var> and <var><a href="/api/
 <h2>Builder: IE9 Compatibility Optional</h2>
 <p>In the wake of IE11's coming release, I have made some smaller IE9-compatibility fixes optional. If you
 only need to support the latest two versions of any browser, you can save a couple of bytes (but not more!) by
-disabling IE9 in the builder. But this is mostly done so the fixes for IE9-compatibility are properly
+disabling IE9 in the builder. The main reason for this change is to make sure fixes for IE9-compatibility are properly
 marked in the source and can be removed at some point in the far future.</p>
 
 
