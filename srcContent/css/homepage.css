@@ -79,3 +79,6 @@ tr:not(:first-child) th { background-color: #fff; font-weight: normal;}
 }
 
 .actionButton span, .shareButton span { font-size: 10px; }
+
+.newsItem { margin-bottom: 0.75em; }
+

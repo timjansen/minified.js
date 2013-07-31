@@ -18,7 +18,7 @@ hhEach({
 	 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
 	 * <pre>
 	 * var pos = $('#myElement').offset();
-	 * $('#resultElement').set('innerHTML', '#myElement's position is left=' + pos.x + ' top=' + pos.y);
+	 * $('#resultElement').fill('#myElement's position is left=' + pos.x + ' top=' + pos.y);
 	 * </pre>
 	 *
 	 * @param element the element whose coordinates should be determined
@@ -28,8 +28,8 @@ hhEach({
 		var elem = this[0];
 		var dest = {'x': 0, 'y': 0};
 		while (elem) {
-			dest.x += elem.offsetLeft;
-			dest.y += elem.offsetTop;
+			dest['x'] += elem.offsetLeft;
+			dest['y'] += elem.offsetTop;
 			elem = elem.offsetParent;
 		}
 		return dest;

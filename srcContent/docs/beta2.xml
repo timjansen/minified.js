@@ -6,7 +6,7 @@
   <page:main><![CDATA[<div>
   <h1>Minified.js beta 2: Features and Changes</h1>
 
-<p>I got a lot of great feedback for beta 1, and many feature requests. So Minified's beta 2 is mostly about adding new features. 
+<p>I got a lot of great feedback for beta 1, including many feature requests. So Minified's beta 2 is mostly about adding new features. 
 Here's a short overview of the API changes: 
 </p>
 
@@ -17,13 +17,13 @@ in a <a href="/api/list.html">Minified list</a> and puts the result into a new l
 to limit the type of elements to include and a maximum number of elements to return per list element.
 <var>trav()</var> will automatically remove duplicates from the result.
 </p>
-<h3>Example: Finding all parents</h3>
+<h5>Example: Finding all parents</h5>
 <pre>var parents = $('.myChild').trav('parentNode', 1); // returns immediate parent of each element</pre>
 
-<h3>Example: Finding all &lt;table>s that contain &lt;th> elements</h3>
+<h5>Example: Finding all &lt;table>s that contain &lt;th> elements</h5>
 <pre>var thTables = $('th').trav('parentNode', 'table', 1); // tables with</pre>
 
-<h3>Example: Finding all &lt;li>s following a &lt;li class='marker'></h3>
+<h5>Example: Finding all &lt;li>s following a &lt;li class='marker'></h5>
 <pre>var followLi = $('li.marker').trav('nextSibling', 'li');</pre>
 
 
@@ -32,10 +32,10 @@ to limit the type of elements to include and a maximum number of elements to ret
 returns <var>true</var> only if all list members match. It is optimized for checking for classes and/or tag names, but will work 
 with any selector.</p>
 
-<h3>Example: Check whether list members have a class</h3>
+<h5>Example: Check whether list members have a class</h5>
 <pre>var areMyElements = $('li').is('.myElement');</pre>
 
-<h3>Example: Check whether input elements are in a form</h3>
+<h5>Example: Check whether input elements are in a form</h5>
 <pre>var areInForm = $('input').is('form input');</pre>
 
 
@@ -53,7 +53,7 @@ are chaining methods, so <var>select()</var> does exactly the same with a differ
 HTML elements with a selector. Like <var><a href="/api/is.html">is()</a></var> it is optimized for checking for classes
 and/or tag names, but will work with any selector. </p>
 
-<h3>Example: Getting a list of all table cells that have two classes</h3>
+<h5>Example: Getting a list of all table cells that have two classes</h5>
 <pre>var areMyElements = $('td.myFirstClass').only('.mySecondClass');</pre>
 
 
@@ -63,7 +63,7 @@ cursor enters or leaves the list's HTML elements. As first parameter it receives
 mouse is over the element and <var>false</var> when it left the element. This makes <var>onOver()</var> compatible with
 <var><a href="/api/toggle.html">toggles</a></var>.</p>
 
-<h3>Example: Creating your own mouseover handler</h3>
+<h5>Example: Creating your own mouseover handler</h5>
 <pre>$('.monitored').onOver(function(isOver, index) {
     if (isOver) 
         console.log('Mouse entered: ', this);
@@ -71,7 +71,7 @@ mouse is over the element and <var>false</var> when it left the element. This ma
         console.log('Mouse left: ', this);
 });</pre>
 
-<h3>Example: Creating a mouseover toggle</h3>
+<h5>Example: Creating a mouseover toggle</h5>
 <pre>$(elem).onOver($(elem).toggle({backgroundColor: '#000'}, {backgroundColor: '#f00'}));</pre>
 
 
@@ -82,10 +82,10 @@ create your own event handler names and call them. <var>trigger()</var> emulates
 event to the browser and thus does not emulate the event default behaviour.
 </p>
 
-<h3>Example: Calling a click handler</h3>
+<h5>Example: Calling a click handler</h5>
 <pre>$('#myButton').trigger('click');</pre>
 
-<h3>Example: Calling a custom event handler with event object</h3>
+<h5>Example: Calling a custom event handler with event object</h5>
 <pre>$('#layoutRoot').trigger('relayout', {width: 800, height: 600});</pre>
 
 
@@ -94,7 +94,7 @@ event to the browser and thus does not emulate the event default behaviour.
 <p><var><a href="/api/values.html">values()</a></var> will read forms or individual input elements and
 store them in a format that's compatible with <var><a href="/api/request.html">$.request()</a></var>.</p>
 
-<h3>Example: Posting a form</h3>
+<h5>Example: Posting a form</h5>
 <pre>$.request('POST', '/myService', $('#myForm').values());</pre>
 
 
@@ -104,7 +104,7 @@ store them in a format that's compatible with <var><a href="/api/request.html">$
 <var><a href="/api/M.html">MINI.M</a></var>.  
 </p>
 
-<h3>Example: Extending Minified with a method to get all child elements</h3>
+<h5>Example: Extending Minified with a method to get all child elements</h5>
 <pre>MINI.M.prototype.children = function() { return $('*', this, true); };
 var children = $('#parent').children();</pre>
 
@@ -115,7 +115,7 @@ var children = $('#parent').children();</pre>
 methods that share the syntax. The prefix '%' is now equivalent to '@data-'. 
 </p>
 
-<h3>Example: Reading a data attribute</h3>
+<h5>Example: Reading a data attribute</h5>
 <pre>var mymeta = $('#myElement').get('%mymeta'); // same as .get('@data-mymeta')</pre>
 
 
@@ -128,7 +128,7 @@ event handlers. Also, you may not need to add new event handlers when you add ch
 parent element, which is mostly useful if you work with <var>innerHTML</var>.
 </p>
 
-<h3>Example: Creating a selecting event handler </h3>
+<h5>Example: Creating a selecting event handler</h5>
 <pre>$('#container').on('click', 'div.clickable', clickHandler);</pre>
 
 

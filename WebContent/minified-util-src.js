@@ -1539,6 +1539,31 @@ define('minifiedUtil', function() {
 		 // @condblock intersection
 		'intersection': funcArrayBind(intersection),
 		 // @condend
+		
+		/*$
+		 * @id copyobj
+		 * @group OBJECT
+		 * @requires 
+		 * @configurable default
+		 * @name _.copyObj()
+		 * @syntax _.copyObj(from, to)
+		 * @module UTIL
+		 * Copies every property of the first object into the second object. The properties are copied as shallow-copies. Only own properties
+		 * are copied, but not inherited properties.
+		 * 
+		 *  @example Copying properties:
+		 * <pre>var target = {a:3, c: 3};
+		 * _.copyObj({a: 1, b: 2}, target); // target is now {a: 1, b: 2, c: 3}</pre>
+		 *
+		 *  @example Inline property merge:
+		 * <pre>var target = _.copyObj({a: 1, b: 2}, {a:3, c: 3}); // target is now {a: 1, b: 2, c: 3}</pre>
+		 *
+		 * @param from the object to copy from
+		 * @param to the object to copy to
+		 * @return the object that has been copied to
+		 */
+		'copyObj': copyObj,
+		
 		/*$ 
 		 * @id range 
 		 * @group FUNC 
@@ -2067,36 +2092,231 @@ define('minifiedUtil', function() {
 		 *
 		 * <b>Examples</b> 
 		 * <pre>var now = new Date();
-		 * var v1  = _.formatValue('y-M-d', );       // e.g. '2013-7-9'
-		 * var v2  = _.formatValue('yyyy-MM-dd', );  // e.g. '2013-07-09'
-		 * var v3  = _.formatValue('yyyy-MM-ddTHH:mm:ss.SS z', ); // e.g. '2013-07-09T23:07:38.472 +0700'
-		 * var v4  = _.formatValue('MM/dd/YY h:mm:ss a', );       // e.g. '07/09/13 11:07:38 pm'
-		 * var v5  = _.formatValue('dd.MM.yyyy HH:mm:ss', );      // e.g. '09.07.2013 23:07:38'
-		 * var v6  = _.formatValue('H:mm', );                // e.g. '23:07'
-		 * var v7  = _.formatValue('W, N d y', );            // e.g. 'Tuesday, July 9 2013'
-		 * var v8  = _.formatValue('Nd', );                  // e.g. 'July9'
+		 * var v1  = _.formatValue('y-M-d', now);       // e.g. '2013-7-9'
+		 * var v2  = _.formatValue('yyyy-MM-dd', now);  // e.g. '2013-07-09'
+		 * var v3  = _.formatValue('yyyy-MM-ddTHH:mm:ss.SS z', now); // e.g. '2013-07-09T23:07:38.472 +0700'
+		 * var v4  = _.formatValue('MM/dd/YY h:mm:ss a', now);       // e.g. '07/09/13 11:07:38 pm'
+		 * var v5  = _.formatValue('dd.MM.yyyy HH:mm:ss', now);      // e.g. '09.07.2013 23:07:38'
+		 * var v6  = _.formatValue('H:mm', now);                // e.g. '23:07'
+		 * var v7  = _.formatValue('W, N d y', now);            // e.g. 'Tuesday, July 9 2013'
+		 * var v8  = _.formatValue('Nd', now);                  // e.g. 'July9'
 		 * var v9  = _.formatValue('d.N[Januar,Februar,MŠrz,April,Mai,Juni,Juli,'+
-		 *             'August,September,Oktober,November,Dezember]', ); // German translation: '9. Juli'
-		 * var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', );  // different timezone: '2013-07-09 5:07 pm' 
+		 *             'August,September,Oktober,November,Dezember]', now); // German translation: '9. Juli'
+		 * var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', now);  // different timezone: '2013-07-09 5:07 pm' 
 		 * </pre>
 		 *
 		 * @param format the format that describes the output
-		 * @param number the number to format
+		 * @param value the value to format. Either a Date, a number, a string or a value that can be converted to a string.
 		 * @return the string-formatted value
 		 */
 		'formatValue': formatValue,
 		
+		/*$
+		 * @id parsedate
+		 * @group FORMAT
+		 * @requires 
+		 * @configurable default
+		 * @name _.parseDate()
+		 * @syntax _.parseDate(format, dateString)
+		 * @module UTIL
+		 * 
+		 * Parses the given string as Date using the given format. The format specifies which date component is expected where in the string.
+		 * It can also be used to specify the timezone of the input string, and it may specify whether an empty string (including strings containing
+		 * only whitespace) is allowed.
+		 *
+		 * In the date format there are a number of reserved characters that are used as placeholders of date components. If you put a single
+		 * character in the format, this will match numbers of any length. If you have two or more of the same character, this is recognized as
+		 * fixed-length string.<br/>
+		 * Some placeholders, such as month names, support translations. To parse dates in other languages, you can specify a comma-separated
+		 * list of translations in brackets following the placeholder.<br/>
+		 * The following placeholder characters are supported.
+		 * <table>
+		 * <tr><th>Character</th><th>Description</th></tr>
+		 * <tr><td>y</td><td>Year (4 digits)</td></tr>
+		 * <tr><td>Y</td><td>Year (2 digits, 2000-based)</td></tr>
+		 * <tr><td>M</td><td>Month (1-12)</td></tr>
+		 * <tr><td>n/td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
+		 * <tr><td>N</td><td>Month as long name ('January', 'February'...). Supports translations.</td></tr>
+		 * <tr><td>d</td><td>Day of month (1-31)</td></tr>
+		 * <tr><td>m</td><td>Minutes (0-59)</td></tr> 
+		 * <tr><td>H</td><td>Hours in 24h format (0-23)</td></tr>
+		 * <tr><td>h</td><td>Hours in 12h format (1-12)</td></tr> 
+		 * <tr><td>K</td><td>Hours in 0-based 12h format (0-11)</td></tr>
+		 * <tr><td>k</td><td>Hours in 1-based 24h format (1-24)</td></tr> 
+		 * <tr><td>s</td><td>Seconds (0-59)</td></tr>
+		 * <tr><td>S</td><td>Milliseconds (0-999)</td></tr>
+		 * <tr><td>a</td><td>Either 'am' or 'pm'. Supports translations.</td></tr>
+		 * <tr><td>w</td><td>Day of week as short name ('Sun', 'Mon'...). Supports translations.</td></tr>
+		 * <tr><td>W</td><td>Day of week as long name ('Sunday', 'Monday'...). Supports translations.</td></tr>
+		 * <tr><td>z</td><td>Timezone offset, e.g. '+0700'</td></tr>
+		 * </table>
+		 * If you prefix the input string with a question mark ('?'), this means that the date is optional. If the input string is empty or consists
+		 * solely of whitespace, <var>parseDate</var> will return null.<br/>
+		 * <var>parseDate()</var> also supports parsing a date in a different timezone. You only need to put the timezone in brackets at the front of
+		 * the format, e.g. '[+0100]'.<br/>
+		 * 
+		 * All other characters  are expected to be identical in format and input string, with the exception of whitespace. Each whitespace character 
+		 * in the format can match any number of other whitespace characters in the input string, but at least one.
+		 *
+		 * Any components that are not in the format will be set to 0. For example, if your format has only date, month and day, the resulting 
+		 * date will be at midnight.
+		 *
+		 * @example Parsing dates in various formats.
+		 * <pre>
+		 * var v1  = _.parseDate('y-M-d', '2013-7-9');
+		 * var v2  = _.parseDate('?yyyyMMdd', '20130709');
+		 * var v3  = _.parseDate('?yyyyMMdd', ' ');  // returns null
+		 * var v4  = _.parseDate('yyyy-MM-ddTHH:mm:ss.SS z', '2013-07-09T23:07:38.472 +0700');
+		 * var v5  = _.parseDate('MM/dd/YY h:mm:ss a', '07/09/13 11:07:38 pm');
+		 * var v6  = _.parseDate('dd.MM.yyyy HH:mm:ss', '09.07.2013 23:07:38');
+		 * var v7  = _.parseDate('W, N d y', 'Tuesday, July 9 2013');
+		 * var v8  = _.parseDate('d.N[Januar,Februar,Maerz,April,Mai,Juni,Juli,'+
+		 *             'August,September,Oktober,November,Dezember] y', '9. Juli 2013'); // parsing german
+		 * var v9  = _.parseDate('[+0100]yyyy-MM-dd h:mm a', '2013-07-09 5:07 pm');  // different timezone:  
+		 * </pre>
+		 *
+		 * @param format the format that describes the output
+		 * @param dateString the string-formatted date to parse
+		 * @return the Date; <var>undefined</var> if parsing failed; or <var>null</var> if the string was empty and 
+		 *              the date format is flagged as optional ('?' at the beginning)
+		 */
 		'parseDate': parseDate,
+		
+		/*$
+		 * @id parsenumber
+		 * @group FORMAT
+		 * @requires 
+		 * @configurable default
+		 * @name _.parseNumber()
+		 * @syntax _.parseNumber(format, numberString)
+		 * @module UTIL
+		 * 
+		 * Parses the given string as number using the given format. <var>parseNumber</var> uses the same format as <var>formatValue</var>,
+		 * but does not support choices. These are the allowed placeholders in the format:
+		 * <table>
+		 * <tr><th>Character</th><th>Description</th></tr>
+		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
+		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
+		 * <tr><td>_</td><td>Optional digit after decimal separator.</td></tr>
+		 * <tr><td>9</td><td>Required digit after decimal separator (0 if number is smaller).</td></tr>
+		 * <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+		 * <tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+		 * </table>
+		 *
+		 * The format string is mainly used to find out what the decimal separator is ('.' or ','). It defaults to '.'. 
+		 *
+		 * <var>parseNumber</var> will ignore any non-numeric characters at the beginning or end of the input string.
+		 *
+		 * If you prefix the input string with a question mark ('?'), this means that the number is optional. If the input string is empty or consists
+		 * solely of whitespace, <var>parseNumber</var> will return null.
+		 *
+		 * If the input string is not valid and can not be parse,  <var>parseNumber</var> will return <var>undefined</var>.
+		 *
+		 * @example Parsing numbers in various formats.
+		 * <pre>
+		 * _.parseNumber('00.99', '2.1');      // returns 2.1
+		 * _.parseNumber('00.99', '');          // returns undefined
+		 * _.parseNumber('?00.99', '2.1');    // optional number. Returns 2.1
+		 * _.parseNumber('?00.99', '');        // returns null
+		 * _.parseNumber('0.9', '=2.1 inch'); // returns 2.1 (non-numeric characters ignored)
+		 * _.parseNumber('0,9', '2,1');         // comma as decimal separator
+		 * _.parseNumber('0,9', '2.1');         // returns 21!! '.' is used as group separator
+		 * _.parseNumber('0.9', '20');         // returns 20 (number of digits ignored)
+		 * _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
+		 * </pre>
+		 *
+		 * @param format the format that describes the input number
+		 * @param numberString the string-formatted number to parse
+		 * @return the resulting number; <var>undefined</var> if parsing failed; or <var>null</var> if the string was empty and 
+		 *              the number format is flagged as optional ('?' at the beginning)
+		 */
 		'parseNumber': parseNumber,
 
-		'copyObj': copyObj,
-		
+		/*$
+		 * @id trim
+		 * @group STRING
+		 * @requires 
+		 * @configurable default
+		 * @name _.trim()
+		 * @syntax _.trim(s)
+		 * @module UTIL
+		 * Removes whitespace from the beginning and end of the given string and returns the result.
+		 * 
+		 * @example Removing whitespace
+		 * <pre>_.trim('abc'); // no change: returns 'abc'
+		 * _.trim('  abc '); // returns 'abc'
+		 * _.trim(' a b c '); // returns 'a b c' (only whitespace at beginning and end is removed)</pre>
+		 *
+		 * @param s the string to trim
+		 * @return the trimmed string
+		 */
 		'trim': trim,
+		
+		/*$
+		 * @id escaperegexp
+		 * @group STRING
+		 * @requires 
+		 * @configurable default
+		 * @name _.escapeRegExp()
+		 * @syntax _.escapeRegExp(s)
+		 * @module UTIL
+		 * Escapes all reserved characters for regular expressions by preceding them with a backslash. 
+		 * 
+		 * @example Creating regular expressions for words:
+		 * <pre>function createWordRE(s) {
+		 *     return new RegExp('\b' + _.escapeRegExp(s) + '\b');
+		 * }</pre>
+		 *
+		 * @param s the string to escape
+		 * @return the escaped string
+		 */
 		'escapeRegExp': escapeRegExp,
+		
+		/*$
+		 * @id escapehtml
+		 * @group STRING
+		 * @requires 
+		 * @configurable default
+		 * @name _.escapeHtml()
+		 * @syntax _.escapeHtml(s)
+		 * @module UTIL
+		 * Escapes all reserved characters for HTML so the string can be used in text or as attribute value. The escaped characters are
+		 * '&', '<', '>', ''' (single quote) and '"' (double quote), and they will be escaped using char codes (e.g. '&#123;').
+		 * 
+		 * @example Creating a HTML title
+		 * <pre>function createTitle(s) {
+		 *     return '<h1>' + _.escapeHtml(s) + '</h1>';
+		 * }</pre>
+		 *
+		 * @param s the string to escape
+		 * @return the escaped string
+		 */
 		'escapeHtml': escapeHtml,
 		
-		'format': function(format, object) {
-			return template(format)(object);
+		/*$ 
+	     * @id format 
+	     * @group FORMAT
+	     * @requires 
+	     * @configurable default 
+	     * @name _.format() 
+	     * @syntax _.format()
+	     * @syntax _.format(template, object)
+	   	 * @module UTIL
+	     * Formats an object using a #template#template. The template syntax is shared with ##_.template(). The only difference is that
+	     * <var>format()</var> frees you from the extra step of creating the template. In any case, whether you use 
+	     * <var>format()</var> or ##_.template(), the template will be cached. Be careful when you create templates dynamically, as 
+	     * every template is cached and consumes memory.<br/>
+	     * If you only want to format a single value, use ##_.formatValue().
+	     * 
+	     * @example Format a list of dates:
+	     * <pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+	     * 
+	     * @param template The #template as a string. The template, once created, will be cached. 
+	     * @param object the object to format 
+	     * @return the string created by the template
+	     */ 
+		'format': function(tpl, object) {
+			return template(tpl)(object);
 		},
 		
 
@@ -2201,20 +2421,54 @@ define('minifiedUtil', function() {
 	     * for arrays that will be invoked for each item.
 	     * </table> 
 	     * 
+	     * Every template you create is already cached, so it not an expensive operation to call ##_.template() a second
+	     * time with the same template. However, because of caching, you should be careful when creating templates
+	     * dynamically, as every new template requires memory that will not be freed.
+	     * 
+	     * See also ##_.format() as an alternative to using ##template(), as it will save you the template invocation.
 	     *  
 	     * @param template The template as a string using the syntax described above. 
 	     * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
 	     *        to escape all output:
 	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
 	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
-	     *        If no escapeFunction has been given, the output will not be escaped. See ##_.htmlTemplate() for a 
-	     *        version of <var>template()</var> that already includes HTML escaping.
+	     *        If no escapeFunction has been given, the output will not be escaped.
+	     *        ##_.escapeHtml() can be used as a escape function for HTML. 
+	     *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
 	     * @return the value returned by the last invocation of <var>func</var>
 	     */ 
 		'template': template,
 		
-		 'htmlTemlplate': function(tpl) { return template(tpl, escapeHtml); }
 		
+		/*$ 
+	     * @id formathtml 
+	     * @group FORMAT
+	     * @requires 
+	     * @configurable default 
+	     * @name _.format() 
+	     * @syntax _.formatHtml()
+	     * @syntax _.formatHtml(template, object)
+	   	 * @module UTIL
+	     * Formats an object using a #template#template with HTML escaping for the output. 
+	     * The template syntax is shared with ##_.template(). Output in double curly braces is automatically escaped using ##_.escapeHtml(). 
+	     * <var>formatHtml()</var> just creates a new template with HTML escaping and invokes it immediately.
+	     * The template will be cached. Be careful when you create templates dynamically, as 
+	     * every template is cached and consumes memory.<br/>
+	     * If you only want to format a single value, use ##_.formatValue().
+	     * 
+	     * @example Format a list of dates:
+	     * <pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+	     * 
+	     * @param template The #template as a string. The template, once created, will be cached.
+	     * @param object the object to format 
+	     * @return the string created by the template
+	     */ 
+		 'formatHtml': function(tpl, obj) { return template(tpl, escapeHtml)(obj); }
+		/*$
+		 * @stop
+		 */
+		
+		// @cond !format '':0
 	}, _);
 
 	///#endsnippet utilUnderscoreFuncs
