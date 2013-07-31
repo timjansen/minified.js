@@ -38,7 +38,7 @@ var listItems = <a href="/api/dollar.html">$</a>('li', 'ol', true); // all list 
 var r = <a href="/api/dollar.html">$</a>('#myTable tr')                                                         // all rows in myTable
            .<a href="/api/filter.html">filter</a>(function(elem, index) { return index % 2 == 1; })             // filter: take only odd rows
            .<a href="/api/collect.html">collect</a>(function(elem) { return <a href="/api/dollar.html">$</a>('td', elem).<a href="/api/sub.html">sub</a>(-3); })            // use the last three cells per row
-           .<a href="/api/find.html">find</a>(function(elem) { if (<a href="/api/dollar.html">$</a>(elem).<a href="/api/hasclass.html">hasClass</a>('hit')) return elem; });  // find first cell with class 'hit'
+           .<a href="/api/find.html">find</a>(function(elem) { if (<a href="/api/dollar.html">$</a>(elem).<a href="/api/is.html">is</a>('.hit')) return elem; });  // find first cell with class 'hit'
 </pre> </p> <p>The lists returned by the selectors behave pretty much like arrays. You can access them by index and they have a <a href="/api/length.html"><code>length</code></a> property. Please note that you should not modify a list using the index operator ("list[i]") though. The result would be undefined. </p><p> This example iterates through a list using a <code>for</code> loop: <pre>var list = <a href="/api/dollar.html">$</a>('input'); 
 for (var i = 0; i &lt; list.<a href="/api/length.html">length</a> ; i++)
     list[i].value = '';

@@ -12,8 +12,8 @@
 		.x { margin-top: 2px; }		
 	</style> 
 
+	<script type="text/javascript">this['MINIUTIL'] = 'minifiedUtil';</script>
 	<script type="text/javascript" src="sparkplug.js"></script>
-	<script type="text/javascript" src="minified-util.js"></script>
 	<script type="text/javascript">
 	// Load the right source, depending on whether 'compiled' is in the URL query
 	
@@ -27,7 +27,18 @@
 	</script>
 	<script type="text/javascript">
 	 	var MINI = require('minified'), $=MINI.$, $$ = MINI.$$, EE = MINI.EE;
- 		var _ = require('minifiedUtil')._;
+	 	
+ 		var _ = { // baby util package to avoid the dep to util
+ 				toString: function toString(s) { 
+ 					return s!=null ? ''+s : '';
+ 				},
+ 				each: function(list, cb) {
+ 					if (list)
+ 						for (var i = 0; i < list.length; i++)
+ 							cb(list[i], i);
+ 					return list;
+ 				}
+ 		};
 	 	
 		function fail(text) {
 			throw text;

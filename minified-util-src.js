@@ -38,16 +38,8 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
  	 * @id minifieddefine
  	 */
 
-define('minifiedUtil', function() {
+define('minifiedUtil', function() { 
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
- 	/*$
- 	 * @id window
- 	 */
-	/**
-	 * @const
-	 */
-	var _this = this;
 
  	/*$
  	 * @id undef
@@ -55,6 +47,7 @@ define('minifiedUtil', function() {
 	/** @const */
 	var undef;
 
+	///#definesnippet utilVars
 	/**
 	 * @const
 	 */
@@ -76,13 +69,13 @@ define('minifiedUtil', function() {
 	
 	var templateCache={};
 
+	///#endsnippet utilVars
+	
+	
 	
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	
-	/*$
-	 * @id globalfuncs
-	 */
+	///#definesnippet commonFuncs
 	
 	/** @param s {?} */
 	function toString(s) { 
@@ -98,9 +91,6 @@ define('minifiedUtil', function() {
 	/** @param s {?} */
 	function isString(s) {
 		return isType(s, 'string');
-	}
-	function isFunction(f) {
-		return isType(f, 'function');
 	}
 	function isObject(f) {
 		return !!f && isType(f, 'object');
@@ -155,10 +145,9 @@ define('minifiedUtil', function() {
 				cb(list[i], i);
 		return list;
 	}
-	function filterObj(obj, filterFuncOrObject) {
+	function filterObj(obj, f) {
 		var r = {};
-		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(key) { return filterFuncOrObject != key; };
-			eachObj(obj, function(key, value) {
+		eachObj(obj, function(key, value) {
 			if (f(key, value))
 				r[key] = value;
 		});
@@ -224,16 +213,16 @@ define('minifiedUtil', function() {
 	}
 	function startsWith(base, start) {
 		if (isList(base)) {
-			var s2 = UNDERSCORE(start); // convert start as we don't know whether it is a list yet
-			return equals(UNDERSCORE(base).sub(0, s2.length), s2);
+			var s2 = _(start); // convert start as we don't know whether it is a list yet
+			return equals(_(base).sub(0, s2.length), s2);
 		}
 		else
 			return start != null && base.substr(0, start.length) == start;
 	}
 	function endsWith(base, end) {
 		if (isList(base)) {
-			var e2 = UNDERSCORE(end);
-			return UNDERSCORE(base).sub(-e2.length).equals(e2) || !e2.length;
+			var e2 = _(end);
+			return _(base).sub(-e2.length).equals(e2) || !e2.length;
 		}
 		else
 			return end != null && base.substr(base.length - end.length) == end;
@@ -276,10 +265,9 @@ define('minifiedUtil', function() {
 	function array(list) {
 		return map(list, nonOp);
 	}
-	function unite() {
-		var self = this;
+	function unite(list) {
 		return function() {
-			return new M(callList(self, arguments));
+			return new M(callList(list, arguments));
 		};
 	}
 	function uniq(list) {
@@ -300,9 +288,6 @@ define('minifiedUtil', function() {
 			keys[item] = 0;
 			return r;
 		});
-	}
-	function coal() {
-		return find(arguments, nonOp);
 	}
 	function contains(list, value) {
 		for (var i = 0; i < list.length; i++)
@@ -370,6 +355,7 @@ define('minifiedUtil', function() {
 	function pad(digits, number) {
 		return formatNumber(number, 0, 0, 0, digits);
 	}
+	
 	function formatNumber(number, afterDecimalPoint, omitZerosAfter, decimalPoint, beforeDecimalPoint, groupingSeparator, groupingSize) {
 		var signed = number < 0;
 		var match = /(\d+)(\.(.*))?/.exec((signed?-number:number).toFixed(afterDecimalPoint));
@@ -405,6 +391,7 @@ define('minifiedUtil', function() {
 			var date = value;
 			var map = {
 				'y': ['FullYear', nonOp],
+				'Y': ['FullYear', function(d) { return d % 100; }],
 				'M': ['Month', plusOne],
 				'n': ['Month', MONTH_SHORT_NAMES],
 				'N': ['Month', MONTH_LONG_NAMES],
@@ -412,8 +399,8 @@ define('minifiedUtil', function() {
 				'm': ['Minutes', nonOp],
 				'H': ['Hours', nonOp],
 				'h': ['Hours', function(d) { return (d % 12) || 12; }],
-				'K': ['Hours', plusOne],
-				'k': ['Hours', function(d) { return d % 12 + 1; }],
+				'k': ['Hours', plusOne],
+				'K': ['Hours', function(d) { return d % 12; }],
 				's': ['Seconds', nonOp],
 				'S': ['Milliseconds', nonOp],
 				'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
@@ -496,6 +483,7 @@ define('minifiedUtil', function() {
 	function parseDate(format, date) {
 		var mapping = {
 			'y': 0,      // placeholder -> ctorIndex
+			'Y': [0, -2000],
 			'M': [1,1], // placeholder -> [ctorIndex, offset|value array]
 			'n': [1, MONTH_SHORT_NAMES], 
 			'N': [1, MONTH_LONG_NAMES],
@@ -687,21 +675,41 @@ define('minifiedUtil', function() {
 						each(obj, function(value, index) { func.call(value, value, index); });
 					else
 						eachObj(obj, function(key, value) { func.call(value, key, value); });
-				}, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, UNDERSCORE);
+				}, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, _);
 				return result.join('');
 			};
 		}
 	}
 
-	
-	
-	
-	
+		
 	function escapeHtml(s) {
 		return replace(s, /[<>'"&]/g, function(s) {
 			return '&#'+s.charCodeAt(0)+';';
 		});
 	}	
+
+	function listBindArray(func) {
+		return function(arg1, arg2) {
+			return new M(func(this, arg1, arg2));
+		};
+	}
+	function listBind(func) {
+		return function(arg1, arg2) {
+			return func(this, arg1, arg2);
+		};
+	}
+	function funcArrayBind(func) {
+		return function(arg1, arg2, arg3) {
+			return new M(func(arg1, arg2, arg3));
+		};
+	}
+	
+	///#endsnippet commonFuncs
+	
+	// NOT a common function: web has a webkit fix in here
+	function isFunction(f) {
+		return isType(f, 'function');
+	}
 	
 	/*$
 	 * @id length
@@ -720,6 +728,7 @@ define('minifiedUtil', function() {
 	 */
 	// always defined below
 
+	///#definesnippet utilM
 	/*$
 	 * @id listunderscore
 	 * @name ._
@@ -747,25 +756,17 @@ define('minifiedUtil', function() {
 	}
 	
 
-	function UNDERSCORE() {
+	function _() {
 		return new M(arguments, true);
 	}
+
+	///#endsnippet utilM
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	function listBindArray(func) {
-		return function(arg1, arg2) {
-			return new M(func(this, arg1, arg2));
-		};
-	}
-	function listBind(func) {
-		return function(arg1, arg2) {
-			return func(this, arg1, arg2);
-		};
-	}
 	
 	
 	copyObj({
+		///#definesnippet utilListFuncs
     /*$
      * @id each
      * @group LIST
@@ -778,7 +779,7 @@ define('minifiedUtil', function() {
      * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
      * the zero-based index as second.
      *
-     * @example Creates the sum of all list entried. 
+     * @example Creates the sum of all list entries. 
      * <pre>
      * var sum = 0;
      * _(17, 4, 22).each(function(item, index) {
@@ -1390,7 +1391,7 @@ define('minifiedUtil', function() {
 	 *
      * @param list The list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
      *             <var>length</var> property.
-     * @return A ##list#Minified list## where duplicated had been filtered out.
+     * @return A ##list#Minified list## without duplicates.
      */
 	'uniq': listBindArray(uniq),
 	
@@ -1415,20 +1416,57 @@ define('minifiedUtil', function() {
      * @return A ##list#Minified list## containing only the duplicate values.
      */
 	'intersection': listBindArray(intersection), 
-	
+
+	/*$ 
+	 * @id join 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .join() 
+	 * @syntax list.join() 
+	 * @syntax list.join(separator) 
+	 * @module UTIL
+	 * Converts list elements into strings and joins them into a single string, optionally separated with the given separator.
+	 * This method is identical to Array's built-in <var>join()</var> method and also uses it internally.
+	 *
+	 * @example Join a few string:
+	 * <pre>var sorted = _('Harry', 'Bert', 'Tom', 'Bo').join(', '); // returns 'Harry, Bert, Tom, Bo'</pre>
+	 *
+	 * @param separator optional a separator to put between the joined strings. If omitted, the string "," (comma) will be used.
+	 * @param otherList The other list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @return the resulting string
+	 */
 	'join': function(separator) {
 		return map(this, nonOp).join(separator);
 	},
-	
+
+	/*$ 
+	 * @id sort 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .sort() 
+	 * @syntax list.sort() 
+	 * @syntax list.sort(cmpFunc) 
+	 * @module UTIL
+	 * Sorts the list elements and returns a new, sorted list. You can specify a function to compare two elements.
+	 * If you don't, the list elements will be converted into strings and sorted lexicographically.
+	 * 
+	 * <var>sort()</var> uses Array's method of the same name internally and shares its properties.
+	 *    
+	 * @example Sort a few names:
+	 * <pre>var sorted = _('Harry', 'Bert', 'Tom', 'Bo').sort(); // returns _('Bo', 'Bert', 'Harry', 'Tom')</pre>
+	 *    
+	 * @param cmpFunc optional an optional <code>function(a, b)</code> to compare two list elements. It must return a number &lt;0 if <var>a</var> is smaller, than <var>b</var> 
+	 *                         &gt;0 if <var>b</var> is larger and 0 if both are equal. If the function is omitted, the list elements will be converted into strings and compared 
+	 *                        lexicographically.
+	 * @return a new, sorted list
+	 */
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
-	},
-
-	'tap': function(func) {
-		func(this);
-		return this;
 	}
-
+	///#endsnippet utilListFuncs
 	
  	/*$
  	 * @stop
@@ -1438,14 +1476,8 @@ define('minifiedUtil', function() {
 
  	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/*$
-	 * @id underscorefuncdef
-	 */
-	function funcArrayBind(func) {
-		return function(arg1, arg2, arg3) {
-			return new M(func(arg1, arg2, arg3));
-		};
-	}
+	///#definesnippet utilUnderscoreFuncs
+
 	copyObj({
 		 // @condblock filter
 		'filter': funcArrayBind(filter),
@@ -1508,53 +1540,789 @@ define('minifiedUtil', function() {
 		'intersection': funcArrayBind(intersection),
 		 // @condend
 		
-		'bind': bind,
-		'partial': partial,
-		'once': once,
-		'nonOp': nonOp,
-		'eachObj': eachObj,
-		'mapObj': mapObj,
-		'filterObj': filterObj,
-
-		'isList': isList,
-		'isFunction': isFunction,
-		'isObject': isObject,
-		'isNumber': isNumber,
-		'isBool': isBool,
-		'isDate': isDate,
-		'isValue': isValue,
-		'isString': isString,
-		'toString': toString,
-		'toList': toList,
-
-		'dateClone': dateClone,
-		'dateAdd': dateAdd,
-		'dateDiff': dateDiff,
-		'dateMidnight': dateMidnight,
-		
-		'formatNumber' : formatNumber,
-		'pad' : pad,
-		'formatValue': formatValue,
-		
-		'parseDate': parseDate,
-		'parseNumber': parseNumber,
-
+		/*$
+		 * @id copyobj
+		 * @group OBJECT
+		 * @requires 
+		 * @configurable default
+		 * @name _.copyObj()
+		 * @syntax _.copyObj(from, to)
+		 * @module UTIL
+		 * Copies every property of the first object into the second object. The properties are copied as shallow-copies. Only own properties
+		 * are copied, but not inherited properties.
+		 * 
+		 *  @example Copying properties:
+		 * <pre>var target = {a:3, c: 3};
+		 * _.copyObj({a: 1, b: 2}, target); // target is now {a: 1, b: 2, c: 3}</pre>
+		 *
+		 *  @example Inline property merge:
+		 * <pre>var target = _.copyObj({a: 1, b: 2}, {a:3, c: 3}); // target is now {a: 1, b: 2, c: 3}</pre>
+		 *
+		 * @param from the object to copy from
+		 * @param to the object to copy to
+		 * @return the object that has been copied to
+		 */
 		'copyObj': copyObj,
 		
-		'coal': coal,
+		/*$ 
+		 * @id range 
+		 * @group FUNC 
+		 * @requires
+		 * @configurable default 
+		 * @name _.range() 
+		 * @syntax _.range(end) 
+		 * @syntax _.range(start, end) 
+		 * @module LIST
+		 * Creates a new ##list#Minified list## containing an interval of numbers from <var>start</var> (inclusive)
+		 * until <var>end</var> (exclusive). <var>start</var> can also be omitted to start at 0.
+		 *
+		 * @example Creates some ranges
+		 * <pre>var l123 = _.range(1, 4); // same as _(1, 2, 3)
+		 * var l0123 = _.range(3); // same as _(0, 1, 2)
+		 * var neg123 = _.range(-3, 0); // same as _(-3, -2, -1)
+		 * var empty = _.range(2,1); // same as _()</pre>	
+		 *
+		 * @param start optional the start number. If omitted, the range starts at 0.
+		 * @param end the end of the range (exclusive)
+		 * @return the new Minfied list containing the numbers. Empty is <var>start</var> is not smaller than <var>end</var>.
+		 */		
+		'range': function(start, end) {
+			var r = [], e = (end==null) ? start : end;
+			for (var i = (end!=null)?start:0; i < e; i++)
+				r.push(i);
+			return new M(r);
+		},
+		
+		/*$ 
+		 * @id bind 
+		 * @group FUNC 
+		 * @requires
+		 * @configurable default 
+		 * @name _.bind() 
+		 * @syntax _.bind(f, fThis) 
+		 * @syntax _.bind(f, fThis, beforeArgs) 
+		 * @syntax _.bind(f, fThis, beforeArgs, afterArgs) 
+		 * @module UTIL
+		 * Creates a new function that calls the given function bound to the given object as 'this', and optionally with the specified 'pre-filled' arguments
+		 * to be appended or prepended to the arguments you all the new function with.
+		 *
+		 * See also ##_.partial(), if you do not need to set 'this'.
+		 *
+		 * @example Create a method that multiplies all list elements:
+		 * <pre>function mul(factor) { return this.map(function(v) { return v * factor; }; }
+		 * var myList = _(1, 2, 3);
+		 * var mulMyList = _.bind(mul, myList);        // binding only 'this'
+		 * var mulMyList5 = _.bind(mul, myList, 5);   // binding 'this' and prepending a parameter
+		 * 
+		 * var myList4 = mulMyList(4); // returns _(4, 8, 12)
+		 * var myList5 = mulMyList(); // returns _(5, 10, 15)</pre>	
+		 *
+		 * @param f the function to bind
+		 * @param fThis the object to pass as 'this'
+		 * @param beforeArgs optional either a list of values to insert in front of the arguments, or a single non-list value to put in front. If null or not set,
+		 *                             there won't be any arguments inserted. If you need to insert a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
+		 *                             (e.g. <code>[null]</code>).
+		 * @param afterArgs optional either a list of values to append to the end of the arguments, or a single non-list value to append. If null or not set,
+		 *                             there won't be any arguments appended. If you need to append a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
+		 *                             (e.g. <code>[null]</code>).
+		 * @return the new function that will invoke <var>f</var> with its arguments modified as specified about.
+		 */
+		'bind': bind,
+		
+		/*$ 
+	 	 * @id partial 
+		 * @group FUNC 
+		 * @requires
+		 * @configurable default 
+		 * @name _.partial() 
+		 * @syntax _.partial(f, beforeArgs) 
+		 * @syntax _.partial(f, beforeArgs, afterArgs) 
+		 * @module UTIL
+		 * Creates a new function that calls the given function with some arguments pre-filled. You can specify one or more arguments to 
+		 * be put in front of the arguments list as well as arguments that will be appended to the argument list.
+		 *
+		 * See also ##_.bind(), if you want to set 'this' as well.
+		 * 
+		 * @example Create functions that divide:
+		 * <pre>function div(a, b) { return a / b; }
+		 * var div5 = _.partial(add, 5); // like function(a) { return 5 / a; }
+		 * var divBy5 = _.partial(add, null, 5); // like function(a) { return a / 5; }
+		 * </pre>
+		 *
+		 * @example Create functions that remove characters from the beginning and/or end of a string:
+		 * <pre>// This function multiplies the first <var>count</var> items of the <var>list</var> by <var>factor</var>
+		 * function multiply(list, count, factor) { return list.map(function(v, index) { return index < count ? factor * v : v; }); }
+		 * 
+		 * var mul3by2 = _.partial(multiply, null, [3, 2]); 
+		 * var r1 = mul10by2(_(1, 2, 3, 4, 5)); // returns _(2, 4, 6, 4, 5)
+		 * 
+		 * var mul123 = _.partial(multiply, [_(1, 2, 3)]);  // array wrapper required to pass a list!
+		 * var r2 = mul123(2, 5);                 // returns _(5, 10, 3)
+		 * 
+		 * var mul12345By2 = _.partial(multiply, [_(1, 2, 3, 4, 5)], 2);  // array wrapper required!
+		 * var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
+		 * </pre>
+		 *
+		 * @param f the function to bind
+		 * @param beforeArgs either a list of values to insert in front of the arguments, or a single non-list value to put in front. If null or not set,
+		 *                             there won't be any arguments inserted. If you need to insert a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
+		 *                             (e.g. <code>[null]</code>).
+		 * @param afterArgs optional either a list of values to append to the end of the arguments, or a single non-list value to append. If null or not set,
+		 *                             there won't be any arguments appended. If you need to append a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
+		 *                             (e.g. <code>[null]</code>).
+		 * @return the resulting string
+		 */
+		'partial': partial,
 
+		/*$
+		 * @id eachobj
+		 * @group OBJECT
+		 * @requires 
+		 * @configurable default
+		 * @name _.eachObj()
+		 * @syntax _.eachObj(obj, callback)
+		 * @module UTIL
+		 * Invokes the given function once for each property of the given object. 
+		 *
+		 * @example Dumps all properties of an object.
+		 * <pre>
+		 * var s = '';
+		 * _.eachObj({a: 1, b: 5, c: 2}, function(key, value) {
+		 *     s += 'key=' + key + ' value=' + value + '\n';
+		 * });
+		 * </pre>
+		 * 
+		 * @param obj the object to use
+		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
+		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
+		 *                 <dt>value</dt><dd>The value of the current property.</dd></dl>
+		 *                 The callback's return value will be ignored.
+		 * @return the object
+		 */
+		'eachObj': eachObj,
+		
+		/*$
+		 * @id mapobj
+		 * @group OBJECT
+		 * @requires 
+		 * @configurable default
+		 * @name _.mapObj()
+		 * @syntax _.mapObj(obj, callback)
+		 * @module UTIL
+		 * Creates a new object with the same properties but different values using the given callback function. The function is called
+		 * for each property of the input object to provice a new value for the property.
+		 *
+		 * @example Increases the values of all properties.
+		 * <pre>
+		 * var r = _.mapObj({a: 1, b: 5, c: 2}, function(key, value) {
+		 *     return value + 1;
+		 * });
+		 * // r is now {a: 2, b: 6, c: 2}
+		 * </pre>
+		 * 
+		 * @param obj the object to use
+		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
+		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
+		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new object.</dd></dl>
+		 * @return the new object
+		 */
+		'mapObj': mapObj,
+		
+
+
+		/*$
+		 * @id filterobj
+		 * @group OBJECT
+		 * @requires 
+		 * @configurable default
+		 * @name _.filterObj()
+		 * @syntax _.filterObj(obj, filterFunc)
+		 * @module UTIL
+		 * Creates a new object that contains only those properties of the input object that have been approved by the filter function.
+		 *  
+		 * If the callback function returns true, the property and its value are shallow-copied in the new object, otherwise it will be removed.
+		 *
+		 * @example Removing all values over 10 from an object:
+		 * <pre>
+		 * var list = _.filterObj({a: 4, b: 22, c: 7, d: 2, e: 19}, function(key, value) {
+		 *     return value &lt;= 10;
+		 * });
+		 * </pre>
+		 * 
+		 * @param obj the object to use
+		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
+		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
+		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the property in the new object, <var>false</var> to omit it.</dd></dl>
+		 * @return the new object
+		 */
+		'filterObj': filterObj,
+
+		/*$
+		 * @id islist
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isList()
+		 * @syntax _.isList(obj)
+		 * @module UTIL
+		 * Checks whether the given object resembles a list or array. To qualify, it must have a <var>length</var> property, but must not be a string, a function or have a 
+		 * <var>nodeType</var> property.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a list or array, <var>false</var> otherwise.
+		 */
+		'isList': isList,
+		
+		/*$
+		 * @id isfunction
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isFunction()
+		 * @syntax _.isFunction(obj)
+		 * @module UTIL
+		 * Checks whether the given object is a function.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a function, <var>false</var> otherwise.
+		 */
+		'isFunction': isFunction,
+		
+		/*$
+		 * @id isobject
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isObject()
+		 * @syntax _.isObject(obj)
+		 * @module UTIL
+		 * Checks whether the given reference is an object as defined by <var>typeof</var>.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is an object, <var>false</var> otherwise.
+		 */
+		'isObject': isObject,
+		
+		/*$
+		 * @id isnumber
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isNumber()
+		 * @syntax _.isNumber(obj)
+		 * @module UTIL
+		 * Checks whether the given reference is a number as defined by <var>typeof</var>.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a number, <var>false</var> otherwise.
+		 */
+		'isNumber': isNumber,
+		
+		/*$
+		 * @id isbool
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isBool()
+		 * @syntax _.isBool(obj)
+		 * @module UTIL
+		 * Checks whether the given reference is a boolean <var>true</var>  or <var>false</var>.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a boolean, <var>false</var> otherwise.
+		 */
+		'isBool': isBool,
+		
+		/*$
+		 * @id isdate
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isDate()
+		 * @syntax _.isDate(obj)
+		 * @module UTIL
+		 * Checks whether the given object is a <var>Date</var>. To be recognized as a date, the object
+		 * must pass #_.isObject() and have a <var>getDate</var> property.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a <var>Date</var>, <var>false</var> otherwise.
+		 */
+		'isDate': isDate,
+		
+		/*$
+		 * @id isvalue
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isValue()
+		 * @syntax _.isValue(obj)
+		 * @module UTIL
+		 * Checks whether the given object is a value. Minified defines values as all basic types (strings, booleans and numbers)
+		 * and Dates.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a value, <var>false</var> otherwise.
+		 */
+		'isValue': isValue,
+		
+		/*$
+		 * @id isstring
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.isString()
+		 * @syntax _.isString(object)
+		 * @module UTIL
+		 * Checks whether the given reference is a string as defined by <var>typeof</var>.
+		 *
+		 * @param obj the object to test
+		 * @return <var>true</var> if the object is a string, <var>false</var> otherwise.
+		 */
+		'isString': isString,
+		
+		/*$
+		 * @id tostring
+		 * @group TYPE
+		 * @requires 
+		 * @configurable default
+		 * @name _.toString()
+		 * @syntax _.toString(obj)
+		 * @module UTIL
+		 * Converts the given object to a string. <var>null</var> and <var>undefined</var> will be converted to an empty string.
+		 *
+		 * @param obj the object to convert
+		 * @return the resulting string
+		 */
+		'toString': toString,
+
+		
+		/*$
+		 * @id dateclone
+		 * @group DATE
+		 * @requires 
+		 * @configurable default
+		 * @name _.dateClone()
+		 * @syntax _.dateClone(date)
+		 * @module UTIL
+		 * Creates a new <var>Date</var> object that represents the same time as the given date.
+		 *
+		 * @param date the <var>Date</var> to clone
+		 * @return the new <var>Date</var> copy
+		 */
+		'dateClone': dateClone,
+		
+		/*$
+		 * @id dateadd
+		 * @group DATE
+		 * @requires 
+		 * @configurable default
+		 * @name _.dateAdd()
+		 * @syntax _.dateAdd(date, property, value)
+		 * @module UTIL
+		 * Adds the specified time to the given <var>Date</var> and returns the result as a new <var>Date</var> .  The unit for the <var>value</var> can be any <var>Date</var>
+		 * property that has get and set methods: 'fullYear', 'month', 'date', 'hours', 'minutes', 'seconds' or 'milliseconds'.
+		 * 
+		 * @example Calculate some dates based on the current time:
+		 * <pre>var now = new Date();
+		 *  var yesterday = _.dateAdd(now, 'date', -1);
+		 *  var inOneHour = _.dateAdd(now, 'hours', 1);
+		 *  var tomorrow = _.dateAdd(now, 'date', 1);
+		 *  var inThreeMonths = _.dateAdd(now, 'month', 3);</pre>
+		 *
+		 * @param date the <var>Date</var> to add to
+		 * @param property a property name to represent the unit of the <var>value</var>. Can be 'fullYear', 'month', 'date', 'hours', 'minutes', 'seconds' or 'milliseconds'.
+		 * @param value the amount to add
+		 * @return the new <var>Date</var> copy
+		 */
+		'dateAdd': dateAdd,
+		
+		/*$
+		 * @id datediff
+		 * @group DATE
+		 * @requires 
+		 * @configurable default
+		 * @name _.dateDiff()
+		 * @syntax _.dateDiff(property, date1, date2)
+		 * @module UTIL
+		 * 
+		 * Calculates the time difference between both dates, using in the unit determined by the <var>property</var>.
+		 * 
+		 * If the unit is not calendar-based ('hours', 'minutes', 'seconds' or 'milliseconds')
+		 * the result is calculated with full precision and not rounded. 
+		 * If the unit is calendar-based ('fullYear', 'month', 'date'),
+		 * the result is the amount of full units between those dates in the current time zone.
+		 * 
+		 * If <var>date2</var> is earlier than <var>date1</var>, the result is negative.
+		 * 
+		 * @example Calculate duration between two dates:
+		 * <pre>function diff(d1, d2) {
+		 *     return _.dateDiff('fullYears', d1, d2) + ' years,' +
+		 *            _.dateDiff('months', d1, d2) + ' months and' +
+		 *            _.dateDiff('date', d1, d2) + ' days';
+		 * }</pre>
+		 *
+		 * @param date1 the first <var>Date</var>
+		 * @param date2 the first <var>Date</var>
+		 * @param property a property name to represent the unit of the <var>value</var>. Can be 'fullYear', 'month', 'date', 'hours', 'minutes', 'seconds' or 'milliseconds'.
+		 * @return the time difference between the two dates. Negative if <var>date2</var> is earlier than <var>date1</var>.
+		 */
+		'dateDiff': dateDiff,
+		
+		/*$
+		 * @id datemidnight
+		 * @group DATE
+		 * @requires 
+		 * @configurable default
+		 * @name _.dateMidnight()
+		 * @syntax _.dateMidnight()
+		 * @syntax _.dateMidnight(date)
+		 * @module UTIL
+		 * 
+		 * Returns a new <var>Date</var> object with the same calendar date, but at midnight in the current time zone. If no parameter 
+		 * is given, it returns the current day at midnight.
+		 *
+		 * @param date optional the <var>Date</var>. If omitted, the current date is used.
+		 * @return a new <var>Date</var> representing midnight in the current time zone
+		 */
+		'dateMidnight': dateMidnight,
+		
+		/*$
+		 * @id pad
+		 * @group FORMAT
+		 * @requires 
+		 * @configurable default
+		 * @name _.pad()
+		 * @syntax _.pad(digits, number)
+		 * @module UTIL
+		 * 
+		 * Converts a number into a string by 'padding' it with leading zeros until it has at least the given number of digits.
+		 *
+		 * @param digits the minimum number of digits for the number
+		 * @param number the number to format
+		 * @return the number converted to a string and padded with zeros
+		 */
+		'pad' : pad,
+		
+		/*$
+		 * @id formatvalue
+		 * @group FORMAT
+		 * @requires 
+		 * @configurable default
+		 * @name _.formatValue()
+		 * @syntax _.formatValue(format, value)
+		 * @module UTIL
+		 * 
+		 * Formats a single value as a string, using the given format template.  It has support for numbers, dates, booleans and strings.
+		 * 
+		 * <b>Choice Formatting</b><br/>
+		 * With a choice format, you can map input values into output values. In the format string the choices are separated by pipes ('|')
+		 * and each choice has the format <code>&ltcmp>&ltvalue>:&lt;result></code>:
+		 * <ul><li>&lt;cmp> is a comparison operator ('=', '>', '<', '>=', '<=') and can be omitted for equality.</li>
+		 * <li>&lt;value> is the value as string.</li>
+		 * <li>&lt;result> is the result, either a string or a number format</li></ul>
+		 * You can have a default choice at the end without &lt;cmp> or &lt;value>.
+		 * 
+		 * <b>Examples</b> 
+		 * <pre>_.formatValue('true:is True|isFalse', value);
+		 * _.formatValue('<5:under 5|>=15:at least 15|=7:is seven|some other number', value);
+		 * _.formatValue('1:one item|2:two items|>3:many items', value);
+		 * _.formatValue('ERR:error|WARN:warning|INFO:info|debug', value);
+		 * </pre>
+		 *
+		 * <b>Number Formatting</b><br/> 
+		 * Number formatting allows you to specify the number of digits before and optionally after the decimal separator, the decimal separator itself
+		 * as well as how to group digits. The following characters are used in the format:
+		 * <table>
+		 * <tr><th>Character</th><th>Description</th></tr>
+		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
+		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
+		 * <tr><td>_</td><td>Optional digit after decimal separator.</td></tr>
+		 * <tr><td>9</td><td>Required digit after decimal separator (0 if number is smaller).</td></tr>
+		 * <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+		 * <tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+		 * </table>
+		 * 
+		 * <b>Examples</b> 
+		 * <pre>var v1  = _.formatValue('#', 15); // '15'
+		 * var v2  = _.formatValue('####', 15);   // '15' (same as '#')
+		 * var v3  = _.formatValue('0000', 15);   // '0015'
+		 * var v4  = _.formatValue('#.___', 15.14274); // '15.143'
+		 * var v5  = _.formatValue('#.999', 15.14274); // '15.143'
+		 * var v6  = _.formatValue('#.___', 15.1);     // '15.1'
+		 * var v7  = _.formatValue('#.999', 15.1);     // '15.100'
+		 * var v8  = _.formatValue('000,999', 15.1);   // '015,100'
+		 * var v9 = _.formatValue('#.___', 15);     // '15'
+		 * var v10 = _.formatValue('#.999', 15);    // '15.000'
+		 * var v11 = _.formatValue('#,___', 15.1);  // '15,1' (comma as decimal separator)
+		 * var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
+		 * var v13 = _.formatValue('000,000.___', 92548.42); // '92,548.42'
+		 * var v14 = _.formatValue('000.000,___', 92548.42); // '92.548,42' (comma as separator)
+		 * var v15 = _.formatValue('<10:#.99|<100:#.9|#', 7.356); // '7.36' (choice format)
+		 * var v16 = _.formatValue('<10:#.99|<100:#.9|#', 25.04); // '25.0' 
+		 * var v17 = _.formatValue('<10:#.99|<100:#.9|#', 71.51); // '72' 
+		 * </pre>
+		 *
+		 * <b>Date Formatting</b><br/> 
+		 * In a date format, there are a number of reserved characters that represent parts of the date. If you repeat the same character, you
+		 * specify the minimum number of digits. Some elements allow a comma-separated list of translations in angular brackets, see below.
+		 * <table>
+		 * <tr><th>Character</th><th>Description</th></tr>
+		 * <tr><td>y</td><td>Year (4 digits)</td></tr>
+		 * <tr><td>Y</td><td>Year (2 digits)</td></tr>
+		 * <tr><td>M</td><td>Month (1-12)</td></tr>
+		 * <tr><td>n/td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
+		 * <tr><td>N</td><td>Month as long name ('January', 'February'...). Supports translations.</td></tr>
+		 * <tr><td>d</td><td>Day of month (1-31)</td></tr>
+		 * <tr><td>m</td><td>Minutes (0-59)</td></tr> 
+		 * <tr><td>H</td><td>Hours in 24h format (0-23)</td></tr>
+		 * <tr><td>h</td><td>Hours in 12h format (1-12)</td></tr> 
+		 * <tr><td>K</td><td>Hours in 0-based 12h format (0-11)</td></tr>
+		 * <tr><td>k</td><td>Hours in 1-based 24h format (1-24)</td></tr> 
+		 * <tr><td>s</td><td>Seconds (0-59)</td></tr>
+		 * <tr><td>S</td><td>Milliseconds (0-999)</td></tr>
+		 * <tr><td>a</td><td>Either 'am' or 'pm'. Supports translations.</td></tr>
+		 * <tr><td>w</td><td>Day of week as short name ('Sun', 'Mon'...). Supports translations.</td></tr>
+		 * <tr><td>W</td><td>Day of week as long name ('Sunday', 'Monday'...). Supports translations.</td></tr>
+		 * <tr><td>z</td><td>Timezone offset, e.g. '+0700'</td></tr>
+		 * </table>
+		 * <var>formatValue</var> also supports formatting a date in a different timezone. You only need to put the timezone in brackets at the front of
+		 * the format, e.g. '[+0100]'.
+		 *
+		 * <b>Examples</b> 
+		 * <pre>var now = new Date();
+		 * var v1  = _.formatValue('y-M-d', now);       // e.g. '2013-7-9'
+		 * var v2  = _.formatValue('yyyy-MM-dd', now);  // e.g. '2013-07-09'
+		 * var v3  = _.formatValue('yyyy-MM-ddTHH:mm:ss.SS z', now); // e.g. '2013-07-09T23:07:38.472 +0700'
+		 * var v4  = _.formatValue('MM/dd/YY h:mm:ss a', now);       // e.g. '07/09/13 11:07:38 pm'
+		 * var v5  = _.formatValue('dd.MM.yyyy HH:mm:ss', now);      // e.g. '09.07.2013 23:07:38'
+		 * var v6  = _.formatValue('H:mm', now);                // e.g. '23:07'
+		 * var v7  = _.formatValue('W, N d y', now);            // e.g. 'Tuesday, July 9 2013'
+		 * var v8  = _.formatValue('Nd', now);                  // e.g. 'July9'
+		 * var v9  = _.formatValue('d.N[Januar,Februar,MŠrz,April,Mai,Juni,Juli,'+
+		 *             'August,September,Oktober,November,Dezember]', now); // German translation: '9. Juli'
+		 * var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', now);  // different timezone: '2013-07-09 5:07 pm' 
+		 * </pre>
+		 *
+		 * @param format the format that describes the output
+		 * @param value the value to format. Either a Date, a number, a string or a value that can be converted to a string.
+		 * @return the string-formatted value
+		 */
+		'formatValue': formatValue,
+		
+		/*$
+		 * @id parsedate
+		 * @group FORMAT
+		 * @requires 
+		 * @configurable default
+		 * @name _.parseDate()
+		 * @syntax _.parseDate(format, dateString)
+		 * @module UTIL
+		 * 
+		 * Parses the given string as Date using the given format. The format specifies which date component is expected where in the string.
+		 * It can also be used to specify the timezone of the input string, and it may specify whether an empty string (including strings containing
+		 * only whitespace) is allowed.
+		 *
+		 * In the date format there are a number of reserved characters that are used as placeholders of date components. If you put a single
+		 * character in the format, this will match numbers of any length. If you have two or more of the same character, this is recognized as
+		 * fixed-length string.<br/>
+		 * Some placeholders, such as month names, support translations. To parse dates in other languages, you can specify a comma-separated
+		 * list of translations in brackets following the placeholder.<br/>
+		 * The following placeholder characters are supported.
+		 * <table>
+		 * <tr><th>Character</th><th>Description</th></tr>
+		 * <tr><td>y</td><td>Year (4 digits)</td></tr>
+		 * <tr><td>Y</td><td>Year (2 digits, 2000-based)</td></tr>
+		 * <tr><td>M</td><td>Month (1-12)</td></tr>
+		 * <tr><td>n/td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
+		 * <tr><td>N</td><td>Month as long name ('January', 'February'...). Supports translations.</td></tr>
+		 * <tr><td>d</td><td>Day of month (1-31)</td></tr>
+		 * <tr><td>m</td><td>Minutes (0-59)</td></tr> 
+		 * <tr><td>H</td><td>Hours in 24h format (0-23)</td></tr>
+		 * <tr><td>h</td><td>Hours in 12h format (1-12)</td></tr> 
+		 * <tr><td>K</td><td>Hours in 0-based 12h format (0-11)</td></tr>
+		 * <tr><td>k</td><td>Hours in 1-based 24h format (1-24)</td></tr> 
+		 * <tr><td>s</td><td>Seconds (0-59)</td></tr>
+		 * <tr><td>S</td><td>Milliseconds (0-999)</td></tr>
+		 * <tr><td>a</td><td>Either 'am' or 'pm'. Supports translations.</td></tr>
+		 * <tr><td>w</td><td>Day of week as short name ('Sun', 'Mon'...). Supports translations.</td></tr>
+		 * <tr><td>W</td><td>Day of week as long name ('Sunday', 'Monday'...). Supports translations.</td></tr>
+		 * <tr><td>z</td><td>Timezone offset, e.g. '+0700'</td></tr>
+		 * </table>
+		 * If you prefix the input string with a question mark ('?'), this means that the date is optional. If the input string is empty or consists
+		 * solely of whitespace, <var>parseDate</var> will return null.<br/>
+		 * <var>parseDate()</var> also supports parsing a date in a different timezone. You only need to put the timezone in brackets at the front of
+		 * the format, e.g. '[+0100]'.<br/>
+		 * 
+		 * All other characters  are expected to be identical in format and input string, with the exception of whitespace. Each whitespace character 
+		 * in the format can match any number of other whitespace characters in the input string, but at least one.
+		 *
+		 * Any components that are not in the format will be set to 0. For example, if your format has only date, month and day, the resulting 
+		 * date will be at midnight.
+		 *
+		 * @example Parsing dates in various formats.
+		 * <pre>
+		 * var v1  = _.parseDate('y-M-d', '2013-7-9');
+		 * var v2  = _.parseDate('?yyyyMMdd', '20130709');
+		 * var v3  = _.parseDate('?yyyyMMdd', ' ');  // returns null
+		 * var v4  = _.parseDate('yyyy-MM-ddTHH:mm:ss.SS z', '2013-07-09T23:07:38.472 +0700');
+		 * var v5  = _.parseDate('MM/dd/YY h:mm:ss a', '07/09/13 11:07:38 pm');
+		 * var v6  = _.parseDate('dd.MM.yyyy HH:mm:ss', '09.07.2013 23:07:38');
+		 * var v7  = _.parseDate('W, N d y', 'Tuesday, July 9 2013');
+		 * var v8  = _.parseDate('d.N[Januar,Februar,Maerz,April,Mai,Juni,Juli,'+
+		 *             'August,September,Oktober,November,Dezember] y', '9. Juli 2013'); // parsing german
+		 * var v9  = _.parseDate('[+0100]yyyy-MM-dd h:mm a', '2013-07-09 5:07 pm');  // different timezone:  
+		 * </pre>
+		 *
+		 * @param format the format that describes the output
+		 * @param dateString the string-formatted date to parse
+		 * @return the Date; <var>undefined</var> if parsing failed; or <var>null</var> if the string was empty and 
+		 *              the date format is flagged as optional ('?' at the beginning)
+		 */
+		'parseDate': parseDate,
+		
+		/*$
+		 * @id parsenumber
+		 * @group FORMAT
+		 * @requires 
+		 * @configurable default
+		 * @name _.parseNumber()
+		 * @syntax _.parseNumber(format, numberString)
+		 * @module UTIL
+		 * 
+		 * Parses the given string as number using the given format. <var>parseNumber</var> uses the same format as <var>formatValue</var>,
+		 * but does not support choices. These are the allowed placeholders in the format:
+		 * <table>
+		 * <tr><th>Character</th><th>Description</th></tr>
+		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
+		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
+		 * <tr><td>_</td><td>Optional digit after decimal separator.</td></tr>
+		 * <tr><td>9</td><td>Required digit after decimal separator (0 if number is smaller).</td></tr>
+		 * <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+		 * <tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+		 * </table>
+		 *
+		 * The format string is mainly used to find out what the decimal separator is ('.' or ','). It defaults to '.'. 
+		 *
+		 * <var>parseNumber</var> will ignore any non-numeric characters at the beginning or end of the input string.
+		 *
+		 * If you prefix the input string with a question mark ('?'), this means that the number is optional. If the input string is empty or consists
+		 * solely of whitespace, <var>parseNumber</var> will return null.
+		 *
+		 * If the input string is not valid and can not be parse,  <var>parseNumber</var> will return <var>undefined</var>.
+		 *
+		 * @example Parsing numbers in various formats.
+		 * <pre>
+		 * _.parseNumber('00.99', '2.1');      // returns 2.1
+		 * _.parseNumber('00.99', '');          // returns undefined
+		 * _.parseNumber('?00.99', '2.1');    // optional number. Returns 2.1
+		 * _.parseNumber('?00.99', '');        // returns null
+		 * _.parseNumber('0.9', '=2.1 inch'); // returns 2.1 (non-numeric characters ignored)
+		 * _.parseNumber('0,9', '2,1');         // comma as decimal separator
+		 * _.parseNumber('0,9', '2.1');         // returns 21!! '.' is used as group separator
+		 * _.parseNumber('0.9', '20');         // returns 20 (number of digits ignored)
+		 * _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
+		 * </pre>
+		 *
+		 * @param format the format that describes the input number
+		 * @param numberString the string-formatted number to parse
+		 * @return the resulting number; <var>undefined</var> if parsing failed; or <var>null</var> if the string was empty and 
+		 *              the number format is flagged as optional ('?' at the beginning)
+		 */
+		'parseNumber': parseNumber,
+
+		/*$
+		 * @id trim
+		 * @group STRING
+		 * @requires 
+		 * @configurable default
+		 * @name _.trim()
+		 * @syntax _.trim(s)
+		 * @module UTIL
+		 * Removes whitespace from the beginning and end of the given string and returns the result.
+		 * 
+		 * @example Removing whitespace
+		 * <pre>_.trim('abc'); // no change: returns 'abc'
+		 * _.trim('  abc '); // returns 'abc'
+		 * _.trim(' a b c '); // returns 'a b c' (only whitespace at beginning and end is removed)</pre>
+		 *
+		 * @param s the string to trim
+		 * @return the trimmed string
+		 */
 		'trim': trim,
+		
+		/*$
+		 * @id escaperegexp
+		 * @group STRING
+		 * @requires 
+		 * @configurable default
+		 * @name _.escapeRegExp()
+		 * @syntax _.escapeRegExp(s)
+		 * @module UTIL
+		 * Escapes all reserved characters for regular expressions by preceding them with a backslash. 
+		 * 
+		 * @example Creating regular expressions for words:
+		 * <pre>function createWordRE(s) {
+		 *     return new RegExp('\b' + _.escapeRegExp(s) + '\b');
+		 * }</pre>
+		 *
+		 * @param s the string to escape
+		 * @return the escaped string
+		 */
 		'escapeRegExp': escapeRegExp,
+		
+		/*$
+		 * @id escapehtml
+		 * @group STRING
+		 * @requires 
+		 * @configurable default
+		 * @name _.escapeHtml()
+		 * @syntax _.escapeHtml(s)
+		 * @module UTIL
+		 * Escapes all reserved characters for HTML so the string can be used in text or as attribute value. The escaped characters are
+		 * '&', '<', '>', ''' (single quote) and '"' (double quote), and they will be escaped using char codes (e.g. '&#123;').
+		 * 
+		 * @example Creating a HTML title
+		 * <pre>function createTitle(s) {
+		 *     return '<h1>' + _.escapeHtml(s) + '</h1>';
+		 * }</pre>
+		 *
+		 * @param s the string to escape
+		 * @return the escaped string
+		 */
 		'escapeHtml': escapeHtml,
 		
-		'format': function(format, object) {
-			return template(format)(object);
+		/*$ 
+	     * @id format 
+	     * @group FORMAT
+	     * @requires 
+	     * @configurable default 
+	     * @name _.format() 
+	     * @syntax _.format()
+	     * @syntax _.format(template, object)
+	   	 * @module UTIL
+	     * Formats an object using a #template. The template syntax is shared with #template(). The only difference is that
+	     * <var>format()</var> frees you from the extra step of creating the template. In any case, whether you use 
+	     * <var>format()</var> or #template(), the template will be cached. Be careful when you create templates dynamically, as 
+	     * every template is cached and consumes memory.<br/>
+	     * If you only want to format a single value, use #formatValue().
+	     * 
+	     * @example Format a list of dates:
+	     * <pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+	     * 
+	     * @param template The #template as a string. The template, once created, will be cached. 
+	     * @return the string created by the template
+	     */ 
+		'format': function(template, object) {
+			return template(template)(object);
 		},
+		
 
 	
 		/*$ 
 	     * @id template 
-	     * @group TEMPLATE
+	     * @group FORMAT
 	     * @requires 
 	     * @configurable default 
 	     * @name _.template() 
@@ -1666,24 +2434,27 @@ define('minifiedUtil', function() {
 		
 		 'htmlTemlplate': function(tpl) { return template(tpl, escapeHtml); }
 		
-	/*$
-	 * @id underscorefuncdefend
-	 */
-	}, UNDERSCORE);
+	}, _);
 
+	///#endsnippet utilUnderscoreFuncs
+
+	
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
 	/*$
 	 @stop
 	 */
 	return {
+		///#definesnippet utilExports
 		/*$
 		 * @id underscore
 		 * @name _()
 		 * @configurable default
 		 * @module UTIL
 		 */
-		'_': UNDERSCORE
+		'_': _,
+		///#endsnippet utilExports
+		'M': M
 	};
 });
 
