@@ -2302,20 +2302,21 @@ define('minifiedUtil', function() {
 	     * @syntax _.format()
 	     * @syntax _.format(template, object)
 	   	 * @module UTIL
-	     * Formats an object using a #template. The template syntax is shared with #template(). The only difference is that
+	     * Formats an object using a #template#template. The template syntax is shared with ##_.template(). The only difference is that
 	     * <var>format()</var> frees you from the extra step of creating the template. In any case, whether you use 
-	     * <var>format()</var> or #template(), the template will be cached. Be careful when you create templates dynamically, as 
+	     * <var>format()</var> or ##_.template(), the template will be cached. Be careful when you create templates dynamically, as 
 	     * every template is cached and consumes memory.<br/>
-	     * If you only want to format a single value, use #formatValue().
+	     * If you only want to format a single value, use ##_.formatValue().
 	     * 
 	     * @example Format a list of dates:
 	     * <pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
 	     * 
 	     * @param template The #template as a string. The template, once created, will be cached. 
+	     * @param object the object to format 
 	     * @return the string created by the template
 	     */ 
-		'format': function(template, object) {
-			return template(template)(object);
+		'format': function(tpl, object) {
+			return template(tpl)(object);
 		},
 		
 
@@ -2420,20 +2421,54 @@ define('minifiedUtil', function() {
 	     * for arrays that will be invoked for each item.
 	     * </table> 
 	     * 
+	     * Every template you create is already cached, so it not an expensive operation to call ##_.template() a second
+	     * time with the same template. However, because of caching, you should be careful when creating templates
+	     * dynamically, as every new template requires memory that will not be freed.
+	     * 
+	     * See also ##_.format() as an alternative to using ##template(), as it will save you the template invocation.
 	     *  
 	     * @param template The template as a string using the syntax described above. 
 	     * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
 	     *        to escape all output:
 	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
 	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
-	     *        If no escapeFunction has been given, the output will not be escaped. See ##_.htmlTemplate() for a 
-	     *        version of <var>template()</var> that already includes HTML escaping.
+	     *        If no escapeFunction has been given, the output will not be escaped.
+	     *        ##_.escapeHtml() can be used as a escape function for HTML. 
+	     *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
 	     * @return the value returned by the last invocation of <var>func</var>
 	     */ 
 		'template': template,
 		
-		 'htmlTemlplate': function(tpl) { return template(tpl, escapeHtml); }
 		
+		/*$ 
+	     * @id formathtml 
+	     * @group FORMAT
+	     * @requires 
+	     * @configurable default 
+	     * @name _.format() 
+	     * @syntax _.formatHtml()
+	     * @syntax _.formatHtml(template, object)
+	   	 * @module UTIL
+	     * Formats an object using a #template#template with HTML escaping for the output. 
+	     * The template syntax is shared with ##_.template(). Output in double curly braces is automatically escaped using ##_.escapeHtml(). 
+	     * <var>formatHtml()</var> just creates a new template with HTML escaping and invokes it immediately.
+	     * The template will be cached. Be careful when you create templates dynamically, as 
+	     * every template is cached and consumes memory.<br/>
+	     * If you only want to format a single value, use ##_.formatValue().
+	     * 
+	     * @example Format a list of dates:
+	     * <pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+	     * 
+	     * @param template The #template as a string. The template, once created, will be cached.
+	     * @param object the object to format 
+	     * @return the string created by the template
+	     */ 
+		 'formatHtml': function(tpl, obj) { return template(tpl, escapeHtml)(obj); }
+		/*$
+		 * @stop
+		 */
+		
+		// @cond !format '':0
 	}, _);
 
 	///#endsnippet utilUnderscoreFuncs
