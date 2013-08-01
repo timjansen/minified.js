@@ -224,6 +224,8 @@ define('minified', function() {
 
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	function returnTrue() { return 1;}
+	
 	/** @param s {?} */
 	function toString(s) { // wrapper for Closure optimization
 		return s!=null ? ''+s : '';
@@ -274,19 +276,9 @@ define('minified', function() {
 		});
 		return r;
 	}
-	function collect(obj, collectFunc) {
+	function collector(iterator, obj, collectFunc) {
 		var result = [];
-		each(obj, function (a, b) {
-			if (isList(a = collectFunc(a, b))) // caution: extreme variable re-using of 'a'
-				each(a, function(rr) { result.push(rr); });
-			else if (a != null)
-				result.push(a);
-		});
-		return result;
-	}
-	function collectObj(obj, collectFunc) { // warning: 1:1 copy of collect(), with one diff... good for gzip..
-		var result = [];
-		eachObj(obj, function (a, b) {
+		iterator(obj, function (a, b) {
 			if (isList(a = collectFunc(a, b))) // caution: extreme variable re-using of 'a'
 				each(a, function(rr) { result.push(rr); });
 			else if (a != null)
@@ -298,10 +290,8 @@ define('minified', function() {
 		return toString(s).replace(regexp, sub||'');
 	}
 	function wordRegExpTester(name, prop) {
-		var re = name != null && RegExp('\\b' + name + '\\b', 'i');
-		return function(obj) {
-			return (!re) || re.test(obj[prop]);
-		};
+		var re = RegExp('\\b' + name + '\\b', 'i');
+		return name ? function(obj) {return re.test(obj[prop]);} : returnTrue;
 	}
 	
 	///#definesnippet webFunctions
@@ -364,7 +354,7 @@ define('minified', function() {
 		return function(event, triggerOriginalTarget) {
 			var e = event || _window.event, stopPropagation;
 			var target = triggerOriginalTarget || e['target'];
-			if ((!filterFunc) || filterFunc(target)) {
+			if (filterFunc(target)) {
 				// @cond debug try {
 				if ((stopPropagation = (((!handler.apply(fThis || target, args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget) {
 					// @condblock ie8compatibility 
@@ -470,7 +460,7 @@ define('minified', function() {
 		
 		function filterElements(list) { // converts into array, makes sure context is respected
 			var retList = (function flatten(a) { // flatten list, keep non-lists, remove nulls
-				return isList(a) ? collect(a, flatten) : a; 
+				return isList(a) ? collector(each, a, flatten) : a; 
 			})(list);
 			if (parent)
 				return filter(retList, function(node) {
@@ -530,6 +520,7 @@ define('minified', function() {
 	// by on(), and in on() only nodes in the right context will be checked
 	function getFilterFunc(selector, context) {
 		var dotPos;
+		var nodeSet = {};
 		if (isFunction(selector))
 			return selector;
 		else if (!selector || 
@@ -542,13 +533,20 @@ define('minified', function() {
 					};
 		}
 		else {
-			var nodeSet = {};
-			$(selector, context)['each'](function(node) {
-				nodeSet[getNodeId(node)] = true;
-			});
-			return function(v) { 
-				return context ? $(selector, context)['find'](v)!=null : nodeSet[getNodeId(v)]; 
-			};
+			if (context) { 
+				return function(v) { 
+					return $(selector, context)['find'](v)!=null; 
+				};
+			}
+			else {
+				$(selector)['each'](function(node) {
+					nodeSet[getNodeId(node)] = true;
+				});
+				return function(v) { 
+					return nodeSet[getNodeId(v)]; 
+				};
+			}
+			
 		}
 	}
 	///#endsnippet webFunctions
@@ -829,7 +827,7 @@ define('minified', function() {
      * @return the new ##list#list##
      */ 
 	'collect': function(collectFunc) { 
-    	 return new M(collect(this, collectFunc)); 
+    	 return new M(collector(each, this, collectFunc)); 
      },
 	
      /*$ 
@@ -867,10 +865,9 @@ define('minified', function() {
       * @return a new ##list#list## containing only the items in the index range. 
       */ 
 	'sub': function(startIndex, endIndex) {
-		var self = this;
-	    var s = (startIndex < 0 ? self['length']+startIndex : startIndex);
-	    var e = endIndex >= 0 ? endIndex : self['length'] + (endIndex || 0);
- 		return self['filter'](function(o, index) { 
+	    var s = (startIndex < 0 ? this['length']+startIndex : startIndex);
+	    var e = endIndex >= 0 ? endIndex : this['length'] + (endIndex || 0);
+ 		return this['filter'](function(o, index) { 
  			return index >= s && index < e; 
  		});
  	},
@@ -981,13 +978,13 @@ define('minified', function() {
 		function extractString(e) {
 			var nodeType = isNode(e);
 			if (nodeType == 1)
-				return collect(e['childNodes'], extractString);
+				return collector(each, e['childNodes'], extractString);
 			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
 				return e['data'];
 			else 
 				return null;
 		}
-		return collect(this, extractString)['join']('');
+		return collector(each, this, extractString)['join']('');
 	},
 	
  	/*$
@@ -2014,7 +2011,7 @@ define('minified', function() {
 	 * @return the list of Element Factory functions and strings to create clones
 	 */
 	'clone': function (onCreate) {
-		return new M(collect(this, function(e) {
+		return new M(collector(each, this, function(e) {
 			var nodeType = isNode(e);
 			if (nodeType == 1) {
 				var attrs = {
@@ -2374,7 +2371,7 @@ define('minified', function() {
 				var n = el['name'], v = toString(el['value']), o=r[n];
 				if (/form/i.test(el['tagName']))
 					// @condblock ie9compatibility 
-					$(collect(el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
+					$(collector(each, el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
 					// @condend
 					// @cond !ie9compatibility $(el['elements'])['values'](r);
 				else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
@@ -2387,6 +2384,35 @@ define('minified', function() {
 			return r;
 		},
 
+		/*$
+		 * @id offset
+		 * @group SELECTORS
+		 * @requires dollar
+		 * @configurable default
+		 * @name .offset()
+		 * @syntax list.offset()
+		 * Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, 
+		 * with 0/0 being the upper left corner, independent of the user's current view (which depends on the user's current scroll position and zoom level).
+		 *
+		 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
+		 * <pre>
+		 * var pos = $('#myElement').offset();
+		 * $('#resultElement').fill('#myElement's position is left=' + pos.x + ' top=' + pos.y);
+		 * </pre>
+		 *
+		 * @param element the element whose coordinates should be determined
+		 * @return an object containing pixel coordinates in two properties 'x' and 'y'
+		 */
+		'offset': function() {
+			var elem = this[0];
+			var dest = {'x': 0, 'y': 0};
+			while (elem) {
+				dest['x'] += elem.offsetLeft;
+				dest['y'] += elem.offsetTop;
+				elem = elem.offsetParent;
+			}
+			return dest;
+		},
 
 		/*$
 		 * @id on
@@ -2488,7 +2514,7 @@ define('minified', function() {
 					var miniHandler = createEventHandler(handler, 
 							noSelector && optArgs && fThisOrArgsOrHandler, // fThis (false means default this) 
 							noSelector && (optArgs || fThisOrArgsOrHandler), // args (false means event obj)
-							index, name == namePrefixed, noSelector ? null : getFilterFunc(handlerOrSelector, el));
+							index, name == namePrefixed, noSelector ? returnTrue : getFilterFunc(handlerOrSelector, el));
 
 					var handlerDescriptor = {'e': el,          // the element  
 							                 'h': miniHandler, // minified's handler 
@@ -2702,9 +2728,9 @@ define('minified', function() {
 			if (data != null) {
 				headers = headers || {};
 				if (!isString(data) && !isNode(data)) { // if data is parameter map...
-					body = collectObj(data, function processParam(paramName, paramValue) {
+					body = collector(eachObj, data, function processParam(paramName, paramValue) {
 						if (isList(paramValue))
-							return collect(paramValue, function(v) {return processParam(paramName, v);});
+							return collector(each, paramValue, function(v) {return processParam(paramName, v);});
 						else
 							return encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : '');
 					}).join('&');
@@ -2788,9 +2814,9 @@ define('minified', function() {
 		if (isString(value = value.valueOf()))
 			return '"' + replace(value, /[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
 		if (isList(value)) 
-			return '[' + collect(value, toJSON).join() + ']';
+			return '[' + collector(each, value, toJSON).join() + ']';
 		if (isObject(value))
-			return '{' + collectObj(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
+			return '{' + collector(eachObj, value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
 		return toString(value);
 	},
     // @condend
