@@ -322,11 +322,9 @@ define('minified', function() {
 		
 		flexiEach(list, function(value) {
 			flexiEach(func(value), function(node) {
-				if (isNode(node)) { // TODO: is this line still needed? node can't be null anymore
-					if (!nodeIds[currentNodeId = getNodeId(node)]) {
-						result.push(node);
-						nodeIds[currentNodeId] = true;
-					}
+				if (isNode(node) &&!nodeIds[currentNodeId = getNodeId(node)]) {
+					result.push(node);
+					nodeIds[currentNodeId] = true;
 				}
 			});
 		});
@@ -450,9 +448,9 @@ define('minified', function() {
     // @cond debug MINI['debug'] = true;
 	
   
+	
 	// implementation of $ that does not produce a Minified list, but just an array
     function dollarRaw(selector, context, childOnly) { 
-		
 		function filterElements(list) { // converts into array, makes sure context is respected
 			var retList = collector(flexiEach, list, function flatten(a) { // flatten list, keep non-lists, remove nulls
 				return isList(a) ? collector(flexiEach, a, flatten) : a; 
@@ -2005,7 +2003,7 @@ define('minified', function() {
 	 * @return the list of Element Factory functions and strings to create clones
 	 */
 	'clone': function (onCreate) {
-		return new M(collector(flexiEach, this, function(e) {
+		return this['collect'](function(e) {
 			var nodeType = isNode(e);
 			if (nodeType == 1) {
 				var attrs = {
@@ -2032,7 +2030,7 @@ define('minified', function() {
 				return e['data'];
 			else 
 				return null;
-		}));
+		});
 	},
 
 
