@@ -224,6 +224,8 @@ define('minified', function() {
 
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	function returnTrue() { return 1;}
+	
 	/** @param s {?} */
 	function toString(s) { // wrapper for Closure optimization
 		return s!=null ? ''+s : '';
@@ -258,39 +260,20 @@ define('minified', function() {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
 				cb(n, obj[n]);
-		return obj;
+		// web version has no return
 	}
-	function each(list, cb) {
-		for (var i = 0; list && i < list.length; i++)
-			cb(list[i], i);
-		return list;
-	}
-	function filter(list, filterFuncOrObject) {
+	function filter(list, f) {
 		var r = []; 
-		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(value) { return filterFuncOrObject != value; };
-		each(list, function(value, index) {
+		flexiEach(list, function(value, index) {
 			if (f(value, index))
 				r.push(value);
 		});
 		return r;
 	}
-	function collect(obj, collectFunc) {
+	function collector(iterator, obj, collectFunc) {
 		var result = [];
-		each(obj, function (a, b) {
-			if (isList(a = collectFunc(a, b))) // caution: extreme variable re-using of 'a'
-				each(a, function(rr) { result.push(rr); });
-			else if (a != null)
-				result.push(a);
-		});
-		return result;
-	}
-	function collectObj(obj, collectFunc) { // warning: 1:1 copy of collect(), with one diff... good for gzip..
-		var result = [];
-		eachObj(obj, function (a, b) {
-			if (isList(a = collectFunc(a, b))) // caution: extreme variable re-using of 'a'
-				each(a, function(rr) { result.push(rr); });
-			else if (a != null)
-				result.push(a);
+		iterator(obj, function (a, b) {
+			flexiEach(collectFunc(a, b), function(v) { result.push(v);});
 		});
 		return result;
 	}
@@ -298,10 +281,8 @@ define('minified', function() {
 		return toString(s).replace(regexp, sub||'');
 	}
 	function wordRegExpTester(name, prop) {
-		var re = name != null && RegExp('\\b' + name + '\\b', 'i');
-		return function(obj) {
-			return (!re) || re.test(obj[prop]);
-		};
+		var re = RegExp('\\b' + name + '\\b', 'i');
+		return name ? function(obj) {return re.test(obj[prop]);} : returnTrue;
 	}
 	
 	///#definesnippet webFunctions
@@ -309,6 +290,25 @@ define('minified', function() {
 	// note: only the web version has the f.item check
 	function isFunction(f) {
 		return isType(f, 'function') && !f['item']; // item check as work-around webkit bug 14547
+	}
+	
+	function flexiEach(list, cb) { // TODO: if Util is included, use each() internally
+		if (isList(list))
+			for (var i = 0; i < list.length; i++)
+				cb(list[i], i);
+		else if (list != null)
+			cb(list, 0);
+		return list;
+	}
+
+	function push(obj, prop, value) {
+		(obj[prop] = (obj[prop] || [])).push(value);
+	}
+	
+	function removeFromArray(array, value) {
+		for (var i = 0; array && i < array.length; i++) 
+			if (array[i] === value) 
+				array.splice(i--, 1);
 	}
 	
 	function delay(f, delayMs) {
@@ -329,21 +329,13 @@ define('minified', function() {
 		var nodeIds = {};
 		var currentNodeId;
 		
-		function processNode(node) {
-			if (isNode(node)) {
-				if (!nodeIds[currentNodeId = getNodeId(node)]) {
+		flexiEach(list, function(value) {
+			flexiEach(func(value), function(node) {
+				if (isNode(node) &&!nodeIds[currentNodeId = getNodeId(node)]) {
 					result.push(node);
 					nodeIds[currentNodeId] = true;
 				}
-			}
-		}
-		
-		each(list, function(value) {
-			var fv = func(value);
-			if (isList(fv))
-				each(fv, processNode);
-			else
-				processNode(fv);
+			});
 		});
 		return result;
 	}
@@ -364,7 +356,7 @@ define('minified', function() {
 		return function(event, triggerOriginalTarget) {
 			var e = event || _window.event, stopPropagation;
 			var target = triggerOriginalTarget || e['target'];
-			if ((!filterFunc) || filterFunc(target)) {
+			if (filterFunc(target)) {
 				// @cond debug try {
 				if ((stopPropagation = (((!handler.apply(fThis || target, args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget) {
 					// @condblock ie8compatibility 
@@ -392,14 +384,14 @@ define('minified', function() {
 
 	// for remove & window.unload
     function detachHandlerList(dummy, handlerList) {
-    	each(handlerList, function(h) {
+    	flexiEach(handlerList, function(h) {
     		h['e'].detachEvent('on'+h['n'], h['h']);
     	});
     }
 	
     // for ready()
     function triggerDomReady() {
-		each(DOMREADY_HANDLER, callArg);
+		flexiEach(DOMREADY_HANDLER, callArg);
 		DOMREADY_HANDLER = null;
     }
     
@@ -465,13 +457,13 @@ define('minified', function() {
     // @cond debug MINI['debug'] = true;
 	
   
+	
 	// implementation of $ that does not produce a Minified list, but just an array
     function dollarRaw(selector, context, childOnly) { 
-		
 		function filterElements(list) { // converts into array, makes sure context is respected
-			var retList = (function flatten(a) { // flatten list, keep non-lists, remove nulls
-				return isList(a) ? collect(a, flatten) : a; 
-			})(list);
+			var retList = collector(flexiEach, list, function flatten(a) { // flatten list, keep non-lists, remove nulls
+				return isList(a) ? collector(flexiEach, a, flatten) : a; 
+			});
 			if (parent)
 				return filter(retList, function(node) {
 					var a = node;
@@ -495,7 +487,7 @@ define('minified', function() {
 		parent = context && context[0]; // note that context may have changed in the previous two lines!! you can't move this line
 		
 		if (!isString(selector))
-		    return filterElements(isList(selector) ? selector : [selector]); 
+		    return filterElements(selector); 
 
 		// @condblock ie7compatibility
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
@@ -505,7 +497,7 @@ define('minified', function() {
 			return dollarRaw(steps[2], dollarRaw(steps[1], parent), childOnly);
 
 		if (selector != (subSelectors = replace(selector, /^#/)))
-			return filterElements([_document.getElementById(subSelectors)]); 
+			return filterElements(_document.getElementById(subSelectors)); 
 
 		// @cond debug if (/\s/.test(selector)) error("Selector has invalid format, please check for whitespace.");
 		// @cond debug if (/[ :\[\]]/.test(selector)) error("Only simple selectors with ids, classes and element names are allowed.");
@@ -530,6 +522,7 @@ define('minified', function() {
 	// by on(), and in on() only nodes in the right context will be checked
 	function getFilterFunc(selector, context) {
 		var dotPos;
+		var nodeSet = {};
 		if (isFunction(selector))
 			return selector;
 		else if (!selector || 
@@ -542,13 +535,20 @@ define('minified', function() {
 					};
 		}
 		else {
-			var nodeSet = {};
-			$(selector, context)['each'](function(node) {
-				nodeSet[getNodeId(node)] = true;
-			});
-			return function(v) { 
-				return context ? $(selector, context)['find'](v)!=null : nodeSet[getNodeId(v)]; 
-			};
+			if (context) { 
+				return function(v) { 
+					return $(selector, context)['find'](v)!=null; 
+				};
+			}
+			else {
+				$(selector)['each'](function(node) {
+					nodeSet[getNodeId(node)] = true;
+				});
+				return function(v) { 
+					return nodeSet[getNodeId(v)]; 
+				};
+			}
+			
 		}
 	}
 	///#endsnippet webFunctions
@@ -564,7 +564,7 @@ define('minified', function() {
 	    		state = newState;
 	    		values = newValues;
    				delay(function() {
-   					each(deferred, callArg);
+   					flexiEach(deferred, callArg);
    				});
     		}
     	};
@@ -741,7 +741,7 @@ define('minified', function() {
      * @return the list
      */
 	'each': function (callback) {
-		return each(this, callback);
+		return flexiEach(this, callback);
 	},
 	
 	/*$
@@ -751,11 +751,9 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .filter()
 	 * @syntax list.filter(filterFunc)
-	 * @syntax list.filter(value)
    	 * @module WEB, UTIL
 	 * Creates a new ##list#Minified list## by taking an existing list and omitting certain elements from it. You
-	 * can either specify a callback function to approve those items that will be in the new list, or 
-	 * you can pass a value to remove from the new list.
+	 * can either specify a callback function to approve those items that will be in the new list.
 	 *  
 	 * If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
 	 * For values, a simple equality operation (<code>==</code>) will be used.
@@ -770,12 +768,10 @@ define('minified', function() {
 	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
 	 *        <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>
-	 * @param value a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
-	 *              be a function. 
 	 * @return the new, filtered ##list#list##
 	 */
-	'filter': function(filterFuncOrValue) {
-	    return new M(filter(this, filterFuncOrValue));
+	'filter': function(filterFunc) {
+	    return new M(filter(this, filterFunc));
 	},
 	
 	/*$ 
@@ -829,7 +825,7 @@ define('minified', function() {
      * @return the new ##list#list##
      */ 
 	'collect': function(collectFunc) { 
-    	 return new M(collect(this, collectFunc)); 
+    	 return new M(collector(flexiEach, this, collectFunc)); 
      },
 	
      /*$ 
@@ -867,10 +863,9 @@ define('minified', function() {
       * @return a new ##list#list## containing only the items in the index range. 
       */ 
 	'sub': function(startIndex, endIndex) {
-		var self = this;
-	    var s = (startIndex < 0 ? self['length']+startIndex : startIndex);
-	    var e = endIndex >= 0 ? endIndex : self['length'] + (endIndex || 0);
- 		return self['filter'](function(o, index) { 
+	    var s = (startIndex < 0 ? this['length']+startIndex : startIndex);
+	    var e = endIndex >= 0 ? endIndex : this['length'] + (endIndex || 0);
+ 		return this['filter'](function(o, index) { 
  			return index >= s && index < e; 
  		});
  	},
@@ -940,14 +935,13 @@ define('minified', function() {
 	 * </pre>
 	 */
      'remove': function() {
-    	each(this, function(obj) {
+    	flexiEach(this, function(obj) {
     		// @condblock ie8compatibility
     		if (IS_PRE_IE9 && isNode(obj) == 1) {
-	    		function removeEvents(node) {
+	    		flexiEach(dollarRaw('*', obj), function(node) {
 	    			detachHandlerList(0, registeredEvents[node[MINIFIED_MAGIC_NODEID]]);
 	    			delete registeredEvents[node[MINIFIED_MAGIC_NODEID]];
-	    		}
-	    		each(dollarRaw('*', obj), removeEvents);
+	    		});
 	    		removeEvents(obj);
     		}
     		// @condend
@@ -981,13 +975,13 @@ define('minified', function() {
 		function extractString(e) {
 			var nodeType = isNode(e);
 			if (nodeType == 1)
-				return collect(e['childNodes'], extractString);
+				return collector(flexiEach, e['childNodes'], extractString);
 			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
 				return e['data'];
 			else 
 				return null;
 		}
-		return collect(this, extractString)['join']('');
+		return collector(flexiEach, this, extractString)['join']('');
 	},
 	
  	/*$
@@ -1268,7 +1262,7 @@ define('minified', function() {
 			}
 			else {
 				var r = {};
-				(isList(spec) ? each : eachObj)(spec, function(name) {
+				(isList(spec) ? flexiEach : eachObj)(spec, function(name) {
 					r[name] = self['get'](name, toNumber);
 				});
 				return r;
@@ -1438,14 +1432,14 @@ define('minified', function() {
     		 }
     		 else
     			// @condend fadeslide
-    			 each(self, function(obj, c) {
+    			 flexiEach(self, function(obj, c) {
     				 var nameClean = replace(replace(name, /^%/,'data-'), /^[@$]/);
     				 var className = obj['className'] || '';
     				 var newObj = /^\$/.test(name) ? obj.style : obj;
     				 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
     				 if (name == '$') {
     					 if (newValue != null) {
-    						 each(newValue.split(/\s+/), function(clzz) {
+    						 flexiEach(newValue.split(/\s+/), function(clzz) {
     							 var cName = replace(clzz, /^[+-]/);
     							 var oldClassName = className;
     							 className = replace(className, RegExp('\\b' + cName + '\\b', 'i'));
@@ -1480,7 +1474,7 @@ define('minified', function() {
 	/*$
 	 * @id add
 	 * @group ELEMENT
-	 * @requires dollar
+	 * @requires dollar each
 	 * @configurable default
 	 * @name .add()
 	 * @syntax list.add(text)
@@ -1558,11 +1552,11 @@ define('minified', function() {
 	 * @return the current list
 	 */
 	'add': function (children, addFunction) {
-		return each(this, function(e, index) {
+		return this['each'](function(e, index) {
 			var lastAdded;
 			(function appendChildren(c) {
 				if (isList(c))
-					each(c, appendChildren);
+					flexiEach(c, appendChildren);
 				else if (isFunction(c))
 					appendChildren(c(e, index));
 				else if (c != null) {   // must check null, as 0 is a valid parameter 
@@ -1668,7 +1662,7 @@ define('minified', function() {
 	 * @return the current list
 	 */
 	'fill': function (children) {
-		return each(this, function(e) { $(e.childNodes)['remove'](); }).add(children);
+		return this['each'](function(e) { $(e['childNodes'])['remove'](); }).add(children);
 	},
 
 	/*$
@@ -2014,7 +2008,7 @@ define('minified', function() {
 	 * @return the list of Element Factory functions and strings to create clones
 	 */
 	'clone': function (onCreate) {
-		return new M(collect(this, function(e) {
+		return this['collect'](function(e) {
 			var nodeType = isNode(e);
 			if (nodeType == 1) {
 				var attrs = {
@@ -2023,7 +2017,7 @@ define('minified', function() {
 						'$$': IS_PRE_IE9 ? e['style']['cssText'] : e.getAttribute('style')
 						// @condend
 				};
-				each(e['attributes'], function(a) {
+				flexiEach(e['attributes'], function(a) {
 					var attrName = a['name'];
 					if (attrName != 'id'
 						// @condblock ie8compatibility
@@ -2041,7 +2035,7 @@ define('minified', function() {
 				return e['data'];
 			else 
 				return null;
-		}));
+		});
 	},
 
 
@@ -2184,7 +2178,7 @@ define('minified', function() {
 		
 		
 		// find start values
-		each(self, function(li) {
+		flexiEach(self, function(li) {
 			var p = {o:$(li), e:{}}; 
 			eachObj(p.s = p.o.get(properties), function(name, start) {
 				var dest = properties[name];
@@ -2208,7 +2202,7 @@ define('minified', function() {
 
 			state['time'] = timePassedMs;
 			if (timePassedMs >= durationMs || timePassedMs < 0) {
-				each(initState, function(isi) { // set destination values
+				flexiEach(initState, function(isi) { // set destination values
 					isi.o.set(isi.e);
 				});
 				loopStop();
@@ -2216,7 +2210,7 @@ define('minified', function() {
 				prom(true, [self]);
 			}
 			else
-				each(initState, function(isi) {
+				flexiEach(initState, function(isi) {
 					eachObj(isi.s, function(name, start) {
 						var newValue = 'rgb(', end=isi.e[name];
 						var t = timePassedMs/durationMs;
@@ -2374,7 +2368,7 @@ define('minified', function() {
 				var n = el['name'], v = toString(el['value']), o=r[n];
 				if (/form/i.test(el['tagName']))
 					// @condblock ie9compatibility 
-					$(collect(el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
+					$(collector(flexiEach, el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
 					// @condend
 					// @cond !ie9compatibility $(el['elements'])['values'](r);
 				else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
@@ -2387,6 +2381,35 @@ define('minified', function() {
 			return r;
 		},
 
+		/*$
+		 * @id offset
+		 * @group SELECTORS
+		 * @requires dollar
+		 * @configurable default
+		 * @name .offset()
+		 * @syntax list.offset()
+		 * Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, 
+		 * with 0/0 being the upper left corner, independent of the user's current view (which depends on the user's current scroll position and zoom level).
+		 *
+		 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
+		 * <pre>
+		 * var pos = $('#myElement').offset();
+		 * $('#resultElement').fill('#myElement's position is left=' + pos.x + ' top=' + pos.y);
+		 * </pre>
+		 *
+		 * @param element the element whose coordinates should be determined
+		 * @return an object containing pixel coordinates in two properties 'x' and 'y'
+		 */
+		'offset': function() {
+			var elem = this[0];
+			var dest = {'x': 0, 'y': 0};
+			while (elem) {
+				dest['x'] += elem.offsetLeft;
+				dest['y'] += elem.offsetTop;
+				elem = elem.offsetParent;
+			}
+			return dest;
+		},
 
 		/*$
 		 * @id on
@@ -2480,7 +2503,7 @@ define('minified', function() {
 			// @cond debug if (!(eventName)) error("eventName and handler parameters are required!"); 
 			// @cond debug if (/\bon/i.test(eventName)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
 			return this['each'](function(el, index) {
-				each(eventName.split(/\s/), function(namePrefixed) {
+				flexiEach(eventName.split(/\s/), function(namePrefixed) {
 					var name = replace(namePrefixed, /\|/);
 					var noSelector = isFunction(handlerOrSelector) || null;
 					var handler = noSelector ? handlerOrSelector : fThisOrArgsOrHandler;
@@ -2488,23 +2511,22 @@ define('minified', function() {
 					var miniHandler = createEventHandler(handler, 
 							noSelector && optArgs && fThisOrArgsOrHandler, // fThis (false means default this) 
 							noSelector && (optArgs || fThisOrArgsOrHandler), // args (false means event obj)
-							index, name == namePrefixed, noSelector ? null : getFilterFunc(handlerOrSelector, el));
+							index, name == namePrefixed, noSelector ? returnTrue : getFilterFunc(handlerOrSelector, el));
 
 					var handlerDescriptor = {'e': el,          // the element  
 							                 'h': miniHandler, // minified's handler 
 							                 'n': name         // event type        
 							                };
-					(handler['M'] = handler['M'] || []).push(handlerDescriptor);
+					push(handler, 'M', handlerDescription);
 					// @condblock ie8compatibility 
 					if (IS_PRE_IE9) {
 						el.attachEvent('on'+name, miniHandler);  // IE < 9 version
-						var nodeId = getNodeId(el);
-						(registeredEvents[nodeId] = (registeredEvents[nodeId] || [])).push(handlerDescriptor);
+						push(registeredEvents, getNodeId(el), handlerDescription);
 					}
 					else {
 					// @condend
 						el.addEventListener(name, miniHandler, false); // W3C DOM
-						(el[MINIFIED_MAGIC_EVENTS] = (el[MINIFIED_MAGIC_EVENTS] || [])).push(handlerDescriptor); 
+						push(el, MINIFIED_MAGIC_EVENTS, handlerDescription);
 					// @condblock ie8compatibility
 					}
 					// @condend
@@ -2587,7 +2609,7 @@ define('minified', function() {
 				var stopBubble, el = element;
 				
 				while(el && !stopBubble) {
-					each(
+					flexiEach(
 							// @condblock ie8compatibility 
 							IS_PRE_IE9 ? registeredEvents[el[MINIFIED_MAGIC_NODEID]] :
 							//@condend
@@ -2702,11 +2724,10 @@ define('minified', function() {
 			if (data != null) {
 				headers = headers || {};
 				if (!isString(data) && !isNode(data)) { // if data is parameter map...
-					body = collectObj(data, function processParam(paramName, paramValue) {
-						if (isList(paramValue))
-							return collect(paramValue, function(v) {return processParam(paramName, v);});
-						else
-							return encodeURIComponent(paramName) + ((paramValue != null) ?  '=' + encodeURIComponent(paramValue) : '');
+					body = collector(eachObj, data, function processParam(paramName, paramValue) {
+						return collector(flexiEach, paramValue, function(v) {
+							return encodeURIComponent(paramName) + ((v != null) ?  '=' + encodeURIComponent(v) : '');
+						});
 					}).join('&');
 				}
 				
@@ -2788,9 +2809,9 @@ define('minified', function() {
 		if (isString(value = value.valueOf()))
 			return '"' + replace(value, /[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
 		if (isList(value)) 
-			return '[' + collect(value, toJSON).join() + ']';
+			return '[' + collector(flexiEach, value, toJSON).join() + ']';
 		if (isObject(value))
-			return '{' + collectObj(value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
+			return '{' + collector(eachObj, value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
 		return toString(value);
 	},
     // @condend
@@ -2997,14 +3018,12 @@ define('minified', function() {
 	'loop': function(paintCallback) { 
         var entry = {c: paintCallback, t: nowAsTime()};
         entry.s = function() {
-    		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // can't use each() or filter() here, list may be modified during run!!
-    			if (ANIMATION_HANDLERS[i] === entry) 
-    				ANIMATION_HANDLERS.splice(i--, 1);
+        	removeFromArray(ANIMATION_HANDLERS, entry);
         };
         
         if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
 			(function raFunc() {
-				if (each(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, nowAsTime() - a.t), a.s);}).length) // check len after run, in case the callback invoked stop func
+				if (flexiEach(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, nowAsTime() - a.t), a.s);}).length) // check len after run, in case the callback invoked stop func
 					REQUEST_ANIMATION_FRAME(raFunc); 
 			})(); 
         } 
@@ -3040,16 +3059,16 @@ define('minified', function() {
      */
 	'off': function (handler) {
 		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
-	   	each(handler['M'], function(h) {
+	   	flexiEach(handler['M'], function(h) {
 			// @condblock ie8compatibility 
 			if (IS_PRE_IE9) {
 				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
-				registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]] = filter(registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]], h);
+				removeFromArray(registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]], h);
 			}
 			else {
 			// @condend
 				h['e'].removeEventListener(h['n'], h['h'], false); // W3C DOM
-				h['e'][MINIFIED_MAGIC_EVENTS] = filter(h['e'][MINIFIED_MAGIC_EVENTS], h);
+				removeFromArray(h['e'][MINIFIED_MAGIC_EVENTS], h);
 			// @condblock ie8compatibility 
 			}
 			// @condend
@@ -3088,7 +3107,7 @@ define('minified', function() {
     // @condblock ie8compatibility
     // for old IEs, unregister all event handlers to avoid mem leaks
     _window.unload = function() {
-    	each(registeredEvents, detachHandlerList);
+    	flexiEach(registeredEvents, detachHandlerList);
     };
     // @condend
     

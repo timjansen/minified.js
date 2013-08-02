@@ -101,6 +101,7 @@ Minified App module will allow this though.
 </li><li><a href="get.html">.get()</a>
 </li><li><a href="is.html">.is()</a>
 </li><li><a href="length.html">.length</a>
+</li><li><a href="offset.html">.offset()</a>
 </li><li><a href="on.html">.on()</a>
 </li><li><a href="onover.html">.onOver()</a>
 </li><li><a href="only.html">.only()</a>

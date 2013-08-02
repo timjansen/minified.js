@@ -2,11 +2,14 @@ Minified Change Log
 ====================
 
 
-Beta 1 (2013-07-13)
+Ongoing
 --------------------
-First release.
+* New method: offset() to get page coordinates of an element
+* Changed filter(): removed value argument, only function possible
 
-Ongoing Development
+
+
+Beta 2 (2013-07-31)
 --------------------
 * Changed target size: the Minified Web version without legacy IE support will be <4kB, but the version with legacy support will be >4kB
 * Worked on automatically preventing legacy IE event handler memory leaks. remove() will now unregister event handlers. In beta 1, you
@@ -27,4 +30,8 @@ Ongoing Development
 * Removed wait(). It will re-appear in the util module soon.
 * Removed Promise.always(). It will re-appear in the util module soon.
 * IE9 compatibility can be turned off in builder. This can save some bytes.
+
+Beta 1 (2013-07-13)
+--------------------
+First release.
 

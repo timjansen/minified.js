@@ -262,9 +262,8 @@ define('minified', function() {
 				cb(n, obj[n]);
 		// web version has no return
 	}
-	function filter(list, filterFuncOrObject) {
+	function filter(list, f) {
 		var r = []; 
-		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(value) { return filterFuncOrObject != value; };
 		flexiEach(list, function(value, index) {
 			if (f(value, index))
 				r.push(value);
@@ -304,6 +303,12 @@ define('minified', function() {
 
 	function push(obj, prop, value) {
 		(obj[prop] = (obj[prop] || [])).push(value);
+	}
+	
+	function removeFromArray(array, value) {
+		for (var i = 0; array && i < array.length; i++) 
+			if (array[i] === value) 
+				array.splice(i--, 1);
 	}
 	
 	function delay(f, delayMs) {
@@ -746,11 +751,9 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .filter()
 	 * @syntax list.filter(filterFunc)
-	 * @syntax list.filter(value)
    	 * @module WEB, UTIL
 	 * Creates a new ##list#Minified list## by taking an existing list and omitting certain elements from it. You
-	 * can either specify a callback function to approve those items that will be in the new list, or 
-	 * you can pass a value to remove from the new list.
+	 * can either specify a callback function to approve those items that will be in the new list.
 	 *  
 	 * If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
 	 * For values, a simple equality operation (<code>==</code>) will be used.
@@ -765,12 +768,10 @@ define('minified', function() {
 	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
 	 *        <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>
-	 * @param value a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
-	 *              be a function. 
 	 * @return the new, filtered ##list#list##
 	 */
-	'filter': function(filterFuncOrValue) {
-	    return new M(filter(this, filterFuncOrValue));
+	'filter': function(filterFunc) {
+	    return new M(filter(this, filterFunc));
 	},
 	
 	/*$ 
@@ -3017,9 +3018,7 @@ define('minified', function() {
 	'loop': function(paintCallback) { 
         var entry = {c: paintCallback, t: nowAsTime()};
         entry.s = function() {
-    		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // can't use each() or filter() here, as they replace the new list - but the list may be modified during run!!
-    			if (ANIMATION_HANDLERS[i] === entry) 
-    				ANIMATION_HANDLERS.splice(i--, 1);
+        	removeFromArray(ANIMATION_HANDLERS, entry);
         };
         
         if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
@@ -3064,12 +3063,12 @@ define('minified', function() {
 			// @condblock ie8compatibility 
 			if (IS_PRE_IE9) {
 				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
-				registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]] = filter(registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]], h);
+				removeFromArray(registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]], h);
 			}
 			else {
 			// @condend
 				h['e'].removeEventListener(h['n'], h['h'], false); // W3C DOM
-				h['e'][MINIFIED_MAGIC_EVENTS] = filter(h['e'][MINIFIED_MAGIC_EVENTS], h);
+				removeFromArray(h['e'][MINIFIED_MAGIC_EVENTS], h);
 			// @condblock ie8compatibility 
 			}
 			// @condend

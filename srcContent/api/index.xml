@@ -82,6 +82,9 @@
 <div class="summary">
 Contains the number of elements in the list.</div>
 
+<h3><a href="offset.html">.offset()</a></h3>
+<div class="summary">Returns the pixel page coordinates of the list's first element.</div>
+
 <h3><a href="on.html">.on()</a></h3>
 <div class="summary">Registers the function as event handler for all items in the list.</div>
 
@@ -177,6 +180,7 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="get.html">.get()</a>
 </li><li><a href="is.html">.is()</a>
 </li><li><a href="length.html">.length</a>
+</li><li><a href="offset.html">.offset()</a>
 </li><li><a href="on.html">.on()</a>
 </li><li><a href="onover.html">.onOver()</a>
 </li><li><a href="only.html">.only()</a>
