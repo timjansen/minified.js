@@ -2369,9 +2369,9 @@ define('minified', function() {
 							                 'h': miniHandler, // minified's handler 
 							                 'n': name         // event type        
 							                };
-					push(handler, 'M', handlerDescription);
+					push(handler, 'M', handlerDescriptor);
 						el.addEventListener(name, miniHandler, false); // W3C DOM
-						push(el, MINIFIED_MAGIC_EVENTS, handlerDescription);
+						push(el, MINIFIED_MAGIC_EVENTS, handlerDescriptor);
 				});
 			});
 		},

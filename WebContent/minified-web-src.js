@@ -2517,16 +2517,16 @@ define('minified', function() {
 							                 'h': miniHandler, // minified's handler 
 							                 'n': name         // event type        
 							                };
-					push(handler, 'M', handlerDescription);
+					push(handler, 'M', handlerDescriptor);
 					// @condblock ie8compatibility 
 					if (IS_PRE_IE9) {
 						el.attachEvent('on'+name, miniHandler);  // IE < 9 version
-						push(registeredEvents, getNodeId(el), handlerDescription);
+						push(registeredEvents, getNodeId(el), handlerDescriptor);
 					}
 					else {
 					// @condend
 						el.addEventListener(name, miniHandler, false); // W3C DOM
-						push(el, MINIFIED_MAGIC_EVENTS, handlerDescription);
+						push(el, MINIFIED_MAGIC_EVENTS, handlerDescriptor);
 					// @condblock ie8compatibility
 					}
 					// @condend
