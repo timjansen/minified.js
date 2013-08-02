@@ -301,6 +301,10 @@ define('minified', function() {
 			cb(list, 0);
 		return list;
 	}
+
+	function push(obj, prop, value) {
+		(obj[prop] = (obj[prop] || [])).push(value);
+	}
 	
 	function delay(f, delayMs) {
 		_window.setTimeout(f, delayMs||0);
@@ -2512,17 +2516,16 @@ define('minified', function() {
 							                 'h': miniHandler, // minified's handler 
 							                 'n': name         // event type        
 							                };
-					(handler['M'] = handler['M'] || []).push(handlerDescriptor);
+					push(handler, 'M', handlerDescription);
 					// @condblock ie8compatibility 
 					if (IS_PRE_IE9) {
 						el.attachEvent('on'+name, miniHandler);  // IE < 9 version
-						var nodeId = getNodeId(el);
-						(registeredEvents[nodeId] = (registeredEvents[nodeId] || [])).push(handlerDescriptor);
+						push(registeredEvents, getNodeId(el), handlerDescription);
 					}
 					else {
 					// @condend
 						el.addEventListener(name, miniHandler, false); // W3C DOM
-						(el[MINIFIED_MAGIC_EVENTS] = (el[MINIFIED_MAGIC_EVENTS] || [])).push(handlerDescriptor); 
+						push(el, MINIFIED_MAGIC_EVENTS, handlerDescription);
 					// @condblock ie8compatibility
 					}
 					// @condend
@@ -3014,7 +3017,7 @@ define('minified', function() {
 	'loop': function(paintCallback) { 
         var entry = {c: paintCallback, t: nowAsTime()};
         entry.s = function() {
-    		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // can't use each() or filter() here, list may be modified during run!!
+    		for (var i = 0; i < ANIMATION_HANDLERS.length; i++) // can't use each() or filter() here, as they replace the new list - but the list may be modified during run!!
     			if (ANIMATION_HANDLERS[i] === entry) 
     				ANIMATION_HANDLERS.splice(i--, 1);
         };
