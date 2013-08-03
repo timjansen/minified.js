@@ -2337,8 +2337,8 @@ define('minified', function() {
 		 * @syntax list.values()
 		 * @syntax list.values(dataMap)
 		 * Creates a name/value map from the given form. values() looks at the list's form elements and writes each element's name into the map,
-		 * using the element name as key and the element's value as value. If there is more than one value with the same name, the map will contain an array
-		 * of values. Form element without value will be written with 'null' as value. Form elements without name will be ignored.
+		 * using the element name as key and the element's value as value. As there can be more than one value with the same name, 
+		 * the map's values will always be arrays of values. Form elements without name will be ignored.
 		 *
 		 * values() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
 		 * elements will be serialized.
@@ -2359,23 +2359,19 @@ define('minified', function() {
 		 * </pre>
 		 * 
 		 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
-		 * @return a map containing name->value pairs as strings. If there is more than one value with the same name,
-		 *         map value is an array of strings
+		 * @return a map containing name->[value, value...] pairs, using strings as name and value. 
 		 */
 		'values': function(data) {
 			var r = data || {};
 			this['each'](function(el) {
-				var n = el['name'], v = toString(el['value']), o=r[n];
+				var n = el['name'], v = toString(el['value']), l;
 				if (/form/i.test(el['tagName']))
 					// @condblock ie9compatibility 
 					$(collector(flexiEach, el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
 					// @condend
 					// @cond !ie9compatibility $(el['elements'])['values'](r);
 				else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
-					if (isList(o))
-						o.push(v);
-					else
-						r[n] = (o == null) ? v : [o, v];
+					r[n] = collector(flexiEach, [r[n], v], nonOp);
 				}
 			});
 			return r;
@@ -2404,9 +2400,9 @@ define('minified', function() {
 			var elem = this[0];
 			var dest = {'x': 0, 'y': 0};
 			while (elem) {
-				dest['x'] += elem.offsetLeft;
-				dest['y'] += elem.offsetTop;
-				elem = elem.offsetParent;
+				dest['x'] += elem['offsetLeft'];
+				dest['y'] += elem['offsetTop'];
+				elem = elem['offsetParent'];
 			}
 			return dest;
 		},
@@ -2614,9 +2610,9 @@ define('minified', function() {
 							IS_PRE_IE9 ? registeredEvents[el[MINIFIED_MAGIC_NODEID]] :
 							//@condend
 							el[MINIFIED_MAGIC_EVENTS], function(hDesc) {
-						if (hDesc['n'] == eventName)
-							stopBubble = stopBubble || hDesc['h'](eventObj, element);
-					});
+								if (hDesc['n'] == eventName)
+									stopBubble = stopBubble || hDesc['h'](eventObj, element);
+				});
 					el = el['parentNode'];
 				}
 			});

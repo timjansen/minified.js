@@ -15,8 +15,12 @@
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
-// the following lines include snippets defined using #definesnippet
+// @condblock dontinclude
+function dummy() {
+// @condend
 
+
+// the following lines include snippets defined using #definesnippet
 ///#include minified-web-src.js  commonAmdStart
 ///#include minified-web-src.js  webVars
 ///#include minified-util-src.js utilVars
@@ -69,7 +73,7 @@
 		var assimilatedPromises = arguments;
 		var assimilatedNum = assimilatedPromises.length;
 		var numCompleted = 0; // number of completed, assimilated promises
-		var values = []; // array containing the result arrays of all assimilated promises
+		var values = []; // array containing the result arrays of all assimilated promises, or the result of the single promise
 	    
 		function set(newState, newValues) {
 			if (state == null) {
@@ -89,13 +93,13 @@
 						assimilate(v['then'], index);
 					}
 					else {
-						values[index] = map(arguments, selfFunc);
+						values[index] = map(arguments, nonOp);
 						if (++numCompleted == assimilatedNum)
 							set(true, assimilatedNum < 2 ? values[index] : values);
 					}
 				}, 
 				function rejectPromise(e) {
-					values[index] = map(arguments, selfFunc);
+					values[index] = map(arguments, nonOp);
 					set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
 				});
 			}
@@ -278,9 +282,18 @@
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 	copyObj({
+		// @condblock dontinclude
+		a:0
+		// @condend
+
 		///#include minified-util-src.js utilListFuncs
 		,
 		///#include minified-web-src.js webListFuncs
+
+		// @condblock dontinclude
+		b:0
+		// @condend
+
 	}, M.prototype);
 	
 			
@@ -293,9 +306,50 @@
 	////INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///#include minified-web-src.js webInit
 
+	copyObj({
 	// @condblock promise
-	_['promise'] = promise;
+	'promise': promise,
 	// @condend promise
+	
+	/*$
+	 * @id delay
+	 * @configurable default
+	 * @requires
+	 * @name $.delay()
+	 * @syntax $.delay(durationMs, func)
+	 * @syntax $.delay(durationMs, func, args)
+	 * @module WEB+UTIL
+	 * 
+	 * Executes the function with the given delay, optionally passing arguments to it.
+	 *
+	 * @param durationMs the number of milliseconds to wait. If null or 0, the promise will be fulfilled as soon as the browser can run it
+	 *                   from the event loop.
+	 * @param func the function to call
+	 * @param args optional an array or list of arguments to pass to the function
+	 */
+	'delay': function(durationMs, func, args) {
+		delay(function() {call(func, args);}, durationMs); // TODO try partial()
+	},
+
+	/*$
+	 * @id defer
+	 * @configurable default
+	 * @requires
+	 * @name $.defer()
+	 * @syntax $.defer(func)
+	 * @syntax $.defer(func, args)
+	 * @module WEB+UTIL
+	 *	
+	 * Executes the function from the browser event loop, as soon as the browser can. Typically that means that
+	 * the function is called after less than 10 milliseconds.
+	 *
+	 * @param func the function to call
+	 * @param args optional an array or list of arguments to pass to the function
+	 */
+	'defer': function(func, args) {
+		delay(function() {call(func, args);}); // TODO try partial()
+	},
+
 	
 	/*$
 	 * @id wait
@@ -332,11 +386,18 @@
 	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
 	 *         <var>args</var> parameter as given to <var>wait()</var>.
 	 */
-	_['wait'] = 	 function(durationMs, args) {
+	'wait': function(durationMs, args) {
 		var p = promise();
 		delay(function() {p(true, args);}, durationMs);
 		return p;
-	};
+	}
+	
+	/*$
+	 * @stop
+	 */
+	// @cond !wait dummy:0
+
+	}, _);
 
 	
 	return {
@@ -347,5 +408,7 @@
 ///#include minified-web-src.js  commonAmdEnd
 ///#include minified-web-src.js  webDocs
 	
-	
+// @condblock dontinclude
+	}
+// @condend
 	
