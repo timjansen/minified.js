@@ -1,20 +1,31 @@
 <project name="minified" default="main">
 
-  <property name="src" value="src/minified-web-src.js"/>
+	<property name="srcPath" value="src/"/>
+	
+	<property name="srcWebName" value="minified-web-src.js"/>
+	<property name="srcWebName" value="minified-web-src.js"/>
+	<property name="srcUtilName" value="minified-util-src.js"/>
+	<property name="srcDblShellName" value="minified-dbl-shell.js"/>
+	<property name="srcDblName" value="minified-dbl-src.js"/>
 	
   <target name="compileJavascript">
+    <!-- Create dbl versions etc -->
+	<script language="javascript" src="build/merger.js" />
+
     <!-- Create noie versions etc -->
   	<script language="javascript" src="build/rewriter.js" />
   	
   	<!-- for Autotest etc.. -->
-  	<copy file="${src}" tofile="WebContent/minified-web-src.js" />
-  	<copy file="src/minified-util-src.js" tofile="WebContent/test/minified-util.js" />
+	<copy file="${srcPath}${srcWebName}" tofile="WebContent/${srcWebName}" />
+	<copy file="${srcPath}${srcUtilName}" tofile="WebContent/${srcUtilName}" />
+	<copy file="${srcPath}${srcDblName}" tofile="WebContent/${srcDblName}" />
+  	<copy file="${srcPath}${srcUtilName}" tofile="WebContent/test/minified-util.js" />
   	<copy file="srcContent/js/sparkplug-src.js" tofile="WebContent/test/sparkplug.js" />
 
-  	<!-- Minified script -->
+  	<!-- Minify -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
   	 	<arg value="--compilation_level=ADVANCED_OPTIMIZATIONS" />
-  	    <arg value="--js=${src}"/>
+  	    <arg value="--js=src/minified-web-src.js"/>
   	 	<arg value="--js_output_file=WebContent/minified-web-closure.js"/>
      </java>
  	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
@@ -22,11 +33,21 @@
  	    <arg value="--js=WebContent/minified-web-src.noie.js"/>
  	 	<arg value="--js_output_file=WebContent/minified-web-closure.noie.js"/>
     </java>
-	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
+	<java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
 	 	<arg value="--compilation_level=ADVANCED_OPTIMIZATIONS" />
 	    <arg value="--js=WebContent/minified-util-src.js"/>
 	 	<arg value="--js_output_file=WebContent/minified-util-closure.js"/>
-   </java>
+    </java>
+	<java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
+	 	<arg value="--compilation_level=ADVANCED_OPTIMIZATIONS" />
+	    <arg value="--js=WebContent/minified-dbl-src.js"/>
+	 	<arg value="--js_output_file=WebContent/minified-dbl-closure.js"/>
+    </java>
+	<java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
+	 	<arg value="--compilation_level=ADVANCED_OPTIMIZATIONS" />
+	    <arg value="--js=WebContent/minified-dbl-src.noie.js"/>
+	 	<arg value="--js_output_file=WebContent/minified-dbl-closure.noie.js"/>
+    </java>
  	  	
     <exec executable="/usr/local/bin/uglifyjs">
       <arg line="WebContent/minified-web-closure.js -o WebContent/minified-web.js"/>
@@ -40,10 +61,20 @@
       <arg line="WebContent/minified-util-closure.js -o WebContent/minified-util.js"/>
       <env key="PATH" path="/usr/local/bin"/>
     </exec>
+    <exec executable="/usr/local/bin/uglifyjs">
+      <arg line="WebContent/minified-dbl-closure.js -o WebContent/minified-dbl.js"/>
+      <env key="PATH" path="/usr/local/bin"/>
+    </exec>
+    <exec executable="/usr/local/bin/uglifyjs">
+      <arg line="WebContent/minified-dbl-closure.noie.js -o WebContent/minified-dbl.noie.js"/>
+      <env key="PATH" path="/usr/local/bin"/>
+    </exec>
   	
   	<delete file="WebContent/minified-web-closure.noie.js" />
   	<delete file="WebContent/minified-web-closure.js" />
   	<delete file="WebContent/minified-util-closure.js" />
+  	<delete file="WebContent/minified-dbl-closure.js" />
+  	<delete file="WebContent/minified-dbl-closure.noie.js" />
   	
     <!-- Builder script -->
   	 <java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">

@@ -43,7 +43,7 @@
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
-///#definesnippet commonAmdStart
+///#snippet commonAmdStart
 
 /*$
  * @id require
@@ -86,12 +86,12 @@ define('minified', function() {
  */
 // @cond !amdsupport (function() {
 	
-///#endsnippet commonAmdStart
+///#/snippet commonAmdStart
 	
 	
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	///#definesnippet webVars
+	///#snippet webVars
 	/**
 	 * @const
 	 */
@@ -196,7 +196,11 @@ define('minified', function() {
         };
     // @condend
 
-	///#endsnippet webVars
+	/*$
+	 * @stop
+	 */
+	
+	///#/snippet webVars
 
 	
 	/*$
@@ -224,7 +228,6 @@ define('minified', function() {
 
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	function returnTrue() { return 1;}
 	
 	/** @param s {?} */
 	function toString(s) { // wrapper for Closure optimization
@@ -280,25 +283,28 @@ define('minified', function() {
 	function replace(s, regexp, sub) {
 		return toString(s).replace(regexp, sub||'');
 	}
-	function wordRegExpTester(name, prop) {
-		var re = RegExp('\\b' + name + '\\b', 'i');
-		return name ? function(obj) {return re.test(obj[prop]);} : returnTrue;
-	}
-	
-	///#definesnippet webFunctions
 
-	// note: only the web version has the f.item check
-	function isFunction(f) {
-		return isType(f, 'function') && !f['item']; // item check as work-around webkit bug 14547
-	}
-	
-	function flexiEach(list, cb) { // TODO: if Util is included, use each() internally
+	function flexiEach(list, cb) {
 		if (isList(list))
 			for (var i = 0; i < list.length; i++)
 				cb(list[i], i);
 		else if (list != null)
 			cb(list, 0);
 		return list;
+	}
+	
+	///#snippet webFunctions
+
+	// note: only the web version has the f.item check
+	function isFunction(f) {
+		return isType(f, 'function') && !f['item']; // item check as work-around webkit bug 14547
+	}
+	
+	function returnTrue() { return 1;}
+	
+	function wordRegExpTester(name, prop) {
+		var re = RegExp('\\b' + name + '\\b', 'i');
+		return name ? function(obj) {return re.test(obj[prop]);} : returnTrue;
 	}
 
 	function push(obj, prop, value) {
@@ -413,7 +419,8 @@ define('minified', function() {
 	
 		return function() {
 			var list = $(_document.createElement(elementName));
-			(isList(attributes) || !isObject(attributes)) ? list['add'](attributes) : list['set'](attributes)['add'](children);
+			// TODO: attributes!=null only needed with UTIL. Web's isObject is simpler.
+			(isList(attributes) || (attributes != null && !isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 			if (onCreate)
 				onCreate(list);
 			return list; 
@@ -551,9 +558,11 @@ define('minified', function() {
 			
 		}
 	}
-	///#endsnippet webFunctions
+	///#/snippet webFunctions
 
-    
+	
+	
+	// Special private promise impl only for web module. A public one  is in minified-dbl, but only available if util is availble.
     function promise() {
     	var state;           // undefined/null = pending, true = fulfilled, false = rejected
     	var values = [];     // an array of values as arguments for the then() handlers
@@ -914,7 +923,7 @@ define('minified', function() {
 				return r;
 	},
 	
-	///#definesnippet webListFuncs
+	///#snippet webListFuncs
 
 	/*$
 	 * @id remove
@@ -2044,7 +2053,7 @@ define('minified', function() {
 	/*$
 	 * @id animate
 	 * @group ANIMATION
-	 * @requires loop dollar set get
+	 * @requires loop dollar set get promise
 	 * @configurable default
 	 * @name .animate()
 	 * @syntax list.animate(properties)
@@ -2622,7 +2631,7 @@ define('minified', function() {
  	 * @stop
  	 */
 		// @cond !trigger dummy:null
-		///#endsnippet webListFuncs
+		///#/snippet webListFuncs
 		
 		
 	}, function(n, v) {M.prototype[n]=v;});
@@ -2630,13 +2639,13 @@ define('minified', function() {
 
  	//// DOLLAR FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	///#definesnippet webDollarFuncs
+	///#snippet webDollarFuncs
 	eachObj({
 	/*$
 	* @id request
 	* @group REQUEST
 	* @requires 
-	* @configurable default
+	* @configurable default promise
 	* @name $.request()
 	* @syntax $.request(method, url)
 	* @syntax $.request(method, url, data)
@@ -3080,12 +3089,12 @@ define('minified', function() {
 	
 	}, function(n, v) {$[n]=v;});
 
-	///#endsnippet webDollarFuncs
+	///#/snippet webDollarFuncs
 			
 				
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-	///#definesnippet webInit
+	///#snippet webInit
     /*$
 	 * @id ready_init
 	 * @dependency
@@ -3107,7 +3116,7 @@ define('minified', function() {
     };
     // @condend
     
-	///#endsnippet webInit
+	///#/snippet webInit
 
     
     // @condblock amdsupport
@@ -3116,7 +3125,7 @@ define('minified', function() {
 	
 	// @cond !amdsupport var MINI = {
 	
-	///#definesnippet webExports
+	///#snippet webExports
 
 		/*$
 		 * @id dollar
@@ -3412,7 +3421,7 @@ define('minified', function() {
 		 */
 		'M': M
 
-		///#endsnippet webExports
+		///#/snippet webExports
 	
 	 	/*$
 	 	 * @stop
@@ -3421,16 +3430,16 @@ define('minified', function() {
 	};
 	// @cond !amdsupport _window['require'] = function(n) { if (n == 'minified') return MINI; };
 
-///#definesnippet commonAmdEnd
+///#snippet commonAmdEnd
 // @condblock amdsupport
 });
 // @condend amdsupport
 
 // @cond !amdsupport })();
-///#endsnippet commonAmdEnd
+///#/snippet commonAmdEnd
         
         
-///#definesnippet  webDocs
+///#snippet  webDocs
 
         
 /*$
@@ -3463,7 +3472,7 @@ define('minified', function() {
  */
         
 /*$
- * @id promise
+ * @id promiseClass
  * @name Promise
  * @module WEB, UTIL
  * 
@@ -3544,9 +3553,21 @@ define('minified', function() {
  * Please note that the Minified Web module only returns Promises, but it <strong>does not allow you to create Promises</strong> directly. The upcoming
  * Minified App module will allow this though.
  */
+/*$
+ * @stop
+ */
+        
 
-///#endsnippet  webDocs
+///#/snippet  webDocs
 
-
+///#remove
+     // This is used only to provide a promise block if web is used stand-alone.
+     /*$
+      * @id promise
+      */
+        
+///#/remove
+        
+        
         
         

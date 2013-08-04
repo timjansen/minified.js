@@ -1,4 +1,14 @@
+//
+// Parser for the /*$ @tag */ syntax and //@cond statements in the Minified source code, which is used for
+// API documentation and also for custom-builds.
+//
+// Used by builder-src.js, docbuilder.js and rebuilder.js.
+//
+//
+
 var _ = (require('minifiedUtil') || require('minified'))._;
+
+
 
 // parses the source, returns an array of objects describing sections that can be enabled/disabled
 function parseSourceSections(src) {

@@ -22,12 +22,15 @@ eval(readFile('src/minified-util-src.js'));
 eval(readFile('srcContent/js/parser-src.js'));
 eval(readFile('build/rebuilder.js'));
 
-var src = readFile(project.getProperty('src'));
+var srcWeb = readFile(project.getProperty('srcPath') + project.getProperty('srcWebName'));
+var srcDbl = readFile(project.getProperty('srcPath') + project.getProperty('srcDblName'));
 
 var noIeConfig = "// minified.js config start -- use this comment to re-create your build configuration\n"+
 				 "// - All sections except debug, ie6compatibility, ie7compatibility, ie8compatibility.\n";
 
-var noIeSrc = rebuild(src, noIeConfig);
+var noIeWebSrc = rebuild(srcWeb, noIeConfig);
+var noIeDblSrc = rebuild(srcDbl, noIeConfig);
 
 // Generate new source
-writeFile('WebContent/minified-web-src.noie.js', noIeSrc);
+writeFile('WebContent/minified-web-src.noie.js', noIeWebSrc);
+writeFile('WebContent/minified-dbl-src.noie.js', noIeDblSrc);

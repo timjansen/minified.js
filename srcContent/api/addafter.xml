@@ -127,7 +127,7 @@ With the previous example's HTML, this would create this:
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
-</li><li><a href="promise.html">Promise</a>
+</li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
 </li><li><a href="require.html">require()</a>

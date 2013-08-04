@@ -1,11 +1,20 @@
 <project name="minified-compile" default="main">
 
-	<property name="srcWeb" value="src/minified-web-src.js"/>
-	<property name="srcUtil" value="src/minified-util-src.js"/>
+	<property name="srcPath" value="src/"/>
+		
+	<property name="srcWebName" value="minified-web-src.js"/>
+	<property name="srcUtilName" value="minified-util-src.js"/>
+	<property name="srcDblShellName" value="minified-dbl-shell.js"/>
+	<property name="srcDblSrcName" value="minified-dbl-src.js"/>
 	
- 	<target name="copyJavascript">
-  		<copy file="${srcWeb}" tofile="WebContent/minified-web-src.js" />
-  		<copy file="${srcUtil}" tofile="WebContent/minified-util-src.js" />
+ 	<target name="mergeJavascript">
+ 		<script language="javascript" src="build/merger.js" />
+	</target>
+	
+ 	<target name="copyJavascript" depends="mergeJavascript">
+  		<copy file="${srcPath}${srcWebName}" tofile="WebContent/${srcWebName}" />
+  		<copy file="${srcPath}${srcUtilName}" tofile="WebContent/${srcUtilName}" />
+  		<copy file="${srcPath}${srcDblSrcName}" tofile="WebContent/${srcDblSrcName}" />
 	</target>
   	
 	<target name="main" depends="copyJavascript"></target>

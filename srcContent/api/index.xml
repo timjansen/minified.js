@@ -139,7 +139,7 @@ Exposes the internal class used by all  Minified lists.</div>
 <div class="summary">
 <i>Minified lists</i> are Array-like objects provided by Minified.</div>
 
-<h3><a href="promise.html">Promise</a></h3>
+<h3><a href="promiseClass.html">Promise</a></h3>
 <div class="summary">
 <i>Promises</i> are objects that represent the result of an asynchronous operation.</div>
 
@@ -197,7 +197,7 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="ee.html">EE()</a>
 </li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
-</li><li><a href="promise.html">Promise</a>
+</li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="error.html">promise.error()</a>
 </li><li><a href="then.html">promise.then()</a>
 </li><li><a href="require.html">require()</a>

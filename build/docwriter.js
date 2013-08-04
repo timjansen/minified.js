@@ -24,7 +24,7 @@ eval(readFile('build/docbuilder.js'));
 
 var _ = (require('minifiedUtil') || require('minified'))._;
 
-var src = readFile(project.getProperty('src'));
+var src = readFile(project.getProperty('srcPath') + project.getProperty('srcWebName'));
 
 var docSections = parseSourceSections(src).filter(function(a) {return (a.name && a.desc && a.doc != 'no');});
 documentSections(docSections);

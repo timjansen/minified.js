@@ -47,7 +47,7 @@ define('minifiedUtil', function() {
 	/** @const */
 	var undef;
 
-	///#definesnippet utilVars
+	///#snippet utilVars
 	/**
 	 * @const
 	 */
@@ -69,13 +69,13 @@ define('minifiedUtil', function() {
 	
 	var templateCache={};
 
-	///#endsnippet utilVars
+	///#/snippet utilVars
 	
 	
 	
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	///#definesnippet commonFuncs
+	///#snippet commonFunctions
 	
 	/** @param s {?} */
 	function toString(s) { 
@@ -96,7 +96,7 @@ define('minifiedUtil', function() {
 		return !!f && isType(f, 'object');
 	}
 	function isNode(n) {
-		return !!n && n['nodeType'];
+		return n && n['nodeType'];
 	}
 	function isNumber(n) {
 		return isType(n, 'number');
@@ -704,7 +704,7 @@ define('minifiedUtil', function() {
 		};
 	}
 	
-	///#endsnippet commonFuncs
+	///#/snippet commonFunctions
 	
 	// NOT a common function: web has a webkit fix in here
 	function isFunction(f) {
@@ -728,7 +728,7 @@ define('minifiedUtil', function() {
 	 */
 	// always defined below
 
-	///#definesnippet utilM
+	///#snippet utilM
 	/*$
 	 * @id listunderscore
 	 * @name ._
@@ -760,13 +760,13 @@ define('minifiedUtil', function() {
 		return new M(arguments, true);
 	}
 
-	///#endsnippet utilM
+	///#/snippet utilM
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
 	copyObj({
-		///#definesnippet utilListFuncs
+		///#snippet utilListFuncs
     /*$
      * @id each
      * @group LIST
@@ -1466,7 +1466,7 @@ define('minifiedUtil', function() {
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
 	}
-	///#endsnippet utilListFuncs
+	///#/snippet utilListFuncs
 	
  	/*$
  	 * @stop
@@ -1476,7 +1476,7 @@ define('minifiedUtil', function() {
 
  	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	///#definesnippet utilUnderscoreFuncs
+	///#snippet utilUnderscoreFuncs
 
 	copyObj({
 		 // @condblock filter
@@ -2471,7 +2471,7 @@ define('minifiedUtil', function() {
 		// @cond !format '':0
 	}, _);
 
-	///#endsnippet utilUnderscoreFuncs
+	///#/snippet utilUnderscoreFuncs
 
 	
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2480,7 +2480,7 @@ define('minifiedUtil', function() {
 	 @stop
 	 */
 	return {
-		///#definesnippet utilExports
+		///#snippet utilExports
 		/*$
 		 * @id underscore
 		 * @name _()
@@ -2488,7 +2488,7 @@ define('minifiedUtil', function() {
 		 * @module UTIL
 		 */
 		'_': _,
-		///#endsnippet utilExports
+		///#/snippet utilExports
 		'M': M
 	};
 });
