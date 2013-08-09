@@ -5,37 +5,7 @@
 hhEach({	
     
 	
-	/*$
-	 * @id offset
-	 * @group SELECTORS
-	 * @requires dollar
-	 * @configurable default
-	 * @name .offset()
-	 * @syntax $(selector).offset()
-	 * Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, 
-	 * with 0/0 being the upper left corner, independent of the user's current view (which depends on the user's current scroll position and zoom level).
-	 *
-	 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
-	 * <pre>
-	 * var pos = $('#myElement').offset();
-	 * $('#resultElement').fill('#myElement's position is left=' + pos.x + ' top=' + pos.y);
-	 * </pre>
-	 *
-	 * @param element the element whose coordinates should be determined
-	 * @return an object containing pixel coordinates in two properties 'x' and 'y'
-	 */
-	'offset': function() {
-		var elem = this[0];
-		var dest = {'x': 0, 'y': 0};
-		while (elem) {
-			dest['x'] += elem.offsetLeft;
-			dest['y'] += elem.offsetTop;
-			elem = elem.offsetParent;
-		}
-		return dest;
-     },
-	
-	
+		
 	/**
 	 * @id wire
 	 * @module ANIMATION

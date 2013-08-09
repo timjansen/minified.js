@@ -2193,9 +2193,7 @@ define('minified', function() {
 		flexiEach(self, function(li) {
 			var p = {o:$(li), e:{}}; 
 			eachObj(p.s = p.o.get(properties), function(name, start) {
-				var dest = properties[name];
-				if (name == '$$slide') 
-					dest = dest*getNaturalHeight(p.o) + 'px';
+				var dest = name == '$$slide' ? properties[name]*getNaturalHeight(p.o) + 'px' : properties[name];
 				p.e[name] = /^[+-]=/.test(dest) ?
 						replace(dest.substr(2), numRegExp, extractNumber(start) + extractNumber(replace(dest, /\+?=/))) 
 						: dest;
