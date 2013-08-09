@@ -1230,7 +1230,7 @@ define('minified', function() {
 
 		if (element) {
 			if (isString(spec)) {
-				var name = replace(replace(spec, /^%/, 'data-'), /^[$@]/);
+				var name = replace(replace(spec, /^%/, 'data-'), /^[$@]+/);
 				var s;
 				if (spec == '$')
 					s = element.className;
@@ -1243,7 +1243,7 @@ define('minified', function() {
 						s = element.getAttribute('style');
 				}
 				// @condblock fadeslide
-				else if (/\$\$/.test(spec) && (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')) {
+				else if (/^\$\$/.test(spec) && (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')) {
 					s = 0;
 				}
 				else if (spec == '$$fade') {
@@ -1258,7 +1258,7 @@ define('minified', function() {
 					s = self['get']('$height');
 				}
 				// @condend fadeslide
-				else if (/^\$/.test(spec)) {
+				else if (/^\$[^$]/.test(spec)) {
 					// @condblock ie8compatibility 
 					if (!_window.getComputedStyle)
 						s = (element.currentStyle||element['style'])[name];
@@ -1320,8 +1320,11 @@ define('minified', function() {
 	 *              between 0 and 1. '$$slide' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0,
 	 *             the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to 
 	 *             'visible' and the display style to 'block'. '$$slide' only works with block elements.</td></tr>
+	 * <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
+	 *             '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document.
+	 *             The coordinates are specified in pixels.</td></tr>
 	 * </table>
-	 * 
+	 *  (use on <code>$(window)</code>)
 	 * @example Unchecking checkboxes:
 	 * <pre>
 	 * $('input.checkbox').set('checked', false);
@@ -1397,7 +1400,8 @@ define('minified', function() {
 	 *             '%' also is used to set attributes, but automatically adds 'data-' to the name. 
 	 *             A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
 	 *             The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
-	 *             The special name '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1. 
+	 *             The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1. 
+	 *             The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use on <code>$(window)</code>). 
 	 *             
 	 * 
 	 * @param value the value to set. If value is null and name specified an attribute, the attribute will be removed.
@@ -1445,7 +1449,7 @@ define('minified', function() {
     		 else
     			// @condend fadeslide
     			 flexiEach(self, function(obj, c) {
-    				 var nameClean = replace(replace(name, /^%/,'data-'), /^[@$]/);
+    				 var nameClean = replace(replace(name, /^%/,'data-'), /^[@$]+/);
     				 var className = obj['className'] || '';
     				 var newObj = /^\$/.test(name) ? obj.style : obj;
     				 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
@@ -1469,6 +1473,10 @@ define('minified', function() {
 						// @condend
 							setAttr(obj, 'style', newValue);
 					 }
+   				 	 else if (name == '$$scrollX')
+			 			 _window['scroll'](newValue, _window['scrollY']);
+   				 	 else if (name == '$$scrollY')
+			 			 _window['scroll'](_window['scrollX'], newValue);
     				 else if (!/^[@%]/.test(name))
     					 newObj[nameClean] = newValue;
     				 else
@@ -2144,7 +2152,8 @@ define('minified', function() {
 	 *
 	 *
 	 * @param properties a property map describing the end values of the corresponding properties. The names can use the
-	 *                   set() syntax ('@' prefix for attributes, '$' for styles, '$$fade' for fading and '$$slide' for slide effects). 
+	 *                   set() syntax ('@' prefix for attributes, '$' for styles, '$$fade' for fading,  '$$slide' for slide effects, 
+	 *                   '$$scrollX' and '$$scrollY' for scroll coordinates). 
 	 *                   Values must be either numbers, numbers with units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). 
 	 *                   Number values, including those with units, can be prefixed with "+=" or "-=", meaning that the value is relative 
 	 *                   to the original value and should be added or subtracted.
