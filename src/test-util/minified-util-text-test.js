@@ -316,6 +316,9 @@ function runTests(loadInContext) {
 			assert.equal(_.template("{{if this<3}}x{{{/if}}")(4),  "");
 			assert.equal(_.template("{{if this<3}}x{{else if this<30}}y{{else   if this<300}}z{{/if}}")(10), "y");
 		});
+		it('() supports {{var declaration}}', function() {
+			assert.equal(_.template("{{var a=obj, b = a;}}{{b}}")('xx'), "xx");
+		});
 		
 		it('() supports {{each expression}}', function() {
 			assert.equal(_.template("{{each}}{{this}}{{/each}}")([1, 2, 3]), "123");

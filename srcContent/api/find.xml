@@ -15,6 +15,8 @@
 <div class="syntaxVariant">
 <div class="syntax">list.find(findFunc)</div>
 <div class="syntax">list.find(element)</div>
+<div class="syntax">list.find(findFunc, startIndex)</div>
+<div class="syntax">list.find(element, startIndex)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -26,8 +28,10 @@
 <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl></dd>
 <dt id="find_element" class=""><a name="find_element"><var>element</var></a></dt>
 <dd class="">the element to search for</dd>
-<dt id="find_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="find_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
+<dt id="find_startIndex" class=""><a name="find_startIndex"><var>startIndex (optional)</var></a></dt>
+<dd class="">the 0-based index of the first element to search.</dd>
+<dt id="find_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="find_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
 it returns either the value returned by the callback or <var>undefined</var>.</dd>
 </dl>
 

@@ -888,6 +888,8 @@ define('minified', function() {
      * @name .find() 
      * @syntax list.find(findFunc) 
      * @syntax list.find(element) 
+     * @syntax list.find(findFunc, startIndex) 
+     * @syntax list.find(element, startIndex) 
      * @module WEB, UTIL
      * Finds a specific value in the list. There are two ways of calling <var>find()</var>:
      * <ol>
@@ -912,13 +914,14 @@ define('minified', function() {
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
      * @param element the element to search for
+     * @param startIndex optional the 0-based index of the first element to search.
      * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
      *         it returns either the value returned by the callback or <var>undefined</var>.
      */ 
-	'find': function(findFunc) {
+	'find': function(findFunc, startIndex) {
 		var self = this, r;
 		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
-		for (var i = 0; i < self.length; i++)
+		for (var i = startIndex; i < self.length; i++)
 			if ((r = f(self[i], i)) != null)
 				return r;
 	},

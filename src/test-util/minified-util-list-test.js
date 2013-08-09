@@ -385,7 +385,7 @@ function runTests(loadInContext) {
 	describe('_.find()', function() {
 		it('single value', function() {
 			var _ = req();
-			var a = _(), b= _("a", 3, "c");
+			var a = _(), b= _("a", 3, "c", 3);
 			
 			assert.equal(_.find(a, 'a'), null);
 			assert.equal(_.find(b, 'a'), 0);
@@ -396,7 +396,7 @@ function runTests(loadInContext) {
 		});
 		it('function', function() {
 			var _ = req();
-			var a = _(), b= _("a", 3, "c");
+			var a = _(), b= _("a", 3, "c", 3);
 			
 			assert.equal(_.find(a, function(value) { return value == 'a'? 1 : null; }), null);
 			assert.equal(_.find(b, function(value) { return value == 'a'? 1 : null; }), 1);
@@ -404,8 +404,54 @@ function runTests(loadInContext) {
 			assert.equal(b.find(function(value) { return value == 3? 17 : null; }), 17);
 			assert.equal(a.find(function(value) { return value == 'c'? '3' : null; }), null);
 			assert.equal(b.find(function(value) { return value == 'c'? '3' : null; }), '3');
+			assert.equal(b.find(function(value, index) { return value == 3 ? index : null; }), 1);
+		});
+		it('index', function() {
+			var _ = req();
+			var l= _("a", 3, "c", 9, 3, 9);
+			
+			assert.equal(_.find(l, 3, 2), 4);
+			assert.equal(l.find(3, 3, 2), 4);
+			assert.equal(l.find(3, -2), 4);
+			assert.equal(l.find(3, -1), null);
 		});
 	});
+	
+	
+	describe('_.findLast()', function() {
+		it('single value', function() {
+			var _ = req();
+			var l= _("a", 3, "c", 9, 3, 9);
+			
+			assert.equal(_.findLast(l, 'a'), 0);
+			assert.equal(l.findLast(3), 4);
+			assert.equal(l.findLast(9), 5);
+		});
+		it('function', function() {
+			var _ = req();
+			var a = _(), b= _("a", 3, "c", 3);
+			
+			assert.equal(_.findLast(a, function(value) { return value == 'a'? 1 : null; }), null);
+			assert.equal(_.findLast(b, function(value) { return value == 'a'? 1 : null; }), 1);
+			assert.equal(a.findLast(function(value) { return value == 3? 17 : null; }), null);
+			assert.equal(b.findLast(function(value) { return value == 3? 17 : null; }), 17);
+			assert.equal(a.findLast(function(value) { return value == 'c'? '3' : null; }), null);
+			assert.equal(b.findLast(function(value) { return value == 'c'? '3' : null; }), '3');
+			assert.equal(b.findLast(function(value, index) { return value == 3 ? index : null; }), 3);
+		});
+		it('index', function() {
+			var _ = req();
+			var l= _("a", 3, "c", 9, 3, 9);
+			assert.equal(_.findLast(l, 3, 2), 1);
+			assert.equal(l.findLast(3, 3, 2), 1);
+			assert.equal(l.findLast(3, -2), 4);
+			assert.equal(l.findLast(3, -3), 1);
+			assert.equal(l.findLast(3, -5), 1);
+			assert.equal(l.findLast(3, -6), null);
+		});
+	});
+	
+	
 	
 	describe('_.contains()', function() {
 		it('finds value', function() {

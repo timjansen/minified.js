@@ -7,6 +7,7 @@ Ongoing
 * New method: offset() to get page coordinates of an element
 * Changed filter(): removed value argument, only function possible
 * In values(), the returned map values will always be arrays.
+* New argument startIndex for find()
 
 
 

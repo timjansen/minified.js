@@ -358,9 +358,8 @@ define('minified', function() {
 	function sub(list, startIndex, endIndex) {
 		if (!list)
 			return [];
-		var l = list.length;
-	    var s = startIndex < 0 ? l+startIndex : startIndex;
-	    var e = endIndex == null ? l : (endIndex >= 0 ? endIndex : l+endIndex);
+	    var s = getFindIndex(list, startIndex, 0);
+	    var e = getFindIndex(list, endIndex, list.length);
  		return filter(list, function(o, index) { 
  			return index >= s && index < e; 
  		});
@@ -379,13 +378,29 @@ define('minified', function() {
 		});
 		return to;
 	}
-	function find(list, findFunc) {
-		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
+	function getFindFunc(findFunc) {
+		return isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
+	}
+	function getFindIndex(list, index, defaultIndex) {
+		return index == null ? defaultIndex : index < 0 ? list.length+index : index;
+	}
+	function find(list, findFunc, startIndex, endIndex) {
+		var f = getFindFunc(findFunc);
+		var e = getFindIndex(list, endIndex, list.length);
 		var r;
-		for (var i = 0; i < list.length; i++)
+		for (var i = getFindIndex(list, startIndex, 0); i < e; i++)
 			if ((r = f(list[i], i)) != null)
 				return r;
 	}
+	function findLast(list, findFunc, startIndex, endIndex) {
+		var f = getFindFunc(findFunc);
+		var e = getFindIndex(list, endIndex, -1);
+		var r;
+		for (var i = getFindIndex(list, startIndex, list.length-1); i > e; i--)
+			if ((r = f(list[i], i)) != null)
+				return r;
+	}
+	
 	function array(list) {
 		return map(list, nonOp);
 	}
@@ -780,6 +795,8 @@ define('minified', function() {
 							return '}else ' + (match[1]  ? 'if('+match[2] +')' : '')+'{';
 						else if (match = /^\/(if)?/.exec(c2))
 							return match[1] ? '}\n' : '});\n';
+						else if (match = /^(var\s.*)/.exec(c2))
+							return match[1]+';';
 						else if (match = /^#(.*)/.exec(c2))
 							return match[1];
 						else if (match = /(.*)::\s*(.*)/.exec(c2))
@@ -955,6 +972,7 @@ define('minified', function() {
 	
 		return function() {
 			var list = $(_document.createElement(elementName));
+			// TODO: attributes!=null only needed with UTIL. Web's isObject is simpler.
 			(isList(attributes) || (attributes != null && !isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 			if (onCreate)
 				onCreate(list);
@@ -1769,7 +1787,7 @@ define('minified', function() {
      */ 
 	'reverse': listBindArray(reverse),
  	
-    /*$ 
+	   /*$ 
      * @id find 
      * @group LIST 
      * @requires
@@ -1777,8 +1795,12 @@ define('minified', function() {
      * @name .find() 
      * @syntax list.find(findFunc) 
      * @syntax list.find(element) 
+     * @syntax list.find(findFunc, startIndex) 
+     * @syntax list.find(element, startIndex) 
      * @syntax _.find(list, findFunc) 
      * @syntax _.find(list, element) 
+     * @syntax _.find(list, findFunc, startIndex) 
+     * @syntax _.find(list, element, startIndex) 
      * @module WEB, UTIL
      * Finds a specific value in the list. There are two ways of calling <var>find()</var>:
      * <ol>
@@ -1816,11 +1838,70 @@ define('minified', function() {
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
      * @param element the element to search for
+     * @param startIndex optional the 0-based index of the first element to search.
      * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
      *         it returns either the value returned by the callback or <var>undefined</var>.
      */ 
  	'find': listBind(find),
+ 
  	
+    /*$ 
+     * @id findlast
+     * @group LIST 
+     * @requires
+     * @configurable default 
+     * @name .findLast() 
+     * @syntax list.findLast(findFunc) 
+     * @syntax list.findLast(element) 
+     * @syntax list.findLast(findFunc, startIndex) 
+     * @syntax list.findLast(element, startIndex) 
+     * @syntax _.findLast(list, findFunc) 
+     * @syntax _.findLast(list, element) 
+     * @syntax _.findLast(list, findFunc, startIndex) 
+     * @syntax _.findLast(list, element, startIndex) 
+     * @module WEB, UTIL
+     * Finds a the last occurrence of specific value in the list. There are two ways of calling <var>findLast()</var>:
+     * <ol>
+     * <li>With a value as argument. Then <var>findLast()</var> will search for the first occurrence of an identical value in the list,
+     *     using the '===' operator for comparisons, and return the index. If it is not found,
+     *     <var>findLast()</var> returns <var>undefined</var>.</li>
+     * <li>With a callback function. <var>findLast()</var> will then call the given function for each list element until the function 
+     *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
+     * </ol>
+     *
+     * @example Finds the first negative number in the list:
+     * <pre> 
+     * var i = _(1, 2, -4, 5, 2, -1, 2).findLast(function(value, index) { if (value < 0) return index; }); // returns 5
+     * </pre> 
+
+     * @example Finds the index of the first 5 in the array:
+     * <pre> 
+     * var i = _.findLast([3, 6, 7, 6, 5, 4, 5], 5); // returns 6
+     * </pre> 
+	 *
+     * @example Determines the last position of the element with the id '#wanted' among all li elements:
+     * <pre> 
+     * var elementIndex = $('li').findLast($$('#wanted'));
+     * </pre> 
+     * 
+     * @example Goes through the elements to find the last div that has the class 'myClass', and returns this element:
+     * <pre> 
+     * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
+     * </pre> 
+     * 
+     * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     *             <var>length</var> property.
+     * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
+     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
+	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
+     * @param element the element to search for
+     * @param startIndex optional the 0-based index of the first element to search.
+     * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
+     *         it returns either the value returned by the callback or <var>undefined</var>.
+     */ 
+ 	'findLast': listBind(findLast),
+ 
     /*$ 
      * @id startswith 
      * @group LIST 
@@ -4301,6 +4382,9 @@ define('minified', function() {
 		 // @condblock find
 		'find': find,
 		 // @condend
+		 // @condblock findlast
+		'findLast': findLast,
+		 // @condend
 		 // @condblock contains
 		'contains': contains,
 		 // @condend
@@ -5188,13 +5272,13 @@ define('minified', function() {
 	     * If you do not need the key, you can omit the variable specification:
 	     * <pre>var myTemplate = _.template('{{each nicknames}}{{this}}{{/each}}');</pre>
 		 *
-	     * In some situations, it may be inevitable to embed raw JavaScript in the template. You need it, for example,
-	     * if you need to . To embed JavaScript code, prefix the
-	     * code with a '#':
+		 * You can also define your own variables, using the regular JavaScript syntax, with 'var':
+	     * <pre>var myTemplate = _.template('{{var s=very.long.name, sum=a+b;}}{{s.desc}}, {{sum}}');</pre>
+		 *
+	     * In some situations, it may be inevitable to embed raw JavaScript in the template. 
+	     * To embed JavaScript code, prefix the code with a '#':
 	     * <pre>var myTemplate = _.template(
-	     *     '{{each}}{{#var outerIndex = index;}}'+
-	     *             '{{each}{{outerIndex}}.{{index}} {{this.title}}\n'{{/each}}'+
-	     *     '{{/each}}');
+	     *     '{{each}}{{#var sum = 0; for (var i = 0; i < 3; i++) { sum += this.numbers[i]; }}{{sum}}{{/each}}');
 	     * var result = myTemplate([['Foreword', 'Intro'], ['Something', 'Something else']]);</pre>
 	     * 
 	     * 

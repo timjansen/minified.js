@@ -86,11 +86,11 @@ own. Or go to <a href="https://docs.google.com/presentation/d/1Q-mT2K5MY7BXJo89f
 </p>
 
 
-  <h2><a name="sizeCmp">Size Comparison</a></h2>
+  <h2><a name="sizeCmp">Size Comparison (Web Module)</a></h2>
   <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
 <tr><th>minified-web.js</th><td>yes</td><td>10.8kb</td><td>4838 bytes</td></tr>
-<tr><th>minified-web.noie.js</th><td>no</td><td>9.3kb</td><td><strong>4092 bytes</strong></td></tr>
+<tr><th>minified-web.noie.js</th><td>no</td><td>9.3kb</td><td><strong>4094 bytes</strong></td></tr>
 <tr><th>jQuery 1.10.2</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
 <tr><th>jQuery 2.0.3</th><td>no</td><td>82kb</td><td>29kb</td></tr>
 <tr><th>MooTools Core NoCompat 1.4.5</th><td>yes</td><td>88kb</td><td>29kb</td></tr>
@@ -98,7 +98,7 @@ own. Or go to <a href="https://docs.google.com/presentation/d/1Q-mT2K5MY7BXJo89f
 </table>
 
 
-<h2><a name="featCmp">Feature Comparison</a></h2>
+<h2><a name="featCmp">Feature Comparison (Web Module)</a></h2>
 <table>
 <tr><th>Feature</th><th>Minified</th><th>jQuery</th><th>MooTools</th><th>Zepto.js</th></tr>
 <tr><th>CSS Selector</th><td>yes<div class="cmpExpl">CSS1 or browser engine</div></td><td>yes<div class="cmpExpl">CSS3 subset + extensions</div></td><td>yes<div class="cmpExpl">CSS3 subset + extensions</div></td><td>yes<div class="cmpExpl">browser engine</div></td></tr>
