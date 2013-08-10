@@ -27,7 +27,7 @@ Modifies the list's elements by setting their properties, attributes, CSS styles
 A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
 The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
 The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1.
-The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use on <code>$(window)</code>).</dd>
+The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use only on <code>$(window)</code>!).</dd>
 <dt id="set_value" class=""><a name="set_value"><var>value</var></a></dt>
 <dd class="">the value to set. If value is null and name specified an attribute, the attribute will be removed.
 If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,

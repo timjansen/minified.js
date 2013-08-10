@@ -2516,6 +2516,12 @@ define('minified', function() {
 					s = self['get']('$height');
 				}
 				// @condend fadeslide
+				// @condblock ie8compatibility 
+				else if (spec == '$$scrollX') // for non-IE, $scrollX/Y fall right thought to element[name]...
+					s = _window['pageXOffset'] != null ? _window['pageXOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollLeft'];
+				else if (spec == '$$scrollY')
+					s = _window['pageXOffset'] != null ? _window['pageYOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollTop'];
+				// @condend
 				else if (/^\$[^$]/.test(spec)) {
 					// @condblock ie8compatibility 
 					if (!_window.getComputedStyle)
@@ -2659,7 +2665,7 @@ define('minified', function() {
 	 *             A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
 	 *             The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
 	 *             The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1. 
-	 *             The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use on <code>$(window)</code>). 
+	 *             The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use only on <code>$(window)</code>!). 
 	 *             
 	 * 
 	 * @param value the value to set. If value is null and name specified an attribute, the attribute will be removed.
@@ -2731,10 +2737,18 @@ define('minified', function() {
 						// @condend
 							setAttr(obj, 'style', newValue);
 					 }
-   				 	 else if (name == '$$scrollX')
-			 			 _window['scroll'](newValue, _window['scrollY']);
-   				 	 else if (name == '$$scrollY')
-			 			 _window['scroll'](_window['scrollX'], newValue);
+   				 	 else if (name == '$$scrollX') {
+			 			 // @cond !ie8compatibility obj['scroll'](newValue, obj['scrollY']);
+   				 		 // @condblock ie8compatibility 
+			 			 obj['scroll'](newValue, $(obj)['get']('$$scrollY'));
+			 			// @condend
+   				 	 }
+   				 	 else if (name == '$$scrollY') {
+			 			 // @cond !ie8compatibility obj['scroll'](obj['scrollX'], newValue);
+   				 		 // @condblock ie8compatibility 
+			 			 obj['scroll']($(obj)['get']('$$scrollX'), newValue);
+			 			// @condend
+   				 	 }
     				 else if (!/^[@%]/.test(name))
     					 newObj[nameClean] = newValue;
     				 else

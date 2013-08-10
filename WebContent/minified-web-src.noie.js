@@ -1276,7 +1276,7 @@ define('minified', function() {
 	 *             A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
 	 *             The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
 	 *             The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1. 
-	 *             The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use on <code>$(window)</code>). 
+	 *             The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use only on <code>$(window)</code>!). 
 	 *             
 	 * 
 	 * @param value the value to set. If value is null and name specified an attribute, the attribute will be removed.
@@ -1340,10 +1340,12 @@ define('minified', function() {
    				 	 else if (name == '$$') {
 							setAttr(obj, 'style', newValue);
 					 }
-   				 	 else if (name == '$$scrollX')
-			 			 _window['scroll'](newValue, _window['scrollY']);
-   				 	 else if (name == '$$scrollY')
-			 			 _window['scroll'](_window['scrollX'], newValue);
+   				 	 else if (name == '$$scrollX') {
+			 			 obj['scroll'](newValue, obj['scrollY']);
+   				 	 }
+   				 	 else if (name == '$$scrollY') {
+			 			 obj['scroll'](obj['scrollX'], newValue);
+   				 	 }
     				 else if (!/^[@%]/.test(name))
     					 newObj[nameClean] = newValue;
     				 else
