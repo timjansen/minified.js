@@ -5,8 +5,10 @@ Minified Change Log
 Ongoing
 --------------------
 * New method: offset() to get page coordinates of an element
+* New get()/set()/animate() properties: $$scrollX and $$scrollY
 * Changed filter(): removed value argument, only function possible
 * In values(), the returned map values will always be arrays.
+* In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead
 * New argument startIndex for find()
 
 

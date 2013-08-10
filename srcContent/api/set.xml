@@ -26,7 +26,8 @@ Modifies the list's elements by setting their properties, attributes, CSS styles
 '%' also is used to set attributes, but automatically adds 'data-' to the name.
 A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
 The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
-The special name '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1.</dd>
+The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1.
+The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use on <code>$(window)</code>).</dd>
 <dt id="set_value" class=""><a name="set_value"><var>value</var></a></dt>
 <dd class="">the value to set. If value is null and name specified an attribute, the attribute will be removed.
 If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
@@ -74,7 +75,12 @@ be set.</p><p>The name given to <var>set()</var> defines what kind of data you a
              between 0 and 1. '$$slide' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0,
             the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to
             'visible' and the display style to 'block'. '$$slide' only works with block elements.</td></tr>
-</table></p><p></p></div>
+<tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
+            '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document.
+            The coordinates are specified in pixels.</td></tr>
+</table>
+ (use on <code>$(window)</code>)
+</p></div>
 
 <div class="examples">
 <h4>Example</h4>

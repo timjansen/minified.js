@@ -2103,8 +2103,7 @@ define('minified', function() {
 	 * When you animate colors, <var>animate()</var> is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not 
 	 * use color names such as 'red'.
 	 *
-	 * You can prefix any number, including numbers with units, with "-=" or "+=" in order to specify a value relative to the starting value. The new value will be added
-	 * to or substracted from the start value to determine the end value.
+	 * Instead of the end value, you can also specify a <code>function(oldValue, index, obj)</code> to calculate the actual end value. 
 	 *
 	 * To allow more complex animation, <var>animate()</var> returns a ##promise#Promise## that is fulfulled when the animation has finished. 
 	 *
@@ -2114,16 +2113,15 @@ define('minified', function() {
 	 *                  .animate({$left: '50px', $top: '100px'}, 1000);  // animation
 	 * </pre>
 	 *
-	 * @example Using relative values for animation:
-	 * <pre>
-	 * $('#myMovingDiv').set({$left: '100px', $top: '100px'})                // start values
-	 *                  .animate({$left: '-=50px', $top: '+=100px'}, 1000);  // animation
-	 * </pre>
-	 * 
 	 * @example Change the color of an element:
 	 * <pre>
 	 * $('#myBlushingDiv').set({$backgroundColor: '#000000'})
 	 *                    .animate({$backgroundColor: '#ff0000'}, 1000);
+	 * </pre>
+	 * 
+	 * @example Using a function to calulate the values for animation:
+	 * <pre>
+	 * $('#myMovingDiv').animate({$left: function(v) { return (parseFloat(v) + 100) + 'px'; }}, 1000);  
 	 * </pre>
 	 * 
 	 * @example Fade-out effect:
@@ -2154,7 +2152,14 @@ define('minified', function() {
 	 * @param properties a property map describing the end values of the corresponding properties. The names can use the
 	 *                   set() syntax ('@' prefix for attributes, '$' for styles, '$$fade' for fading,  '$$slide' for slide effects, 
 	 *                   '$$scrollX' and '$$scrollY' for scroll coordinates). 
-	 *                   Values must be either numbers, numbers with units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb'). 
+	 *                   Values must be either numbers, numbers with units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb') or
+	 *                   a <code>function(oldValue, index, obj)</code>  to determine the new value. The function  will be invoked for each list element 
+	 *                   to evaluate the new value: 
+	 *                   <dl><dt>oldValue</dt><dd>The old value of the property to be changed, as returned by ##get().
+	 *                   For the CSS style names, this is the computed style of the property </dd>
+	 *                   <dt>index</dt><dd>The list index of the object owning the property</dd>
+	 *                   <dt>obj</dt><dd>The list element owning the property.<dd>
+	 *                   <dt class="returnValue">(callback return value)</dt><dd>The destination value to be set.</dd></dl> 
 	 *                   Number values, including those with units, can be prefixed with "+=" or "-=", meaning that the value is relative 
 	 *                   to the original value and should be added or subtracted.
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
@@ -2185,7 +2190,6 @@ define('minified', function() {
 		// @cond debug var colorRegexp = /^(rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|#\w{3}|#\w{6})\s*$/i;
 		var self = this;
 		var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
-		var numRegExp = /-?[\d.]+/;
 		var loopStop;
 		var prom = promise();
 		var interpolate = isFunction(linearity) ? linearity : function(startValue, endValue, t) {
@@ -2197,15 +2201,12 @@ define('minified', function() {
 		durationMs = durationMs || 500;
 		linearity = linearity || 0;
 		
-		
 		// find start values
-		flexiEach(self, function(li) {
+		flexiEach(self, function(li, index) {
 			var p = {o:$(li), e:{}}; 
 			eachObj(p.s = p.o.get(properties), function(name, start) {
-				var dest = name == '$$slide' ? properties[name]*getNaturalHeight(p.o) + 'px' : properties[name];
-				p.e[name] = /^[+-]=/.test(dest) ?
-						replace(dest.substr(2), numRegExp, extractNumber(start) + extractNumber(replace(dest, /\+?=/))) 
-						: dest;
+				p.e[name] = isFunction(dest) ? dest(start, index, li) : 
+					name == '$$slide' ? properties[name]*getNaturalHeight(p.o) + 'px' : properties[name];
 			});
 			initState.push(p);
 		});
@@ -2238,7 +2239,7 @@ define('minified', function() {
 								newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i), t)) + (i < 2 ? ',' : ')');
 						}
 						else 
-							newValue = replace(end, numRegExp, toString(interpolate(extractNumber(start), extractNumber(end), t)));
+							newValue = replace(end, /-?[\d.]+/, toString(interpolate(extractNumber(start), extractNumber(end), t)));
 						isi.o.set(name, newValue);
 					});
 				});

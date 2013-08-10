@@ -25,8 +25,16 @@
 <dl class="params">
 <dt id="animate_properties" class=""><a name="animate_properties"><var>properties</var></a></dt>
 <dd class="">a property map describing the end values of the corresponding properties. The names can use the
-set() syntax ('@' prefix for attributes, '$' for styles, '$$fade' for fading and '$$slide' for slide effects).
-Values must be either numbers, numbers with units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb').
+set() syntax ('@' prefix for attributes, '$' for styles, '$$fade' for fading,  '$$slide' for slide effects,
+'$$scrollX' and '$$scrollY' for scroll coordinates).
+Values must be either numbers, numbers with units (e.g. "2 px") or colors ('rgb(r,g,b)', '#rrggbb' or '#rgb') or
+a <code>function(oldValue, index, obj)</code>  to determine the new value. The function  will be invoked for each list element
+to evaluate the new value:
+<dl><dt>oldValue</dt><dd>The old value of the property to be changed, as returned by <code><a href='get.html'>get()</a></code>.
+For the CSS style names, this is the computed style of the property </dd>
+<dt>index</dt><dd>The list index of the object owning the property</dd>
+<dt>obj</dt><dd>The list element owning the property.<dd>
+<dt class="returnValue">(callback return value)</dt><dd>The destination value to be set.</dd></dl>
 Number values, including those with units, can be prefixed with "+=" or "-=", meaning that the value is relative
 to the original value and should be added or subtracted.</dd>
 <dt id="animate_durationMs" class=""><a name="animate_durationMs"><var>durationMs (optional)</var></a></dt>
@@ -71,8 +79,7 @@ is a value between 0 and 1 that specifies the state of the transition. The funct
 for the value to write. This can cause problems if you mix units in CSS. For example, if the start value is '10%' and you specify an end value of '20px', animate
 will do an animation from '10px' to '20px'. It is not able to convert units.</p><p><var>animate()</var> does not only support strings with units, but any string containing exactly one number. This allows you, among other things, with IE-specific CSS properties.
 For example, you can transition from a start value 'alpha(opacity = 0)' to 'alpha(opacity = 100)'.</p><p>When you animate colors, <var>animate()</var> is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not
-use color names such as 'red'.</p><p>You can prefix any number, including numbers with units, with "-=" or "+=" in order to specify a value relative to the starting value. The new value will be added
-to or substracted from the start value to determine the end value.</p><p>To allow more complex animation, <var>animate()</var> returns a <a href='promise.html'>Promise</a> that is fulfulled when the animation has finished.</p><p></p></div>
+use color names such as 'red'.</p><p>Instead of the end value, you can also specify a <code>function(oldValue, index, obj)</code> to calculate the actual end value.</p><p>To allow more complex animation, <var>animate()</var> returns a <a href='promise.html'>Promise</a> that is fulfulled when the animation has finished.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -83,17 +90,16 @@ $('#myMovingDiv').set({$left: '0px', $top: '0px'})                // start value
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>Using relative values for animation:
-<pre>
-$('#myMovingDiv').set({$left: '100px', $top: '100px'})                // start values
-                 .animate({$left: '-=50px', $top: '+=100px'}, 1000);  // animation
-</pre>
-</p></div>
-<h4>Example</h4>
 <div class="example"><p>Change the color of an element:
 <pre>
 $('#myBlushingDiv').set({$backgroundColor: '#000000'})
                    .animate({$backgroundColor: '#ff0000'}, 1000);
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Using a function to calulate the values for animation:
+<pre>
+$('#myMovingDiv').animate({$left: function(v) { return (parseFloat(v) + 100) + 'px'; }}, 1000);
 </pre>
 </p></div>
 <h4>Example</h4>
