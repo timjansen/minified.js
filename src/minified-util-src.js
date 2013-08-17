@@ -34,7 +34,21 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
 	this['define'] = function(name, f) {def[name] = f();};
 	this['require'] = function(name) { return def[name]; }; 
 }
- 	/*$
+
+	/*$
+	 * @id commonjs
+	 * @name Minified Util for Servers (node.js compatible)
+	 * @doc no
+	 * @configurable optional
+	 * This is a define()-version that will export Minified for Node.js and other CommonJS systems. 
+	 */
+	// @cond !amdfallback function define(name, func) { module.exports = func(); }
+	/*$
+	 * @stop
+	 */
+	
+
+	/*$
  	 * @id minifieddefine
  	 */
 
@@ -787,7 +801,7 @@ define('minifiedUtil', function() {
     /*$
      * @id each
      * @group LIST
-     * @requires list
+     * @requires
      * @configurable default
      * @name .each()
      * @syntax list.each(callback)
@@ -832,7 +846,7 @@ define('minifiedUtil', function() {
 	/*$
 	 * @id filter
 	 * @group LIST
-	 * @requires list
+	 * @requires 
 	 * @configurable default
 	 * @name .filter()
 	 * @syntax list.filter(filterFunc)
@@ -888,7 +902,7 @@ define('minifiedUtil', function() {
 	/*$ 
      * @id collect 
      * @group LIST 
-     * @requires list
+     * @requires 
      * @configurable default 
      * @name .collect() 
      * @syntax list.collect(collectFunc) 
@@ -955,7 +969,7 @@ define('minifiedUtil', function() {
 	/*$ 
      * @id map 
      * @group LIST 
-     * @requires list
+     * @requires
      * @configurable default 
      * @name .map() 
      * @syntax list.map(mapFunc) 
@@ -994,7 +1008,7 @@ define('minifiedUtil', function() {
 	/*$ 
 	 * @id toobject
 	 * @group LIST 
-	 * @requires list
+	 * @requires
 	 * @configurable default 
 	 * @name .toObject() 
 	 * @syntax list.toObject(valueList)
@@ -1027,7 +1041,7 @@ define('minifiedUtil', function() {
 	/*$ 
 	 * @id equals
 	 * @group LIST 
-	 * @requires list
+	 * @requires
 	 * @configurable default 
 	 * @name .equals() 
 	 * @syntax list.equals(otherObject)
@@ -2482,7 +2496,7 @@ define('minifiedUtil', function() {
 	     * In some situations, it may be inevitable to embed raw JavaScript in the template. 
 	     * To embed JavaScript code, prefix the code with a '#':
 	     * <pre>var myTemplate = _.template(
-	     *     '{{each}}{{#var sum = 0; for (var i = 0; i < 3; i++) { sum += this.numbers[i]; }}{{sum}}{{/each}}');
+	     *     '{{each}}{{#var sum = 0; for (var i = 0; i < 3; i++) sum += this.numbers[i]; }}{{sum}}{{/each}}');
 	     * var result = myTemplate([['Foreword', 'Intro'], ['Something', 'Something else']]);</pre>
 	     * 
 	     * 

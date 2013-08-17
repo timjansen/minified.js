@@ -1423,7 +1423,7 @@ define('minified', function() {
     /*$
      * @id each
      * @group LIST
-     * @requires list
+     * @requires
      * @configurable default
      * @name .each()
      * @syntax list.each(callback)
@@ -1468,7 +1468,7 @@ define('minified', function() {
 	/*$
 	 * @id filter
 	 * @group LIST
-	 * @requires list
+	 * @requires 
 	 * @configurable default
 	 * @name .filter()
 	 * @syntax list.filter(filterFunc)
@@ -1524,7 +1524,7 @@ define('minified', function() {
 	/*$ 
      * @id collect 
      * @group LIST 
-     * @requires list
+     * @requires 
      * @configurable default 
      * @name .collect() 
      * @syntax list.collect(collectFunc) 
@@ -1591,7 +1591,7 @@ define('minified', function() {
 	/*$ 
      * @id map 
      * @group LIST 
-     * @requires list
+     * @requires
      * @configurable default 
      * @name .map() 
      * @syntax list.map(mapFunc) 
@@ -1630,7 +1630,7 @@ define('minified', function() {
 	/*$ 
 	 * @id toobject
 	 * @group LIST 
-	 * @requires list
+	 * @requires
 	 * @configurable default 
 	 * @name .toObject() 
 	 * @syntax list.toObject(valueList)
@@ -1663,7 +1663,7 @@ define('minified', function() {
 	/*$ 
 	 * @id equals
 	 * @group LIST 
-	 * @requires list
+	 * @requires
 	 * @configurable default 
 	 * @name .equals() 
 	 * @syntax list.equals(otherObject)
@@ -2516,12 +2516,14 @@ define('minified', function() {
 					s = self['get']('$height');
 				}
 				// @condend fadeslide
+				// @condblock scrollxy
 				// @condblock ie8compatibility 
 				else if (spec == '$$scrollX') // for non-IE, $scrollX/Y fall right thought to element[name]...
 					s = _window['pageXOffset'] != null ? _window['pageXOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollLeft'];
 				else if (spec == '$$scrollY')
 					s = _window['pageXOffset'] != null ? _window['pageYOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollTop'];
-				// @condend
+				// @condend ie8compatibility
+				// @condend scrollxy
 				else if (/^\$[^$]/.test(spec)) {
 					// @condblock ie8compatibility 
 					if (!_window.getComputedStyle)
@@ -2737,6 +2739,7 @@ define('minified', function() {
 						// @condend
 							setAttr(obj, 'style', newValue);
 					 }
+   					// @condblock scrollxy
    				 	 else if (name == '$$scrollX') {
 			 			 // @cond !ie8compatibility obj['scroll'](newValue, obj['scrollY']);
    				 		 // @condblock ie8compatibility 
@@ -2749,6 +2752,7 @@ define('minified', function() {
 			 			 obj['scroll']($(obj)['get']('$$scrollX'), newValue);
 			 			// @condend
    				 	 }
+    				 // @condend
     				 else if (!/^[@%]/.test(name))
     					 newObj[nameClean] = newValue;
     				 else
@@ -5300,7 +5304,7 @@ define('minified', function() {
 	     * In some situations, it may be inevitable to embed raw JavaScript in the template. 
 	     * To embed JavaScript code, prefix the code with a '#':
 	     * <pre>var myTemplate = _.template(
-	     *     '{{each}}{{#var sum = 0; for (var i = 0; i < 3; i++) { sum += this.numbers[i]; }}{{sum}}{{/each}}');
+	     *     '{{each}}{{#var sum = 0; for (var i = 0; i < 3; i++) { sum += this.numbers[i]; }}{{sum}}{{#} }}');
 	     * var result = myTemplate([['Foreword', 'Intro'], ['Something', 'Something else']]);</pre>
 	     * 
 	     * 

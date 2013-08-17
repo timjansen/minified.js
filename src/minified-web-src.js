@@ -223,6 +223,14 @@ define('minified', function() {
 	 * @name Support for $$fade and $$slide
 	 */
 	/*$
+	 * @id scrollxy
+	 * @requires set 
+	 * @group ANIMATION
+	 * @configurable default
+	 * @doc no
+	 * @name Support for $$scrollX and $$scrollY
+	 */
+	/*$
 	 * @stop
 	 */
 
@@ -1258,12 +1266,14 @@ define('minified', function() {
 					s = self['get']('$height');
 				}
 				// @condend fadeslide
+				// @condblock scrollxy
 				// @condblock ie8compatibility 
 				else if (spec == '$$scrollX') // for non-IE, $scrollX/Y fall right thought to element[name]...
 					s = _window['pageXOffset'] != null ? _window['pageXOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollLeft'];
 				else if (spec == '$$scrollY')
 					s = _window['pageXOffset'] != null ? _window['pageYOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollTop'];
-				// @condend
+				// @condend ie8compatibility
+				// @condend scrollxy
 				else if (/^\$[^$]/.test(spec)) {
 					// @condblock ie8compatibility 
 					if (!_window.getComputedStyle)
@@ -1479,6 +1489,7 @@ define('minified', function() {
 						// @condend
 							setAttr(obj, 'style', newValue);
 					 }
+   					// @condblock scrollxy
    				 	 else if (name == '$$scrollX') {
 			 			 // @cond !ie8compatibility obj['scroll'](newValue, obj['scrollY']);
    				 		 // @condblock ie8compatibility 
@@ -1491,6 +1502,7 @@ define('minified', function() {
 			 			 obj['scroll']($(obj)['get']('$$scrollX'), newValue);
 			 			// @condend
    				 	 }
+    				 // @condend
     				 else if (!/^[@%]/.test(name))
     					 newObj[nameClean] = newValue;
     				 else
