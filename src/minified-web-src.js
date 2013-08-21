@@ -200,8 +200,6 @@ define('minified', function() {
 	 * @stop
 	 */
 	
-	///#/snippet webVars
-
 	
 	/*$
 	 * @id ie6compatibility
@@ -234,6 +232,9 @@ define('minified', function() {
 	 * @stop
 	 */
 
+	///#/snippet webVars
+
+	
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	
