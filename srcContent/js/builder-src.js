@@ -1,5 +1,5 @@
 var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
-var _ = require('minifiedUtil')._;
+var _ = MINI._;
 
 var MAX_SIZE = 4095;
 var SRC='/download/minified-web-src.js';

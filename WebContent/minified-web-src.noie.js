@@ -160,6 +160,14 @@ define('minified', function() {
 	 * @name Support for $$fade and $$slide
 	 */
 	/*$
+	 * @id scrollxy
+	 * @requires set 
+	 * @group ANIMATION
+	 * @configurable default
+	 * @doc no
+	 * @name Support for $$scrollX and $$scrollY
+	 */
+	/*$
 	 * @stop
 	 */
 
@@ -1138,6 +1146,8 @@ define('minified', function() {
 					s = self['get']('$height');
 				}
 				// @condend fadeslide
+				// @condblock scrollxy
+				// @condend scrollxy
 				else if (/^\$[^$]/.test(spec)) {
 						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 				}
@@ -1340,12 +1350,14 @@ define('minified', function() {
    				 	 else if (name == '$$') {
 							setAttr(obj, 'style', newValue);
 					 }
+   					// @condblock scrollxy
    				 	 else if (name == '$$scrollX') {
 			 			 obj['scroll'](newValue, obj['scrollY']);
    				 	 }
    				 	 else if (name == '$$scrollY') {
 			 			 obj['scroll'](obj['scrollX'], newValue);
    				 	 }
+    				 // @condend
     				 else if (!/^[@%]/.test(name))
     					 newObj[nameClean] = newValue;
     				 else

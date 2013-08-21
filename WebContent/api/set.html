@@ -1,33 +1,257 @@
-<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="UTF-8"></meta><title>.set() - Minified.js</title><link rel="stylesheet" type="text/css" href="../css/reference.css"></link></head><body><div id="head"><div class="container"><a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt='Minified'><![endif]--> <!--[if gt IE 8]><img src='/img/minified.svg' alt='Minified'><![endif]--> <!--[if !IE]>--><img src='/img/minified.svg' alt='Minified'/><!--<![endif]--></a><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download/">Download</a><a class="notSelected" href="/builder/">Build</a><a class="notSelected" href="/docs/">Documentation</a><a class="selected" href="/api/">API</a><a class="notSelected" href="/about/">About</a></div></div></div><div id="main"><div class="container"> <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p> <h2><a name="doc-set">.set()</a></h2> <div class="summary"> Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes.</div> <h4>Syntax Variants</h4> <div class="syntaxVariant"> <div class="syntax">list.set(name, value)</div> <div class="syntax">list.set(properties)</div> <div class="syntax">list.set(cssClasses)</div> </div> <h4>Parameters</h4> <dl class="params"> <dt id="set_name" class=""><a name="set_name"><var>name</var></a></dt> <dd class="">the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute. '%' also is used to set attributes, but automatically adds 'data-' to the name. A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes. The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way. The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1. The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use only on <code>$(window)</code>!).</dd> <dt id="set_value" class=""><a name="set_value"><var>value</var></a></dt> <dd class="">the value to set. If value is null and name specified an attribute, the attribute will be removed. If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added, with a '-' prefix the class will be removed. Without prefix, the class will be toggled. If <var>value</var> is a function, the <code>function(oldValue, index, obj)</code> will be invoked for each list element to evaluate the new value: <dl><dt>oldValue</dt><dd>The old value of the property to be changed, as returned by <code><a href='get.html'>get()</a></code>. For the CSS style names, this is the computed style of the property </dd> <dt>index</dt><dd>The list index of the object owning the property</dd> <dt>obj</dt><dd>The list element owning the property.<dd> <dt class="returnValue">(callback return value)</dt><dd>The value to be set.</dd></dl> Functions are not supported by '$'.</dd> <dt id="set_properties" class=""><a name="set_properties"><var>properties</var></a></dt> <dd class="">a Object as map containing names as keys and the values to set as map values. See above for the name syntax.</dd> <dt id="set_cssClasses" class=""><a name="set_cssClasses"><var>cssClasses</var></a></dt> <dd class="">if <var>set()</var> is invoked with a string as single argument, the name "$" (CSS classes) is used and the argument is the value. See above for CSS syntax. Instead of a string, you can also specify a <code>function(oldValue, index, obj)</code> to modify the existing classes.</dd> <dt id="set_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="set_RETURN"><var>(return value)</var></a></dt> <dd class="inSyntax0 inSyntax1 inSyntax2">the list</dd> </dl> <h4>Description</h4> <div class="description"><p> Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes. You can either supply a single name and value to set only one property, or you can provide an object that contains name/value pairs to describe more than one property. More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will be set.</p><p>The name given to <var>set()</var> defines what kind of data you are setting. The following name schemes are supported:</p><p><table> <tr><th>Name Schema</th><th>Example</th><th>Sets what?</th><th>Description</th></tr> <tr><td>name</td><td>innerHTML</td><td>Property</td><td>A name without prefix of '$' or '@' sets a property of the object.</td></tr> <tr><td>@name</td><td>@href</td><td>Attribute</td><td>Sets the HTML attribute using setAttribute(). In order to stay compatible with Internet Explorer 7 and earlier, you should not set the attributes '@class' and '@style'. Instead use '$' and '$$' as shown below.</td></tr> <tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Sets a data attribute using setAttribute(). Data attributes are attributes whose names start with 'data-'. '%myattr' and '@data-myattr' are equivalent.</td></tr> <tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <var>style</var> object.</td></tr> <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <var>$</var> modifies the element's CSS classes using the object's <var>className</var> property. The value is a space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class. The name '$' can also be omitted if <var>set</var> is called with class names as only argument.</td></tr> <tr><td>$$</td><td>$$</td><td>Style</td><td>Sets the element's style attribute in a browser-independent way.</td></tr> <tr><td>$$fade</td><td>$$fade</td><td>Fade Effect</td><td>The name '$$fade' sets the opacity of the element in a browser-independent way. The value must be a number between 0 and 1. '$$fade' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0, the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to 'visible' and the display style to 'block'. '$$fade' only works with block elements.</td></tr> <tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>The name '$$slide' allows a vertical slide-out or slide-in effect. The value must be a number between 0 and 1. '$$slide' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0, the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to 'visible' and the display style to 'block'. '$$slide' only works with block elements.</td></tr> <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document. The coordinates are specified in pixels.</td></tr> </table> (use on <code>$(window)</code>) </p></div> <div class="examples"> <h4>Example</h4> <div class="example"><p>Unchecking checkboxes: <pre>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>.set() - Minified.js</title>
+
+<link rel="stylesheet" type="text/css" href="../css/reference.css"/>
+
+
+
+
+</head>
+<body>
+<div id="head">
+	<div class="container">
+		
+		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt='Minified'><![endif]-->
+		<!--[if gt IE 8]><img src='/img/minified.svg' alt='Minified'><![endif]-->
+		<!--[if !IE]> --><img src='/img/minified.svg' alt='Minified'/><!-- <![endif]--></a>
+
+		<div id="topMenu">
+			<a class="notSelected" href="/">Home</a>
+			<a class="notSelected" href="/download/">Download</a>
+			<a class="notSelected" href="/builder/">Build</a>
+			<a class="notSelected" href="/docs/">Documentation</a>
+			<a class="selected" href="/api/">API</a>
+			<a class="notSelected" href="/about/">About</a>
+		</div>
+	</div>
+</div>
+<div id="main">
+	<div class="container">
+<div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
+<h2><a name="doc-set">.set()</a></h2>
+<div class="summary">
+Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes.</div>
+
+<h4>Syntax Variants</h4>
+<div class="syntaxVariant">
+<div class="syntax">list.set(name, value)</div>
+<div class="syntax">list.set(properties)</div>
+<div class="syntax">list.set(cssClasses)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="set_name" class=""><a name="set_name"><var>name</var></a></dt>
+<dd class="">the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
+'%' also is used to set attributes, but automatically adds 'data-' to the name.
+A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
+The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
+The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1.
+The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use only on <code>$(window)</code>!).</dd>
+<dt id="set_value" class=""><a name="set_value"><var>value</var></a></dt>
+<dd class="">the value to set. If value is null and name specified an attribute, the attribute will be removed.
+If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
+with a '-' prefix the class will be removed. Without prefix, the class will be toggled.
+If <var>value</var> is a function, the <code>function(oldValue, index, obj)</code> will be invoked for each list element
+to evaluate the new value:
+<dl><dt>oldValue</dt><dd>The old value of the property to be changed, as returned by <code><a href='get.html'>get()</a></code>.
+For the CSS style names, this is the computed style of the property </dd>
+<dt>index</dt><dd>The list index of the object owning the property</dd>
+<dt>obj</dt><dd>The list element owning the property.<dd>
+<dt class="returnValue">(callback return value)</dt><dd>The value to be set.</dd></dl>
+Functions are not supported by '$'.</dd>
+<dt id="set_properties" class=""><a name="set_properties"><var>properties</var></a></dt>
+<dd class="">a Object as map containing names as keys and the values to set as map values. See above for the name syntax.</dd>
+<dt id="set_cssClasses" class=""><a name="set_cssClasses"><var>cssClasses</var></a></dt>
+<dd class="">if <var>set()</var> is invoked with a string as single argument, the name "$" (CSS classes) is used and the argument is the
+value. See above for CSS syntax.
+Instead of a string, you can also specify a <code>function(oldValue, index, obj)</code> to modify the existing classes.</dd>
+<dt id="set_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="set_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2">the list</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description"><p>
+Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes. You can either supply a
+single name and value to set only one property, or you can provide an object that contains name/value pairs to describe more than one property.
+More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will
+be set.</p><p>The name given to <var>set()</var> defines what kind of data you are setting. The following name schemes are supported:</p><p><table>
+<tr><th>Name Schema</th><th>Example</th><th>Sets what?</th><th>Description</th></tr>
+<tr><td>name</td><td>innerHTML</td><td>Property</td><td>A name without prefix of '$' or '@' sets a property of the object.</td></tr>
+<tr><td>@name</td><td>@href</td><td>Attribute</td><td>Sets the HTML attribute using setAttribute(). In order to stay compatible with Internet Explorer 7 and earlier,
+            you should not set the attributes '@class' and '@style'. Instead use '$' and '$$' as shown below.</td></tr>
+<tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Sets a data attribute using setAttribute(). Data attributes are
+        attributes whose names start with 'data-'. '%myattr' and '@data-myattr' are equivalent.</td></tr>
+<tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <var>style</var> object.</td></tr>
+<tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <var>$</var> modifies the element's CSS classes using the object's <var>className</var> property. The value is a
+            space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
+            The name '$' can also be omitted if <var>set</var> is called with class names as only argument.</td></tr>
+<tr><td>$$</td><td>$$</td><td>Style</td><td>Sets the element's style attribute in a browser-independent way.</td></tr>
+<tr><td>$$fade</td><td>$$fade</td><td>Fade Effect</td><td>The name '$$fade' sets the opacity of the element in a browser-independent way. The value must be a number
+             between 0 and 1. '$$fade' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0,
+            the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to
+            'visible' and the display style to 'block'. '$$fade' only works with block elements.</td></tr>
+<tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>The name '$$slide' allows a vertical slide-out or slide-in effect. The value must be a number
+             between 0 and 1. '$$slide' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0,
+            the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to
+            'visible' and the display style to 'block'. '$$slide' only works with block elements.</td></tr>
+<tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
+            '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document.
+            The coordinates are specified in pixels.</td></tr>
+</table>
+ (use on <code>$(window)</code>)
+</p></div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example"><p>Unchecking checkboxes:
+<pre>
 $('input.checkbox').set('checked', false);
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Changing the <var>innerHTML</var> property of an element: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Changing the <var>innerHTML</var> property of an element:
+<pre>
 $('#toc').set('innerHTML', 'Content');
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Changing attributes: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Changing attributes:
+<pre>
 $('a.someLinks').set('@href', 'http://www.example.com/');
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Removing attributes: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Removing attributes:
+<pre>
 $('a.someLinks').set('@title', null);
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Changing styles: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Changing styles:
+<pre>
 $('.bigText').set('$font-size', 'x-large');
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Adding and removing CSS classes: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Adding and removing CSS classes:
+<pre>
 $('.myElem').set('$', '+myClass -otherClass');
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Toggling a CSS class: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Toggling a CSS class:
+<pre>
 $('.myElem').set('$', 'on');
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Shortcut for CSS manipulation: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Shortcut for CSS manipulation:
+<pre>
 $('.myElem').set('+myClass -otherClass on');
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Making an element transparent: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Making an element transparent:
+<pre>
 $('.seeThrough').set('$$fade', 0.5);
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Making an element visible. Note that $$fade will set the element's display style to 'block' and visibility style to 'visible'. <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Making an element visible. Note that $$fade will set the element's display style to 'block' and visibility style to 'visible'.
+<pre>
 $('.myElem').set('$$fade', 1);
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Using a map to change several properties: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Using a map to change several properties:
+<pre>
 $('input.checkbox').set({checked: false,
                          'parentNode.@title': 'Check this'});
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Changing CSS with a map: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Changing CSS with a map:
+<pre>
 $('.importantText').set({$fontSize: 'x-large',
                          $color: 'black',
                          $backgroundColor: 'red',
                          $: '+selected -default'});
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>You can specify a function as value to modify a value instead of just setting it: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>You can specify a function as value to modify a value instead of just setting it:
+<pre>
 $('h2').set('innerHTML', function(oldValue, index) {
     return 'Chapter ' + index + ': ' + oldValue.toUpperCase();
 });
-</pre> </p></div> </div> <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p> </div> <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a> </li><li><a href="dollardollar.html">$$()</a> </li><li><a href="getcookie.html">$.getCookie()</a> </li><li><a href="loop.html">$.loop()</a> </li><li><a href="off.html">$.off()</a> </li><li><a href="parsejson.html">$.parseJSON()</a> </li><li><a href="ready.html">$.ready()</a> </li><li><a href="request.html">$.request()</a> </li><li><a href="setcookie.html">$.setCookie()</a> </li><li><a href="tojson.html">$.toJSON()</a> </li><li><a href="add.html">.add()</a> </li><li><a href="addafter.html">.addAfter()</a> </li><li><a href="addbefore.html">.addBefore()</a> </li><li><a href="addfront.html">.addFront()</a> </li><li><a href="animate.html">.animate()</a> </li><li><a href="clone.html">.clone()</a> </li><li><a href="collect.html">.collect()</a> </li><li><a href="each.html">.each()</a> </li><li><a href="fill.html">.fill()</a> </li><li><a href="filter.html">.filter()</a> </li><li><a href="find.html">.find()</a> </li><li><a href="get.html">.get()</a> </li><li><a href="is.html">.is()</a> </li><li><a href="length.html">.length</a> </li><li><a href="offset.html">.offset()</a> </li><li><a href="on.html">.on()</a> </li><li><a href="onover.html">.onOver()</a> </li><li><a href="only.html">.only()</a> </li><li><a href="remove.html">.remove()</a> </li><li><a href="replace.html">.replace()</a> </li><li><a href="select.html">.select()</a> </li><li><a href="set.html">.set()</a> </li><li><a href="sub.html">.sub()</a> </li><li><a href="text.html">.text()</a> </li><li><a href="toggle.html">.toggle()</a> </li><li><a href="trav.html">.trav()</a> </li><li><a href="trigger.html">.trigger()</a> </li><li><a href="values.html">.values()</a> </li><li><a href="ee.html">EE()</a> </li><li><a href="M.html">M</a> </li><li><a href="list.html">Minified Lists</a> </li><li><a href="promiseClass.html">Promise</a> </li><li><a href="error.html">promise.error()</a> </li><li><a href="then.html">promise.then()</a> </li><li><a href="require.html">require()</a> </li><li><a href="/docs/howto.html">How to...</a></li></ul></div> </div></div><div id="foot"><div class="container"><p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the <a href="https://plus.google.com/100950045026999226880/posts">Google+ page</a>. <a href="/impressum.html">Legal Notice / Impressum</a>.</p></div></div></body></html>
+</pre>
+</p></div>
+</div>
+
+
+<p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
+</div>
+<div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
+</li><li><a href="dollardollar.html">$$()</a>
+</li><li><a href="getcookie.html">$.getCookie()</a>
+</li><li><a href="loop.html">$.loop()</a>
+</li><li><a href="off.html">$.off()</a>
+</li><li><a href="parsejson.html">$.parseJSON()</a>
+</li><li><a href="ready.html">$.ready()</a>
+</li><li><a href="request.html">$.request()</a>
+</li><li><a href="setcookie.html">$.setCookie()</a>
+</li><li><a href="tojson.html">$.toJSON()</a>
+</li><li><a href="add.html">.add()</a>
+</li><li><a href="addafter.html">.addAfter()</a>
+</li><li><a href="addbefore.html">.addBefore()</a>
+</li><li><a href="addfront.html">.addFront()</a>
+</li><li><a href="animate.html">.animate()</a>
+</li><li><a href="clone.html">.clone()</a>
+</li><li><a href="collect.html">.collect()</a>
+</li><li><a href="each.html">.each()</a>
+</li><li><a href="fill.html">.fill()</a>
+</li><li><a href="filter.html">.filter()</a>
+</li><li><a href="find.html">.find()</a>
+</li><li><a href="get.html">.get()</a>
+</li><li><a href="is.html">.is()</a>
+</li><li><a href="length.html">.length</a>
+</li><li><a href="offset.html">.offset()</a>
+</li><li><a href="on.html">.on()</a>
+</li><li><a href="onover.html">.onOver()</a>
+</li><li><a href="only.html">.only()</a>
+</li><li><a href="remove.html">.remove()</a>
+</li><li><a href="replace.html">.replace()</a>
+</li><li><a href="select.html">.select()</a>
+</li><li><a href="set.html">.set()</a>
+</li><li><a href="sub.html">.sub()</a>
+</li><li><a href="text.html">.text()</a>
+</li><li><a href="toggle.html">.toggle()</a>
+</li><li><a href="trav.html">.trav()</a>
+</li><li><a href="trigger.html">.trigger()</a>
+</li><li><a href="values.html">.values()</a>
+</li><li><a href="ee.html">EE()</a>
+</li><li><a href="M.html">M</a>
+</li><li><a href="list.html">Minified Lists</a>
+</li><li><a href="promiseClass.html">Promise</a>
+</li><li><a href="error.html">promise.error()</a>
+</li><li><a href="then.html">promise.then()</a>
+</li><li><a href="require.html">require()</a>
+</li><li><a href="/docs/howto.html">How to...</a></li></ul></div>
+
+</div>
+</div>
+<div id="foot">
+	<div class="container">
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
+		<a href="https://plus.google.com/100950045026999226880/posts">Google+ page</a>.
+		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
+	</div>
+</div>
+
+
+</body>
+</html>

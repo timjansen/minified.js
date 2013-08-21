@@ -6,8 +6,8 @@
 //
 //
 
-var _ = (require('minifiedUtil') || require('minified'))._;
-
+var isCommonJs = typeof module != 'undefined' && !!module.exports;
+var _ = isCommonJs ? require('minified-headless') : (require('minifiedUtil') || require('minified'))._;
 
 
 // parses the source, returns an array of objects describing sections that can be enabled/disabled
@@ -299,4 +299,12 @@ function deserializeEnabledSections(sections, sectionMap, src) {
 	return null;
 }
 
+if (isCommonJs) {
+	module.exports = { 
+			parseSourceSections: parseSourceSections,
+			prepareSections: prepareSections,
+			deserializeEnabledSections: deserializeEnabledSections,
+			compile: compile
+	};
+}
 

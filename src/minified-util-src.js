@@ -42,17 +42,16 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
 	 * @configurable optional
 	 * This is a define()-version that will export Minified for Node.js and other CommonJS systems. 
 	 */
-	// @cond !amdfallback function define(name, func) { module.exports = func(); }
 	/*$
 	 * @stop
 	 */
 	
 
-	/*$
- 	 * @id minifieddefine
- 	 */
-
-define('minifiedUtil', function() { 
+// @condblock !commonjs
+define('minifiedUtil', function() {
+// @condend !commonjs
+// @cond commonjs module.exports = (function() { 
+	
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  	/*$
@@ -2576,6 +2575,7 @@ define('minifiedUtil', function() {
 	/*$
 	 @stop
 	 */
+//@condblock !commonjs
 	return {
 		///#snippet utilExports
 		/*$
@@ -2588,7 +2588,14 @@ define('minifiedUtil', function() {
 		///#/snippet utilExports
 		'M': M
 	};
+	
 });
+//@condend !commonjs
+
+//@cond commonjs _.M=M; _._=_;
+//@cond commonjs return _;
+//@cond commonjs })();
+
 
 /*$
  * @stop 

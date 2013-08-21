@@ -10,7 +10,7 @@ Ongoing
 * In values(), the returned map values will always be arrays.
 * In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead
 * New argument startIndex for find()
-
+* Replaced ant-based build system with Grunt
 
 
 Beta 2 (2013-07-31)
