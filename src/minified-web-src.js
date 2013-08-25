@@ -39,7 +39,7 @@
  */
 
 // ==ClosureCompiler==
-// @output_file_name minified.js
+// @output_file_name minified-web.js
 // @compilation_level ADVANCED_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
@@ -262,9 +262,6 @@ define('minified', function() {
 	function isNode(n) {
 		return n && n['nodeType'];
 	}
-	function isNumber(n) {
-		return isType(n, 'number');
-	}
 	function nonOp(v) {
 		return v;
 	}
@@ -302,11 +299,12 @@ define('minified', function() {
 		return list;
 	}
 	
+	
 	///#snippet webFunctions
 
 	// note: only the web version has the f.item check
 	function isFunction(f) {
-		return isType(f, 'function') && !f['item']; // item check as work-around webkit bug 14547
+		return isType(f, 'function') && !f['item']; // item check as work-around for webkit bug 14547
 	}
 
 	function isList(v) {
@@ -320,9 +318,7 @@ define('minified', function() {
 		return name ? function(obj) {return re.test(obj[prop]);} : returnTrue;
 	}
 
-	function push(obj, prop, value) {
-		(obj[prop] = (obj[prop] || [])).push(value);
-	}
+
 	
 	function removeFromArray(array, value) {
 		for (var i = 0; array && i < array.length; i++) 
@@ -415,7 +411,6 @@ define('minified', function() {
     }
     
     function ready(handler) {
-    	// @cond debug if (typeof handler != 'function') error("First argument must be a function");
     	if (DOMREADY_HANDLER)
 			DOMREADY_HANDLER.push(handler);
 		else
@@ -427,9 +422,6 @@ define('minified', function() {
 	}
     
     function EE(elementName, attributes, children, onCreate) {
-		// @cond debug if (!elementName) error("EE() requires the element name."); 
-		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':').");
-	
 		return function() {
 			var list = $(_document.createElement(elementName));
 			// TODO: attributes!=null only needed with UTIL. Web's isObject is simpler.
@@ -487,12 +479,9 @@ define('minified', function() {
 			if (parent)
 				return filter(retList, function(node) {
 					var a = node;
-					while (a = a['parentNode']) {
-						if (a === parent)
-							return _true;
-						if (childOnly)
-							return _false;
-					}
+					while (a = a['parentNode'])
+						if (a == parent || childOnly)
+							return a == parent;
 					// fall through to return undef
 				});
 			else
@@ -522,54 +511,47 @@ define('minified', function() {
 		// @cond debug if (/\s/.test(selector)) error("Selector has invalid format, please check for whitespace.");
 		// @cond debug if (/[ :\[\]]/.test(selector)) error("Only simple selectors with ids, classes and element names are allowed.");
 
-		parent = parent || _document;
-
 		elementName = (dotPos = /([\w-]*)\.?([\w-]*)/.exec(selector))[1];
 		className = dotPos[2];
-		elements = (useGEbC = parent.getElementsByClassName && className) ? parent.getElementsByClassName(className) : parent.getElementsByTagName(elementName || '*'); 
+		elements = (useGEbC = _document.getElementsByClassName && className) ? (parent || _document).getElementsByClassName(className) : (parent || _document).getElementsByTagName(elementName || '*'); 
 
 		if (regexpFilter = useGEbC ? elementName : className)
 			elements =  filter(elements, wordRegExpTester(regexpFilter, useGEbC ? 'nodeName' : 'className'));
 		// @condend
 		
 		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(selector);
-		return parent ? filterElements(elements) : elements;
+		return childOnly ? filterElements(elements) : elements;
 	};
 	
 
 	// If context is set, live updates will be possible. 
-	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because it is used only
+	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because context is used only
 	// by on(), and in on() only nodes in the right context will be checked
 	function getFilterFunc(selector, context) {
 		var dotPos;
 		var nodeSet = {};
 		if (isFunction(selector))
 			return selector;
-		else if (!selector || 
-				 (isString(selector) && 
-						 (selector == '*' || ((dotPos = /^([\w-]*)\.([\w-]+)$/.exec(selector)) || (dotPos = /^([\w-]+)$/.exec(selector)))))) {
+		else if (!selector || selector == '*' ||
+				 (isString(selector) && (dotPos = /^([\w-]*)\.?([\w-]*)$/.exec(selector)))) {
 			var nodeNameFilter = wordRegExpTester(dotPos && dotPos[1], 'nodeName');
 			var classNameFilter = wordRegExpTester(dotPos && dotPos[2], 'className');
 			return function(v) { 
 				return isNode(v) == 1 && nodeNameFilter(v) && classNameFilter(v);
 			};
 		}
+		else if (context) 
+			return function(v) { 
+				return $(selector, context)['find'](v)!=_null; // live search instead of node set, for on()
+			};
 		else {
-			if (context) { 
-				return function(v) { 
-					return $(selector, context)['find'](v)!=_null; 
-				};
-			}
-			else {
-				$(selector)['each'](function(node) {
-					nodeSet[getNodeId(node)] = _true;
-				});
-				return function(v) { 
-					return nodeSet[getNodeId(v)]; 
-				};
-			}
-			
-		}
+			$(selector)['each'](function(node) {
+				nodeSet[getNodeId(node)] = _true;
+			});
+			return function(v) { 
+				return nodeSet[getNodeId(v)]; 
+			};
+		}	
 	}
 	///#/snippet webFunctions
 
@@ -1058,12 +1040,13 @@ define('minified', function() {
  	 *         have been visited when traversing another node. Duplicate nodes will be automatically removed.
  	 */
 	'trav': function(property, selector, maxDepth) {
-		var f = getFilterFunc(isNumber(selector) ? _null : selector);
-		var max = isNumber(selector) ? selector : maxDepth || 1e9;
+		var isNum = isType(selector, 'number'); // TODO: use isNumber in util
+		var f = getFilterFunc(isNum ? _null : selector); 
+		var max = isNum ? selector : maxDepth;
 		return new M(collectUniqNodes(this, function(node) {
 				var r = [];
 				var c = node;
-				while ((c = c[property]) && r.length < max)
+				while ((c = c[property]) && r.length != max) // note that maxDepth and max can be undef
 					if (f(c))
 						r.push(c);
 				return r;
@@ -2548,8 +2531,9 @@ define('minified', function() {
 		 * @return the list
 		 */
 		'on': function (eventName, handlerOrSelector, fThisOrArgsOrHandler, optArgs) {
-			// @cond debug if (!(eventName)) error("eventName and handler parameters are required!"); 
-			// @cond debug if (/\bon/i.test(eventName)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
+			function push(obj, prop, value) {
+				(obj[prop] = (obj[prop] || [])).push(value);
+			}
 			return this['each'](function(el, index) {
 				flexiEach(eventName.split(/\s/), function(namePrefixed) {
 					var name = replace(namePrefixed, /\|/);

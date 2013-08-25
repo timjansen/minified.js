@@ -59,7 +59,7 @@ Duplicate nodes will be removed from selectors, but not from lists.</dd>
 
 <h4>Description</h4>
 <div class="description"><p>Creates a new <a href='list.html'>Minified list</a>, or register a DOMReady-handler.
-The most common usage is with a CSS-like selector. <var$()</var> will then create a list containing all elements of the current HTML
+The most common usage is with a CSS-like selector. <var>$()</var> will then create a list containing all elements of the current HTML
 document that fulfill the filter conditions. Alternatively you can also specify a list of objects or a single object.
 Nested lists will automatically be flattened, and nulls will automatically be removed from the resulting list.</p><p>Additionally, you can specify a second argument to provide a context. Contexts only make sense if you selected only
 HTML nodes with the first parameter. Then the context limits the resulting list to include only those nodes

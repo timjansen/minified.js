@@ -12,16 +12,16 @@
 		.x { margin-top: 2px; }		
 	</style> 
 
-	<script type="text/javascript">this['MINIUTIL'] = 'minifiedUtil';</script>
 	<script type="text/javascript" src="sparkplug.js"></script>
 	<script type="text/javascript">
 	// Load the right source, depending on whether 'compiled' is in the URL query
 	
 	var q = window.location.search, undefined;
 	var srcFiles = ["../minified-web-src.js", "../minified-web.js", 
-	                "../minified-dbl-src.js", "../minified-dbl.js", 
+	                "../minified-src.js", 
+	                "../minified.test.js", // this is the same as minified.js - Eclipse's web server creates minified.js as project dir 
 	                "../minified-web-src.noie.js", "../minified-web.noie.js",
-	                "../minified-dbl-src.noie.js", "../minified-dbl.noie.js"];
+	                "../minified-src.noie.js", "../minified.noie.js"];
 	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 4); // remove non-ie versions on old ie
 	
 	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;
@@ -174,7 +174,7 @@
 				
 			}
 		}
-		$(function() { window.setTimeout(runTest, 1); });
+		$(function() { window.setTimeout(runTest, 10); });
 		$(function() {$('#file').fill(srcFiles[srcNum]);});
 		
 	</script>

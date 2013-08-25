@@ -42,17 +42,16 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
 	 * @configurable optional
 	 * This is a define()-version that will export Minified for Node.js and other CommonJS systems. 
 	 */
-	// @cond !amdfallback function define(name, func) { module.exports = func(); }
 	/*$
 	 * @stop
 	 */
 	
 
-	/*$
- 	 * @id minifieddefine
- 	 */
-
-define('minifiedUtil', function() { 
+// @condblock !commonjs
+define('minifiedUtil', function() {
+// @condend !commonjs
+// @cond commonjs module.exports = (function() { 
+	
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  	/*$
@@ -124,9 +123,6 @@ define('minifiedUtil', function() {
 	function isValue(n) {
 		var type = typeof n;
 		return type == 'object' ? !!(n && n['getDay']) : (type == 'string' || type == 'number' || isBool(n));
-	}
-	function isList(v) {
-		return !!v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
 	}
 	function toList(l) {
 		return isList(l) ? l : (l != null ? [l] : []);
@@ -741,6 +737,12 @@ define('minifiedUtil', function() {
 	function isFunction(f) {
 		return isType(f, 'function');
 	}
+	
+	// NOT a common function: web excludes window
+	function isList(v) {
+		return !!v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
+	}
+
 	
 	/*$
 	 * @id length
@@ -2576,6 +2578,7 @@ define('minifiedUtil', function() {
 	/*$
 	 @stop
 	 */
+//@condblock !commonjs
 	return {
 		///#snippet utilExports
 		/*$
@@ -2588,7 +2591,14 @@ define('minifiedUtil', function() {
 		///#/snippet utilExports
 		'M': M
 	};
+	
 });
+//@condend !commonjs
+
+//@cond commonjs _.M=M; _._=_;
+//@cond commonjs return _;
+//@cond commonjs })();
+
 
 /*$
  * @stop 

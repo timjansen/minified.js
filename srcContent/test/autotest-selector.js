@@ -439,9 +439,9 @@ window.miniTests.push.apply(window.miniTests, [
 		name: "$().is()",
 		exec: function() {
 			check($('#a').is(), true, 'default');
-			check($(document).is(), false, '!default');
+			check($(1).is(), false, '!default');
 			check($('#a').is('*'), true, '*');
-			check($(document).is('*'), false, '!*');
+			check($(['x']).is('*'), false, '!*');
 			check($('#a').is('.x'), true, 'class');
 			check($('#b').is('.x'), false, '!class');
 			check($('#a').is('div'), true, 'tag');

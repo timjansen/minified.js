@@ -1,6 +1,7 @@
 module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		
 		minitemplate: {
 			options: {
 				template: 'templates/page.template'
@@ -77,7 +78,7 @@ module.exports = function(grunt) {
 		    }
 		},
 		
-		closurecompiler: {
+		'closurecompiler': {
 			dist: {
 				options: {
 					compilation_level: 'ADVANCED_OPTIMIZATIONS'
@@ -105,13 +106,25 @@ module.exports = function(grunt) {
 		uglify: {
 			dist: {
 				options: {
+					compress: {
+						hoist_vars: true,
+						unsafe: true
+					},
+					mangle: {
+					}					
 				},
 				files: {
 					'WebContent/minified-web.js': 'tmp/minified-web-closure.js',
 					'WebContent/minified-web.noie.js': 'tmp/minified-web-closure.noie.js',
 					'WebContent/minified-util.js': 'tmp/minified-util-closure.js',
 					'WebContent/minified.noie.js': 'tmp/minified-closure.noie.js',
-					'WebContent/minified.js': 'tmp/minified-closure.js'          
+					'WebContent/minified.js': 'tmp/minified-closure.js',
+					'WebContent/minified.test.js': 'tmp/minified-closure.js', // b/c /minified.js not usable on Eclipse web server!
+					
+					'tmp/minified-web-ugly.js': 'WebContent/minified-web.js' ,
+					'tmp/minified-web-ugly.noie.js': 'WebContent/minified-web.noie.js',
+					'tmp/minified-util-ugly.js': 'WebContent/minified-util.js'
+
 				}
 			}
 		},
@@ -126,12 +139,18 @@ module.exports = function(grunt) {
 					'WebContent/test/sparkplug.js': 'srcContent/js/sparkplug-src.js'
 				}
 			},
-			site: {
+			pngs: {
 				files: {
-					'WebContent/img/': 'srcContent/img/*.png',
-					'WebContent/': 'srcContent/test/',
-					'WebContent/': 'srcContent/example/'
+					'WebContent/img/': 'srcContent/img/*.png'
 				}
+			},
+			test: {
+				files: [{
+		            expand: true,     
+		            cwd: 'srcContent/',  
+		            src: ['examples/*.html', 'test/**/*.js', 'test/**/*.html', 'test/**/*.txt'],
+		            dest: 'WebContent/'		          
+		      }]
 			}
 
 		},
@@ -169,9 +188,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-xmlmin');
 	
-	grunt.registerTask('default', ['mergesrc', 'rebuildsrc', 'writedocs', 'minitemplate']);
-	grunt.registerTask('code', ['default', 'copy:sources', 'closurecompiler', 'uglify']);
-	grunt.registerTask('site', ['code', 'copy:site', 'cssmin', 'htmlmin', 'xmlmin']);
+	grunt.registerTask('default', ['mergesrc', 'rebuildsrc', 'copy:sources', 'copy:test']);
+	grunt.registerTask('code', ['default', 'closurecompiler:dist', 'uglify']);
+	grunt.registerTask('site', ['closurecompiler:site', 'writedocs', 'minitemplate', 'copy:pngs', 'copy:test', 'cssmin', 'htmlmin', 'xmlmin']);
+	grunt.registerTask('all', ['code', 'site']);
 	
 	
 };

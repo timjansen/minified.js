@@ -7,8 +7,8 @@
 {{each link: this.externalCss}}<link rel="stylesheet" type="text/css" href="{{link}}"/>{{/each}}
 {{if this.inlineCss}}<style type="text/css">{{this.inlineCss}}</style>{{/if}}
 {{each link: this.asyncCss}}<script type="text/javascript" src="{{link}}" async="async"></script>{{/each}}
-{{each link: this.externalJs}}<script type="text/javascript" src="{link}">{{/each}}
-{{if this.inlineJs}}<script type="text/javascript">{{this.inlineJs}}</xsl:value-of></script>{{/if}}
+{{each link: this.externalJs}}<script type="text/javascript" src="{{link}}"></script>{{/each}}
+{{if this.inlineJs}}<script type="text/javascript">{{this.inlineJs}}</script>{{/if}}
 </head>
 <body>
 <div id="head">

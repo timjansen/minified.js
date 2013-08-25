@@ -103,9 +103,6 @@ module.exports = (function() {
 		var type = typeof n;
 		return type == 'object' ? !!(n && n['getDay']) : (type == 'string' || type == 'number' || isBool(n));
 	}
-	function isList(v) {
-		return !!v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
-	}
 	function toList(l) {
 		return isList(l) ? l : (l != null ? [l] : []);
 	}
@@ -713,6 +710,11 @@ module.exports = (function() {
 	// NOT a common function: web has a webkit fix in here
 	function isFunction(f) {
 		return isType(f, 'function');
+	}
+
+	// NOT a common function: web excludes window
+	function isList(v) {
+		return !!v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
 	}
 
 	/*$

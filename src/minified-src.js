@@ -67,6 +67,9 @@ define('minified', function() {
 	
 ///#/snippet commonAmdStart
 	///#snippet webVars
+	
+	var _null = null, _true = true, _false = false;
+	
 	/**
 	 * @const
 	 */
@@ -175,6 +178,38 @@ define('minified', function() {
 	 * @stop
 	 */
 	
+	
+	/*$
+	 * @id ie6compatibility
+	 * @requires ie7compatibility 
+	 * @group OPTIONS
+	 * @configurable default
+	 * @doc no
+	 * @name Backward-Compatibility for IE6 and similar browsers
+	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6 which makes the library a tiny 
+	 * little bit larger.
+	 */
+
+	/*$
+	 * @id fadeslide
+	 * @requires animate set 
+	 * @group ANIMATION
+	 * @configurable default
+	 * @doc no
+	 * @name Support for $$fade and $$slide
+	 */
+	/*$
+	 * @id scrollxy
+	 * @requires set 
+	 * @group ANIMATION
+	 * @configurable default
+	 * @doc no
+	 * @name Support for $$scrollX and $$scrollY
+	 */
+	/*$
+	 * @stop
+	 */
+
 	///#/snippet webVars
 	///#snippet utilVars
 	/**
@@ -234,9 +269,6 @@ define('minified', function() {
 	function isValue(n) {
 		var type = typeof n;
 		return type == 'object' ? !!(n && n['getDay']) : (type == 'string' || type == 'number' || isBool(n));
-	}
-	function isList(v) {
-		return !!v && v.length != null && !isString(v) && !isNode(v) && !isFunction(v);
 	}
 	function toList(l) {
 		return isList(l) ? l : (l != null ? [l] : []);
@@ -850,19 +882,21 @@ define('minified', function() {
 
 	// note: only the web version has the f.item check
 	function isFunction(f) {
-		return isType(f, 'function') && !f['item']; // item check as work-around webkit bug 14547
+		return isType(f, 'function') && !f['item']; // item check as work-around for webkit bug 14547
+	}
+
+	function isList(v) {
+		return v && v.length != _null && !isString(v) && !isNode(v) && !isFunction(v) && v !== _window;
 	}
 	
-	function returnTrue() { return 1;}
+	function returnTrue() { return _true;}
 	
 	function wordRegExpTester(name, prop) {
 		var re = RegExp('\\b' + name + '\\b', 'i');
 		return name ? function(obj) {return re.test(obj[prop]);} : returnTrue;
 	}
 
-	function push(obj, prop, value) {
-		(obj[prop] = (obj[prop] || [])).push(value);
-	}
+
 	
 	function removeFromArray(array, value) {
 		for (var i = 0; array && i < array.length; i++) 
@@ -892,7 +926,7 @@ define('minified', function() {
 			flexiEach(func(value), function(node) {
 				if (isNode(node) &&!nodeIds[currentNodeId = getNodeId(node)]) {
 					result.push(node);
-					nodeIds[currentNodeId] = true;
+					nodeIds[currentNodeId] = _true;
 				}
 			});
 		});
@@ -901,10 +935,10 @@ define('minified', function() {
 	
 	// finds out the 'natural' height of the first element, the one if $$slide=1
 	function getNaturalHeight(elementList) {
-		var q = {'$position': 'absolute', '$visibility': 'hidden', '$display': 'block', '$height': null};
+		var q = {'$position': 'absolute', '$visibility': 'hidden', '$display': 'block', '$height': _null};
 		var oldStyles = elementList['get'](q);
 		elementList['set'](q);
-		var h = elementList['get']('$height', true);
+		var h = elementList['get']('$height', _true);
 		elementList['set'](oldStyles);
 		return h;
 	}
@@ -925,8 +959,8 @@ define('minified', function() {
 						e['stopPropagation']();
 					// @condblock ie8compatibility 
 					}
-					e.returnValue = false; // cancel for IE
-					e.cancelBubble = true; // cancel bubble for IE
+					e.returnValue = _false; // cancel for IE
+					e.cancelBubble = _true; // cancel bubble for IE
 					// @condend
 				}
 				// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
@@ -951,11 +985,10 @@ define('minified', function() {
     // for ready()
     function triggerDomReady() {
 		flexiEach(DOMREADY_HANDLER, callArg);
-		DOMREADY_HANDLER = null;
+		DOMREADY_HANDLER = _null;
     }
     
     function ready(handler) {
-    	// @cond debug if (typeof handler != 'function') error("First argument must be a function");
     	if (DOMREADY_HANDLER)
 			DOMREADY_HANDLER.push(handler);
 		else
@@ -967,16 +1000,13 @@ define('minified', function() {
 	}
     
     function EE(elementName, attributes, children, onCreate) {
-		// @cond debug if (!elementName) error("EE() requires the element name."); 
-		// @cond debug if (/:/.test(elementName)) error("The element name can not create a colon (':').");
-	
 		return function() {
 			var list = $(_document.createElement(elementName));
 			// TODO: attributes!=null only needed with UTIL. Web's isObject is simpler.
-			(isList(attributes) || (attributes != null && !isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
+			(isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 			if (onCreate)
 				onCreate(list);
-			return list; 
+			return list;
 		};
 	}
 
@@ -1027,12 +1057,9 @@ define('minified', function() {
 			if (parent)
 				return filter(retList, function(node) {
 					var a = node;
-					while (a = a['parentNode']) {
-						if (a === parent)
-							return true;
-						if (childOnly)
-							return false;
-					}
+					while (a = a['parentNode'])
+						if (a == parent || childOnly)
+							return a == parent;
 					// fall through to return undef
 				});
 			else
@@ -1062,54 +1089,47 @@ define('minified', function() {
 		// @cond debug if (/\s/.test(selector)) error("Selector has invalid format, please check for whitespace.");
 		// @cond debug if (/[ :\[\]]/.test(selector)) error("Only simple selectors with ids, classes and element names are allowed.");
 
-		parent = parent || _document;
-
 		elementName = (dotPos = /([\w-]*)\.?([\w-]*)/.exec(selector))[1];
 		className = dotPos[2];
-		elements = (useGEbC = parent.getElementsByClassName && className) ? parent.getElementsByClassName(className) : parent.getElementsByTagName(elementName || '*'); 
+		elements = (useGEbC = _document.getElementsByClassName && className) ? (parent || _document).getElementsByClassName(className) : (parent || _document).getElementsByTagName(elementName || '*'); 
 
 		if (regexpFilter = useGEbC ? elementName : className)
 			elements =  filter(elements, wordRegExpTester(regexpFilter, useGEbC ? 'nodeName' : 'className'));
 		// @condend
 		
 		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(selector);
-		return parent ? filterElements(elements) : elements;
+		return childOnly ? filterElements(elements) : elements;
 	};
 	
 
 	// If context is set, live updates will be possible. 
-	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because it is used only
+	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because context is used only
 	// by on(), and in on() only nodes in the right context will be checked
 	function getFilterFunc(selector, context) {
 		var dotPos;
 		var nodeSet = {};
 		if (isFunction(selector))
 			return selector;
-		else if (!selector || 
-				 (isString(selector) && 
-						 (selector == '*' || ((dotPos = /^([\w-]*)\.([\w-]+)$/.exec(selector)) || (dotPos = /^([\w-]+)$/.exec(selector)))))) {
+		else if (!selector || selector == '*' ||
+				 (isString(selector) && (dotPos = /^([\w-]*)\.?([\w-]*)$/.exec(selector)))) {
 			var nodeNameFilter = wordRegExpTester(dotPos && dotPos[1], 'nodeName');
 			var classNameFilter = wordRegExpTester(dotPos && dotPos[2], 'className');
 			return function(v) { 
-						return isNode(v) == 1 && nodeNameFilter(v) && classNameFilter(v);
-					};
+				return isNode(v) == 1 && nodeNameFilter(v) && classNameFilter(v);
+			};
 		}
+		else if (context) 
+			return function(v) { 
+				return $(selector, context)['find'](v)!=_null; // live search instead of node set, for on()
+			};
 		else {
-			if (context) { 
-				return function(v) { 
-					return $(selector, context)['find'](v)!=null; 
-				};
-			}
-			else {
-				$(selector)['each'](function(node) {
-					nodeSet[getNodeId(node)] = true;
-				});
-				return function(v) { 
-					return nodeSet[getNodeId(v)]; 
-				};
-			}
-			
-		}
+			$(selector)['each'](function(node) {
+				nodeSet[getNodeId(node)] = _true;
+			});
+			return function(v) { 
+				return nodeSet[getNodeId(v)]; 
+			};
+		}	
 	}
 	///#/snippet webFunctions
 	
@@ -2249,7 +2269,7 @@ define('minified', function() {
 			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
 				return e['data'];
 			else 
-				return null;
+				return _null;
 		}
 		return collector(flexiEach, this, extractString)['join']('');
 	},
@@ -2303,12 +2323,13 @@ define('minified', function() {
  	 *         have been visited when traversing another node. Duplicate nodes will be automatically removed.
  	 */
 	'trav': function(property, selector, maxDepth) {
-		var f = getFilterFunc(isNumber(selector) ? null : selector);
-		var max = isNumber(selector) ? selector : maxDepth || 1e9;
+		var isNum = isType(selector, 'number'); // TODO: use isNumber in util
+		var f = getFilterFunc(isNum ? _null : selector); 
+		var max = isNum ? selector : maxDepth;
 		return new M(collectUniqNodes(this, function(node) {
 				var r = [];
 				var c = node;
-				while ((c = c[property]) && r.length < max)
+				while ((c = c[property]) && r.length != max) // note that maxDepth and max can be undef
 					if (f(c))
 						r.push(c);
 				return r;
@@ -2381,7 +2402,7 @@ define('minified', function() {
  	 */
 	'is': function(selector) {
 		var f = getFilterFunc(selector);
-		return !this['find'](function(v) {if (!f(v)) return true;});
+		return !this['find'](function(v) {if (!f(v)) return _true;});
 	},
 	
  	/*$
@@ -2519,9 +2540,9 @@ define('minified', function() {
 				// @condblock scrollxy
 				// @condblock ie8compatibility 
 				else if (spec == '$$scrollX') // for non-IE, $scrollX/Y fall right thought to element[name]...
-					s = _window['pageXOffset'] != null ? _window['pageXOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollLeft'];
+					s = _window['pageXOffset'] != _null ? _window['pageXOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollLeft'];
 				else if (spec == '$$scrollY')
-					s = _window['pageXOffset'] != null ? _window['pageYOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollTop'];
+					s = _window['pageXOffset'] != _null ? _window['pageYOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollTop'];
 				// @condend ie8compatibility
 				// @condend scrollxy
 				else if (/^\$[^$]/.test(spec)) {
@@ -2530,7 +2551,7 @@ define('minified', function() {
 						s = (element.currentStyle||element['style'])[name];
 					else 
 					// @condend
-						s = _window.getComputedStyle(element, null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
+						s = _window.getComputedStyle(element, _null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 				}
 				else if (/^[@%]/.test(spec))
 					s = element.getAttribute(name);
@@ -2689,7 +2710,7 @@ define('minified', function() {
 	 */
      'set': function (name, value) {
     	 function setAttr(obj, n, v) {
-    		 if (v != null)  
+    		 if (v != _null)  
     			 obj.setAttribute(n, v);
 			 else
 				 obj.removeAttribute(n);
@@ -2720,7 +2741,7 @@ define('minified', function() {
     				 var newObj = /^\$/.test(name) ? obj.style : obj;
     				 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
     				 if (name == '$') {
-    					 if (newValue != null) {
+    					 if (newValue != _null) {
     						 flexiEach(newValue.split(/\s+/), function(clzz) {
     							 var cName = replace(clzz, /^[+-]/);
     							 var oldClassName = className;
@@ -2855,7 +2876,7 @@ define('minified', function() {
 					flexiEach(c, appendChildren);
 				else if (isFunction(c))
 					appendChildren(c(e, index));
-				else if (c != null) {   // must check null, as 0 is a valid parameter 
+				else if (c != _null) {   // must check null, as 0 is a valid parameter 
 					var n = isNode(c) ? c : _document.createTextNode(c);
 					if (lastAdded)
 						lastAdded.parentNode.insertBefore(n, lastAdded.nextSibling);
@@ -2865,7 +2886,7 @@ define('minified', function() {
 						e.appendChild(n);
 					lastAdded = n;
 				}
-			})(isNode(children) && index ? null : children);
+			})(isNode(children) && index ? _null : children);
 		});
 	},
 
@@ -3309,7 +3330,7 @@ define('minified', function() {
 			if (nodeType == 1) {
 				var attrs = {
 						// @condblock ie8compatibility
-						'$': e['className'] || null,
+						'$': e['className'] || _null,
 						'$$': IS_PRE_IE9 ? e['style']['cssText'] : e.getAttribute('style')
 						// @condend
 				};
@@ -3330,7 +3351,7 @@ define('minified', function() {
 			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
 				return e['data'];
 			else 
-				return null;
+				return _null;
 		});
 	},
 
@@ -3473,7 +3494,7 @@ define('minified', function() {
 		};
 		state = state || {};
 		state['time'] = 0;
-		state['stop'] = function() { loopStop(); prom(false); };
+		state['stop'] = function() { loopStop(); prom(_false); };
 		durationMs = durationMs || 500;
 		linearity = linearity || 0;
 		
@@ -3481,8 +3502,9 @@ define('minified', function() {
 		flexiEach(self, function(li, index) {
 			var p = {o:$(li), e:{}}; 
 			eachObj(p.s = p.o.get(properties), function(name, start) {
+				var dest = properties[name];
 				p.e[name] = isFunction(dest) ? dest(start, index, li) : 
-					name == '$$slide' ? properties[name]*getNaturalHeight(p.o) + 'px' : properties[name];
+					name == '$$slide' ? properties[name]*getNaturalHeight(p.o) + 'px' : dest;
 			});
 			initState.push(p);
 		});
@@ -3502,8 +3524,8 @@ define('minified', function() {
 					isi.o.set(isi.e);
 				});
 				loopStop();
-				state['time'] = null;
-				prom(true, [self]);
+				state['time'] = _null;
+				prom(_true, [self]);
 			}
 			else
 				flexiEach(initState, function(isi) {
@@ -3604,13 +3626,13 @@ define('minified', function() {
 		'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
 			var self = this;
 			var animState = {};
-			var state = false, regexg = /\b(?=\w)/g, stateDesc;
+			var state = _false, regexg = /\b(?=\w)/g, stateDesc;
 
 			if (stateDesc2)
 				return self['set'](stateDesc1) && 
 				    function(newState) {
 						if (newState !== state) {
-							stateDesc = (state = newState===true||newState===false ? newState : !state) ? stateDesc2 : stateDesc1;
+							stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
 							
 							if (isFunction(stateDesc)) 
 								return stateDesc(self, durationMs, linearity);
@@ -3792,12 +3814,13 @@ define('minified', function() {
 		 * @return the list
 		 */
 		'on': function (eventName, handlerOrSelector, fThisOrArgsOrHandler, optArgs) {
-			// @cond debug if (!(eventName)) error("eventName and handler parameters are required!"); 
-			// @cond debug if (/\bon/i.test(eventName)) error("The event name looks invalid. Don't use an 'on' prefix (e.g. use 'click', not 'onclick'");
+			function push(obj, prop, value) {
+				(obj[prop] = (obj[prop] || [])).push(value);
+			}
 			return this['each'](function(el, index) {
 				flexiEach(eventName.split(/\s/), function(namePrefixed) {
 					var name = replace(namePrefixed, /\|/);
-					var noSelector = isFunction(handlerOrSelector) || null;
+					var noSelector = isFunction(handlerOrSelector) || _null;
 					var handler = noSelector ? handlerOrSelector : fThisOrArgsOrHandler;
 
 					var miniHandler = createEventHandler(handler, 
@@ -3817,7 +3840,7 @@ define('minified', function() {
 					}
 					else {
 					// @condend
-						el.addEventListener(name, miniHandler, false); // W3C DOM
+						el.addEventListener(name, miniHandler, _false); // W3C DOM
 						push(el, MINIFIED_MAGIC_EVENTS, handlerDescriptor);
 					// @condblock ie8compatibility
 					}
@@ -4012,25 +4035,25 @@ define('minified', function() {
 			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			//@condend
 			// @cond !ie6compatibility xhr = new XMLHttpRequest();
-			if (data != null) {
+			if (data != _null) {
 				headers = headers || {};
 				if (!isString(data) && !isNode(data)) { // if data is parameter map...
 					body = collector(eachObj, data, function processParam(paramName, paramValue) {
 						return collector(flexiEach, paramValue, function(v) {
-							return encodeURIComponent(paramName) + ((v != null) ?  '=' + encodeURIComponent(v) : '');
+							return encodeURIComponent(paramName) + ((v != _null) ?  '=' + encodeURIComponent(v) : '');
 						});
 					}).join('&');
 				}
 				
 				if (!/post/i.test(method)) {
 					url += '?' + body;
-					body = null;
+					body = _null;
 				}
 				else if (!isNode(data) && !isString(data) && !headers[ContentType])
 					headers[ContentType] = 'application/x-www-form-urlencoded';
 			}
 			
-			xhr['open'](method, url, true, username, password);
+			xhr['open'](method, url, _true, username, password);
 			eachObj(headers, function(hdrName, hdrValue) {
 				xhr['setRequestHeader'](hdrName, hdrValue);
 			});
@@ -4038,10 +4061,10 @@ define('minified', function() {
 			xhr.onreadystatechange = function() {
 				if (xhr['readyState'] == 4 && !callbackCalled++) {
 					if (xhr['status'] == 200) {
-						prom(true, [xhr['responseText'], xhr['responseXML']]);
+						prom(_true, [xhr['responseText'], xhr['responseXML']]);
 					}
 					else
-						prom(false, [xhr['status'], xhr['statusText'], xhr['responseText']]);
+						prom(_false, [xhr['status'], xhr['statusText'], xhr['responseText']]);
 				}
 			};
 			
@@ -4049,7 +4072,7 @@ define('minified', function() {
 		}
 		catch (e) {
 			if (!callbackCalled) 
-				prom(false, [0, null, toString(e)]);
+				prom(_false, [0, _null, toString(e)]);
 		}
 		return prom;
 	},
@@ -4095,7 +4118,7 @@ define('minified', function() {
     */
     // @condblock ie7compatibility
     'toJSON': function toJSON(value) {
-		if (value == null)
+		if (value == _null)
 			return ""+value;                  //result: "null"; toString(value) is not possible, because it returns an empty string for null
 		if (isString(value = value.valueOf()))
 			return '"' + replace(value, /[\\\"\x00-\x1f\x22\x5c]/g, ucode) + '"' ;
@@ -4209,11 +4232,6 @@ define('minified', function() {
      * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
      *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
      *                   browser has been closed. If the number negative or the date in the past, the cookie will be deleted.
-     * @param path optional if set, the cookie will be restricted to documents in the given path. Otherwise it is valid
-     *                       for the whole domain. This is rarely needed and defaults to '/'.
-     * @param domain optional if set, you use it to specify the domain (e.g. example.com) which can read the cookie. If you don't set it,
-     *               the domain which hosts the current document is used. This parameter is rarely used, because there are only very
-     *               few use cases in which this makes sense.
      * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
      *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
      *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
@@ -4287,14 +4305,12 @@ define('minified', function() {
 	*   var radius = 100;
 	*   var d = 3000;                                        // duration in ms
 	*   $.loop(function(t, stopFunc) {
-	*     if (t > d) {                                       // time is up: call stopFunc()!
-	*       stopFunc();
-	*       return;
-	*     }
-	* 
-	*     var a = 2 * Math.PI * t / rotationsPerMs           // angular position
+	*     var a = 2 * Math.PI * Math.min(t, d) / rotationsPerMs; // angular position
 	*     myDiv.style.left = (radius * Math.cos(a) + ' px';
 	*     myDiv.style.top = (radius * Math.sin(a) + ' px';
+	*     
+	*     if (t > d)                                         // time is up: call stopFunc()!
+	*       stopFunc();
 	*   });
 	* </pre>
 	*
@@ -4358,13 +4374,13 @@ define('minified', function() {
 			}
 			else {
 			// @condend
-				h['e'].removeEventListener(h['n'], h['h'], false); // W3C DOM
+				h['e'].removeEventListener(h['n'], h['h'], _false); // W3C DOM
 				removeFromArray(h['e'][MINIFIED_MAGIC_EVENTS], h);
 			// @condblock ie8compatibility 
 			}
 			// @condend
 		});
-		handler['M'] = null;
+		handler['M'] = _null;
 	}
 
     
@@ -5389,7 +5405,7 @@ define('minified', function() {
 
     if (_document.addEventListener)
     // @condend
-    	_document.addEventListener("DOMContentLoaded", triggerDomReady, false);
+    	_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
 	/*$
 	 @stop
 	 */
@@ -5525,7 +5541,7 @@ define('minified', function() {
 		 * @syntax $(domreadyFunction)
          * @module WEB
 		 * Creates a new ##list#Minified list##, or register a DOMReady-handler. 
-		 * The most common usage is with a CSS-like selector. <var$()</var> will then create a list containing all elements of the current HTML
+		 * The most common usage is with a CSS-like selector. <var>$()</var> will then create a list containing all elements of the current HTML
 		 * document that fulfill the filter conditions. Alternatively you can also specify a list of objects or a single object. 
 		 * Nested lists will automatically be flattened, and nulls will automatically be removed from the resulting list.
 		 * 
