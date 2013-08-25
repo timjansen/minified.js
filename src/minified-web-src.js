@@ -369,25 +369,28 @@ define('minified', function() {
 	function createEventHandler(handler, fThis, args, index, unprefixed, filterFunc) {
 		// triggerOriginalTarget is set only if the event handler is called by trigger()!! 
 		return function(event, triggerOriginalTarget) {
-			var e = event || _window.event, stopPropagation;
-			var target = triggerOriginalTarget || e['target'];
-			if (filterFunc(target)) {
-				// @cond debug try {
-				if ((stopPropagation = (((!handler.apply(fThis || target, args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget) {
-					// @condblock ie8compatibility 
-					if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
-					// @condend
-						e['preventDefault']();
-						e['stopPropagation']();
-					// @condblock ie8compatibility 
-					}
-					e.returnValue = _false; // cancel for IE
-					e.cancelBubble = _true; // cancel bubble for IE
-					// @condend
+			// @condblock ie8compatibility 
+			var e = event || _window.event;
+			if (filterFunc(triggerOriginalTarget || e['target']) && (((((!handler.apply(fThis || triggerOriginalTarget || e['target'], args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget)) {
+				if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
+					e['preventDefault']();
+					e['stopPropagation']();
 				}
-				// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
+				e.returnValue = _false; // cancel for IE
+				e.cancelBubble = _true; // cancel bubble for IE
+				return true;
 			}
-			return stopPropagation; // if called by trigger, return propagation result 
+			else
+				return false;
+			// @condend ie8compatibility
+
+			// @cond !ie8compatibility if (filterFunc(triggerOriginalTarget || event['target']) && (((((!handler.apply(fThis || triggerOriginalTarget || event['target'], args || [event, index])) || args) && unprefixed)) && !triggerOriginalTarget)) {
+			// @cond !ie8compatibility 	e['preventDefault']();
+			// @cond !ie8compatibility 	e['stopPropagation']();
+			// @cond !ie8compatibility 	return true;
+			// @cond !ie8compatibility }
+			// @cond !ie8compatibility else
+			// @cond !ie8compatibility 	return false;		
 		};
 	}
 	
