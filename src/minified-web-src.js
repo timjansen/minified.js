@@ -91,9 +91,11 @@ define('minified', function() {
 	
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		
+	///#snippet webVars
+	
 	var _null = null, _true = true, _false = false;
 	
-	///#snippet webVars
 	/**
 	 * @const
 	 */
@@ -263,9 +265,6 @@ define('minified', function() {
 	function isNumber(n) {
 		return isType(n, 'number');
 	}
-	function isList(v) {
-		return v && v.length != _null && !isString(v) && !isNode(v) && !isFunction(v);
-	}
 	function nonOp(v) {
 		return v;
 	}
@@ -308,6 +307,10 @@ define('minified', function() {
 	// note: only the web version has the f.item check
 	function isFunction(f) {
 		return isType(f, 'function') && !f['item']; // item check as work-around webkit bug 14547
+	}
+
+	function isList(v) {
+		return v && v.length != _null && !isString(v) && !isNode(v) && !isFunction(v) && v !== _window;
 	}
 	
 	function returnTrue() { return _true;}
@@ -548,8 +551,8 @@ define('minified', function() {
 			var nodeNameFilter = wordRegExpTester(dotPos && dotPos[1], 'nodeName');
 			var classNameFilter = wordRegExpTester(dotPos && dotPos[2], 'className');
 			return function(v) { 
-						return isNode(v) == 1 && nodeNameFilter(v) && classNameFilter(v);
-					};
+				return isNode(v) == 1 && nodeNameFilter(v) && classNameFilter(v);
+			};
 		}
 		else {
 			if (context) { 
@@ -924,15 +927,15 @@ define('minified', function() {
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
      * @param element the element to search for
-     * @param startIndex optional the 0-based index of the first element to search.
+     * @param startIndex optional the 0-based index of the first element to search. Default is 0.
      * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
      *         it returns either the value returned by the callback or <var>undefined</var>.
      */ 
 	'find': function(findFunc, startIndex) {
-		var self = this, r;
+		var r;
 		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
-		for (var i = startIndex; i < self.length; i++)
-			if ((r = f(self[i], i)) != _null)
+		for (var i = startIndex || 0; i < this.length; i++)
+			if ((r = f(this[i], i)) != _null)
 				return r;
 	},
 	
@@ -2963,11 +2966,6 @@ define('minified', function() {
      * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
      *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
      *                   browser has been closed. If the number negative or the date in the past, the cookie will be deleted.
-     * @param path optional if set, the cookie will be restricted to documents in the given path. Otherwise it is valid
-     *                       for the whole domain. This is rarely needed and defaults to '/'.
-     * @param domain optional if set, you use it to specify the domain (e.g. example.com) which can read the cookie. If you don't set it,
-     *               the domain which hosts the current document is used. This parameter is rarely used, because there are only very
-     *               few use cases in which this makes sense.
      * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
      *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
      *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
