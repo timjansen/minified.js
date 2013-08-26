@@ -2404,9 +2404,7 @@ define('minified', function() {
 					if (newState !== state) {
 						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
 						
-						if (isFunction(stateDesc)) 
-							return stateDesc(self, durationMs, linearity);
-						else if (durationMs) 
+						if (durationMs) 
 							return self['animate'](stateDesc, animState['stop'] ? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
 						else
 							return self['set'](stateDesc) && undef;

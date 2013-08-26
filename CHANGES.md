@@ -4,14 +4,15 @@ Minified Change Log
 
 Ongoing
 --------------------
-* New method: offset() to get page coordinates of an element
-/ New method: dial() returns a function that transitions elements between two states
-* New get()/set()/animate() properties: $$scrollX and $$scrollY
-* Changed filter(): removed value argument, only function possible
+* New method: offset() to get page coordinates of an element.
+* New method: dial() returns a function that transitions elements between two states.
+* New get()/set()/animate() properties: $$scrollX and $$scrollY.
+* New argument startIndex for find().
+* Changed filter(): removed value argument, only function possible.
 * In values(), the returned map values will always be arrays.
-* In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead
-* New argument startIndex for find()
-* Replaced ant-based build system with Grunt
+* In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead.
+* In toggle(), removed the (undocumented) possibility of using functions as states.
+* Replaced ant-based build system with Grunt.
 
 
 Beta 2 (2013-07-31)
