@@ -5,6 +5,7 @@ Minified Change Log
 Ongoing
 --------------------
 * New method: offset() to get page coordinates of an element
+/ New method: dial() returns a function that transitions elements between two states
 * New get()/set()/animate() properties: $$scrollX and $$scrollY
 * Changed filter(): removed value argument, only function possible
 * In values(), the returned map values will always be arrays.

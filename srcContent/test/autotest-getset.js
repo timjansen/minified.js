@@ -172,6 +172,67 @@ window.miniTests.push.apply(window.miniTests, [
 			check($('#c').get('$marginTop', true) == 0 || isNaN($('#c').get('$marginTop', true)));
 			check(isNaN($('#a').get('@id', true)));
 		}
+	},
+
+	{
+		name: "$().dial(props, props, 1)",
+	 	exec: function() {
+	 		var obj1 = {a: 0, b: 2};
+	 		var obj2 = {a: 4, b: 9};
+	 		var d = $([obj1, obj2]).dial({a:0, b:10, c: '5px', d: '#fff'}, {a:10, b:0, c: '15px', d: '#000'}, 1);
+	 		d(0);
+			check(obj1.a, 0);
+			check(obj2.a, 0);
+			check(obj1.b, 10);
+			check(obj2.b, 10);
+			check(obj1.c, '5px');
+			check(obj2.c, '5px');
+			check(obj1.d, '#fff');
+			check(obj2.d, '#fff');
+	 		d(1);
+			check(obj1.a, 10);
+			check(obj1.b, 0);
+			check(obj2.c, '15px');
+			check(obj2.d, '#000');
+	 		d(0.5);
+			check(obj1.a, 5);
+			check(obj1.b, 5);
+			check(obj2.c, '10px');
+			check(obj2.d, 'rgb(128,128,128)');
+	 		d(0.25);
+			check(obj1.a, 2.5);
+			check(obj1.b, 7.5);
+			check(obj2.c, '7.5px');
+			check(obj2.d, 'rgb(191,191,191)');
+		}
+	},
+	
+	{
+		name: "$().dial(props, props, func)",
+	 	exec: function() {
+	 		var obj1 = {a: 0, b: 2};
+	 		var obj2 = {a: 4, b: 9};
+	 		var d = $([obj1, obj2]).dial({a:0, b:10, c: '5px', d: '#fff'}, {a:10, b:0, c: '15px', d: '#000'}, 
+	 				function(start, end, t) { return t < 1 ? start : end; });
+	 		d(0);
+			check(obj2.a, 0);
+			check(obj2.b, 10);
+			check(obj1.c, '5px');
+			check(obj1.d, '#fff');
+	 		d(1);
+			check(obj1.a, 10);
+			check(obj1.b, 0);
+			check(obj2.c, '15px');
+			check(obj2.d, '#000');
+	 		d(0.5);
+			check(obj1.a, 0);
+			check(obj1.b, 10);
+			check(obj2.c, '5px');
+			check(obj2.d, 'rgb(255,255,255)');
+	 		d(0.25);
+			check(obj1.a, 0);
+		}
 	}
+	
 
 ]);

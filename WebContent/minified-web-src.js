@@ -369,25 +369,26 @@ define('minified', function() {
 	function createEventHandler(handler, fThis, args, index, unprefixed, filterFunc) {
 		// triggerOriginalTarget is set only if the event handler is called by trigger()!! 
 		return function(event, triggerOriginalTarget) {
-			var e = event || _window.event, stopPropagation;
-			var target = triggerOriginalTarget || e['target'];
-			if (filterFunc(target)) {
-				// @cond debug try {
-				if ((stopPropagation = (((!handler.apply(fThis || target, args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget) {
-					// @condblock ie8compatibility 
-					if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
-					// @condend
-						e['preventDefault']();
-						e['stopPropagation']();
-					// @condblock ie8compatibility 
-					}
-					e.returnValue = _false; // cancel for IE
-					e.cancelBubble = _true; // cancel bubble for IE
-					// @condend
+			var stop;
+			// @condblock ie8compatibility 
+			var e = event || _window.event;
+			if (filterFunc(triggerOriginalTarget || e['target']) && 
+			   (((stop = ((!handler.apply(fThis || triggerOriginalTarget || e['target'], args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget)) {
+				if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
+					e['preventDefault']();
+					e['stopPropagation']();
 				}
-				// @cond debug } catch (ex) { error("Error in event handler \""+name+"\": "+ex); }
+				e.returnValue = _false; // cancel for IE
+				e.cancelBubble = _true; // cancel bubble for IE
 			}
-			return stopPropagation; // if called by trigger, return propagation result 
+			// @condend ie8compatibility
+
+			// @cond !ie8compatibility if (filterFunc(triggerOriginalTarget || event['target']) && (((stop = ((!handler.apply(fThis || triggerOriginalTarget || event['target'], args || [event, index])) || args) && unprefixed)) && !triggerOriginalTarget)) {
+			// @cond !ie8compatibility 	event['preventDefault']();
+			// @cond !ie8compatibility 	event['stopPropagation']();
+			// @cond !ie8compatibility }
+			
+			return stop;
 		};
 	}
 	
@@ -2078,7 +2079,7 @@ define('minified', function() {
 	/*$
 	 * @id animate
 	 * @group ANIMATION
-	 * @requires loop dollar set get promise
+	 * @requires loop dollar dial get promise
 	 * @configurable default
 	 * @name .animate()
 	 * @syntax list.animate(properties)
@@ -2197,462 +2198,516 @@ define('minified', function() {
 	 *         The fulfillment handler will be called as <code>function(list)</code>:
 	 *         <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl> 
 	 *         The rejection handler is called as <code>function()</code> without arguments. 
-	 */
+	 */	
 	'animate': function (properties, durationMs, linearity, state) {
-		// @cond debug if (!properties || typeof properties == 'string') error('First parameter must be a map of properties (e.g. "{top: 0, left: 0}") ');
-		// @cond debug if (linearity && !isFunction(linearity) && (linearity < 0 || linearity > 1)) error('Third parameter must be at least 0 and not larger than 1.');
-		// @cond debug var colorRegexp = /^(rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|#\w{3}|#\w{6})\s*$/i;
 		var self = this;
-		var initState = []; // for each item contains a map {s:{}, e:{}, o} s/e are property name -> startValue of start/end. The item is in o.
+		var dials = []; // contains a dial for each item
 		var loopStop;
 		var prom = promise();
-		var interpolate = isFunction(linearity) ? linearity : function(startValue, endValue, t) {
-			return startValue + t * (endValue - startValue) * (linearity + (1-linearity) * t * (3 - 2*t)); 
-		};
 		state = state || {};
 		state['time'] = 0;
 		state['stop'] = function() { loopStop(); prom(_false); };
 		durationMs = durationMs || 500;
-		linearity = linearity || 0;
 		
 		// find start values
 		flexiEach(self, function(li, index) {
-			var p = {o:$(li), e:{}}; 
-			eachObj(p.s = p.o.get(properties), function(name, start) {
+			var elList = $(li), dialStartProps, dialEndProps = {};
+			eachObj(dialStartProps = elList.get(properties), function(name, start) {
 				var dest = properties[name];
-				p.e[name] = isFunction(dest) ? dest(start, index, li) : 
-					name == '$$slide' ? properties[name]*getNaturalHeight(p.o) + 'px' : dest;
+				dialEndProps[name] = isFunction(dest) ? dest(start, index, li) : 
+					name == '$$slide' ? properties[name]*getNaturalHeight(elList) + 'px' : dest;
 			});
-			initState.push(p);
+			dials.push(elList['dial'](dialStartProps, dialEndProps, linearity));
 		});
-
+		
 		// start animation
 		loopStop = $.loop(function(timePassedMs) { 
-			function getColorComponent(colorCode, index) {
-				return (/^#/.test(colorCode)) ?
-					parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
-					:
-					parseInt(replace(colorCode, /[^\d,]+/g).split(',')[index]);
-			}
-
 			state['time'] = timePassedMs;
 			if (timePassedMs >= durationMs || timePassedMs < 0) {
-				flexiEach(initState, function(isi) { // set destination values
-					isi.o.set(isi.e);
-				});
 				loopStop();
 				state['time'] = _null;
 				prom(_true, [self]);
 			}
-			else
-				flexiEach(initState, function(isi) {
-					eachObj(isi.s, function(name, start) {
-						var newValue = 'rgb(', end=isi.e[name];
-						var t = timePassedMs/durationMs;
-						if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
-							for (var i = 0; i < 3; i++) 
-								newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i), t)) + (i < 2 ? ',' : ')');
-						}
-						else 
-							newValue = replace(end, /-?[\d.]+/, toString(interpolate(extractNumber(start), extractNumber(end), t)));
-						isi.o.set(name, newValue);
-					});
-				});
-			});
-			return prom;		
-		},
-		
-		/*$
-		 * @id toggle
-		 * @group ANIMATION
-		 * @requires animate set
-		 * @configurable default
-		 * @name .toggle()
-		 * @syntax list.toggle(cssClasses)
-		 * @syntax list.toggle(state1, state2)
-		 * @syntax list.toggle(state1, state2, durationMs)
-		 * @syntax list.toggle(state1, state2, durationMs, linearity)
-		 * @syntax list.toggle(state1, state2, durationMs, interpolationFunction)
-		 * @module WEB
-		 * 
-		 * Creates a function that switches between the two given states for the list. The states use the ##set() property syntax. You can also
-		 * just pass a string of CSS classes, as you do with <var>set()</var>.
-		 *
- 	     * If no duration is given, the returned function changes the state immediately using ##set(). If a duration has been passed, the returned function
- 	     * uses ##animate() to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the 
- 	     * animation and returns to the other state.
-		 *
-		 * @example Creates a toggle function that changes the background color of the page.
-		 * <pre>
-		 * var light = $('body').set({$backgroundColor: #000}, {$backgroundColor: #fff});
-		 * light();      // toggles state to second state
-		 * light(false); // sets first state (background color to #000).
-		 * light(true);  // sets second state (background color to #fff).
-		 * light();      // toggles state to first state
-		 * </pre>
-		 * 
-		 * @example Takes the previous function, but adds it as an onclick event handler that toggles the color.
-		 * <pre>
-		 * var light = $('body').toggle({$backgroundColor: #000}, {$backgroundColor: #fff});
-		 * $('#mySwitch').on('click', light);
-		 * </pre>
-		 *
-		 * @example Using an animated transition by passing a duration:
-		 * <pre>
-		 * var dimmer = $('body').toggle({$backgroundColor: #000}, {$backgroundColor: #fff}, 500);
-		 * $('#mySwitch').on('click', dimmer);
-		 * </pre>
-		 *
-		 * @example Toggling CSS classes using the full syntax:
-		 * <pre>
-		 * var t = $('#myElement').toggle({$: '-myClass1 -myClass2'}, {$: '+myClass1 +myClass2'});
-		 * $('#myController').on('click', t);
-		 * </pre>
-		 *
-		 * @example There is a shortcut for toggling CSS classes. Just list them space-separated in a string:
-		 * <pre>
-		 * var t = $('#myElement').toggle('myClass1 myClass2');
-		 * </pre>
-		 * 
-		 * @param cssClasses a string containing space-separated CSS class names to toggle. Classes are disabled in the first state
-		 *                   and enabled in the second.
-		 * @param state1 a property map in ##set() syntax describing the initial state of the properties. The properties will automatically be set when the
-		 *                   <var>toggle()</var> function is created. The properties will be set for all elements of the list.
-		 * @param state2 a property map describing the second state of the properties. Uses ##set() syntax, like the other state. 
-		 * @param durationMs optional if set, the duration of the animation in milliseconds. By default, there is no animation and the 
-		 * 					 properties will be changed immediately.
-		 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.
-		 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> for the animation which will be called every 
-		 *     time an interpolated value is required: 
-		 *           <dl>
-	 	 *             <dt>startValue</dt><dd>The start value of the transition.</dd>
-	 	 *             <dt>endValue</dt><dd>The end value of the transition.</dd>
-	 	 *           <dt>t</dt><dd>A value between 0 and 1 that specifies the state of the transition.</dd>
-	 	 *             <dt class="returnValue">(callback return value)</dt><dd>The value at the time <var>t</var>.</dd>
-	 	 *             </dl> 		 
-	 	 * @return a toggle function <code>function(newState)</code> that will toggle between the two states, or set a specific state.
-		 *             <dl>
-		 *             <dt>newState (optional)</dt><dd>If a boolean <var>true</var or <var>false</var> is given, 
-		 *             the toggle will set the first or second state, respectively. If called with any other value, or without a value,
-		 *             the function toggles to the other state.</dd>
-		 *             <dt class="returnValue">(return value)</dt><dd>A ##promise#Promise## that is fulfilled when the toggle operation ended, or
-		 *             <var>null</var>/<var>undefined</var> if the toggle finished its work during the invocation. Promises are mostly
-		 *             used for animations, so you can track when the animation is done.</dd>
-		 *             </dl>
-		 */
-		'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
-			var self = this;
-			var animState = {};
-			var state = _false, regexg = /\b(?=\w)/g, stateDesc;
+			flexiEach(dials, function(dial) {dial(timePassedMs/durationMs);}); // TODO: use callList in Util builds
+		});
+		return prom;		
+	},
 
-			if (stateDesc2)
-				return self['set'](stateDesc1) && 
-				    function(newState) {
-						if (newState !== state) {
-							stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
-							
-							if (isFunction(stateDesc)) 
-								return stateDesc(self, durationMs, linearity);
-							else if (durationMs) 
-								return self['animate'](stateDesc, animState['stop'] ? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
-							else
-								return self['set'](stateDesc) && undef;
-						}
-					};
-			else
-				return self['toggle'](replace(stateDesc1, regexg, '-'), replace(stateDesc1, regexg, '+'));
-		},
+	
+	/*$
+	 * @id dial
+	 * @group ANIMATION
+	 * @requires get set
+	 * @configurable default
+	 * @name .dial()
+	 * @syntax list.dial(state1, state2)
+	 * @syntax list.dial(state1, state2, linearity)
+	 * @syntax list.dial(state1, state2, interpolationFunc)
+	 * @module WEB
+	 * 
+	 * Creates a function allows you to set all list members to one of two states or any transitional state between them. 
+	 * The states are specified using a ##set() - compatible object maps containing the properties to set.
+	 * Pass 0 to the function to set the first state for all list members, or 1 to set the second state.
+	 * Any value between 0 and 1 will cause dial to interpolate between the two states.
+	 * Interpolation is supported for all numeric values, including those that have a string suffix (e.g. 'px' unit), 
+	 * and for colors in all CSS notations (e.g. '#f00', '#f0d1ff' or 'rgb(23,0,100)').
+	 *
+	 * You can use the optional third parameter to define the kind of interpolation to use for values between 0 and 1.
+	 * If 0, the dial uses a smooth, cubic interpolation. For 1 it uses linear interpolation. Values between 0 and 1
+	 * will mix both algorithms. You can also specify an interpolation function.
+	 *
+	 * See also ##toggle() for a similar function that allows you to set two states and automatically animate them.
+	 *
+	 * @example Creates a dial function that changes the background color of the page.
+	 * <pre>
+	 * var light = $('body').dial({$backgroundColor: #000}, {$backgroundColor: #fff});
+	 * light(0);     // set the first state (background color to #000)
+	 * light(1);     // sets second state (background color to #fff).
+	 * light(0.5);  // interpolates between two states, sets background color to #888.
+	 * light(0.25);  // interpolates between two states, sets background color to #444.
+	 * </pre>
+	 * 
+	 * @param state1 a property map in ##set() syntax describing the first state of the properties. The properties will be set for all elements of the list.
+	 * @param state2 a property map describing the second state of the properties. Uses ##set() syntax, like the first state. 
+	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.
+	 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> which will be called every 
+	 *     values when an interpolated value is required: 
+	 *           <dl>
+ 	 *             <dt>startValue</dt><dd>The start value of the transition.</dd>
+ 	 *             <dt>endValue</dt><dd>The end value of the transition.</dd>
+ 	 *           <dt>t</dt><dd>A value between 0 and 1 that specifies the state of the transition.</dd>
+ 	 *             <dt class="returnValue">(callback return value)</dt><dd>The value at the time <var>t</var>.</dd>
+ 	 *             </dl> 		 
+ 	 * @return a dial function <code>function(newPosition)</code> that will set the state.
+	 *             <dl>
+	 *             <dt>newPosition</dt><dd>If 0 or lower, set the list members to the first step. 
+	 *             If 1 or higher, sets them to the second state. For any value betweeen 0 and 1, the list members
+	 *             will be set to interpolated values.</dd>
+	 *             </dl>
+	 */
+	'dial': function (properties1, properties2, linearity) {
+		var self = this;
+		var interpolate = isFunction(linearity) ? linearity : function(startValue, endValue, t) {
+			return startValue + t * (endValue - startValue) * (linearity + (1-linearity) * t * (3 - 2*t)); 
+		};
+		linearity = linearity || 0;
 
-		/*$
-		 * @id values
-		 * @module REQUEST
-		 * @requires each
-		 * @configurable default
-		 * @name .values()
-		 * @syntax list.values()
-		 * @syntax list.values(dataMap)
-		 * Creates a name/value map from the given form. values() looks at the list's form elements and writes each element's name into the map,
-		 * using the element name as key and the element's value as value. As there can be more than one value with the same name, 
-		 * the map's values will always be arrays of values. Form elements without name will be ignored.
-		 *
-		 * values() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
-		 * elements will be serialized.
-		 * 
-		 * The map format returned by values() is exactly the format used by request().
-		 * 
-		 * Please note that when you include an input element more than once, for example by having the input itself and its form in the list, the
-		 * value will be included twice in the list.
-		 *
-		 * @example Serialize a form and send it as request parameters:
-		 * <pre>
-		 * $.request('get', '/exampleService', $('#myForm').values(), resultHandler);
-		 * </pre>
-		 * 
-		 * @example Serialize only some selected input fields:
-		 * <pre>
-		 * var data = $('#myText, input.myRadios').values();
-		 * </pre>
-		 * 
-		 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
-		 * @return a map containing name->[value, value...] pairs, using strings as name and value. 
-		 */
-		'values': function(data) {
-			var r = data || {};
-			this['each'](function(el) {
-				var n = el['name'], v = toString(el['value']), l;
-				if (/form/i.test(el['tagName']))
-					// @condblock ie9compatibility 
-					$(collector(flexiEach, el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
-					// @condend
-					// @cond !ie9compatibility $(el['elements'])['values'](r);
-				else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
-					r[n] = collector(flexiEach, [r[n], v], nonOp);
-				}
-			});
-			return r;
-		},
-
-		/*$
-		 * @id offset
-		 * @group SELECTORS
-		 * @requires dollar
-		 * @configurable default
-		 * @name .offset()
-		 * @syntax list.offset()
-		 * Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, 
-		 * with 0/0 being the upper left corner, independent of the user's current view (which depends on the user's current scroll position and zoom level).
-		 *
-		 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
-		 * <pre>
-		 * var pos = $('#myElement').offset();
-		 * $('#resultElement').fill('#myElement's position is left=' + pos.x + ' top=' + pos.y);
-		 * </pre>
-		 *
-		 * @param element the element whose coordinates should be determined
-		 * @return an object containing pixel coordinates in two properties 'x' and 'y'
-		 */
-		'offset': function() {
-			var elem = this[0];
-			var dest = {'x': 0, 'y': 0};
-			while (elem) {
-				dest['x'] += elem['offsetLeft'];
-				dest['y'] += elem['offsetTop'];
-				elem = elem['offsetParent'];
-			}
-			return dest;
-		},
-
-		/*$
-		 * @id on
-		 * @group EVENTS
-		 * @requires dollar each
-		 * @configurable default
-		 * @name .on()
-		 * @syntax list.on(names, eventHandler)
-		 * @syntax list.on(names, selector, eventHandler)
-		 * @syntax list.on(names, customFunc, args)
-		 * @syntax list.on(names, customFunc, fThis, args)
-		 * @module WEB
-		 * Registers the function as event handler for all items in the list.
-		 * 
-		 * By default, Minified cancels event propagation and the element's default behaviour for all elements that have an event handler. 
-		 * You can override this by prefixing the event name with a '|' or by returning a 'true' value in the handler, which will reinstate 
-		 * the original JavaScript behaviour.
-		 * 
-		 * Handlers are called with the original event object as first argument, the index of the source element in the 
-		 * list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked). 
-		 * 
-		 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback. 
-		 * When you pass arguments, the handler's return value is always ignored and the event with unnamed prefixes 
-		 * will always be cancelled.
-		 * 
-		 * Optionally you can specify a selector string to receive only events that bubbled up from elements matching the
-		 * selector. The selector is executed in the context of the element you registered on to identify whether the
-		 * original target of the event qualifies. If not, the handler is not called.
-		 * 
-		 * Minified always registers event handlers with event bubbling enabled. Event capture is not supported.
-		 * 
-		 * Event handlers can be unregistered using #off#$.off().
-		 * 
-		 * @example Adds a handler to all divs which paints the div background color to red when clicked. 
-		 * <pre>
-		 * $('div').on('click', function() {
-		 *    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
-		 * });
-		 * </pre>
-		 *
-		 * @example Registers a handler to call a method setStatus('running') using an inline function:
-		 * <pre>
-		 * $('#myButton').on('click', function() {
-		 *    myObject.setStatus('running');
-		 * });
-		 * </pre>
-		 * The previous example can bere written like this, using <var>on()</var>'s <var>args</var> and <var>fThis</var> parameters:
-		 * <pre>
-		 * $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
-		 * </pre>
-		 *
-		 * @example Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behaviour: 
-		 * <pre>
-		 * $('#myInput').on('|keypress |keydown', function() {
-		 *    // do something
-		 * });
-		 * </pre>
-		 * 
-		 * @example Adds listeners for all clicks on 
-		 * <pre>
-		 * $('#table').on('change', 'tr', function(event, index, selectedIndex) {
-		 *    alert("Click on table row number: " + selectedIndex);
-		 * });
-		 * </pre>
-		 * 
-		 * @param names the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
-		 *             the name must not used. You can register the handler for more than one event by specifying several 
-		 *             space-separated event names. If the name is prefixed
-		 *             with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will 
-		 *             be executed by the browser. 
-		 * @param selector optional a selector string for ##dollar#$() to receive only events that match the selector. 
-		 *                Supports all valid parameters for ##dollar#$() except functions. Analog to ##is(), 
-		 *                 the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
-		 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
-		 * 		  <dl>
-	 	 *             <dt>event</dt><dd>The original DOM event object.</dd>
-	 	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
-	 	 *             <dt class="returnValue">(callback return value)</dt><dd>Unless the handler returns <var>true</var> 
-	 	 *             or the event name is prefixed by '|', all further processing of the event will be 
-		 *                stopped and event bubbling will be disabled.</dd>
-	 	 *             </dl>
-		 *             'this' is set to the target element that caused the event (the same as <var>event.target</var>).
-		 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>
-		 *                   and optionally the 'this' context given using <var>fThis</var>.
-		 * @param fThis optional a value for 'this' in the custom callback, instead of the event target
-		 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. 
-		 *                      If you pass custom arguments, the return value of the handler will always be ignored.
-		 * @return the list
-		 */
-		'on': function (eventName, handlerOrSelector, fThisOrArgsOrHandler, optArgs) {
-			function push(obj, prop, value) {
-				(obj[prop] = (obj[prop] || [])).push(value);
-			}
-			return this['each'](function(el, index) {
-				flexiEach(eventName.split(/\s/), function(namePrefixed) {
-					var name = replace(namePrefixed, /\|/);
-					var noSelector = isFunction(handlerOrSelector) || _null;
-					var handler = noSelector ? handlerOrSelector : fThisOrArgsOrHandler;
-
-					var miniHandler = createEventHandler(handler, 
-							noSelector && optArgs && fThisOrArgsOrHandler, // fThis (false means default this) 
-							noSelector && (optArgs || fThisOrArgsOrHandler), // args (false means event obj)
-							index, name == namePrefixed, noSelector ? returnTrue : getFilterFunc(handlerOrSelector, el));
-
-					var handlerDescriptor = {'e': el,          // the element  
-							                 'h': miniHandler, // minified's handler 
-							                 'n': name         // event type        
-							                };
-					push(handler, 'M', handlerDescriptor);
-					// @condblock ie8compatibility 
-					if (IS_PRE_IE9) {
-						el.attachEvent('on'+name, miniHandler);  // IE < 9 version
-						push(registeredEvents, getNodeId(el), handlerDescriptor);
-					}
-					else {
-					// @condend
-						el.addEventListener(name, miniHandler, _false); // W3C DOM
-						push(el, MINIFIED_MAGIC_EVENTS, handlerDescriptor);
-					// @condblock ie8compatibility
-					}
-					// @condend
-				});
-			});
-		},
-		
-		
-		/*$
-		 * @id onover
-		 * @group EVENTS
-		 * @requires on dollar trav find
-		 * @configurable default
-		 * @name .onOver()
-		 * @syntax list.onOver(handler)
-		 * @module WEB
-		 * Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.
-		 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
-		 * which allows you to use any ##toggle() function as handler.
-		 * 
-		 * @example Creates a toggle that animates the element on mouse over:
-		 * <pre>
-		 * $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 500));
-		 * </pre>
-		 * 
-		 * @param toggle the callback <code>function(isOver, index)</code> to invoke when the event has been triggered:
-		 * 		  <dl>
-	 	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
-	 	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
-	 	 *             </dl>
-		 *             'this' is set to the target element that caused the event.
-		 * @return the list
-		 */
-		'onOver': function(toggle) {
-			var self = this, curOverState = [];
-			return self['on']('|mouseover |mouseout', function(ev, index) {
-				var overState = ev['type'] != 'mouseout';
-				// @condblock ie9compatibility 
-				var relatedTarget = ev['relatedTarget'] || ev['toElement'];
-				// @condend
-				// @cond !ie9compatibility var relatedTarget = ev['relatedTarget'];
-				if (curOverState[index] !== overState) {
-					if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['trav']('parentNode', self[index]).length)) {
-						curOverState[index] = overState;
-						toggle.call(this, overState, index);
-					}
-				}
-			});
-		},
-		
-		/*$
-		 * @id trigger
-		 * @group EVENTS
-		 * @requires on each
-		 * @configurable default
-		 * @name .trigger()
-		 * @syntax list.trigger(name)
-		 * @syntax list.trigger(name, eventObject)
-		 * @module WEB
-		 * 
-		 * Triggers event handlers registered with ##on().
-		 * Any event that has been previously registered using ##on() can be invoked with <var>trigger()</var>. Please note that 
-		 * it will not simulate the default behaviour on the elements, such as a form submit when you click on a submit button. Event bubbling
-		 * is supported, thus unless there's an event handler that cancels the event, the event will be triggered on all parent elements.
-		 * 
-		 * 
-		 * @example Simulates a 'click' event on the button. 
-		 * <pre>
-		 * $('#myButton').trigger('click');
-		 * </pre>
-		 * 
-		 * @param name a single event name to trigger
-		 * @param eventObj optional an object to pass to the event handler, provided the handler does not have custom arguments.
-		 *                 Anything you pass here will be directly given to event handlers as event object, so you need to know what 
-		 *                 they expect.
-		 * @return the list
-		 */
-		'trigger': function (eventName, eventObj) {
-			return this['each'](function(element, index) {
-				var stopBubble, el = element;
-				
-				while(el && !stopBubble) {
-					flexiEach(
-							// @condblock ie8compatibility 
-							IS_PRE_IE9 ? registeredEvents[el[MINIFIED_MAGIC_NODEID]] :
-							//@condend
-							el[MINIFIED_MAGIC_EVENTS], function(hDesc) {
-								if (hDesc['n'] == eventName)
-									stopBubble = stopBubble || hDesc['h'](eventObj, element);
-				});
-					el = el['parentNode'];
-				}
-			});
+		function getColorComponent(colorCode, index) {
+			return (/^#/.test(colorCode)) ?
+				parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
+				:
+				parseInt(replace(colorCode, /[^\d,]+/g).split(',')[index]);
 		}
+		return function(t) {
+			eachObj(properties1, function(name, start) {
+				var newValue = 'rgb(', end=properties2[name];
+				if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
+					for (var i = 0; i < 3; i++) 
+						newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i), t)) + (i < 2 ? ',' : ')');
+				}
+				else
+					newValue = replace(end, /-?[\d.]+/, toString(interpolate(extractNumber(start), extractNumber(end), t)));
+				self['set'](name, t>=1?end:t<=0?start:newValue);
+			});
+		};
+	},
+
+	
+	/*$
+	 * @id toggle
+	 * @group ANIMATION
+	 * @requires animate set
+	 * @configurable default
+	 * @name .toggle()
+	 * @syntax list.toggle(cssClasses)
+	 * @syntax list.toggle(state1, state2)
+	 * @syntax list.toggle(state1, state2, durationMs)
+	 * @syntax list.toggle(state1, state2, durationMs, linearity)
+	 * @syntax list.toggle(state1, state2, durationMs, interpolationFunction)
+	 * @module WEB
+	 * 
+	 * Creates a function that switches between the two given states for the list. The states use the ##set() property syntax. You can also
+	 * just pass a string of CSS classes, as you do with <var>set()</var>.
+	 *
+     * If no duration is given, the returned function changes the state immediately using ##set(). If a duration has been passed, the returned function
+     * uses ##animate() to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the 
+     * animation and returns to the other state.
+	 *
+	 * See also ##dial() for a similar function that allows you to interpolate between two states.
+	 *
+	 * @example Creates a toggle function that changes the background color of the page.
+	 * <pre>
+	 * var light = $('body').set({$backgroundColor: #000}, {$backgroundColor: #fff});
+	 * light();      // toggles state to second state
+	 * light(false); // sets first state (background color to #000).
+	 * light(true);  // sets second state (background color to #fff).
+	 * light();      // toggles state to first state
+	 * </pre>
+	 * 
+	 * @example Takes the previous function, but adds it as an onclick event handler that toggles the color.
+	 * <pre>
+	 * var light = $('body').toggle({$backgroundColor: #000}, {$backgroundColor: #fff});
+	 * $('#mySwitch').on('click', light);
+	 * </pre>
+	 *
+	 * @example Using an animated transition by passing a duration:
+	 * <pre>
+	 * var dimmer = $('body').toggle({$backgroundColor: #000}, {$backgroundColor: #fff}, 500);
+	 * $('#mySwitch').on('click', dimmer);
+	 * </pre>
+	 *
+	 * @example Toggling CSS classes using the full syntax:
+	 * <pre>
+	 * var t = $('#myElement').toggle({$: '-myClass1 -myClass2'}, {$: '+myClass1 +myClass2'});
+	 * $('#myController').on('click', t);
+	 * </pre>
+	 *
+	 * @example There is a shortcut for toggling CSS classes. Just list them space-separated in a string:
+	 * <pre>
+	 * var t = $('#myElement').toggle('myClass1 myClass2');
+	 * </pre>
+	 * 
+	 * @param cssClasses a string containing space-separated CSS class names to toggle. Classes are disabled in the first state
+	 *                   and enabled in the second.
+	 * @param state1 a property map in ##set() syntax describing the initial state of the properties. The properties will automatically be set when the
+	 *                   <var>toggle()</var> function is created. The properties will be set for all elements of the list.
+	 * @param state2 a property map describing the second state of the properties. Uses ##set() syntax, like the other state. 
+	 * @param durationMs optional if set, the duration of the animation in milliseconds. By default, there is no animation and the 
+	 * 					 properties will be changed immediately.
+	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.
+	 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> for the animation which will be called every 
+	 *     time an interpolated value is required: 
+	 *           <dl>
+ 	 *             <dt>startValue</dt><dd>The start value of the transition.</dd>
+ 	 *             <dt>endValue</dt><dd>The end value of the transition.</dd>
+ 	 *           <dt>t</dt><dd>A value between 0 and 1 that specifies the state of the transition.</dd>
+ 	 *             <dt class="returnValue">(callback return value)</dt><dd>The value at the time <var>t</var>.</dd>
+ 	 *             </dl> 		 
+ 	 * @return a toggle function <code>function(newState)</code> that will toggle between the two states, or set a specific state.
+	 *             <dl>
+	 *             <dt>newState (optional)</dt><dd>If a boolean <var>true</var or <var>false</var> is given, 
+	 *             the toggle will set the first or second state, respectively. If called with any other value, or without a value,
+	 *             the function toggles to the other state.</dd>
+	 *             <dt class="returnValue">(return value)</dt><dd>A ##promise#Promise## that is fulfilled when the toggle operation ended, or
+	 *             <var>null</var>/<var>undefined</var> if the toggle finished its work during the invocation. Promises are mostly
+	 *             used for animations, so you can track when the animation is done.</dd>
+	 *             </dl>
+	 */
+	'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
+		var self = this;
+		var animState = {};
+		var state = _false, regexg = /\b(?=\w)/g, stateDesc;
+
+		if (stateDesc2)
+			return self['set'](stateDesc1) && 
+			    function(newState) {
+					if (newState !== state) {
+						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
+						
+						if (isFunction(stateDesc)) 
+							return stateDesc(self, durationMs, linearity);
+						else if (durationMs) 
+							return self['animate'](stateDesc, animState['stop'] ? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
+						else
+							return self['set'](stateDesc) && undef;
+					}
+				};
+		else
+			return self['toggle'](replace(stateDesc1, regexg, '-'), replace(stateDesc1, regexg, '+'));
+	},
+	
+	
+
+	/*$
+	 * @id values
+	 * @module REQUEST
+	 * @requires each
+	 * @configurable default
+	 * @name .values()
+	 * @syntax list.values()
+	 * @syntax list.values(dataMap)
+	 * Creates a name/value map from the given form. values() looks at the list's form elements and writes each element's name into the map,
+	 * using the element name as key and the element's value as value. As there can be more than one value with the same name, 
+	 * the map's values will always be arrays of values. Form elements without name will be ignored.
+	 *
+	 * values() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
+	 * elements will be serialized.
+	 * 
+	 * The map format returned by values() is exactly the format used by request().
+	 * 
+	 * Please note that when you include an input element more than once, for example by having the input itself and its form in the list, the
+	 * value will be included twice in the list.
+	 *
+	 * @example Serialize a form and send it as request parameters:
+	 * <pre>
+	 * $.request('get', '/exampleService', $('#myForm').values(), resultHandler);
+	 * </pre>
+	 * 
+	 * @example Serialize only some selected input fields:
+	 * <pre>
+	 * var data = $('#myText, input.myRadios').values();
+	 * </pre>
+	 * 
+	 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
+	 * @return a map containing name->[value, value...] pairs, using strings as name and value. 
+	 */
+	'values': function(data) {
+		var r = data || {};
+		this['each'](function(el) {
+			var n = el['name'], v = toString(el['value']), l;
+			if (/form/i.test(el['tagName']))
+				// @condblock ie9compatibility 
+				$(collector(flexiEach, el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
+				// @condend
+				// @cond !ie9compatibility $(el['elements'])['values'](r);
+			else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
+				r[n] = collector(flexiEach, [r[n], v], nonOp);
+			}
+		});
+		return r;
+	},
+
+	/*$
+	 * @id offset
+	 * @group SELECTORS
+	 * @requires dollar
+	 * @configurable default
+	 * @name .offset()
+	 * @syntax list.offset()
+	 * Returns the pixel page coordinates of the list's first element. Page coordinates are the pixel coordinates within the document, 
+	 * with 0/0 being the upper left corner, independent of the user's current view (which depends on the user's current scroll position and zoom level).
+	 *
+	 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
+	 * <pre>
+	 * var pos = $('#myElement').offset();
+	 * $('#resultElement').fill('#myElement's position is left=' + pos.x + ' top=' + pos.y);
+	 * </pre>
+	 *
+	 * @param element the element whose coordinates should be determined
+	 * @return an object containing pixel coordinates in two properties 'x' and 'y'
+	 */
+	'offset': function() {
+		var elem = this[0];
+		var dest = {'x': 0, 'y': 0};
+		while (elem) {
+			dest['x'] += elem['offsetLeft'];
+			dest['y'] += elem['offsetTop'];
+			elem = elem['offsetParent'];
+		}
+		return dest;
+	},
+
+	/*$
+	 * @id on
+	 * @group EVENTS
+	 * @requires dollar each
+	 * @configurable default
+	 * @name .on()
+	 * @syntax list.on(names, eventHandler)
+	 * @syntax list.on(names, selector, eventHandler)
+	 * @syntax list.on(names, customFunc, args)
+	 * @syntax list.on(names, customFunc, fThis, args)
+	 * @module WEB
+	 * Registers the function as event handler for all items in the list.
+	 * 
+	 * By default, Minified cancels event propagation and the element's default behaviour for all elements that have an event handler. 
+	 * You can override this by prefixing the event name with a '|' or by returning a 'true' value in the handler, which will reinstate 
+	 * the original JavaScript behaviour.
+	 * 
+	 * Handlers are called with the original event object as first argument, the index of the source element in the 
+	 * list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked). 
+	 * 
+	 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback. 
+	 * When you pass arguments, the handler's return value is always ignored and the event with unnamed prefixes 
+	 * will always be cancelled.
+	 * 
+	 * Optionally you can specify a selector string to receive only events that bubbled up from elements matching the
+	 * selector. The selector is executed in the context of the element you registered on to identify whether the
+	 * original target of the event qualifies. If not, the handler is not called.
+	 * 
+	 * Minified always registers event handlers with event bubbling enabled. Event capture is not supported.
+	 * 
+	 * Event handlers can be unregistered using #off#$.off().
+	 * 
+	 * @example Adds a handler to all divs which paints the div background color to red when clicked. 
+	 * <pre>
+	 * $('div').on('click', function() {
+	 *    this.style.backgroundColor = 'red';    // 'this' contains the element that caused the event
+	 * });
+	 * </pre>
+	 *
+	 * @example Registers a handler to call a method setStatus('running') using an inline function:
+	 * <pre>
+	 * $('#myButton').on('click', function() {
+	 *    myObject.setStatus('running');
+	 * });
+	 * </pre>
+	 * The previous example can bere written like this, using <var>on()</var>'s <var>args</var> and <var>fThis</var> parameters:
+	 * <pre>
+	 * $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
+	 * </pre>
+	 *
+	 * @example Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behaviour: 
+	 * <pre>
+	 * $('#myInput').on('|keypress |keydown', function() {
+	 *    // do something
+	 * });
+	 * </pre>
+	 * 
+	 * @example Adds listeners for all clicks on 
+	 * <pre>
+	 * $('#table').on('change', 'tr', function(event, index, selectedIndex) {
+	 *    alert("Click on table row number: " + selectedIndex);
+	 * });
+	 * </pre>
+	 * 
+	 * @param names the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
+	 *             the name must not used. You can register the handler for more than one event by specifying several 
+	 *             space-separated event names. If the name is prefixed
+	 *             with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will 
+	 *             be executed by the browser. 
+	 * @param selector optional a selector string for ##dollar#$() to receive only events that match the selector. 
+	 *                Supports all valid parameters for ##dollar#$() except functions. Analog to ##is(), 
+	 *                 the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
+	 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
+	 * 		  <dl>
+ 	 *             <dt>event</dt><dd>The original DOM event object.</dd>
+ 	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
+ 	 *             <dt class="returnValue">(callback return value)</dt><dd>Unless the handler returns <var>true</var> 
+ 	 *             or the event name is prefixed by '|', all further processing of the event will be 
+	 *                stopped and event bubbling will be disabled.</dd>
+ 	 *             </dl>
+	 *             'this' is set to the target element that caused the event (the same as <var>event.target</var>).
+	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>
+	 *                   and optionally the 'this' context given using <var>fThis</var>.
+	 * @param fThis optional a value for 'this' in the custom callback, instead of the event target
+	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. 
+	 *                      If you pass custom arguments, the return value of the handler will always be ignored.
+	 * @return the list
+	 */
+	'on': function (eventName, handlerOrSelector, fThisOrArgsOrHandler, optArgs) {
+		function push(obj, prop, value) {
+			(obj[prop] = (obj[prop] || [])).push(value);
+		}
+		return this['each'](function(el, index) {
+			flexiEach(eventName.split(/\s/), function(namePrefixed) {
+				var name = replace(namePrefixed, /\|/);
+				var noSelector = isFunction(handlerOrSelector) || _null;
+				var handler = noSelector ? handlerOrSelector : fThisOrArgsOrHandler;
+
+				var miniHandler = createEventHandler(handler, 
+						noSelector && optArgs && fThisOrArgsOrHandler, // fThis (false means default this) 
+						noSelector && (optArgs || fThisOrArgsOrHandler), // args (false means event obj)
+						index, name == namePrefixed, noSelector ? returnTrue : getFilterFunc(handlerOrSelector, el));
+
+				var handlerDescriptor = {'e': el,          // the element  
+						                 'h': miniHandler, // minified's handler 
+						                 'n': name         // event type        
+						                };
+				push(handler, 'M', handlerDescriptor);
+				// @condblock ie8compatibility 
+				if (IS_PRE_IE9) {
+					el.attachEvent('on'+name, miniHandler);  // IE < 9 version
+					push(registeredEvents, getNodeId(el), handlerDescriptor);
+				}
+				else {
+				// @condend
+					el.addEventListener(name, miniHandler, _false); // W3C DOM
+					push(el, MINIFIED_MAGIC_EVENTS, handlerDescriptor);
+				// @condblock ie8compatibility
+				}
+				// @condend
+			});
+		});
+	},
+	
+	
+	/*$
+	 * @id onover
+	 * @group EVENTS
+	 * @requires on dollar trav find
+	 * @configurable default
+	 * @name .onOver()
+	 * @syntax list.onOver(handler)
+	 * @module WEB
+	 * Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.
+	 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
+	 * which allows you to use any ##toggle() function as handler.
+	 * 
+	 * @example Creates a toggle that animates the element on mouse over:
+	 * <pre>
+	 * $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 500));
+	 * </pre>
+	 * 
+	 * @param toggle the callback <code>function(isOver, index)</code> to invoke when the event has been triggered:
+	 * 		  <dl>
+ 	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
+ 	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
+ 	 *             </dl>
+	 *             'this' is set to the target element that caused the event.
+	 * @return the list
+	 */
+	'onOver': function(toggle) {
+		var self = this, curOverState = [];
+		return self['on']('|mouseover |mouseout', function(ev, index) {
+			var overState = ev['type'] != 'mouseout';
+			// @condblock ie9compatibility 
+			var relatedTarget = ev['relatedTarget'] || ev['toElement'];
+			// @condend
+			// @cond !ie9compatibility var relatedTarget = ev['relatedTarget'];
+			if (curOverState[index] !== overState) {
+				if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['trav']('parentNode', self[index]).length)) {
+					curOverState[index] = overState;
+					toggle.call(this, overState, index);
+				}
+			}
+		});
+	},
+	
+	/*$
+	 * @id trigger
+	 * @group EVENTS
+	 * @requires on each
+	 * @configurable default
+	 * @name .trigger()
+	 * @syntax list.trigger(name)
+	 * @syntax list.trigger(name, eventObject)
+	 * @module WEB
+	 * 
+	 * Triggers event handlers registered with ##on().
+	 * Any event that has been previously registered using ##on() can be invoked with <var>trigger()</var>. Please note that 
+	 * it will not simulate the default behaviour on the elements, such as a form submit when you click on a submit button. Event bubbling
+	 * is supported, thus unless there's an event handler that cancels the event, the event will be triggered on all parent elements.
+	 * 
+	 * 
+	 * @example Simulates a 'click' event on the button. 
+	 * <pre>
+	 * $('#myButton').trigger('click');
+	 * </pre>
+	 * 
+	 * @param name a single event name to trigger
+	 * @param eventObj optional an object to pass to the event handler, provided the handler does not have custom arguments.
+	 *                 Anything you pass here will be directly given to event handlers as event object, so you need to know what 
+	 *                 they expect.
+	 * @return the list
+	 */
+	'trigger': function (eventName, eventObj) {
+		return this['each'](function(element, index) {
+			var stopBubble, el = element;
+			
+			while(el && !stopBubble) {
+				flexiEach(
+						// @condblock ie8compatibility 
+						IS_PRE_IE9 ? registeredEvents[el[MINIFIED_MAGIC_NODEID]] :
+						//@condend
+						el[MINIFIED_MAGIC_EVENTS], function(hDesc) {
+							if (hDesc['n'] == eventName)
+								stopBubble = stopBubble || hDesc['h'](eventObj, element);
+			});
+				el = el['parentNode'];
+			}
+		});
+	}
 
  	/*$
  	 * @stop
