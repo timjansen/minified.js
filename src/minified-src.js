@@ -3583,14 +3583,16 @@ define('minified', function() {
 		}
 		return function(t) {
 			eachObj(properties1, function(name, start) {
-				var newValue = 'rgb(', end=properties2[name];
-				if (/^#|rgb\(/.test(end)) { // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
-					for (var i = 0; i < 3; i++) 
-						newValue += Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i), t)) + (i < 2 ? ',' : ')');
-				}
-				else
-					newValue = replace(end, /-?[\d.]+/, toString(interpolate(extractNumber(start), extractNumber(end), t)));
-				self['set'](name, t>=1?end:t<=0?start:newValue);
+				var end=properties2[name], i = 0; 
+				self['set'](name, t<=0?start:t>=1?end:
+					 (/^#|rgb\(/.test(end)) ? // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
+								('rgb('+ Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i++), t)) // expression repeated 3 times for gzip
+								+ ',' + Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i++), t))
+								+ ',' + Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i++), t))
+							    + ')')
+							:
+								replace(end, /-?[\d.]+/, toString(interpolate(extractNumber(start), extractNumber(end), t)))
+				);
 			});
 		};
 	},
