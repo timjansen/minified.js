@@ -31,13 +31,6 @@ JavaScript <var>escape()</var> function, unless you set the optional <var>dontEs
 <dd class="">specifies when the cookie expires. Can be either a Date object or a number that specifies the
 amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
 browser has been closed. If the number negative or the date in the past, the cookie will be deleted.</dd>
-<dt id="setcookie_path" class=""><a name="setcookie_path"><var>path (optional)</var></a></dt>
-<dd class="">if set, the cookie will be restricted to documents in the given path. Otherwise it is valid
-for the whole domain. This is rarely needed and defaults to '/'.</dd>
-<dt id="setcookie_domain" class=""><a name="setcookie_domain"><var>domain (optional)</var></a></dt>
-<dd class="">if set, you use it to specify the domain (e.g. example.com) which can read the cookie. If you don't set it,
-the domain which hosts the current document is used. This parameter is rarely used, because there are only very
-few use cases in which this makes sense.</dd>
 <dt id="setcookie_dontEscape" class=""><a name="setcookie_dontEscape"><var>dontEscape (optional)</var></a></dt>
 <dd class="">if set, the cookie value is not escaped. Note that without escaping you can not use every possible
 character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
@@ -87,6 +80,7 @@ $.setCookie('numberOfVisits', '', -1);
 </li><li><a href="animate.html">.animate()</a>
 </li><li><a href="clone.html">.clone()</a>
 </li><li><a href="collect.html">.collect()</a>
+</li><li><a href="dial.html">.dial()</a>
 </li><li><a href="each.html">.each()</a>
 </li><li><a href="fill.html">.fill()</a>
 </li><li><a href="filter.html">.filter()</a>

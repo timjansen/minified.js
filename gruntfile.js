@@ -84,21 +84,11 @@ module.exports = function(grunt) {
 					compilation_level: 'ADVANCED_OPTIMIZATIONS'
 				},
 				files: {
-					'tmp/minified-web-closure.js':      'src/minified-web-src.js',
-					'tmp/minified-web-closure.noie.js': 'WebContent/minified-web-src.noie.js',
-					'tmp/minified-util-closure.js':     'src/minified-util-src.js',
-					'tmp/minified-closure.noie.js':     'WebContent/minified-src.noie.js',
-					'tmp/minified-closure.js':          'src/minified-src.js'
-				}
-			},
-			
-			site: {
-				options: {
-					compilation_level: 'ADVANCED_OPTIMIZATIONS'
-				},
-				files: {
-					'WebContent/js/builder.js': ['src/minified-src.js', 'srcContent/js/parser-src.js', 'srcContent/js/builder-src.js'],
-					'WebContent/js/homepage.js': ['srcContent/js/minified-homepage.js', 'srcContent/js/homepage-src.js']
+					'tmp/minified-web.js':      'src/minified-web-src.js',
+					'tmp/minified-web.noie.js': 'WebContent/minified-web-src.noie.js',
+					'tmp/minified-util.js':     'src/minified-util-src.js',
+					'tmp/minified.noie.js':     'WebContent/minified-src.noie.js',
+					'tmp/minified.js':          'src/minified-src.js'
 				}
 			}
 		},
@@ -114,17 +104,26 @@ module.exports = function(grunt) {
 					}					
 				},
 				files: {
-					'WebContent/minified-web.js': 'tmp/minified-web-closure.js',
-					'WebContent/minified-web.noie.js': 'tmp/minified-web-closure.noie.js',
-					'WebContent/minified-util.js': 'tmp/minified-util-closure.js',
-					'WebContent/minified.noie.js': 'tmp/minified-closure.noie.js',
-					'WebContent/minified.js': 'tmp/minified-closure.js',
-					'WebContent/minified.test.js': 'tmp/minified-closure.js', // b/c /minified.js not usable on Eclipse web server!
+					'WebContent/minified-web.js': 'tmp/minified-web.js',
+					'WebContent/minified-web.noie.js': 'tmp/minified-web.noie.js',
+					'WebContent/minified-util.js': 'tmp/minified-util.js',
+					'WebContent/minified.noie.js': 'tmp/minified.noie.js',
+					'WebContent/minified.js': 'tmp/minified.js',
+					'WebContent/minified.test.js': 'tmp/minified.js' // b/c /minified.js not usable on Eclipse web server!
 					
-					'tmp/minified-web-ugly.js': 'WebContent/minified-web.js' ,
-					'tmp/minified-web-ugly.noie.js': 'WebContent/minified-web.noie.js',
-					'tmp/minified-util-ugly.js': 'WebContent/minified-util.js'
-
+				}
+			},
+			
+			site: {
+				options: {
+					compress: {
+					},
+					mangle: {
+					}					
+				},
+				files: {
+					'WebContent/js/builder.js': ['src/minified-src.js', 'srcContent/js/parser-src.js', 'srcContent/js/builder-src.js'],
+					'WebContent/js/homepage.js': ['srcContent/js/minified-homepage.js', 'srcContent/js/homepage-src.js']
 				}
 			}
 		},
@@ -176,6 +175,23 @@ module.exports = function(grunt) {
 			            dest: 'WebContent/img'		          
 			    }]
 			}
+		},
+		
+		measuresize: {
+			minified: {
+				files: {
+					'WebContent/minified-web.js': 'tmp/minified-web.js',
+					'WebContent/minified-web.noie.js': 'tmp/minified-web.noie.js',
+					'WebContent/minified-util.js': 'tmp/minified-util.js',
+					'WebContent/minified.noie.js': 'tmp/minified.noie.js',
+					'WebContent/minified.js': 'tmp/minified.js',
+				}
+			}
+		},
+		
+		clean: {
+			tmp: ['tmp'],
+			webContent: ['WebContent']
 		}
 	});
 	
@@ -189,8 +205,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-xmlmin');
 	
 	grunt.registerTask('default', ['mergesrc', 'rebuildsrc', 'copy:sources', 'copy:test']);
-	grunt.registerTask('code', ['default', 'closurecompiler:dist', 'uglify']);
-	grunt.registerTask('site', ['closurecompiler:site', 'writedocs', 'minitemplate', 'copy:pngs', 'copy:test', 'cssmin', 'htmlmin', 'xmlmin']);
+	grunt.registerTask('code', ['default', 'closurecompiler:dist', 'uglify', 'measuresize']);
+	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:pngs', 'copy:test', 'cssmin', 'htmlmin', 'xmlmin']);
 	grunt.registerTask('all', ['code', 'site']);
 	
 	

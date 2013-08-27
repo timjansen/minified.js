@@ -28,7 +28,7 @@
 <dt id="find_element" class=""><a name="find_element"><var>element</var></a></dt>
 <dd class="">the element to search for</dd>
 <dt id="find_startIndex" class=""><a name="find_startIndex"><var>startIndex (optional)</var></a></dt>
-<dd class="">the 0-based index of the first element to search.</dd>
+<dd class="">the 0-based index of the first element to search. Default is 0.</dd>
 <dt id="find_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="find_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
 it returns either the value returned by the callback or <var>undefined</var>.</dd>
@@ -78,6 +78,7 @@ var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return
 </li><li><a href="animate.html">.animate()</a>
 </li><li><a href="clone.html">.clone()</a>
 </li><li><a href="collect.html">.collect()</a>
+</li><li><a href="dial.html">.dial()</a>
 </li><li><a href="each.html">.each()</a>
 </li><li><a href="fill.html">.fill()</a>
 </li><li><a href="filter.html">.filter()</a>

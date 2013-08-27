@@ -1,5 +1,5 @@
 /**
- * JavaScript file for Node.js that generates Javadoc-like documentation.
+ * Task for Grunt that generates Javadoc-like documentation.
  */
 
 // Helper

@@ -61,7 +61,7 @@ used for animations, so you can track when the animation is done.</dd>
 Creates a function that switches between the two given states for the list. The states use the <code><a href='set.html'>set()</a></code> property syntax. You can also
 just pass a string of CSS classes, as you do with <var>set()</var>.</p><p>If no duration is given, the returned function changes the state immediately using <code><a href='set.html'>set()</a></code>. If a duration has been passed, the returned function
 uses <code><a href='animate.html'>animate()</a></code> to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the
-animation and returns to the other state.</p><p></p></div>
+animation and returns to the other state.</p><p>See also <code><a href='dial.html'>dial()</a></code> for a similar function that allows you to interpolate between two states.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -123,6 +123,7 @@ var t = $('#myElement').toggle('myClass1 myClass2');
 </li><li><a href="animate.html">.animate()</a>
 </li><li><a href="clone.html">.clone()</a>
 </li><li><a href="collect.html">.collect()</a>
+</li><li><a href="dial.html">.dial()</a>
 </li><li><a href="each.html">.each()</a>
 </li><li><a href="fill.html">.fill()</a>
 </li><li><a href="filter.html">.filter()</a>
