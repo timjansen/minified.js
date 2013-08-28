@@ -68,8 +68,6 @@ define('minified', function() {
 ///#/snippet commonAmdStart
 	///#snippet webVars
 	
-	var _null = null, _true = true, _false = false;
-	
 	/**
 	 * @const
 	 */
@@ -80,8 +78,6 @@ define('minified', function() {
 	 */
 	var _document = document;
 	
-	/** @const */
-	var undef;
 	/**
 	 * @const
 	 * @type {!string}
@@ -212,6 +208,11 @@ define('minified', function() {
 
 	///#/snippet webVars
 	///#snippet utilVars
+	var _null = null, _true = true, _false = false;
+
+	/** @const */
+	var undef;
+	
 	/**
 	 * @const
 	 */
@@ -238,7 +239,7 @@ define('minified', function() {
 	
 	/** @param s {?} */
 	function toString(s) { 
-		return s!=null ? ''+s : '';
+		return s!=_null ? ''+s : '';
 	}
 	/**
 	 * @param s {?}
@@ -264,14 +265,14 @@ define('minified', function() {
 		return isObject(n) && !!n['getDay'];
 	}
 	function isBool(n) {
-		return n === true || n === false;
+		return n === _true || n === _false;
 	}
 	function isValue(n) {
 		var type = typeof n;
 		return type == 'object' ? !!(n && n['getDay']) : (type == 'string' || type == 'number' || isBool(n));
 	}
 	function toList(l) {
-		return isList(l) ? l : (l != null ? [l] : []);
+		return isList(l) ? l : (l != _null ? [l] : []);
 	}
 
 	function nonOp(v) {
@@ -281,7 +282,7 @@ define('minified', function() {
 		return d+1; 
 	}
 	function replace(s, regexp, sub) {
-		return toString(s).replace(regexp, sub != null ? sub : '');
+		return toString(s).replace(regexp, sub != _null ? sub : '');
 	}
 	function escapeRegExp(s) {
 		return replace(s, /[\\\[\]\/{}()*+?.$|^-]/g, "\\$&");
@@ -323,7 +324,7 @@ define('minified', function() {
 		iterator(obj, function (a, b) {
 			if (isList(a = collectFunc(a, b))) // extreme variable reusing: a is now the callback result
 				each(a, function(rr) { result.push(rr); });
-			else if (a != null)
+			else if (a != _null)
 				result.push(a);
 		});
 		return result;
@@ -373,7 +374,7 @@ define('minified', function() {
 			return equals(_(base).sub(0, s2.length), s2);
 		}
 		else
-			return start != null && base.substr(0, start.length) == start;
+			return start != _null && base.substr(0, start.length) == start;
 	}
 	function endsWith(base, end) {
 		if (isList(base)) {
@@ -381,7 +382,7 @@ define('minified', function() {
 			return _(base).sub(-e2.length).equals(e2) || !e2.length;
 		}
 		else
-			return end != null && base.substr(base.length - end.length) == end;
+			return end != _null && base.substr(base.length - end.length) == end;
 	}
 	function reverse(list) {
 		var i = list.length;
@@ -405,7 +406,7 @@ define('minified', function() {
 	}
 	function copyObj(from, to, dontOverwrite) {
 		eachObj(from, function(name, value) {
-			if (to[name] == null || !dontOverwrite)
+			if (to[name] == _null || !dontOverwrite)
 				to[name] = value;
 		});
 		return to;
@@ -414,14 +415,14 @@ define('minified', function() {
 		return isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 	}
 	function getFindIndex(list, index, defaultIndex) {
-		return index == null ? defaultIndex : index < 0 ? list.length+index : index;
+		return index == _null ? defaultIndex : index < 0 ? list.length+index : index;
 	}
 	function find(list, findFunc, startIndex, endIndex) {
 		var f = getFindFunc(findFunc);
 		var e = getFindIndex(list, endIndex, list.length);
 		var r;
 		for (var i = getFindIndex(list, startIndex, 0); i < e; i++)
-			if ((r = f(list[i], i)) != null)
+			if ((r = f(list[i], i)) != _null)
 				return r;
 	}
 	function findLast(list, findFunc, startIndex, endIndex) {
@@ -429,7 +430,7 @@ define('minified', function() {
 		var e = getFindIndex(list, endIndex, -1);
 		var r;
 		for (var i = getFindIndex(list, startIndex, list.length-1); i > e; i--)
-			if ((r = f(list[i], i)) != null)
+			if ((r = f(list[i], i)) != _null)
 				return r;
 	}
 	
@@ -445,10 +446,10 @@ define('minified', function() {
 		var found = {};
 		return filter(list, function(item) {
 			if (found[item])
-				return false;
+				return _false;
 			else {
 				found[item] = 1;
-				return true;
+				return _true;
 			}
 		});
 	}
@@ -463,38 +464,38 @@ define('minified', function() {
 	function contains(list, value) {
 		for (var i = 0; i < list.length; i++)
 			if (list[i] == value)
-				return true;
-		return false;
+				return _true;
+		return _false;
 	}
 	// equals if a and b have the same elements and all are equal. Supports getters.
 	function equals(x, y) {
 		var a = isFunction(x) ? x() : x;
 		var b = isFunction(y) ? y() : y;
 		if (a == b)
-			return true;
-		else if (a == null || b == null)
-			return false;
+			return _true;
+		else if (a == _null || b == _null)
+			return _false;
 		else if (isValue(a) || isValue(b))
 			return isDate(a) && isDate(b) && a.getTime()==b.getTime();
 		else if (isList(a)) {
 			if (a.length != b.length)
-				return false;
+				return _false;
 			else
 				return !find(a, function(val, index) {
 					if (!equals(val, b[index]))
-						return true;
+						return _true;
 				});
 		}
 		else {
 			if (isList(b))
-				return false;
+				return _false;
 			var aKeys = keys(a);
 			if (aKeys.length != keyCount(b))
-				return false;
+				return _false;
 			else
 				return !find(aKeys, function(key) {
 					if (!equals(a[key],b[key]))
-						return true;
+						return _true;
 				});
 		}
 	}
@@ -518,7 +519,7 @@ define('minified', function() {
 		};
 	}
 	function partial(f, beforeArgs, afterArgs) {
-		return bind(f, null, beforeArgs, afterArgs);
+		return bind(f, _null, beforeArgs, afterArgs);
 	}
 	function insertString(origString, index, len, newString) {
 		return origString.substr(0, index) + newString + origString.substr(index+len);
@@ -545,7 +546,7 @@ define('minified', function() {
 		return (signed?'-':'') + preDecimal + (afterDecimalPoint ? ((omitZerosAfter?replace(postDecimal, /[.,]?0+$/):postDecimal)) : '');
 	}
 	function getTimezone(match, idx, refDate) {
-		if (idx == null || !match)
+		if (idx == _null || !match)
 			return 0;
 		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
 	}
@@ -601,7 +602,7 @@ define('minified', function() {
 						d = (optionArray || val[1])[d];
 					else
 						d = val[1](d, optionArray);
-					if (d != null && !isString(d))
+					if (d != _null && !isString(d))
 						d = pad(placeholderDigits.length+1, d);
 					return d;
 				}
@@ -616,17 +617,17 @@ define('minified', function() {
 				if (match = /^([<>]?)(=?)([^:]*?)\s*:\s*(.*)$/.exec(fmtPart)) {
 					var cmpVal1 = value, cmpVal2 = parseFloat(match[3]);
 					if (isNaN(cmpVal2) || !isNumber(cmpVal1)) {
-						cmpVal1 = (cmpVal1==null) ? "null" : toString(cmpVal1); // not ""+value, because undefined is treated as null here
+						cmpVal1 = (cmpVal1==_null) ? "null" : toString(cmpVal1); // not ""+value, because undefined is treated as null here
 						cmpVal2 = match[3];
 					}
 					if (match[1]) {
 						if ((!match[2] && cmpVal1 == cmpVal2 ) ||
 						    (match[1] == '<'  && cmpVal1 > cmpVal2)  ||
 						    (match[1] == '>'  && cmpVal1 < cmpVal2))
-							return null;
+							return _null;
 					}
 					else if (cmpVal1 != cmpVal2)
-						return null;
+						return _null;
 					numFmtOrResult = match[4];
 				}
 				else
@@ -676,7 +677,7 @@ define('minified', function() {
 	
 		if (/^\?/.test(format)) {
 			if (trim(date) == '')
-				return null;
+				return _null;
 			format = format.substr(1);
 		}
 		
@@ -720,8 +721,8 @@ define('minified', function() {
 				var mapEntry  = mapping[placeholderChar];
 				var ctorIndex = mapEntry[0];
 				var valList = indexEntry[1] || mapEntry[1];
-				var listValue = find(valList, function(v, index) { return startsWith(matchVal.toLowerCase(), v.toLowerCase()) ? index : null; });
-				if (listValue == null)
+				var listValue = find(valList, function(v, index) { return startsWith(matchVal.toLowerCase(), v.toLowerCase()) ? index : _null; });
+				if (listValue == _null)
 					return undef;
 				if (placeholderChar == 'a')
 					ctorArgs[ctorIndex] += listValue * 12;
@@ -744,10 +745,10 @@ define('minified', function() {
 	// returns number; null if optional and not set; undefined if parsing failed
 	function parseNumber(format, value) {
 		if (arguments.length == 1)
-			return parseNumber(null, format);
+			return parseNumber(_null, format);
 		if (/^\?/.test(format)) {
 			if (trim(value) == '')
-				return null;
+				return _null;
 			format = format.substr(1);
 		}
 		var match, decSep = (match = /[0#]([.,])[_9]/.exec(format)) ? match[1] : ((match = /^[.,]$/.exec(format)) ? match[0]: '.');
@@ -1426,12 +1427,12 @@ define('minified', function() {
 		};
 
 		self['length'] = idx;
-		self['_'] = true;
+		self['_'] = _true;
 	}
 	
 
 	function _() {
-		return new M(arguments, true);
+		return new M(arguments, _true);
 	}
 
 	///#/snippet utilM
@@ -4563,8 +4564,8 @@ define('minified', function() {
 		 * @return the new Minfied list containing the numbers. Empty is <var>start</var> is not smaller than <var>end</var>.
 		 */		
 		'range': function(start, end) {
-			var r = [], e = (end==null) ? start : end;
-			for (var i = (end!=null)?start:0; i < e; i++)
+			var r = [], e = (end==_null) ? start : end;
+			for (var i = (end!=_null)?start:0; i < e; i++)
 				r.push(i);
 			return new M(r);
 		},

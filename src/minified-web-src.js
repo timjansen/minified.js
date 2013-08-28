@@ -91,10 +91,10 @@ define('minified', function() {
 	
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	var _null = null, _true = true, _false = false;
+	var undef;
 		
 	///#snippet webVars
-	
-	var _null = null, _true = true, _false = false;
 	
 	/**
 	 * @const
@@ -106,8 +106,6 @@ define('minified', function() {
 	 */
 	var _document = document;
 	
-	/** @const */
-	var undef;
 	/**
 	 * @const
 	 * @type {!string}
