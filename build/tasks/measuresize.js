@@ -34,7 +34,7 @@ module.exports = function(grunt) {
 		    });
 		    
 			gzipStream.on('end', function() {
-		    	results[f] = size;
+		    	results[f.replace(/^.*\//, '')] = size;
 		        if (!--resultsToDo) {
 		        	grunt.log.writeln('GZip Results:');
 		        	_.keys(results).sort().each(function(file) {

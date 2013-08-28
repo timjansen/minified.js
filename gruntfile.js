@@ -189,6 +189,15 @@ module.exports = function(grunt) {
 			}
 		},
 		
+		mochaTest: {
+			util: {
+				options: {
+					bail: true,
+				},
+				src: [ 'src/test-util/*test.js' ]
+			}
+ 	    },
+		
 		clean: {
 			tmp: ['tmp'],
 			webContent: ['WebContent']
@@ -202,12 +211,16 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-closurecompiler');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-mocha-test');
+	grunt.loadNpmTasks('grunt-mocha');
 	grunt.loadNpmTasks('grunt-xmlmin');
 	
-	grunt.registerTask('default', ['mergesrc', 'rebuildsrc', 'copy:sources', 'copy:test']);
-	grunt.registerTask('code', ['default', 'closurecompiler:dist', 'uglify', 'measuresize']);
+	grunt.registerTask('assemble', ['mergesrc', 'rebuildsrc', 'copy:sources', 'copy:test']);
+	grunt.registerTask('test', ['mochaTest']);
+	grunt.registerTask('code', ['assemble', 'closurecompiler:dist', 'uglify', 'test', 'measuresize']);
 	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:pngs', 'copy:test', 'cssmin', 'htmlmin', 'xmlmin']);
 	grunt.registerTask('all', ['code', 'site']);
+	grunt.registerTask('default', ['code']);
 	
 	
 };

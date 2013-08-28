@@ -48,7 +48,7 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
 	
 
 // @condblock !commonjs
-define('minifiedUtil', function() {
+define('minified', function() {
 // @condend !commonjs
 // @cond commonjs module.exports = (function() { 
 	
