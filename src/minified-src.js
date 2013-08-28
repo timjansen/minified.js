@@ -213,9 +213,6 @@ define('minified', function() {
 	/** @const */
 	var undef;
 	
-	/**
-	 * @const
-	 */
 	function val3(v) {return v.substr(0,3);}
 	var MONTH_LONG_NAMES = 'January,February,March,April,May,June,July,August,September,October,November,December'.split(/,/);
 	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, val3); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -447,10 +444,8 @@ define('minified', function() {
 		return filter(list, function(item) {
 			if (found[item])
 				return _false;
-			else {
-				found[item] = 1;
-				return _true;
-			}
+			else
+				return found[item] = 1;
 		});
 	}
 	function intersection(list, otherList) {
