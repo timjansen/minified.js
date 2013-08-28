@@ -372,25 +372,11 @@ define('minifiedUtil', function() {
 		return origString.substr(0, index) + newString + origString.substr(index+len);
 	}
 	function pad(digits, number) {
-		return formatNumber(number, 0, 0, 0, digits);
-	}
-	
-	function formatNumber(number, afterDecimalPoint, omitZerosAfter, decimalPoint, beforeDecimalPoint, groupingSeparator, groupingSize) {
-		var signed = number < 0;
-		var match = /(\d+)(\.(.*))?/.exec((signed?-number:number).toFixed(afterDecimalPoint));
-		var preDecimal = match[1], postDecimal = (decimalPoint||'.') + match[3];
-		function group(s) {
-			var len = s.length;
-			if (len > groupingSize)
-				return group(s.substr(0, len-groupingSize)) + (groupingSeparator||',') + s.substr(len-groupingSize);
-			else
-				return s;					
-		}
-		while (preDecimal.length < (beforeDecimalPoint||1))
+		var signed = number < 0 ? '-' : '';
+		var preDecimal = replace((signed?-number:number).toFixed(0), /\..*/);
+		while (preDecimal.length < digits)
 			preDecimal = '0' + preDecimal;
-		if (groupingSize)
-			preDecimal = group(preDecimal);
-		return (signed?'-':'') + preDecimal + (afterDecimalPoint ? ((omitZerosAfter?replace(postDecimal, /[.,]?0+$/):postDecimal)) : '');
+		return signed + preDecimal;
 	}
 	function getTimezone(match, idx, refDate) {
 		if (idx == _null || !match)
@@ -482,17 +468,28 @@ define('minifiedUtil', function() {
 
 				//  formatNumber(number, afterDecimalPoint, omitZerosAfter, decimalPoint, beforeDecimalPoint, groupingSeparator, groupingSize)
 				if (isNumber(value) && (match = /(?:(0[0.,]*)|(#[#.,]*))(_*)(9*)/.exec(numFmtOrResult))) {
-					var part1 = toString(match[1]) + toString(match[2]);
-					var preDecimalLen = toString(match[1]).length ? replace(part1, /[.,]/g).length : 1;
-					var decimalPoint = replace(replace(part1, /^.*[0#]/), /[^,.]/g);
-					var postDecimal = toString(match[3]).length + toString(match[4]).length;
-					var groupingSeparator, groupingSize;
+					var preDecimalFormat = toString(match[1]) + toString(match[2]);
+					var preDecimalLen = toString(match[1]).length ? replace(preDecimalFormat, /[.,]/g).length : 1;
+					var decimalPoint = replace(replace(preDecimalFormat, /^.*[0#]/), /[^,.]/g);
+					var postDecimalLen = toString(match[3]).length + toString(match[4]).length;
+					var signed = value < 0 ? '-' : '';
+					var m = /(\d+)(\.(.*))?/.exec((signed?-value:value).toFixed(postDecimalLen));
+					var preDecimal = pad(preDecimalLen, parseInt(m[1]));
+					var postDecimal = (decimalPoint||'.') + m[3];
 					if (matchGrp = /([.,])[^.,]+[.,]/.exec(match[0])) {
-						groupingSeparator = matchGrp[1];
-						groupingSize = matchGrp[0].length - 2;
+						var groupingSize = matchGrp[0].length - 2;
+						function group(s) {
+							var len = s.length;
+							if (len > groupingSize)
+								return group(s.substr(0, len-groupingSize)) + matchGrp[1] + s.substr(len-groupingSize);
+							else
+								return s;					
+						}
+						preDecimal = group(preDecimal);
 					}
-					var formatted = formatNumber(value, postDecimal, toString(match[3]).length, decimalPoint, preDecimalLen, groupingSeparator, groupingSize);
-					return insertString(numFmtOrResult, match.index, toString(match[0]).length, formatted);
+					return insertString(numFmtOrResult, match.index, toString(match[0]).length, 
+							signed + preDecimal + 
+							(postDecimalLen ? (toString(match[3]).length?replace(postDecimal, /[.,]?0+$/):postDecimal) : ''));
 				}
 				else
 					return numFmtOrResult;
@@ -1611,12 +1608,6 @@ define('minifiedUtil', function() {
 		 // @condblock equals
 		'equals': equals,
 		 // @condend
-		 // @condblock keys
-		'keys': funcArrayBind(keys),
-		 // @condend
-		 // @condblock values
-		'values': funcArrayBind(values),
-		 // @condend
 		 // @condblock call
 		'call': funcArrayBind(callList),
 		 // @condend
@@ -1632,6 +1623,39 @@ define('minifiedUtil', function() {
 		 // @condblock intersection
 		'intersection': funcArrayBind(intersection),
 		 // @condend
+
+	    /*$ 
+	     * @id keys 
+	     * @group OBJECT 
+	     * @requires
+	     * @configurable default 
+	     * @name .keys() 
+	     * @syntax _.keys(obj) 
+	     * @module UTIL
+	     * Creates a ##list#Minified list## containing all property names of the specified object. Only direct properies are
+	     * included, not inherited ones. The order of the keys in the list is undefined and runtime-specific.
+		 *
+	     * @param object The object to gather keys from.
+	     * @return A Minified list containing the property names.
+	     */
+		'keys': funcArrayBind(keys),
+
+	    /*$ 
+	     * @id values 
+	     * @group OBJECT 
+	     * @requires
+	     * @configurable default 
+	     * @name .values() 
+	     * @syntax _.values(obj) 
+	     * @module UTIL
+	     * Creates a ##list#Minified list## containing all property values of the specified object. Only direct properies are
+	     * included, not inherited ones. The order of the values in the list is undefined and runtime-specific.
+		 *
+	     * @param object The object to gather values from.
+	     * @return A Minified list containing the property names.
+	     */
+		'values': funcArrayBind(values),
+
 		
 		/*$
 		 * @id copyobj
