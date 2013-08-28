@@ -64,6 +64,18 @@ What you can expect from Minified Web
 * A stable API that won't change.
 
 
+Building
+---------
+To build Minified, you need to install Node.js and Grunt. Then enter the Minified directory and install the dependencies:
+> npm install
+
+To build the whole project including the site, use
+> grunt all
+
+If you only want to compile the code, use 
+> grunt code
+
+
 Licensing
 -----------
 Public Domain. Use, modify and distribute it any way you like. No attribution required.
@@ -83,18 +95,6 @@ and when I work on them, I usually strive for perfection. Every unnecessary kilo
 little helper functions to replace jQuery functionality without the overhead. As I worked on several other projects, I wrote more and more helper 
 functions and started sharing them between projects until they became a library of their own.  By now they are so mature that I believe that this 
 library, called Minified, became a valid alternative to jQuery and MooTools at a fraction of the size.
-
-What you see here is only the beginning, a 4kb module for building web sites. The plan is to have three modules, each under 4kb:
-<ul><li><strong>Minified Web</strong> is a browser interaction library, comparable to jQuery or MooTools. It is available now.</li>
-<li><strong>Minified Util</strong> offers utilities for lists and maps, functions, promises, string and number formatting, date handling and 
-internationalization. Its scope and size can be compared to <a href="http://underscorejs.org/">Underscore</a>, but it omits the more 
-obscure functional helpers and replaces them with date and string helpers. You can find an early version in the /src directory
-on GitHub.</li>
-<li><strong>Minified Apps</strong> will be a MVC-oriented library for single-page applications and complex multi-page apps.
-The scope will be somewhat similar to Backbone or Angular.js, but with a Plain-Old-JSON-Object (POJO) principles and a template/binding
-concept that is closely tied to the page's DOM and is predestinated for <a href="http://www.w3.org/TR/components-intro/#template-section">HTML5 templates</a>.
-It is built upon the other two modules. A preview should be available by the end of 2013.</li>
-</ul>
 
 Thank you for checking out Minified.
 			Tim Jansen
