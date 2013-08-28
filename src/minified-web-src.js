@@ -3476,7 +3476,9 @@ define('minified', function() {
 		 *                 <dl><dt>elementList</dt><dd>The newly created element wrapped in a Minified list.  </dd></dl>
 		 *                 The function's return value will be ignored. 
 		 *                 The callback allows you, for example, to add event handlers to the element using ##on().
-		 * @return a Element Factory function, which returns a Minified list containing the DOM HTMLElement that has been created or modified as only element
+		 * @return a Element Factory function, which returns a Minified list containing the DOM HTMLElement that has been created or 
+		 *         modified, as only element. The factory function can be called repeatedly and will create a new set of DOM nodes on 
+		 *         each invocation. 
 		 */
 		'EE': EE,
 		

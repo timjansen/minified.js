@@ -713,6 +713,10 @@ define('minified', function() {
 		});
 	}	
 
+	function formatHtml(tpl, obj) { 
+		return template(tpl, escapeHtml)(obj); 
+	}
+	
 	function listBindArray(func) {
 		return function(arg1, arg2) {
 			return new M(func(this, arg1, arg2));
@@ -2587,7 +2591,7 @@ define('minified', function() {
 	     * @param object the object to format 
 	     * @return the string created by the template
 	     */ 
-		 'formatHtml': function(tpl, obj) { return template(tpl, escapeHtml)(obj); }
+		 'formatHtml': formatHtml
 		/*$
 		 * @stop
 		 */

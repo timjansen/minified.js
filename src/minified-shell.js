@@ -38,6 +38,24 @@ function dummy() {
 		delay(function() {call(func, args);}); // TODO try partial()
 	}
 	
+	function ht(htmlTemplate, object) {
+		return this.set('innerHTML', htmlTemplate.test(/{{/) ? htmlFormat(htmlTemplate, object) : htmlTemplate);
+	}
+	
+	function HTML(htmlTemplate, object, onCreate) {
+		var tpl = htmlTemplate.test(/{{/) ? template(htmlTemplate, escapeHtml) : function() { return htmlTemplate; };
+		return function() {
+			var tmp = _document.createElement('div');
+	        tmp['innerHTML'] = tpl(object);
+	        var nodeList = _(tmp.childNodes);
+	        if (onCreate)
+	            onCreate(nodeList);
+	        return nodeList;
+	    };	
+	}
+
+	
+	
 	/*$
 	 * @id promise
 	 * @group REQUEST
@@ -94,7 +112,7 @@ function dummy() {
 					each(deferred, function(f) {f();});
 				});
 			}
-		}
+		};
 
 		// use promise varargs
 		each(assimilatedPromises, function assimilate(promise, index) {
@@ -283,7 +301,7 @@ function dummy() {
 	 * @id length
 	 * @group SELECTORS
 	 * @requires dollar
-	 * @name .length
+	 * @name list.length
 	 * @syntax length
    	 * @module WEB, UTIL
 	 * 
@@ -320,10 +338,62 @@ function dummy() {
 		,
 		///#include minified-web-src.js webListFuncs
 
-		///#remove
-		b:0
-		///#/remove
-
+		/*$
+		 * @id ht
+		 * @group ELEMENT
+		 * @requires set
+		 * @configurable default
+		 * @name .ht()
+		 * @syntax list.ht(html)
+		 * @syntax list.ht(htmlTemplate, object)
+	     * @module WEB
+		 * Replaces the content of the list elements with the HTML generated using the given template. The template uses
+		 * ##template() syntax and HTML-escaped its output using ##escapeHtml(). 
+		 * 
+		 * @example Using template to format a number:
+		 * <pre>
+		 * &lt;div id="price">-&lt;/div>
+		 * </pre> 
+		 * Then the price can be set like this:
+		 * <pre>
+		 * var price = 14.9;
+		 * $('#price').ht('<b>${{::0.99}}</b>', price);
+		 * </pre>
+		 * Results in:
+		 * <pre>
+		 * &lt;div id="price"><b>$14.90</b>&lt;/div>
+		 * </pre> 
+		 *
+		 * @example Render a list of names:
+		 * <pre>
+		 * var names = [ {first: 'James', last: 'Sullivan'}, 
+		 *               {first: 'Michael', last: 'Wazowski'} ];
+		 * $('#list').ht('<h2>{{listName}}</h2>\n'+
+		 *               '<ul>{{each n: names}}<li>{{n.first}} {{n.last}}</li>{{/each}}</ul>', 
+		 *               {listName: 'Guys', names: names});
+		 * </pre>
+		 * The code creates this:
+		 * <pre>
+		 * <h2>Guys</h2>
+		 * <ul><li>James Sullivan<li><li>Michael Wazowski</li></ul>
+		 * </pre> 
+		 *
+		 * @param htmlTemplate the template using ##template() syntax. Please note, because this is a template, you should
+		 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
+		 *                     Minified will cache only a limited number of templates. Exception: If the template string does not use
+		 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
+		 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
+		 *                     unless you use triple curly-braces.
+		 * @param object optional the object to pass to the template
+		 * @return the current list
+		 */
+		'ht':ht
+		/*$
+		 * @stop
+		 */
+		// @cond !ht dummy:0
+		
+		
 	}, M.prototype);
 	
 			
@@ -340,6 +410,68 @@ function dummy() {
 	// @condblock promise
 	'promise': promise,
 	// @condend promise
+	
+	/*$
+	 * @id html
+	 * @group ELEMENT
+	 * @requires htmltemplate
+	 * @configurable default
+	 * @name HTML()
+	 * @syntax HTML(html)
+	 * @syntax HTML(htmlTemplate, object)
+	 * @syntax HTML(htmlTemplate, object, onCreate)
+     * @module WEB
+	 * Creates an Element Factory function that creates nodes from the given HTML template. The function, when invoked,
+	 * returns a ##list#list of DOM nodes. It is compatible with ##add(), ##fill() and related methods.
+	 * The template uses ##template() syntax with ##escapeHtml() escaping for values.
+	 * 
+	 * Please note that the function <var>HTML</var> will not be automatically exported by Minified. You should always import it
+	 * using the recommended import statement:
+	 * <pre>
+	 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, HTML = MINI.HTML;
+	 * </pre>
+	 * 
+	 * @example Creating a HTML element to format a number:
+	 * <pre>
+	 * &lt;div id="price">-&lt;/div>
+	 * </pre> 
+	 * Then the price can be set like this:
+	 * <pre>
+	 * var price = 14.9;
+	 * $('#price').fill(HTML('<b>${{::0.99}}</b>', price));
+	 * </pre>
+	 * Results in:
+	 * <pre>
+	 * &lt;div id="price"><b>$14.90</b>&lt;/div>
+	 * </pre> 
+	 *
+	 * @example Adding elements to an existign list:
+	 * <pre>
+	 * var names = [ {first: 'James', last: 'Sullivan'}, 
+	 *               {first: 'Michael', last: 'Wazowski'} ];
+	 * $('#list').add(HTML('{{each}}<li>{{this.first}} {{this.last}}</li>{{/each}}', names);
+	 * </pre>
+	 * The code adds this to #list:
+	 * <pre>
+	 * <li>James Sullivan<li><li>Michael Wazowski</li>
+	 * </pre> 
+	 *
+	 * @param htmlTemplate the template using ##template() syntax. Please note, because this is a template, you should
+	 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
+	 *                     Minified will cache only a limited number of templates. Exception: If the template string does not use
+	 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
+	 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
+	 *                     unless you use triple curly-braces.
+	 * @param object optional the object to pass to the template
+	 * @param onCreate optional a <code>function(elementList)</code> that will be called each time an element had been created. 
+	 *                 <dl><dt>elementList</dt><dd>The newly created element wrapped in a Minified list.  </dd></dl>
+	 *                 The function's return value will be ignored. 
+	 *                 The callback allows you, for example, to add event handlers to the elements using ##on().
+	 * @return a Element Factory function, which returns a Minified list containing the DOM nodes that have been created using the
+	 *         template. The factory function can be called repeatedly and will create a new set of DOM nodes on each invocation. 
+	 */
+	'HTML': HTML,
+
 	
 	/*$
 	 * @id delay
