@@ -115,7 +115,9 @@ define('minified', function() {
 	 */
 	var JAVASCRIPT_ESCAPES = {'"': '\\"', "'": "\\'", '\n': '\\n', '\t': '\\t', '\r': '\\r'};
 	
-	var templateCache={};
+	var MAX_CACHED_TEMPLATES = 99;
+	var templateCache={}; // template -> function
+	var templates = [];   // list of MAX_CACHED_TEMPLATES templates
 
 	///#/snippet utilVars
 	
@@ -688,7 +690,7 @@ define('minified', function() {
 					}
 				}).join('')+'}';
 			var f = (new Function('obj', 'each', 'esc', 'print', '_', funcBody));
-			return templateCache[template] = function(obj, thisContext) {
+			var t = function(obj, thisContext) {
 				var result = [];
 				f.call(thisContext || obj, obj, function(obj, func) {
 					if (isList(obj))
@@ -698,6 +700,9 @@ define('minified', function() {
 				}, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, _);
 				return result.join('');
 			};
+			if (templates.push(t) > MAX_CACHED_TEMPLATES)
+				delete templateCache[templates.shift()];
+			return templateCache[template] = t; 
 		}
 	}
 
