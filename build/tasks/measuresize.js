@@ -37,8 +37,8 @@ module.exports = function(grunt) {
 		    	results[f] = size;
 		        if (!--resultsToDo) {
 		        	grunt.log.writeln('GZip Results:');
-		        	_.eachObj(results, function(file, size) {
-			        	grunt.log.writeln(_.format('  {{file}}: {{size}} bytes', {file:file, size:size}));
+		        	_.keys(results).sort().each(function(file) {
+			        	grunt.log.writeln(_.format('  {{file}}: {{size}} bytes', {file:file, size:results[file]}));
 		        	});
 		        	if (options.destFile)
 		        		grunt.file.write(options.destFile, JSON.stringify(results));
