@@ -268,7 +268,9 @@ define('minified', function() {
 	 */
 	var JAVASCRIPT_ESCAPES = {'"': '\\"', "'": "\\'", '\n': '\\n', '\t': '\\t', '\r': '\\r'};
 	
-	var templateCache={};
+	var MAX_CACHED_TEMPLATES = 99;
+	var templateCache={}; // template -> function
+	var templates = [];   // list of MAX_CACHED_TEMPLATES templates
 
 	///#/snippet utilVars
 	///#snippet commonFunctions
@@ -836,7 +838,7 @@ define('minified', function() {
 					}
 				}).join('')+'}';
 			var f = (new Function('obj', 'each', 'esc', 'print', '_', funcBody));
-			return templateCache[template] = function(obj, thisContext) {
+			var t = function(obj, thisContext) {
 				var result = [];
 				f.call(thisContext || obj, obj, function(obj, func) {
 					if (isList(obj))
@@ -846,6 +848,9 @@ define('minified', function() {
 				}, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, _);
 				return result.join('');
 			};
+			if (templates.push(t) > MAX_CACHED_TEMPLATES)
+				delete templateCache[templates.shift()];
+			return templateCache[template] = t; 
 		}
 	}
 
@@ -1189,14 +1194,14 @@ define('minified', function() {
 		var numCompleted = 0; // number of completed, assimilated promises
 		var values = []; // array containing the result arrays of all assimilated promises, or the result of the single promise
 	    
-		function set(newState, newValues) {
+		var set = function(newState, newValues) {
 			if (state == null) {
-				state = newState;
+				set['state'] = state = newState;
 				values = isList(newValues) ? newValues : [newValues];
 				defer(function() {
 					each(deferred, function(f) {f();});
 				});
-			}		
+			}
 		}
 
 		// use promise varargs
@@ -1221,7 +1226,20 @@ define('minified', function() {
 				set(false, [e, values, index]);
 			}
 		});
-	    
+
+    	/*$
+    	 * @id state
+    	 * @group REQUEST
+    	 * @name promise.state
+    	 * @syntax promise.state
+    	 * 
+    	 * @module WEB, UTIL
+    	 * Contains the current state of the promise. The property is only set when the Promise finished. 
+    	 * It is set to <var>true</var> when the promise completed successfully, and to 
+    	 * <var>false</var> when the promise failed.
+    	 */   
+
+		
     	/*$
     	 * @id then
     	 * @group REQUEST

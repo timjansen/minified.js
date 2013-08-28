@@ -86,14 +86,14 @@ function dummy() {
 		var numCompleted = 0; // number of completed, assimilated promises
 		var values = []; // array containing the result arrays of all assimilated promises, or the result of the single promise
 	    
-		function set(newState, newValues) {
+		var set = function(newState, newValues) {
 			if (state == null) {
-				state = newState;
+				set['state'] = state = newState;
 				values = isList(newValues) ? newValues : [newValues];
 				defer(function() {
 					each(deferred, function(f) {f();});
 				});
-			}		
+			}
 		}
 
 		// use promise varargs
@@ -118,7 +118,20 @@ function dummy() {
 				set(false, [e, values, index]);
 			}
 		});
-	    
+
+    	/*$
+    	 * @id state
+    	 * @group REQUEST
+    	 * @name promise.state
+    	 * @syntax promise.state
+    	 * 
+    	 * @module WEB, UTIL
+    	 * Contains the current state of the promise. The property is only set when the Promise finished. 
+    	 * It is set to <var>true</var> when the promise completed successfully, and to 
+    	 * <var>false</var> when the promise failed.
+    	 */   
+
+		
     	/*$
     	 * @id then
     	 * @group REQUEST
