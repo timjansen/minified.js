@@ -65,12 +65,51 @@ define('minified', function() {
 	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, val3); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 	var WEEK_LONG_NAMES = 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday'.split(/,/);
 	var WEEK_SHORT_NAMES = map(WEEK_LONG_NAMES, val3); 
-	
-	/**
-	 * @const
-	 */
 	var MERIDIAN_NAMES = ['am', 'pm'];
 
+	var FORMAT_DATE_MAP = {
+			'y': ['FullYear', nonOp],
+			'Y': ['FullYear', function(d) { return d % 100; }],
+			'M': ['Month', plusOne],
+			'n': ['Month', MONTH_SHORT_NAMES],
+			'N': ['Month', MONTH_LONG_NAMES],
+			'd': ['Date', nonOp],
+			'm': ['Minutes', nonOp],
+			'H': ['Hours', nonOp],
+			'h': ['Hours', function(d) { return (d % 12) || 12; }],
+			'k': ['Hours', plusOne],
+			'K': ['Hours', function(d) { return d % 12; }],
+			's': ['Seconds', nonOp],
+			'S': ['Milliseconds', nonOp],
+			'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
+			'w': ['Day', WEEK_SHORT_NAMES],
+			'W': ['Day', WEEK_LONG_NAMES],
+			'z': ['TimezoneOffset', function(d, dummy, timezone) {
+				if (timezone)
+					return timezone;
+				var sign = d < 0 ? '+' : '-'; 
+				var off = d > 0 ? d : -d; 
+				return sign + pad(2, Math.floor(off/60)) + pad(2, off%60); 
+			}]
+		};
+
+	var PARSE_DATE_MAP = {
+			'y': 0,      // placeholder -> ctorIndex
+			'Y': [0, -2000],
+			'M': [1,1], // placeholder -> [ctorIndex, offset|value array]
+			'n': [1, MONTH_SHORT_NAMES], 
+			'N': [1, MONTH_LONG_NAMES],
+			'd': 2,
+			'm': 4,
+			'H': 3,
+			'h': 3,
+			'K': [3,1],
+			'k': [3,1],
+			's':  5,
+			'S':  6,
+			'a': [3, MERIDIAN_NAMES]
+		};
+	
 	/**
 	 * @const
 	 */
@@ -383,6 +422,9 @@ define('minified', function() {
 			return 0;
 		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
 	}
+	
+
+	
 	// formats number with format string (e.g. "#.999", "#,_", "00000", "000.99", "000.000.000,99", "000,000,000.__")
 	// choice syntax: <cmp><value>:<format>|<cmp><value>:<format>|... 
 	// e.g. 0:no item|1:one item|>=2:# items
@@ -394,31 +436,7 @@ define('minified', function() {
 			var timezone, match;
 			var formatNoTZ = format;
 			var date = value;
-			var map = {
-				'y': ['FullYear', nonOp],
-				'Y': ['FullYear', function(d) { return d % 100; }],
-				'M': ['Month', plusOne],
-				'n': ['Month', MONTH_SHORT_NAMES],
-				'N': ['Month', MONTH_LONG_NAMES],
-				'd': ['Date', nonOp],
-				'm': ['Minutes', nonOp],
-				'H': ['Hours', nonOp],
-				'h': ['Hours', function(d) { return (d % 12) || 12; }],
-				'k': ['Hours', plusOne],
-				'K': ['Hours', function(d) { return d % 12; }],
-				's': ['Seconds', nonOp],
-				'S': ['Milliseconds', nonOp],
-				'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
-				'w': ['Day', WEEK_SHORT_NAMES],
-				'W': ['Day', WEEK_LONG_NAMES],
-				'z': ['TimezoneOffset', function(d) {
-					if (timezone)
-						return timezone;
-					var sign = d < 0 ? '+' : '-'; 
-					var off = d > 0 ? d : -d; 
-					return sign + pad(2, Math.floor(off/60)) + pad(2, off%60); 
-				}]
-			};
+
 			if (match = /^\[(([+-]\d\d)(\d\d))\]\s*(.*)/.exec(format)) {
 				timezone = match[1];
 				date = dateAdd(value, 'minutes', getTimezone(match, 2, value));
@@ -426,15 +444,15 @@ define('minified', function() {
 			}
 			
 			return replace(formatNoTZ, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
-				var val = map[placeholderChar];
+				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
-					var d = date['get' + (isList(val)?val[0]:val)].call(date);
+					var d = date['get' + val[0]].call(date);
 					
 					var optionArray = params && params.split(',');
 					if (isList(val[1])) 
 						d = (optionArray || val[1])[d];
 					else
-						d = val[1](d, optionArray);
+						d = val[1](d, optionArray, timezone);
 					if (d != _null && !isString(d))
 						d = pad(placeholderDigits.length+1, d);
 					return d;
@@ -497,22 +515,6 @@ define('minified', function() {
 	}
 	// returns date; null if optional and not set; undefined if parsing failed
 	function parseDate(format, date) {
-		var mapping = {
-			'y': 0,      // placeholder -> ctorIndex
-			'Y': [0, -2000],
-			'M': [1,1], // placeholder -> [ctorIndex, offset|value array]
-			'n': [1, MONTH_SHORT_NAMES], 
-			'N': [1, MONTH_LONG_NAMES],
-			'd': 2,
-			'm': 4,
-			'H': 3,
-			'h': 3,
-			'K': [3,1],
-			'k': [3,1],
-			's':  5,
-			'S':  6,
-			'a': [3, MERIDIAN_NAMES]
-		};
 		var indexMap = {}; // contains reGroupPosition -> typeLetter or [typeLetter, value array]
 		var reIndex = 1;
 		var timezoneOffsetMatch;
@@ -562,7 +564,7 @@ define('minified', function() {
 			var indexEntry = indexMap[i];
 			if (isList(indexEntry)) { // for a, n or N
 				var placeholderChar = indexEntry[0];
-				var mapEntry  = mapping[placeholderChar];
+				var mapEntry  = PARSE_DATE_MAP[placeholderChar];
 				var ctorIndex = mapEntry[0];
 				var valList = indexEntry[1] || mapEntry[1];
 				var listValue = find(valList, function(v, index) { return startsWith(matchVal.toLowerCase(), v.toLowerCase()) ? index : _null; });
@@ -575,7 +577,7 @@ define('minified', function() {
 			}
 			else if (indexEntry) { // for numeric values (yHmMs)
 				var value = parseInt(matchVal);
-				var mapEntry  = mapping[indexEntry];
+				var mapEntry  = PARSE_DATE_MAP[indexEntry];
 				if (isList(mapEntry))
 					ctorArgs[mapEntry[0]] += value - mapEntry[1];
 				else
