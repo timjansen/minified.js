@@ -2656,7 +2656,7 @@ define('minified', function() {
 			if (curOverState[index] !== overState) {
 				if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['trav']('parentNode', self[index]).length)) {
 					curOverState[index] = overState;
-					toggle.call(this, overState, index);
+					toggle.call(this, overState, index, ev);
 				}
 			}
 		});

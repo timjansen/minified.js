@@ -331,13 +331,17 @@ function dummy() {
 		
 	copyObj({
 		///#remove
-		a:0
+		dummy1:0
 		///#/remove
 
 		///#include minified-util-src.js utilListFuncs
 		,
+		///#remove
+		dummy2:0
+		///#/remove
+		
 		///#include minified-web-src.js webListFuncs
-
+		,
 		/*$
 		 * @id ht
 		 * @group ELEMENT
@@ -393,7 +397,6 @@ function dummy() {
 		 */
 		// @cond !ht dummy:0
 		
-		
 	}, M.prototype);
 	
 			
@@ -414,7 +417,7 @@ function dummy() {
 	/*$
 	 * @id html
 	 * @group ELEMENT
-	 * @requires htmltemplate
+	 * @requires 
 	 * @configurable default
 	 * @name HTML()
 	 * @syntax HTML(html)
