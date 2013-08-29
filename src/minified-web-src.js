@@ -2173,8 +2173,6 @@ define('minified', function() {
 	 *                   <dt>index</dt><dd>The list index of the object owning the property</dd>
 	 *                   <dt>obj</dt><dd>The list element owning the property.<dd>
 	 *                   <dt class="returnValue">(callback return value)</dt><dd>The destination value to be set.</dd></dl> 
-	 *                   Number values, including those with units, can be prefixed with "+=" or "-=", meaning that the value is relative 
-	 *                   to the original value and should be added or subtracted.
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.
 	 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> which will be
