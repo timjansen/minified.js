@@ -39,11 +39,11 @@ function dummy() {
 	}
 	
 	function ht(htmlTemplate, object) {
-		return this.set('innerHTML', htmlTemplate.test(/{{/) ? htmlFormat(htmlTemplate, object) : htmlTemplate);
+		return this.set('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : htmlTemplate.test(/{{/) ? htmlFormat(htmlTemplate, object) : htmlTemplate);
 	}
 	
 	function HTML(htmlTemplate, object, onCreate) {
-		var tpl = htmlTemplate.test(/{{/) ? template(htmlTemplate, escapeHtml) : function() { return htmlTemplate; };
+		var tpl = isFunction(htmlTemplate) ? htmlTemplate : htmlTemplate.test(/{{/) ? template(htmlTemplate, escapeHtml) : function() { return htmlTemplate; };
 		return function() {
 			var tmp = _document.createElement('div');
 	        tmp['innerHTML'] = tpl(object);
@@ -348,8 +348,10 @@ function dummy() {
 		 * @requires set
 		 * @configurable default
 		 * @name .ht()
-		 * @syntax list.ht(html)
-		 * @syntax list.ht(htmlTemplate, object)
+		 * @syntax list.ht(templateString)
+		 * @syntax list.ht(templateString, object)
+		 * @syntax list.ht(templateFunction)
+		 * @syntax list.ht(templateFunction, object)
 	     * @module WEB
 		 * Replaces the content of the list elements with the HTML generated using the given template. The template uses
 		 * ##template() syntax and HTML-escaped its output using ##escapeHtml(). 
@@ -382,13 +384,16 @@ function dummy() {
 		 * <ul><li>James Sullivan<li><li>Michael Wazowski</li></ul>
 		 * </pre> 
 		 *
-		 * @param htmlTemplate the template using ##template() syntax. Please note, because this is a template, you should
+		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
 		 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
 		 *                     Minified will cache only a limited number of templates. Exception: If the template string does not use
 		 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
 		 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
 		 *                     unless you use triple curly-braces.
-		 * @param object optional the object to pass to the template
+		 * @param templateFunction instead of a HTML template <var>ht()</var> also accepts a template function, e.g. one
+		 *                         created by ##template(). It will be invoked with the object as only argument.
+		 * @param object optional the object to pass to the template. If object is not set, the template is called with <var>undefined</var>
+		 *                        as object.
 		 * @return the current list
 		 */
 		'ht':ht
@@ -420,9 +425,12 @@ function dummy() {
 	 * @requires 
 	 * @configurable default
 	 * @name HTML()
-	 * @syntax HTML(html)
-	 * @syntax HTML(htmlTemplate, object)
-	 * @syntax HTML(htmlTemplate, object, onCreate)
+	 * @syntax HTML(templateString)
+	 * @syntax HTML(templateString, object)
+	 * @syntax HTML(templateString, object, onCreate)
+	 * @syntax HTML(templateFunction)
+	 * @syntax HTML(templateFunction, object)
+	 * @syntax HTML(templateFunction, object, onCreate)
      * @module WEB
 	 * Creates an Element Factory function that creates nodes from the given HTML template. The function, when invoked,
 	 * returns a ##list#list of DOM nodes. It is compatible with ##add(), ##fill() and related methods.
@@ -459,12 +467,14 @@ function dummy() {
 	 * <li>James Sullivan<li><li>Michael Wazowski</li>
 	 * </pre> 
 	 *
-	 * @param htmlTemplate the template using ##template() syntax. Please note, because this is a template, you should
+	 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
 	 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
 	 *                     Minified will cache only a limited number of templates. Exception: If the template string does not use
 	 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
 	 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
 	 *                     unless you use triple curly-braces.
+	 * @param templateFunction instead of a HTML template <var>ht()</var> also accepts a template function, e.g. one
+	 *                         created by ##template(). It will be invoked with the object as only argument.
 	 * @param object optional the object to pass to the template
 	 * @param onCreate optional a <code>function(elementList)</code> that will be called each time an element had been created. 
 	 *                 <dl><dt>elementList</dt><dd>The newly created element wrapped in a Minified list.  </dd></dl>
