@@ -4,6 +4,15 @@ Minified Change Log
 
 Ongoing
 --------------------
+* Added Util module.
+* New distribution minified.js, containing both Util and Web.
+* Replaced ant-based build system with Grunt.
+
+Full distribution only:
+* New method: ht() replaces node content with HTML template.
+* New method: HTML() creates element factory from HTML template.
+
+Web module:
 * New method: offset() to get page coordinates of an element.
 * New method: dial() returns a function that transitions elements between two states.
 * New get()/set()/animate() properties: $$scrollX and $$scrollY.
@@ -12,7 +21,6 @@ Ongoing
 * In values(), the returned map values will always be arrays.
 * In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead.
 * In toggle(), removed the (undocumented) possibility of using functions as states.
-* Replaced ant-based build system with Grunt.
 
 
 Beta 2 (2013-07-31)
