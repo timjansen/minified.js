@@ -45,7 +45,7 @@
  		};
 	 	
 		function fail(text) {
-			throw text;
+			throw new Error(text);
 		}
 
 		function check(value, expected, extraMsg) {
@@ -114,7 +114,7 @@
 		function runTest() {
 			var test = window.miniTests[testNum];
 			var msgSpan;
-			$('#results').add(EE('div', {}, [test.name + ': ', msgSpan = EE('span', 'waiting..')()]));
+			$('#results').add(EE('div', {}, [test.name + ': ', msgSpan = EE('span', 'waiting..')]));
 			var playgroundDiv;
 			if (test.async) // create playground div for async tests; they must not change anything else
 				 $('#playground').add(playgroundDiv = EE('div')[0]);
@@ -154,7 +154,7 @@
 				if (success)
 					setSuccess(true, 'ok');
 				else
-					setSuccess(success, 'Got exception');
+					setSuccess(success, 'Failed');
 			}
 			
 			$('#container2').fill();

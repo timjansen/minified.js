@@ -420,15 +420,45 @@ define('minified', function() {
 		return dollarRaw(selector)[0];
 	}
     
-    function EE(elementName, attributes, children, onCreate) {
-		return function() {
-			var list = $(_document.createElement(elementName));
-			// TODO: attributes!=null only needed with UTIL. Web's isObject is simpler.
-			(isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
-			if (onCreate)
-				onCreate(list);
-			return list;
-		};
+    function EE(elementName, attributes, children) {
+		var list = $(_document.createElement(elementName));
+		// TODO: attributes!=null only needed with UTIL. Web's isObject is simpler.
+		return (isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
+	}
+
+	function clone (listOrNode) {
+		return collector(flexiEach, listOrNode, function(e) {
+			var nodeType;
+			if (isString(e))
+				return e;
+			else if (isList(e)) 
+				return clone(e);
+			else if ((nodeType = isNode(e)) == 1) {
+				var attrs = {
+						// @condblock ie8compatibility
+						'$': e['className'] || _null,
+						'$$': IS_PRE_IE9 ? e['style']['cssText'] : e.getAttribute('style')
+						// @condend
+				};
+				flexiEach(e['attributes'], function(a) {
+					var attrName = a['name'];
+					if (attrName != 'id'
+						// @condblock ie8compatibility
+						&& attrName != 'style'
+						&& attrName != 'class'
+						&& e.getAttribute(attrName)  // getAttribute for IE8
+						// @condend
+						) {
+						attrs['@'+attrName] = a['value'];
+					}
+				});
+				return EE(e['tagName'], attrs, clone(e['childNodes']));
+			}
+			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
+				return e['data'];
+			else
+				return _null;
+		});
 	}
 
    
@@ -1511,18 +1541,16 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .add()
 	 * @syntax list.add(text)
-	 * @syntax list.add(factoryFunction)
 	 * @syntax list.add(list)
 	 * @syntax list.add(node)
      * @module WEB
 	 * Adds the given node(s) as content to the list's HTML elements. If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list element to create the node to add. This is called a factory function. It can return all 
-	 * values allowed by <var>add()</var>, including another function to be called.
-	 * If you pass a list or a function returning a list, all its elements will be added using the rules above.
-	 *
-	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
-	 * does not allow adding it more than once. You should use a factory function to add DOM elements to more than one list element. ##EE() 
-	 * and ##clone() are two simple ways to create factory functions.
+	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
+     *
+	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
+	 * and ##clone#clones for all following list elements.
+	 * 
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1602,7 +1630,7 @@ define('minified', function() {
 						e.appendChild(n);
 					lastAdded = n;
 				}
-			})(isNode(children) && index ? _null : children);
+			})(index &&!isFunction(children) ? clone(children) : children);
 		});
 	},
 
@@ -1620,12 +1648,15 @@ define('minified', function() {
 	 * @syntax list.fill(node)
      * @module WEB
 	 * Sets the content of the list's HTML elements, replacing old content. If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list member to create a node. The function prototype is <code>function(parent, index)</code>. 
-	 * It can return all values allowed by <var>fill()</var>, including another function to be called.
-	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
+	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
 	 *
-	 * It is also possible to pass a DOM node, but it will be set <strong>only in the first element of the list</strong>, because DOM
-	 * does not allow adding it more than once.
+	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
+	 * and ##clone#clones for all following list elements.
+	 * 
+	 * You can also pass a function as argument. It will be invoked for each list element to create the node to add.  The 
+	 * function can return all values allowed by <var>add()</var>, including another function to be called.
+	 *
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
 	 *
 	 * Call <var>fill()</var> without arguments to remove all children from a node.
 	 * 
@@ -1711,12 +1742,15 @@ define('minified', function() {
      * @module WEB
 	 * Inserts the given text or element(s) as sibling in front of each HTML element in the list. 
 	 * If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list element to create the new node, with the arguments <code>function(parent, index)</code>. 
-	 * It can return all values allowed by <var>addBefore()</var>, including another function to be called.
-	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
+	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
 	 *
-	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
-	 * does not allow adding it more than once.
+	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
+	 * and ##clone#clones for all following list elements.
+	 * 
+	 * You can also pass a function as argument. It will be invoked for each list element to create the node to add.  The 
+	 * function can return all values allowed by <var>add()</var>, including another function to be called.
+	 *
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1783,12 +1817,15 @@ define('minified', function() {
      * @module WEB
 	 * Inserts the given text or element(s) as sibling after each HTML element in the list. 
 	 * If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list element to create the node(s) to add. It can return all values
-	 * allowed by <var>addAfter()</var>, including another function to be called.
-	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
+	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
 	 *
-	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
-	 * does not allow adding it more than once.
+	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
+	 * and ##clone#clones for all following list elements.
+	 * 
+	 * You can also pass a function as argument. It will be invoked for each list element to create the node to add.  The 
+	 * function can return all values allowed by <var>add()</var>, including another function to be called.
+	 *
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1850,12 +1887,15 @@ define('minified', function() {
      * @module WEB
 	 * Adds the given node(s) as children to the list's HTML elements. Unlike ##add(), the new nodes will be the first children and not the last.
 	 * If a string has been given, it will be added as text node.
-	 * If you pass a function, it will be invoked for each list element to create node(s) with the arguments <code>function(parent, index)</code>. 
-	 * It can return all values allowed by <var>addFront()</var>, including another function to be called.
-	 * If you pass a list or a function returns a list, all its elements will be added using the rules above.
+	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
 	 *
-	 * It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
-	 * does not allow adding it more than once.
+	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
+	 * and ##clone#clones for all following list elements.
+	 * 
+	 * You can also pass a function as argument. It will be invoked for each list element to create the node to add.  The 
+	 * function can return all values allowed by <var>add()</var>, including another function to be called.
+	 *
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1929,12 +1969,15 @@ define('minified', function() {
      * @module WEB
 	 * Replaces the list items with the the given node(s) in the DOM tree. 
 	 * If a string has been given, it will be set as text node.
-	 * If you pass a function, it will be invoked for each list element to create node(s) with the arguments <code>function(parent, index)</code>. 
-	 * It can return all values allowed by <var>replace()</var>, including another function to be called.
-	 * If you pass a list or a function returns a list, all its elements will be set using the rules above.
+	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
 	 *
-	 * It is also possible to pass a DOM node, but it will replace <strong>only the first element of the list</strong>, because DOM
-	 * does not allow adding it more than once.
+	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
+	 * and ##clone#clones for all following list elements.
+	 * 
+	 * You can also pass a function as argument. It will be invoked for each list element to create the node to add.  The 
+	 * function can return all values allowed by <var>add()</var>, including another function to be called.
+	 *
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1997,16 +2040,16 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .clone()
 	 * @syntax list.clone()
-	 * @syntax list.clone(onCreate)
      * @module WEB
-	 * Creates a ##list#Minified list## of strings and Element Factories that return clones of the list's HTML elements. An Element Factory is a function
-	 * that creates a Minified list of fresh DOM nodes. You can pass the list to ##add(), ##fill() or similar functions to re-create the cloned nodes.
+     * Clones all HTML elements and text nodes in the given list by creating a deep copy. Strings in the list will remain unchanged,
+     * and everything else will be removed.
 	 *
-	 * <var>clone()</var> is very limited in what it will clone. Only elements, their attributes, text nodes and CDATA will be cloned.
+	 * <var>clone()</var> is very limited in what it will clone. Only elements, their attributes, text nodes,  CDATA nodes and strings will 
+	 * be copied. Nested lists will be automatically flattened.
 	 * Modifications of the elements, such as event handlers, will not be cloned.
 	 *
-	 * Please note that id attributes will be automatically skipped by the Element Factory. This allows you to address the element to clone by id
-	 * without having to worry about duplicate ids in the result.
+	 * Please note that id attributes will be automatically skipped by the <var>clone()</var>. This allows you to address the element to 
+	 * clone by id without having to worry about duplicate ids in the result.
 	 * 
 	 * @example Using the following HTML:
 	 * <pre>
@@ -2014,66 +2057,22 @@ define('minified', function() {
 	 *    &lt;div id="comment1">My comment.&lt;/div>
 	 * &lt;/div>
 	 * </pre> 
-	 * Creating a clone factory:
+	 * Creating a clone:
 	 * <pre>
-	 * var myCloneFactory = $('#comment1').clone();
+	 * var myClone = $('#comment1').clone();
 	 * </pre>
-	 * Creating a clone and adding it below the existing one:
+	 * Adding it below the original:
 	 * <pre>
-	 * $('#comments').add(myCloneFactory);
+	 * $('#comments').add(myClone);
 	 * </pre> 
 	 *
- 	 * @example Creating an event handler for a clone:
-	 * <pre>
-	 * var buttonCloner = $('#myButton').clone(function(newButton) {
-	 *     newButton.on('click', function() { alert('Cloned button clicked'); });
-	 * });
-	 * $('#buttonContainer').add(buttonCloner);
-	 * </pre> 
-	 *
-	 * @param onCreate optional A <code>function(elementList)</code> that will be called for each top-level element created by the Element
- 	 *                 Factory:
- 	 *                 <dl><dt>elementList</dt><dd>The newly created element wrapped in a Minified list. </dd></dl>
- 	 *                 The function's return value will be ignored. 
- 	 *                 The callback allows you, for example, to add event handlers to the element using ##on().
- 	 *                 Please note that the callback will be not be called for cloned text nodes. If you clone
- 	 *                 more than one element, <var>onCreate</var> will be invoked for each element. 
-	 * @return the list of Element Factory functions and strings to create clones
+	 * @return the list of containing copies of all supported items in the original list.
 	 */
-	'clone': function (onCreate) {
-		return this['collect'](function(e) {
-			var nodeType = isNode(e);
-			if (nodeType == 1) {
-				var attrs = {
-						// @condblock ie8compatibility
-						'$': e['className'] || _null,
-						'$$': IS_PRE_IE9 ? e['style']['cssText'] : e.getAttribute('style')
-						// @condend
-				};
-				flexiEach(e['attributes'], function(a) {
-					var attrName = a['name'];
-					if (attrName != 'id'
-						// @condblock ie8compatibility
-						&& attrName != 'style'
-						&& attrName != 'class'
-						&& e.getAttribute(attrName)  // getAttribute for IE8
-						// @condend
-						) {
-						attrs['@'+attrName] = a['value'];
-					}
-				});
-				return EE(e['tagName'], attrs, $(e['childNodes'])['clone'](), onCreate);
-			}
-			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
-				return e['data'];
-			else 
-				return _null;
-		});
+	'clone':  function() {
+		return new M(clone(this)); // TODO: with Util use list bind func
 	},
 
 
-
-	
 	/*$
 	 * @id animate
 	 * @group ANIMATION

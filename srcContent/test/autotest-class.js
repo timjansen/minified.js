@@ -2,7 +2,7 @@ window.miniTests.push.apply(window.miniTests, [
   	{
 		name:'$().set("$", "-")',
 		exec: function() {
-			var s1 = EE('div', {'className': 'a b c d e'})()[0];
+			var s1 = EE('div', {'className': 'a b c d e'})[0];
 			var m = $(s1);
 			m.set('$', '-x');
 			check(s1.className, 'a b c d e');
@@ -23,8 +23,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'$().set("$", "+")',
 		exec: function() {
-			var s1 = EE('div')()[0];
-			var s2 = EE('div', {'className':''})()[0];
+			var s1 = EE('div')[0];
+			var s2 = EE('div', {'className':''})[0];
 			var m = $([s1, s2]);
 			m.set('$', '+a');
 			check(s1.className, 'a');
@@ -49,8 +49,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'$().set("$", "class")',
 		exec: function() {
-			var s1 = EE('div', {'className': 'a b c'})()[0];
-			var s2 = EE('div')()[0];
+			var s1 = EE('div', {'className': 'a b c'})[0];
+			var s2 = EE('div')[0];
 			var m = $([s1, s2]);
 			m.set('$', 'a');
 			check(s1.className, 'b c');
@@ -72,8 +72,8 @@ window.miniTests.push.apply(window.miniTests, [
 	{
 		name:'$().set("$", mix)',
 		exec: function() {
-			var s1 = EE('div', {'className': 'a b c'})()[0];
-			var s2 = EE('div')()[0];
+			var s1 = EE('div', {'className': 'a b c'})[0];
+			var s2 = EE('div')[0];
 			var m = $([s1, s2]);
 			m.set('$', 'a b c');
 			check(s1.className, '');

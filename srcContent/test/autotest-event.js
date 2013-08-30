@@ -27,8 +27,8 @@ window.miniTests.push.apply(window.miniTests, [
 			var callNum = 0, lastIndex;
 			var expect, error;
 			var s, s2;
-			p.add(s = EE('div', {$width: '30px', $height: '10px'})()[0]);
-			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})()[0]);
+			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
+			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})[0]);
 			$('div', p).on('click', handler = function(e, index) {
 				callNum++;
 				lastIndex = index;
@@ -58,10 +58,10 @@ window.miniTests.push.apply(window.miniTests, [
 			var p = $('#container2');
 			var s, c1, c2, c3;
 			var proofEek1 = 0, proofPropagation = 0; proofBoo = 0, proofClonk = 0;
-			p.add(s = EE('div')()[0]);
-			$(s).add(c1 = EE('p','bla')()[0]);
-			$(s).add(c2 = EE('span', 'x')()[0]);
-			$(s).add(c3 = EE('span', {$: 'supiClass'} ,'x')()[0]);
+			p.add(s = EE('div')[0]);
+			$(s).add(c1 = EE('p','bla')[0]);
+			$(s).add(c2 = EE('span', 'x')[0]);
+			$(s).add(c3 = EE('span', {$: 'supiClass'} ,'x')[0]);
 			
 			$(s).on('|eek', 'span.supiClass', function(e, index) { if (e.success && index==0 && this===c3) proofEek1++; });
 			$(s).on('eek', 'span.supiClass', function() { check(++proofPropagation, proofEek1, "Propagation failed."); });
@@ -97,10 +97,10 @@ window.miniTests.push.apply(window.miniTests, [
 			var p = $('#container2');
 			var s, c3, c4, c5;
 			var proofTag = 0, proofClass = 0, proofComplexMatch = 0, proofComplexNonMatch = 0;
-			p.add(s = EE('div')()[0]);
-			$(s).add(EE('p','bla')()[0]);
-			$(s).add(EE('span', 'x')()[0]);
-			$(s).add(c3 = EE('span', {$: 'supiClass'} ,'x')()[0]);
+			p.add(s = EE('div')[0]);
+			$(s).add(EE('p','bla')[0]);
+			$(s).add(EE('span', 'x')[0]);
+			$(s).add(c3 = EE('span', {$: 'supiClass'} ,'x')[0]);
 			$(s).on('|eek', 'span', function(e, index) { if (e.success && index==0) proofTag++; });
 			$(s).on('|eek', '.supiClass', function(e, index) { if (e.success && index==0) proofClass++; });
 			$(s).on('|eek', 'a,.supiClass,form,.whatever', function(e, index) { if (e.success && index==0) proofComplexMatch++; });
@@ -112,8 +112,8 @@ window.miniTests.push.apply(window.miniTests, [
 			check(proofComplexMatch, 1, "eek selector test / complex");
 			check(proofComplexNonMatch, 0, "eek selector test / complex non");
 
-			$(s).add(c4 = EE('span','y')()[0]);
-			$(s).add(c5 = EE('span', {$: 'supiClass'} ,'z')()[0]);
+			$(s).add(c4 = EE('span','y')[0]);
+			$(s).add(c5 = EE('span', {$: 'supiClass'} ,'z')[0]);
 
 			$(c4).trigger('eek', {success:1});
 			check(proofTag, 2, "live test, span only / tag");
@@ -136,8 +136,8 @@ window.miniTests.push.apply(window.miniTests, [
 			var callNum = 0;
 			var expect = null, error = null;
 			var s, s2;
-			p.add(s = EE('div', {$width: '30px', $height: '10px'})()[0]);
-			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})()[0]);
+			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
+			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})[0]);
 			$('div', p).on('click', handler = function(e, index) {
 				callNum++;
 				if (this != expect)
@@ -167,9 +167,9 @@ window.miniTests.push.apply(window.miniTests, [
 			var s, s2, s3;
 			var proofEek1 = 0, proofEek2 = 0;
 			var proofBoo1 = 0, proofBoo2 = 0, proofBoo3 = 0, proofBoo4 = 0;
-			p.add(s = EE('div', {$width: '30px', $height: '10px'})()[0]);
-			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})()[0]);
-			$(s).add(s3 = EE('div', {$width: '1px', $height: '10px'})()[0]);
+			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
+			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})[0]);
+			$(s).add(s3 = EE('div', {$width: '1px', $height: '10px'})[0]);
 
 			$(p).trigger('boo'); // nop
 			

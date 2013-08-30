@@ -17,6 +17,8 @@ Web module:
 * New method: dial() returns a function that transitions elements between two states.
 * New get()/set()/animate() properties: $$scrollX and $$scrollY.
 * New argument startIndex for find().
+* Changed EE() and clone(): they return elements in a list, instead of element factories.
+* Changed add(), fill(), addBefore()...: will clone elements if added to more than one parent.
 * Changed filter(): removed value argument, only function possible.
 * In values(), the returned map values will always be arrays.
 * In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead.

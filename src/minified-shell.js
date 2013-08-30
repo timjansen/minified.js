@@ -44,17 +44,10 @@ function dummy() {
 	
 	function HTML(htmlTemplate, object, onCreate) {
 		var tpl = isFunction(htmlTemplate) ? htmlTemplate : htmlTemplate.test(/{{/) ? template(htmlTemplate, escapeHtml) : function() { return htmlTemplate; };
-		return function() {
-			var tmp = _document.createElement('div');
-	        tmp['innerHTML'] = tpl(object);
-	        var nodeList = _(tmp.childNodes);
-	        if (onCreate)
-	            onCreate(nodeList);
-	        return nodeList;
-	    };	
+		var tmp = _document.createElement('div');
+        tmp['innerHTML'] = tpl(object);
+        return  _(tmp.childNodes);
 	}
-
-	
 	
 	/*$
 	 * @id promise
@@ -432,8 +425,7 @@ function dummy() {
 	 * @syntax HTML(templateFunction, object)
 	 * @syntax HTML(templateFunction, object, onCreate)
      * @module WEB
-	 * Creates an Element Factory function that creates nodes from the given HTML template. The function, when invoked,
-	 * returns a ##list#list of DOM nodes. It is compatible with ##add(), ##fill() and related methods.
+	 * Creates a ##list#list of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
 	 * The template uses ##template() syntax with ##escapeHtml() escaping for values.
 	 * 
 	 * Please note that the function <var>HTML</var> will not be automatically exported by Minified. You should always import it
@@ -476,12 +468,7 @@ function dummy() {
 	 * @param templateFunction instead of a HTML template <var>ht()</var> also accepts a template function, e.g. one
 	 *                         created by ##template(). It will be invoked with the object as only argument.
 	 * @param object optional the object to pass to the template
-	 * @param onCreate optional a <code>function(elementList)</code> that will be called each time an element had been created. 
-	 *                 <dl><dt>elementList</dt><dd>The newly created element wrapped in a Minified list.  </dd></dl>
-	 *                 The function's return value will be ignored. 
-	 *                 The callback allows you, for example, to add event handlers to the elements using ##on().
-	 * @return a Element Factory function, which returns a Minified list containing the DOM nodes that have been created using the
-	 *         template. The factory function can be called repeatedly and will create a new set of DOM nodes on each invocation. 
+	 * @return the list containing the new HTML nodes 
 	 */
 	'HTML': HTML,
 
