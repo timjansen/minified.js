@@ -33,9 +33,7 @@ to evaluate the new value:
 For the CSS style names, this is the computed style of the property </dd>
 <dt>index</dt><dd>The list index of the object owning the property</dd>
 <dt>obj</dt><dd>The list element owning the property.<dd>
-<dt class="returnValue">(callback return value)</dt><dd>The destination value to be set.</dd></dl>
-Number values, including those with units, can be prefixed with "+=" or "-=", meaning that the value is relative
-to the original value and should be added or subtracted.</dd>
+<dt class="returnValue">(callback return value)</dt><dd>The destination value to be set.</dd></dl></dd>
 <dt id="animate_durationMs" class=""><a name="animate_durationMs"><var>durationMs (optional)</var></a></dt>
 <dd class="">the duration of the animation in milliseconds. Default: 500ms.</dd>
 <dt id="animate_linearity" class=""><a name="animate_linearity"><var>linearity (optional)</var></a></dt>

@@ -59,10 +59,11 @@ window.miniTests.push.apply(window.miniTests, [
 			
 			check(!!s);
 		}
-	}/*,
+	},
 	{
 		name:'$.request() promises',
 		async: 1000,
+		featureMissing: !_,
 		exec: function(setSuccess, playground) {
 			var s = $.request('get', '/test/test.txt', null)
 			.then(function(txt) {
@@ -94,5 +95,5 @@ window.miniTests.push.apply(window.miniTests, [
 			});
 			check(!!s);
 		}
-	}*/
+	}
 ]);

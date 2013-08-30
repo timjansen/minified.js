@@ -113,21 +113,6 @@ window.miniTests.push.apply(window.miniTests, [
 		}
 	},
 	
-	{
-		name: "set() name check exception (debug)",
-		debugFailure: "set name check did not work.",
-		exec: function() {
-			$('#container2').set();
-		}
-	},
-	{
-		name: "set() 2nd arg exception (debug)",
-		debugFailure: "2nd arg check did not work.",
-		exec: function() {
-			$('#container2').set({a:1}, "foobar");
-		}
-	},
-
 	
 	{
 		name: "$().get(property)",

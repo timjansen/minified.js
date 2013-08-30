@@ -1151,11 +1151,11 @@ define('minified', function() {
 	}
 	
 	function ht(htmlTemplate, object) {
-		return this.set('innerHTML', htmlTemplate.test(/{{/) ? htmlFormat(htmlTemplate, object) : htmlTemplate);
+		return this.set('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : htmlTemplate.test(/{{/) ? htmlFormat(htmlTemplate, object) : htmlTemplate);
 	}
 	
 	function HTML(htmlTemplate, object, onCreate) {
-		var tpl = htmlTemplate.test(/{{/) ? template(htmlTemplate, escapeHtml) : function() { return htmlTemplate; };
+		var tpl = isFunction(htmlTemplate) ? htmlTemplate : htmlTemplate.test(/{{/) ? template(htmlTemplate, escapeHtml) : function() { return htmlTemplate; };
 		return function() {
 			var tmp = _document.createElement('div');
 	        tmp['innerHTML'] = tpl(object);
@@ -1325,7 +1325,7 @@ define('minified', function() {
     	 * @return a new ##promise#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
     	 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
     	 */   
-	    set['then'] = function then(onFulfilled, onRejected) {
+	    var then = set['then'] = function (onFulfilled, onRejected) {
 			var newPromise = promise();
 			var callCallbacks = function() {
 	    		try {
@@ -3494,8 +3494,6 @@ define('minified', function() {
 	 *                   <dt>index</dt><dd>The list index of the object owning the property</dd>
 	 *                   <dt>obj</dt><dd>The list element owning the property.<dd>
 	 *                   <dt class="returnValue">(callback return value)</dt><dd>The destination value to be set.</dd></dl> 
-	 *                   Number values, including those with units, can be prefixed with "+=" or "-=", meaning that the value is relative 
-	 *                   to the original value and should be added or subtracted.
 	 * @param durationMs optional the duration of the animation in milliseconds. Default: 500ms.
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0.
 	 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> which will be
@@ -4040,8 +4038,10 @@ define('minified', function() {
 		 * @requires set
 		 * @configurable default
 		 * @name .ht()
-		 * @syntax list.ht(html)
-		 * @syntax list.ht(htmlTemplate, object)
+		 * @syntax list.ht(templateString)
+		 * @syntax list.ht(templateString, object)
+		 * @syntax list.ht(templateFunction)
+		 * @syntax list.ht(templateFunction, object)
 	     * @module WEB
 		 * Replaces the content of the list elements with the HTML generated using the given template. The template uses
 		 * ##template() syntax and HTML-escaped its output using ##escapeHtml(). 
@@ -4074,13 +4074,16 @@ define('minified', function() {
 		 * <ul><li>James Sullivan<li><li>Michael Wazowski</li></ul>
 		 * </pre> 
 		 *
-		 * @param htmlTemplate the template using ##template() syntax. Please note, because this is a template, you should
+		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
 		 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
 		 *                     Minified will cache only a limited number of templates. Exception: If the template string does not use
 		 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
 		 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
 		 *                     unless you use triple curly-braces.
-		 * @param object optional the object to pass to the template
+		 * @param templateFunction instead of a HTML template <var>ht()</var> also accepts a template function, e.g. one
+		 *                         created by ##template(). It will be invoked with the object as only argument.
+		 * @param object optional the object to pass to the template. If object is not set, the template is called with <var>undefined</var>
+		 *                        as object.
 		 * @return the current list
 		 */
 		'ht':ht
@@ -5604,9 +5607,12 @@ define('minified', function() {
 	 * @requires 
 	 * @configurable default
 	 * @name HTML()
-	 * @syntax HTML(html)
-	 * @syntax HTML(htmlTemplate, object)
-	 * @syntax HTML(htmlTemplate, object, onCreate)
+	 * @syntax HTML(templateString)
+	 * @syntax HTML(templateString, object)
+	 * @syntax HTML(templateString, object, onCreate)
+	 * @syntax HTML(templateFunction)
+	 * @syntax HTML(templateFunction, object)
+	 * @syntax HTML(templateFunction, object, onCreate)
      * @module WEB
 	 * Creates an Element Factory function that creates nodes from the given HTML template. The function, when invoked,
 	 * returns a ##list#list of DOM nodes. It is compatible with ##add(), ##fill() and related methods.
@@ -5643,12 +5649,14 @@ define('minified', function() {
 	 * <li>James Sullivan<li><li>Michael Wazowski</li>
 	 * </pre> 
 	 *
-	 * @param htmlTemplate the template using ##template() syntax. Please note, because this is a template, you should
+	 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
 	 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
 	 *                     Minified will cache only a limited number of templates. Exception: If the template string does not use
 	 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
 	 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
 	 *                     unless you use triple curly-braces.
+	 * @param templateFunction instead of a HTML template <var>ht()</var> also accepts a template function, e.g. one
+	 *                         created by ##template(). It will be invoked with the object as only argument.
 	 * @param object optional the object to pass to the template
 	 * @param onCreate optional a <code>function(elementList)</code> that will be called each time an element had been created. 
 	 *                 <dl><dt>elementList</dt><dd>The newly created element wrapped in a Minified list.  </dd></dl>

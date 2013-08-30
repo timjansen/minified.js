@@ -42,7 +42,9 @@ The syntax is exactly like <code><a href='add.html'>add()</a></code>.</dd>
 The function's return value will be ignored.
 The callback allows you, for example, to add event handlers to the element using <code><a href='on.html'>on()</a></code>.</dd>
 <dt id="ee_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4"><a name="ee_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">a Element Factory function, which returns a Minified list containing the DOM HTMLElement that has been created or modified as only element</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">a Element Factory function, which returns a Minified list containing the DOM HTMLElement that has been created or
+modified, as only element. The factory function can be called repeatedly and will create a new set of DOM nodes on
+each invocation.</dd>
 </dl>
 
 <h4>Description</h4>

@@ -213,7 +213,7 @@ function dummy() {
     	 * @return a new ##promise#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
     	 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
     	 */   
-	    set['then'] = function then(onFulfilled, onRejected) {
+	    var then = set['then'] = function (onFulfilled, onRejected) {
 			var newPromise = promise();
 			var callCallbacks = function() {
 	    		try {

@@ -345,7 +345,7 @@ window.miniTests.push.apply(window.miniTests, [
 		exec: function() {
 			m = $('#a').trav('nextSibling');
 			containsAll(m, [document.getElementById("b"), document.getElementById("c")], true, 'two siblings');
-			_.each(m, function(v, index) {
+			__.each(m, function(v, index) {
 				if (v.nodeType != 1)
 					fail("Node is not element: " + v);
 			});

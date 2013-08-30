@@ -29,9 +29,10 @@
     document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
 	</script>
 	<script type="text/javascript">
-	 	var MINI = require('minified'), $=MINI.$, $$ = MINI.$$, EE = MINI.EE;
+	 	var MINI = require('minified'), $=MINI.$, $$ = MINI.$$, EE = MINI.EE, HTML=MINI.HTML;
+	 	var _ = MINI._;
 	 	
- 		var _ = { // baby util package to avoid the dep to util
+ 		var __ = { // baby util package to avoid the dep to util
  				toString: function toString(s) { 
  					return s!=null ? ''+s : '';
  				},
@@ -126,7 +127,7 @@
 				}
 				if (!testFinished) {
 					msgSpan.set(s ? '+resultOk' : '+resultFailed').fill(s ? 'OK' : 'Failed (' + msg + ')');
-					if (window.console) console.log('Test:', test.name, 'Result:', s, 'Msg:', _.toString(msg));
+					if (window.console) console.log('Test:', test.name, 'Result:', s, 'Msg:', __.toString(msg));
 					testFinished = true;
 					finishedNum++;
 					if (!s)
@@ -136,45 +137,31 @@
 				}
 			}
 			
-			if (!test.debugFailure) { // regular, non-debug test
-				var success = true, msg;
-				try {
-					test.exec(setSuccess, playgroundDiv);
-				}
-				catch (e) {
-					success = false;
-					msg = ""+(e.message||e);
-				}
-				if (!success || !test.async)
-					setSuccess(success, msg);
-				
-				if (test.async)
-					window.setTimeout(function() {setSuccess(false, 'timeout, waited ' + test.async + 'ms')}, test.async);
+			if (test.featureMissing) {
+				msgSpan.fill('not available in build');
+				if (finishedNum++ == miniTests.length) 
+					testsCompleted();
 			}
-			else if (MINI.debug) { // only test if debug available
+			else {
 				var success = true;
 				try {
 					test.exec(setSuccess, playgroundDiv);
 				}
 				catch (e) {
 					success = false;
+					if (window.console) console.log('Exception:', e, e.stack);
 				}
-				if (!success)
-					setSuccess(success, test.debugFailure);
-			}
-			else {
-				msgSpan.fill('not executable');
-				finishedNum++;
+				if (success)
+					setSuccess(true, 'ok');
+				else
+					setSuccess(success, 'Got exception');
 			}
 			
 			$('#container2').fill();
 			if (++testNum < window.miniTests.length)
 				window.setTimeout(runTest, 1);
-			else {
-				
-			}
 		}
-		$(function() { window.setTimeout(runTest, 10); });
+		$(function() { window.setTimeout(runTest, 5); });
 		$(function() {$('#file').fill(srcFiles[srcNum]);});
 		
 	</script>
