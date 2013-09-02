@@ -108,9 +108,44 @@ describe('minified-web-promises-test.js', function() {
 				}
 			});
 			check(!!s);
-
+		});
+		
+	    it('combines promises', function(done) {
+	    	this.timeout(2000);
+			if (!_)
+				return done();
+			
+			var completed = 0;
+			function incComp() { completed++; }
+			_.promise(_.wait(10).then(incComp), 
+			          _.wait(100).then(incComp), 
+			          _.wait(500).then(incComp))
+			 .then(function() {
+				 if (completed == 3)
+					 done();
+				 else
+					 done('Completed before all three promises were done.');
+			 });
+	    });
+	});
+	
+	
+	describe('wait()', function() {
+		it('just works', function(done) {
+			this.timeout(500);
+			if (!_)
+				return done();
+			_.wait(50, [1, 2, 3])
+			 .then(function(a, b, c, d) {
+				 if (a == 1 && b == 2 && c == 3 && !d)
+					 done();
+				 else
+					 done('wrong args.');
+			 });
 		});
 	});
+
+	
 
 	/*
 	describe('.fill()', function() {
