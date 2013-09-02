@@ -382,7 +382,7 @@ define('minified', function() {
 				e.cancelBubble = _true; // cancel bubble for IE
 			}
 			// @condend ie8compatibility
-			
+
 			// @cond !ie8compatibility var match = !selectorFilter, el = triggerOriginalTarget || event['target'];
 			// @cond !ie8compatibility while (el && el != registeredOn && !match)
 			// @cond !ie8compatibility   if (selectorFilter(el))

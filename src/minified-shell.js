@@ -39,11 +39,11 @@ function dummy() {
 	}
 	
 	function ht(htmlTemplate, object) {
-		return this.set('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : htmlTemplate.test(/{{/) ? htmlFormat(htmlTemplate, object) : htmlTemplate);
+		return this.set('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : /{{/.test(htmlTemplate) ? formatHtml(htmlTemplate, object) : htmlTemplate);
 	}
 	
 	function HTML(htmlTemplate, object, onCreate) {
-		var tpl = isFunction(htmlTemplate) ? htmlTemplate : htmlTemplate.test(/{{/) ? template(htmlTemplate, escapeHtml) : function() { return htmlTemplate; };
+		var tpl = isFunction(htmlTemplate) ? htmlTemplate : /{{/.test(htmlTemplate) ? template(htmlTemplate, escapeHtml) : function() { return htmlTemplate; };
 		var tmp = _document.createElement('div');
         tmp['innerHTML'] = tpl(object);
         return  _(tmp.childNodes);
@@ -412,65 +412,6 @@ function dummy() {
 	'promise': promise,
 	// @condend promise
 	
-	/*$
-	 * @id html
-	 * @group ELEMENT
-	 * @requires 
-	 * @configurable default
-	 * @name HTML()
-	 * @syntax HTML(templateString)
-	 * @syntax HTML(templateString, object)
-	 * @syntax HTML(templateString, object, onCreate)
-	 * @syntax HTML(templateFunction)
-	 * @syntax HTML(templateFunction, object)
-	 * @syntax HTML(templateFunction, object, onCreate)
-     * @module WEB
-	 * Creates a ##list#list of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
-	 * The template uses ##template() syntax with ##escapeHtml() escaping for values.
-	 * 
-	 * Please note that the function <var>HTML</var> will not be automatically exported by Minified. You should always import it
-	 * using the recommended import statement:
-	 * <pre>
-	 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, HTML = MINI.HTML;
-	 * </pre>
-	 * 
-	 * @example Creating a HTML element to format a number:
-	 * <pre>
-	 * &lt;div id="price">-&lt;/div>
-	 * </pre> 
-	 * Then the price can be set like this:
-	 * <pre>
-	 * var price = 14.9;
-	 * $('#price').fill(HTML('<b>${{::0.99}}</b>', price));
-	 * </pre>
-	 * Results in:
-	 * <pre>
-	 * &lt;div id="price"><b>$14.90</b>&lt;/div>
-	 * </pre> 
-	 *
-	 * @example Adding elements to an existign list:
-	 * <pre>
-	 * var names = [ {first: 'James', last: 'Sullivan'}, 
-	 *               {first: 'Michael', last: 'Wazowski'} ];
-	 * $('#list').add(HTML('{{each}}<li>{{this.first}} {{this.last}}</li>{{/each}}', names);
-	 * </pre>
-	 * The code adds this to #list:
-	 * <pre>
-	 * <li>James Sullivan<li><li>Michael Wazowski</li>
-	 * </pre> 
-	 *
-	 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
-	 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
-	 *                     Minified will cache only a limited number of templates. Exception: If the template string does not use
-	 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
-	 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
-	 *                     unless you use triple curly-braces.
-	 * @param templateFunction instead of a HTML template <var>ht()</var> also accepts a template function, e.g. one
-	 *                         created by ##template(). It will be invoked with the object as only argument.
-	 * @param object optional the object to pass to the template
-	 * @return the list containing the new HTML nodes 
-	 */
-	'HTML': HTML,
 
 	
 	/*$
@@ -561,8 +502,75 @@ function dummy() {
 
 	
 	return {
+		///#remove
+		dummy:0 
+		///#/remove
 		///#include minified-util-src.js utilExports
 		///#include minified-web-src.js webExports
+		/*$
+		 * @id html
+		 * @group ELEMENT
+		 * @requires 
+		 * @configurable default
+		 * @name HTML()
+		 * @syntax HTML(templateString)
+		 * @syntax HTML(templateString, object)
+		 * @syntax HTML(templateString, object, onCreate)
+		 * @syntax HTML(templateFunction)
+		 * @syntax HTML(templateFunction, object)
+		 * @syntax HTML(templateFunction, object, onCreate)
+	     * @module WEB
+		 * Creates a ##list#list of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
+		 * The template uses ##template() syntax with ##escapeHtml() escaping for values.
+		 * 
+		 * Please note that the function <var>HTML</var> will not be automatically exported by Minified. You should always import it
+		 * using the recommended import statement:
+		 * <pre>
+		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, HTML = MINI.HTML;
+		 * </pre>
+		 * 
+		 * @example Creating a HTML element to format a number:
+		 * <pre>
+		 * &lt;div id="price">-&lt;/div>
+		 * </pre> 
+		 * Then the price can be set like this:
+		 * <pre>
+		 * var price = 14.9;
+		 * $('#price').fill(HTML('<b>${{::0.99}}</b>', price));
+		 * </pre>
+		 * Results in:
+		 * <pre>
+		 * &lt;div id="price"><b>$14.90</b>&lt;/div>
+		 * </pre> 
+		 *
+		 * @example Adding elements to an existign list:
+		 * <pre>
+		 * var names = [ {first: 'James', last: 'Sullivan'}, 
+		 *               {first: 'Michael', last: 'Wazowski'} ];
+		 * $('#list').add(HTML('{{each}}<li>{{this.first}} {{this.last}}</li>{{/each}}', names);
+		 * </pre>
+		 * The code adds this to #list:
+		 * <pre>
+		 * <li>James Sullivan<li><li>Michael Wazowski</li>
+		 * </pre> 
+		 *
+		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
+		 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
+		 *                     Minified will cache only a limited number of templates. Exception: If the template string does not use
+		 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
+		 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
+		 *                     unless you use triple curly-braces.
+		 * @param templateFunction instead of a HTML template <var>ht()</var> also accepts a template function, e.g. one
+		 *                         created by ##template(). It will be invoked with the object as only argument.
+		 * @param object optional the object to pass to the template
+		 * @return the list containing the new HTML nodes 
+		 */
+		,'HTML': HTML
+		
+		///#remove
+	
+		///#/remove
+
 	};
 
 ///#include minified-web-src.js  commonAmdEnd

@@ -232,8 +232,56 @@ describe('minified-web-element-test.js', function() {
 			check(/nonono/.test($$('#container2').innerHTML), true, 'Clone() id / content');
 		});
 	});
-	
 
+
+	describe('.ht()', function() {
+		it('just works', function() {
+			if (!_)
+				return;
+			
+			var sl = $([EE('span'), EE('span')]);
+			sl.ht('{{a}}+{{b}}={{a+b}}', {a:1, b:3});
+			check(sl[0].innerHTML, '1+3=4');
+			check(sl[1].innerHTML, '1+3=4');
+
+			sl.ht('<b>{{a}}{{b}}</b>', {a:1, b:3});
+			check(/<b>13<\/b>/i.test(sl[1].innerHTML), true, 'check inner html');
+			sl.ht('<b>{{a}}{{b}}</b>', {a:1, b:3}); // use caching..
+			check(/<b>13<\/b>/i.test(sl[1].innerHTML), true, 'check inner html again');
+
+			sl.ht('abc');
+			check(sl[0].innerHTML, 'abc');
+		});
+	});
+	
+	describe('HTML()', function() {
+		it('just works', function() {
+			if (!_)
+				return;
+			
+			var sl = HTML('{{a}}+{{b}}={{a+b}}', {a:1, b:3});
+			check(sl.length, 1);
+			check(sl[0].data, '1+3=4');
+
+			sl = HTML('<b>{{a}}{{b}}</b>', {a:1, b:3});
+			check(sl.length, 1);
+			check(sl[0].tagName.toLowerCase(), 'b');
+			check(sl[0].innerHTML, '13', 'check inner html');
+
+			sl = HTML('<b>{{a}}{{b}}</b>xx<i>eek</i>', {a:1, b:3});
+			check(sl.length, 3);
+			check(sl[0].tagName.toLowerCase(), 'b');
+			check(sl[0].innerHTML, '13', 'check inner html elem 1');
+			check(sl[1].data, 'xx');
+			check(sl[2].tagName.toLowerCase(), 'i');
+			check(sl[2].innerHTML, 'eek', 'check inner html elem 2');
+
+			
+			sl = HTML('abc');
+			check(sl[0].data, 'abc');
+			check(sl.length, 1);
+		});
+	});
 
 	/*
 	describe('.fill()', function() {
