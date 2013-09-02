@@ -84,7 +84,7 @@
 	</head>
 	<body>
 		<div id="pageContainer">
-		<h2>Minified Web Test: {{file}}</h2>
+		<h2 id="title">Minified Web Test: {{file}}</h2>
 		<div><button onclick="document.location.href = 'autorun.html'; return false;">Rerun All Tests</button></div>
 
 		<div id="mocha"></div>
@@ -115,7 +115,7 @@
 			<div id="c" class="m">
 				<p><b>div id="b" class="m"</b></p>
 				<div id="c_a" class="x y">
-					<p>div id="c_a" class="x y"</p>
+					<p>div id="c_a" class="x y r-r"</p>
 				</div>
 				<div id="c_b" class="m z">
 					<p>div id="c_b" class="m z"</p>
@@ -183,8 +183,8 @@
     	mocha.run(function() {
     		if (failures == 0)
     			forward();
+    		document.getElementById('title').style.color = failures ? 'red' : 'black';
     	});
-    	console.log('failures', failures);
 	</script>
 </html>
 
