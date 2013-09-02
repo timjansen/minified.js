@@ -1,7 +1,11 @@
-window.miniTests.push.apply(window.miniTests, [
-  	{
-		name:'$().set("$", "-")',
-		exec: function() {
+describe('minified-web-class-test.js', function() {
+	
+	beforeEach(function() {
+		$('#container2').fill();
+	});
+	
+	describe('.set() (class functions)', function() {
+		it('removes classes', function() {
 			var s1 = EE('div', {'className': 'a b c d e'})[0];
 			var m = $(s1);
 			m.set('$', '-x');
@@ -18,11 +22,9 @@ window.miniTests.push.apply(window.miniTests, [
 			check(s1.className, '');
 			m.set('-c');
 			check(s1.className, '');
-		}
-	},
-	{
-		name:'$().set("$", "+")',
-		exec: function() {
+		});
+		
+		it('add classes', function() {
 			var s1 = EE('div')[0];
 			var s2 = EE('div', {'className':''})[0];
 			var m = $([s1, s2]);
@@ -44,11 +46,9 @@ window.miniTests.push.apply(window.miniTests, [
 			m.set('+c');
 			check(s1.className, 'a b c');
 			check(s2.className, 'a b c');
-		}
-	},
-	{
-		name:'$().set("$", "class")',
-		exec: function() {
+		});
+		
+		it('toggles classes', function() {
 			var s1 = EE('div', {'className': 'a b c'})[0];
 			var s2 = EE('div')[0];
 			var m = $([s1, s2]);
@@ -67,11 +67,9 @@ window.miniTests.push.apply(window.miniTests, [
 			m.set('x');
 			check(s1.className, '');
 			check(s2.className, 'a b c');
-		}
-	},
-	{
-		name:'$().set("$", mix)',
-		exec: function() {
+		});
+		
+		it('just works', function() {
 			var s1 = EE('div', {'className': 'a b c'})[0];
 			var s2 = EE('div')[0];
 			var m = $([s1, s2]);
@@ -87,6 +85,23 @@ window.miniTests.push.apply(window.miniTests, [
 			m.set('a +d -c');
 			check(s1.className, 'a d');
 			check(s2.className, 'b d');
-		}
-	}
-]);
+		});
+	});
+	
+
+
+	/*
+	describe('.fill()', function() {
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+	});
+	*/
+
+});

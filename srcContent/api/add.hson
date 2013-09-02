@@ -13,7 +13,6 @@
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.add(text)</div>
-<div class="syntax">list.add(factoryFunction)</div>
 <div class="syntax">list.add(list)</div>
 <div class="syntax">list.add(node)</div>
 </div>
@@ -35,17 +34,14 @@ and attempt to add them to more than one element, the result is undefined. You s
 if you add DOM nodes to more than one element.</dd>
 <dt id="add_node" class=""><a name="add_node"><var>node</var></a></dt>
 <dd class="">a DOM node to add <strong>only to the first element</strong> of the list.</dd>
-<dt id="add_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="add_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the current list</dd>
+<dt id="add_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="add_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2">the current list</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>Adds the given node(s) as content to the list's HTML elements. If a string has been given, it will be added as text node.
-If you pass a function, it will be invoked for each list element to create the node to add. This is called a factory function. It can return all
-values allowed by <var>add()</var>, including another function to be called.
-If you pass a list or a function returning a list, all its elements will be added using the rules above.</p><p>It is also possible to pass a DOM node, but it will be added <strong>only to the first element of the list</strong>, because DOM
-does not allow adding it more than once. You should use a factory function to add DOM elements to more than one list element. <code><a href='ee.html'>EE()</a></code>
-and <code><a href='clone.html'>clone()</a></code> are two simple ways to create factory functions.</p><p></p></div>
+DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.</p><p>When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
+and <a href='clone.html'>clones for all following list elements.</p><p></a>EE(), <code><a href='html.html'>HTML()</a></code> and <code><a href='clone.html'>clone()</a></code> are compatible with <var>add()</var> and can help you create new HTML ndoes.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

@@ -1,0 +1,6 @@
+{
+	file: '../minified.js',
+	hasNext: false,
+	nextFile: '',
+	nextFileNOIE: ''
+}

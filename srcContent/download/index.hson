@@ -13,7 +13,7 @@ main: `<div>
 			<span class="summary">Version: beta2</span><br/>
 			<span class="summary">Size: 152 kBytes</span><br/>
 			<span class="summary">Sourcecode with full IE compatibility.</span></a></td>
-		<td><a href="/download/minified-web-src.noie.js"><span class="link">minified-web-src.noie.js</span><br/>
+		<td><a href="/download/minified-noie-web-src.js"><span class="link">minified-noie-web-src.js</span><br/>
 			<span class="summary">Version: beta2</span><br/>
 			<span class="summary">Size: 145 kBytes</span><br/>
 			<span class="summary">Sourcecode, IE6-8 support removed.</span></a></td>
@@ -23,7 +23,7 @@ main: `<div>
 			<span class="summary">Version: beta2</span><br/>
 			<span class="summary">Size: 4838 bytes (gzip'd)</span><br/>
 			<span class="summary">Compiled Version with full IE compatibility.</span></a></td>
-		<td><a href="/download/minified-web.noie.js"><span class="link">minified-web.noie.js</span><br/>
+		<td><a href="/download/minified-noie-web.noie.js"><span class="link">minified-noie-web.js</span><br/>
 			<span class="summary">Version: beta2</span><br/>
 			<span class="summary">Size: <strong>4092 bytes</strong> (gzip'd)</span><br/>
 			<span class="summary">Compiled Version, no IE6-8 compatibility.</span></a></td>

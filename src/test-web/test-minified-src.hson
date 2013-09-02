@@ -1,0 +1,6 @@
+{
+	file: '../minified-src.js',
+	hasNext: true,
+	nextFile: 'test-minified-web.html?forward',
+	nextFileNOIE: 'test-minified-web.html?forward'
+}

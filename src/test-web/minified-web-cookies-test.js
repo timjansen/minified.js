@@ -1,7 +1,7 @@
-window.miniTests.push.apply(window.miniTests, [
-	{
-		name:'setCookie/getCookie/deleteCookie',
-		exec: function() {
+describe('minified-web-cookies-test.js', function() {
+	
+	describe('setCookie()/getCookie()', function() {
+		it('just works', function() {
 			check($.getCookie('w'), null);
 			
 			$.setCookie('a', 'b');
@@ -21,6 +21,23 @@ window.miniTests.push.apply(window.miniTests, [
 			check($.getCookie('xx'), 'a===');
 
 			$.setCookie('c', '', -1);
-			check($.getCookie('xx'), 'a===');
-		}
-	}]);
+			check($.getCookie('xx'), 'a===');		});
+	});
+	
+
+
+	/*
+	describe('.fill()', function() {
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+	});
+	*/
+
+});

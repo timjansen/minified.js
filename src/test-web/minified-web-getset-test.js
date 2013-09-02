@@ -1,16 +1,17 @@
-window.miniTests.push.apply(window.miniTests, [
-	{
-		name: "$().set(null)",
-	 	exec: function() {
+describe('minified-web-getset-test.js', function() {
+	beforeEach(function() {
+		$('#container2').fill();
+	});
+	
+	describe('.set()', function() {
+		it('sets null', function() {
 	 		var l = $('#container2').add(EE('span', {'@id':'hello'}, 'hello'));
 	 		l.set(null);
-			check(l[0].childNodes.length, 1);
+			check(l[0].childNodes.length, 1); 
 			check(!l[0].className);
-		}
-	},
-	{
-		name: "$().set(name, value)",
-	 	exec: function() {
+		});
+
+		it('sets a single value', function() {
 	 		$().set('a', 1); // test empty set
 	 		
 	 		var o = [{a:3, b: 'hello', style: {}, y: {v: 2, w: {}}}, {style: {}, x: {}, y: {w: {}}}];
@@ -39,11 +40,9 @@ window.miniTests.push.apply(window.miniTests, [
 	 		$('#hello1, #hello2').set('@title', null);
 	 		check(!document.getElementById('hello1').getAttribute('title'));
 	 		check(!document.getElementById('hello2').getAttribute('title'));
-		}
-	},
-	{
-		name: "$().set(map)",
-	 	exec: function() {
+		});
+
+		it('sets a map', function() {
 	 		$().set({a: 1}); // test empty set
 	 		
 	 		var o = [{a:3, b: 'hello', style: {}, y: {v: 2, w: {}}}, {a:2, b: 'hi', style: {}, x: {}, y: {w: {}}}];
@@ -68,12 +67,10 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(document.getElementById('hello1').getAttribute('title'), 'hello element');
 	 		check(document.getElementById('hello2').getAttribute('title'), 'hello element');
 	 		check(document.getElementById('hello2').getAttribute('data-xy'), 'fooo');
-		}
-	},
+			
+		});
 
-	{
-		name: "$().set(name, function)",
-	 	exec: function() {
+		it('sets with a function', function() {
 	 		var undef;
 	 		$().set('f', 1); // test empty set
 	 		
@@ -109,59 +106,41 @@ window.miniTests.push.apply(window.miniTests, [
 	 		check(ar[0].a, 9);
 	 		check(ar[1].a, 8);
 	 		check(ar[2].a, 17);
-	 		
-		}
-	},
-	
-	
-	{
-		name: "$().get(property)",
-	 	exec: function() {
+			
+		});
+	});
+
+
+	describe('.get()', function() {
+		it('gets properties', function() {
 			check($('#a').get('title'), 'tititi');
 			check($('#a').get('id'), 'a');
 			check($('#a').get('ddsffdsf'), null);
-		}
-	},
-
-	{
-		name: "$().get(attribute)",
-	 	exec: function() {
+		});
+		it('gets attributes', function() {
 			check($('#a').get('@title'), 'tititi');
 			check($('#a').get('@id'), 'a');
 			check($('#a').get('@ddsffdsf'), null);
-		}
-	},
-	
-	{
-		name: "$().get(data-attribute)",
-	 	exec: function() {
+		});
+		it('gets data attributes', function() {
 			check($('#a').get('%x'), 'bar');
 			check($('#a').get('%yy'), 'foo');
-		}
-	},
-
-	{
-		name: "$().get(style)",
-	 	exec: function() {
+		});
+		it('gets styles', function() {
 			check($('#a').get('$marginTop'), '5px');
 			check($('#a_b').get('$marginTop'), '2px');
 			contains(['0px', 'auto'], $('#c').get('$marginTop'));
-		}
-	},
-
-	{
-		name: "$().get(name, toNumber)",
-	 	exec: function() {
+		});
+		it('converts to numbers', function() {
 			check($('#a').get('$marginTop', true), 5);
 			check($('#a_b').get('$marginTop', true), 2);
 			check($('#c').get('$marginTop', true) == 0 || isNaN($('#c').get('$marginTop', true)));
 			check(isNaN($('#a').get('@id', true)));
-		}
-	},
+		});
+	});
 
-	{
-		name: "$().dial(props, props, 1)",
-	 	exec: function() {
+	describe('.dial()', function() {
+		it('interpolates linearly', function() {
 	 		var obj1 = {a: 0, b: 2};
 	 		var obj2 = {a: 4, b: 9};
 	 		var d = $([obj1, obj2]).dial({a:0, b:10, c: '5px', d: '#fff'}, {a:10, b:0, c: '15px', d: '#000'}, 1);
@@ -189,12 +168,8 @@ window.miniTests.push.apply(window.miniTests, [
 			check(obj1.b, 7.5);
 			check(obj2.c, '7.5px');
 			check(obj2.d, 'rgb(191,191,191)');
-		}
-	},
-	
-	{
-		name: "$().dial(props, props, func)",
-	 	exec: function() {
+		});
+		it('supports interpolation functions', function() {
 	 		var obj1 = {a: 0, b: 2};
 	 		var obj2 = {a: 4, b: 9};
 	 		var d = $([obj1, obj2]).dial({a:0, b:10, c: '5px', d: '#fff'}, {a:10, b:0, c: '15px', d: '#000'}, 
@@ -215,9 +190,24 @@ window.miniTests.push.apply(window.miniTests, [
 			check(obj2.c, '5px');
 			check(obj2.d, 'rgb(255,255,255)');
 	 		d(0.25);
-			check(obj1.a, 0);
-		}
-	}
-	
+			check(obj1.a, 0);			
+		});
+	});
 
-]);
+
+
+/*
+describe('.fill()', function() {
+	it('', function() {
+		
+	});
+	it('', function() {
+		
+	});
+	it('', function() {
+		
+	});
+});
+*/
+
+});

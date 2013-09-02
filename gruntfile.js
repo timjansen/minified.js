@@ -1,17 +1,44 @@
+/*
+ * Welcome to Minfied's gruntfile :)
+ * 
+ * Here are some tasks that may be interesting for development:
+ * 
+ * - all: compiles and tests everything, sets up the /WebContent dir that's used for the site
+ * - code: compiles the code in /src, executes automated tests
+ * - site: use after you changed site content in /srcContent
+ * - assemble (default): just create minified.js and copy test cases into /WebDevelopment, but no (slow) closure compilation
+ * - watch: watches over files, execute the tasks above automatically when files change
+ * - server: starts a server on port 8080 that serves /WebContent
+ * 
+ */ 
+
 module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		
 		minitemplate: {
-			options: {
-				template: 'templates/page.template'
-			},
 			staticPages: {
+				options: {
+					template: 'templates/page.template'
+				},
 				files: [{
 			            expand: true,     
 			            cwd: 'srcContent/',  
 			            src: ['**/*.hson'],
 			            dest: 'WebContent/',
+			            ext: '.html'
+			          
+				}]
+			},
+			webTests: {
+				options: {
+					template: 'src/test-web/webtest.template'
+				},
+				files: [{
+			            expand: true,     
+			            cwd: 'src/test-web/',  
+			            src: ['**/*.hson'],
+			            dest: 'WebContent/test/',
 			            ext: '.html'
 			          
 				}]
@@ -47,8 +74,8 @@ module.exports = function(grunt) {
 					 "// - All sections except debug, ie6compatibility, ie7compatibility, ie8compatibility.\n"
 				},
 				files: {
-					'WebContent/minified-src.noie.js': 'src/minified-src.js',
-					'WebContent/minified-web-src.noie.js': 'src/minified-web-src.js'
+					'WebContent/minified-noie-src.js': 'src/minified-src.js',
+					'WebContent/minified-noie-web-src.js': 'src/minified-web-src.js'
 				}
 			},
 			headless: {
@@ -85,9 +112,9 @@ module.exports = function(grunt) {
 				},
 				files: {
 					'tmp/minified-web.js':      'src/minified-web-src.js',
-					'tmp/minified-web.noie.js': 'WebContent/minified-web-src.noie.js',
+					'tmp/minified-noie-web.js': 'WebContent/minified-noie-web-src.js',
 					'tmp/minified-util.js':     'src/minified-util-src.js',
-					'tmp/minified.noie.js':     'WebContent/minified-src.noie.js',
+					'tmp/minified-noie.js':     'WebContent/minified-noie-src.js',
 					'tmp/minified.js':          'src/minified-src.js'
 				}
 			}
@@ -105,9 +132,9 @@ module.exports = function(grunt) {
 				},
 				files: {
 					'WebContent/minified-web.js': 'tmp/minified-web.js',
-					'WebContent/minified-web.noie.js': 'tmp/minified-web.noie.js',
+					'WebContent/minified-noie-web.js': 'tmp/minified-noie-web.js',
 					'WebContent/minified-util.js': 'tmp/minified-util.js',
-					'WebContent/minified.noie.js': 'tmp/minified.noie.js',
+					'WebContent/minified-noie.js': 'tmp/minified-noie.js',
 					'WebContent/minified.js': 'tmp/minified.js',
 					'WebContent/minified.test.js': 'tmp/minified.js' // b/c /minified.js not usable on Eclipse web server!
 					
@@ -135,7 +162,9 @@ module.exports = function(grunt) {
 					'WebContent/minified-util-src.js': 'src/minified-util-src.js',
 					'WebContent/minified-src.js': 'src/minified-src.js',
 					'WebContent/test/minified-util.js': 'src/minified-util-src.js',
-					'WebContent/test/sparkplug.js': 'srcContent/js/sparkplug-src.js'
+					'WebContent/test/sparkplug.js': 'srcContent/js/sparkplug-src.js',
+					'WebContent/test/mocha.js': 'node_modules/mocha/mocha.js',
+					'WebContent/test/mocha.css': 'node_modules/mocha/mocha.css'
 				}
 			},
 			pngs: {
@@ -145,10 +174,18 @@ module.exports = function(grunt) {
 			},
 			test: {
 				files: [{
-		            expand: true,     
-		            cwd: 'srcContent/',  
+		            expand: true,
+		            cwd: 'srcContent/',
 		            src: ['examples/*.html', 'test/**/*.js', 'test/**/*.html', 'test/**/*.txt'],
-		            dest: 'WebContent/'		          
+		            dest: 'WebContent/'
+		      }]
+			},
+			testCases: {
+				files: [{
+		            expand: true,
+		            cwd: 'src/test-web',  
+		            src: ['*.js'],
+		            dest: 'WebContent/test/'
 		      }]
 			}
 
@@ -181,9 +218,9 @@ module.exports = function(grunt) {
 			minified: {
 				files: {
 					'WebContent/minified-web.js': 'tmp/minified-web.js',
-					'WebContent/minified-web.noie.js': 'tmp/minified-web.noie.js',
+					'WebContent/minified-noie-web.js': 'tmp/minified-noie-web.js',
 					'WebContent/minified-util.js': 'tmp/minified-util.js',
-					'WebContent/minified.noie.js': 'tmp/minified.noie.js',
+					'WebContent/minified-noie.js': 'tmp/minified-noie.js',
 					'WebContent/minified.js': 'tmp/minified.js',
 				}
 			}
@@ -197,11 +234,46 @@ module.exports = function(grunt) {
 				src: [ 'src/test-util/*test.js' ]
 			}
  	    },
-		
+ 	    
+ 	    mocha: {
+ 		  all: {
+ 			options: {
+ 				run: true,
+ 				timeout: 50000
+ 			},
+ 			src: [ 'WebContent/test/test-minified*.html' ]
+ 		  }
+ 	    },
+ 	    
 		clean: {
 			tmp: ['tmp'],
 			webContent: ['WebContent']
-		}
+		},
+		
+		watch: {
+			  test: {
+				files: ['src/test-web/**/*'],
+				tasks: ['assemble']
+			  },
+			  code: {
+				files: ['src/minified-web-src.js', 'src/minified-util-src.js', 'src/minified-shell.js'],
+				tasks: ['code']
+			  },
+			  content: {
+			    files: ['srcContent/**/*'],
+			    tasks: ['site']
+			  }
+			},
+		
+		connect: {
+		    server: {
+		      options: {
+		        port: 8080,
+		        base: 'WebContent',
+		        keepalive: true
+		      }
+		    }
+		  }
 	});
 	
 	grunt.loadTasks('build/tasks/');
@@ -214,12 +286,15 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-mocha');
 	grunt.loadNpmTasks('grunt-xmlmin');
+	grunt.loadNpmTasks('grunt-contrib-connect');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 	
-	grunt.registerTask('assemble', ['mergesrc', 'rebuildsrc', 'copy:sources', 'copy:test']);
+	grunt.registerTask('assemble', ['mergesrc', 'rebuildsrc', 'copy:sources', 'copy:test', 'copy:testCases', 'minitemplate:webTests']);
 	grunt.registerTask('test', ['mochaTest']);
 	grunt.registerTask('code', ['assemble', 'closurecompiler:dist', 'uglify', 'test', 'measuresize']);
 	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:pngs', 'copy:test', 'cssmin', 'htmlmin', 'xmlmin']);
 	grunt.registerTask('all', ['code', 'site']);
+	grunt.registerTask('server', ['all', 'connect']);
 	grunt.registerTask('default', ['code']);
 	
 	

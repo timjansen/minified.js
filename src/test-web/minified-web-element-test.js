@@ -1,7 +1,11 @@
-window.miniTests.push.apply(window.miniTests, [
-	{
-		name:'EE() / simple',
-		exec: function() {
+describe('minified-web-element-test.js', function() {
+	
+	beforeEach(function() {
+		$('#container2').fill();
+	});
+	
+	describe('EE()', function() {
+		it('creates elements', function() {
 			var sl = EE('span');
 			check(sl.length, 1, "First len test");
 			var s = sl[0];
@@ -17,33 +21,9 @@ window.miniTests.push.apply(window.miniTests, [
 			check(/^span$/i.test(s2.tagName));
 			check(s2.getAttribute('title'), 'mytitle');
 			check(s2.childNodes.length, 0);
-		}
-	},
-	{
-		name:'$().add() / function',
-		exec: function() {
-			var sl = EE('span');
-			sl.add(function(obj, index) {
-				check(obj, sl[0], true);
-				check(index, 0);
-				return 'test';
-			});
-			check(sl[0].childNodes.length, 1);
-			check(sl[0].firstChild.nodeType, 3);
-			check(sl[0].firstChild.data, 'test');
+		});
 			
-			sl.add(function(obj, index) {
-				check(obj, sl[0], true);
-				check(index, 0);
-				return [EE('br'), EE('br'), 'bar'];
-			});
-			check(sl[0].childNodes.length, 4);
-			check(sl[0].childNodes[3].nodeType, 3);
-		}
-	},
-	{
-		name:'EE() / full',
-		exec: function() {
+		it('creates attributes and adds children', function() {
 			var sl3 = EE('div', {'@title': '5', 'className': 'a b', $marginTop: '2px'}, 'hello');
 			check(sl3.length, 1);
 			var s3 = sl3[0];
@@ -57,11 +37,9 @@ window.miniTests.push.apply(window.miniTests, [
 			check(t.nodeType, 3);
 			check(t.data, 'hello');
 			check(t.parentNode, s3, true);
-		}
-	},
-	{
-		name:'EE() / complex',
-		exec: function() {
+		});
+
+		it('adds children', function() {
 			var sl4 = EE('div', ['hello' , EE('b', null, 'user'), '!']);
 			var s4 = sl4[0];
 			check(s4.nodeType, 1);
@@ -84,11 +62,13 @@ window.miniTests.push.apply(window.miniTests, [
 			check(t4.nodeType, 3);
 			check(t4.data, 'user');
 			check(t4.parentNode, s5, true);
-		}
-	},
-	{
-		name:'$().add()',
-		exec: function() {
+		});
+
+	});
+	
+	describe('.add()', function() {
+		
+		it('adds elements, text and lists, but no nulls', function() {
 			var sl = EE('span');
 			sl.add('test');
 			check(sl[0].childNodes.length, 1);
@@ -108,11 +88,32 @@ window.miniTests.push.apply(window.miniTests, [
 			
 			sl.add(null);
 			check(sl[0].childNodes.length, 4);
-		}
-	},
-	{
-		name:'$().fill()',
-		exec: function() {
+		});
+		
+		it('supports element factories', function() {
+			var sl = EE('span');
+			sl.add(function(obj, index) {
+				check(obj, sl[0], true);
+				check(index, 0);
+				return 'test';
+			});
+			check(sl[0].childNodes.length, 1);
+			check(sl[0].firstChild.nodeType, 3);
+			check(sl[0].firstChild.data, 'test');
+			
+			sl.add(function(obj, index) {
+				check(obj, sl[0], true);
+				check(index, 0);
+				return [EE('br'), EE('br'), 'bar'];
+			});
+			check(sl[0].childNodes.length, 4);
+			check(sl[0].childNodes[3].nodeType, 3);
+		});
+	});
+	
+	
+	describe('.fill()', function() {
+		it('fills', function() {
 			var sl = EE('span');
 			sl.fill(EE('br'));
 			check(sl[0].childNodes.length, 1);
@@ -123,70 +124,8 @@ window.miniTests.push.apply(window.miniTests, [
 			check(sl[0].childNodes.length, 3);
 			check(sl[0].childNodes[0].data, 'foo');
 			check(sl[0].childNodes[2].data, 'bar');
-		}
-	},
-	{
-		name:'$().replace()',
-		exec: function() {
-			var sl = EE('span');
-			sl.fill(['foo', EE('br'), 'bar']);
-			$(sl[0].childNodes[2]).replace(EE('br'));
-			check(sl[0].childNodes.length, 3);
-			check(/^br$/i.test(sl[0].childNodes[2].tagName));
-			
-			$(sl[0].childNodes[2]).replace(['foo', EE('br')]);
-			check(sl[0].childNodes.length, 4);
-			check(sl[0].childNodes[2].data, 'foo');
-			check(/^br$/i.test(sl[0].childNodes[3].tagName));
-		}
-	},
-	{
-		name:'$().addFront()',
-		exec: function() {
-			var sl = EE('span');
-			sl.fill([EE('br'), 'bar']);
-			sl.addFront('foo');
-			check(sl[0].childNodes.length, 3);
-			check(sl[0].childNodes[0].data, 'foo');
-			check(sl[0].childNodes[2].data, 'bar');
-			check(/^br$/i.test(sl[0].childNodes[1].tagName));
-		}
-	},
-	{
-		name:'$().addAfter()',
-		exec: function() {
-			var sl = EE('span');
-			sl.fill([EE('br'), 'bar']);
-			$(sl[0].childNodes[0]).addAfter('foo');
-			check(sl[0].childNodes.length, 3);
-			check(sl[0].childNodes[1].data, 'foo');
-			check(sl[0].childNodes[2].data, 'bar');
-			check(/^br$/i.test(sl[0].childNodes[0].tagName));
-			
-			$(sl[0].childNodes[2]).addAfter('test');
-			check(sl[0].childNodes.length, 4);
-			check(sl[0].childNodes[3].data, 'test');
-		}
-	},
-	{
-		name:'$().addBefore()',
-		exec: function() {
-			var sl = EE('span');
-			sl.fill([EE('br'), 'bar']);
-			$(sl[0].childNodes[0]).addBefore('foo');
-			check(sl[0].childNodes.length, 3);
-			check(sl[0].childNodes[0].data, 'foo');
-			check(sl[0].childNodes[2].data, 'bar');
-			check(/^br$/i.test(sl[0].childNodes[1].tagName));
-			
-			$(sl[0].childNodes[2]).addAfter(EE('br'));
-			check(sl[0].childNodes.length, 4);
-			check(/^br$/i.test(sl[0].childNodes[3].tagName));
-		}
-	},
-	{
-		name:'$().fill() / multi',
-		exec: function() {
+		});
+		it('fills all list members', function() {
 			var sl = $([EE('span'), EE('span'), EE('span')]);
 			sl.fill('foo');
 			check(sl[0].childNodes.length, 1);
@@ -208,25 +147,106 @@ window.miniTests.push.apply(window.miniTests, [
 			check(sl[0].childNodes.length, 3);
 			check(sl[1].childNodes.length, 3);
 			check(sl[2].childNodes.length, 3);
-		}
-	},
-	{
-		name:'$().clone()',
-		exec: function() {
+			
+		});
+	});
+	
+
+	describe('.replace()', function() {
+		it('replaces', function() {
+			var sl = EE('span');
+			sl.fill(['foo', EE('br'), 'bar']);
+			$(sl[0].childNodes[2]).replace(EE('br'));
+			check(sl[0].childNodes.length, 3);
+			check(/^br$/i.test(sl[0].childNodes[2].tagName));
+			
+			$(sl[0].childNodes[2]).replace(['foo', EE('br')]);
+			check(sl[0].childNodes.length, 4);
+			check(sl[0].childNodes[2].data, 'foo');
+			check(/^br$/i.test(sl[0].childNodes[3].tagName));
+		});
+	});
+	
+
+	
+	describe('.addFront()', function() {
+		it('adds to front', function() {
+			var sl = EE('span');
+			sl.fill([EE('br'), 'bar']);
+			sl.addFront('foo');
+			check(sl[0].childNodes.length, 3);
+			check(sl[0].childNodes[0].data, 'foo');
+			check(sl[0].childNodes[2].data, 'bar');
+			check(/^br$/i.test(sl[0].childNodes[1].tagName));
+		});
+	});
+	
+
+	
+	describe('.addAfter()', function() {
+		it('adds after', function() {
+			var sl = EE('span');
+			sl.fill([EE('br'), 'bar']);
+			$(sl[0].childNodes[0]).addAfter('foo');
+			check(sl[0].childNodes.length, 3);
+			check(sl[0].childNodes[1].data, 'foo');
+			check(sl[0].childNodes[2].data, 'bar');
+			check(/^br$/i.test(sl[0].childNodes[0].tagName));
+			
+			$(sl[0].childNodes[2]).addAfter('test');
+			check(sl[0].childNodes.length, 4);
+			check(sl[0].childNodes[3].data, 'test');
+		});
+	});
+
+	
+	
+	describe('.addBefore()', function() {
+		it('adds before', function() {
+			var sl = EE('span');
+			sl.fill([EE('br'), 'bar']);
+			$(sl[0].childNodes[0]).addBefore('foo');
+			check(sl[0].childNodes.length, 3);
+			check(sl[0].childNodes[0].data, 'foo');
+			check(sl[0].childNodes[2].data, 'bar');
+			check(/^br$/i.test(sl[0].childNodes[1].tagName));
+			
+			$(sl[0].childNodes[2]).addAfter(EE('br'));
+			check(sl[0].childNodes.length, 4);
+			check(/^br$/i.test(sl[0].childNodes[3].tagName));
+		});
+	});
+
+	describe('.clone()', function() {
+		it('clones', function() {
 			var sl = $('#cloneTest .cloneMe').clone();
 			check(sl.length, 1);
 			$('#container2').fill(sl);
 			check($$('#container2 .cloneMe').innerHTML.toLowerCase(), $$('#cloneTest .cloneMe').innerHTML.toLowerCase());
-		}
-	},
-	{
-		name:'$().clone() / id',
-		exec: function() {
+		});
+		it('removes id from clone', function() {
 			var sl = $('#cloneId').clone();
 			check(sl.length, 1);
 			$('#container2').fill(sl);
 			check(/id=/.test($$('#container2').innerHTML), false, 'Clone() id removal');
 			check(/nonono/.test($$('#container2').innerHTML), true, 'Clone() id / content');
-		}
-	}
-]);
+		});
+	});
+	
+
+
+	/*
+	describe('.fill()', function() {
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+	});
+	*/
+
+});

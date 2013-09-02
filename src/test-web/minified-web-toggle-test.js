@@ -1,7 +1,7 @@
-window.miniTests.push.apply(window.miniTests, [
-	{
-		name:'$().toggle(classNames)',
-		exec: function() {
+describe('minified-web-toggle-test.js', function() {
+	
+	describe('.toggle()', function() {
+		it('toggles classes', function() {
 			var s1 = EE('div')[0];
 			var s2 = EE('div', {'className':'a b c d'})[0];
 			var t = $([s1, s2]).toggle('b d');
@@ -40,11 +40,8 @@ window.miniTests.push.apply(window.miniTests, [
 			t();
 			check(s1.className, 'b d');
 			check(s2.className, 'a c b d');
-		}
-	},
-	{
-		name:'$().toggle(attributes and styles)',
-		exec: function() {
+		});
+		it('toggles attributes and styles', function() {
 			var s1 = EE('div', {'@title':'init', $display: 'none'})[0];
 			var s2 = EE('div', {})[0];
 			var t = $([s1, s2]).toggle({'@title': 'a', $display: 'none'}, {'@title': 'b', $display: 'block'});
@@ -72,6 +69,23 @@ window.miniTests.push.apply(window.miniTests, [
 			check(s2.getAttribute('title'), 'a');
 			check(s1.style.display, 'none');
 			check(s2.style.display, 'none');
-		}
-	}
-]);
+		});
+
+	
+	});
+	
+	/*
+	describe('.fill()', function() {
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+	});
+	*/
+
+});

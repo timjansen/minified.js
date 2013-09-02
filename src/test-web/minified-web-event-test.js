@@ -18,10 +18,14 @@ function triggerEvent(element, event) {
 		element.fireEvent("on" + event.eventType, event);
 } 
 
-window.miniTests.push.apply(window.miniTests, [
-	{
-		name:'$().on()',
-		exec: function() {
+describe('minified-web-event-test.js', function() {
+	
+	beforeEach(function() {
+		$('#container2').fill();
+	});
+	
+	describe('.on()', function() {
+		it('works without selectors', function() {
 			var p = $('#container2');
 			var handler;
 			var callNum = 0, lastIndex;
@@ -50,14 +54,12 @@ window.miniTests.push.apply(window.miniTests, [
 			check(callNum, 2, "callNum");
 			check(lastIndex, 1, "index");
 			check(error, null);
-		}
-	},
-	{
-		name:'$().on(selectors)',
-		exec: function() {
+		});
+		
+		it('works with selectors', function() {
 			var p = $('#container2');
 			var s, c1, c2, c3;
-			var proofEek1 = 0, proofPropagation = 0; proofBoo = 0, proofClonk = 0;
+			var proofEek1 = 0, proofPropagation = 0, proofBoo = 0, proofClonk = 0;
 			p.add(s = EE('div')[0]);
 			$(s).add(c1 = EE('p','bla')[0]);
 			$(s).add(c2 = EE('span', 'x')[0]);
@@ -89,11 +91,9 @@ window.miniTests.push.apply(window.miniTests, [
 			check(proofClonk, 2, "clonk triggered again");
 			$(c1).trigger('clonk', {success:1});
 			check(proofClonk, 2, "clonk not triggered");
-		}
-	},
-	{
-		name:'$().on(selectors) live',
-		exec: function() {
+		});
+		
+		it('works with live selectors', function() {
 			var p = $('#container2');
 			var s, c3, c4, c5;
 			var proofTag = 0, proofClass = 0, proofComplexMatch = 0, proofComplexNonMatch = 0;
@@ -126,11 +126,11 @@ window.miniTests.push.apply(window.miniTests, [
 			check(proofClass, 2, "live test, span and class / class");
 			check(proofComplexMatch, 2, "live test, span and class / complex");
 			check(proofComplexNonMatch, 0, "live test, span and class / complex non");
-		}
-	},
-	{
-		name:'$.off()',
-		exec: function() {
+		});
+	});
+
+	describe('off()', function() {
+		it('just works', function() {
 			var p = $('#container2');
 			var handler;
 			var callNum = 0;
@@ -158,11 +158,11 @@ window.miniTests.push.apply(window.miniTests, [
 			triggerEvent(s, createClick());
 			triggerEvent(s2, createClick());
 			check(callNum, 0, "after off");
-		}
-	},
-	{
-		name:'$().trigger()',
-		exec: function() {
+		});
+	});
+
+	describe('.trigger()', function() {
+		it('just works', function() {
 			var p = $('#container2');
 			var s, s2, s3;
 			var proofEek1 = 0, proofEek2 = 0;
@@ -205,6 +205,21 @@ window.miniTests.push.apply(window.miniTests, [
 
 			check(proofEek1, 2, "final eek check");
 			check(proofEek2, 2, "final eek check 2");
-		}
-	}
-]);
+		});
+	});
+
+	/*
+	describe('.fill()', function() {
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+	});
+	*/
+
+});

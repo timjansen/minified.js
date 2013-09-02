@@ -1,75 +1,79 @@
-function checkFunc(setSuccess, func) {
-	try {
-		func();
-		setSuccess(true);
-	}
-	catch (e) {
-		setSuccess(false, e);
-	}
-}
-
-window.miniTests.push.apply(window.miniTests, [
-	{
-		name:'animate()',
-		async: 1000,
-		exec: function(setSuccess, playground) {
+describe('minified-web-promises-test.js', function() {
+	
+	describe('.animate()', function() {
+		it('just works', function(done) {
 			var s;
 			$(playground).add(s = EE('span', {'@title': 0, $marginTop: '20px', $backgroundColor: '#000'})[0]);
 			check(s.getAttribute('title'), 0);
 			check((s.style.backgroundColor == '#000') || (s.style.backgroundColor == '#000000') || (s.style.backgroundColor == 'rgb(0, 0, 0)'));
 
 			$(s).animate({'@title': 50, $marginTop: '2px', $backgroundColor: '#ff0'}, 300, 0).then(function() {
-				checkFunc(setSuccess, function() {
+				try {
 					check(s.getAttribute('title'), 50);
 					check((s.style.backgroundColor == '#ff0') || (s.style.backgroundColor == '#ffff00') || (s.style.backgroundColor == 'rgb(255, 255, 0)'));
-				});
+					done();
+				}
+				catch (e) {
+					done(e);
+				}
 			});
 
-		}
-	},
-	{
-		name:'$.request()',
-		async: 1000,
-		exec: function(setSuccess, playground) {
+		});
+	});
+
+	describe('request()', function() {
+		it('requests', function(done) {
 			var s = $.request('get', '/test/test.txt', null)
 			.then(function(txt) {
-				checkFunc(setSuccess, function() {
+				try {
 					check(txt.indexOf('Used for testing') > 0);
-				});
+					done();
+				}
+				catch (e) {
+					done(e);
+				}
 			}, function() {
 				setSuccess(false, 'onFailure called, but should not be called');
 			});
 			
 			check(!!s);
-		}
-	},
-	{
-		name:'$.request() 404 error',
-		async: 3000,
-		exec: function(setSuccess, playground) {
+
+		});
+		
+		it('handles 404', function(done) {
+
 			var s = $.request('get', '/doesnotexist.txt', null)
 			.then(function(txt) {
 				setSuccess(false, 'onSuccess called, but should be 404');
 
 			}, function(status) {
-				checkFunc(setSuccess, function() {
+				try {
 					check(status,  404);
-				});
+					done();
+				}
+				catch (e) {
+					done(e);
+				}
 			});
 			
 			check(!!s);
-		}
-	},
-	{
-		name:'$.request() promises',
-		async: 1000,
-		featureMissing: !_,
-		exec: function(setSuccess, playground) {
+
+		});
+	});
+		
+	describe('promise()', function() {
+		it('can be nested', function(done) {
+			if (!_)
+				return done();
+			
 			var s = $.request('get', '/test/test.txt', null)
 			.then(function(txt) {
-				checkFunc(setSuccess, function() {
+				try {
 					check(txt.indexOf('Used for testing') > 0);
-				});
+				}
+				catch (e) {
+					done(e);
+				}
 			})
 			.then(function(txt) {
 				var p = _.promise();
@@ -83,17 +87,43 @@ window.miniTests.push.apply(window.miniTests, [
 				return p;
 			})
 			.then(function(value) {
-				setSuccess(false, 'then should be skipped after error');
+				done('then should be skipped after error');
 			})
 			.error(function(value) {
-				check(value, "xxx");
+				try {
+					check(value, "xxx");
+				}
+				catch(e) {
+					done(e);
+				}
 				return 23;
 			})
 			.always(function(value) {
-				check(value, 23);
-				setSuccess(true, "ok")
+				try {
+					check(value, 23);
+					done();
+				}
+				catch (e) {
+					done(e);
+				}
 			});
 			check(!!s);
-		}
-	}
-]);
+
+		});
+	});
+
+	/*
+	describe('.fill()', function() {
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+		it('', function() {
+			
+		});
+	});
+	*/
+
+});

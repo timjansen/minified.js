@@ -54,7 +54,7 @@
 <div class="summary">Animates the items of the list by modifying their properties, CSS styles and attributes.</div>
 
 <h3><a href="clone.html">.clone()</a></h3>
-<div class="summary">Creates a Minified list of strings and Element Factories that return clones of the list's HTML elements.</div>
+<div class="summary">Clones all HTML elements and text nodes in the given list by creating a deep copy.</div>
 
 <h3><a href="collect.html">.collect()</a></h3>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
