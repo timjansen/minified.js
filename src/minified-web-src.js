@@ -309,11 +309,9 @@ define('minified', function() {
 		return v && v.length != _null && !isString(v) && !isNode(v) && !isFunction(v) && v !== _window;
 	}
 	
-	function returnTrue() { return _true; }
-	
 	function wordRegExpTester(name, prop) {
 		var re = RegExp('(^|\\s)' + name + '(?=$|\\s)', 'i');
-		return name ? function(obj) {return re.test(obj[prop]);} : returnTrue;
+		return function(obj) {return  name ? re.test(obj[prop]) : _true;};
 	}
 	
 	function removeFromArray(array, value) {
@@ -362,14 +360,20 @@ define('minified', function() {
 	}
 	
 	// event handler creation for on(). Outside of on() to prevent unneccessary circular refs
-	function createEventHandler(handler, fThis, args, index, unprefixed, filterFunc) {
+	function createEventHandler(handler, registeredOn, fThis, args, index, unprefixed, selectorFilter) {
 		// triggerOriginalTarget is set only if the event handler is called by trigger()!! 
 		return function(event, triggerOriginalTarget) {
 			var stop;
 			// @condblock ie8compatibility 
 			var e = event || _window.event;
-			if (filterFunc(triggerOriginalTarget || e['target']) && 
-			   (((stop = ((!handler.apply(fThis || triggerOriginalTarget || e['target'], args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget)) {
+			var match = !selectorFilter, el = triggerOriginalTarget || e['target'];
+			while (el && el != registeredOn && !match)
+				if (selectorFilter(el))
+					match = _true;
+				else
+					el = el['parentNode'];
+			if (match && 
+			   (((stop = ((!handler.apply(fThis || (selectorFilter ? el : registeredOn), args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget)) {
 				if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
 					e['preventDefault']();
 					e['stopPropagation']();
@@ -378,8 +382,15 @@ define('minified', function() {
 				e.cancelBubble = _true; // cancel bubble for IE
 			}
 			// @condend ie8compatibility
-
-			// @cond !ie8compatibility if (filterFunc(triggerOriginalTarget || event['target']) && (((stop = ((!handler.apply(fThis || triggerOriginalTarget || event['target'], args || [event, index])) || args) && unprefixed)) && !triggerOriginalTarget)) {
+			
+			// @cond !ie8compatibility var match = !selectorFilter, el = triggerOriginalTarget || event['target'];
+			// @cond !ie8compatibility while (el && el != registeredOn && !match)
+			// @cond !ie8compatibility   if (selectorFilter(el))
+			// @cond !ie8compatibility     match = _true;
+			// @cond !ie8compatibility   else
+			// @cond !ie8compatibility     el = el['parentNode'];
+			// @cond !ie8compatibility
+			// @cond !ie8compatibility if (match && (((stop = ((!handler.apply(fThis || (selectorFilter ? el : registeredOn), args || [event, index])) || args) && unprefixed)) && !triggerOriginalTarget)) {
 			// @cond !ie8compatibility 	event['preventDefault']();
 			// @cond !ie8compatibility 	event['stopPropagation']();
 			// @cond !ie8compatibility }
@@ -2588,10 +2599,10 @@ define('minified', function() {
 				var noSelector = isFunction(handlerOrSelector) || _null;
 				var handler = noSelector ? handlerOrSelector : fThisOrArgsOrHandler;
 
-				var miniHandler = createEventHandler(handler, 
+				var miniHandler = createEventHandler(handler, el,
 						noSelector && optArgs && fThisOrArgsOrHandler, // fThis (false means default this) 
 						noSelector && (optArgs || fThisOrArgsOrHandler), // args (false means event obj)
-						index, name == namePrefixed, noSelector ? returnTrue : getFilterFunc(handlerOrSelector, el));
+						index, name == namePrefixed, noSelector ? null : getFilterFunc(handlerOrSelector, el));
 
 				var handlerDescriptor = {'e': el,          // the element  
 						                 'h': miniHandler, // minified's handler 
@@ -2696,7 +2707,7 @@ define('minified', function() {
 						el[MINIFIED_MAGIC_EVENTS], function(hDesc) {
 							if (hDesc['n'] == eventName)
 								stopBubble = stopBubble || hDesc['h'](eventObj, element);
-			});
+						});
 				el = el['parentNode'];
 			}
 		});

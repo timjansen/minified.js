@@ -17,7 +17,6 @@ describe('minified-web-promises-test.js', function() {
 					done(e);
 				}
 			});
-
 		});
 	});
 
@@ -35,13 +34,10 @@ describe('minified-web-promises-test.js', function() {
 			}, function() {
 				setSuccess(false, 'onFailure called, but should not be called');
 			});
-			
 			check(!!s);
-
 		});
 		
 		it('handles 404', function(done) {
-
 			var s = $.request('get', '/doesnotexist.txt', null)
 			.then(function(txt) {
 				setSuccess(false, 'onSuccess called, but should be 404');
@@ -55,9 +51,7 @@ describe('minified-web-promises-test.js', function() {
 					done(e);
 				}
 			});
-			
 			check(!!s);
-
 		});
 	});
 		

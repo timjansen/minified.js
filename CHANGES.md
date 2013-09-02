@@ -25,6 +25,13 @@ Web module:
 * In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead.
 * In toggle(), removed the (undocumented) possibility of using functions as states.
 
+Bugfixes:
+* Make $(window) work.
+* Handle CSS classes containing dashes correctly.
+* on() handler's 'this' now contains the element the handler is registered on, not the event source.
+* corrected bubbling with live selectors
+
+
 
 Beta 2 (2013-07-31)
 --------------------

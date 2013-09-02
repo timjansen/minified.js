@@ -28,8 +28,8 @@ describe('minified-web-event-test.js', function() {
 		it('works without selectors', function() {
 			var p = $('#container2');
 			var handler;
-			var callNum = 0, lastIndex;
-			var expect, error;
+			var callNum = 0, lastIndex = 0;
+			var expect = null, error = null;
 			var s, s2;
 			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
 			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})[0]);
@@ -53,6 +53,25 @@ describe('minified-web-event-test.js', function() {
 			triggerEvent(s2, createClick());
 			check(callNum, 2, "callNum");
 			check(lastIndex, 1, "index");
+			check(error, null);
+		});
+		
+		it('bubbles correctly', function() {
+			var p = $('#container2');
+			var callNum = 0;
+			var error = null;
+			var s, c;
+			p.add(s = EE('div', {$width: '30px', $height: '10px'}, c = EE('span')[0])[0]);
+			$('div', p).on('click', function(e, index) {
+				callNum++;
+				if (this == c)
+					error = 'wrong this: set to triggered element, not to registered!';
+				else if (this != s)
+					error = 'wrong this: neither triggered no registered element!';
+			});
+			
+			triggerEvent(c, createClick());
+			check(callNum, 1, "callNum");
 			check(error, null);
 		});
 		
@@ -127,8 +146,83 @@ describe('minified-web-event-test.js', function() {
 			check(proofComplexMatch, 2, "live test, span and class / complex");
 			check(proofComplexNonMatch, 0, "live test, span and class / complex non");
 		});
+		
+		it('bubbles real events correctly with selectors', function() {
+			var p = $('#container2');
+			var s, c, g, error = null;
+			var proof = 0;
+			p.add(s = EE('div'));
+			s.add(c = EE('p', {$: 'x'}, g = EE('span', 'bla')));
+
+			s.on('click', 'p', function(e, index) { 
+				if (index != 0)
+					error = 'index not 0';
+				else if (this === g[0])
+					error = 'this set to triggered element, not registered element.';
+				else if (this === s[0])
+					error = 'this set to parent element.';
+				else if (this !== c[0])
+					error = 'this wrong';
+				proof++; 
+			});
+			triggerEvent(c[0], createClick());
+			check(error, null);
+			check(proof, 1, "click triggered without bubbling");
+
+			triggerEvent(g[0], createClick());
+			check(error, null);
+			check(proof, 2, "click triggered with bubbling");
+
+			triggerEvent(s[0], createClick());
+			check(proof, 2, "capturing");
+			
+			var h;
+			g.add(h = EE('b', 'bold'));
+			triggerEvent(h[0], createClick());
+			check(error, null);
+			check(proof, 3, "double bubble");
+		});
+		
+		it('bubbles triggered events correctly with selectors', function() {
+			var p = $('#container2');
+			var s, c, g, error = null;
+			var proof = 0;
+			p.add(s = EE('div'));
+			s.add(c = EE('p', {$: 'x'}, g = EE('span', 'bla')));
+	
+			s.on('|eek', 'p', function(e, index) { 
+				if (!e.success) 
+					error = 'arg not set';
+				else if (index != 0)
+					error = 'index not 0';
+				else if (this === g[0])
+					error = 'this set to triggered element, not registered element.';
+				else if (this === s[0])
+					error = 'this set to parent element.';
+				else if (this !== c[0])
+					error = 'this wrong';
+				proof++; 
+			});
+			c.trigger('eek', {success:1});
+			check(error, null);
+			check(proof, 1, "eek triggered without bubbling");
+	
+			g.trigger('eek', {success:1});
+			check(error, null);
+			check(proof, 2, "eek triggered with bubbling");
+	
+			s.trigger('eek', {success:1});
+			check(proof, 2, "capturing");
+			
+			var h;
+			g.add(h = EE('b', 'bold'));
+			h.trigger('eek', {success:1});
+			check(error, null);
+			check(proof, 3, "double bubble");
+		});
 	});
 
+	
 	describe('off()', function() {
 		it('just works', function() {
 			var p = $('#container2');
