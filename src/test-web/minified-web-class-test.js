@@ -86,6 +86,30 @@ describe('minified-web-class-test.js', function() {
 			check(s1.className, 'a d');
 			check(s2.className, 'b d');
 		});
+		
+		it('respects dashes', function() {
+			var s1 = EE('div', {'className': 'a-b-c a-b b-c a b c'})()[0];
+			var s2 = EE('div')()[0];
+			var m = $([s1, s2]);
+			m.set('$', '-a -b -c');
+			check(s1.className, 'a-b-c a-b b-c');
+			check(s2.className, '');
+			m.set('$', '+a +b +c');
+			check(s1.className, 'a-b-c a-b b-c a b c');
+			check(s2.className, 'a b c');
+			m.set('$', '-a-b -b-c');
+			check(s1.className, 'a-b-c a b c');
+			check(s2.className, 'a b c');
+			m.set('$', '+a-b +b-c');
+			check(s1.className, 'a-b-c a b c a-b b-c');
+			check(s2.className, 'a b c a-b b-c');
+			m.set('-a-b-c');
+			check(s1.className, 'a b c a-b b-c');
+			check(s2.className, 'a b c a-b b-c');
+			m.set('+a-b-c');
+			check(s1.className, 'a b c a-b b-c a-b-c');
+			check(s2.className, 'a b c a-b b-c a-b-c');
+		});
 	});
 	
 

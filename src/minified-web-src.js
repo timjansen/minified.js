@@ -1491,7 +1491,7 @@ define('minified', function() {
     						 flexiEach(newValue.split(/\s+/), function(clzz) {
     							 var cName = replace(clzz, /^[+-]/);
     							 var oldClassName = className;
-    							 className = replace(className, RegExp('\\b' + cName + '\\b', 'i'));
+    							 className = replace(className, RegExp('(^|\\s)' + cName + '(?=\\s|$)', 'i'));
     							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
     								 className += ' ' + cName;
     						 });
