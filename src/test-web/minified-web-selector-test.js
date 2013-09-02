@@ -80,6 +80,11 @@ describe('minified-web-selector-test.js', function() {
    			containsAll(m, [document.getElementById("a"),document.getElementById("a_b"),
    					document.getElementById("b_a"),document.getElementById("b_b"),document.getElementById("c_a")], true);
 		});
+		it('selects classes with dash', function() {
+   			var m = $('.r-r');
+   			check(m.length, 1);
+   			containsAll(m, [document.getElementById("c_a")], true);
+		});
 		it('handles unknown classes', function() {
    			var m = $('.sdsada');
    			check(m.length, 0);
@@ -129,6 +134,11 @@ describe('minified-web-selector-test.js', function() {
 		it('supports name.class', function() {
    			var m = $('div.n');
    			check(m.length, 2);
+		});
+		it('supports name.cl-a-ss', function() {
+   			var m = $('div.r-r');
+   			check(m.length, 1);
+   			check(m[0], document.getElementById('c_a'));
 		});
 		it('supports name.unknownClass', function() {
   			var m = $('div.xxx');
@@ -313,6 +323,8 @@ describe('minified-web-selector-test.js', function() {
    			check($('#a').is('p.x'), false, '!tag+class');
    			check($('#a').is(function(v) { return v == document.getElementById('a');}), true, 'func');
    			check($('#b').is(function(v) { return v == document.getElementById('a');}), false, '!func');
+   			check($('#c_a').is('.r-r'), true, 'dash-class');
+   			check($('#c_b').is('.r-r'), false, '!dash-class');
 
    			check($('#a, #b').is(), true, 'multi default');
    			check($([$('#a'), document]).is(), false, 'multi !default');
@@ -355,6 +367,12 @@ describe('minified-web-selector-test.js', function() {
    			containsAll($('#a, #b').only('span, div, p'), [document.getElementById('a'), document.getElementById('b')], 'complex');
    			containsAll($('#a, #b').only('#a, #b'), [document.getElementById('a'), document.getElementById('b')], 'complex 2');
    			containsAll($('#a, #b').only('span, a, p'), [], '!complex');
+   			
+   			var fd1 = $([EE('span', {$: 'a b c-c'}), EE('span', {$: 'c-c b a'}), EE('span', {$: 'b c-c a'})]);
+   			check(fd1.only('.c-c').length, 3, 'dash-test');
+   			check(fd1.only('.d-d').length, 0, '!dash-test');
+  			check(fd1.only('span.c-c').length, 3, 'class.dash-test');
+  			check(fd1.only('div.c-c').length, 0, '!class.dash-test');
 		});
 	});
 	

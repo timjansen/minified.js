@@ -114,7 +114,7 @@
 
 			<div id="c" class="m">
 				<p><b>div id="b" class="m"</b></p>
-				<div id="c_a" class="x y">
+				<div id="c_a" class="x y r-r">
 					<p>div id="c_a" class="x y r-r"</p>
 				</div>
 				<div id="c_b" class="m z">

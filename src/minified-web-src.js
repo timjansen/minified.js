@@ -309,14 +309,12 @@ define('minified', function() {
 		return v && v.length != _null && !isString(v) && !isNode(v) && !isFunction(v) && v !== _window;
 	}
 	
-	function returnTrue() { return _true;}
+	function returnTrue() { return _true; }
 	
 	function wordRegExpTester(name, prop) {
-		var re = RegExp('\\b' + name + '\\b', 'i');
+		var re = RegExp('(^|\\s)' + name + '(?=$|\\s)', 'i');
 		return name ? function(obj) {return re.test(obj[prop]);} : returnTrue;
 	}
-
-
 	
 	function removeFromArray(array, value) {
 		for (var i = 0; array && i < array.length; i++) 
@@ -547,7 +545,7 @@ define('minified', function() {
 		if (regexpFilter = useGEbC ? elementName : className)
 			elements =  filter(elements, wordRegExpTester(regexpFilter, useGEbC ? 'nodeName' : 'className'));
 		// @condend
-		
+
 		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(selector);
 		return childOnly ? filterElements(elements) : elements;
 	};
@@ -1491,7 +1489,7 @@ define('minified', function() {
     						 flexiEach(newValue.split(/\s+/), function(clzz) {
     							 var cName = replace(clzz, /^[+-]/);
     							 var oldClassName = className;
-    							 className = replace(className, RegExp('(^|\\s)' + cName + '(?=\\s|$)', 'i'));
+    							 className = replace(className, RegExp('(^|\\s)' + cName + '(?=$|\\s)', 'i'));
     							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
     								 className += ' ' + cName;
     						 });

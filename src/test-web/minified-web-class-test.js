@@ -68,28 +68,10 @@ describe('minified-web-class-test.js', function() {
 			check(s1.className, '');
 			check(s2.className, 'a b c');
 		});
-		
-		it('just works', function() {
-			var s1 = EE('div', {'className': 'a b c'})[0];
-			var s2 = EE('div')[0];
-			var m = $([s1, s2]);
-			m.set('$', 'a b c');
-			check(s1.className, '');
-			check(s2.className, 'a b c');
-			m.set({$: 'a d'});
-			check(s1.className, 'a d');
-			check(s2.className, 'b c d');
-			m.set('a +d');
-			check(s1.className, 'd');
-			check(s2.className, 'b c a d');
-			m.set('a +d -c');
-			check(s1.className, 'a d');
-			check(s2.className, 'b d');
-		});
-		
+
 		it('respects dashes', function() {
-			var s1 = EE('div', {'className': 'a-b-c a-b b-c a b c'})()[0];
-			var s2 = EE('div')()[0];
+			var s1 = EE('div', {'className': 'a-b-c a-b b-c a b c'})[0];
+			var s2 = EE('div')[0];
 			var m = $([s1, s2]);
 			m.set('$', '-a -b -c');
 			check(s1.className, 'a-b-c a-b b-c');
@@ -110,6 +92,25 @@ describe('minified-web-class-test.js', function() {
 			check(s1.className, 'a b c a-b b-c a-b-c');
 			check(s2.className, 'a b c a-b b-c a-b-c');
 		});
+		
+		it('just works', function() {
+			var s1 = EE('div', {'className': 'a b c x-y'})[0];
+			var s2 = EE('div')[0];
+			var m = $([s1, s2]);
+			m.set('$', 'a b c x-y');
+			check(s1.className, '');
+			check(s2.className, 'a b c x-y');
+			m.set({$: 'a d'});
+			check(s1.className, 'a d');
+			check(s2.className, 'b c x-y d');
+			m.set('a +d x-y');
+			check(s1.className, 'd x-y');
+			check(s2.className, 'b c a d');
+			m.set('a +d -c');
+			check(s1.className, 'x-y a d');
+			check(s2.className, 'b d');
+		});
+		
 	});
 	
 
