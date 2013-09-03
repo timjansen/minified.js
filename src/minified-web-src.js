@@ -2190,26 +2190,21 @@ define('minified', function() {
 	 *             <dt>t</dt><dd>A value between 0 and 1 that specifies the state of the transition.</dd>
 	 *             <dt class="returnValue">(callback return value)</dt><dd>The value at the time <var>t</var>.</dd>
 	 *             </dl> 
-	 * @param state optional if set, the animation controller will write information about its state in this object. When <var>animate()</var> returns,
-	 *                       there will be a <var>stop()</var> function in the property <var>state.stop</var> that can be used to abort the animation. 
-	 *                       The property <var>state.time</var> will be continously updated while the animation is running
-	 *                       and contains the number of milliseconds that have passed from the start, allowing you to track the progress of the animation. 
-	 *                       If the animation finished, controller writes null into <var>state.time</var>. <var>state.stop</var> will not be 
-	 *                       modified and can still be safely invoked even when the animation ended. 
 	 * @return a ##promise#Promise## object to monitor the animation's progress. 
 	 *         It is fulfilled when the animation ended, and rejected if the animation had been stopped.
 	 *         The fulfillment handler will be called as <code>function(list)</code>:
 	 *         <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl> 
 	 *         The rejection handler is called as <code>function()</code> without arguments. 
+	 *         The promise also contains a special property 'stop', which is a function that will interrupt a running
+	 *         animation and returns how long it ran in milliseconds.
 	 */	
-	'animate': function (properties, durationMs, linearity, state) {
+	'animate': function (properties, durationMs, linearity) {
 		var self = this;
 		var dials = []; // contains a dial for each item
 		var loopStop;
 		var prom = promise();
-		state = state || {};
-		state['time'] = 0;
-		state['stop'] = function() { loopStop(); prom(_false); };
+		var time = 0;
+		prom['stop'] = function() { prom(_false); loopStop(); return time; };
 		durationMs = durationMs || 500;
 		
 		// find start values
@@ -2224,14 +2219,16 @@ define('minified', function() {
 		});
 		
 		// start animation
-		loopStop = $.loop(function(timePassedMs) { 
-			state['time'] = timePassedMs;
+		loopStop = $.loop(function(timePassedMs) {
 			if (timePassedMs >= durationMs || timePassedMs < 0) {
+				time = durationMs;
 				loopStop();
-				state['time'] = _null;
 				prom(_true, [self]);
 			}
-			flexiEach(dials, function(dial) {dial(timePassedMs/durationMs);}); // TODO: use callList in Util builds
+			else
+				time = timePassedMs;
+
+			flexiEach(dials, function(dial) {dial(time/durationMs);}); // TODO: use callList in Util builds
 		});
 		return prom;		
 	},
@@ -2400,7 +2397,7 @@ define('minified', function() {
 	 */
 	'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
 		var self = this;
-		var animState = {};
+		var promise;
 		var state = _false, regexg = /\b(?=\w)/g, stateDesc;
 
 		if (stateDesc2)
@@ -2410,7 +2407,7 @@ define('minified', function() {
 						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
 						
 						if (durationMs) 
-							return self['animate'](stateDesc, animState['stop'] != _null ? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
+							return (promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity)).then(function(){promise=_null;});
 						else
 							return self['set'](stateDesc) && undef;
 					}

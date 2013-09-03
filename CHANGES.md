@@ -23,6 +23,7 @@ Web module:
 * Changed filter(): removed value argument, only function possible.
 * In values(), the returned map values will always be arrays.
 * In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead.
+* In animate(), removed animState param. stop() is now a property of the promise, time is returned by stop().
 * In toggle(), removed the (undocumented) possibility of using functions as states.
 
 Bugfixes:

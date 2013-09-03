@@ -47,19 +47,14 @@ called every time an interpolated value is required:
 <dt>t</dt><dd>A value between 0 and 1 that specifies the state of the transition.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>The value at the time <var>t</var>.</dd>
 </dl></dd>
-<dt id="animate_state" class=""><a name="animate_state"><var>state (optional)</var></a></dt>
-<dd class="">if set, the animation controller will write information about its state in this object. When <var>animate()</var> returns,
-there will be a <var>stop()</var> function in the property <var>state.stop</var> that can be used to abort the animation.
-The property <var>state.time</var> will be continously updated while the animation is running
-and contains the number of milliseconds that have passed from the start, allowing you to track the progress of the animation.
-If the animation finished, controller writes null into <var>state.time</var>. <var>state.stop</var> will not be
-modified and can still be safely invoked even when the animation ended.</dd>
 <dt id="animate_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="animate_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">a <a href='promise.html'>Promise</a> object to monitor the animation's progress.
 It is fulfilled when the animation ended, and rejected if the animation had been stopped.
 The fulfillment handler will be called as <code>function(list)</code>:
 <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl>
-The rejection handler is called as <code>function()</code> without arguments.</dd>
+The rejection handler is called as <code>function()</code> without arguments.
+The promise also contains a special property 'stop', which is a function that will interrupt a running
+animation and returns how long it ran in milliseconds.</dd>
 </dl>
 
 <h4>Description</h4>
