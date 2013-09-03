@@ -68,6 +68,8 @@
   		var MINI = require('minified'), $ = MINI.$, $$=MINI.$$, EE = MINI.EE, HTML = MINI.HTML;
   		var _ = MINI._;
   	
+  		var isPhantomJS = /PhantomJS/.test(navigator.userAgent);
+  	
   		mocha.setup('bdd');
   	</script>
   	<script src="minified-web-selector-test.js"></script>
@@ -180,11 +182,13 @@
 		};
 		
     	mocha.checkLeaks();
-    	mocha.run(function() {
-    		if (failures == 0)
-    			forward();
-    		document.getElementById('title').style.color = failures ? 'red' : 'black';
-    	});
+    	
+    	if (!isPhantomJS) 
+			mocha.run(function() {
+				if (failures == 0)
+					forward();
+				document.getElementById('title').style.color = failures ? 'red' : 'black';
+			});
 	</script>
 </html>
 

@@ -5,7 +5,7 @@ describe('minified-web-getset-test.js', function() {
 	
 	describe('.set()', function() {
 		it('sets null', function() {
-	 		var l = $('#container2').add(EE('span', {'@id':'hello'}, 'hello'));
+	 		var l = $('#container2').fill().add(EE('span', {'@id':'hello'}, 'hello'));
 	 		l.set(null);
 			check(l[0].childNodes.length, 1); 
 			check(!l[0].className);

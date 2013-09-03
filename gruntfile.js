@@ -5,6 +5,8 @@
  * 
  * - all: compiles and tests everything, sets up the /WebContent dir that's used for the site
  * - code: compiles the code in /src, executes automated tests
+ * - test: runs all available tests (util in Node.js, web in PhantomJS)
+ * - testQuick: runs the most important tests, much faster than 'test'
  * - site: use after you changed site content in /srcContent
  * - assemble (default): just create minified.js and copy test cases into /WebDevelopment, but no (slow) closure compilation
  * - watch: watches over files, execute the tasks above automatically when files change
@@ -236,13 +238,22 @@ module.exports = function(grunt) {
  	    },
  	    
  	    mocha: {
- 		  all: {
- 			options: {
- 				run: true,
- 				timeout: 50000
- 			},
- 			src: [ 'WebContent/test/test-minified*.html' ]
- 		  }
+ 	 		  quick: {
+ 	  			options: {
+ 	  				run: true,
+ 	  				timeout: 50000
+ 	  			},
+ 	  			src: [ 'WebContent/test/test-minified.html',  
+ 	  			       'WebContent/test/test-minified-noie.html']
+ 	  		  },
+ 	 		  all: {
+ 	  			options: {
+ 	  				run: true,
+ 	  				timeout: 50000
+ 	  			},
+ 	  			src: [ 'WebContent/test/test-minified*.html' ]
+ 	  		  }
+
  	    },
  	    
 		clean: {
@@ -290,10 +301,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	
 	grunt.registerTask('assemble', ['mergesrc', 'rebuildsrc', 'copy:sources', 'copy:test', 'copy:testCases', 'minitemplate:webTests']);
-	grunt.registerTask('test', ['mochaTest']);
-	grunt.registerTask('code', ['assemble', 'closurecompiler:dist', 'uglify', 'test', 'measuresize']);
+	grunt.registerTask('code', ['assemble', 'closurecompiler:dist', 'uglify', 'testQuick', 'measuresize']);
+	grunt.registerTask('testQuick', ['mochaTest', 'mocha:quick']);
+	grunt.registerTask('test', ['mochaTest', 'mocha:all']);
 	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:pngs', 'copy:test', 'cssmin', 'htmlmin', 'xmlmin']);
-	grunt.registerTask('all', ['code', 'site']);
+	grunt.registerTask('all', ['code', 'test', 'site']);
 	grunt.registerTask('server', ['all', 'connect']);
 	grunt.registerTask('default', ['code']);
 	

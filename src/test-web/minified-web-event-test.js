@@ -26,11 +26,12 @@ describe('minified-web-event-test.js', function() {
 	
 	describe('.on()', function() {
 		it('works without selectors', function() {
-			var p = $('#container2');
+			var p = $('#container2').fill();
 			var handler;
 			var callNum = 0, lastIndex = 0;
 			var expect = null, error = null;
 			var s, s2;
+			
 			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
 			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})[0]);
 			$('div', p).on('click', handler = function(e, index) {
@@ -39,9 +40,9 @@ describe('minified-web-event-test.js', function() {
 				if (this != expect)
 					error = 'Did not get called on expected event';
 			});
-			
+
 			check(handler.M != null);
-			check(handler.M.length, 2);
+			check(handler.M.length, 2, 'Got handler');
 			
 			expect = s;
 			triggerEvent(s, createClick());
@@ -225,7 +226,7 @@ describe('minified-web-event-test.js', function() {
 	
 	describe('off()', function() {
 		it('just works', function() {
-			var p = $('#container2');
+			var p = $('#container2').fill();
 			var handler;
 			var callNum = 0;
 			var expect = null, error = null;
@@ -257,7 +258,7 @@ describe('minified-web-event-test.js', function() {
 
 	describe('.trigger()', function() {
 		it('just works', function() {
-			var p = $('#container2');
+			var p = $('#container2').fill();
 			var s, s2, s3;
 			var proofEek1 = 0, proofEek2 = 0;
 			var proofBoo1 = 0, proofBoo2 = 0, proofBoo3 = 0, proofBoo4 = 0;

@@ -1,3 +1,5 @@
+
+if (!isPhantomJS)
 describe('minified-web-promises-test.js', function() {
 	
 	describe('.animate()', function() {
