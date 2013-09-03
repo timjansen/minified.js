@@ -978,7 +978,6 @@ define('minified', function() {
 			// @cond !ie8compatibility 	event['preventDefault']();
 			// @cond !ie8compatibility 	event['stopPropagation']();
 			// @cond !ie8compatibility }
-			
 			return stop;
 		};
 	}
@@ -3725,7 +3724,7 @@ define('minified', function() {
 						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
 						
 						if (durationMs) 
-							return self['animate'](stateDesc, animState['stop'] ? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
+							return self['animate'](stateDesc, animState['stop'] != _null ? (animState['stop']() || animState['time']) : durationMs, linearity, animState);
 						else
 							return self['set'](stateDesc) && undef;
 					}
