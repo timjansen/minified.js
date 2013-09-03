@@ -943,12 +943,12 @@ define('minified', function() {
 		return h;
 	}
 	
+	// @condblock ie8compatibility 
 	// event handler creation for on(). Outside of on() to prevent unneccessary circular refs
 	function createEventHandler(handler, registeredOn, fThis, args, index, unprefixed, selectorFilter) {
 		// triggerOriginalTarget is set only if the event handler is called by trigger()!! 
 		return function(event, triggerOriginalTarget) {
 			var stop;
-			// @condblock ie8compatibility 
 			var e = event || _window.event;
 			var match = !selectorFilter, el = triggerOriginalTarget || e['target'];
 			while (el && el != registeredOn && !match)
@@ -965,22 +965,86 @@ define('minified', function() {
 				e.returnValue = _false; // cancel for IE
 				e.cancelBubble = _true; // cancel bubble for IE
 			}
-			// @condend ie8compatibility
-
-			// @cond !ie8compatibility var match = !selectorFilter, el = triggerOriginalTarget || event['target'];
-			// @cond !ie8compatibility while (el && el != registeredOn && !match)
-			// @cond !ie8compatibility   if (selectorFilter(el))
-			// @cond !ie8compatibility     match = _true;
-			// @cond !ie8compatibility   else
-			// @cond !ie8compatibility     el = el['parentNode'];
-			// @cond !ie8compatibility
-			// @cond !ie8compatibility if (match && (((stop = ((!handler.apply(fThis || (selectorFilter ? el : registeredOn), args || [event, index])) || args) && unprefixed)) && !triggerOriginalTarget)) {
-			// @cond !ie8compatibility 	event['preventDefault']();
-			// @cond !ie8compatibility 	event['stopPropagation']();
-			// @cond !ie8compatibility }
 			return stop;
 		};
 	}
+	
+	function onCompat(eventName, handlerOrSelector, fThisOrArgsOrHandler, optArgs) {
+		function push(obj, prop, value) {
+			(obj[prop] = (obj[prop] || [])).push(value);
+		}
+		return this['each'](function(el, index) {
+			flexiEach(eventName.split(/\s/), function(namePrefixed) {
+				var name = replace(namePrefixed, /\|/);
+				var noSelector = isFunction(handlerOrSelector) || _null;
+				var handler = noSelector ? handlerOrSelector : fThisOrArgsOrHandler;
+
+				var miniHandler = createEventHandler(handler, el,
+						noSelector && optArgs && fThisOrArgsOrHandler, // fThis (false means default this) 
+						noSelector && (optArgs || fThisOrArgsOrHandler), // args (false means event obj)
+						index, name == namePrefixed, noSelector ? null : getFilterFunc(handlerOrSelector, el));
+
+				var handlerDescriptor = {'e': el,          // the element  
+						                 'h': miniHandler, // minified's handler 
+						                 'n': name         // event type        
+						                };
+				push(handler, 'M', handlerDescriptor);
+				if (IS_PRE_IE9) {
+					el.attachEvent('on'+name, miniHandler);  // IE < 9 version
+					push(registeredEvents, getNodeId(el), handlerDescriptor);
+				}
+				else {
+					el.addEventListener(name, miniHandler, _false); // W3C DOM
+					push(el, MINIFIED_MAGIC_EVENTS, handlerDescriptor);
+				}
+			});
+		});
+	}
+	// @condend ie8compatibility 
+	// @condblock !ie8compatibility 
+	function onNonCompat(eventName, handlerOrSelector, fThisOrArgsOrHandler, optArgs) {
+		function push(obj, prop, value) {
+			(obj[prop] = (obj[prop] || [])).push(value);
+			// TODO: try: obj[prop] = $([obj[prop], value]);
+			// TODO: try: if (obj[prop]) obj[prop].push(value) else obj[prop] = value; 
+			// TODO: try inlining push()
+		}
+		return this['each'](function(registeredOn, index) {
+			flexiEach(eventName.split(/\s/), function(namePrefixed) {
+				var name = replace(namePrefixed, /\|/);
+				var noSelector = isFunction(handlerOrSelector) || _null;
+				var handler = noSelector ? handlerOrSelector : fThisOrArgsOrHandler;
+				
+				var miniHandler = function(event, triggerOriginalTarget) {
+					var stop;
+					var match, el = noSelector ? registeredOn : (triggerOriginalTarget || event['target']);
+					if (!noSelector) {
+						var selectorFilter = getFilterFunc(handlerOrSelector, registeredOn);
+						while (el && el != registeredOn && !match)
+							if (selectorFilter(el))
+								match = _true;
+							else
+								el = el['parentNode'];
+					}
+					if ((noSelector || match) && (((stop = ((!handler.apply((noSelector && optArgs && fThisOrArgsOrHandler) || el, 
+							noSelector && (optArgs || fThisOrArgsOrHandler) || [event, index])) || args) && name == namePrefixed)) && !triggerOriginalTarget)) {
+						event['preventDefault']();
+						event['stopPropagation']();
+					}
+					return stop;
+				};
+
+				var handlerDescriptor = {'e': registeredOn, // the element  
+						                 'h': miniHandler,    // minified's handler 
+						                 'n': name             // event type        
+						                };
+				push(handler, 'M', handlerDescriptor);
+				registeredOn.addEventListener(name, miniHandler, _false);
+				push(registeredOn, MINIFIED_MAGIC_EVENTS, handlerDescriptor);
+			});
+		});
+	}
+	// @condend ie8compatibility 
 	
     function nowAsTime() {
     	return new Date().getTime();
@@ -3510,7 +3574,7 @@ define('minified', function() {
 	 *         <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl> 
 	 *         The rejection handler is called as <code>function()</code> without arguments. 
 	 *         The promise also contains a special property 'stop', which is a function that will interrupt a running
-	 *         animation and returns how long it ran.
+	 *         animation and returns how long it ran in milliseconds.
 	 */	
 	'animate': function (properties, durationMs, linearity) {
 		var self = this;
@@ -3899,41 +3963,12 @@ define('minified', function() {
 	 *                      If you pass custom arguments, the return value of the handler will always be ignored.
 	 * @return the list
 	 */
-	'on': function (eventName, handlerOrSelector, fThisOrArgsOrHandler, optArgs) {
-		function push(obj, prop, value) {
-			(obj[prop] = (obj[prop] || [])).push(value);
-		}
-		return this['each'](function(el, index) {
-			flexiEach(eventName.split(/\s/), function(namePrefixed) {
-				var name = replace(namePrefixed, /\|/);
-				var noSelector = isFunction(handlerOrSelector) || _null;
-				var handler = noSelector ? handlerOrSelector : fThisOrArgsOrHandler;
-
-				var miniHandler = createEventHandler(handler, el,
-						noSelector && optArgs && fThisOrArgsOrHandler, // fThis (false means default this) 
-						noSelector && (optArgs || fThisOrArgsOrHandler), // args (false means event obj)
-						index, name == namePrefixed, noSelector ? null : getFilterFunc(handlerOrSelector, el));
-
-				var handlerDescriptor = {'e': el,          // the element  
-						                 'h': miniHandler, // minified's handler 
-						                 'n': name         // event type        
-						                };
-				push(handler, 'M', handlerDescriptor);
-				// @condblock ie8compatibility 
-				if (IS_PRE_IE9) {
-					el.attachEvent('on'+name, miniHandler);  // IE < 9 version
-					push(registeredEvents, getNodeId(el), handlerDescriptor);
-				}
-				else {
-				// @condend
-					el.addEventListener(name, miniHandler, _false); // W3C DOM
-					push(el, MINIFIED_MAGIC_EVENTS, handlerDescriptor);
-				// @condblock ie8compatibility
-				}
-				// @condend
-			});
-		});
-	},
+	'on': 
+		// @condblock ie8compatibility
+			onCompat
+		// @condend ie8compatibility 
+		// @cond !ie8compatibility onNonCompat
+		,
 	
 	
 	/*$

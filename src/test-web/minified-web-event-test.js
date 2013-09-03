@@ -76,6 +76,32 @@ describe('minified-web-event-test.js', function() {
 			check(error, null);
 		});
 		
+		it('passes arguments and this correctly', function() {
+			var p = $('#container2');
+			var callNum = 0;
+			var error = null;
+			var s;
+			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
+			$('div', p).on('click', function(a, b, c) {
+				callNum++;
+				if (this != s)
+					error = 'arg only: wrong this!';
+				if (a != 1 || b != 2 || c != 3)
+					error = 'arg only: arguments not passed';
+			}, [1, 2, 3]);
+			$('div', p).on('click', function(x) {
+				callNum++;
+				if (this != "foo")
+					error = 'this and arg: wrong this!';
+				if (x != "bar")
+					error = 'this and arg: arguments not passed';
+			}, "foo", ["bar"]);
+			
+			triggerEvent(s, createClick());
+			check(callNum, 2, "callNum");
+			check(error, null);
+		});
+		
 		it('works with selectors', function() {
 			var p = $('#container2');
 			var s, c1, c2, c3;

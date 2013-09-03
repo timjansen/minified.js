@@ -97,8 +97,11 @@
 		startLoop();
 		window.setInterval(startLoop, DURMS+1000);
 		
-		var yToggle = $('#toggleDiv div').toggle({$top: '10px'}, {$top: '270px'}, 1000, 0);
-		window.setInterval(yToggle, 3544);
+		var yToggle = $('#toggleDiv div').toggle({$top: '10px'}, {$top: '270px'}, 5000, 0);
+		window.setTimeout(function randomTimeout() {
+			yToggle();
+			window.setTimeout(randomTimeout, Math.round(Math.random() * 3000) + 200);
+		}, 1000);
 		var xToggle = $('#toggleDiv div').toggle({$left: '10px'}, {$left: '270px'}, 5000, 1);
 		function backNForth() {
 			xToggle(true);
