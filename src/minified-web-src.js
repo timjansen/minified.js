@@ -184,19 +184,6 @@ define('minified', function() {
 	 * The difference between IE7 and IE8 compatibility that IE7 provides neither native selector support (querySelectorAll) nor native JSON.
 	 * Disabling IE6 and IE7 will not only make Minified smaller, but give you full CSS selectors and complete JSON support. 
 	 */
-    // @condblock ucode
-    /**
-     * @const 
-     * @type {Object.<string, string>} 
-     */
-	var STRING_SUBSTITUTIONS = {    // table of character substitutions
-            '\t': '\\t',
-            '\r': '\\r',
-            '\n': '\\n',
-            '"' : '\\"',
-            '\\': '\\\\'
-        };
-    // @condend
 
 	/*$
 	 * @stop
@@ -296,7 +283,11 @@ define('minified', function() {
 			cb(list, 0);
 		return list;
 	}
-	
+
+    function ucode(a) {
+        return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+    }
+
 	
 	///#snippet webFunctions
 
@@ -528,15 +519,6 @@ define('minified', function() {
 	}
 
    
-    /*$
-	 * @id ucode
-	 * @dependency
-     */
-    // @condblock ie7compatibility
-    function ucode(a) {
-        return STRING_SUBSTITUTIONS[a] ||  ('\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4));
-    }
-    // @condend
 
     /*$
      * @stop
@@ -2887,7 +2869,7 @@ define('minified', function() {
 	/*$
     * @id tojson
     * @group JSON
-    * @requires ucode 
+    * @requires  
     * @configurable default
     * @name $.toJSON()
     * @syntax $.toJSON(value)
@@ -2933,7 +2915,7 @@ define('minified', function() {
 	/*$
 	* @id parsejson
 	* @group JSON
-	* @requires ucode
+	* @requires 
 	* @configurable default
 	* @name $.parseJSON()
 	* @syntax $.parseJSON(text)
