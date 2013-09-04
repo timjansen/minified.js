@@ -419,10 +419,6 @@ define('minified', function() {
 	// @condend ie8compatibility 
 	// @condblock !ie8compatibility 
 	function onNonCompat(eventName, handlerOrSelector, fThisOrArgsOrHandler, optArgs) {
-		function push(obj, prop, value) {
-			(obj[prop] = (obj[prop] || [])).push(value);
-			// TODO: try inlining push()
-		}
 		return this['each'](function(registeredOn, index) {
 			flexiEach(eventName.split(/\s/), function(namePrefixed) {
 				var name = replace(namePrefixed, /\|/);
@@ -452,9 +448,9 @@ define('minified', function() {
 						                 'h': miniHandler,    // minified's handler 
 						                 'n': name             // event type        
 						                };
-				push(handler, 'M', handlerDescriptor);
+				(handler['M'] = handler['M'] || []).push(handlerDescriptor);
+				(registeredOn[MINIFIED_MAGIC_EVENTS] = registeredOn[MINIFIED_MAGIC_EVENTS] || []).push(handlerDescriptor);
 				registeredOn.addEventListener(name, miniHandler, _false);
-				push(registeredOn, MINIFIED_MAGIC_EVENTS, handlerDescriptor);
 			});
 		});
 	}

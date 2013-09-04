@@ -14,8 +14,6 @@
 <div class="syntaxVariant">
 <div class="syntax">$.setCookie(name, value)</div>
 <div class="syntax">$.setCookie(name, value, dateOrDays)</div>
-<div class="syntax">$.setCookie(name, value, dateOrDays, path)</div>
-<div class="syntax">$.setCookie(name, value, dateOrDays, path, domain)</div>
 </div>
 
 <h4>Parameters</h4>
