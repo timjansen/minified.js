@@ -3008,8 +3008,6 @@ define('minified', function() {
      * @name $.setCookie()
      * @syntax $.setCookie(name, value)
      * @syntax $.setCookie(name, value, dateOrDays)
-     * @syntax $.setCookie(name, value, dateOrDays, path)
-     * @syntax $.setCookie(name, value, dateOrDays, path, domain)
      * @module WEB
      * Creates, updates or deletes a cookie. If there is an an existing cookie
      * of the same name, will be overwritten with the new value and settings.
@@ -3042,12 +3040,9 @@ define('minified', function() {
      *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
      *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
      */
-    'setCookie': function(name, value, dateOrDays, path, domain, dontEscape) {
-		// @cond debug if (!name) error('Cookie name must be set!');
-		// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
+    'setCookie': function(name, value, dateOrDays, dontEscape) {
     	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
-    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(nowAsTime() + dateOrDays * 8.64E7)).toUTCString()) : '') + 
-    		'; path=' + (path ? escapeURI(path) : '/') + (domain ? ('; domain=' + escape(domain)) : '');
+    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(nowAsTime() + dateOrDays * 8.64E7)).toUTCString()) : '');
     },
     
     /*$
@@ -3078,8 +3073,6 @@ define('minified', function() {
      *         using JavaScript's <code>unescape()</code> function.
      */
     'getCookie': function(name, dontUnescape) {
-    	// @cond debug if (!name) error('Cookie name must be set!');
-    	// @cond debug if (/[^\w\d-_%]/.test(name)) error('Cookie name must not contain non-alphanumeric characters other than underscore and minus. Please escape them using encodeURIComponent().');
     	var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
     	return dontUnescape ? match : match && unescape(match);
     },

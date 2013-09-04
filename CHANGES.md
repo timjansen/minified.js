@@ -25,6 +25,7 @@ Web module:
 * In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead.
 * In animate(), removed animState param. stop() is now a property of the promise, time is returned by stop().
 * In toggle(), removed the (undocumented) possibility of using functions as states.
+* In setCookie(), removed the path and domain options.
 
 Bugfixes:
 * Make $(window) work.
