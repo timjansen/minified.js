@@ -110,11 +110,6 @@ define('minified', function() {
 			'a': [3, MERIDIAN_NAMES]
 		};
 	
-	/**
-	 * @const
-	 */
-	var JAVASCRIPT_ESCAPES = {'"': '\\"', "'": "\\'", '\n': '\\n', '\t': '\\t', '\r': '\\r'};
-	
 	var MAX_CACHED_TEMPLATES = 99;
 	var templateCache={}; // template -> function
 	var templates = [];   // list of MAX_CACHED_TEMPLATES templates
@@ -652,14 +647,12 @@ define('minified', function() {
 	
 	
 	function escapeJavaScriptString(s) {
-		return replace(s, /['"\t\n\r]/g, function(a) {
-			return JAVASCRIPT_ESCAPES[a];
+		return replace(s, /[\x00-\x1f'"\u2028\u2029]/g, function(a) {
+			return '\\u'+('000'+a.charCodeAt(0).toString(16)).slice(-4);
 		});
 	}
 
 	
-	
-	 
 	function template(template, escapeFunction) {
 		if (templateCache[template])
 			return templateCache[template];
