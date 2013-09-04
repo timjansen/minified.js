@@ -2516,7 +2516,7 @@ define('minified', function() {
 	'values': function(data) {
 		var r = data || {};
 		this['each'](function(el) {
-			var n = el['name'], v = toString(el['value']), l;
+			var n = el['name'], v = toString(el['value']);
 			if (/form/i.test(el['tagName']))
 				// @condblock ie9compatibility 
 				$(collector(flexiEach, el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
