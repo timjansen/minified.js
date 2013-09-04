@@ -2452,9 +2452,6 @@ define('minified', function() {
 	 *             <dt>newState (optional)</dt><dd>If a boolean <var>true</var or <var>false</var> is given, 
 	 *             the toggle will set the first or second state, respectively. If called with any other value, or without a value,
 	 *             the function toggles to the other state.</dd>
-	 *             <dt class="returnValue">(return value)</dt><dd>A ##promise#Promise## that is fulfilled when the toggle operation ended, or
-	 *             <var>null</var>/<var>undefined</var> if the toggle finished its work during the invocation. Promises are mostly
-	 *             used for animations, so you can track when the animation is done.</dd>
 	 *             </dl>
 	 */
 	'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
@@ -2469,9 +2466,9 @@ define('minified', function() {
 						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
 						
 						if (durationMs) 
-							return (promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity)).then(function(){promise=_null;});
+							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity)).then(function(){promise=_null;});
 						else
-							return self['set'](stateDesc) && undef;
+							self['set'](stateDesc) && undef;
 					}
 				};
 		else
