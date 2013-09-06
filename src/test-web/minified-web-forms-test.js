@@ -21,6 +21,13 @@ describe('minified-web-forms-test.js', function() {
 			check(a['i3_1'], 'ttt');
 		});
 
+		it('handles forms', function() {
+			var a = $("#id2").values();
+			check(countKeys(a), 2);
+			check(a['i2_1'], 'bb');
+			check(a['i2_2'], 'bc');
+		});
+		
 		it('handles simple forms plus field', function() {
 			var a = $("#id2, #id3_1").values();
 			check(countKeys(a), 3);

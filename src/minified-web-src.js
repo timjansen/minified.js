@@ -2494,7 +2494,8 @@ define('minified', function() {
 			var n = el['name'], v = toString(el['value']);
 			if (/form/i.test(el['tagName']))
 				// @condblock ie9compatibility 
-				$(collector(flexiEach, el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
+				for (var i = 0; i < el['elements'].length; i++) // can't call directly, as IE<=9's elements has a nodeType prop and isList does not work
+					$(el['elements'][i])['values'](r); 
 				// @condend
 				// @cond !ie9compatibility $(el['elements'])['values'](r);
 			else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
