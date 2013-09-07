@@ -2331,7 +2331,7 @@ define('minified', function() {
 	    			detachHandlerList(0, registeredEvents[node[MINIFIED_MAGIC_NODEID]]);
 	    			delete registeredEvents[node[MINIFIED_MAGIC_NODEID]];
 	    		});
-	    		removeEvents(obj);
+	    		detachHandlerList(0, registeredEvents[obj[MINIFIED_MAGIC_NODEID]]);
     		}
     		// @condend
 
@@ -3789,7 +3789,7 @@ define('minified', function() {
 	 * <pre>
 	 * var data = $('#myText, input.myRadios').values();
 	 * </pre>
-	 * 
+	 *
 	 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
 	 * @return a map containing name->[value, value...] pairs, using strings as name and value. 
 	 */
@@ -3799,7 +3799,8 @@ define('minified', function() {
 			var n = el['name'], v = toString(el['value']);
 			if (/form/i.test(el['tagName']))
 				// @condblock ie9compatibility 
-				$(collector(flexiEach, el['elements'], nonOp))['values'](r); // must be recollected, as IE<=9 has a nodeType prop and isList does not work
+				for (var i = 0; i < el['elements'].length; i++) // can't call directly, as IE<=9's elements has a nodeType prop and isList does not work
+					$(el['elements'][i])['values'](r); 
 				// @condend
 				// @cond !ie9compatibility $(el['elements'])['values'](r);
 			else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio

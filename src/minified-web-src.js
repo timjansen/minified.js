@@ -1026,7 +1026,8 @@ define('minified', function() {
 	    			detachHandlerList(0, registeredEvents[node[MINIFIED_MAGIC_NODEID]]);
 	    			delete registeredEvents[node[MINIFIED_MAGIC_NODEID]];
 	    		});
-	    		removeEvents(obj);
+	    		detachHandlerList(0, registeredEvents[obj[MINIFIED_MAGIC_NODEID]]);
+	    		delete registeredEvents[obj[MINIFIED_MAGIC_NODEID]];
     		}
     		// @condend
 
@@ -2484,7 +2485,7 @@ define('minified', function() {
 	 * <pre>
 	 * var data = $('#myText, input.myRadios').values();
 	 * </pre>
-	 * 
+	 *
 	 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
 	 * @return a map containing name->[value, value...] pairs, using strings as name and value. 
 	 */
