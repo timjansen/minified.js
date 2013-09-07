@@ -175,6 +175,9 @@ describe('minified-web-event-test.js', function() {
 		});
 		
 		it('bubbles real events correctly with selectors', function() {
+			if (isLegacyIE) // can't test in IE, custom events don't bubble
+				return;
+			
 			var p = $('#container2');
 			var s, c, g, error = null;
 			var proof = 0;
