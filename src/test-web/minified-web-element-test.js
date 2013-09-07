@@ -233,6 +233,14 @@ describe('minified-web-element-test.js', function() {
 		});
 	});
 
+	describe('_.template()', function() {
+		it('just works', function() {
+			if (!_)
+				return;
+			
+			check(_.template('{{a}}+{{b}}={{a+b}}')({a:1, b:3}), '1+3=4');
+		});
+	});
 
 	describe('.ht()', function() {
 		it('just works', function() {

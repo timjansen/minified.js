@@ -302,6 +302,7 @@ function runTests(loadInContext) {
 			assert.equal(_.template("abc{{1}}")(), "abc1");
 			assert.equal(_.template("abc{{a}}")({a:1}), "abc1");
 			assert.equal(_.template("abc{{}}")(1), "abc1");
+			assert.equal(_.template("{{a}}+{{b}}={{a+b}}")({a:1,b:3}), '1+3=4');
 		});
 		it('() supports {{expression::format}}>', function() {
 			var d3 = new Date(1362956403000); // Sun, 10 Mar 2013 23:00:03 GMT  NO DAYLIGHT SAVING

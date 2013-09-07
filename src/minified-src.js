@@ -201,9 +201,9 @@ define('minified', function() {
 	var undef;
 	
 	function val3(v) {return v.substr(0,3);}
-	var MONTH_LONG_NAMES = 'January,February,March,April,May,June,July,August,September,October,November,December'.split(/,/);
+	var MONTH_LONG_NAMES = split('January,February,March,April,May,June,July,August,September,October,November,December', /,/g);
 	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, val3); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-	var WEEK_LONG_NAMES = 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday'.split(/,/);
+	var WEEK_LONG_NAMES = split('Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday', /,/g);
 	var WEEK_SHORT_NAMES = map(WEEK_LONG_NAMES, val3); 
 	var MERIDIAN_NAMES = ['am', 'pm'];
 
@@ -789,13 +789,28 @@ define('minified', function() {
 		return replace(s, /[\x00-\x1f'"\u2028\u2029]/g, ucode);
 	}
 
+	// reimplemented split for IE<=8
+	function split(str, regexp) {
+		// @condblock ie8compatibility
+		var start = 0;
+		var m, r = [];
+		while (m = regexp.exec(str)) {
+			r.push(str.substring(start, m.index));
+			start = m.index + m[0].length;
+		}
+		r.push(str.substr(start));
+		return r;
+		// @condend ie8compatibility
+		
+		// @cond !ie8compatibility return str.split(regexp);
+	}
 	
 	function template(template, escapeFunction) {
 		if (templateCache[template])
 			return templateCache[template];
 		else {
 			var funcBody = 'with(_.isObject(obj)?obj:{}){'+
-				map(template.split(/{{|}}}?/), function(chunk, index) {
+				map(split(template, /{{|}}}?/g), function(chunk, index) {
 					var match, c1 = trim(chunk), c2 = replace(c1, /^{/), escapeSnippet  = (c1==c2) ? 'esc(' : '';
 					if (index%2) { // odd means JS code
 						if (match = /^each\b(\s+([\w_]+(\s*,\s*[\w_]+)?)\s*:)?(.*)/.exec(c2))
@@ -2332,6 +2347,7 @@ define('minified', function() {
 	    			delete registeredEvents[node[MINIFIED_MAGIC_NODEID]];
 	    		});
 	    		detachHandlerList(0, registeredEvents[obj[MINIFIED_MAGIC_NODEID]]);
+	    		delete registeredEvents[obj[MINIFIED_MAGIC_NODEID]];
     		}
     		// @condend
 
