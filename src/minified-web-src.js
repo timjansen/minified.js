@@ -110,13 +110,9 @@ define('minified', function() {
 	 * @const
 	 * @type {!string}
 	 */
-	var MINIFIED_MAGIC_NODEID = 'minified';
-	/**
-	 * @const
-	 * @type {!string}
-	 */
-	var MINIFIED_MAGIC_EVENTS = 'minified2';
+	var MINIFIED_MAGIC_NODEID = 'Mid';
 
+	
 	var nodeId = 1;
 
 	// @condblock ie8compatibility
@@ -402,7 +398,7 @@ define('minified', function() {
 				}
 				else {
 					el.addEventListener(name, miniHandler, _false); // W3C DOM
-					push(el, MINIFIED_MAGIC_EVENTS, handlerDescriptor);
+					push(el, 'M', handlerDescriptor);
 				}
 			});
 		});
@@ -434,18 +430,45 @@ define('minified', function() {
 					}
 					return stop;
 				};
-
-				var handlerDescriptor = {'e': registeredOn, // the element  
-						                 'h': miniHandler,    // minified's handler 
-						                 'n': name             // event type        
-						                };
-				(handler['M'] = handler['M'] || []).push(handlerDescriptor);
-				(registeredOn[MINIFIED_MAGIC_EVENTS] = registeredOn[MINIFIED_MAGIC_EVENTS] || []).push(handlerDescriptor);
+				
+				var trigger = function(eventName, eventObj, element) {
+					return (name == eventName) && miniHandler(eventObj, element);
+				};
+				
+				(registeredOn['M'] = registeredOn['M'] || []).push(trigger);
+				(handler['M'] = handler['M'] || []).push(function () {
+					registeredOn.removeEventListener(name, miniHandler, _false);
+					removeFromArray(registeredOn['M'], trigger);
+				});
 				registeredOn.addEventListener(name, miniHandler, _false);
 			});
 		});
 	}
+	// @condend !ie8compatibility 
+	
+	// @condblock ie8compatibility 
+	function offCompat(handler) {
+	   	flexiEach(handler['M'], function(h) {
+			if (IS_PRE_IE9) {
+				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
+				removeFromArray(registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]], h);
+			}
+			else {
+				h['e'].removeEventListener(h['n'], h['h'], _false); // W3C DOM
+				removeFromArray(h['e']['M'], h);
+			}
+		});
+		handler['M'] = _null;
+	}
 	// @condend ie8compatibility 
+
+	// @condblock !ie8compatibility 
+	function offNonCompat(handler) {
+	   	flexiEach(handler['M'], callArg);
+		handler['M'] = _null;
+	}
+	// @condend !ie8compatibility 
+
 	
     function nowAsTime() {
     	return new Date().getTime();
@@ -2705,17 +2728,23 @@ define('minified', function() {
 		return this['each'](function(element, index) {
 			var stopBubble, el = element;
 			
+			// @condblock ie8compatibility 
 			while(el && !stopBubble) {
 				flexiEach(
-						// @condblock ie8compatibility 
 						IS_PRE_IE9 ? registeredEvents[el[MINIFIED_MAGIC_NODEID]] :
-						//@condend
-						el[MINIFIED_MAGIC_EVENTS], function(hDesc) {
+						el['M'], function(hDesc) {
 							if (hDesc['n'] == eventName)
 								stopBubble = stopBubble || hDesc['h'](eventObj, element);
 						});
 				el = el['parentNode'];
 			}
+			//@condend
+			// @cond !ie8compatibility while(el && !stopBubble) {
+			// @cond !ie8compatibility 	flexiEach(el['M'], function(f) {
+			// @cond !ie8compatibility 		stopBubble = stopBubble || f(eventName, eventObj, element); 
+			// @cond !ie8compatibility 	});
+			// @cond !ie8compatibility 	el = el['parentNode'];
+			// @cond !ie8compatibility }
 		});
 	}
 
@@ -3140,24 +3169,14 @@ define('minified', function() {
 	 * @param handler the handler to unregister, as given to ##on(). It must be a handler that has previously been registered using ##on().
 	 *                If the handler is not registered as event handler, the function does nothing.
      */
-	'off': function (handler) {
-		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
-	   	flexiEach(handler['M'], function(h) {
-			// @condblock ie8compatibility 
-			if (IS_PRE_IE9) {
-				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
-				removeFromArray(registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]], h);
-			}
-			else {
-			// @condend
-				h['e'].removeEventListener(h['n'], h['h'], _false); // W3C DOM
-				removeFromArray(h['e'][MINIFIED_MAGIC_EVENTS], h);
-			// @condblock ie8compatibility 
-			}
-			// @condend
-		});
-		handler['M'] = _null;
-	}
+	'off': 
+		// @condblock ie8compatibility
+		offCompat
+		// @condend ie8compatibility 
+		// @cond !ie8compatibility offNonCompat
+		
+	
+		
 
     
  	/*$

@@ -2631,8 +2631,42 @@ define('minified', function() {
 		/*$
 		 * @id underscore
 		 * @name _()
+		 * @syntax _(item...)
 		 * @configurable default
 		 * @module UTIL
+		 * Creates a new Minified list. Supports variable arguments so you can add items directly to the list.For arguments that are lists 
+		 * (as defined by ##_.isList()), the list content will be added to the new list. Unlike ##dollar#$()#, this is not done recursively
+		 * and thus you can create a list of lists by wrapping arguments in a list. Another difference between <var>_()</var> and <var>$()</var>
+		 * is that <var>$()</var> will automatically remove <var>null</var> values while <var>_()</var> will keep them.
+		 * 
+		 * @example Creating an empty list
+		 * <pre>_()</pre>
+		 * 
+		 * @example Creating a list with three items:
+		 * <pre>_(1, 2, 3)</pre>
+		 * 
+		 * @example Creating the same list, but by passing an array. One array level will be flattened:
+		 * <pre>_([1, 2, 3])</pre>
+		 * 
+		 * @example Creating a list containing the arrays [1, 2] and [3, 4].
+		 * <pre>_([[1, 2], [3, 4]])</pre>
+		 * 
+		 * @example Merging two lists:
+		 * <pre>var a = _("a", "b", "c");
+		 * var b = _("x", "y", "z");
+		 * var merged = _(a, b);    // contains _("a", "b", "c", "x", "y", "z")
+		 * </pre>
+		 * 
+		 * @example Adding two elements to a list:
+		 * <pre>var a = _(1, 2, 3);
+		 * var a4 = _(a, 4);       // contains _(1, 2, 3, 4)
+		 * </pre>
+		 * 
+		 * @example Mixing different list types and single elements:
+		 * <pre>_(1, [], [2, 3], _(), _(4, 5)); // same content as _(1, 2, 3, 4, 5)</pre>
+		 * 
+		 * @param item an item to add to the new list. If it is a list (as defined by ##_.isList()), its content will be to the new
+		 *        ##Minified list#list# (but NOT recursively).
 		 */
 		'_': _,
 		///#/snippet utilExports

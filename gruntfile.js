@@ -264,7 +264,7 @@ module.exports = function(grunt) {
 		watch: {
 			  test: {
 				files: ['src/test-web/**/*'],
-				tasks: ['assemble']
+				tasks: ['assemble', 'testQuick']
 			  },
 			  code: {
 				files: ['src/minified-web-src.js', 'src/minified-util-src.js', 'src/minified-shell.js'],

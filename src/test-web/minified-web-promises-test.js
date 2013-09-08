@@ -34,7 +34,7 @@ describe('minified-web-promises-test.js', function() {
 					done(e);
 				}
 			}, function() {
-				setSuccess(false, 'onFailure called, but should not be called');
+				done('onFailure called, but should not be called');
 			});
 			check(!!s);
 		});

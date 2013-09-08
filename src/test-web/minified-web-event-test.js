@@ -111,7 +111,12 @@ describe('minified-web-event-test.js', function() {
 			$(s).add(c2 = EE('span', 'x')[0]);
 			$(s).add(c3 = EE('span', {$: 'supiClass'} ,'x')[0]);
 			
-			$(s).on('|eek', 'span.supiClass', function(e, index) { if (e.success && index==0 && this===c3) proofEek1++; });
+			$(s).on('|eek', 'span.supiClass', function(e, index) { 
+				check(e.success, true, 'success set'); 
+				check(index, 0, ' index set');
+				check(this, c3, 'this set', true);
+				proofEek1++; 
+			});
 			$(s).on('eek', 'span.supiClass', function() { check(++proofPropagation, proofEek1, "Propagation failed."); });
 			$(s).on('eek', 'span.supiClass', function() { fail('stopping propagation failed');});
 			$(s).trigger('eek', {success:1});

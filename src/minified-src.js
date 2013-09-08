@@ -82,13 +82,9 @@ define('minified', function() {
 	 * @const
 	 * @type {!string}
 	 */
-	var MINIFIED_MAGIC_NODEID = 'minified';
-	/**
-	 * @const
-	 * @type {!string}
-	 */
-	var MINIFIED_MAGIC_EVENTS = 'minified2';
+	var MINIFIED_MAGIC_NODEID = 'Mid';
 
+	
 	var nodeId = 1;
 
 	// @condblock ie8compatibility
@@ -992,7 +988,7 @@ define('minified', function() {
 				}
 				else {
 					el.addEventListener(name, miniHandler, _false); // W3C DOM
-					push(el, MINIFIED_MAGIC_EVENTS, handlerDescriptor);
+					push(el, 'M', handlerDescriptor);
 				}
 			});
 		});
@@ -1024,18 +1020,45 @@ define('minified', function() {
 					}
 					return stop;
 				};
-
-				var handlerDescriptor = {'e': registeredOn, // the element  
-						                 'h': miniHandler,    // minified's handler 
-						                 'n': name             // event type        
-						                };
-				(handler['M'] = handler['M'] || []).push(handlerDescriptor);
-				(registeredOn[MINIFIED_MAGIC_EVENTS] = registeredOn[MINIFIED_MAGIC_EVENTS] || []).push(handlerDescriptor);
+				
+				var trigger = function(eventName, eventObj, element) {
+					return (name == eventName) && miniHandler(eventObj, element);
+				};
+				
+				(registeredOn['M'] = registeredOn['M'] || []).push(trigger);
+				(handler['M'] = handler['M'] || []).push(function () {
+					registeredOn.removeEventListener(name, miniHandler, _false);
+					removeFromArray(registeredOn['M'], trigger);
+				});
 				registeredOn.addEventListener(name, miniHandler, _false);
 			});
 		});
 	}
+	// @condend !ie8compatibility 
+	
+	// @condblock ie8compatibility 
+	function offCompat(handler) {
+	   	flexiEach(handler['M'], function(h) {
+			if (IS_PRE_IE9) {
+				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
+				removeFromArray(registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]], h);
+			}
+			else {
+				h['e'].removeEventListener(h['n'], h['h'], _false); // W3C DOM
+				removeFromArray(h['e']['M'], h);
+			}
+		});
+		handler['M'] = _null;
+	}
 	// @condend ie8compatibility 
+
+	// @condblock !ie8compatibility 
+	function offNonCompat(handler) {
+	   	flexiEach(handler['M'], callArg);
+		handler['M'] = _null;
+	}
+	// @condend !ie8compatibility 
+
 	
     function nowAsTime() {
     	return new Date().getTime();
@@ -4025,17 +4048,23 @@ define('minified', function() {
 		return this['each'](function(element, index) {
 			var stopBubble, el = element;
 			
+			// @condblock ie8compatibility 
 			while(el && !stopBubble) {
 				flexiEach(
-						// @condblock ie8compatibility 
 						IS_PRE_IE9 ? registeredEvents[el[MINIFIED_MAGIC_NODEID]] :
-						//@condend
-						el[MINIFIED_MAGIC_EVENTS], function(hDesc) {
+						el['M'], function(hDesc) {
 							if (hDesc['n'] == eventName)
 								stopBubble = stopBubble || hDesc['h'](eventObj, element);
 						});
 				el = el['parentNode'];
 			}
+			//@condend
+			// @cond !ie8compatibility while(el && !stopBubble) {
+			// @cond !ie8compatibility 	flexiEach(el['M'], function(f) {
+			// @cond !ie8compatibility 		stopBubble = stopBubble || f(eventName, eventObj, element); 
+			// @cond !ie8compatibility 	});
+			// @cond !ie8compatibility 	el = el['parentNode'];
+			// @cond !ie8compatibility }
 		});
 	}
 
@@ -4518,24 +4547,14 @@ define('minified', function() {
 	 * @param handler the handler to unregister, as given to ##on(). It must be a handler that has previously been registered using ##on().
 	 *                If the handler is not registered as event handler, the function does nothing.
      */
-	'off': function (handler) {
-		// @cond debug if (!handler || !handler['M']) error("No handler given or handler invalid.");
-	   	flexiEach(handler['M'], function(h) {
-			// @condblock ie8compatibility 
-			if (IS_PRE_IE9) {
-				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
-				removeFromArray(registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]], h);
-			}
-			else {
-			// @condend
-				h['e'].removeEventListener(h['n'], h['h'], _false); // W3C DOM
-				removeFromArray(h['e'][MINIFIED_MAGIC_EVENTS], h);
-			// @condblock ie8compatibility 
-			}
-			// @condend
-		});
-		handler['M'] = _null;
-	}
+	'off': 
+		// @condblock ie8compatibility
+		offCompat
+		// @condend ie8compatibility 
+		// @cond !ie8compatibility offNonCompat
+		
+	
+		
 
     
  	/*$
@@ -5701,8 +5720,42 @@ define('minified', function() {
 		/*$
 		 * @id underscore
 		 * @name _()
+		 * @syntax _(item...)
 		 * @configurable default
 		 * @module UTIL
+		 * Creates a new Minified list. Supports variable arguments so you can add items directly to the list.For arguments that are lists 
+		 * (as defined by ##_.isList()), the list content will be added to the new list. Unlike ##dollar#$()#, this is not done recursively
+		 * and thus you can create a list of lists by wrapping arguments in a list. Another difference between <var>_()</var> and <var>$()</var>
+		 * is that <var>$()</var> will automatically remove <var>null</var> values while <var>_()</var> will keep them.
+		 * 
+		 * @example Creating an empty list
+		 * <pre>_()</pre>
+		 * 
+		 * @example Creating a list with three items:
+		 * <pre>_(1, 2, 3)</pre>
+		 * 
+		 * @example Creating the same list, but by passing an array. One array level will be flattened:
+		 * <pre>_([1, 2, 3])</pre>
+		 * 
+		 * @example Creating a list containing the arrays [1, 2] and [3, 4].
+		 * <pre>_([[1, 2], [3, 4]])</pre>
+		 * 
+		 * @example Merging two lists:
+		 * <pre>var a = _("a", "b", "c");
+		 * var b = _("x", "y", "z");
+		 * var merged = _(a, b);    // contains _("a", "b", "c", "x", "y", "z")
+		 * </pre>
+		 * 
+		 * @example Adding two elements to a list:
+		 * <pre>var a = _(1, 2, 3);
+		 * var a4 = _(a, 4);       // contains _(1, 2, 3, 4)
+		 * </pre>
+		 * 
+		 * @example Mixing different list types and single elements:
+		 * <pre>_(1, [], [2, 3], _(), _(4, 5)); // same content as _(1, 2, 3, 4, 5)</pre>
+		 * 
+		 * @param item an item to add to the new list. If it is a list (as defined by ##_.isList()), its content will be to the new
+		 *        ##Minified list#list# (but NOT recursively).
 		 */
 		'_': _,
 		///#/snippet utilExports
