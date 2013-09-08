@@ -20,11 +20,11 @@ function dummy() {
 ///#/remove
 
 
-///#include minified-web-src.js  commonAmdStart
-///#include minified-web-src.js  webVars
-///#include minified-util-src.js utilVars
-///#include minified-util-src.js commonFunctions
-///#include minified-web-src.js  webFunctions
+///#include minified-web-full-src.js  commonAmdStart
+///#include minified-web-full-src.js  webVars
+///#include minified-util-full-src.js utilVars
+///#include minified-util-full-src.js commonFunctions
+///#include minified-web-full-src.js  webFunctions
 	
 	function flexiEach(list, cb) {
 		if (isList(list))
@@ -318,7 +318,7 @@ function dummy() {
 	 */
 	
 	
-	///#include minified-util-src.js utilM
+	///#include minified-util-full-src.js utilM
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -327,13 +327,13 @@ function dummy() {
 		dummy1:0
 		///#/remove
 
-		///#include minified-util-src.js utilListFuncs
+		///#include minified-util-full-src.js utilListFuncs
 		,
 		///#remove
 		dummy2:0
 		///#/remove
 		
-		///#include minified-web-src.js webListFuncs
+		///#include minified-web-full-src.js webListFuncs
 		,
 		/*$
 		 * @id ht
@@ -399,13 +399,13 @@ function dummy() {
 	
 			
 	//// DOLLAR FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///#include minified-web-src.js webDollarFuncs
+	///#include minified-web-full-src.js webDollarFuncs
 	
 	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///#include minified-util-src.js utilUnderscoreFuncs
+	///#include minified-util-full-src.js utilUnderscoreFuncs
 	
 	////INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///#include minified-web-src.js webInit
+	///#include minified-web-full-src.js webInit
 
 	copyObj({
 	// @condblock promise
@@ -505,8 +505,8 @@ function dummy() {
 		///#remove
 		dummy:0 
 		///#/remove
-		///#include minified-util-src.js utilExports
-		///#include minified-web-src.js webExports
+		///#include minified-util-full-src.js utilExports
+		///#include minified-web-full-src.js webExports
 		/*$
 		 * @id html
 		 * @group ELEMENT
@@ -573,8 +573,8 @@ function dummy() {
 
 	};
 
-///#include minified-web-src.js  commonAmdEnd
-///#include minified-web-src.js  webDocs
+///#include minified-web-full-src.js  commonAmdEnd
+///#include minified-web-full-src.js  webDocs
 	
 ///#remove
 	}

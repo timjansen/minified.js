@@ -2508,7 +2508,7 @@ define('minified', function() {
 	 * <pre>
 	 * var data = $('#myText, input.myRadios').values();
 	 * </pre>
-	 *
+	 * 
 	 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
 	 * @return a map containing name->[value, value...] pairs, using strings as name and value. 
 	 */
