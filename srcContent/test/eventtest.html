@@ -21,7 +21,7 @@
 	// Load the right source, depending on whether 'compiled' is in the URL query
 	
 	var q = window.location.search, undefined;
-	var srcFiles = ["../minified-web-src.js", "../minified-web.js", "../minified-web-src.noie.js", "../minified-web.noie.js"];
+	var srcFiles = ["dist/minified-web-src.js", "dist/minified-web.js", "dist/minified-web-src.noie.js", "dist/minified-web.noie.js"];
 	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie version on old ie
 	
 	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;

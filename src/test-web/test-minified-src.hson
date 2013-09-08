@@ -1,6 +1,5 @@
 {
-	file: '../minified-src.js',
-	hasNext: true,
-	nextFile: 'test-minified-web.html?forward',
-	nextFileNOIE: 'test-minified-web.html?forward'
+	file: 'dist/minified-src.js',
+	nextFile: 'test-minified-web-src.html?forward',
+	nextFileLegacy: ''
 }

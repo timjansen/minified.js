@@ -1,7 +1,0 @@
-{
-	file: '../minified-noie.js',
-	hasNext: true,
-	nextFile: 'test-minified.html',
-	nextFileNOIE: 'test-minified.html'
-}
-

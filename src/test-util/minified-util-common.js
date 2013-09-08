@@ -6,7 +6,7 @@ var fs = require("fs");
 
 exports.AMD_NAME = 'minified';
 
-exports.files = ['minified-util-src.js'];
+exports.files = ['minified-util-full-src.js'];
 exports.dirs = ['../', 'src/'];
 
 function loadInContextSrc(src) {

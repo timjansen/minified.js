@@ -58,8 +58,8 @@
 		}
 		
 		function forward() {
-			if (/forward/.test(q) && {{hasNext}})
-				document.location.href = isLegacyIE ? '{{nextFileNOIE}}' : '{{nextFile}}';
+			if (/forward/.test(q) && (isLegacyIE ? '{{nextFileLegacy}}' : '{{nextFile}}'))
+				document.location.href = isLegacyIE ? '{{nextFileLegacy}}' : '{{nextFile}}';
 		}
   	</script>
 	<script type="text/javascript" src="{{file}}"></script>

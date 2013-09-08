@@ -1,0 +1,5 @@
+{
+	file: 'dist/minified-legacyie-src.js',
+	nextFile: 'test-minified-legacy-web.html?forward',
+	nextFileLegacy: 'test-minified-legacy-web.html?forward'
+}

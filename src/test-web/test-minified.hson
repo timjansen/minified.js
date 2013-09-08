@@ -1,6 +1,6 @@
 {
-	file: '../minified.js',
-	hasNext: false,
+	file: 'dist/minified.js',
 	nextFile: '',
-	nextFileNOIE: ''
+	nextFileLegacy: ''
 }
+
