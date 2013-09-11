@@ -29,7 +29,7 @@
  * @name require()
  * @syntax require(name)
  * @group OPTIONS
- * @module WEB, UTIL, APP
+ * @module WEB, UTIL
  * Returns a reference to a module. If you do not use an AMD loader to load Minified, just call <var>require()</var> with the
  * argument 'minified' to get a reference to Minified.
  * If you do use an AMD loader, Minified will not define this function and you can use the AMD loader to obtain the
@@ -1582,6 +1582,7 @@ define('minified', function() {
      * @requires
      * @configurable default
      * @name .each()
+     * @altname _.each()
      * @syntax list.each(callback)
      * @syntax _.each(list, callback)
      * @module UTIL, WEB
@@ -1627,6 +1628,7 @@ define('minified', function() {
 	 * @requires 
 	 * @configurable default
 	 * @name .filter()
+     * @altname _.filter()
 	 * @syntax list.filter(filterFunc)
 	 * @syntax list.filter(value)
      * @syntax _.filter(list, filterFunc)
@@ -1682,7 +1684,8 @@ define('minified', function() {
      * @group LIST 
      * @requires 
      * @configurable default 
-     * @name .collect() 
+     * @name .collect()
+     * @altname _.collect
      * @syntax list.collect(collectFunc) 
      * @syntax _.collect(list, collectFunc)
    	 * @module WEB, UTIL
@@ -1749,7 +1752,8 @@ define('minified', function() {
      * @group LIST 
      * @requires
      * @configurable default 
-     * @name .map() 
+     * @name .map()
+     * @altname _.map()
      * @syntax list.map(mapFunc) 
      * @syntax _.map(list, mapFunc)
    	 * @module WEB, UTIL
@@ -1788,7 +1792,8 @@ define('minified', function() {
 	 * @group LIST 
 	 * @requires
 	 * @configurable default 
-	 * @name .toObject() 
+	 * @name .toObject()
+     * @altname _.toObject()
 	 * @syntax list.toObject(valueList)
 	 * @syntax _.toObject(keyList, valueList)
 	 * @module UTIL
@@ -1821,7 +1826,8 @@ define('minified', function() {
 	 * @group LIST 
 	 * @requires
 	 * @configurable default 
-	 * @name .equals() 
+	 * @name .equals()
+     * @altname _.equals()
 	 * @syntax list.equals(otherObject)
 	 * @syntax _.equals(thisObject, otherObject)
 	 * @module UTIL
@@ -1866,7 +1872,8 @@ define('minified', function() {
      * @group LIST 
      * @requires  
      * @configurable default 
-     * @name .sub() 
+     * @name .sub()
+     * @altname _.sub()
      * @syntax list.sub(startIndex) 
      * @syntax list.sub(startIndex, endIndex) 
      * @syntax _.sub(list, startIndex) 
@@ -1916,7 +1923,8 @@ define('minified', function() {
      * @group LIST 
      * @requires  
      * @configurable default 
-     * @name .sub() 
+     * @name .reverse()
+     * @altname _.reverse()
      * @syntax list.reverse() 
      * @syntax _.reverse(list) 
      * @module WEB, UTIL
@@ -1943,12 +1951,13 @@ define('minified', function() {
      */ 
 	'reverse': listBindArray(reverse),
  	
-	   /*$ 
+	/*$ 
      * @id find 
      * @group LIST 
      * @requires
      * @configurable default 
-     * @name .find() 
+     * @name .find()
+     * @altname _.find()
      * @syntax list.find(findFunc) 
      * @syntax list.find(element) 
      * @syntax list.find(findFunc, startIndex) 
@@ -1969,7 +1978,7 @@ define('minified', function() {
      *
      * @example Finds the first negative number in the list:
      * <pre> 
-     * var i = _(1, 2, -4, 5, 2, -1).find(function(value, index) { if (value < 0) return index; }); // returns 2
+     * var i = _(1, 2, -4, 5, 2, -1).find(function(value, index) { if (value &lt; 0) return index; }); // returns 2
      * </pre> 
 
      * @example Finds the index of the first 5 in the array:
@@ -2006,7 +2015,8 @@ define('minified', function() {
      * @group LIST 
      * @requires
      * @configurable default 
-     * @name .findLast() 
+     * @name .findLast()
+     * @altname _.findLast()
      * @syntax list.findLast(findFunc) 
      * @syntax list.findLast(element) 
      * @syntax list.findLast(findFunc, startIndex) 
@@ -2027,9 +2037,9 @@ define('minified', function() {
      *
      * @example Finds the first negative number in the list:
      * <pre> 
-     * var i = _(1, 2, -4, 5, 2, -1, 2).findLast(function(value, index) { if (value < 0) return index; }); // returns 5
+     * var i = _(1, 2, -4, 5, 2, -1, 2).findLast(function(value, index) { if (value &lt; 0) return index; }); // returns 5
      * </pre> 
-
+	 *
      * @example Finds the index of the first 5 in the array:
      * <pre> 
      * var i = _.findLast([3, 6, 7, 6, 5, 4, 5], 5); // returns 6
@@ -2063,7 +2073,8 @@ define('minified', function() {
      * @group LIST 
      * @requires
      * @configurable default 
-     * @name .startsWith() 
+     * @name .startsWith()
+     * @altname _.startsWith()
      * @syntax list.startsWith(otherList) 
      * @syntax _.startsWith(list, otherList) 
      * @syntax _.startsWith(baseString, otherString) 
@@ -2107,7 +2118,8 @@ define('minified', function() {
      * @group LIST 
      * @requires
      * @configurable default 
-     * @name .endsWith() 
+     * @name .endsWith()
+     * @altname _.endsWith()
      * @syntax list.endsWith(otherList) 
      * @syntax _.endsWith(list, otherList) 
      * @syntax _.endsWith(baseString, otherString) 
@@ -2151,7 +2163,8 @@ define('minified', function() {
      * @group LIST 
      * @requires
      * @configurable default 
-     * @name .contains() 
+     * @name .contains()
+     * @altname _.contains()
      * @syntax list.contains(item) 
      * @syntax _.contains(list, item) 
      * @module UTIL
@@ -2183,7 +2196,8 @@ define('minified', function() {
      * @group LIST 
      * @requires
      * @configurable default 
-     * @name .call() 
+     * @name .call()
+     * @altname _.call()
      * @syntax list.call() 
      * @syntax list.call(fThis) 
      * @syntax list.call(args) 
@@ -2215,7 +2229,8 @@ define('minified', function() {
      * @group LIST 
      * @requires
      * @configurable default 
-     * @name .array() 
+     * @name .array()
+     * @altname _.array()
      * @syntax list.array() 
      * @syntax _.array(list) 
      * @module UTIL
@@ -2232,7 +2247,8 @@ define('minified', function() {
      * @group LIST 
      * @requires
      * @configurable default 
-     * @name .unite() 
+     * @name .unite()
+     * @altname _.unite()
      * @syntax list.unite() 
      * @syntax _.unite(list) 
      * @module UTIL
@@ -2251,7 +2267,8 @@ define('minified', function() {
      * @group LIST 
      * @requires
      * @configurable default 
-     * @name .uniq() 
+     * @name .uniq()
+     * @altname _.uniq()
      * @syntax list.uniq() 
      * @syntax _.uniq(list) 
      * @module UTIL
@@ -2272,7 +2289,8 @@ define('minified', function() {
      * @group LIST 
      * @requires
      * @configurable default 
-     * @name .intersection() 
+     * @name .intersection()
+     * @altname _.intersection() 
      * @syntax list.intersection(otherList) 
      * @syntax _.intersection(list, otherList) 
      * @module UTIL
@@ -4732,7 +4750,7 @@ define('minified', function() {
 		 * @example Create a method that multiplies all list elements:
 		 * <pre>function mul(factor) { return this.map(function(v) { return v * factor; }; }
 		 * var myList = _(1, 2, 3);
-		 * var mulMyList = _.bind(mul, myList);        // binding only 'this'
+		 * var mulMyList = _.bind(mul, myList);       // binding only 'this'
 		 * var mulMyList5 = _.bind(mul, myList, 5);   // binding 'this' and prepending a parameter
 		 * 
 		 * var myList4 = mulMyList(4); // returns _(4, 8, 12)
@@ -4766,13 +4784,13 @@ define('minified', function() {
 		 * 
 		 * @example Create functions that divide:
 		 * <pre>function div(a, b) { return a / b; }
-		 * var div5 = _.partial(add, 5); // like function(a) { return 5 / a; }
+		 * var div5 = _.partial(add, 5);         // like function(a) { return 5 / a; }
 		 * var divBy5 = _.partial(add, null, 5); // like function(a) { return a / 5; }
 		 * </pre>
 		 *
 		 * @example Create functions that remove characters from the beginning and/or end of a string:
 		 * <pre>// This function multiplies the first <var>count</var> items of the <var>list</var> by <var>factor</var>
-		 * function multiply(list, count, factor) { return list.map(function(v, index) { return index < count ? factor * v : v; }); }
+		 * function multiply(list, count, factor) { return list.map(function(v, index) { return index &lt; count ? factor * v : v; }); }
 		 * 
 		 * var mul3by2 = _.partial(multiply, null, [3, 2]); 
 		 * var r1 = mul10by2(_(1, 2, 3, 4, 5)); // returns _(2, 4, 6, 4, 5)
@@ -5140,15 +5158,15 @@ define('minified', function() {
 		 * <b>Choice Formatting</b><br/>
 		 * With a choice format, you can map input values into output values. In the format string the choices are separated by pipes ('|')
 		 * and each choice has the format <code>&ltcmp>&ltvalue>:&lt;result></code>:
-		 * <ul><li>&lt;cmp> is a comparison operator ('=', '>', '<', '>=', '<=') and can be omitted for equality.</li>
+		 * <ul><li>&lt;cmp> is a comparison operator ('=', '>', '&lt;', '>=', '&lt;=') and can be omitted for equality.</li>
 		 * <li>&lt;value> is the value as string.</li>
 		 * <li>&lt;result> is the result, either a string or a number format</li></ul>
 		 * You can have a default choice at the end without &lt;cmp> or &lt;value>.
 		 * 
 		 * <b>Examples</b> 
 		 * <pre>_.formatValue('true:is True|isFalse', value);
-		 * _.formatValue('<5:under 5|>=15:at least 15|=7:is seven|some other number', value);
-		 * _.formatValue('1:one item|2:two items|>3:many items', value);
+		 * _.formatValue('&lt;5:under 5|&gt;=15:at least 15|=7:is seven|some other number', value);
+		 * _.formatValue('1:one item|2:two items|&gt;3:many items', value);
 		 * _.formatValue('ERR:error|WARN:warning|INFO:info|debug', value);
 		 * </pre>
 		 *
@@ -5156,6 +5174,7 @@ define('minified', function() {
 		 * Number formatting allows you to specify the number of digits before and optionally after the decimal separator, the decimal separator itself
 		 * as well as how to group digits. The following characters are used in the format:
 		 * <table>
+		 * 
 		 * <tr><th>Character</th><th>Description</th></tr>
 		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
 		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
@@ -5180,9 +5199,9 @@ define('minified', function() {
 		 * var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
 		 * var v13 = _.formatValue('000,000.___', 92548.42); // '92,548.42'
 		 * var v14 = _.formatValue('000.000,___', 92548.42); // '92.548,42' (comma as separator)
-		 * var v15 = _.formatValue('<10:#.99|<100:#.9|#', 7.356); // '7.36' (choice format)
-		 * var v16 = _.formatValue('<10:#.99|<100:#.9|#', 25.04); // '25.0' 
-		 * var v17 = _.formatValue('<10:#.99|<100:#.9|#', 71.51); // '72' 
+		 * var v15 = _.formatValue('&lt;10:#.99|&lt;100:#.9|#', 7.356); // '7.36' (choice format)
+		 * var v16 = _.formatValue('&lt;10:#.99|&lt;100:#.9|#', 25.04); // '25.0' 
+		 * var v17 = _.formatValue('&lt;10:#.99|&lt;100:#.9|#', 71.51); // '72' 
 		 * </pre>
 		 *
 		 * <b>Date Formatting</b><br/> 
@@ -5402,11 +5421,11 @@ define('minified', function() {
 		 * @syntax _.escapeHtml(s)
 		 * @module UTIL
 		 * Escapes all reserved characters for HTML so the string can be used in text or as attribute value. The escaped characters are
-		 * '&', '<', '>', ''' (single quote) and '"' (double quote), and they will be escaped using char codes (e.g. '&#123;').
+		 * '&amp;', '&lt;', '>', ''' (single quote) and '"' (double quote), and they will be escaped using char codes (e.g. '&amp;#123;').
 		 * 
 		 * @example Creating a HTML title
 		 * <pre>function createTitle(s) {
-		 *     return '<h1>' + _.escapeHtml(s) + '</h1>';
+		 *     return '&lt;h1>' + _.escapeHtml(s) + '&lt;/h1>';
 		 * }</pre>
 		 *
 		 * @param s the string to escape

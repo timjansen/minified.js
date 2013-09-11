@@ -11,8 +11,20 @@
 <h3><a href="dollar.html">$()</a></h3>
 <div class="summary">Creates a new Minified list, or register a DOMReady-handler.</div>
 
+<h3><a href="length.html">list.length</a></h3>
+<div class="summary">
+Contains the number of elements in the Minified list.</div>
+
 <h3><a href="dollardollar.html">$$()</a></h3>
 <div class="summary">Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found.</div>
+
+<h3><a href="defer.html">$.defer()</a></h3>
+<div class="summary">
+Executes the function from the browser event loop, as soon as the browser can.</div>
+
+<h3><a href="delay.html">$.delay()</a></h3>
+<div class="summary">
+Executes the function with the given delay, optionally passing arguments to it.</div>
 
 <h3><a href="getcookie.html">$.getCookie()</a></h3>
 <div class="summary">Tries to find the cookie with the given name and returns it.</div>
@@ -38,6 +50,13 @@
 <h3><a href="tojson.html">$.toJSON()</a></h3>
 <div class="summary">Converts the given value into a JSON string.</div>
 
+<h3><a href="wait.html">$.wait()</a></h3>
+<div class="summary">
+Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed.</div>
+
+<h3><a href="listunderscore.html">._</a></h3>
+<div class="summary">Set to <var>true</var> if this is a Minified list.</div>
+
 <h3><a href="add.html">.add()</a></h3>
 <div class="summary">Adds the given node(s) as content to the list's HTML elements.</div>
 
@@ -53,11 +72,20 @@
 <h3><a href="animate.html">.animate()</a></h3>
 <div class="summary">Animates the items of the list by modifying their properties, CSS styles and attributes.</div>
 
+<h3><a href="array.html">.array()</a></h3>
+<div class="summary">Converts a Minified list or other array-like structure into a native JavaScript array.</div>
+
+<h3><a href="call.html">.call()</a></h3>
+<div class="summary">Calls all function in the list.</div>
+
 <h3><a href="clone.html">.clone()</a></h3>
 <div class="summary">Clones all HTML elements and text nodes in the given list by creating a deep copy.</div>
 
 <h3><a href="collect.html">.collect()</a></h3>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
+
+<h3><a href="contains.html">.contains()</a></h3>
+<div class="summary">Checks whether the list contains the given item.</div>
 
 <h3><a href="dial.html">.dial()</a></h3>
 <div class="summary">
@@ -65,6 +93,12 @@ Creates a function allows you to set all list members to one of two states or an
 
 <h3><a href="each.html">.each()</a></h3>
 <div class="summary">Invokes the given function once for each item in the list.</div>
+
+<h3><a href="endswith.html">.endsWith()</a></h3>
+<div class="summary">Checks whether the list or string ends with the other string or list.</div>
+
+<h3><a href="equals.html">.equals()</a></h3>
+<div class="summary">Checks whether two values, lists or objects are equal in a deep comparison.</div>
 
 <h3><a href="fill.html">.fill()</a></h3>
 <div class="summary">Sets the content of the list's HTML elements, replacing old content.</div>
@@ -75,15 +109,29 @@ Creates a function allows you to set all list members to one of two states or an
 <h3><a href="find.html">.find()</a></h3>
 <div class="summary">Finds a specific value in the list.</div>
 
+<h3><a href="findlast.html">.findLast()</a></h3>
+<div class="summary">Finds a the last occurrence of specific value in the list.</div>
+
 <h3><a href="get.html">.get()</a></h3>
 <div class="summary">Retrieves properties, attributes and styles from the list's first element.</div>
+
+<h3><a href="ht.html">.ht()</a></h3>
+<div class="summary">Replaces the content of the list elements with the HTML generated using the given template.</div>
+
+<h3><a href="intersection.html">.intersection()</a></h3>
+<div class="summary">Takes two input lists to create a new list containing only those values that exist in both input lists.</div>
 
 <h3><a href="is.html">.is()</a></h3>
 <div class="summary">Checks whether all elements in the list match the given selector.</div>
 
-<h3><a href="length.html">.length</a></h3>
-<div class="summary">
-Contains the number of elements in the list.</div>
+<h3><a href="join.html">.join()</a></h3>
+<div class="summary">Converts list elements into strings and joins them into a single string, optionally separated with the given separator.</div>
+
+<h3><a href="keys.html">.keys()</a></h3>
+<div class="summary">Creates a Minified list containing all property names of the specified object.</div>
+
+<h3><a href="map.html">.map()</a></h3>
+<div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
 
 <h3><a href="offset.html">.offset()</a></h3>
 <div class="summary">Returns the pixel page coordinates of the list's first element.</div>
@@ -103,6 +151,9 @@ Contains the number of elements in the list.</div>
 <h3><a href="replace.html">.replace()</a></h3>
 <div class="summary">Replaces the list items with the the given node(s) in the DOM tree.</div>
 
+<h3><a href="reverse.html">.reverse()</a></h3>
+<div class="summary">Returns a new Minified list with the input list's elements in reverse order.</div>
+
 <h3><a href="select.html">.select()</a></h3>
 <div class="summary">Executes a selector with the list as context.</div>
 
@@ -110,11 +161,20 @@ Contains the number of elements in the list.</div>
 <div class="summary">
 Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes.</div>
 
+<h3><a href="sort.html">.sort()</a></h3>
+<div class="summary">Sorts the list elements and returns a new, sorted list.</div>
+
+<h3><a href="startswith.html">.startsWith()</a></h3>
+<div class="summary">Checks whether the list or string starts with the other string or list.</div>
+
 <h3><a href="sub.html">.sub()</a></h3>
 <div class="summary">Returns a new Minified list containing only the elements in the specified range.</div>
 
 <h3><a href="text.html">.text()</a></h3>
 <div class="summary">Returns the concatenated text content of all nodes in the list.</div>
+
+<h3><a href="toobject.html">.toObject()</a></h3>
+<div class="summary">Creates an object map from a list of keys and a list of values.</div>
 
 <h3><a href="toggle.html">.toggle()</a></h3>
 <div class="summary">
@@ -128,11 +188,24 @@ optionally filtered by the given selector.</div>
 <div class="summary">
 Triggers event handlers registered with on.</div>
 
+<h3><a href="uniq.html">.uniq()</a></h3>
+<div class="summary">Takes a list of values and removes all duplicates.</div>
+
+<h3><a href="unite.html">.unite()</a></h3>
+<div class="summary">Takes a list of functions as input to create a new function that calls all input functions with the same
+arguments.</div>
+
 <h3><a href="values.html">.values()</a></h3>
 <div class="summary">Creates a name/value map from the given form.</div>
 
+<h3><a href="values.html">.values()</a></h3>
+<div class="summary">Creates a Minified list containing all property values of the specified object.</div>
+
 <h3><a href="ee.html">EE()</a></h3>
 <div class="summary">Creates a new Element Factory.</div>
+
+<h3><a href="html.html">HTML()</a></h3>
+<div class="summary">Creates a ##list#list of HTML nodes from the given HTML template.</div>
 
 <h3><a href="M.html">M</a></h3>
 <div class="summary">
@@ -146,8 +219,120 @@ Exposes the internal class used by all  Minified lists.</div>
 <div class="summary">
 <i>Promises</i> are objects that represent the result of an asynchronous operation.</div>
 
+<h3><a href="underscore.html">_()</a></h3>
+<div class="summary">Creates a new Minified list.</div>
+
+<h3><a href="bind.html">_.bind()</a></h3>
+<div class="summary">Creates a new function that calls the given function bound to the given object as 'this', and optionally with the specified 'pre-filled' arguments
+to be appended or prepended to the arguments you all the new function with.</div>
+
+<h3><a href="copyobj.html">_.copyObj()</a></h3>
+<div class="summary">Copies every property of the first object into the second object.</div>
+
+<h3><a href="dateadd.html">_.dateAdd()</a></h3>
+<div class="summary">Adds the specified time to the given <var>Date</var> and returns the result as a new <var>Date</var> .</div>
+
+<h3><a href="dateclone.html">_.dateClone()</a></h3>
+<div class="summary">Creates a new <var>Date</var> object that represents the same time as the given date.</div>
+
+<h3><a href="datediff.html">_.dateDiff()</a></h3>
+<div class="summary">
+Calculates the time difference between both dates, using in the unit determined by the <var>property</var>.</div>
+
+<h3><a href="datemidnight.html">_.dateMidnight()</a></h3>
+<div class="summary">
+Returns a new <var>Date</var> object with the same calendar date, but at midnight in the current time zone.</div>
+
+<h3><a href="eachobj.html">_.eachObj()</a></h3>
+<div class="summary">Invokes the given function once for each property of the given object.</div>
+
+<h3><a href="escapehtml.html">_.escapeHtml()</a></h3>
+<div class="summary">Escapes all reserved characters for HTML so the string can be used in text or as attribute value.</div>
+
+<h3><a href="escaperegexp.html">_.escapeRegExp()</a></h3>
+<div class="summary">Escapes all reserved characters for regular expressions by preceding them with a backslash.</div>
+
+<h3><a href="filterobj.html">_.filterObj()</a></h3>
+<div class="summary">Creates a new object that contains only those properties of the input object that have been approved by the filter function.</div>
+
+<h3><a href="formathtml.html">_.format()</a></h3>
+<div class="summary">Formats an object using a #template#template with HTML escaping for the output.</div>
+
+<h3><a href="format.html">_.format()</a></h3>
+<div class="summary">Formats an object using a #template#template.</div>
+
+<h3><a href="formatvalue.html">_.formatValue()</a></h3>
+<div class="summary">
+Formats a single value as a string, using the given format template.</div>
+
+<h3><a href="isbool.html">_.isBool()</a></h3>
+<div class="summary">Checks whether the given reference is a boolean <var>true</var>  or <var>false</var>.</div>
+
+<h3><a href="isdate.html">_.isDate()</a></h3>
+<div class="summary">Checks whether the given object is a <var>Date</var>.</div>
+
+<h3><a href="isfunction.html">_.isFunction()</a></h3>
+<div class="summary">Checks whether the given object is a function.</div>
+
+<h3><a href="islist.html">_.isList()</a></h3>
+<div class="summary">Checks whether the given object resembles a list or array.</div>
+
+<h3><a href="isnumber.html">_.isNumber()</a></h3>
+<div class="summary">Checks whether the given reference is a number as defined by <var>typeof</var>.</div>
+
+<h3><a href="isobject.html">_.isObject()</a></h3>
+<div class="summary">Checks whether the given reference is an object as defined by <var>typeof</var>.</div>
+
+<h3><a href="isstring.html">_.isString()</a></h3>
+<div class="summary">Checks whether the given reference is a string as defined by <var>typeof</var>.</div>
+
+<h3><a href="isvalue.html">_.isValue()</a></h3>
+<div class="summary">Checks whether the given object is a value.</div>
+
+<h3><a href="mapobj.html">_.mapObj()</a></h3>
+<div class="summary">Creates a new object with the same properties but different values using the given callback function.</div>
+
+<h3><a href="pad.html">_.pad()</a></h3>
+<div class="summary">
+Converts a number into a string by 'padding' it with leading zeros until it has at least the given number of digits.</div>
+
+<h3><a href="parsedate.html">_.parseDate()</a></h3>
+<div class="summary">
+Parses the given string as Date using the given format.</div>
+
+<h3><a href="parsenumber.html">_.parseNumber()</a></h3>
+<div class="summary">
+Parses the given string as number using the given format.</div>
+
+<h3><a href="partial.html">_.partial()</a></h3>
+<div class="summary">Creates a new function that calls the given function with some arguments pre-filled.</div>
+
+<h3><a href="range.html">_.range()</a></h3>
+<div class="summary">Creates a new Minified list containing an interval of numbers from <var>start</var> (inclusive)
+until <var>end</var> (exclusive).</div>
+
+<h3><a href="template.html">_.template()</a></h3>
+<div class="summary">Parses a Handlebars-like template to create a reusable template function.</div>
+
+<h3><a href="tostring.html">_.toString()</a></h3>
+<div class="summary">Converts the given object to a string.</div>
+
+<h3><a href="trim.html">_.trim()</a></h3>
+<div class="summary">Removes whitespace from the beginning and end of the given string and returns the result.</div>
+
+<h3><a href="promise.html">promise()</a></h3>
+<div class="summary">
+Creates a new ##promise#Promise, optionally assimilating other promises.</div>
+
+<h3><a href="always.html">promise.always()</a></h3>
+<div class="summary">Registers a callback that will always be called when the Promise's operation ended, no matter whether the operation succeeded or not.</div>
+
 <h3><a href="error.html">promise.error()</a></h3>
 <div class="summary">Registers a callback that will be called when the operation failed.</div>
+
+<h3><a href="state.html">promise.state</a></h3>
+<div class="summary">
+Contains the current state of the promise.</div>
 
 <h3><a href="then.html">promise.then()</a></h3>
 <div class="summary">
@@ -160,7 +345,10 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 <h3><a href="/docs/howto.html">How to...</a></h3>
 <div class="summary">Can't find something? Try this page!</div><p><br/></p></div>
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
+</li><li><a href="length.html">list.length</a>
 </li><li><a href="dollardollar.html">$$()</a>
+</li><li><a href="defer.html">$.defer()</a>
+</li><li><a href="delay.html">$.delay()</a>
 </li><li><a href="getcookie.html">$.getCookie()</a>
 </li><li><a href="loop.html">$.loop()</a>
 </li><li><a href="off.html">$.off()</a>
@@ -169,40 +357,94 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="request.html">$.request()</a>
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
+</li><li><a href="wait.html">$.wait()</a>
+</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
 </li><li><a href="addfront.html">.addFront()</a>
 </li><li><a href="animate.html">.animate()</a>
+</li><li><a href="array.html">.array()</a>
+</li><li><a href="call.html">.call()</a>
 </li><li><a href="clone.html">.clone()</a>
 </li><li><a href="collect.html">.collect()</a>
+</li><li><a href="contains.html">.contains()</a>
 </li><li><a href="dial.html">.dial()</a>
 </li><li><a href="each.html">.each()</a>
+</li><li><a href="endswith.html">.endsWith()</a>
+</li><li><a href="equals.html">.equals()</a>
 </li><li><a href="fill.html">.fill()</a>
 </li><li><a href="filter.html">.filter()</a>
 </li><li><a href="find.html">.find()</a>
+</li><li><a href="findlast.html">.findLast()</a>
 </li><li><a href="get.html">.get()</a>
+</li><li><a href="ht.html">.ht()</a>
+</li><li><a href="intersection.html">.intersection()</a>
 </li><li><a href="is.html">.is()</a>
-</li><li><a href="length.html">.length</a>
+</li><li><a href="join.html">.join()</a>
+</li><li><a href="keys.html">.keys()</a>
+</li><li><a href="map.html">.map()</a>
 </li><li><a href="offset.html">.offset()</a>
 </li><li><a href="on.html">.on()</a>
 </li><li><a href="onover.html">.onOver()</a>
 </li><li><a href="only.html">.only()</a>
 </li><li><a href="remove.html">.remove()</a>
 </li><li><a href="replace.html">.replace()</a>
+</li><li><a href="reverse.html">.reverse()</a>
 </li><li><a href="select.html">.select()</a>
 </li><li><a href="set.html">.set()</a>
+</li><li><a href="sort.html">.sort()</a>
+</li><li><a href="startswith.html">.startsWith()</a>
 </li><li><a href="sub.html">.sub()</a>
 </li><li><a href="text.html">.text()</a>
+</li><li><a href="toobject.html">.toObject()</a>
 </li><li><a href="toggle.html">.toggle()</a>
 </li><li><a href="trav.html">.trav()</a>
 </li><li><a href="trigger.html">.trigger()</a>
+</li><li><a href="uniq.html">.uniq()</a>
+</li><li><a href="unite.html">.unite()</a>
+</li><li><a href="values.html">.values()</a>
 </li><li><a href="values.html">.values()</a>
 </li><li><a href="ee.html">EE()</a>
+</li><li><a href="html.html">HTML()</a>
 </li><li><a href="M.html">M</a>
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
+</li><li><a href="underscore.html">_()</a>
+</li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="copyobj.html">_.copyObj()</a>
+</li><li><a href="dateadd.html">_.dateAdd()</a>
+</li><li><a href="dateclone.html">_.dateClone()</a>
+</li><li><a href="datediff.html">_.dateDiff()</a>
+</li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="escapehtml.html">_.escapeHtml()</a>
+</li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="format.html">_.format()</a>
+</li><li><a href="formathtml.html">_.format()</a>
+</li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="isbool.html">_.isBool()</a>
+</li><li><a href="isdate.html">_.isDate()</a>
+</li><li><a href="isfunction.html">_.isFunction()</a>
+</li><li><a href="islist.html">_.isList()</a>
+</li><li><a href="isnumber.html">_.isNumber()</a>
+</li><li><a href="isobject.html">_.isObject()</a>
+</li><li><a href="isstring.html">_.isString()</a>
+</li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="mapobj.html">_.mapObj()</a>
+</li><li><a href="pad.html">_.pad()</a>
+</li><li><a href="parsedate.html">_.parseDate()</a>
+</li><li><a href="parsenumber.html">_.parseNumber()</a>
+</li><li><a href="partial.html">_.partial()</a>
+</li><li><a href="range.html">_.range()</a>
+</li><li><a href="template.html">_.template()</a>
+</li><li><a href="tostring.html">_.toString()</a>
+</li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="promise.html">promise()</a>
+</li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>
+</li><li><a href="state.html">promise.state</a>
 </li><li><a href="then.html">promise.then()</a>
 </li><li><a href="require.html">require()</a>
 </li><li><a href="/docs/howto.html">How to...</a></li></ul></div>

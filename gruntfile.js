@@ -53,7 +53,7 @@ module.exports = function(grunt) {
 		        destDir: 'srcContent/api/'
 		      },
 		      files: {
-		    	  src: ['src/minified-web-src.js']
+		    	  src: ['src/minified-full-src.js']
 		      }
 		    }
 		},
@@ -174,7 +174,7 @@ module.exports = function(grunt) {
 					'WebContent/test/mocha.css':    'node_modules/mocha/mocha.css'
 				}
 			},
-			pngs: {
+			imgs: {
 				files: {
 					'WebContent/img/': 'srcContent/img/*.png'
 				}
@@ -318,7 +318,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('code', ['assemble', 'closurecompiler:dist', 'uglify', 'copy:testdist', 'testQuick', 'measuresize']);
 	grunt.registerTask('testQuick', ['mochaTest', 'mocha:quick']);
 	grunt.registerTask('test', ['mochaTest', 'mocha:all']);
-	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:pngs', 'copy:test', 'cssmin', 'htmlmin', 'xmlmin']);
+	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:imgs', 'copy:test', 'cssmin', 'htmlmin', 'xmlmin']);
 	grunt.registerTask('all', ['code', 'test', 'site']);
 	grunt.registerTask('server', ['all', 'connect']);
 	grunt.registerTask('default', ['code']);

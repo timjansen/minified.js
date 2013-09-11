@@ -50,7 +50,7 @@
  * @name require()
  * @syntax require(name)
  * @group OPTIONS
- * @module WEB, UTIL, APP
+ * @module WEB, UTIL
  * Returns a reference to a module. If you do not use an AMD loader to load Minified, just call <var>require()</var> with the
  * argument 'minified' to get a reference to Minified.
  * If you do use an AMD loader, Minified will not define this function and you can use the AMD loader to obtain the
