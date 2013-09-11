@@ -2527,7 +2527,7 @@ define('minified', function() {
 	     * <pre>The price is {{obj::#.00}}.</pre>	     
 	     * 
 	     * Conditions can be expressed using <code>if</code> and <code>else</code>:
-	     * <pre>Hello {{if visits==0}}New{{else if visits<10}}Returning{{else}}Regular{{/if}} Customer.<pre>
+	     * <pre>Hello {{if visits==0}}New{{else if visits&lt;10}}Returning{{else}}Regular{{/if}} Customer.<pre>
 	     * You can use any JavaScript expression as condition.
 	     * 
 	     * Use <code>each</code> to iterate through a list:
@@ -2564,7 +2564,7 @@ define('minified', function() {
 	     * In some situations, it may be inevitable to embed raw JavaScript in the template. 
 	     * To embed JavaScript code, prefix the code with a '#':
 	     * <pre>var myTemplate = _.template(
-	     *     '{{each}}{{#var sum = 0; for (var i = 0; i < 3; i++) sum += this.numbers[i]; }}{{sum}}{{/each}}');
+	     *     '{{each}}{{#var sum = 0; for (var i = 0; i &lt; 3; i++) sum += this.numbers[i]; }}{{sum}}{{/each}}');
 	     * var result = myTemplate([['Foreword', 'Intro'], ['Something', 'Something else']]);</pre>
 	     * 
 	     * 
