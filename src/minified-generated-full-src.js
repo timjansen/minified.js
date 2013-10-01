@@ -4,7 +4,7 @@
 
 
 /*
- * Minified.js - Combines Minified Web and Minified Util
+ * Minified.js - Combines Minified Web, Minified Util and the extra package
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -1245,6 +1245,7 @@ define('minified', function() {
 	}
 	///#/snippet webFunctions
 	
+	///#snippet extrasFunctions
 	function flexiEach(list, cb) {
 		if (isList(list))
 			each(list, cb);
@@ -1508,7 +1509,9 @@ define('minified', function() {
 	   	return set;
 	}
 	// @condend promise
-	
+
+	///#/snippet extrasFunctions
+	///#snippet extrasDocs
  	/*$
 	 * @id length
 	 * @group SELECTORS
@@ -1535,7 +1538,7 @@ define('minified', function() {
 	 *    sum += list[i];
 	 * </pre>
 	 */
-	
+	///#/snippet extrasDocs
 	
 	///#snippet utilM
 	/*$
@@ -4092,6 +4095,7 @@ define('minified', function() {
 		// @cond !trigger dummy:null
 		///#/snippet webListFuncs
 		,
+	///#snippet extrasListFuncs
 		/*$
 		 * @id ht
 		 * @group ELEMENT
@@ -4151,6 +4155,8 @@ define('minified', function() {
 		 * @stop
 		 */
 		// @cond !ht dummy:0
+	///#/snippet extrasListFuncs
+
 		
 	}, M.prototype);
 	
@@ -5612,40 +5618,11 @@ define('minified', function() {
 	}, _);
 
 	///#/snippet utilUnderscoreFuncs
-	
-	////INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///#snippet webInit
-    /*$
-	 * @id ready_init
-	 * @dependency
-     */
-    // @condblock ie8compatibility
-    _window.onload = triggerDomReady;
-
-    if (_document.addEventListener)
-    // @condend
-    	_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
-	/*$
-	 @stop
-	 */
-
-    
-    
-    // @condblock ie8compatibility
-    // for old IEs, unregister all event handlers to avoid mem leaks
-    _window.unload = function() {
-    	flexiEach(registeredEvents, detachHandlerList);
-    };
-    // @condend
-    
-	///#/snippet webInit
-
+	///#snippet extrasUnderscoreFuncs
 	copyObj({
 	// @condblock promise
 	'promise': promise,
 	// @condend promise
-	
-
 	
 	/*$
 	 * @id delay
@@ -5733,7 +5710,37 @@ define('minified', function() {
 
 	}, _);
 
+	///#/snippet extrasUnderscoreFuncs
+
 	
+	////INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///#snippet webInit
+    /*$
+	 * @id ready_init
+	 * @dependency
+     */
+    // @condblock ie8compatibility
+    _window.onload = triggerDomReady;
+
+    if (_document.addEventListener)
+    // @condend
+    	_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
+	/*$
+	 @stop
+	 */
+
+    
+    
+    // @condblock ie8compatibility
+    // for old IEs, unregister all event handlers to avoid mem leaks
+    _window.unload = function() {
+    	flexiEach(registeredEvents, detachHandlerList);
+    };
+    // @condend
+    
+	///#/snippet webInit
+
+
 	return {
 		///#snippet utilExports
 		/*$
@@ -6077,6 +6084,8 @@ define('minified', function() {
 		'M': M
 
 		///#/snippet webExports
+	///#snippet extrasExports
+
 		/*$
 		 * @id html
 		 * @group ELEMENT
@@ -6136,8 +6145,12 @@ define('minified', function() {
 		 * @return the list containing the new HTML nodes 
 		 */
 		,'HTML': HTML
+		/*$
+		 * @stop
+		 */
+		// @cond !html dummyHtml:0
 		
-
+	///#/snippet extrasExports
 	};
 
 ///#snippet commonAmdEnd

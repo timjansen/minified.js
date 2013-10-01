@@ -51,9 +51,11 @@ module.exports = function(grunt) {
 				if (fs.statSync(srcFile).mtime.getTime() > destTime)
 					destUpToDate = false;
 			});
-			if (destUpToDate)
+			if (destUpToDate) {
+				grunt.verbose.writeln("Destination up to date, nothing to do.");
 				return;
-			
+			}
+
 			var src = grunt.file.read(srcPath);
 			var srcDir;
 			
