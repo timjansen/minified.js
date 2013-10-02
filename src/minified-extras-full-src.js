@@ -1,5 +1,5 @@
 /*
- * Minified-extras-full-src.js - Extra functions not contains in Web or Util modules. 
+ * Minified-extras-full-src.js - Extra functions not contained in Web or Util modules. 
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.

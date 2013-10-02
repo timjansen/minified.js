@@ -430,7 +430,7 @@ define('minified', function() {
 	
 
 	
-	// formats number with format string (e.g. "#.999", "#,_", "00000", "000.99", "000.000.000,99", "000,000,000.__")
+	// formats number with format string (e.g. "#.000", "#,#", "00000", "000.00", "000.000.000,00", "000,000,000.##")
 	// choice syntax: <cmp><value>:<format>|<cmp><value>:<format>|... 
 	// e.g. 0:no item|1:one item|>=2:# items
 	// <value>="null" used to compare with nulls.
@@ -469,7 +469,7 @@ define('minified', function() {
 		}
 		else 
 			return find(format.split(/\s*\|\s*/), function(fmtPart) {
-				var match, matchGrp, numFmtOrResult;
+				var match, matchGrp, numFmtOrResult, groupSep, groupingSize;
 				if (match = /^([<>]?)(=?)([^:]*?)\s*:\s*(.*)$/.exec(fmtPart)) {
 					var cmpVal1 = value, cmpVal2 = parseFloat(match[3]);
 					if (isNaN(cmpVal2) || !isNumber(cmpVal1)) {
@@ -489,22 +489,24 @@ define('minified', function() {
 				else
 					numFmtOrResult = fmtPart;
 
-				//  formatNumber(number, afterDecimalPoint, omitZerosAfter, decimalPoint, beforeDecimalPoint, groupingSeparator, groupingSize)
-				if (isNumber(value) && (match = /(?:(0[0.,]*)|(#[#.,]*))(_*)(9*)/.exec(numFmtOrResult))) {
-					var preDecimalFormat = toString(match[1]) + toString(match[2]);
-					var preDecimalLen = toString(match[1]).length ? replace(preDecimalFormat, /[.,]/g).length : 1;
-					var decimalPoint = replace(replace(preDecimalFormat, /^.*[0#]/), /[^,.]/g);
-					var postDecimalLen = toString(match[3]).length + toString(match[4]).length;
+				if (isNumber(value) && (match = /[0#]([0#.,]*[0#])?/.exec(numFmtOrResult))) {
+					var numFmt = match[0];
+					if (matchGrp = /\.([0#]*)\.|,([0#]*),/.exec(numFmt)) {
+						groupSep = matchGrp[0].charAt(0);
+						groupingSize = matchGrp[1] != null ? matchGrp[1].length : matchGrp[2].length;
+						numFmt = replace(numFmt, groupSep == '.' ? /\./g : /,/g);
+					}
+					var m2 = /([0#]+)(([.,])([0#]+))?/.exec(numFmt);
+					var postDecimalMinLen = replace(m2[2], /#/g).length;
 					var signed = value < 0 ? '-' : '';
-					var m = /(\d+)(\.(.*))?/.exec((signed?-value:value).toFixed(postDecimalLen));
-					var preDecimal = pad(preDecimalLen, parseInt(m[1]));
-					var postDecimal = (decimalPoint||'.') + m[3];
-					if (matchGrp = /([.,])[^.,]+[.,]/.exec(match[0])) {
-						var groupingSize = matchGrp[0].length - 2;
+					var m = /(\d+)(\.(\d+))?/.exec((signed?-value:value).toFixed(m2[2]?m2[4].length:0));
+					var preDecimal = pad(replace(m2[1], /#/g).length, parseInt(m[1]));
+					var postDecimal = (m2[3]||'.') + m[3];
+					if (matchGrp) {
 						function group(s) {
 							var len = s.length;
 							if (len > groupingSize)
-								return group(s.substr(0, len-groupingSize)) + matchGrp[1] + s.substr(len-groupingSize);
+								return group(s.substr(0, len-groupingSize)) + groupSep + s.substr(len-groupingSize);
 							else
 								return s;					
 						}
@@ -512,7 +514,7 @@ define('minified', function() {
 					}
 					return insertString(numFmtOrResult, match.index, toString(match[0]).length, 
 							signed + preDecimal + 
-							(postDecimalLen ? (toString(match[3]).length?replace(postDecimal, /[.,]?0+$/):postDecimal) : ''));
+							(m[2] ? (postDecimal.length>postDecimalMinLen?replace(postDecimal.substr(0, postDecimalMinLen)+replace(postDecimal.substr(postDecimalMinLen), /0+$/), /[.,]$/):postDecimal) : ''));
 				}
 				else
 					return numFmtOrResult;
@@ -592,7 +594,7 @@ define('minified', function() {
 		var d = new Date(ctorArgs[0], ctorArgs[1], ctorArgs[2], ctorArgs[3], ctorArgs[4], ctorArgs[5], ctorArgs[6]);
 		return dateAdd(d, 'minutes', -getTimezone(timezoneOffsetMatch, 1, d) - getTimezone(match, timezoneIndex, d));
 	}
-	// format ?##00,00__
+	// format ?##00,00##
 	// returns number; null if optional and not set; undefined if parsing failed
 	function parseNumber(format, value) {
 		if (arguments.length == 1)
@@ -602,7 +604,7 @@ define('minified', function() {
 				return _null;
 			format = format.substr(1);
 		}
-		var match, decSep = (match = /[0#]([.,])[_9]/.exec(format)) ? match[1] : ((match = /^[.,]$/.exec(format)) ? match[0]: '.');
+		var decSep = (/(^|[^0#.,])(,|[0#.]*,[0#]+|[0#]+\.[0#]+\.[0#.,]*)($|[^0#.,])/.test(format)) ? ',' : '.';
 		var r = parseFloat(replace(replace(replace(value, decSep == ',' ? /\./g : /,/g), decSep, '.'), /^[^\d-]*(-?\d)/, '$1'));
 		return isNaN(r) ? undef : r;
 	}

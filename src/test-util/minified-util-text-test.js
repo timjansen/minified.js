@@ -50,52 +50,53 @@ function runTests(loadInContext) {
 			assert.equal(_.formatValue("?#", 1), "1");
 			assert.equal(_.formatValue("?00000", -1), "-00001");
 			
-			assert.equal(_.formatValue("#.9", 1), "1.0");
-			assert.equal(_.formatValue("0.99", 1), "1.00");
-			assert.equal(_.formatValue("0.9999", 1), "1.0000");
-			assert.equal(_.formatValue("#._", 1), "1");
-			assert.equal(_.formatValue("#.____", 1), "1");
-			assert.equal(_.formatValue("#.9999", -1), "-1.0000");
-			assert.equal(_.formatValue("0._", -1), "-1");
+			assert.equal(_.formatValue("#.0", 1), "1.0");
+			assert.equal(_.formatValue("0.00", 1), "1.00");
+			assert.equal(_.formatValue("0.0000", 1), "1.0000");
+			assert.equal(_.formatValue("#.#", 1), "1");
+			assert.equal(_.formatValue("#.####", 1), "1");
+			assert.equal(_.formatValue("#.0000", -1), "-1.0000");
+			assert.equal(_.formatValue("0.#", -1), "-1");
 			
 			assert.equal(_.formatValue("#", 1.5), "2");
-			assert.equal(_.formatValue("#.9", 1.5), "1.5");
-			assert.equal(_.formatValue("#.99", 1.5), "1.50");
-			assert.equal(_.formatValue("#.999", 1.5), "1.500");
-			assert.equal(_.formatValue("#.___", 1.5), "1.5");
+			assert.equal(_.formatValue("#.0", 1.5), "1.5");
+			assert.equal(_.formatValue("#.00", 1.5), "1.50");
+			assert.equal(_.formatValue("#.000", 1.5), "1.500");
+			assert.equal(_.formatValue("#.###", 1.5), "1.5");
 			
-			assert.equal(_.formatValue("#.9", 1.667), "1.7");
-			assert.equal(_.formatValue("#.99", 1.667), "1.67");
-			assert.equal(_.formatValue("#.999", 1.667), "1.667");
-			assert.equal(_.formatValue("#.9999", 1.667), "1.6670");
-			assert.equal(_.formatValue("#._", 1.667), "1.7");
-			assert.equal(_.formatValue("#.__", 1.667), "1.67");
-			assert.equal(_.formatValue("#.___", 1.667), "1.667");
-			assert.equal(_.formatValue("#.____", 1.667), "1.667");
+			assert.equal(_.formatValue("#.0", 1.667), "1.7");
+			assert.equal(_.formatValue("#.00", 1.667), "1.67");
+			assert.equal(_.formatValue("#.000", 1.667), "1.667");
+			assert.equal(_.formatValue("#.0000", 1.667), "1.6670");
+			assert.equal(_.formatValue("#.#", 1.667), "1.7");
+			assert.equal(_.formatValue("#.##", 1.667), "1.67");
+			assert.equal(_.formatValue("#.###", 1.667), "1.667");
+			assert.equal(_.formatValue("#.####", 1.667), "1.667");
 			
-			assert.equal(_.formatValue("#,_", 1.667), "1,7");
-			assert.equal(_.formatValue("#,9", 1.667), "1,7");
+			assert.equal(_.formatValue("#,0", 1), "1,0");
+			assert.equal(_.formatValue("#,#", 1.667), "1,7");
+			assert.equal(_.formatValue("#,0", 1.667), "1,7");
 			
-			assert.equal(_.formatValue("00.9999", 1.667), "01.6670");
-			assert.equal(_.formatValue("0._", 10.667), "10.7");
-			assert.equal(_.formatValue("000000000,99", 1.667), "000000001,67");
-			assert.equal(_.formatValue("000000000.__", 777.667), "000000777.67");
+			assert.equal(_.formatValue("00.0000", 1.667), "01.6670");
+			assert.equal(_.formatValue("0.#", 10.667), "10.7");
+			assert.equal(_.formatValue("000000000,00", 1.667), "000000001,67");
+			assert.equal(_.formatValue("000000000.##", 777.667), "000000777.67");
 			
 			assert.equal(_.formatValue("#.###.###.###", 9999999999), "9.999.999.999");
 			assert.equal(_.formatValue("#.###.###.###",  999999999),   "999.999.999");
 			assert.equal(_.formatValue("0.000.000.000",  999999999), "0.999.999.999");
-			assert.equal(_.formatValue("0,000,000,000.__", 9999999999), "9,999,999,999");
-			assert.equal(_.formatValue("0,000,000,000.99", 9999999999), "9,999,999,999.00");
-			assert.equal(_.formatValue("000,000,000.99", 123456.256), "000,123,456.26");
-			assert.equal(_.formatValue("000,000,000.__", 123456.256), "000,123,456.26");
-			assert.equal(_.formatValue("###,###,###.99", 123456.256), "123,456.26");
+			assert.equal(_.formatValue("0,000,000,000.##", 9999999999), "9,999,999,999");
+			assert.equal(_.formatValue("0,000,000,000.00", 9999999999), "9,999,999,999.00");
+			assert.equal(_.formatValue("000,000,000.00", 123456.256), "000,123,456.26");
+			assert.equal(_.formatValue("000,000,000.##", 123456.256), "000,123,456.26");
+			assert.equal(_.formatValue("###,###,###.00", 123456.256), "123,456.26");
 			
 			assert.equal(_.formatValue("ABC#####DEF", 1), "ABC1DEF");
 			assert.equal(_.formatValue("?ABC#####DEF", 1), "ABC1DEF");
-			assert.equal(_.formatValue("$0.99", 1), "$1.00");
-			assert.equal(_.formatValue("bla=0.999 bla", 1.5), "bla=1.500 bla");
-			assert.equal(_.formatValue("#.__ EUR", 1.667), "1.67 EUR");
-			assert.equal(_.formatValue("c 0,000,000,000.99 e", 9999999999), "c 9,999,999,999.00 e");
+			assert.equal(_.formatValue("$0.00", 1), "$1.00");
+			assert.equal(_.formatValue("bla=0.000 bla", 1.5), "bla=1.500 bla");
+			assert.equal(_.formatValue("#.## EUR", 1.667), "1.67 EUR");
+			assert.equal(_.formatValue("c 0,000,000,000.00 e", 9999999999), "c 9,999,999,999.00 e");
 		});
 		
 		it('supports string choices', function() {
@@ -134,10 +135,10 @@ function runTests(loadInContext) {
 			assert.equal(_.formatValue("<13:kid | <=19:teen | >=65:senior | adult", 65), "senior");
 			assert.equal(_.formatValue("<13:kid | <=19:teen | >=65:senior | adult", 66), "senior");
 
-			assert.equal(_.formatValue("<10: small #.99 | >100: big 0000.9999 | medium #.#", 1.1), "small 1.10");
-			assert.equal(_.formatValue("<10: small #.99 | >100: big 0000.9999 | medium #.#", 54), "medium 54");
-			assert.equal(_.formatValue("<10: small #.99 | >100: big 0000.9999 | medium #.#", 217), "big 0217.0000");
-			assert.equal(_.formatValue("<10: small #.99 | >100: big 0000.9999 | medium", 50), "medium");
+			assert.equal(_.formatValue("<10: small #.00 | >100: big 0000.0000 | medium #.#", 1.1), "small 1.10");
+			assert.equal(_.formatValue("<10: small #.00 | >100: big 0000.0000 | medium #.#", 54), "medium 54");
+			assert.equal(_.formatValue("<10: small #.00 | >100: big 0000.0000 | medium #.#", 217), "big 0217.0000");
+			assert.equal(_.formatValue("<10: small #.00 | >100: big 0000.0000 | medium", 50), "medium");
 		});
 		
 		it('formats dates', function() {
@@ -250,16 +251,16 @@ function runTests(loadInContext) {
 		it('parse numbers, with format', function() {
 			assert.equal(_.parseNumber("000", "0"), 0);
 			assert.equal(_.parseNumber("#", "1"), 1);
-			assert.equal(_.parseNumber("####,___", "02020"), 2020);
+			assert.equal(_.parseNumber("####,###", "02020"), 2020);
 			assert.equal(_.parseNumber(".", "-1.5"), -1.5);
 			assert.equal(_.parseNumber(",", "-1.5"), -15);
-			assert.equal(_.parseNumber("###,___", "-1.5"), -15);
+			assert.equal(_.parseNumber("###,###", "-1.5"), -15);
 			assert.equal(_.parseNumber(",", "2.222.333"), 2222333);
 			assert.equal(_.parseNumber(".", "0.1"), 0.1);
-			assert.equal(_.parseNumber("###,999", "012,135"), 12.135);
-			assert.equal(_.parseNumber("###.999", "012.135"), 12.135);
-			assert.equal(_.parseNumber("#,#,#.9", "-43,3,3,3,0.12"), -433330.12);
-			assert.equal(_.parseNumber("#.#.#,9", "-43.3.3.3.0,12"), -433330.12);
+			assert.equal(_.parseNumber("###,000", "012,135"), 12.135);
+			assert.equal(_.parseNumber("###.000", "012.135"), 12.135);
+			assert.equal(_.parseNumber("#,#,#.0", "-43,3,3,3,0.12"), -433330.12);
+			assert.equal(_.parseNumber("#.#.#,0", "-43.3.3.3.0,12"), -433330.12);
 		});
 		it('does not parse broken strings', function() {
 			assert.equal(_.parseNumber("0", "a"), undefined);
@@ -277,7 +278,7 @@ function runTests(loadInContext) {
 			assert.equal(_.format("a.b={{a.b}}, e.e._32.42={{e.e._32[42][1]}}", {a:{b:2}, e:{e:{_32:{'42':[1, 5]}}}}), "a.b=2, e.e._32.42=5");
 		});
 		it('supports sub formats', function() {
-			assert.equal(_.format("{{ a ::000.99}} | {{choice::a:x|b:y|c:z}} | {{date::yyyyMMdd}}", {a: 15.8, choice: 'b', date: new Date(2011, 3, 2)}), "015.80 | y | 20110402");
+			assert.equal(_.format("{{ a ::000.00}} | {{choice::a:x|b:y|c:z}} | {{date::yyyyMMdd}}", {a: 15.8, choice: 'b', date: new Date(2011, 3, 2)}), "015.80 | y | 20110402");
 		});
 	});
 	
@@ -338,7 +339,7 @@ function runTests(loadInContext) {
 		
 		it('() supports {{{ }}} and esc', function() {
 			assert.equal(_.template("{{esc(2)}} {{{esc(2)}}} {{5}}", function(a) { return a*2; })(), "8 4 10");
-			assert.equal(_.template("{{5::#.999}}", function(a) { return 'x'+a+'x'; })(), "x5.000x");
+			assert.equal(_.template("{{5::#.000}}", function(a) { return 'x'+a+'x'; })(), "x5.000x");
 		});
 		it('() supports _', function() {
 			assert.equal(_.template("{{_(1, 2).join('_')}}")(), "1_2");
