@@ -85,6 +85,9 @@ function runTests(loadInContext) {
 			assert.equal(_.formatValue("#.###.###.###", 9999999999), "9.999.999.999");
 			assert.equal(_.formatValue("#.###.###.###",  999999999),   "999.999.999");
 			assert.equal(_.formatValue("0.000.000.000",  999999999), "0.999.999.999");
+			assert.equal(_.formatValue("#########,###.##", 9999999999), "9,999,999,999");
+			assert.equal(_.formatValue("#########,###.##", 9999999999.129), "9,999,999,999.13");
+			assert.equal(_.formatValue("#########,###.00", 9999999999), "9,999,999,999.00");
 			assert.equal(_.formatValue("0,000,000,000.##", 9999999999), "9,999,999,999");
 			assert.equal(_.formatValue("0,000,000,000.00", 9999999999), "9,999,999,999.00");
 			assert.equal(_.formatValue("000,000,000.00", 123456.256), "000,123,456.26");

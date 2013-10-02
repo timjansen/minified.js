@@ -614,7 +614,7 @@ define('minified', function() {
 
 				if (isNumber(value) && (match = /[0#]([0#.,]*[0#])?/.exec(numFmtOrResult))) {
 					var numFmt = match[0];
-					if (matchGrp = /\.([0#]*)\.|,([0#]*),/.exec(numFmt)) {
+					if (matchGrp = /\.([0#]*)[.,]|,([0#]*)[.,]/.exec(numFmt)) {
 						groupSep = matchGrp[0].charAt(0);
 						groupingSize = matchGrp[1] != null ? matchGrp[1].length : matchGrp[2].length;
 						numFmt = replace(numFmt, groupSep == '.' ? /\./g : /,/g);
@@ -5186,30 +5186,34 @@ define('minified', function() {
 		 * <tr><th>Character</th><th>Description</th></tr>
 		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
 		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
-		 * <tr><td>_</td><td>Optional digit after decimal separator.</td></tr>
-		 * <tr><td>9</td><td>Required digit after decimal separator (0 if number is smaller).</td></tr>
 		 * <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
 		 * <tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
 		 * </table>
+		 * 
+		 * If you only define a group separator, but not a decimal separator, the group separator must appear
+		 * at least twice in the format. Otherwise it will be considered a decimal separator. Please note that when you
+		 * have several group separators, Minified counts only the number of digit between its first and second
+		 * appearance to determine how to group the digits. If you have only one group separator and a decimal separator, 
+		 * the number of digits between them is used to format the number. 
 		 * 
 		 * <b>Examples</b> 
 		 * <pre>var v1  = _.formatValue('#', 15); // '15'
 		 * var v2  = _.formatValue('####', 15);   // '15' (same as '#')
 		 * var v3  = _.formatValue('0000', 15);   // '0015'
-		 * var v4  = _.formatValue('#.___', 15.14274); // '15.143'
-		 * var v5  = _.formatValue('#.999', 15.14274); // '15.143'
-		 * var v6  = _.formatValue('#.___', 15.1);     // '15.1'
-		 * var v7  = _.formatValue('#.999', 15.1);     // '15.100'
-		 * var v8  = _.formatValue('000,999', 15.1);   // '015,100'
-		 * var v9 = _.formatValue('#.___', 15);     // '15'
-		 * var v10 = _.formatValue('#.999', 15);    // '15.000'
-		 * var v11 = _.formatValue('#,___', 15.1);  // '15,1' (comma as decimal separator)
+		 * var v4  = _.formatValue('#.###', 15.14274); // '15.143'
+		 * var v5  = _.formatValue('#.000', 15.14274); // '15.143'
+		 * var v6  = _.formatValue('#.###', 15.1);     // '15.1'
+		 * var v7  = _.formatValue('#.000', 15.1);     // '15.100'
+		 * var v8  = _.formatValue('000,000', 15.1);   // '015,100'
+		 * var v9 = _.formatValue('#.###', 15);     // '15'
+		 * var v10 = _.formatValue('#.000', 15);    // '15.000'
+		 * var v11 = _.formatValue('#,###', 15.1);  // '15,1' (comma as decimal separator)
 		 * var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
-		 * var v13 = _.formatValue('000,000.___', 92548.42); // '92,548.42'
-		 * var v14 = _.formatValue('000.000,___', 92548.42); // '92.548,42' (comma as separator)
-		 * var v15 = _.formatValue('&lt;10:#.99|&lt;100:#.9|#', 7.356); // '7.36' (choice format)
-		 * var v16 = _.formatValue('&lt;10:#.99|&lt;100:#.9|#', 25.04); // '25.0' 
-		 * var v17 = _.formatValue('&lt;10:#.99|&lt;100:#.9|#', 71.51); // '72' 
+		 * var v13 = _.formatValue('000,000.###', 92548.42); // '92,548.42'
+		 * var v14 = _.formatValue('000.000,###', 92548.42); // '92.548,42' (comma as separator)
+		 * var v15 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 7.356); // '7.36' (choice format)
+		 * var v16 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 25.04); // '25.0' 
+		 * var v17 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 71.51); // '72' 
 		 * </pre>
 		 *
 		 * <b>Date Formatting</b><br/> 
