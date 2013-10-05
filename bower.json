@@ -5,7 +5,7 @@
   "authors": [
     "Tim Jansen <tim@tjansen.de>"
   ],
-  "description": "Minified - lightweight JavaScript library",
+  "description": "Minified is a universal, lightweight library for the web",
   "main": "dist/minified.js",
   "license": "Public Domain",
   "ignore": [

@@ -1,6 +1,6 @@
 {
   "name": "Minified",
-  "version": "0.3.0",
+  "version": "2014.0.0-beta2",
   "description": "Minified is a universal, lightweight library for the web",
   "main": "WebContent/minified.js",
   "scripts": {
