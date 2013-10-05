@@ -784,12 +784,6 @@ define('minified', function() {
 	// always defined below
 
 	///#snippet utilM
-	/*$
-	 * @id listunderscore
-	 * @name ._
-	 * @syntax _
-	 * Set to <var>true</var> if this is a Minified list.
-	 */
 	
 	/*$
      * @id listctor

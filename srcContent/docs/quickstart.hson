@@ -7,14 +7,15 @@ main: `<div>
 
 <h2>What is Minified.js?</h2>
 <ul>
-<li>Tiny JavaScript framework (&lt;4kb gzipped)<ul>
-<li>7-8 times smaller than jQuery or MooTools</li>
+<li>Tiny JavaScript framework<ul>
+<li>Two modules: Web (jQuery-like features) and Util (Utility functions). </li>
+<li>Modules can be used stand-alone (~4kB) or together (&lt;8kB)
 <li>allows even smaller builds using the <a href="/builder/">Builder</a> tool</li></ul></li> 
 
 <li>Complete Feature Set<ul>
-<li>Nearly all features that jQuery and MooTools have.</li>
-<li>Some extra features that jQuery and/or MooTools do not have.</li>
-<li>Flexible enough to make up for missing features</li></ul></li>
+<li>Selectors, HTML and CSS manipulation, animation</li>
+<li>Events, JSON, Form serialization, HTTP Requests</li>
+<li>List and string utilities, templates, promises</li></ul></li> 
 
 <li>No Magic<ul>
 <li>Aims to be predictable</li>
@@ -41,12 +42,21 @@ If you would like to optimize the size of your site, you should consider <a href
 <p>
 No matter whether you are including Minified with a script tag or you use a synchronous loader like 
 <a href="http://requirejs.org">RequireJS</a>, it is recommended to use the following 
-lines to define the three essential functions:
+lines to define the five essential functions:
 <pre>
 var MINI = require('minified');
-var $ = MINI.$, $$=MINI.$$, EE=MINI.EE;
+var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
 </pre>
 Please note that this works even without an AMD loader. Minified provides its own <code>require</code> function if no AMD loader is present.
+</p>
+
+<h2>How to work with Minified Modules</h2>
+<p>This is relatively simple. For both modules you need to <code>require('minified')</code>. 
+<ul>All Web-module functions use <code>$</code> as entry point.</ul>
+<ul><code>$$</code> and <code>EE</code> are two additional top-level functions in the Web module</ul>
+<ul>All Util-module functions use <code>_</code> as entry point.</ul>
+<ul><code>HTML</code> is only available in the full distribution of Web AND Util.</ul>
+</ul>
 </p>
 
 <h2>Running Your Script at the Right Time</h2>
@@ -56,7 +66,7 @@ simple solution is to execute the script in a <a href="/api/ready.html">ready</a
 
 <pre>
 var MINI = require('minified');
-var $ = MINI.$, $$=MINI.$$, EE=MINI.EE;
+var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
 
 $(function() {
 	// PUT YOUR CODE HERE
@@ -65,13 +75,14 @@ $(function() {
 </p>
 
 
-<h2>Creating a Minified list</h2>
+<h2>Creating a List of DOM Elements</h2>
 <p>The first step to doing almost anything with Minified is to create a <a href="/api/list.html">Minified list</a>, an array-like class where most 
 of Minified's functions are stored.</p>
 
 <p>You can create a Minified list using CSS selectors with the familiar jQuery-syntax:
 <pre>
-var MINI = require('minified'), $ = MINI.$, $$=MINI.$$, EE=MINI.EE;
+var MINI = require('minified');
+var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
 
 $(function() {
 	var listItems = <a href="/api/dollar.html">$</a>('#myList li');
@@ -145,15 +156,30 @@ list.<a href="/api/length.html">each</a>(function(element, index) {
 
 <p>A special variant of the selector function <a href="/api/dollar.html"><code>$</code></a> is 
 <a href="/api/dollardollar.html"><code>$$</code></a>. It works like <a href="/api/dollar.html"><code>$</code></a>, 
-but returns only the first element of the list instead of the complete list. If the list is empty, it returns <var>undefined</var>.
+but returns only the first element of the list instead of the complete list. If the list is empty, it returns <span class="var">undefined</span>.
 <pre>
 var parent1 = <a href="/api/dollardollar.html">$$</a>('#myElement').parentNode;
 var parent2 = <a href="/api/dollar.html">$</a>('#myElement')[0].parentNode;     // same result: $$() is just short for $()[0]
 </pre>
 </p>
 
-<h2>Universal get() and set()</h2>
+<h2>Creating Generic Minfied lists</h2>
+<p>Minified has two constructors for Minified list. The previous sections showed <a href="/api/dollar.html"><code>$()</code></a>, which is 
+designed to create lists of DOM nodes and is contained in the Web module. The Util module contains a second constructor, 
+<a href="/api/underscore.html"><code>_()</code></a>. It supports varargs, does not remove nulls and flattens only the first level of lists. Selectors 
+and other HTML-specific things are not supported by <a href="/api/underscore.html"><code>_()</code></a>.
+<pre>
+<a href="/api/underscore.html">_</a>(1, 2, 3, 4, 5);         // list contains numbers 1 to 5   
+<a href="/api/underscore.html">_</a>([1, 2, 3, 4, 5]);       // same content!    
+<a href="/api/underscore.html">_</a>([1, 2], [3, 4], 5);     // same content!!
+<a href="/api/underscore.html">_</a>([[1, 2], [3, 4], [5]]); // different content: contains three arrays [1,2], [3,4] and [5]!
+</pre>
+No matter whether you use the <a href="/api/dollar.html"><code>$()</code></a> constructor or <a href="/api/underscore.html"><code>_()</code></a>, you will 
+always get the same type of list and have access to all list methods that are available in the distribution that you use.
+</p>
 
+
+<h2>Universal get() and set()</h2>
 <p>Whereas other frameworks have a number of different functions to access properties, attributes and CSS styles, 
 Minified has only two: <a href="/api/get.html"><code>get()</code></a> and 
 <a href="/api/set.html"><code>set()</code></a>. You define what data you access by using the right name. Other 
@@ -195,8 +221,8 @@ var margins = <a href="/api/dollar.html">$</a>('.greeting').<a href="/api/get.ht
 </p>
 
 <p>Minified also uses <a href="/api/set.html"><code>set()</code></a> to modify CSS classes. If you need to overwrite the existing 
-classes, you could always set them with the <var>className</var> property of the element. For more complex 
-operations, <a href="/api/set.html"><code>set()</code></a> provides you with the name <var>$</var>. But since 
+classes, you could always set them with the <span class="var">className</span> property of the element. For more complex 
+operations, <a href="/api/set.html"><code>set()</code></a> provides you with the name <span class="var">$</span>. But since 
 it is the most important <a href="/api/set.html"><code>set()</code></a> operation, you can omit it and write:
 <pre>
 <a href="/api/dollar.html">$</a>('.cnt').<a href="/api/set.html">set</a>('+highlighted -plain'); // add / remove CSS class
@@ -249,61 +275,78 @@ Please see the <a href="/api/animate.html"><code>animate()</code></a> documentat
 
 <h2>Creating and Modifying HTML</h2>
 
-<p>The most important functions for modifying HTML are <a href="/api/fill.html"><code>fill()</code></a> and <a href="/api/add.html"><code>add()</code></a>. <a href="/api/fill.html"><code>fill()</code></a> replaces the element's children with the given nodes, and <a href="/api/add.html"><code>add()</code></a> just adds them as children.</p>
+<p>The most important functions for modifying HTML are <a href="/api/fill.html"><code>fill()</code></a> and <a href="/api/add.html"><code>add()</code></a>. 
+<a href="/api/fill.html"><code>fill()</code></a> replaces the element's children with the given nodes, and 
+<a href="/api/add.html"><code>add()</code></a> just adds them as children.</p>
 
-<p>In the simplest case, you can call <a href="/api/fill.html"><code>fill()</code></a> without arguments to all children from the elements in the list:
+<p>In the simplest case, you can call <a href="/api/fill.html"><code>fill()</code></a> without arguments to all 
+children from the elements in the list:
 <pre>
 <a href="/api/dollar.html">$</a>('.myClass').<a href="/api/fill.html">fill</a>();   // remove all children
 </pre>
 </p>
 
 <p>
-Call <a href="/api/fill.html"><code>fill()</code></a> or <a href="/api/add.html"><code>add()</code></a> with a string to create a new text node and add it:
+Call <a href="/api/fill.html"><code>fill()</code></a> or <a href="/api/add.html"><code>add()</code></a> with a string to create a 
+new text node and add it:
 <pre>
-<a href="/api/dollar.html">$</a>('.greetings').<a href="/api/fill.html">fill</a>("Hello");       // Replace children with text "Hello"
+<a href="/api/dollar.html">$</a>('.greetings').<a href="/api/fill.html">fill</a>("Hello");      // Replace children with text "Hello"
 <a href="/api/dollar.html">$</a>('.greetings').<a href="/api/add.html">add</a>("and Goodbye");  // add a second text node
 </pre>
 </p>
 
-<p>If you want to add a new element, <a href="/api/el.html"><code>EE()</code></a> comes into play. 
-<a href="/api/el.html"><code>EE()</code></a> creates an <strong>Element Factory</strong>. Element Factories are simple no-argument functions to new create 
-elements. When called, the Element Factory creates the element and returns it wrapped in a Minfied list. 
-
+<p>If you want to add a new element, you can use either <a href="/api/ee.html"><code>EE()</code></a> or 
+<a href="/api/html.html"><code>HTML()</code></a> to create it. 
+<a href="/api/ee.html"><code>EE()</code></a> creates a <a href="/api/list.html">list</a> 
+containing an element.
 Optionally they can also add children to the new element, as well as attributes and everything else that is supported 
 by <a href="/api/set.html"><code>set()</code></a>.
 
 <pre>
-var MINI = require('minified'), $ = MINI.$, $$=MINI.$$, EE=MINI.EE;
+var MINI = require('minified');
+var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
 
-<a href="/api/dollar.html">$</a>('#header').<a href="/api/fill.html">fill</a>(<a href="/api/el.html">EE</a>('h2', 'My Title'));                                  // creates &lt;h2>MyTitle&lt;/h2>
-<a href="/api/dollar.html">$</a>('#linkContainer').<a href="/api/fill.html">fill</a>(<a href="/api/el.html">EE</a>('a', {'@href': 'http://acme.com'}, "ACME"));  // creates &lt;a href="http://acme.com">ACME&lt;/a>
-<a href="/api/dollar.html">$</a>('#header').<a href="/api/add.html">add</a>([<a href="/api/el.html">EE</a>('br'), "Single line", <a href="/api/el.html">EE</a>('br')]);                        // add &lt;br/>Single line&lt;br/>
-<a href="/api/dollar.html">$</a>('#list').<a href="/api/fill.html">fill</a>(<a href="/api/el.html">EE</a>('ul', [  // &lt;ul>
-                                      <a href="/api/el.html">EE</a>('li', {$: 'first'}, "First item"), // &lt;li class="first">First Item&lt;/li>
-                                      <a href="/api/el.html">EE</a>('li', "Second item"),              // &lt;li>Second Item&lt;/li>
-                                      <a href="/api/el.html">EE</a>('li', "Third item"),               // &lt;li>Third Item&lt;/li>
+<a href="/api/dollar.html">$</a>('#header').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('h2', 'My Title'));                                  // creates &lt;h2>MyTitle&lt;/h2>
+<a href="/api/dollar.html">$</a>('#linkContainer').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('a', {'@href': 'http://acme.com'}, "ACME"));  // creates &lt;a href="http://acme.com">ACME&lt;/a>
+<a href="/api/dollar.html">$</a>('#header').<a href="/api/add.html">add</a>([<a href="/api/ee.html">EE</a>('br'), "Single line", <a href="/api/ee.html">EE</a>('br')]);                        // add &lt;br/>Single line&lt;br/>
+<a href="/api/dollar.html">$</a>('#list').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('ul', [  // &lt;ul>
+                                      <a href="/api/ee.html">EE</a>('li', {$: 'first'}, "First item"), // &lt;li class="first">First Item&lt;/li>
+                                      <a href="/api/ee.html">EE</a>('li', "Second item"),              // &lt;li>Second Item&lt;/li>
+                                      <a href="/api/ee.html">EE</a>('li', "Third item"),               // &lt;li>Third Item&lt;/li>
                                    ])); // &lt;/ul>
 </pre>
-</p>
 
-<p>It is possible to write your own factory function and give it to <a href="/api/add.html"><code>add()</code></a>
-or <a href="/api/fill.html"><code>fill()</code></a>. The function will be called for each list member to create a new DOM element:
+
+<a href="/api/html.html"><code>HTML()</code></a> does the same, but uses a HTML snippet to create the elements:
 <pre>
-<a href="/api/dollar.html">$</a>('.chapter').<a href="/api/add.html">add</a>(function(elem, index) { 
-	return <a href="/api/el.html">EE</a>('span', {$: 'chapterFooter'}, 'This was chapter ' + index);
-});
+var MINI = require('minified');
+var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
+
+<a href="/api/dollar.html">$</a>('#header').<a href="/api/fill.html">fill</a>(<a href="/api/html.html">HTML</a>('&lt;h2>My Title&lt;/h2>'));
+<a href="/api/dollar.html">$</a>('#linkContainer').<a href="/api/fill.html">fill</a>(<a href="/api/html.html">HTML</a>('&lt;a href="http://acme.com">ACME&lt;/a>'));
+<a href="/api/dollar.html">$</a>('#header').<a href="/api/add.html">add</a>([<a href="/api/html.html">HTML</a>('&lt;br/>'), "Single line", <a href="/api/html.html">HTML</a>('&lt;br/>')]);
+<a href="/api/dollar.html">$</a>('#list').<a href="/api/fill.html">fill</a>(<a href="/api/html.html">HTML</a>('&lt;ul>'+
+                                      '&lt;li class="first">First item&lt;/li>'+
+                                      '&lt;li>Second item&lt;/li>'+
+                                      '&lt;li>Third item&lt;/li>'+
+                                      '&lt;/ul>'));
 </pre>
-Factory functions can return everything that can be handled by <a href="/api/add.html"><code>add()</code></a>: 
-strings (for text nodes), DOM elements, another factory function (to be called) or lists containing these things.
+HTML can not only handle HTML strings, but supports <a href="/api/template.html">Minified templates</a>:
+<pre>var nameList = ['Joe', 'James', 'Jim', 'Jumbo'];
+<a href="/api/dollar.html">$</a>('#list').<a href="/api/fill.html">fill</a>(<a href="/api/html.html">HTML</a>('&lt;ul>'+
+                                      '{{each names}}&lt;li>{{this}}&lt;/li>{{/each}}'+
+                                      '&lt;/ul>', {names: nameList}));
+</pre>
+Please refer to the <a href="/api/template.html"><code>template()</code></a> API documentation for the full template syntax. 
 </p>
 
 
 <p>Beside <a href="/api/fill.html"><code>fill()</code></a> and <a href="/api/add.html"><code>add()</code></a>, there are a few more functions for adding or removing nodes:
 <pre>
 <a href="/api/dollar.html">$</a>('#d').<a href="/api/addfront.html">addFront</a>('Read this first!');        // add as first child
-<a href="/api/dollar.html">$</a>('#e').<a href="/api/addafter.html">addAfter</a>([<a href="/api/el.html">EE</a>('hr'), 'My Footer']);   // add directly after #e
-<a href="/api/dollar.html">$</a>('#f').<a href="/api/addbefore.html">addBefore</a>(<a href="/api/el.html">EE</a>('h1', 'My Title'));     // add in front of #f
-<a href="/api/dollar.html">$</a>('#oldH2').<a href="/api/replace.html">replace</a>(<a href="/api/el.html">EE</a>('h2', 'New Title'));  // replace #oldH2 with the new &lt;h2>
+<a href="/api/dollar.html">$</a>('#e').<a href="/api/addafter.html">addAfter</a>([<a href="/api/ee.html">EE</a>('hr'), 'My Footer']);   // add directly after #e
+<a href="/api/dollar.html">$</a>('#f').<a href="/api/addbefore.html">addBefore</a>(<a href="/api/html.html">HTML</a>('&lt;h1>My Title&lt;/h1>'));     // add in front of #f
+<a href="/api/dollar.html">$</a>('#oldH2').<a href="/api/replace.html">replace</a>(<a href="/api/ee.html">EE</a>('h2', 'New Title'));  // replace #oldH2 with the new &lt;h2>
 <a href="/api/dollar.html">$</a>('#oldH3').<a href="/api/remove.html">remove</a>();                        // remove #oldH3 without substitution
 </pre>
 </p>
@@ -490,7 +533,7 @@ The next example transmits the data in JSON form to the imaginary service and th
 </p>
 
 
-<h2>A few more things..</h2>
+<h2>Custom Animations</h2>
 
 <p>When doing JavaScript animation you should avoid using a simple timeout, as this will cause unneccessary CPU load when the browser 
 is not displaying your page and you also won't be able to have the perfect frame rate. Modern browsers support 'requestAnimationFrame' which 
@@ -511,14 +554,7 @@ var r = 100;               // radius 100 px
 </pre>
 </p>
 
-<p>Last, but not least, Minified provides you with two helper functions to read and write cookies in the browser:
-<pre>
-var visits = <a href="/api/getcookie.html">$.getCookie</a>('numberOfVisits');
-<a href="/api/setcookie.html">$.setCookie</a>('numberOfVisits',
-            visits ? (parseInt(visits) + 1) : 1,    // if cookie not set, start with 1
-            365);                                   // store for 365 days
-</pre>
-</p>
+
 
 <p>back to <a href="/docs">Minified documentation</a>.</p>
 

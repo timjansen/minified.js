@@ -10,7 +10,7 @@
 <h2><a name="doc-then">promise.then()</a></h2>
 <div class="summary">
 Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
-successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</div>
+successfully (<span class="var">onSuccess</span>) or an error occurred (<span class="var">onError</span>).</div>
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
@@ -23,14 +23,14 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 <dl class="params">
 <dt id="then_onSuccess" class=""><a name="then_onSuccess"><var>onSuccess (optional)</var></a></dt>
 <dd class="">a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.
-If the function returns a <a href='promise.html'>Promise</a>, that Promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the
+If the function returns a <a href='promise.html'>Promise</a>, that Promise will be evaluated to determine the state of the promise returned by <span class="var">then()</span>. If it returns any other value, the
 returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
-Pass <var>null</var> or <var>undefined</var> if you do not need the success handler.</dd>
+Pass <span class="var">null</span> or <span class="var">undefined</span> if you do not need the success handler.</dd>
 <dt id="then_onError" class=""><a name="then_onError"><var>onError (optional)</var></a></dt>
 <dd class="">a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a <a href='promise.html'>Promise</a>, that promise will
-be evaluated to determine the state of the Promise returned by <var>then()</var>. If it returns anything else, the returned Promise will
+be evaluated to determine the state of the Promise returned by <span class="var">then()</span>. If it returns anything else, the returned Promise will
 have success status. If the function throws an error, the returned Promise will be in the error state.
-You can pass <var>null</var> or <var>undefined</var> if you do not need the error handler.</dd>
+You can pass <span class="var">null</span> or <span class="var">undefined</span> if you do not need the error handler.</dd>
 <dt id="then_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="then_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2">a new <a href='promise.html'>Promise</a> object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
 If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.</dd>
@@ -39,10 +39,10 @@ If no callback has been provided and the original Promise changes to that state,
 <h4>Description</h4>
 <div class="description"><p>
 Registers two callbacks that will be invoked when the <a href='promise.html'>Promise</a>'s asynchronous operation finished
-successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after
-<var>then()</var> returned, from the browser's event loop.
+successfully (<span class="var">onSuccess</span>) or an error occurred (<span class="var">onError</span>). The callbacks will be called after
+<span class="var">then()</span> returned, from the browser's event loop.
 Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks.
-You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to.</p><p></p></div>
+You can chain <span class="var">then()</span> invocations, as <span class="var">then()</span> returns another Promise object that you can attach to.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -104,7 +104,6 @@ $.request('get', '/weather.do')
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -157,19 +156,30 @@ $.request('get', '/weather.do')
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -178,15 +188,22 @@ $.request('get', '/weather.do')
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

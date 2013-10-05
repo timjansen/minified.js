@@ -23,13 +23,13 @@ Parses the given string as number using the given format.</div>
 <dt id="parsenumber_numberString" class=""><a name="parsenumber_numberString"><var>numberString</var></a></dt>
 <dd class="">the string-formatted number to parse</dd>
 <dt id="parsenumber_RETURN" class="returnValue inSyntax0"><a name="parsenumber_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the resulting number; <var>undefined</var> if parsing failed; or <var>null</var> if the string was empty and
+<dd class="inSyntax0">the resulting number; <span class="var">undefined</span> if parsing failed; or <span class="var">null</span> if the string was empty and
 the number format is flagged as optional ('?' at the beginning)</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>
-Parses the given string as number using the given format. <var>parseNumber</var> uses the same format as <var>formatValue</var>,
+Parses the given string as number using the given format. <span class="var">parseNumber</span> uses the same format as <span class="var">formatValue</span>,
 but does not support choices. These are the allowed placeholders in the format:
 <table>
 <tr><th>Character</th><th>Description</th></tr>
@@ -39,8 +39,8 @@ but does not support choices. These are the allowed placeholders in the format:
 <tr><td>9</td><td>Required digit after decimal separator (0 if number is smaller).</td></tr>
 <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
 <tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
-</table></p><p>The format string is mainly used to find out what the decimal separator is ('.' or ','). It defaults to '.'.</p><p><var>parseNumber</var> will ignore any non-numeric characters at the beginning or end of the input string.</p><p>If you prefix the input string with a question mark ('?'), this means that the number is optional. If the input string is empty or consists
-solely of whitespace, <var>parseNumber</var> will return null.</p><p>If the input string is not valid and can not be parse,  <var>parseNumber</var> will return <var>undefined</var>.</p><p></p></div>
+</table></p><p>The format string is mainly used to find out what the decimal separator is ('.' or ','). It defaults to '.'.</p><p><span class="var">parseNumber</span> will ignore any non-numeric characters at the beginning or end of the input string.</p><p>If you prefix the input string with a question mark ('?'), this means that the number is optional. If the input string is empty or consists
+solely of whitespace, <span class="var">parseNumber</span> will return null.</p><p>If the input string is not valid and can not be parse,  <span class="var">parseNumber</span> will return <span class="var">undefined</span>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -76,7 +76,6 @@ _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -129,19 +128,30 @@ _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -150,15 +160,22 @@ _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

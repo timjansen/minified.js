@@ -27,17 +27,17 @@ Here's an overview over Minified's distributions:
 Util provides general utility functions for JavaScript that are also useful outside of a browser. All Util functions are in the default namespace '_',
 so you can easily see which functions are located in Util. There is only one <a href="/api/list.html">Minified list</a> implementation though,
 and you can use methods from both modules interchangeably. For example, you can modify a list using Util's 
-<var><a href="/api/map.html">map()</a></var> and then animate the result using <var><a href="/api/animate.html">animate()</a></var>.<br/>
+<span class="var"><a href="/api/map.html">map()</a></span> and then animate the result using <span class="var"><a href="/api/animate.html">animate()</a></span>.<br/>
 Util has far too many functions to show them all, but here are the basics:
 </p>
 
-<h5>Example: Importing all Util and Web symbols</a></var></h5>
+<h5>Example: Importing all Util and Web symbols</a></span></h5>
 <pre>var MINI = require('minified');                               // Util is also in 'minified'!
 var _ = MINI._;                                               // _ is Util's namespace
 var $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, HTML = MINI.HTML; // Web module. HTML is new!
 </pre>
 
-<h5>Example: Creating a list with <var><a href="/api/underscore.html">_()</a></var></h5>
+<h5>Example: Creating a list with <span class="var"><a href="/api/underscore.html">_()</a></span></h5>
 <pre>var list1 = _('a', 'b', 'c', 'd'); 
 var list2 = $(['a', 'b', 'c', 'd']);       // $() and _() create the same list type!
 var list3 = _(['a', 'b'], 'c', ['d']);     // same as list1 and 2: first list level is flattened to allow merging
@@ -92,7 +92,7 @@ var r5 = template5({names: [{firstName: 'Joe', lastName: 'Jones'},
 </pre>
 
 <h2>New: Creating Promises with _.promise()</h2>
-You can now use <var><a href="/api/promise.html">promise()</a></var> to create your own promises. To fulfill or pass them, just call the promise
+You can now use <span class="var"><a href="/api/promise.html">promise()</a></span> to create your own promises. To fulfill or pass them, just call the promise
 as a function. The constructor also allows you to unite promises, so it creates a promise that is fulfilled when either all promises succeeded or one failed.
 <pre>
 function animateAndRequest() {
@@ -110,7 +110,7 @@ function myTimeout(ms) {
 
 
 <h2>New: HTML templates with ht()</h2>
-<p><var><a href="/api/ht.html">ht()</a></var> executes a HTML <a href="/api/template.html">template</a> and replaces the 
+<p><span class="var"><a href="/api/ht.html">ht()</a></span> executes a HTML <a href="/api/template.html">template</a> and replaces the 
 list elements' content with the created HTML.<br/>
 Please note that ht() is only available in the full distribution (minified.js / minified.noie.js).</p>
 <pre>
@@ -119,7 +119,7 @@ $('#name').ht('<b>{{first}} {{last}}</b>', {first: 'Tim', last: 'Taylor'});
 
 
 <h2>New: Creating HTML Elements with HTML()</h2>
-<p><var><a href="/api/html.html">HTML()</a></var> creates a list of elements from the given HTML <a href="/api/template.html">template</a>.<br/>
+<p><span class="var"><a href="/api/html.html">HTML()</a></span> creates a list of elements from the given HTML <a href="/api/template.html">template</a>.<br/>
 Please note that HTML() is only available in the full distribution (minified.js / minified.noie.js).</p>
 <pre>
 $('ul.users').add(HTML('<li>{{first}} {{last}}</li>', {first: 'Tim', last: 'Taylor'}));
@@ -127,7 +127,7 @@ $('ul.users').add(HTML('<li>{{first}} {{last}}</li>', {first: 'Tim', last: 'Tayl
 
 
 <h2>New: Getting page coordinates with offset()</h2>
-<p><var><a href="/api/offset.html">offset()</a></var> returns the page coordinates of an element.</p>
+<p><span class="var"><a href="/api/offset.html">offset()</a></span> returns the page coordinates of an element.</p>
 <pre>
 var pos = $('#myElem').offset();
 console.log('x=', pos.x, ' y=', pos.y);
@@ -135,17 +135,17 @@ console.log('x=', pos.x, ' y=', pos.y);
 
 
 <h2>New: Virtual properties $$scrollX and $$scrollY for get()/set()/animate()</h2>
-<p>The virtual properties <var>$$scrollX</var> and <var>$$scrollY</var> allow you to scroll the main window.</p>
+<p>The virtual properties <span class="var">$$scrollX</span> and <span class="var">$$scrollY</span> allow you to scroll the main window.</p>
 <pre>
 $(window).animate({$$scrollY: $('#myElem').offset().y}, 1000);  // smooth-scroll to element
 </pre>
 
 
 <h2>New: Interpolate styles with dial()</h2>
-<p><var><a href="/api/dial.html">dial()</a></var> returns a function that can set
-an interpolated state for the list's elements. It is somewhat similar to <var><a href="/api/toggle.html">toggle()</a></var>
-and is helpful for complex or interactive animation. <var><a href="/api/animate.html">animate()</a></var> uses 
-<var>dial()</var> internally.</p>
+<p><span class="var"><a href="/api/dial.html">dial()</a></span> returns a function that can set
+an interpolated state for the list's elements. It is somewhat similar to <span class="var"><a href="/api/toggle.html">toggle()</a></span>
+and is helpful for complex or interactive animation. <span class="var"><a href="/api/animate.html">animate()</a></span> uses 
+<span class="var">dial()</span> internally.</p>
 <pre>
 var myDimmer = $('#myElem').dial({$backgroundColor: '#000'}, {$backgroundColor: '#fff'});
 myDimmer(0); // make element black (#000)
@@ -157,7 +157,7 @@ myDimmer(0.75);  // dark gray (#ccc)
 
 
 <h2>New: Destination callback for animate()</h2>
-<p><var><a href="/api/animate.html">animate()</a></var> got support for functions as destination. The function will be
+<p><span class="var"><a href="/api/animate.html">animate()</a></span> got support for functions as destination. The function will be
 called once for each animated element to determine its actual destination. This replaces the old relative syntax (e.g. '+=10px').</p>
 <pre>
 $('.animated').animate({$top: function(oldValue, index, obj) { return (parseInt(oldValue)+10) + 'px'; }});
@@ -165,11 +165,11 @@ $('.animated').animate({$top: function(oldValue, index, obj) { return (parseInt(
 
 
 h2>Change: Replacing 'element factory' concept with smarter add()</h2>
-<p>Before beta 3, <var><a href="/api/ee.html">EE()</a></var> and <var><a href="/api/clone.html">clone()</a></var> returned 
+<p>Before beta 3, <span class="var"><a href="/api/ee.html">EE()</a></span> and <span class="var"><a href="/api/clone.html">clone()</a></span> returned 
 an 'element factory' (a function creating the actual elements). I abandoned this concept as it was too complex and hard to understand. Instead 
 both function will now return regular lists containing the new elements.<br/>
-<var>The new <a href="/api/add.html">add()</a></var> (and all the methods based on it, such as <var><a href="/api/fill.html">fill()</a></var> 
-and <var><a href="/api/replace.html">replace()</a></var>) will clone HTML nodes if they are added more than once to a document.</p>
+<span class="var">The new <a href="/api/add.html">add()</a></span> (and all the methods based on it, such as <span class="var"><a href="/api/fill.html">fill()</a></span> 
+and <span class="var"><a href="/api/replace.html">replace()</a></span>) will clone HTML nodes if they are added more than once to a document.</p>
 
 
 

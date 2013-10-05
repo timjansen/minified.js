@@ -20,7 +20,7 @@
 <dt id="onover_toggle" class=""><a name="onover_toggle"><var>toggle</var></a></dt>
 <dd class="">the callback <code>function(isOver, index)</code> to invoke when the event has been triggered:
 <dl>
-<dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
+<dt>isOver</dt><dd><span class="var">true</span> if mouse is entering element, <span class="var">false</span> when leaving.</dd>
 <dt>index</dt><dd>The index of the target element in the <a href='list.html'>Minified list</a> .</dd>
 </dl>
 'this' is set to the target element that caused the event.</dd>
@@ -30,7 +30,7 @@
 
 <h4>Description</h4>
 <div class="description"><p>Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.
-The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
+The handler is called with a boolean parameter, <span class="var">true</span> for entering and <span class="var">false</span> for leaving,
 which allows you to use any <code><a href='toggle.html'>toggle()</a></code> function as handler.</p><p></p></div>
 
 <div class="examples">
@@ -59,7 +59,6 @@ $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -112,19 +111,30 @@ $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -133,15 +143,22 @@ $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

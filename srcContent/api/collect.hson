@@ -20,12 +20,12 @@
 <dl class="params">
 <dt id="collect_list" class=""><a name="collect_list"><var>list</var></a></dt>
 <dd class="">a list to transform. Can be an array, a <a href='list.html'>Minified list</a> or any other array-like structure with
-<var>length</var> property.</dd>
+<span class="var">length</span> property.</dd>
 <dt id="collect_collectFunc" class=""><a name="collect_collectFunc"><var>collectFunc</var></a></dt>
 <dd class="">The callback <code>function(item, index)</code> to invoke for each item:
 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to
-the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and be not added to
+the result list. Other objects will also be added. Nulls and <span class="var">undefined</span> will be ignored and be not added to
 the new result list. </dd></dl></dd>
 <dt id="collect_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="collect_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the new <a href='list.html'>list</a></dd>
@@ -38,8 +38,8 @@ The callback can return
 <ul>
 <li>an array or another list-like object. Its content will be appended to the resulting list.</li>
 <li>a regular object which will be appended to the list</li>
-<li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list.
-If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li>
+<li><span class="var">null</span> (or <span class="var">undefined</span>), which means that no object will be added to the list.
+If you need to add <span class="var">null</span> or <span class="var">undefined</span> to the result list, put it into a single-element array.</li>
 </ul></p><p></p></div>
 
 <div class="examples">
@@ -103,7 +103,6 @@ var elements = $('input.myTexts').collect(function(item) {
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -156,19 +155,30 @@ var elements = $('input.myTexts').collect(function(item) {
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -177,15 +187,22 @@ var elements = $('input.myTexts').collect(function(item) {
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

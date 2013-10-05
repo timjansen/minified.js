@@ -28,7 +28,7 @@
 
 <h4>Description</h4>
 <div class="description"><p>Checks whether two values, lists or objects are equal in a deep comparison.</p><p>First equals checks whether it got a function as parameter. If yes, it will be invoked without arguments and the function is called recursively with the function's result.</p><p>Once both values are no functions anymore, the values will be evaluated, If the first value is...
-<ul><li>...<var>null</var> or <var>undefined</var>, they are only equal if the other one is also either <var>null</var> or <var>undefined</var>.</li>
+<ul><li>...<span class="var">null</span> or <span class="var">undefined</span>, they are only equal if the other one is also either <span class="var">null</span> or <span class="var">undefined</span>.</li>
 <li>...a value as defined by #_.isValue(), but not a Date, they are equal if the other value is the same type and is equal according to the '==' operator.</li>
 <li>...a Date, they are equal if the other value is a Date representing the same time.</li>
 <li>...a list or array, they are equal if the other value is also either a list or an array, has the same number of items and all items equal the items of the other
@@ -36,8 +36,8 @@
 <li>...a function, it will be invoked without arguments and its return value is evaluated using these rules as if the value has been passed. </li>
 <li>...any other object, they are equal if they contain exactly the same keys (as defined by #_.eachObj()) and all values are equal as determined using these rules
      recursively.</li>
-</ul></p><p>Please note that, according to the rules, a ##list#Minified list# is equal to an array, as long as their content is equal. <var>equals</var> does not
-differentiate between <var>null</var> and <var>undefined</var>.</p><p><var>equals</var> is commutative. If you swap the parameters, the result should be the same.</p><p></p></div>
+</ul></p><p>Please note that, according to the rules, a ##list#Minified list# is equal to an array, as long as their content is equal. <span class="var">equals</span> does not
+differentiate between <span class="var">null</span> and <span class="var">undefined</span>.</p><p><span class="var">equals</span> is commutative. If you swap the parameters, the result should be the same.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -71,7 +71,6 @@ differentiate between <var>null</var> and <var>undefined</var>.</p><p><var>equal
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -124,19 +123,30 @@ differentiate between <var>null</var> and <var>undefined</var>.</p><p><var>equal
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -145,15 +155,22 @@ differentiate between <var>null</var> and <var>undefined</var>.</p><p><var>equal
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

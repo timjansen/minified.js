@@ -16,7 +16,7 @@
 Contains the number of elements in the Minified list.</div>
 
 <h3><a href="dollardollar.html">$$()</a></h3>
-<div class="summary">Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found.</div>
+<div class="summary">Returns a DOM object containing the first match of the given selector, or <span class="var">undefined</span> if no match was found.</div>
 
 <h3><a href="defer.html">$.defer()</a></h3>
 <div class="summary">
@@ -53,9 +53,6 @@ Executes the function with the given delay, optionally passing arguments to it.<
 <h3><a href="wait.html">$.wait()</a></h3>
 <div class="summary">
 Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed.</div>
-
-<h3><a href="listunderscore.html">._</a></h3>
-<div class="summary">Set to <var>true</var> if this is a Minified list.</div>
 
 <h3><a href="add.html">.add()</a></h3>
 <div class="summary">Adds the given node(s) as content to the list's HTML elements.</div>
@@ -196,10 +193,10 @@ Triggers event handlers registered with on.</div>
 arguments.</div>
 
 <h3><a href="values.html">.values()</a></h3>
-<div class="summary">Creates a name/value map from the given form.</div>
+<div class="summary">Creates a Minified list containing all property values of the specified object.</div>
 
 <h3><a href="values.html">.values()</a></h3>
-<div class="summary">Creates a Minified list containing all property values of the specified object.</div>
+<div class="summary">Creates a name/value map from the given form.</div>
 
 <h3><a href="ee.html">EE()</a></h3>
 <div class="summary">Creates a new Element Factory.</div>
@@ -230,18 +227,18 @@ to be appended or prepended to the arguments you all the new function with.</div
 <div class="summary">Copies every property of the first object into the second object.</div>
 
 <h3><a href="dateadd.html">_.dateAdd()</a></h3>
-<div class="summary">Adds the specified time to the given <var>Date</var> and returns the result as a new <var>Date</var> .</div>
+<div class="summary">Adds the specified time to the given <span class="var">Date</span> and returns the result as a new <span class="var">Date</span> .</div>
 
 <h3><a href="dateclone.html">_.dateClone()</a></h3>
-<div class="summary">Creates a new <var>Date</var> object that represents the same time as the given date.</div>
+<div class="summary">Creates a new <span class="var">Date</span> object that represents the same time as the given date.</div>
 
 <h3><a href="datediff.html">_.dateDiff()</a></h3>
 <div class="summary">
-Calculates the time difference between both dates, using in the unit determined by the <var>property</var>.</div>
+Calculates the time difference between both dates, using in the unit determined by the <span class="var">property</span>.</div>
 
 <h3><a href="datemidnight.html">_.dateMidnight()</a></h3>
 <div class="summary">
-Returns a new <var>Date</var> object with the same calendar date, but at midnight in the current time zone.</div>
+Returns a new <span class="var">Date</span> object with the same calendar date, but at midnight in the current time zone.</div>
 
 <h3><a href="eachobj.html">_.eachObj()</a></h3>
 <div class="summary">Invokes the given function once for each property of the given object.</div>
@@ -266,10 +263,10 @@ Returns a new <var>Date</var> object with the same calendar date, but at midnigh
 Formats a single value as a string, using the given format template.</div>
 
 <h3><a href="isbool.html">_.isBool()</a></h3>
-<div class="summary">Checks whether the given reference is a boolean <var>true</var>  or <var>false</var>.</div>
+<div class="summary">Checks whether the given reference is a boolean <span class="var">true</span>  or <span class="var">false</span>.</div>
 
 <h3><a href="isdate.html">_.isDate()</a></h3>
-<div class="summary">Checks whether the given object is a <var>Date</var>.</div>
+<div class="summary">Checks whether the given object is a <span class="var">Date</span>.</div>
 
 <h3><a href="isfunction.html">_.isFunction()</a></h3>
 <div class="summary">Checks whether the given object is a function.</div>
@@ -278,13 +275,13 @@ Formats a single value as a string, using the given format template.</div>
 <div class="summary">Checks whether the given object resembles a list or array.</div>
 
 <h3><a href="isnumber.html">_.isNumber()</a></h3>
-<div class="summary">Checks whether the given reference is a number as defined by <var>typeof</var>.</div>
+<div class="summary">Checks whether the given reference is a number as defined by <span class="var">typeof</span>.</div>
 
 <h3><a href="isobject.html">_.isObject()</a></h3>
-<div class="summary">Checks whether the given reference is an object as defined by <var>typeof</var>.</div>
+<div class="summary">Checks whether the given reference is an object as defined by <span class="var">typeof</span>.</div>
 
 <h3><a href="isstring.html">_.isString()</a></h3>
-<div class="summary">Checks whether the given reference is a string as defined by <var>typeof</var>.</div>
+<div class="summary">Checks whether the given reference is a string as defined by <span class="var">typeof</span>.</div>
 
 <h3><a href="isvalue.html">_.isValue()</a></h3>
 <div class="summary">Checks whether the given object is a value.</div>
@@ -308,8 +305,8 @@ Parses the given string as number using the given format.</div>
 <div class="summary">Creates a new function that calls the given function with some arguments pre-filled.</div>
 
 <h3><a href="range.html">_.range()</a></h3>
-<div class="summary">Creates a new Minified list containing an interval of numbers from <var>start</var> (inclusive)
-until <var>end</var> (exclusive).</div>
+<div class="summary">Creates a new Minified list containing an interval of numbers from <span class="var">start</span> (inclusive)
+until <span class="var">end</span> (exclusive).</div>
 
 <h3><a href="template.html">_.template()</a></h3>
 <div class="summary">Parses a Handlebars-like template to create a reusable template function.</div>
@@ -322,7 +319,7 @@ until <var>end</var> (exclusive).</div>
 
 <h3><a href="promise.html">promise()</a></h3>
 <div class="summary">
-Creates a new ##promise#Promise, optionally assimilating other promises.</div>
+Creates a new Promise, optionally assimilating other promises.</div>
 
 <h3><a href="always.html">promise.always()</a></h3>
 <div class="summary">Registers a callback that will always be called when the Promise's operation ended, no matter whether the operation succeeded or not.</div>
@@ -337,7 +334,7 @@ Contains the current state of the promise.</div>
 <h3><a href="then.html">promise.then()</a></h3>
 <div class="summary">
 Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
-successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</div>
+successfully (<span class="var">onSuccess</span>) or an error occurred (<span class="var">onError</span>).</div>
 
 <h3><a href="require.html">require()</a></h3>
 <div class="summary">Returns a reference to a module.</div>
@@ -358,7 +355,6 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -411,19 +407,30 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
-</li><li><a href="format.html">_.format()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
+</li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -432,15 +439,22 @@ successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>).</
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

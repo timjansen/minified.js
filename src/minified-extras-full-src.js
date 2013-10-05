@@ -55,7 +55,7 @@ function dummy() {
 	 * @syntax promise(otherPromise1, otherPromise2, ...)
 	 * @module WEB+UTIL
 	 * 
-	 * Creates a new ##promise#Promise, optionally assimilating other promises. If no other promise is given, a promise controlled
+	 * Creates a new ##promise#Promise##, optionally assimilating other promises. If no other promise is given, a promise controlled
 	 * directly by you is returned. The returned promise is a function that can be called directly to change the 
 	 * promises state.
 	 * 
@@ -74,7 +74,9 @@ function dummy() {
 	 * 
 	 * @example A simple promise that is fulfilled after 1 second:
 	 * <pre>var p = promise();
-	 * setTimeout(function() {p(true, []);}, 1000);
+	 * setTimeout(function() { 
+	 *     p(true, []); 
+	 * }, 1000);
 	 * </pre>
 	 * 
 	 * @param otherPromise varargs one or more promises to assimilate

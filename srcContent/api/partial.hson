@@ -22,11 +22,11 @@
 <dd class="">the function to bind</dd>
 <dt id="partial_beforeArgs" class=""><a name="partial_beforeArgs"><var>beforeArgs</var></a></dt>
 <dd class="">either a list of values to insert in front of the arguments, or a single non-list value to put in front. If null or not set,
-there won't be any arguments inserted. If you need to insert a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array
+there won't be any arguments inserted. If you need to insert a <span class="var">null</span>, <span class="var">undefined</span> or a list, just wrap them in an array
 (e.g. <code>[null]</code>).</dd>
 <dt id="partial_afterArgs" class=""><a name="partial_afterArgs"><var>afterArgs (optional)</var></a></dt>
 <dd class="">either a list of values to append to the end of the arguments, or a single non-list value to append. If null or not set,
-there won't be any arguments appended. If you need to append a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array
+there won't be any arguments appended. If you need to append a <span class="var">null</span>, <span class="var">undefined</span> or a list, just wrap them in an array
 (e.g. <code>[null]</code>).</dd>
 <dt id="partial_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="partial_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the resulting string</dd>
@@ -34,7 +34,7 @@ there won't be any arguments appended. If you need to append a <var>null</var>, 
 
 <h4>Description</h4>
 <div class="description"><p>Creates a new function that calls the given function with some arguments pre-filled. You can specify one or more arguments to
-be put in front of the arguments list as well as arguments that will be appended to the argument list.</p><p>See also <code><a href='_.bind.html'>_.bind()</a></code>, if you want to set 'this' as well.</p><p></p></div>
+be put in front of the arguments list as well as arguments that will be appended to the argument list.</p><p>See also <code><a href='undefinedbind.html'>_.bind()</a></code>, if you want to set 'this' as well.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -46,7 +46,7 @@ var divBy5 = _.partial(add, null, 5); // like function(a) { return a / 5; }
 </p></div>
 <h4>Example</h4>
 <div class="example"><p>Create functions that remove characters from the beginning and/or end of a string:
-<pre>// This function multiplies the first <var>count</var> items of the <var>list</var> by <var>factor</var>
+<pre>// This function multiplies the first <span class="var">count</span> items of the <span class="var">list</span> by <span class="var">factor</span>
 function multiply(list, count, factor) { return list.map(function(v, index) { return index &lt; count ? factor * v : v; }); }</p><p>var mul3by2 = _.partial(multiply, null, [3, 2]);
 var r1 = mul10by2(_(1, 2, 3, 4, 5)); // returns _(2, 4, 6, 4, 5)</p><p>var mul123 = _.partial(multiply, [_(1, 2, 3)]);  // array wrapper required to pass a list!
 var r2 = mul123(2, 5);                 // returns _(5, 10, 3)</p><p>var mul12345By2 = _.partial(multiply, [_(1, 2, 3, 4, 5)], 2);  // array wrapper required!
@@ -72,7 +72,6 @@ var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -125,19 +124,30 @@ var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -146,15 +156,22 @@ var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

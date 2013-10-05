@@ -3,6 +3,10 @@
 	font-family: monospace;
 }
 
+span.var {
+	font-style: italic;
+}
+
 h3, h2 {
 	margin-top: 2.5em;
 	margin-bottom: 0.5em;

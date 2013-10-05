@@ -1,0 +1,25 @@
+{
+  "name": "Minified",
+  "version": "2014.0.0-beta2",
+  "homepage": "http://minifiedjs.com",
+  "authors": [
+    "Tim Jansen <tim@tjansen.de>"
+  ],
+  "description": "Minified - lightweight JavaScript library",
+  "main": "dist/minified.js",
+  "license": "Public Domain",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "tmp",
+    "srcContent",
+    "WebContent",
+    "templates",
+    "srcContent",
+    "build",
+    "src",
+    "gruntfile.js",
+    "package.json"
+  ]
+}

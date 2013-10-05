@@ -35,14 +35,14 @@ the selector is optimized for the simple patterns '.classname', 'tagname' and 't
 <dl>
 <dt>event</dt><dd>The original DOM event object.</dd>
 <dt>index</dt><dd>The index of the target object in the <a href='list.html'>Minified list</a> .</dd>
-<dt class="returnValue">(callback return value)</dt><dd>Unless the handler returns <var>true</var>
+<dt class="returnValue">(callback return value)</dt><dd>Unless the handler returns <span class="var">true</span>
 or the event name is prefixed by '|', all further processing of the event will be
 stopped and event bubbling will be disabled.</dd>
 </dl>
-'this' is set to the target element that caused the event (the same as <var>event.target</var>).</dd>
+'this' is set to the target element that caused the event (the same as <span class="var">event.target</span>).</dd>
 <dt id="on_customFunc" class=""><a name="on_customFunc"><var>customFunc</var></a></dt>
-<dd class="">a function to be called instead of a regular event handler with the arguments given in <var>args</var>
-and optionally the 'this' context given using <var>fThis</var>.</dd>
+<dd class="">a function to be called instead of a regular event handler with the arguments given in <span class="var">args</span>
+and optionally the 'this' context given using <span class="var">fThis</span>.</dd>
 <dt id="on_fThis" class=""><a name="on_fThis"><var>fThis (optional)</var></a></dt>
 <dd class="">a value for 'this' in the custom callback, instead of the event target</dd>
 <dt id="on_args" class=""><a name="on_args"><var>args (optional)</var></a></dt>
@@ -78,7 +78,7 @@ $('#myButton').on('click', function() {
    myObject.setStatus('running');
 });
 </pre>
-The previous example can bere written like this, using <var>on()</var>'s <var>args</var> and <var>fThis</var> parameters:
+The previous example can bere written like this, using <span class="var">on()</span>'s <span class="var">args</span> and <span class="var">fThis</span> parameters:
 <pre>
 $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 </pre>
@@ -118,7 +118,6 @@ $('#table').on('change', 'tr', function(event, index, selectedIndex) {
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -171,19 +170,30 @@ $('#table').on('change', 'tr', function(event, index, selectedIndex) {
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -192,15 +202,22 @@ $('#table').on('change', 'tr', function(event, index, selectedIndex) {
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

@@ -9,7 +9,7 @@
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-promise">promise()</a></h2>
 <div class="summary">
-Creates a new ##promise#Promise, optionally assimilating other promises.</div>
+Creates a new Promise, optionally assimilating other promises.</div>
 
 <h4>Syntax Variants</h4>
 <div class="syntaxVariant">
@@ -23,16 +23,16 @@ Creates a new ##promise#Promise, optionally assimilating other promises.</div>
 <dd class="">varargs one or more promises to assimilate</dd>
 <dt id="promise_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="promise_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
-<dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected</dd>
+<dl><dt>state</dt><dd><span class="var">true</span> to set the Promise to fulfilled, <span class="var">false</span> to set the state as rejected</dd>
 <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
-<var>state</var>).</dd></dl>
+<span class="var">state</span>).</dd></dl>
 The function can be called several times, but only the first invocation modifies the Promise. All subsequent calls will
 be ignored.</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>
-Creates a new ##promise#Promise, optionally assimilating other promises. If no other promise is given, a promise controlled
+Creates a new <a href='promise.html'>Promise</a>, optionally assimilating other promises. If no other promise is given, a promise controlled
 directly by you is returned. The returned promise is a function that can be called directly to change the
 promises state.</p><p>If if one promise is given, this promise assimilates the given promise as-is, and just forwards
 fulfillment and rejection with the original values.</p><p>If more than one promise are given, it will assimilate all of them with slightly different rules:
@@ -49,7 +49,9 @@ fulfillment and rejection with the original values.</p><p>If more than one promi
 <h4>Example</h4>
 <div class="example"><p>A simple promise that is fulfilled after 1 second:
 <pre>var p = promise();
-setTimeout(function() {p(true, []);}, 1000);
+setTimeout(function() {
+    p(true, []);
+}, 1000);
 </pre>
 </p></div>
 </div>
@@ -71,7 +73,6 @@ setTimeout(function() {p(true, []);}, 1000);
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -124,19 +125,30 @@ setTimeout(function() {p(true, []);}, 1000);
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -145,15 +157,22 @@ setTimeout(function() {p(true, []);}, 1000);
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

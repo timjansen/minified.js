@@ -23,7 +23,7 @@ Parses the given string as Date using the given format.</div>
 <dt id="parsedate_dateString" class=""><a name="parsedate_dateString"><var>dateString</var></a></dt>
 <dd class="">the string-formatted date to parse</dd>
 <dt id="parsedate_RETURN" class="returnValue inSyntax0"><a name="parsedate_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the Date; <var>undefined</var> if parsing failed; or <var>null</var> if the string was empty and
+<dd class="inSyntax0">the Date; <span class="var">undefined</span> if parsing failed; or <span class="var">null</span> if the string was empty and
 the date format is flagged as optional ('?' at the beginning)</dd>
 </dl>
 
@@ -58,8 +58,8 @@ The following placeholder characters are supported.
 <tr><td>z</td><td>Timezone offset, e.g. '+0700'</td></tr>
 </table>
 If you prefix the input string with a question mark ('?'), this means that the date is optional. If the input string is empty or consists
-solely of whitespace, <var>parseDate</var> will return null.<br/>
-<var>parseDate()</var> also supports parsing a date in a different timezone. You only need to put the timezone in brackets at the front of
+solely of whitespace, <span class="var">parseDate</span> will return null.<br/>
+<span class="var">parseDate()</span> also supports parsing a date in a different timezone. You only need to put the timezone in brackets at the front of
 the format, e.g. '[+0100]'.<br/></p><p>All other characters  are expected to be identical in format and input string, with the exception of whitespace. Each whitespace character
 in the format can match any number of other whitespace characters in the input string, but at least one.</p><p>Any components that are not in the format will be set to 0. For example, if your format has only date, month and day, the resulting
 date will be at midnight.</p><p></p></div>
@@ -99,7 +99,6 @@ var v9  = _.parseDate('[+0100]yyyy-MM-dd h:mm a', '2013-07-09 5:07 pm');  // dif
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -152,19 +151,30 @@ var v9  = _.parseDate('[+0100]yyyy-MM-dd h:mm a', '2013-07-09 5:07 pm');  // dif
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -173,15 +183,22 @@ var v9  = _.parseDate('[+0100]yyyy-MM-dd h:mm a', '2013-07-09 5:07 pm');  // dif
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

@@ -45,7 +45,7 @@ called every time an interpolated value is required:
 <dt>startValue</dt><dd>The start value of the transition.</dd>
 <dt>endValue</dt><dd>The end value of the transition.</dd>
 <dt>t</dt><dd>A value between 0 and 1 that specifies the state of the transition.</dd>
-<dt class="returnValue">(callback return value)</dt><dd>The value at the time <var>t</var>.</dd>
+<dt class="returnValue">(callback return value)</dt><dd>The value at the time <span class="var">t</span>.</dd>
 </dl></dd>
 <dt id="animate_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="animate_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">a <a href='promise.html'>Promise</a> object to monitor the animation's progress.
@@ -58,20 +58,20 @@ animation and returns how long it ran in milliseconds.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Animates the items of the list by modifying their properties, CSS styles and attributes. <var>animate()</var> can work with numbers, strings that contain exactly one
+<div class="description"><p>Animates the items of the list by modifying their properties, CSS styles and attributes. <span class="var">animate()</span> can work with numbers, strings that contain exactly one
 number, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.</p><p>When you invoke the function, it will first read all old values from the object and extract their numbers and colors. These start values will be compared to
-the destination values that have been specified in the given properties. Then <var>animate()</var> will create a background task using <code><a href='$.loop.html'>$.loop()</a></code> that updates the
+the destination values that have been specified in the given properties. Then <span class="var">animate()</span> will create a background task using <code><a href='undefinedloop.html'>$.loop()</a></code> that updates the
 specified properties in frequent intervals so that they transition to their destination values.</p><p>The start values will be obtained using <code><a href='get.html'>get()</a></code>. It is recommended to set the start values using <code><a href='set.html'>set()</a></code> before you start the animation, even if this is not
-always required.</p><p>You can define the kind of transition using the <var>linearity</var> parameter. If you omit it or pass 0, animate's default algorithm will cause a smooth transition
+always required.</p><p>You can define the kind of transition using the <span class="var">linearity</span> parameter. If you omit it or pass 0, animate's default algorithm will cause a smooth transition
 from the start value to the end value. If you pass 1, the transition will be linear, with a sudden start and end of the animation. Any value between 0 and 1
-is also allowed and will give you a transition that is 'somewhat smooth'.</p><p>Instead of the <var>linearity</var> function you can also provide your own interpolation <code>function(startValue, endValue, t)</code> which will be
-called every time an interpolated value is required. <var>startValue</var> and <var>endValue</var> define the start and end values. <var>t</var>
-is a value between 0 and 1 that specifies the state of the transition. The function should return <var>startValue</var> for 0 and
-<var>endValue</var> for 1. For values between 0 and 1, the function should return a transitional value.</p><p>If the start value of a property is a string containing a number, <var>animate()</var> will always ignore all the surrounding text and use the destination value as a template
+is also allowed and will give you a transition that is 'somewhat smooth'.</p><p>Instead of the <span class="var">linearity</span> function you can also provide your own interpolation <code>function(startValue, endValue, t)</code> which will be
+called every time an interpolated value is required. <span class="var">startValue</span> and <span class="var">endValue</span> define the start and end values. <span class="var">t</span>
+is a value between 0 and 1 that specifies the state of the transition. The function should return <span class="var">startValue</span> for 0 and
+<span class="var">endValue</span> for 1. For values between 0 and 1, the function should return a transitional value.</p><p>If the start value of a property is a string containing a number, <span class="var">animate()</span> will always ignore all the surrounding text and use the destination value as a template
 for the value to write. This can cause problems if you mix units in CSS. For example, if the start value is '10%' and you specify an end value of '20px', animate
-will do an animation from '10px' to '20px'. It is not able to convert units.</p><p><var>animate()</var> does not only support strings with units, but any string containing exactly one number. This allows you, among other things, with IE-specific CSS properties.
-For example, you can transition from a start value 'alpha(opacity = 0)' to 'alpha(opacity = 100)'.</p><p>When you animate colors, <var>animate()</var> is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not
-use color names such as 'red'.</p><p>Instead of the end value, you can also specify a <code>function(oldValue, index, obj)</code> to calculate the actual end value.</p><p>To allow more complex animation, <var>animate()</var> returns a <a href='promise.html'>Promise</a> that is fulfulled when the animation has finished.</p><p></p></div>
+will do an animation from '10px' to '20px'. It is not able to convert units.</p><p><span class="var">animate()</span> does not only support strings with units, but any string containing exactly one number. This allows you, among other things, with IE-specific CSS properties.
+For example, you can transition from a start value 'alpha(opacity = 0)' to 'alpha(opacity = 100)'.</p><p>When you animate colors, <span class="var">animate()</span> is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not
+use color names such as 'red'.</p><p>Instead of the end value, you can also specify a <code>function(oldValue, index, obj)</code> to calculate the actual end value.</p><p>To allow more complex animation, <span class="var">animate()</span> returns a <a href='promise.html'>Promise</a> that is fulfulled when the animation has finished.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -139,7 +139,6 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -192,19 +191,30 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -213,15 +223,22 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

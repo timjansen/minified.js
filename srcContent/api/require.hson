@@ -20,15 +20,15 @@
 <dt id="require_name" class=""><a name="require_name"><var>name</var></a></dt>
 <dd class="">the name of the module to request. In Minified's implementation, only 'minified' is supported.</dd>
 <dt id="require_RETURN" class="returnValue inSyntax0"><a name="require_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the reference to Minified if 'minified' had been used as name. <var>undefined</var> otherwise.</dd>
+<dd class="inSyntax0">the reference to Minified if 'minified' had been used as name. <span class="var">undefined</span> otherwise.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Returns a reference to a module. If you do not use an AMD loader to load Minified, just call <var>require()</var> with the
+<div class="description"><p>Returns a reference to a module. If you do not use an AMD loader to load Minified, just call <span class="var">require()</span> with the
 argument 'minified' to get a reference to Minified.
 If you do use an AMD loader, Minified will not define this function and you can use the AMD loader to obtain the
 reference to Minified.
-Minified's version of <var>require</var> is very simple and will only support Minified, but <strong>no other libraries</strong>. You can not
+Minified's version of <span class="var">require</span> is very simple and will only support Minified, but <strong>no other libraries</strong>. You can not
 use it to load other modules, and it will be incompatible with all non-AMD libraries that also define a function
 of the same name. If you need to work with several libraries, you need a real AMD loader.</p><p></p></div>
 
@@ -49,7 +49,6 @@ of the same name. If you need to work with several libraries, you need a real AM
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -102,19 +101,30 @@ of the same name. If you need to work with several libraries, you need a real AM
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -123,15 +133,22 @@ of the same name. If you need to work with several libraries, you need a real AM
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

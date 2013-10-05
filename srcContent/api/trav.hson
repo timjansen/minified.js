@@ -23,7 +23,7 @@ optionally filtered by the given selector.</div>
 <dl class="params">
 <dt id="trav_selector" class=""><a name="trav_selector"><var>selector (optional)</var></a></dt>
 <dd class="">any selector valid for <code><a href='dollar.html'>$()</a></code>, including CSS selectors and lists. Alternatively you can pass
-a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
+a <code>function(node)</code> returning <span class="var">true</span> for those nodes that are approved.
 <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
 is relative to the number of matches for the selector in the document. Default is '*', which includes all elements
 (but no other nodes such as text nodes).</dd>
@@ -36,7 +36,7 @@ have been visited when traversing another node. Duplicate nodes will be automati
 
 <h4>Description</h4>
 <div class="description"><p>Traverses each DOM node in the list using the given property; creates a new list that includes each visited node,
-optionally filtered by the given selector.</p><p><var>trav()</var> traverses the DOM tree for each list element it finds a <var>null</var>.
+optionally filtered by the given selector.</p><p><span class="var">trav()</span> traverses the DOM tree for each list element it finds a <span class="var">null</span>.
 All visited nodes that match the given selector are added to the result list. If no selector is given,
 only elements will be added.</p><p></p></div>
 
@@ -84,7 +84,6 @@ var parents = $('.myElements').trav('parentNode', 'table.specialParent', 1);
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -137,19 +136,30 @@ var parents = $('.myElements').trav('parentNode', 'table.specialParent', 1);
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -158,15 +168,22 @@ var parents = $('.myElements').trav('parentNode', 'table.specialParent', 1);
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

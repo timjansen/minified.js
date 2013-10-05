@@ -21,7 +21,7 @@ register callbacks to find out the result. They will be invoked as soon as the o
 If the operation already ended when you register the callbacks, the callback will then just be called from the event loop as soon
 as possible (but never while the <code><a href='then.html'>then()</a></code> you register them with is still running).<br/>
 This design forces you to handle the operation result asynchronously and disencourages 'bad' techniques such as polling.</p><p>The central method of a Promises, and indeed the only required function in Promises/A+, is <code><a href='then.html'>then()</a></code>. It allows you to register
-two callback methods, one for success (called 'fulfillment' in Promises/A+ terminology) and one for failures (called 'rejection' in Promises/A+).</p><p>This example shows you how to use <var>then()</var>:
+two callback methods, one for success (called 'fulfillment' in Promises/A+ terminology) and one for failures (called 'rejection' in Promises/A+).</p><p>This example shows you how to use <span class="var">then()</span>:
 <pre>
 $.request('get', 'http://example.com/weather?zip=90210')
  .then(function success(result) {
@@ -29,8 +29,8 @@ $.request('get', 'http://example.com/weather?zip=90210')
  }, function error(exception) {
  	alert('Something went wrong');
  });
-</pre></p><p>What makes Promises so special is that <code><a href='then.html'>then()</a></code> itself returns a new Promise, which is based on the Promise <var>then()</var> was called on, but can be
-modified by the outcome of callbacks. Both arguments to <var>then()</var> are optional, and you can also write the code like this:
+</pre></p><p>What makes Promises so special is that <code><a href='then.html'>then()</a></code> itself returns a new Promise, which is based on the Promise <span class="var">then()</span> was called on, but can be
+modified by the outcome of callbacks. Both arguments to <span class="var">then()</span> are optional, and you can also write the code like this:
 <pre>
 $.request('get', 'http://example.com/weather?zip=90210')
  .then(function success(result) {
@@ -39,12 +39,12 @@ $.request('get', 'http://example.com/weather?zip=90210')
  .then(null, function error(exception) {
  	alert('Something went wrong');
  });
-</pre></p><p>Because the first <code><a href='then.html'>then()</a></code> returns a new Promise based on the original Promise, the second <var>then()</var> will handle errors of the request just like
+</pre></p><p>Because the first <code><a href='then.html'>then()</a></code> returns a new Promise based on the original Promise, the second <span class="var">then()</span> will handle errors of the request just like
 the first one did. There is only one subtle difference in the second example: the error handler will not only be called if the request failed,
 but also when the request succeded but the success handler threw an exception. That's one of the two differences between the original Promise and
-the Promise returned by <var>then()</var>. Any exception thrown in a callback causes the new Promise to be in error state.</p><p>Before I show you the second difference between the original Promise and the new Promise, let me make the example a bit more readable
+the Promise returned by <span class="var">then()</span>. Any exception thrown in a callback causes the new Promise to be in error state.</p><p>Before I show you the second difference between the original Promise and the new Promise, let me make the example a bit more readable
 by using <code><a href='error.html'>error()</a></code>, which is not part of Promises/A+, but a simple extension by Minified. It just registers the failure callback without
-forcing you to specify <var>null</var> as first argument:
+forcing you to specify <span class="var">null</span> as first argument:
 <pre>
 $.request('get', 'http://example.com/weather?zip=90210')
  .then(function success(result) {
@@ -54,7 +54,7 @@ $.request('get', 'http://example.com/weather?zip=90210')
  	alert('Something went wrong');
  });
 </pre></p><p>A very powerful capability of Promises is that you can easily chain them. If a <code><a href='then.html'>then()</a></code> callback returns a value, the new Promise returned
-by <var>then()</var> will be marked as success (fulfilled) and this value is the result of the operation. If a callback returns a Promise,
+by <span class="var">then()</span> will be marked as success (fulfilled) and this value is the result of the operation. If a callback returns a Promise,
 the new Promise will assume the state of the returned Promise. You can use the latter to create chains of asynchronous operations,
 but you still need only a single error handler for all of them and you do not need to nest functions to achieve this:
 <pre>
@@ -90,7 +90,6 @@ Minified App module will allow this though.
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -143,19 +142,30 @@ Minified App module will allow this though.
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -164,15 +174,22 @@ Minified App module will allow this though.
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

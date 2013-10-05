@@ -35,7 +35,7 @@ For example, use 'div' to find all div elements, '.header' to find all elements 
 write '.header, .footer'. To find all divs elements below the element with the id 'main', use '#main div'.
 The selector "*" will return all elements.</dd>
 <dt id="dollar_list" class=""><a name="dollar_list"><var>list</var></a></dt>
-<dd class="">a list to copy. It can be an array, another Minified list, a DOM nodelist or anything else that has a <var>length</var> property and
+<dd class="">a list to copy. It can be an array, another Minified list, a DOM nodelist or anything else that has a <span class="var">length</span> property and
 allows read access by index. A shallow copy of the list will be returned. Nulls will be automatically removed from the copy. Nested lists
 will be flattened, so the result only contains nodes.</dd>
 <dt id="dollar_object" class=""><a name="dollar_object"><var>object</var></a></dt>
@@ -59,14 +59,14 @@ Duplicate nodes will be removed from selectors, but not from lists.</dd>
 
 <h4>Description</h4>
 <div class="description"><p>Creates a new <a href='list.html'>Minified list</a>, or register a DOMReady-handler.
-The most common usage is with a CSS-like selector. <var>$()</var> will then create a list containing all elements of the current HTML
+The most common usage is with a CSS-like selector. <span class="var">$()</span> will then create a list containing all elements of the current HTML
 document that fulfill the filter conditions. Alternatively you can also specify a list of objects or a single object.
 Nested lists will automatically be flattened, and nulls will automatically be removed from the resulting list.</p><p>Additionally, you can specify a second argument to provide a context. Contexts only make sense if you selected only
 HTML nodes with the first parameter. Then the context limits the resulting list to include only those nodes
 that are descendants of the context nodes. The context can be either a selector, a list or a single HTML node, and will be
 processed like the first argument. A third arguments allows you to limit the list to
 only those elements that are direct children of the context nodes (so a child of a child would be filtered out).</p><p>
-As a special shortcut, if you pass a function to <var>$()</var>, it will be registered using <code><a href='ready.html'>$.ready()</a></code> to be executed
+As a special shortcut, if you pass a function to <span class="var">$()</span>, it will be registered using <code><a href='ready.html'>$.ready()</a></code> to be executed
 when the DOM model is complete.</p><p></p></div>
 
 <div class="examples">
@@ -89,7 +89,7 @@ var l2 = $([elementA, elementB, elementC]);
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>Lists will be automatically flattened and nulls removed. So this list <var>l3</var> has the same content as <var>l2</var>:
+<div class="example"><p>Lists will be automatically flattened and nulls removed. So this list <span class="var">l3</span> has the same content as <span class="var">l2</span>:
 <pre>
 var l3 = $([elementA, [elementB, null, elementC], null]);
 </pre>
@@ -183,7 +183,6 @@ $(function() {
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -236,19 +235,30 @@ $(function() {
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -257,15 +267,22 @@ $(function() {
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

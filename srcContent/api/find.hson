@@ -26,29 +26,29 @@
 <dl class="params">
 <dt id="find_list" class=""><a name="find_list"><var>list</var></a></dt>
 <dd class="">A list to use as input. Can be an array, a <a href='list.html'>Minified list</a> or any other array-like structure with
-<var>length</var> property.</dd>
+<span class="var">length</span> property.</dd>
 <dt id="find_findFunc" class=""><a name="find_findFunc"><var>findFunc</var></a></dt>
 <dd class="">The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-<dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
-<var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl></dd>
+<dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <span class="var">null</span> or
+<span class="var">undefined</span>, <span class="var">find()</span> will return it directly. Otherwise it will continue. </dd></dl></dd>
 <dt id="find_element" class=""><a name="find_element"><var>element</var></a></dt>
 <dd class="">the element to search for</dd>
 <dt id="find_startIndex" class=""><a name="find_startIndex"><var>startIndex (optional)</var></a></dt>
 <dd class="">the 0-based index of the first element to search.</dd>
 <dt id="find_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5 inSyntax6 inSyntax7"><a name="find_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5 inSyntax6 inSyntax7">if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
-it returns either the value returned by the callback or <var>undefined</var>.</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5 inSyntax6 inSyntax7">if called with an element, either the element's index in the list or <span class="var">undefined</span> if not found. If called with a callback function,
+it returns either the value returned by the callback or <span class="var">undefined</span>.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Finds a specific value in the list. There are two ways of calling <var>find()</var>:
+<div class="description"><p>Finds a specific value in the list. There are two ways of calling <span class="var">find()</span>:
 <ol>
-<li>With a value as argument. Then <var>find()</var> will search for the first occurrence of an identical value in the list,
+<li>With a value as argument. Then <span class="var">find()</span> will search for the first occurrence of an identical value in the list,
     using the '===' operator for comparisons, and return the index. If it is not found,
-    <var>find()</var> returns <var>undefined</var>.</li>
-<li>With a callback function. <var>find()</var> will then call the given function for each list element until the function
-    returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
+    <span class="var">find()</span> returns <span class="var">undefined</span>.</li>
+<li>With a callback function. <span class="var">find()</span> will then call the given function for each list element until the function
+    returns a value that is not <span class="var">null</span> or <span class="var">undefined</span>. This value will be returned.</li>
 </ol></p><p></p></div>
 
 <div class="examples">
@@ -95,7 +95,6 @@ var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -148,19 +147,30 @@ var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -169,15 +179,22 @@ var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

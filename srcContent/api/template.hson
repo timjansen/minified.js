@@ -26,10 +26,10 @@ to escape all output:
 <dl><dt>inputString</dt><dd>The string to escape.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
 If no escapeFunction has been given, the output will not be escaped.
-<code><a href='_.escapehtml.html'>_.escapeHtml()</a></code> can be used as a escape function for HTML.
-See <code><a href='_.htmlformat.html'>_.htmlFormat()</a></code> for a version of <var>format()</var> that already includes HTML escaping.</dd>
+<code><a href='undefinedescapehtml.html'>_.escapeHtml()</a></code> can be used as a escape function for HTML.
+See <code><a href='undefinedhtmlformat.html'>_.htmlFormat()</a></code> for a version of <span class="var">format()</span> that already includes HTML escaping.</dd>
 <dt id="template_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="template_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the value returned by the last invocation of <var>func</var></dd>
+<dd class="inSyntax0 inSyntax1">the value returned by the last invocation of <span class="var">func</span></dd>
 </dl>
 
 <h4>Description</h4>
@@ -37,18 +37,18 @@ See <code><a href='_.htmlformat.html'>_.htmlFormat()</a></code> for a version of
 <a href="http://handlebarsjs.com/">Handlebars</a>. Unlike Handlebars, it is based on raw JavaScript expressions and thus gives you
 complete freedom, but also offers you shortcuts for formatting, iteration and conditionals.</p><p>Every template can receive exactly one object as input. If you need more than one value as input, put all requires values
 into an object.</p><p>Use double curly braces to embed a JavaScript expression and insert its result:
-<pre>{{a}} plus {{b}} is {{a+b}}</pre></p><p>To use such a template, create it with <var>template()</var> and then execute the resulting function:
+<pre>{{a}} plus {{b}} is {{a+b}}</pre></p><p>To use such a template, create it with <span class="var">template()</span> and then execute the resulting function:
 <pre>var myTemplate = _.template('{{a}} plus {{b}} is {{a+b}}');
 var result = myTemplate({a: 5, b: 7});</pre>
 If you pass an object as input, its properties will be mapped using JavaScript's <code>with</code>
 statement and are available as variables throughout the template.</p><p>If you have only a simple value to render, you can pass it directly and access it through the pre-defined
-variable <var>obj</var>:
+variable <span class="var">obj</span>:
 <pre>var myTemplate = _.template('The result is {{obj}}.');
 var result = myTemplate(17);</pre>
-Alternatively, you could also access the input as <var>this</var>, but be aware that JavaScript wraps simples types
-such as Number and Boolean. <var>this</var> is the default, so you can omit it to get the same result:
+Alternatively, you could also access the input as <span class="var">this</span>, but be aware that JavaScript wraps simples types
+such as Number and Boolean. <span class="var">this</span> is the default, so you can omit it to get the same result:
 <pre>var myTemplate = _.template('The result is {{ }}.');
-var result = myTemplate(17);</pre></p><p>Minified templates can use <code><a href='_.formatvalue.html'>_.formatValue()</a></code> formats directly. Just separate them from the expression by
+var result = myTemplate(17);</pre></p><p>Minified templates can use <code><a href='undefinedformatvalue.html'>_.formatValue()</a></code> formats directly. Just separate them from the expression by
 a double-colon:
 <pre>The price is {{obj::#.00}}.</pre></p><p>Conditions can be expressed using <code>if</code> and <code>else</code>:
 <pre>Hello {{if visits==0}}New{{else if visits&lt;10}}Returning{{else}}Regular{{/if}} Customer.<pre>
@@ -58,17 +58,17 @@ You can use any JavaScript expression as condition.</p><p>Use <code>each</code> 
 var result = myTemplate({names: [{firstName: 'Joe', lastName: 'Jones'},
                                  {firstName: 'Marc', lastName: 'Meyer'}]});</pre>
 <code>each</code> will iterate through the members of the given object. It
-calls its body for each item and put a reference to the item into <var>this</var>.
+calls its body for each item and put a reference to the item into <span class="var">this</span>.
 Optionally, you can specify up to two variables to store the value in (instead of this) and
 the zero-based index of the current item:
 <pre>var myTemplate = _.template(
 	   '{{each value, index: names}}{{index}}. {{value.firstName}} {{value.lastName}}{{/each}}');
-</pre></p><p>If you do not pass an expression to <code>each</var>, it will take the list from <var>this</var>:
+</pre></p><p>If you do not pass an expression to <code>each</span>, it will take the list from <span class="var">this</span>:
 <pre>var myTemplate = _.template('{{each value:}}{{value}};{{/each}}');
 var result = myTemplate([1, 2, 3]);</pre></p><p>Beside lists, you can also iterate through the properties of an object. The property name will be stored
-in the first given parameter and the value in <var>this</var> and the second parameter:
+in the first given parameter and the value in <span class="var">this</span> and the second parameter:
 <pre>var myTemplate = _.template('{{each key, value: nicknames}}{{key}}: {{value}}{{/each}}');
-var result = myTemplate({nicknames: {Matt: 'Matthew', John: 'Jonathan'} });</pre></p><p>Shorter version of the previous example that uses <var>this</var> for the value:
+var result = myTemplate({nicknames: {Matt: 'Matthew', John: 'Jonathan'} });</pre></p><p>Shorter version of the previous example that uses <span class="var">this</span> for the value:
 <pre>var myTemplate = _.template('{{each key: nicknames}}{{key}}: {{this}}{{/each}}');</pre></p><p>If you do not need the key, you can omit the variable specification:
 <pre>var myTemplate = _.template('{{each nicknames}}{{this}}{{/each}}');</pre></p><p>You can also define your own variables, using the regular JavaScript syntax, with 'var':
 <pre>var myTemplate = _.template('{{var s=very.long.name, sum=a+b;}}{{s.desc}}, {{sum}}');</pre></p><p>In some situations, it may be inevitable to embed raw JavaScript in the template.
@@ -88,11 +88,11 @@ following variables for you:
                     a default function that returns the input unmodified.</td></tr>
 <tr><td>print</td><td>A <code>function(text,...)</code> that appends one or more strings to the template result.</td></tr>
 <tr><td>each</td><td>A <code>function(listOrObject, eachCallback)</code> that can iterate over lists or object properties.
-The <var>eachCallback</var> is a <code>function(key, value)</code> for objects or <code>function(value, index)</code>
+The <span class="var">eachCallback</span> is a <code>function(key, value)</code> for objects or <code>function(value, index)</code>
 for arrays that will be invoked for each item.
-</table></p><p>Every template you create is already cached, so it not an expensive operation to call <code><a href='_.template.html'>_.template()</a></code> a second
+</table></p><p>Every template you create is already cached, so it not an expensive operation to call <code><a href='undefinedtemplate.html'>_.template()</a></code> a second
 time with the same template. However, because of caching, you should be careful when creating templates
-dynamically, as every new template requires memory that will not be freed.</p><p>See also <code><a href='_.format.html'>_.format()</a></code> as an alternative to using <code><a href='template.html'>template()</a></code>, as it will save you the template invocation.</p><p></p></div>
+dynamically, as every new template requires memory that will not be freed.</p><p>See also <code><a href='undefinedformat.html'>_.format()</a></code> as an alternative to using <code><a href='template.html'>template()</a></code>, as it will save you the template invocation.</p><p></p></div>
 
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
@@ -111,7 +111,6 @@ dynamically, as every new template requires memory that will not be freed.</p><p
 </li><li><a href="setcookie.html">$.setCookie()</a>
 </li><li><a href="tojson.html">$.toJSON()</a>
 </li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="listunderscore.html">._</a>
 </li><li><a href="add.html">.add()</a>
 </li><li><a href="addafter.html">.addAfter()</a>
 </li><li><a href="addbefore.html">.addBefore()</a>
@@ -164,19 +163,30 @@ dynamically, as every new template requires memory that will not be freed.</p><p
 </li><li><a href="list.html">Minified Lists</a>
 </li><li><a href="promiseClass.html">Promise</a>
 </li><li><a href="underscore.html">_()</a>
+</li><li><a href="array.html">_.array()</a>
 </li><li><a href="bind.html">_.bind()</a>
+</li><li><a href="call.html">_.call()</a>
+</li><li><a href="collect.html">_.collect</a>
+</li><li><a href="contains.html">_.contains()</a>
 </li><li><a href="copyobj.html">_.copyObj()</a>
 </li><li><a href="dateadd.html">_.dateAdd()</a>
 </li><li><a href="dateclone.html">_.dateClone()</a>
 </li><li><a href="datediff.html">_.dateDiff()</a>
 </li><li><a href="datemidnight.html">_.dateMidnight()</a>
+</li><li><a href="each.html">_.each()</a>
 </li><li><a href="eachobj.html">_.eachObj()</a>
+</li><li><a href="endswith.html">_.endsWith()</a>
+</li><li><a href="equals.html">_.equals()</a>
 </li><li><a href="escapehtml.html">_.escapeHtml()</a>
 </li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
+</li><li><a href="filter.html">_.filter()</a>
 </li><li><a href="filterobj.html">_.filterObj()</a>
+</li><li><a href="find.html">_.find()</a>
+</li><li><a href="findlast.html">_.findLast()</a>
 </li><li><a href="formathtml.html">_.format()</a>
 </li><li><a href="format.html">_.format()</a>
 </li><li><a href="formatvalue.html">_.formatValue()</a>
+</li><li><a href="intersection.html">_.intersection()</a>
 </li><li><a href="isbool.html">_.isBool()</a>
 </li><li><a href="isdate.html">_.isDate()</a>
 </li><li><a href="isfunction.html">_.isFunction()</a>
@@ -185,15 +195,22 @@ dynamically, as every new template requires memory that will not be freed.</p><p
 </li><li><a href="isobject.html">_.isObject()</a>
 </li><li><a href="isstring.html">_.isString()</a>
 </li><li><a href="isvalue.html">_.isValue()</a>
+</li><li><a href="map.html">_.map()</a>
 </li><li><a href="mapobj.html">_.mapObj()</a>
 </li><li><a href="pad.html">_.pad()</a>
 </li><li><a href="parsedate.html">_.parseDate()</a>
 </li><li><a href="parsenumber.html">_.parseNumber()</a>
 </li><li><a href="partial.html">_.partial()</a>
 </li><li><a href="range.html">_.range()</a>
+</li><li><a href="reverse.html">_.reverse()</a>
+</li><li><a href="startswith.html">_.startsWith()</a>
+</li><li><a href="sub.html">_.sub()</a>
 </li><li><a href="template.html">_.template()</a>
+</li><li><a href="toobject.html">_.toObject()</a>
 </li><li><a href="tostring.html">_.toString()</a>
 </li><li><a href="trim.html">_.trim()</a>
+</li><li><a href="uniq.html">_.uniq()</a>
+</li><li><a href="unite.html">_.unite()</a>
 </li><li><a href="promise.html">promise()</a>
 </li><li><a href="always.html">promise.always()</a>
 </li><li><a href="error.html">promise.error()</a>

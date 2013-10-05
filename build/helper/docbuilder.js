@@ -11,11 +11,13 @@ function parseDescription(desc, paragraphSeparator, plainText) {
 		.replace(/##(\w+)#([^#]+)##/g, function(all, id, text) { // ##id#any text##
 			return plainText ? text :  "<a href='"+id.toLowerCase()+".html'>"+text+"</a>";
 		})
-		.replace(/#(\w*)#([\w$.]+)\(\)/g, function(all, id, name) { // #id#name()  
-			var rId = id || name;
+		.replace(/#(\w*)#([\w$._]+)\(\)/g, function(all, id, name) { // #id#name()  and   ##name()
+			var rId = id || name.replace(/[_.$]+/g);
 			return plainText ? name : "<code><a href='"+rId.toLowerCase()+".html'>"+name+"()</a></code>";
 		})
-		.replace(/\n\n/mg, paragraphSeparator || '');
+		.replace(/\n\n/mg, paragraphSeparator || '')
+		.replace(/<var>/g, '<span class="var">')
+		.replace(/<\/var>/g, '</span>');
 }
 
 //takes a section, as created by parseSourceSections(). Adds a 'htmldoc' property containing HTML doc.
@@ -88,12 +90,15 @@ function createPreview(sec) {
 }
 
 
-//takes a section, as created by parseSourceSections(). Adds a 'tocentry' property containing a HTML preview of the function.
+//takes a section, as created by parseSourceSections(). Adds a 'tocentry' properties containing a HTML preview of the function.
 function createTOCEntry(sec) {
 	if (!sec.name || !sec.desc || sec.doc == 'no')
 		return;
 	
-	sec.tocentry = _.format('<a href="{{ID}}.html">{{TITLE}}</a>\n',	{ID: sec.id, TITLE: sec.name});
+	sec.tocentries = {};
+	sec.tocentries[sec.name] = _.format('<a href="{{ID}}.html">{{TITLE}}</a>\n',	{ID: sec.id, TITLE: sec.name});
+	if (sec.altname)
+		sec.tocentries[sec.altname] = _.format('<a href="{{ID}}.html">{{TITLE}}</a>\n',	{ID: sec.id, TITLE: sec.altname});
 }
 
 function documentSections(docSections) {
@@ -132,11 +137,17 @@ function sortTocOrder(sections) {
 }
 
 function createToc(sections) {
-	sortTocOrder(sections);
+	var tocEntries = [];
+	_.each(sections, function(sec) {
+		_.eachObj(sec.tocentries, function(name, html) {
+			tocEntries.push({id: sec.id, name: name, html: html});
+		});
+	});
+	sortTocOrder(tocEntries);
 	
 	var html = '<div id="toc"><h3>Functions</h3><ul>';
-	_.each(sections, function(sec) {
-		html += '<li>'+sec.tocentry+'</li>';
+	_.each(tocEntries, function(te) {
+		html += '<li>'+te.html+'</li>';
 	});
 	html += '<li><a href="/docs/howto.html">How to...</a></li>';
 	html += '</ul></div>';
