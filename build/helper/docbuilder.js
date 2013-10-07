@@ -28,6 +28,21 @@ function createDocs(sec) {
 	var s = _.format('<h2><a name="doc-{{ID}}">{{TITLE}}</a></h2>\n'+
 			'<div class="summary">{{SUMMARY}}</div>\n\n',
 			{ID: sec.id, TITLE: sec.name, SUMMARY: parseDescription(sec.desc.replace(/\.[^]+$/m, '.'), null, true)});
+	
+	var avail;
+	if (/COMMENT/.test(sec.module))
+		avail = sec.module.replace(/\s*COMMENT\s*/);
+	else if (/WEB.UTIL/.test(sec.module) || /UTIL.WEB/.test(sec.module))
+		avail = 'Complete distribution only, not available in stand-alone modules.';
+	else if (/WEB/.test(sec.module) && /UTIL/.test(sec.module))
+		avail = 'Available in all modules.';
+	else if (/WEB/.test(sec.module)) 
+		avail = 'Web module only.';
+	else if (/UTIL/.test(sec.module))
+		avail = 'Util module only.';
+	if (avail)
+		s += '<div class="availability">' + avail + '</div>';
+	
 	if (sec.syntax.length) {
 		if (sec.syntax.length == 1)
 			s += '<h4>Syntax</h4>\n';
@@ -96,9 +111,10 @@ function createTOCEntry(sec) {
 		return;
 	
 	sec.tocentries = {};
-	sec.tocentries[sec.name] = _.format('<a href="{{ID}}.html">{{TITLE}}</a>\n',	{ID: sec.id, TITLE: sec.name});
-	if (sec.altname)
-		sec.tocentries[sec.altname] = _.format('<a href="{{ID}}.html">{{TITLE}}</a>\n',	{ID: sec.id, TITLE: sec.altname});
+	sec.tocentries[sec.name] = _.format('<a href="{{id}}.html">{{name}}</a> '+
+			'{{if obj.module && !/WEB.UTIL/.test(obj.module)}}<span class="tocMod">{{if /WEB/.test(module) && !/UTIL/.test(module)}}Web{{else if /WEB/.test(module) && /UTIL/.test(module)}}Web, Util{{else if /UTIL/.test(module)}}Util{{/if}}</span>{{/if}}\n', sec);
+//	if (sec.altname)
+//		sec.tocentries[sec.altname] = _.format('<a href="{{id}}.html">{{altname}}</a>\n', sec);
 }
 
 function documentSections(docSections) {
@@ -158,7 +174,7 @@ function createOverviewPage(sections) {
 	sortTocOrder(sections);
 	
 	// Gen
-	var html = '<div id="docmain"><p class="docHead"><h1>Minified Web API</h1>\n</p>\n';
+	var html = '<div id="docmain"><p class="docHead"><h1>Minified API</h1>\n</p>\n';
 	_.each(sections, function(sec) {
 		html += sec.htmlpreview;
 	});

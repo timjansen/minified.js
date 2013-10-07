@@ -2,6 +2,9 @@ describe('minified-web-cookies-test.js', function() {
 	
 	describe('setCookie()/getCookie()', function() {
 		it('just works', function() {
+			if (!$.getCookie)
+				return;
+			
 			check($.getCookie('w'), null);
 			
 			$.setCookie('a', 'b');
@@ -24,20 +27,4 @@ describe('minified-web-cookies-test.js', function() {
 			check($.getCookie('xx'), 'a===');		});
 	});
 	
-
-
-	/*
-	describe('.fill()', function() {
-		it('', function() {
-			
-		});
-		it('', function() {
-			
-		});
-		it('', function() {
-			
-		});
-	});
-	*/
-
 });

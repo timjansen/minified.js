@@ -369,6 +369,18 @@ function runTests(loadInContext) {
 			assert(_.equals(_.sub(null, -1, 2), []));
 		});
 	});
+
+	describe('_.only()', function() {
+		it('selects one element', function() {
+			var _ = req();
+			var a = _(200, null, 1, 0, 34, 2, 3, 200), b= _();
+			
+			assert(_.equals(a.only(0), [200]));
+			assert(_.equals(a.only(2), [1]));
+			assert(_.equals(a.only(100), []));
+			assert(_.equals(b.only(100), []));
+		});
+	});
 	
 	describe('_.toObject()', function() {
 		it('single value', function() {

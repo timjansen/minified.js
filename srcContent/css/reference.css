@@ -31,6 +31,7 @@ p.docFoot {
 	margin-top: 2em;
 }
 .container { min-width: 70em !important; } /* overrides minimum.css */
+h2, h3, h4 { margin-top: 1.5em !important;  margin-bottom: 0.5em !important;} /* overrides minimum.css */
 
 dd dl { margin: 0.5em 0.5em 1em; }
 dd dl dt { font-style: italic; }
@@ -44,3 +45,19 @@ dl dl dt { margin-top: 0.25em; }
 .returnValue {
 	margin-top: 1em;
 }
+
+span.tocMod {
+	font-size: 50%;
+	color: #888;
+}
+
+div.availability {
+	font-style: italic;
+	font-size: smaller;
+	margin-top: 1.5em;
+	margin-bottom: 0em;
+	color: #888;
+}
+
+div.examples h4 { margin-top: 2.5em !important; }
+

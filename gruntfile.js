@@ -216,7 +216,7 @@ module.exports = function(grunt) {
 					'WebContent/css/doc.css': ['srcContent/css/minimum.css', 'srcContent/css/doc.css'],
 					'WebContent/css/links.css': ['srcContent/css/minimum.css', 'srcContent/css/links.css'],
 					'WebContent/css/homepage.css': ['srcContent/css/minimum.css', 'srcContent/css/homepage.css'],
-					'WebContent/css/reference.css': ['srcContent/css/minimum.css', 'srcContent/css/reference.css']
+					'WebContent/css/reference.css': ['srcContent/css/minimum.css', 'srcContent/css/doc.css', 'srcContent/css/reference.css']
 				}
 			}
 		},
@@ -284,11 +284,11 @@ module.exports = function(grunt) {
 				tasks: ['assemble', 'testQuick']
 			  },
 			  code: {
-				files: ['src/minified-web-full-src.js', 'src/minified-util-full-src.js', 'src/minified-master.js'],
+				files: ['src/minified-web-full-src.js', 'src/minified-util-full-src.js', 'src/minified-extras-full-src.js', 'src/minified-master.js'],
 				tasks: ['code']
 			  },
 			  content: {
-			    files: ['srcContent/**/*'],
+			    files: ['srcContent/**/*', 'build/helper/docbuilder.js'],
 			    tasks: ['site']
 			  }
 			},

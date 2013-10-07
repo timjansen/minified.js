@@ -16,6 +16,7 @@ Full distribution only:
 Web module:
 * New method: offset() to get page coordinates of an element.
 * New method: dial() returns a function that transitions elements between two states.
+* New method: onChange() invokes an event handler when an input's content changes.
 * New get()/set()/animate() properties: $$scrollX and $$scrollY.
 * New argument startIndex for find().
 * Changed EE() and clone(): they return elements in a list, instead of element factories.
@@ -26,6 +27,8 @@ Web module:
 * In animate(), removed animState param. stop() is now a property of the promise, time is returned by stop().
 * In toggle(), removed the (undocumented) option of using functions as states; toggle funcs don't return promises anymore. 
 * In setCookie(), removed the path and domain options.
+* In only(), supports numeric argument to select element by index.
+* Moved setCookie() and getCookie() to the complete distribution.
 
 Bugfixes:
 * Make $(window) work.

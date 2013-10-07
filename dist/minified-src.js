@@ -1055,6 +1055,8 @@ define('minified', function() {
 		var nodeSet = {};
 		if (isFunction(selector))
 			return selector;
+		else if (isNumber(selector))
+			return function(v, index) { return index == selector; };
 		else if (!selector || selector == '*' ||
 				 (isString(selector) && (dotPos = /^([\w-]*)\.?([\w-]*)$/.exec(selector)))) {
 			var nodeNameFilter = wordRegExpTester(dotPos && dotPos[1], 'nodeName');
@@ -1111,7 +1113,7 @@ define('minified', function() {
 	 * @syntax promise(otherPromise1, otherPromise2, ...)
 	 * @module WEB+UTIL
 	 * 
-	 * Creates a new ##promise#Promise##, optionally assimilating other promises. If no other promise is given, a promise controlled
+	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, a promise controlled
 	 * directly by you is returned. The returned promise is a function that can be called directly to change the 
 	 * promises state.
 	 * 
@@ -1404,7 +1406,6 @@ define('minified', function() {
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	copyObj({
-
 		///#snippet utilListFuncs
     /*$
      * @id each
@@ -1711,6 +1712,8 @@ define('minified', function() {
      * Returns a new ##list#Minified list## containing only the elements in the specified range. If there are no elements in the range,
      * an empty list is returned.
      * Negative indices are supported and will be added to the list's length, thus allowing you to specify ranges at the list's end.
+     *
+     * If you only want to have a single element from the list, you can only use ##only().
      *
      * @example Takes only the second and third element:
      * <pre> 
@@ -2183,9 +2186,8 @@ define('minified', function() {
 	 */
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
-	}
+	},
 	///#/snippet utilListFuncs
-		,
 
 	///#snippet webListFuncs
 
@@ -2297,7 +2299,7 @@ define('minified', function() {
  	 *         have been visited when traversing another node. Duplicate nodes will be automatically removed.
  	 */
 	'trav': function(property, selector, maxDepth) {
-		var isNum = isType(selector, 'number'); // TODO: use isNumber in util
+		var isNum = isNumber(selector);
 		var f = getFilterFunc(isNum ? _null : selector); 
 		var max = isNum ? selector : maxDepth;
 		return new M(collectUniqNodes(this, function(node) {
@@ -2387,12 +2389,15 @@ define('minified', function() {
  	 * @name .only()
  	 * @syntax list.only()
  	 * @syntax list.only(selector)
-     * @module WEB
- 	 * Returns a new list that contains only those elements that match the given selector.
+ 	 * @syntax list.only(filterFunc)
+ 	 * @syntax list.only(index)
+     * @module COMMENT only(index) is always available. All others variants are only in the Web module.
+ 	 * Returns a new list that contains only those elements that match the given selector, match the callback function
+ 	 * or have the given index. If no parameter has been given, the method returns all elements (same as '*').
  	 * 
- 	 * Please note that this method is optimized for the four simple selector forms '*', '.classname', 'tagname' 
- 	 * and 'tagname.classname'. If you use any other kind of selector, please be aware that selectors that match
- 	 * many elements can be slow.
+ 	 * When you use selectors, please note that this method is optimized for the four simple 
+ 	 * selector forms '*', '.classname', 'tagname' and 'tagname.classname'. If you use any other kind of 
+ 	 * selector, please be aware that selectors that match many elements can be slow.
  	 * 
  	 * @example Returns only those list elements have the classes 'listItem' and 'myClass':
  	 * <pre>
@@ -2404,12 +2409,14 @@ define('minified', function() {
  	 * var forms = $('#content *').only('form'); 
  	 * </pre>
  	 * 
- 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists. Alternatively you can pass
- 	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
+ 	 * @param selector any selector valid for #dollar#$(), including CSS selectors and lists. 
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which keeps all elements
  	 *        (but no other nodes such as text nodes).
- 	 * @return a new list containing only elements matched by the selector.
+ 	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
+ 	 * @param index the index of the element to keep. All elements with other index will be omitted. If there is no element
+ 	 *        with this index in the list, the returned list is empty.
+ 	 * @return a new list containing only elements matched by the selector/function/index.
  	 */
 	'only': function(selector) {
 		return this['filter'](getFilterFunc(selector));
@@ -3307,7 +3314,7 @@ define('minified', function() {
 	 *
 	 * Instead of the end value, you can also specify a <code>function(oldValue, index, obj)</code> to calculate the actual end value. 
 	 *
-	 * To allow more complex animation, <var>animate()</var> returns a ##promise#Promise## that is fulfulled when the animation has finished. 
+	 * To allow more complex animation, <var>animate()</var> returns a ##promiseClass#Promise## that is fulfulled when the animation has finished. 
 	 *
 	 * @example Move an element. 
 	 * <pre>
@@ -3336,7 +3343,7 @@ define('minified', function() {
 	 * $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
 	 * </pre>
 	 *
-	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200
+	 * @example Chained animation using ##promiseClass#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200
 	 *          and finally moves to 100/100.
 	 * <pre>
 	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
@@ -3372,7 +3379,7 @@ define('minified', function() {
 	 *             <dt>t</dt><dd>A value between 0 and 1 that specifies the state of the transition.</dd>
 	 *             <dt class="returnValue">(callback return value)</dt><dd>The value at the time <var>t</var>.</dd>
 	 *             </dl> 
-	 * @return a ##promise#Promise## object to monitor the animation's progress. 
+	 * @return a ##promiseClass#Promise## object to monitor the animation's progress. 
 	 *         It is fulfilled when the animation ended, and rejected if the animation had been stopped.
 	 *         The fulfillment handler will be called as <code>function(list)</code>:
 	 *         <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl> 
@@ -3782,10 +3789,11 @@ define('minified', function() {
 	 * $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 500));
 	 * </pre>
 	 * 
-	 * @param toggle the callback <code>function(isOver, index)</code> to invoke when the event has been triggered:
+	 * @param toggle the callback <code>function(isOver, index, event)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
+ 	 *             <dt>event</dt><dd>The original event object given to ##on().</dd>
  	 *             </dl>
 	 *             'this' is set to the target element that caused the event.
 	 * @return the list
@@ -3804,6 +3812,53 @@ define('minified', function() {
 					toggle.call(this, overState, index, ev);
 				}
 			}
+		});
+	},
+
+	/*$
+	 * @id onchange
+	 * @group EVENTS
+	 * @requires on dollar
+	 * @configurable default
+	 * @name .onOver()
+	 * @syntax list.onOver(handler)
+	 * @module WEB
+	 * Registers a handler to be called whenever content of the list's input fields changes. The handler is
+	 * called in realtime and does not wait for the focus to change. Text fields as well
+	 * as checkboxes and radio buttons are supported. The handler is called with the new value as first argument.
+	 * It is boolean for checkbox/radio buttons and the new text as string for text fields. 
+	 * 
+	 * @example Creates a handler that writes the input's content into a text node:
+	 * <pre>
+	 * $('#myField').onOver(function(newValue, index, ev) { $('#target').fill(newValue); });
+	 * </pre>
+	 * 
+	 * @param handler the callback <code>function(newValue, index, ev)</code> to invoke when the event has been triggered:
+	 * 		  <dl>
+ 	 *             <dt>newValue</dt>For text fields the new <var>value</var> string. For checkboxes/radio buttons boolean.</dd>
+ 	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
+ 	 *             <dt>event</dt><dd>The original event object given to ##on().</dd>
+ 	 *             </dl>
+	 *             'this' is set to the target element that caused the event.
+	 * @return the list
+	 */
+	'onChange': function(handler) {
+		var oldValues = [];
+		function register(eventNames, property, index) {
+			oldValues[index] = el[property];
+			$(el)['on'](eventNames, function(e) {
+				var newValue = el[eventNames]; 
+				if (newValue != oldValues[index]) {
+					handler.call(this, newValue, index, ev);
+					oldValues[index] = newValue;
+				}
+			});
+		}
+		each(this, function(el, index) {
+			if (/kbox|dio/i.test(el['type']))
+				register('|click', 'checked', index);
+			else 
+				register('|input |change |keyup', 'value', index);
 		});
 	},
 
@@ -3933,7 +3988,7 @@ define('minified', function() {
 	* @syntax $.request(method, url, data, onSuccess, onFailure, headers)
 	* @syntax $.request(method, url, data, onSuccess, onFailure, headers, username, password)
     * @module WEB
-	* Initiates a HTTP request to the given URL, using XMLHttpRequest. It returns a ##promise#Promise## object that allows you to obtain the result.
+	* Initiates a HTTP request to the given URL, using XMLHttpRequest. It returns a ##promiseClass#Promise## object that allows you to obtain the result.
 	* 
 	* @example Invokes a REST web service and parse the resulting document using JSON:
 	* <pre>
@@ -3983,7 +4038,7 @@ define('minified', function() {
 	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.
 	* @param username optional username to be used for HTTP authentication, together with the password parameter
 	* @param password optional password for HTTP authentication
-	* @return a ##promise#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
+	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
 	*         the success handler will be called as <code>function(text, xml)</code>:
 	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
 	*         <dt>xml</dt><dd>If the response was a XML document, the DOM <var>Document</var>. Otherwise null.</a>.</dd></dl>
@@ -4133,82 +4188,6 @@ define('minified', function() {
     * @param handler the <code>function()</code> to be called when the HTML is ready.
     */
     'ready': ready,
-
-	/*$
-     * @id setcookie
-     * @group COOKIE
-     * @configurable default
-     * @name $.setCookie()
-     * @syntax $.setCookie(name, value)
-     * @syntax $.setCookie(name, value, dateOrDays)
-     * @module WEB
-     * Creates, updates or deletes a cookie. If there is an an existing cookie
-     * of the same name, will be overwritten with the new value and settings.
-     * 
-     * To delete a cookie, overwrite it with an expiration date in the past. The easiest way to do this is to 
-     * use <code>-1</code> as third argument.
-     *
-     * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
-     * <pre>
-     * var visits = $.getCookie('numberOfVisits');
-     * $.setCookie('numberOfVisits', 
-     *                      visits ? (parseInt(visits) + 1) : 1,   // if cookie not set, start with 1
-     *                      365);                                  // store for 365 days
-     * </pre>
-     * 
-     * @example Deletes the cookie 'numberOfVisits':
-     * <pre>
-     * $.setCookie('numberOfVisits', '', -1);
-     * </pre>
-     * 
-     * @param name the name of the cookie. This should ideally be an alphanumeric name, as it will not be escaped by Minified and this
-     *             guarantees compatibility with all systems.
-     *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax. 
-     * @param value the value of the cookie. All characters can be used. Non-Alphanumeric other than "*@-_+./" will be escaped using the 
-     *              JavaScript <var>escape()</var> function, unless you set the optional <var>dontEscape</var> parameter.
-     * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
-     *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
-     *                   browser has been closed. If the number negative or the date in the past, the cookie will be deleted.
-     * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
-     *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
-     *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
-     */
-    'setCookie': function(name, value, dateOrDays, dontEscape) {
-    	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
-    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(nowAsTime() + dateOrDays * 8.64E7)).toUTCString()) : '');
-    },
-
-    /*$
-     * @id getcookie
-     * @group COOKIE
-     * @requires
-     * @configurable default
-     * @name $.getCookie()
-     * @syntax $.getCookie(name)
-     * @syntax $.getCookie(name, dontUnescape)
-     * @module WEB
-     * Tries to find the cookie with the given name and returns it.
-     *
-     * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
-     * <pre>
-     * var visits = $.getCookie('numberOfVisits');
-     * if (!visits)    // check whether cookie set. Null if not
-     *     $('#myCounter').set('innerHML', 'Your first visit.');
-     * else
-     *     $('#myCounter').set('innerHTML', 'Visit No ' + visits);
-     * </pre>
-     *  
-     * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
-     *             You may want to escape the name using <var>encodeURIComponent()</var> for all other characters.
-     * @param dontUnescape optional if set and true, the value will be returned unescaped. Use this parameter only if the value has been encoded
-     *                     in a special way, and not with the JavaScript <var>encode()</var> method.
-     * @return the value of the cookie, or null if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
-     *         using JavaScript's <code>unescape()</code> function.
-     */
-    'getCookie': function(name, dontUnescape) {
-    	var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
-    	return dontUnescape ? match : match && unescape(match);
-    },
 
 	/*$
 	* @id loop
@@ -4383,11 +4362,11 @@ define('minified', function() {
 		'keys': funcArrayBind(keys),
 
 	    /*$ 
-	     * @id values 
+	     * @id objvalues 
 	     * @group OBJECT 
 	     * @requires
 	     * @configurable default 
-	     * @name .values() 
+	     * @name _.values() 
 	     * @syntax _.values(obj) 
 	     * @module UTIL
 	     * Creates a ##list#Minified list## containing all property values of the specified object. Only direct properies are
@@ -5302,7 +5281,7 @@ define('minified', function() {
 	     * @group FORMAT
 	     * @requires 
 	     * @configurable default 
-	     * @name _.format() 
+	     * @name _.formatHtml() 
 	     * @syntax _.formatHtml()
 	     * @syntax _.formatHtml(template, object)
 	   	 * @module UTIL
@@ -5334,6 +5313,82 @@ define('minified', function() {
 	// @condblock promise
 	'promise': promise,
 	// @condend promise
+
+	/*$
+     * @id setcookie
+     * @group COOKIE
+     * @configurable default
+     * @name $.setCookie()
+     * @syntax $.setCookie(name, value)
+     * @syntax $.setCookie(name, value, dateOrDays)
+     * @module WEB+UTIL
+     * Creates, updates or deletes a cookie. If there is an an existing cookie
+     * of the same name, will be overwritten with the new value and settings.
+     * 
+     * To delete a cookie, overwrite it with an expiration date in the past. The easiest way to do this is to 
+     * use <code>-1</code> as third argument.
+     *
+     * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
+     * <pre>
+     * var visits = $.getCookie('numberOfVisits');
+     * $.setCookie('numberOfVisits', 
+     *                      visits ? (parseInt(visits) + 1) : 1,   // if cookie not set, start with 1
+     *                      365);                                  // store for 365 days
+     * </pre>
+     * 
+     * @example Deletes the cookie 'numberOfVisits':
+     * <pre>
+     * $.setCookie('numberOfVisits', '', -1);
+     * </pre>
+     * 
+     * @param name the name of the cookie. This should ideally be an alphanumeric name, as it will not be escaped by Minified and this
+     *             guarantees compatibility with all systems.
+     *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax. 
+     * @param value the value of the cookie. All characters can be used. Non-Alphanumeric other than "*@-_+./" will be escaped using the 
+     *              JavaScript <var>escape()</var> function, unless you set the optional <var>dontEscape</var> parameter.
+     * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
+     *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
+     *                   browser has been closed. If the number negative or the date in the past, the cookie will be deleted.
+     * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
+     *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
+     *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
+     */
+    'setCookie': function(name, value, dateOrDays, dontEscape) {
+    	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
+    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(nowAsTime() + dateOrDays * 8.64E7)).toUTCString()) : '');
+    },
+
+    /*$
+     * @id getcookie
+     * @group COOKIE
+     * @requires
+     * @configurable default
+     * @name $.getCookie()
+     * @syntax $.getCookie(name)
+     * @syntax $.getCookie(name, dontUnescape)
+     * @module WEB+UTIL
+     * Tries to find the cookie with the given name and returns it.
+     *
+     * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
+     * <pre>
+     * var visits = $.getCookie('numberOfVisits');
+     * if (!visits)    // check whether cookie set. Null if not
+     *     $('#myCounter').set('innerHML', 'Your first visit.');
+     * else
+     *     $('#myCounter').set('innerHTML', 'Visit No ' + visits);
+     * </pre>
+     *  
+     * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
+     *             You may want to escape the name using <var>encodeURIComponent()</var> for all other characters.
+     * @param dontUnescape optional if set and true, the value will be returned unescaped. Use this parameter only if the value has been encoded
+     *                     in a special way, and not with the JavaScript <var>encode()</var> method.
+     * @return the value of the cookie, or null if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
+     *         using JavaScript's <code>unescape()</code> function.
+     */
+    'getCookie': function(name, dontUnescape) {
+    	var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
+    	return dontUnescape ? match : match && unescape(match);
+    },
 
 	/*$
 	 * @id delay
@@ -5891,20 +5946,20 @@ define('minified', function() {
  * @name Promise
  * @module WEB, UTIL
  * 
- * <i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using #request#$.request(),
+ * <i>Promises</i> are objects that represent the future result of an asynchronous operation. When you start such an operation, using #request#$.request(),
  * ##animate(), or ##wait(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
  * 
  * Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
  * be able to interoperate with most other Promises implementations.
  * 
  * What may be somewhat surprising about this Promises specification is that there is no direct way to find out the state of the operation.
- * There is neither a property nor a function to find out what the result is or whether it is available. Instead, you always have to 
+ * There is neither a property nor a function to get result directly or find out whether it is available. Instead, you always have to 
  * register callbacks to find out the result. They will be invoked as soon as the operation is finished. 
  * If the operation already ended when you register the callbacks, the callback will then just be called from the event loop as soon
  * as possible (but never while the ##then() you register them with is still running).<br/>
  * This design forces you to handle the operation result asynchronously and disencourages 'bad' techniques such as polling.
  * 
- * The central method of a Promises, and indeed the only required function in Promises/A+, is ##then(). It allows you to register
+ * The central method of a Promise, and indeed the only required function in Promises/A+, is ##then(). It allows you to register
  * two callback methods, one for success (called 'fulfillment' in Promises/A+ terminology) and one for failures (called 'rejection' in Promises/A+).
  * 
  * This example shows you how to use <var>then()</var>:
@@ -5929,13 +5984,13 @@ define('minified', function() {
  *  });
  * </pre>
  * 
- * Because the first ##then() returns a new Promise based on the original Promise, the second <var>then()</var> will handle errors of the request just like
+ * Because the first ##then() returns a new Promise based on the original Promise, the second <var>then()</var> will handle errors of the request just like 
  * the first one did. There is only one subtle difference in the second example: the error handler will not only be called if the request failed, 
  * but also when the request succeded but the success handler threw an exception. That's one of the two differences between the original Promise and 
  * the Promise returned by <var>then()</var>. Any exception thrown in a callback causes the new Promise to be in error state. 
  * 
  * Before I show you the second difference between the original Promise and the new Promise, let me make the example a bit more readable 
- * by using ##error(), which is not part of Promises/A+, but a simple extension by Minified. It just registers the failure callback without
+ * by using ##error(), which is not part of Promises/A+, but a simple extension by Minified. It just registers the failure callback without 
  * forcing you to specify <var>null</var> as first argument: 
  * <pre>
  * $.request('get', 'http://example.com/weather?zip=90210')
@@ -5947,9 +6002,9 @@ define('minified', function() {
  *  });
  * </pre>
  * 
- * A very powerful capability of Promises is that you can easily chain them. If a ##then() callback returns a value, the new Promise returned
- * by <var>then()</var> will be marked as success (fulfilled) and this value is the result of the operation. If a callback returns a Promise,
- * the new Promise will assume the state of the returned Promise. You can use the latter to create chains of asynchronous operations,
+ * A very powerful capability of Promises is that you can easily chain them. If a ##then() callback returns a value, the new Promise returned 
+ * by <var>then()</var> will be marked as success (fulfilled) and this value is the result of the operation. If a callback returns a Promise, 
+ * the new Promise will assume the state of the returned Promise. You can use the latter to create chains of asynchronous operations, 
  * but you still need only a single error handler for all of them and you do not need to nest functions to achieve this:
  * <pre>
  * $.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
@@ -5964,9 +6019,28 @@ define('minified', function() {
  *  });
  * </pre>
  *  
+ * Only the full Minified distribution allows you to create promises yourself, using the ##promise() function. The Promises/A+ 
+ * specification does not specify how to fulfill a promise, but in Minified's implementation every Promise object is a function  
+ * that needs to be called when the promise result is ready. It requires two arguments.
+ * The first is a boolean, true for a successful operation and false for a failure. The second is an array or list containing the
+ * arguments to call the corresponding ##then() handler with.
  * 
- * Please note that the Minified Web module only returns Promises, but it <strong>does not allow you to create Promises</strong> directly. The upcoming
- * Minified App module will allow this though.
+ * The following example is a function, similar to ##wait(), that returns a Promise which succeeds after the given amount 
+ * of milliseconds has passed.
+ * It then fulfills the promise with the number of milliseconds as argument. 
+ * 
+ * <pre>
+ * function timeout(durationMs) {
+ *		var p = _.promise();
+ *		setTimeout(function() { p(true, [durationMs]); }, durationMs);
+ *		return p;
+ * }
+ * </pre>
+ * Call it like this: 
+ * <pre>
+ * timeout(1000).then(function(ms) { window.alert(ms+ ' milliseconds have passed.'); });
+ * </pre>
+ * 
  */
 /*$
  * @stop

@@ -34,12 +34,8 @@ function dummy() {
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 	copyObj({
-		///#remove
-		dummy1:0
-		///#/remove
-
 		///#include minified-util-full-src.js utilListFuncs
-		,
+		
 		///#remove
 		dummy2:0
 		///#/remove

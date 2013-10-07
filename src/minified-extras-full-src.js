@@ -402,6 +402,82 @@ function dummy() {
 	// @condend promise
 	
 	/*$
+     * @id setcookie
+     * @group COOKIE
+     * @configurable default
+     * @name $.setCookie()
+     * @syntax $.setCookie(name, value)
+     * @syntax $.setCookie(name, value, dateOrDays)
+     * @module WEB+UTIL
+     * Creates, updates or deletes a cookie. If there is an an existing cookie
+     * of the same name, will be overwritten with the new value and settings.
+     * 
+     * To delete a cookie, overwrite it with an expiration date in the past. The easiest way to do this is to 
+     * use <code>-1</code> as third argument.
+     *
+     * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
+     * <pre>
+     * var visits = $.getCookie('numberOfVisits');
+     * $.setCookie('numberOfVisits', 
+     *                      visits ? (parseInt(visits) + 1) : 1,   // if cookie not set, start with 1
+     *                      365);                                  // store for 365 days
+     * </pre>
+     * 
+     * @example Deletes the cookie 'numberOfVisits':
+     * <pre>
+     * $.setCookie('numberOfVisits', '', -1);
+     * </pre>
+     * 
+     * @param name the name of the cookie. This should ideally be an alphanumeric name, as it will not be escaped by Minified and this
+     *             guarantees compatibility with all systems.
+     *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax. 
+     * @param value the value of the cookie. All characters can be used. Non-Alphanumeric other than "*@-_+./" will be escaped using the 
+     *              JavaScript <var>escape()</var> function, unless you set the optional <var>dontEscape</var> parameter.
+     * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
+     *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
+     *                   browser has been closed. If the number negative or the date in the past, the cookie will be deleted.
+     * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
+     *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
+     *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
+     */
+    'setCookie': function(name, value, dateOrDays, dontEscape) {
+    	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
+    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(nowAsTime() + dateOrDays * 8.64E7)).toUTCString()) : '');
+    },
+    
+    /*$
+     * @id getcookie
+     * @group COOKIE
+     * @requires
+     * @configurable default
+     * @name $.getCookie()
+     * @syntax $.getCookie(name)
+     * @syntax $.getCookie(name, dontUnescape)
+     * @module WEB+UTIL
+     * Tries to find the cookie with the given name and returns it.
+     *
+     * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
+     * <pre>
+     * var visits = $.getCookie('numberOfVisits');
+     * if (!visits)    // check whether cookie set. Null if not
+     *     $('#myCounter').set('innerHML', 'Your first visit.');
+     * else
+     *     $('#myCounter').set('innerHTML', 'Visit No ' + visits);
+     * </pre>
+     *  
+     * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
+     *             You may want to escape the name using <var>encodeURIComponent()</var> for all other characters.
+     * @param dontUnescape optional if set and true, the value will be returned unescaped. Use this parameter only if the value has been encoded
+     *                     in a special way, and not with the JavaScript <var>encode()</var> method.
+     * @return the value of the cookie, or null if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
+     *         using JavaScript's <code>unescape()</code> function.
+     */
+    'getCookie': function(name, dontUnescape) {
+    	var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
+    	return dontUnescape ? match : match && unescape(match);
+    },
+	
+	/*$
 	 * @id delay
 	 * @configurable default
 	 * @requires

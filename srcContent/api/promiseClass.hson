@@ -9,18 +9,18 @@
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-promiseClass">Promise</a></h2>
 <div class="summary">
-<i>Promises</i> are objects that represent the result of an asynchronous operation.</div>
+<i>Promises</i> are objects that represent the future result of an asynchronous operation.</div>
 
-<h4>Description</h4>
+<div class="availability">Available in all modules.</div><h4>Description</h4>
 <div class="description"><p>
-<i>Promises</i> are objects that represent the result of an asynchronous operation. When you start such an operation, using <code><a href='request.html'>$.request()</a></code>,
+<i>Promises</i> are objects that represent the future result of an asynchronous operation. When you start such an operation, using <code><a href='request.html'>$.request()</a></code>,
 <code><a href='animate.html'>animate()</a></code>, or <code><a href='wait.html'>wait()</a></code>, you will get a Promise object that allows you to get the result as soon as the operation is finished.</p><p>Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
 be able to interoperate with most other Promises implementations.</p><p>What may be somewhat surprising about this Promises specification is that there is no direct way to find out the state of the operation.
-There is neither a property nor a function to find out what the result is or whether it is available. Instead, you always have to
+There is neither a property nor a function to get result directly or find out whether it is available. Instead, you always have to
 register callbacks to find out the result. They will be invoked as soon as the operation is finished.
 If the operation already ended when you register the callbacks, the callback will then just be called from the event loop as soon
 as possible (but never while the <code><a href='then.html'>then()</a></code> you register them with is still running).<br/>
-This design forces you to handle the operation result asynchronously and disencourages 'bad' techniques such as polling.</p><p>The central method of a Promises, and indeed the only required function in Promises/A+, is <code><a href='then.html'>then()</a></code>. It allows you to register
+This design forces you to handle the operation result asynchronously and disencourages 'bad' techniques such as polling.</p><p>The central method of a Promise, and indeed the only required function in Promises/A+, is <code><a href='then.html'>then()</a></code>. It allows you to register
 two callback methods, one for success (called 'fulfillment' in Promises/A+ terminology) and one for failures (called 'rejection' in Promises/A+).</p><p>This example shows you how to use <span class="var">then()</span>:
 <pre>
 $.request('get', 'http://example.com/weather?zip=90210')
@@ -68,134 +68,129 @@ $.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
  .error(function(exception) {
  	alert('Something went wrong');
  });
-</pre></p><p>
-Please note that the Minified Web module only returns Promises, but it <strong>does not allow you to create Promises</strong> directly. The upcoming
-Minified App module will allow this though.
-</p></div>
+</pre></p><p>Only the full Minified distribution allows you to create promises yourself, using the <code><a href='promise.html'>promise()</a></code> function. The Promises/A+
+specification does not specify how to fulfill a promise, but in Minified's implementation every Promise object is a function
+that needs to be called when the promise result is ready. It requires two arguments.
+The first is a boolean, true for a successful operation and false for a failure. The second is an array or list containing the
+arguments to call the corresponding <code><a href='then.html'>then()</a></code> handler with.</p><p>The following example is a function, similar to <code><a href='wait.html'>wait()</a></code>, that returns a Promise which succeeds after the given amount
+of milliseconds has passed.
+It then fulfills the promise with the number of milliseconds as argument.</p><p><pre>
+function timeout(durationMs) {
+	var p = _.promise();
+	setTimeout(function() { p(true, [durationMs]); }, durationMs);
+	return p;
+}
+</pre>
+Call it like this:
+<pre>
+timeout(1000).then(function(ms) { window.alert(ms+ ' milliseconds have passed.'); });
+</pre></p><p></p></div>
 
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
-<div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a>
-</li><li><a href="length.html">list.length</a>
-</li><li><a href="dollardollar.html">$$()</a>
-</li><li><a href="defer.html">$.defer()</a>
-</li><li><a href="delay.html">$.delay()</a>
-</li><li><a href="getcookie.html">$.getCookie()</a>
-</li><li><a href="loop.html">$.loop()</a>
-</li><li><a href="off.html">$.off()</a>
-</li><li><a href="parsejson.html">$.parseJSON()</a>
-</li><li><a href="ready.html">$.ready()</a>
-</li><li><a href="request.html">$.request()</a>
-</li><li><a href="setcookie.html">$.setCookie()</a>
-</li><li><a href="tojson.html">$.toJSON()</a>
-</li><li><a href="wait.html">$.wait()</a>
-</li><li><a href="add.html">.add()</a>
-</li><li><a href="addafter.html">.addAfter()</a>
-</li><li><a href="addbefore.html">.addBefore()</a>
-</li><li><a href="addfront.html">.addFront()</a>
-</li><li><a href="animate.html">.animate()</a>
-</li><li><a href="array.html">.array()</a>
-</li><li><a href="call.html">.call()</a>
-</li><li><a href="clone.html">.clone()</a>
-</li><li><a href="collect.html">.collect()</a>
-</li><li><a href="contains.html">.contains()</a>
-</li><li><a href="dial.html">.dial()</a>
-</li><li><a href="each.html">.each()</a>
-</li><li><a href="endswith.html">.endsWith()</a>
-</li><li><a href="equals.html">.equals()</a>
-</li><li><a href="fill.html">.fill()</a>
-</li><li><a href="filter.html">.filter()</a>
-</li><li><a href="find.html">.find()</a>
-</li><li><a href="findlast.html">.findLast()</a>
-</li><li><a href="get.html">.get()</a>
-</li><li><a href="ht.html">.ht()</a>
-</li><li><a href="intersection.html">.intersection()</a>
-</li><li><a href="is.html">.is()</a>
-</li><li><a href="join.html">.join()</a>
-</li><li><a href="keys.html">.keys()</a>
-</li><li><a href="map.html">.map()</a>
-</li><li><a href="offset.html">.offset()</a>
-</li><li><a href="on.html">.on()</a>
-</li><li><a href="onover.html">.onOver()</a>
-</li><li><a href="only.html">.only()</a>
-</li><li><a href="remove.html">.remove()</a>
-</li><li><a href="replace.html">.replace()</a>
-</li><li><a href="reverse.html">.reverse()</a>
-</li><li><a href="select.html">.select()</a>
-</li><li><a href="set.html">.set()</a>
-</li><li><a href="sort.html">.sort()</a>
-</li><li><a href="startswith.html">.startsWith()</a>
-</li><li><a href="sub.html">.sub()</a>
-</li><li><a href="text.html">.text()</a>
-</li><li><a href="toobject.html">.toObject()</a>
-</li><li><a href="toggle.html">.toggle()</a>
-</li><li><a href="trav.html">.trav()</a>
-</li><li><a href="trigger.html">.trigger()</a>
-</li><li><a href="uniq.html">.uniq()</a>
-</li><li><a href="unite.html">.unite()</a>
-</li><li><a href="values.html">.values()</a>
-</li><li><a href="values.html">.values()</a>
-</li><li><a href="ee.html">EE()</a>
-</li><li><a href="html.html">HTML()</a>
-</li><li><a href="M.html">M</a>
-</li><li><a href="list.html">Minified Lists</a>
-</li><li><a href="promiseClass.html">Promise</a>
-</li><li><a href="underscore.html">_()</a>
-</li><li><a href="array.html">_.array()</a>
-</li><li><a href="bind.html">_.bind()</a>
-</li><li><a href="call.html">_.call()</a>
-</li><li><a href="collect.html">_.collect</a>
-</li><li><a href="contains.html">_.contains()</a>
-</li><li><a href="copyobj.html">_.copyObj()</a>
-</li><li><a href="dateadd.html">_.dateAdd()</a>
-</li><li><a href="dateclone.html">_.dateClone()</a>
-</li><li><a href="datediff.html">_.dateDiff()</a>
-</li><li><a href="datemidnight.html">_.dateMidnight()</a>
-</li><li><a href="each.html">_.each()</a>
-</li><li><a href="eachobj.html">_.eachObj()</a>
-</li><li><a href="endswith.html">_.endsWith()</a>
-</li><li><a href="equals.html">_.equals()</a>
-</li><li><a href="escapehtml.html">_.escapeHtml()</a>
-</li><li><a href="escaperegexp.html">_.escapeRegExp()</a>
-</li><li><a href="filter.html">_.filter()</a>
-</li><li><a href="filterobj.html">_.filterObj()</a>
-</li><li><a href="find.html">_.find()</a>
-</li><li><a href="findlast.html">_.findLast()</a>
-</li><li><a href="formathtml.html">_.format()</a>
-</li><li><a href="format.html">_.format()</a>
-</li><li><a href="formatvalue.html">_.formatValue()</a>
-</li><li><a href="intersection.html">_.intersection()</a>
-</li><li><a href="isbool.html">_.isBool()</a>
-</li><li><a href="isdate.html">_.isDate()</a>
-</li><li><a href="isfunction.html">_.isFunction()</a>
-</li><li><a href="islist.html">_.isList()</a>
-</li><li><a href="isnumber.html">_.isNumber()</a>
-</li><li><a href="isobject.html">_.isObject()</a>
-</li><li><a href="isstring.html">_.isString()</a>
-</li><li><a href="isvalue.html">_.isValue()</a>
-</li><li><a href="map.html">_.map()</a>
-</li><li><a href="mapobj.html">_.mapObj()</a>
-</li><li><a href="pad.html">_.pad()</a>
-</li><li><a href="parsedate.html">_.parseDate()</a>
-</li><li><a href="parsenumber.html">_.parseNumber()</a>
-</li><li><a href="partial.html">_.partial()</a>
-</li><li><a href="range.html">_.range()</a>
-</li><li><a href="reverse.html">_.reverse()</a>
-</li><li><a href="startswith.html">_.startsWith()</a>
-</li><li><a href="sub.html">_.sub()</a>
-</li><li><a href="template.html">_.template()</a>
-</li><li><a href="toobject.html">_.toObject()</a>
-</li><li><a href="tostring.html">_.toString()</a>
-</li><li><a href="trim.html">_.trim()</a>
-</li><li><a href="uniq.html">_.uniq()</a>
-</li><li><a href="unite.html">_.unite()</a>
-</li><li><a href="promise.html">promise()</a>
-</li><li><a href="always.html">promise.always()</a>
-</li><li><a href="error.html">promise.error()</a>
-</li><li><a href="state.html">promise.state</a>
-</li><li><a href="then.html">promise.then()</a>
-</li><li><a href="require.html">require()</a>
+<div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a> <span class="tocMod">Web</span>
+</li><li><a href="length.html">list.length</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="dollardollar.html">$$()</a> <span class="tocMod">Web</span>
+</li><li><a href="defer.html">$.defer()</a> 
+</li><li><a href="delay.html">$.delay()</a> 
+</li><li><a href="getcookie.html">$.getCookie()</a> <span class="tocMod">Web</span>
+</li><li><a href="loop.html">$.loop()</a> <span class="tocMod">Web</span>
+</li><li><a href="off.html">$.off()</a> <span class="tocMod">Web</span>
+</li><li><a href="parsejson.html">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="ready.html">$.ready()</a> <span class="tocMod">Web</span>
+</li><li><a href="request.html">$.request()</a> <span class="tocMod">Web</span>
+</li><li><a href="setcookie.html">$.setCookie()</a> <span class="tocMod">Web</span>
+</li><li><a href="tojson.html">$.toJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="wait.html">$.wait()</a> 
+</li><li><a href="add.html">.add()</a> <span class="tocMod">Web</span>
+</li><li><a href="addafter.html">.addAfter()</a> <span class="tocMod">Web</span>
+</li><li><a href="addbefore.html">.addBefore()</a> <span class="tocMod">Web</span>
+</li><li><a href="addfront.html">.addFront()</a> <span class="tocMod">Web</span>
+</li><li><a href="animate.html">.animate()</a> <span class="tocMod">Web</span>
+</li><li><a href="array.html">.array()</a> <span class="tocMod">Util</span>
+</li><li><a href="call.html">.call()</a> <span class="tocMod">Util</span>
+</li><li><a href="clone.html">.clone()</a> <span class="tocMod">Web</span>
+</li><li><a href="collect.html">.collect()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="contains.html">.contains()</a> <span class="tocMod">Util</span>
+</li><li><a href="dial.html">.dial()</a> <span class="tocMod">Web</span>
+</li><li><a href="each.html">.each()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="endswith.html">.endsWith()</a> <span class="tocMod">Util</span>
+</li><li><a href="equals.html">.equals()</a> <span class="tocMod">Util</span>
+</li><li><a href="fill.html">.fill()</a> <span class="tocMod">Web</span>
+</li><li><a href="filter.html">.filter()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="find.html">.find()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="findlast.html">.findLast()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="get.html">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="ht.html">.ht()</a> <span class="tocMod">Web</span>
+</li><li><a href="intersection.html">.intersection()</a> <span class="tocMod">Util</span>
+</li><li><a href="is.html">.is()</a> <span class="tocMod">Web</span>
+</li><li><a href="join.html">.join()</a> <span class="tocMod">Util</span>
+</li><li><a href="keys.html">.keys()</a> <span class="tocMod">Util</span>
+</li><li><a href="map.html">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="offset.html">.offset()</a> 
+</li><li><a href="on.html">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onover.html">.onOver()</a> <span class="tocMod">Web</span>
+</li><li><a href="only.html">.only()</a> <span class="tocMod"></span>
+</li><li><a href="remove.html">.remove()</a> <span class="tocMod">Web</span>
+</li><li><a href="replace.html">.replace()</a> <span class="tocMod">Web</span>
+</li><li><a href="reverse.html">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="select.html">.select()</a> <span class="tocMod">Web</span>
+</li><li><a href="set.html">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="sort.html">.sort()</a> <span class="tocMod">Util</span>
+</li><li><a href="startswith.html">.startsWith()</a> <span class="tocMod">Util</span>
+</li><li><a href="sub.html">.sub()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="text.html">.text()</a> <span class="tocMod">Web</span>
+</li><li><a href="toobject.html">.toObject()</a> <span class="tocMod">Util</span>
+</li><li><a href="toggle.html">.toggle()</a> <span class="tocMod">Web</span>
+</li><li><a href="trav.html">.trav()</a> <span class="tocMod">Web</span>
+</li><li><a href="trigger.html">.trigger()</a> <span class="tocMod">Web</span>
+</li><li><a href="uniq.html">.uniq()</a> <span class="tocMod">Util</span>
+</li><li><a href="unite.html">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="values.html">.values()</a> <span class="tocMod"></span>
+</li><li><a href="ee.html">EE()</a> <span class="tocMod">Web</span>
+</li><li><a href="html.html">HTML()</a> <span class="tocMod">Web</span>
+</li><li><a href="M.html">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="list.html">Minified Lists</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="promiseClass.html">Promise</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="underscore.html">_()</a> <span class="tocMod">Util</span>
+</li><li><a href="bind.html">_.bind()</a> <span class="tocMod">Util</span>
+</li><li><a href="copyobj.html">_.copyObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="dateadd.html">_.dateAdd()</a> <span class="tocMod">Util</span>
+</li><li><a href="dateclone.html">_.dateClone()</a> <span class="tocMod">Util</span>
+</li><li><a href="datediff.html">_.dateDiff()</a> <span class="tocMod">Util</span>
+</li><li><a href="datemidnight.html">_.dateMidnight()</a> <span class="tocMod">Util</span>
+</li><li><a href="eachobj.html">_.eachObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="escapehtml.html">_.escapeHtml()</a> <span class="tocMod">Util</span>
+</li><li><a href="escaperegexp.html">_.escapeRegExp()</a> <span class="tocMod">Util</span>
+</li><li><a href="filterobj.html">_.filterObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="format.html">_.format()</a> <span class="tocMod">Util</span>
+</li><li><a href="formathtml.html">_.formatHtml()</a> <span class="tocMod">Util</span>
+</li><li><a href="formatvalue.html">_.formatValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="isbool.html">_.isBool()</a> <span class="tocMod">Util</span>
+</li><li><a href="isdate.html">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isfunction.html">_.isFunction()</a> <span class="tocMod">Util</span>
+</li><li><a href="islist.html">_.isList()</a> <span class="tocMod">Util</span>
+</li><li><a href="isnumber.html">_.isNumber()</a> <span class="tocMod">Util</span>
+</li><li><a href="isobject.html">_.isObject()</a> <span class="tocMod">Util</span>
+</li><li><a href="isstring.html">_.isString()</a> <span class="tocMod">Util</span>
+</li><li><a href="isvalue.html">_.isValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="mapobj.html">_.mapObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="pad.html">_.pad()</a> <span class="tocMod">Util</span>
+</li><li><a href="parsedate.html">_.parseDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="parsenumber.html">_.parseNumber()</a> <span class="tocMod">Util</span>
+</li><li><a href="partial.html">_.partial()</a> <span class="tocMod">Util</span>
+</li><li><a href="range.html">_.range()</a> <span class="tocMod"></span>
+</li><li><a href="template.html">_.template()</a> <span class="tocMod">Util</span>
+</li><li><a href="tostring.html">_.toString()</a> <span class="tocMod">Util</span>
+</li><li><a href="trim.html">_.trim()</a> <span class="tocMod">Util</span>
+</li><li><a href="objvalues.html">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="promise.html">promise()</a> 
+</li><li><a href="always.html">promise.always()</a> 
+</li><li><a href="error.html">promise.error()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="state.html">promise.state</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="then.html">promise.then()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="require.html">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html">How to...</a></li></ul></div>
 
 `

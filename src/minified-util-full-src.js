@@ -815,6 +815,11 @@ define('minified', function() {
 	
 	
 	copyObj({
+		// this function is only used if only Util is selected: Web contains a better version.
+		'only': function(index) {
+			return filter(this, function(v, i) { return i == index; });
+		},
+		
 		///#snippet utilListFuncs
     /*$
      * @id each
@@ -1122,6 +1127,8 @@ define('minified', function() {
      * Returns a new ##list#Minified list## containing only the elements in the specified range. If there are no elements in the range,
      * an empty list is returned.
      * Negative indices are supported and will be added to the list's length, thus allowing you to specify ranges at the list's end.
+     *
+     * If you only want to have a single element from the list, you can only use ##only().
      *
      * @example Takes only the second and third element:
      * <pre> 
@@ -1595,12 +1602,12 @@ define('minified', function() {
 	 */
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
-	}
+	},
 	///#/snippet utilListFuncs
-	
- 	/*$
+	/*$
  	 * @stop
  	 */
+	dummy:0
 	}, M.prototype);
      
 
@@ -1684,11 +1691,11 @@ define('minified', function() {
 		'keys': funcArrayBind(keys),
 
 	    /*$ 
-	     * @id values 
+	     * @id objvalues 
 	     * @group OBJECT 
 	     * @requires
 	     * @configurable default 
-	     * @name .values() 
+	     * @name _.values() 
 	     * @syntax _.values(obj) 
 	     * @module UTIL
 	     * Creates a ##list#Minified list## containing all property values of the specified object. Only direct properies are
@@ -2610,7 +2617,7 @@ define('minified', function() {
 	     * @group FORMAT
 	     * @requires 
 	     * @configurable default 
-	     * @name _.format() 
+	     * @name _.formatHtml() 
 	     * @syntax _.formatHtml()
 	     * @syntax _.formatHtml(template, object)
 	   	 * @module UTIL
