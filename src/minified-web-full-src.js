@@ -2738,17 +2738,17 @@ define('minified', function() {
 	 */
 	'onChange': function(handler) {
 		var oldValues = [];
-		function register(eventNames, property, index) {
-			oldValues[index] = el[property];
-			$(el)['on'](eventNames, function(e) {
-				var newValue = el[eventNames]; 
-				if (newValue != oldValues[index]) {
-					handler.call(this, newValue, index, ev);
-					oldValues[index] = newValue;
-				}
-			});
-		}
 		each(this, function(el, index) {
+			function register(eventNames, property, index) {
+				oldValues[index] = el[property];
+				$(el)['on'](eventNames, function(e) {
+					var newValue = el[property]; 
+					if (newValue != oldValues[index]) {
+						handler.call(this, newValue, index, e);
+						oldValues[index] = newValue;
+					}
+				});
+			}
 			if (/kbox|dio/i.test(el['type']))
 				register('|click', 'checked', index);
 			else 

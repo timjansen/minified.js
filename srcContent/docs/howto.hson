@@ -218,7 +218,7 @@ $$('#myElement').innerHTML = "My &lt;b>HTML&lt;/b>";</pre>
 </p>
 <p>
 API: <a href="/api/ht.html">ht()</a>, <a href="/api/set.html">set()</a>, <a href="/api/template.html">template()</a>, <a href="/api/dollardollar.html">$$()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/HUzFh/">ht()</a>, <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
 </p>
 
 <h3><a name="html_addhtml">Append HTML</a></h3>
