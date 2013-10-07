@@ -18,10 +18,11 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="onover_toggle" class=""><a name="onover_toggle"><var>toggle</var></a></dt>
-<dd class="">the callback <code>function(isOver, index)</code> to invoke when the event has been triggered:
+<dd class="">the callback <code>function(isOver, index, event)</code> to invoke when the event has been triggered:
 <dl>
 <dt>isOver</dt><dd><span class="var">true</span> if mouse is entering element, <span class="var">false</span> when leaving.</dd>
 <dt>index</dt><dd>The index of the target element in the <a href='list.html'>Minified list</a> .</dd>
+<dt>event</dt><dd>The original event object given to <code><a href='on.html'>on()</a></code>.</dd>
 </dl>
 'this' is set to the target element that caused the event.</dd>
 <dt id="onover_RETURN" class="returnValue inSyntax0"><a name="onover_RETURN"><var>(return value)</var></a></dt>
@@ -50,13 +51,13 @@ $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color
 </li><li><a href="dollardollar.html">$$()</a> <span class="tocMod">Web</span>
 </li><li><a href="defer.html">$.defer()</a> 
 </li><li><a href="delay.html">$.delay()</a> 
-</li><li><a href="getcookie.html">$.getCookie()</a> <span class="tocMod">Web</span>
+</li><li><a href="getcookie.html">$.getCookie()</a> 
 </li><li><a href="loop.html">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html">$.parseJSON()</a> <span class="tocMod">Web</span>
 </li><li><a href="ready.html">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html">$.request()</a> <span class="tocMod">Web</span>
-</li><li><a href="setcookie.html">$.setCookie()</a> <span class="tocMod">Web</span>
+</li><li><a href="setcookie.html">$.setCookie()</a> 
 </li><li><a href="tojson.html">$.toJSON()</a> <span class="tocMod">Web</span>
 </li><li><a href="wait.html">$.wait()</a> 
 </li><li><a href="add.html">.add()</a> <span class="tocMod">Web</span>
@@ -86,6 +87,7 @@ $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color
 </li><li><a href="map.html">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html">.offset()</a> 
 </li><li><a href="on.html">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html">.remove()</a> <span class="tocMod">Web</span>

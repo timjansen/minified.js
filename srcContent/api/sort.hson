@@ -45,13 +45,13 @@ If you don't, the list elements will be converted into strings and sorted lexico
 </li><li><a href="dollardollar.html">$$()</a> <span class="tocMod">Web</span>
 </li><li><a href="defer.html">$.defer()</a> 
 </li><li><a href="delay.html">$.delay()</a> 
-</li><li><a href="getcookie.html">$.getCookie()</a> <span class="tocMod">Web</span>
+</li><li><a href="getcookie.html">$.getCookie()</a> 
 </li><li><a href="loop.html">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html">$.parseJSON()</a> <span class="tocMod">Web</span>
 </li><li><a href="ready.html">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html">$.request()</a> <span class="tocMod">Web</span>
-</li><li><a href="setcookie.html">$.setCookie()</a> <span class="tocMod">Web</span>
+</li><li><a href="setcookie.html">$.setCookie()</a> 
 </li><li><a href="tojson.html">$.toJSON()</a> <span class="tocMod">Web</span>
 </li><li><a href="wait.html">$.wait()</a> 
 </li><li><a href="add.html">.add()</a> <span class="tocMod">Web</span>
@@ -81,6 +81,7 @@ If you don't, the list elements will be converted into strings and sorted lexico
 </li><li><a href="map.html">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html">.offset()</a> 
 </li><li><a href="on.html">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html">.remove()</a> <span class="tocMod">Web</span>

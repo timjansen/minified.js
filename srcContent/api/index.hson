@@ -139,6 +139,9 @@ Creates a function allows you to set all list members to one of two states or an
 <h3><a href="onover.html">.onOver()</a></h3>
 <div class="summary">Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.</div>
 
+<h3><a href="onchange.html">.onOver()</a></h3>
+<div class="summary">Registers a handler to be called whenever content of the list's input fields changes.</div>
+
 <h3><a href="only.html">.only()</a></h3>
 <div class="summary">Returns a new list that contains only those elements that match the given selector, match the callback function
 or have the given index.</div>
@@ -347,13 +350,13 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="dollardollar.html">$$()</a> <span class="tocMod">Web</span>
 </li><li><a href="defer.html">$.defer()</a> 
 </li><li><a href="delay.html">$.delay()</a> 
-</li><li><a href="getcookie.html">$.getCookie()</a> <span class="tocMod">Web</span>
+</li><li><a href="getcookie.html">$.getCookie()</a> 
 </li><li><a href="loop.html">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html">$.parseJSON()</a> <span class="tocMod">Web</span>
 </li><li><a href="ready.html">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html">$.request()</a> <span class="tocMod">Web</span>
-</li><li><a href="setcookie.html">$.setCookie()</a> <span class="tocMod">Web</span>
+</li><li><a href="setcookie.html">$.setCookie()</a> 
 </li><li><a href="tojson.html">$.toJSON()</a> <span class="tocMod">Web</span>
 </li><li><a href="wait.html">$.wait()</a> 
 </li><li><a href="add.html">.add()</a> <span class="tocMod">Web</span>
@@ -383,6 +386,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="map.html">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html">.offset()</a> 
 </li><li><a href="on.html">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html">.remove()</a> <span class="tocMod">Web</span>
