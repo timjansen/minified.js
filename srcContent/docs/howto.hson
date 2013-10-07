@@ -218,7 +218,7 @@ $$('#myElement').innerHTML = "My &lt;b>HTML&lt;/b>";</pre>
 </p>
 <p>
 API: <a href="/api/ht.html">ht()</a>, <a href="/api/set.html">set()</a>, <a href="/api/template.html">template()</a>, <a href="/api/dollardollar.html">$$()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/HUzFh/">ht()</a>, <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
+JSFiddle Examples: <a href="http://jsfiddle.net/tjansen/HUzFh/">ht()</a>, <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
 </p>
 
 <h3><a name="html_addhtml">Append HTML</a></h3>
@@ -239,7 +239,7 @@ If your list has more than one element,  you need to write a <span class="var">s
 </p>
 <p>
 API: <a href="/api/add.html">add()</a>, <a href="/api/html.html">HTML()</a>, <a href="/api/set.html">set()</a>, <a href="/api/dollardollar.html">$$()</a>.<br/>
-JSFiddle Example: <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
+JSFiddle Examples: <a href="http://jsfiddle.net/tjansen/V5yWf/">HTML()</a>, <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
 </p>
 
 

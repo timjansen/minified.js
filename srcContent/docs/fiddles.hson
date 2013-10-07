@@ -25,7 +25,10 @@
 <span class="summary">A simple example for HTTP requests and JSON that uses JSFiddle's echo service.</span></a></li>
 <li><a href="http://jsfiddle.net/tjansen/HUzFh/"><span class="link">HTML Templates with ht() and onChange()</span><br/>
 <span class="summary">Shows you how to use simple HTML templates and monitor real-time changes with onChange().</span></a></li>
+<li><a href="http://jsfiddle.net/tjansen/V5yWf/"><span class="link">HTML Templates with HTML() and add()</span><br/>
+<span class="summary">Shows you how to use HTML templates with event handlers.</span></a></li>
 </ul>
+
 
 <p>back to <a href="/docs">Minified documentation</a>.</p>
 
