@@ -3851,7 +3851,7 @@ define('minified', function() {
 				$(el)['on'](eventNames, function(e) {
 					var newValue = el[eventNames]; 
 					if (newValue != oldValues[index]) {
-						handler.call(this, newValue, index, ev);
+						handler.call(this, newValue, index, e);
 						oldValues[index] = newValue;
 					}
 				});
