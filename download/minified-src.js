@@ -3849,7 +3849,7 @@ define('minified', function() {
 			function register(eventNames, property, index) {
 				oldValues[index] = el[property];
 				$(el)['on'](eventNames, function(e) {
-					var newValue = el[eventNames]; 
+					var newValue = el[property]; 
 					if (newValue != oldValues[index]) {
 						handler.call(this, newValue, index, e);
 						oldValues[index] = newValue;
