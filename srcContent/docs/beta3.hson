@@ -126,6 +126,16 @@ $('ul.users').add(HTML('<li>{{first}} {{last}}</li>', {first: 'Tim', last: 'Tayl
 </pre>
 
 
+<h2>New: Getting notified of text field changes with onChange()</h2>
+<p><span class="var"><a href="/api/onchange.html">onChange()</a></span> registers an event handler for input fields
+that will be notified in real-time when the field content changes.</p>
+<pre>
+$('#myField').onOver(function(newValue, index, ev) { 
+    $('#target').fill(newValue); 
+});
+</pre>
+
+
 <h2>New: Getting page coordinates with offset()</h2>
 <p><span class="var"><a href="/api/offset.html">offset()</a></span> returns the page coordinates of an element.</p>
 <pre>
