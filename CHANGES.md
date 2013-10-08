@@ -22,6 +22,7 @@ Web module:
 * Changed EE() and clone(): they return elements in a list, instead of element factories.
 * Changed add(), fill(), addBefore()...: will clone elements if added to more than one parent.
 * Changed filter(): removed value argument, only function possible.
+* In on(), the handler's return value is always ignored, unless the event name is prefixed with '?'.
 * In values(), the returned map values will always be arrays.
 * In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead.
 * In animate(), removed animState param. stop() is now a property of the promise, time is returned by stop().

@@ -118,7 +118,7 @@ describe('minified-web-event-test.js', function() {
 				proofEek1++; 
 			});
 			$(s).on('eek', 'span.supiClass', function() { check(++proofPropagation, proofEek1, "Propagation failed."); });
-			$(s).on('eek', 'span.supiClass', function() { fail('stopping propagation failed');});
+			$(s).on('|eek', 'span.supiClass', function() { fail('stopping propagation failed');});
 			$(s).trigger('eek', {success:1});
 			check(proofEek1, 0, "eek not triggered / selector does not match parent");
 			$(c1).trigger('eek', {success:1});
@@ -309,7 +309,7 @@ describe('minified-web-event-test.js', function() {
 			$(s3).trigger('eek', {success:1});
 			check(proofEek1, 2, "eek bubbled");
 			
-			$(s3).on('eek', function(e) { if (e.success) proofEek2++; return false; });
+			$(s3).on('?eek', function(e) { if (e.success) proofEek2++; return false; });
 			$(s3).trigger('eek', {success:1});
 			check(proofEek2, 1, "eek triggered again");
 			check(proofEek1, 2, "event consumed");

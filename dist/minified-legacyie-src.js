@@ -924,7 +924,7 @@ define('minified', function() {
 
 	// @condblock ie8compatibility 
 	// event handler creation for on(). Outside of on() to prevent unneccessary circular refs
-	function createEventHandler(handler, registeredOn, fThis, args, index, unprefixed, selectorFilter) {
+	function createEventHandler(handler, registeredOn, fThis, args, index, prefix, selectorFilter) {
 		// triggerOriginalTarget is set only if the event handler is called by trigger()!! 
 		return function(event, triggerOriginalTarget) {
 			var stop;
@@ -936,7 +936,8 @@ define('minified', function() {
 				else
 					el = el['parentNode'];
 			if (match && 
-			   (((stop = ((!handler.apply(fThis || (selectorFilter ? el : registeredOn), args || [e, index])) || args) && unprefixed)) && !triggerOriginalTarget)) {
+			   (stop = (((!handler.apply(fThis || (selectorFilter ? el : registeredOn), args || [e, index])) || prefix=='') && prefix != '|')) && 
+			   !triggerOriginalTarget) {
 				if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
 					e['preventDefault']();
 					e['stopPropagation']();
@@ -954,14 +955,14 @@ define('minified', function() {
 		}
 		return this['each'](function(el, index) {
 			flexiEach(eventName.split(/\s/), function(namePrefixed) {
-				var name = replace(namePrefixed, /\|/);
+				var name = replace(namePrefixed, /[?|]/);
 				var noSelector = isFunction(handlerOrSelector) || _null;
 				var handler = noSelector ? handlerOrSelector : fThisOrArgsOrHandler;
 
 				var miniHandler = createEventHandler(handler, el,
 						noSelector && optArgs && fThisOrArgsOrHandler, // fThis (false means default this) 
 						noSelector && (optArgs || fThisOrArgsOrHandler), // args (false means event obj)
-						index, name == namePrefixed, noSelector ? null : getFilterFunc(handlerOrSelector, el));
+						index, replace(namePrefixed, /[^?|]/g), noSelector ? null : getFilterFunc(handlerOrSelector, el));
 
 				var handlerDescriptor = {'e': el,          // the element  
 						                 'h': miniHandler, // minified's handler 
@@ -3839,16 +3840,14 @@ define('minified', function() {
 	 * @module WEB
 	 * Registers the function as event handler for all items in the list.
 	 * 
-	 * By default, Minified cancels event propagation and the element's default behaviour for all elements that have an event handler. 
-	 * You can override this by prefixing the event name with a '|' or by returning a 'true' value in the handler, which will reinstate 
-	 * the original JavaScript behaviour.
+	 * By default, Minified cancels event propagation and disables element's default behaviour for all elements that have an event handler. 
+	 * You can override this, either by prefixing the event name with a '|', or by prefixing them with '?' and returning a <var>true</var>  
+	 * in the handler. Both will reinstate the original JavaScript behaviour. 
 	 * 
 	 * Handlers are called with the original event object as first argument, the index of the source element in the 
 	 * list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked). 
 	 * 
 	 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback. 
-	 * When you pass arguments, the handler's return value is always ignored and the event with unnamed prefixes 
-	 * will always be cancelled.
 	 * 
 	 * Optionally you can specify a selector string to receive only events that bubbled up from elements matching the
 	 * selector. The selector is executed in the context of the element you registered on to identify whether the
@@ -3883,7 +3882,14 @@ define('minified', function() {
 	 * });
 	 * </pre>
 	 * 
-	 * @example Adds listeners for all clicks on 
+	 * @example Adds a click handler that will abort the operation by returning false, unless the user confirms it:
+	 * <pre>
+	 * $('#myLink').on('?click', function() {
+	 *    return window.confirm('Really leave?');
+	 * });
+	 * </pre>
+	 * 
+	 * @example Adds listeners for all clicks on a table's rows.
 	 * <pre>
 	 * $('#table').on('change', 'tr', function(event, index, selectedIndex) {
 	 *    alert("Click on table row number: " + selectedIndex);
@@ -3893,8 +3899,8 @@ define('minified', function() {
 	 * @param names the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
 	 *             the name must not used. You can register the handler for more than one event by specifying several 
 	 *             space-separated event names. If the name is prefixed
-	 *             with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will 
-	 *             be executed by the browser. 
+	 *             with '|' (pipe), the event will be passed through and the event's default actions will be executed by the browser. 
+	 *             If the name is prefixed with '?', the event will only be passed through if the handler returns <var>true</var>. 
 	 * @param selector optional a selector string for ##dollar#$() to receive only events that match the selector. 
 	 *                Supports all valid parameters for ##dollar#$() except functions. Analog to ##is(), 
 	 *                 the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
@@ -3907,11 +3913,12 @@ define('minified', function() {
 	 *                stopped and event bubbling will be disabled.</dd>
  	 *             </dl>
 	 *             'this' is set to the target element that caused the event (the same as <var>event.target</var>).
+	 *             If the event name has been prefixed with '?', the return value will be evaluated to find out whether to
+	 *             cancel further event processing. In all other cases, the return value will be ignored.
 	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>
 	 *                   and optionally the 'this' context given using <var>fThis</var>.
 	 * @param fThis optional a value for 'this' in the custom callback, instead of the event target
 	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. 
-	 *                      If you pass custom arguments, the return value of the handler will always be ignored.
 	 * @return the list
 	 */
 	'on': 

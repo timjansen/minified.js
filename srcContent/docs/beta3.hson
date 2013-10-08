@@ -181,7 +181,9 @@ both function will now return regular lists containing the new elements.<br/>
 <span class="var">The new <a href="/api/add.html">add()</a></span> (and all the methods based on it, such as <span class="var"><a href="/api/fill.html">fill()</a></span> 
 and <span class="var"><a href="/api/replace.html">replace()</a></span>) will clone HTML nodes if they are added more than once to a document.</p>
 
-
+h2>Change: New prefix '?' in on()</h2>
+<p>Before beta 3, the return value of event handlers was evaluated by default. Event processing would be aborted unless the handler returned true.<br/>
+Now the return value will be ignored by default. A new event name prefix '?' allows you to specify that the return value must be used.
 
 <h2>Build System: Switched to grunt</h2>
 <p>The old ant-based build system has been replaced with a shiny new one based on <a href="http://gruntjs.com">grunt</a>.

@@ -24,8 +24,8 @@
 <dd class="">the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of
 the name must not used. You can register the handler for more than one event by specifying several
 space-separated event names. If the name is prefixed
-with '|' (pipe), the handler's return value is ignored and the event will be passed through the event's default actions will
-be executed by the browser.</dd>
+with '|' (pipe), the event will be passed through and the event's default actions will be executed by the browser.
+If the name is prefixed with '?', the event will only be passed through if the handler returns <span class="var">true</span>.</dd>
 <dt id="on_selector" class=""><a name="on_selector"><var>selector (optional)</var></a></dt>
 <dd class="">a selector string for <a href='dollar.html'>$() to receive only events that match the selector.
 Supports all valid parameters for </a>dollar#$() except functions. Analog to <code><a href='is.html'>is()</a></code>,
@@ -39,26 +39,25 @@ the selector is optimized for the simple patterns '.classname', 'tagname' and 't
 or the event name is prefixed by '|', all further processing of the event will be
 stopped and event bubbling will be disabled.</dd>
 </dl>
-'this' is set to the target element that caused the event (the same as <span class="var">event.target</span>).</dd>
+'this' is set to the target element that caused the event (the same as <span class="var">event.target</span>).
+If the event name has been prefixed with '?', the return value will be evaluated to find out whether to
+cancel further event processing. In all other cases, the return value will be ignored.</dd>
 <dt id="on_customFunc" class=""><a name="on_customFunc"><var>customFunc</var></a></dt>
 <dd class="">a function to be called instead of a regular event handler with the arguments given in <span class="var">args</span>
 and optionally the 'this' context given using <span class="var">fThis</span>.</dd>
 <dt id="on_fThis" class=""><a name="on_fThis"><var>fThis (optional)</var></a></dt>
 <dd class="">a value for 'this' in the custom callback, instead of the event target</dd>
 <dt id="on_args" class=""><a name="on_args"><var>args (optional)</var></a></dt>
-<dd class="">an array of arguments to pass to the custom callback function instead of the event objects.
-If you pass custom arguments, the return value of the handler will always be ignored.</dd>
+<dd class="">an array of arguments to pass to the custom callback function instead of the event objects.</dd>
 <dt id="on_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="on_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the list</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Registers the function as event handler for all items in the list.</p><p>By default, Minified cancels event propagation and the element's default behaviour for all elements that have an event handler.
-You can override this by prefixing the event name with a '|' or by returning a 'true' value in the handler, which will reinstate
-the original JavaScript behaviour.</p><p>Handlers are called with the original event object as first argument, the index of the source element in the
-list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked).</p><p>Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback.
-When you pass arguments, the handler's return value is always ignored and the event with unnamed prefixes
-will always be cancelled.</p><p>Optionally you can specify a selector string to receive only events that bubbled up from elements matching the
+<div class="description"><p>Registers the function as event handler for all items in the list.</p><p>By default, Minified cancels event propagation and disables element's default behaviour for all elements that have an event handler.
+You can override this, either by prefixing the event name with a '|', or by prefixing them with '?' and returning a <span class="var">true</span>
+in the handler. Both will reinstate the original JavaScript behaviour.</p><p>Handlers are called with the original event object as first argument, the index of the source element in the
+list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked).</p><p>Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback.</p><p>Optionally you can specify a selector string to receive only events that bubbled up from elements matching the
 selector. The selector is executed in the context of the element you registered on to identify whether the
 original target of the event qualifies. If not, the handler is not called.</p><p>Minified always registers event handlers with event bubbling enabled. Event capture is not supported.</p><p>Event handlers can be unregistered using <code><a href='off.html'>$.off()</a></code>.</p><p></p></div>
 
@@ -92,7 +91,15 @@ $('#myInput').on('|keypress |keydown', function() {
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>Adds listeners for all clicks on
+<div class="example"><p>Adds a click handler that will abort the operation by returning false, unless the user confirms it:
+<pre>
+$('#myLink').on('?click', function() {
+   return window.confirm('Really leave?');
+});
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Adds listeners for all clicks on a table's rows.
 <pre>
 $('#table').on('change', 'tr', function(event, index, selectedIndex) {
    alert("Click on table row number: " + selectedIndex);
