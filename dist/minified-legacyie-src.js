@@ -4150,10 +4150,8 @@ define('minified', function() {
 	* @name $.request()
 	* @syntax $.request(method, url)
 	* @syntax $.request(method, url, data)
-	* @syntax $.request(method, url, data, onSuccess)
-	* @syntax $.request(method, url, data, onSuccess, onFailure)
-	* @syntax $.request(method, url, data, onSuccess, onFailure, headers)
-	* @syntax $.request(method, url, data, onSuccess, onFailure, headers, username, password)
+	* @syntax $.request(method, url, data, headers)
+	* @syntax $.request(method, url, data, headers, username, password)
     * @module WEB
 	* Initiates a HTTP request to the given URL, using XMLHttpRequest. It returns a ##promiseClass#Promise## object that allows you to obtain the result.
 	* 
