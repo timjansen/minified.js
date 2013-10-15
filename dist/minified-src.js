@@ -3777,7 +3777,7 @@ define('minified', function() {
 	 */
 	'on': 
 		onNonCompat
-		,
+	,
 
 	/*$
 	 * @id onover
@@ -3845,7 +3845,6 @@ define('minified', function() {
  	 *             <dt>newValue</dt>For text fields the new <var>value</var> string. 
  	 *              For checkboxes/radio buttons boolean from <var>checked</var>.</dd>
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
- 	 *             <dt>event</dt><dd>The original event object given to ##on().</dd>
  	 *             </dl>
 	 *             'this' is set to the target element that caused the event.
 	 * @return the list
@@ -3855,10 +3854,10 @@ define('minified', function() {
 		each(this, function(el, index) {
 			function register(eventNames, property, index) {
 				oldValues[index] = el[property];
-				$(el)['on'](eventNames, function(e) {
+				$(el)['on'](eventNames, function() {
 					var newValue = el[property]; 
 					if (newValue != oldValues[index]) {
-						handler.call(this, newValue, index, e);
+						handler.call(this, newValue, index);
 						oldValues[index] = newValue;
 					}
 				});
