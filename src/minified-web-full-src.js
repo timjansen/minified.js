@@ -3187,7 +3187,12 @@ define('minified', function() {
 	 * @dependency
      */
     // @condblock ie8compatibility
-    _window.onload = triggerDomReady;
+	var oldOnLoad = _window.onload;
+	_window.onload = function() {
+		triggerDomReady();
+		if (oldOnLoad)
+			oldOnLoad();
+	};
 
     if (_document.addEventListener)
     // @condend
