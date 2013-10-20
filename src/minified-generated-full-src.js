@@ -4239,7 +4239,7 @@ define('minified', function() {
     * @module WEB
 	* Initiates a HTTP request to the given URL, using XMLHttpRequest. It returns a ##promiseClass#Promise## object that allows you to obtain the result.
 	* 
-	* @example Invokes a REST web service and parse the resulting document using JSON:
+	* @example Invokes a REST web service and parses the resulting document using JSON:
 	* <pre>
 	* $.request('get', 'http://service.example.com/weather', {zipcode: 90210})
 	*    .then(function(txt) {
@@ -4248,7 +4248,7 @@ define('minified', function() {
 	*    })
 	*    .error(function(status, statusText, responseText) {
 	*         $('#weatherResult').fill('The weather service was not available.');
-	*     });
+	*    });
 	* </pre>
 	* 
 	* @example Sending a JSON object to a REST web service:
@@ -4258,7 +4258,8 @@ define('minified', function() {
 	*      entries: [
 	*        {name: 'Joe',
 	*      	    job: 'Plumber'
-	*      }]};
+	*        }
+	*      ]};
 	* 
 	* function failureHandler() {
 	*   $('#registrationResult').fill('Registration failed');
@@ -4290,18 +4291,15 @@ define('minified', function() {
 	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
 	*         the success handler will be called as <code>function(text, xml)</code>:
 	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
-	*         <dt>xml</dt><dd>If the response was a XML document, the DOM <var>Document</var>. Otherwise null.</a>.</dd></dl>
+	*         <dt>xml</dt><dd>If the response was a XML document, the DOM <var>Document</var>. Otherwise null.</dd></dl>
 	*         The failure handler will be called as <code>function(statusCode, statusText, text)</code>:
 	*         <dl><dt>statusCode</dt><dd>The HTTP status (never 200; 0 if no HTTP request took place).</dd>
 	*         <dt>statusText</dt><dd>The HTTP status text (or null, if the browser threw an exception).</dd>
-	*         <dt>text</dt><dd>the response's body text, if there was any, or the exception as string if the browser threw one.</a>.</dd></dl>
+	*         <dt>text</dt><dd>the response's body text, if there was any, or the exception as string if the browser threw one.</dd></dl>
+	*         
+	* @see ##values() serializes an HTML form in a format ready to be sent by <var>$.request</var>.
 	*/
 	'request': function (method, url, data, headers, username, password) {
-		// @cond debug if (!method) error("request() requires a HTTP method as first argument.");
-		// @cond debug if (!url) error("request() requires a url as second argument.");
-		// @cond debug if (onSuccess && typeof onSuccess != 'function') error("request()'s fourth argument is optional, but if it is set, it must be a function.");
-		// @cond debug if (onFailure && typeof onFailure != 'function') error("request()'s fifth argument is optional, but if it is set, it must be a function.");
-		// @cond debug if (username && !password) error("If the user name is set (7th argument), you must also provide a password as 8th argument.");		method = method.toUpperCase();
 		/** @const */ var ContentType = 'Content-Type';
 		var xhr, body = data, callbackCalled = 0, prom = promise();
 		try {
@@ -4379,7 +4377,7 @@ define('minified', function() {
     *   <li>Boolean</li>
     *   <li>null</li>
     * </ul>
-    * Any other types in your JSON tree, especially Dates, should be converted into Strings by you.
+    * Any other types in your JSON tree, especially Dates, should be converted into Strings before being passed to <var>toJSON</var>.
     *
     * @example Converts an object into a JSON object:
     * <pre>
@@ -4414,12 +4412,14 @@ define('minified', function() {
 	* @syntax $.parseJSON(text)
     * @module WEB
 	* Parses a string containing JSON and returns the de-serialized object.
-	* If the browser's built-in function <var>JSON.parse</var> is defined, which it is in pretty all browsers except 
-	* Internet Explorer 7 and earlier, it will be used. This is mainly to prevent possible security problems caused 
-	* by the use of <var>eval</var> in the implementation. Only in browsers without
-	* <var>JSON.parse</var> Minified's own implementation will be used.
 	* 
-	* If you use a Minified build without Internet Explorer 7 compatibility, <var>JSON.parse</var> will always be used.
+	* In Minified builds without Internet Explorer 7 compatibility, the browser's built-in function 
+	* <var>JSON.parse</var> is used for de-serialization.
+ 	*
+	* Only if you have a legacy-build without IE7 support, and you are actually running on IE7 or earlier, 
+	* Minified will actually use its own implementation. Because of subtle differences between the
+	* browser implementation and Minified's own you need to test your code thoroughly in this constellation,
+	* but but it is a recommended security practise to use the browser implementation whenever possible.
 	*
 	* @example Parsing a JSON string:
 	* <pre>
@@ -4452,8 +4452,8 @@ define('minified', function() {
     * @name $.ready()
     * @syntax $.ready(handler)
     * @module WEB
-    * Registers a handler to be called as soon as the HTML has been fully loaded. Does not necessarily wait for images and other elements, 
-    * only the main HTML document needs to be complete. On older browsers, it is the same as <var>window.onload</var>. 
+    * Registers a handler to be called as soon as the HTML has been fully loaded in the browser. Does not necessarily wait for images and other elements, 
+    * only the main HTML document needs to be complete. On older browsers it is the same as <var>window.onload</var>. 
     * 
     * If you call <var>ready()</var> after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.
     *
@@ -4484,11 +4484,11 @@ define('minified', function() {
 	* animation frame. 
 	* The exact frequency is determined by the browser and may vary depending on factors such as the time needed to 
 	* render the current page, the screen's framerate and whether the page is currently visible to the user. 
-	* In older browsers, the callback function will be invoked approximately every 33 milliseconds.
+	* In older browsers the callback function will be invoked approximately every 33 milliseconds.
 	* 
 	* An animation loop runs indefinitely. To stop it, you have two options:
-	* <ul><li><var>$.loop()</var> returns a <var>stop()</var> function. If you invoke it, the animation loops ends</li>
-	* <li>The animation callback receives the same <var>stop()</var> function as second argument, so the callback can end the animation itself</li>
+	* <ul><li><var>$.loop()</var> returns a <var>stop()</var> function. If you invoke it, the animation loops ends.</li>
+	* <li>The animation callback receives the same <var>stop()</var> function as second argument, so the callback can end the animation itself.</li>
 	* </ul>
 	*
 	* @example Animates a div by moving along in a circle.
@@ -4501,19 +4501,20 @@ define('minified', function() {
 	*     var a = 2 * Math.PI * Math.min(t, d) / rotationsPerMs; // angular position
 	*     myDiv.style.left = (radius * Math.cos(a) + ' px';
 	*     myDiv.style.top = (radius * Math.sin(a) + ' px';
-	*     
 	*     if (t > d)                                         // time is up: call stopFunc()!
 	*       stopFunc();
 	*   });
 	* </pre>
 	*
-	* @param paintCallback a callback <code>function(timestamp, stopFunc)</code> to invoke for painting. Parameters given to callback:
+	* @param paintCallback a callback <code>function(timestamp, stopFunc)</code> that will be invoked repeatedly to prepare a frame. Parameters given to callback:
 	* <dl>
-	*            <dt>timestamp</dt><dd>The number of miliseconds since animation start.</dd>
+	*            <dt>timestamp</dt><dd>The number of miliseconds since animation's start.</dd>
 	*            <dt>stop</dt><dd>Call this <code>function()</code> to stop the currently running animation.</dd>
 	* </dl>
 	* The callback's return value will be ignored.
 	* @return a <code>function()</code> that stops the currently running animation. This is the same function that is also given to the callback.
+	* 
+	* @see ##animate() for simple, property-based animations.
 	*/
 	'loop': function(paintCallback) { 
         var entry = {c: paintCallback, t: nowAsTime()};
@@ -4542,6 +4543,8 @@ define('minified', function() {
 	 * Removes the given event handler. The call will be ignored if the given handler has not been registered using ##on(). 
 	 * If the handler has been registered for more than one element or event, it will be removed from all instances.
 	 * 
+	 * Please note that you can not unregister event handlers registered using ##onOver() or ##onChange().
+	 * 
 	 * @example Adds a handler to an element:
 	 * <pre>
 	 * function myEventHandler() {
@@ -4556,6 +4559,8 @@ define('minified', function() {
 	 * 
 	 * @param handler the handler to unregister, as given to ##on(). It must be a handler that has previously been registered using ##on().
 	 *                If the handler is not registered as event handler, the function does nothing.
+	 *                
+	 * @see ##on() registers an event handler.
      */
 	'off': 
 		// @condblock ie8compatibility
@@ -5449,10 +5454,18 @@ define('minified', function() {
 	     * 
 	     * @param template The #template as a string. The template, once created, will be cached. 
 	     * @param object the object to format 
+	     * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
+	     *        to escape all output:
+	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
+	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
+	     *        If no escapeFunction has been given, the output will not be escaped.
+	     *        ##_.escapeHtml() can be used as a escape function for HTML, and ##_.escapeRegExp for regular expressions. 
+	     *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
+	     *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
 	     * @return the string created by the template
 	     */ 
-		'format': function(tpl, object) {
-			return template(tpl)(object);
+		'format': function(tpl, object, escapeFunction) {
+			return template(tpl, escapeFunction)(object);
 		},
 		
 
@@ -5569,7 +5582,8 @@ define('minified', function() {
 	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
 	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
 	     *        If no escapeFunction has been given, the output will not be escaped.
-	     *        ##_.escapeHtml() can be used as a escape function for HTML. 
+	     *        ##_.escapeHtml() can be used as a escape function for HTML, and ##_.escapeRegExp for regular expressions. 
+	     *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
 	     *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
 	     * @return the value returned by the last invocation of <var>func</var>
 	     */ 
@@ -5652,6 +5666,8 @@ define('minified', function() {
      * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
      *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
      *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
+     * @see ##$.getCookie() reads a cookie.
+
      */
     'setCookie': function(name, value, dateOrDays, dontEscape) {
     	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
@@ -5667,7 +5683,7 @@ define('minified', function() {
      * @syntax $.getCookie(name)
      * @syntax $.getCookie(name, dontUnescape)
      * @module WEB+UTIL
-     * Tries to find the cookie with the given name and returns it.
+     * Returns the cookie with the given name. 
      *
      * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
      * <pre>
@@ -5679,11 +5695,12 @@ define('minified', function() {
      * </pre>
      *  
      * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
-     *             You may want to escape the name using <var>encodeURIComponent()</var> for all other characters.
+     *             You may want to escape the name using <var>encodeURIComponent()</var> if it contains any other characters.
      * @param dontUnescape optional if set and true, the value will be returned unescaped. Use this parameter only if the value has been encoded
-     *                     in a special way, and not with the JavaScript <var>encode()</var> method.
-     * @return the value of the cookie, or null if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
+     *                     in a special way and not with the standard JavaScript <var>encode()</var> method.
+     * @return the value of the cookie, or <var>null</var> if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
      *         using JavaScript's <code>unescape()</code> function.
+     * @see ##$.setCookie() sets a cookie.
      */
     'getCookie': function(name, dontUnescape) {
     	var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
@@ -5699,15 +5716,19 @@ define('minified', function() {
 	 * @syntax $.delay(durationMs, func, args)
 	 * @module WEB+UTIL
 	 * 
-	 * Executes the function with the given delay, optionally passing arguments to it.
+	 * Executes the function after the specified delay, optionally passing arguments to it. Please note that it only uses <var>setTimeout</var>
+	 * internally and there is not guarantee that it will be called exactly after the given amount of milliseconds.
 	 *
 	 * @param durationMs the number of milliseconds to wait. If null or 0, the promise will be fulfilled as soon as the browser can run it
 	 *                   from the event loop.
 	 * @param func the function to call
 	 * @param args optional an array or list of arguments to pass to the function
+	 * 
+	 * @see ##$.defer() works like <var>$.delay</var> invoked with a delay of 0.
+	 * @see ##$.wait() creates a ##promise#Promise## that will be fulfilled after the given duration.
 	 */
 	'delay': function(durationMs, func, args) {
-		delay(function() {call(func, args);}, durationMs); // TODO try partial()
+		delay(function() {call(func, args);}, durationMs);
 	},
 
 	/*$
@@ -5719,11 +5740,13 @@ define('minified', function() {
 	 * @syntax $.defer(func, args)
 	 * @module WEB+UTIL
 	 *	
-	 * Executes the function from the browser event loop, as soon as the browser can. Typically that means that
+	 * Executes the function in the browser event loop, as soon as the browser can. Typically that means that
 	 * the function is called after less than 10 milliseconds.
 	 *
 	 * @param func the function to call
 	 * @param args optional an array or list of arguments to pass to the function
+	 * 
+	 * @see ##$.delay() works like <var>$.defer()</var>, but delays the execution for the specified amount of time.
 	 */
 	'defer': defer,
 
@@ -5738,10 +5761,10 @@ define('minified', function() {
 	 * @syntax $.wait(durationMs, args)
 	 * @module WEB+UTIL
 	 *
-	 * Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
+	 * Creates a new  ##promise#Promise## that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
 	 * because it allows you to chain delays into your animation chain.
 	 *
-	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
+	 * @example Chained animation using Promise callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
 	 *          and finally moves to 100/100.
 	 * <pre>
 	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
@@ -5749,7 +5772,7 @@ define('minified', function() {
 	 *    .then(function() {
 	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
 	 *    }).then(function() {
-	 *    		 return _.wait(50);
+	 *    	     return _.wait(50);
 	 *    }).then(function() {
 	 *           div.animate({$left: '100px', $top: '100px'}, 400);
 	 *    });
@@ -5762,6 +5785,8 @@ define('minified', function() {
 	 * @param args optional an array of arguments to pass to the promise handler
 	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
 	 *         <var>args</var> parameter as given to <var>wait()</var>.
+	 *         
+	 * @see ##$.delay() calls a simple callback function after a specified waiting period.
 	 */
 	'wait': function(durationMs, args) {
 		var p = promise();
@@ -5786,7 +5811,12 @@ define('minified', function() {
 	 * @dependency
      */
     // @condblock ie8compatibility
-    _window.onload = triggerDomReady;
+	var oldOnLoad = _window.onload;
+	_window.onload = function() {
+		triggerDomReady();
+		if (oldOnLoad)
+			oldOnLoad();
+	};
 
     if (_document.addEventListener)
     // @condend
@@ -5859,6 +5889,7 @@ define('minified', function() {
 		 * @requires  
 		 * @dependency yes
 		 * @name $()
+		 * @syntax $()
 		 * @syntax $(selector)
 		 * @syntax $(selector, context)
 		 * @syntax $(selector, context, childOnly)
@@ -5874,13 +5905,17 @@ define('minified', function() {
 		 * The most common usage is with a CSS-like selector. <var>$()</var> will then create a list containing all elements of the current HTML
 		 * document that fulfill the filter conditions. Alternatively you can also specify a list of objects or a single object. 
 		 * Nested lists will automatically be flattened, and nulls will automatically be removed from the resulting list.
+		 * If you call <var>$()</var> without any arguments, it will return an empty list.
 		 * 
-		 * Additionally, you can specify a second argument to provide a context. Contexts only make sense if you selected only
+		 * Additionally, you can specify a second argument to provide a context. Contexts only make sense if you selected 
 		 * HTML nodes with the first parameter. Then the context limits the resulting list to include only those nodes 
 		 * that are descendants of the context nodes. The context can be either a selector, a list or a single HTML node, and will be 
 		 * processed like the first argument. A third arguments allows you to limit the list to 
 		 * only those elements that are direct children of the context nodes (so a child of a child would be filtered out).
 		 *
+		 * The lists created by <var>$()</var> are the same type as the ##list#Minified lists## created by Util's #underscore#_() constructor and other
+		 * Util methods. All Util methods work on lists created by <var>$()</var>. If you want to add your own methods to those lists,
+		 * use ##M#MINI.M##.
 		 * 
 		 * As a special shortcut, if you pass a function to <var>$()</var>, it will be registered using #ready#$.ready() to be executed 
 		 * when the DOM model is complete.
@@ -5890,7 +5925,7 @@ define('minified', function() {
 		 * var l0 = $('#myElementId');
 		 * </pre>
 		 * 	 
-		 * @example You can pass a reference to a DOM node to the function to receive a list containing only this node:
+		 * @example You can pass an object reference to create a list containing only this element:
 		 * <pre>
 		 * var l1 = $(document.getElementById('myElementId')); 
 		 * </pre>
@@ -5910,32 +5945,33 @@ define('minified', function() {
 		 * var l4 = $('.myClass');
 		 * </pre>
 		 * 	 
-		 * @example A selector to find all elements with the given name.
+		 * @example A selector to find all elements of the given type.
 		 * <pre>
 		 * var l5 = $('input'); // finds all input elements
 		 * </pre>
 		 * 	 
-		 * @example A selector to find all elements with the given name and class.
+		 * @example A selector to find all elements with the given type and class.
 		 * <pre>
 		 * var l6 = $('input.myRadio'); // finds all input elements with class 'myRadio'
 		 * </pre>
 		 * 	 
 		 * @example A selector to find all elements that are descendants of the given element.
 		 * <pre>
-		 * var l7 = $('#myForm input'); // finds all input elements that are in the element with the id myForm
+		 * var l7 = $('#myForm input'); // finds all input elements contained in the element myForm
 		 * </pre>
 		 * 	 
-		 * @example A selector to find all elements that have either CSS class 'a' or class 'b':
+		 * @example A selector to find all elements that have either a CSS class 'a' or class 'b':
 		 * <pre>
-		 * var l8 = $('.a, .b'); // finds all elements that have either the class a or class b
+		 * var l8 = $('.a, .b'); // finds all elements that have class a or class b
 		 * </pre>
 		 * 	 
-		 * @example A selector that finds all elements that are descendants of the element myDivision, are inside a .myForm class and are input elements:
+		 * @example A selector that finds all elements that are descendants of the element myDivision, are inside an element with the
+		 * class .myForm and are input elements:
 		 * <pre>
 		 * var l9 = $('#myDivision .myForm input'); 
 		 * </pre>
 		 * 	 
-		 * @example Using contexts to make it easier to specify ancestors:
+		 * @example Contexts can make it easier to specify ancestors:
 		 * <pre>
 		 * var l10 = $('.myRadio', '#formA, #formB, #formC'); 
 		 * </pre>
@@ -5943,7 +5979,7 @@ define('minified', function() {
 		 * <pre>
 		 * var l10 = $('#formA .myRadio, #formB .myRadio, #formC .myRadio'); 
 		 * </pre>
-		 *  	 
+		 * 
 		 * @example Using one of the list functions, ##set(), on the list, and setting the element's text color. '$' at the beginning of the property name sets a CSS value.
 		 * <pre>
 		 * $('#myElementId').set('$color', 'red');
@@ -5975,18 +6011,22 @@ define('minified', function() {
 		 * @param list a list to copy. It can be an array, another Minified list, a DOM nodelist or anything else that has a <var>length</var> property and
 		 *             allows read access by index. A shallow copy of the list will be returned. Nulls will be automatically removed from the copy. Nested lists 
 		 *             will be flattened, so the result only contains nodes.
-		 * @param object a object to create a single-element list containing only the object. If the object argument is null, an empty list will be returned.
+		 * @param object an object to create a single-element list containing only the object. If the argument is null, an empty list will be returned.
 		 * @param domreadyFunction a function to be registered using #ready#$.ready().
-		 * @param context optional an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection, using the same syntax variants as the
-		 *             first argument. If given, the returned list contains only descendants of the context nodes, all others will be filtered out. 
+		 * @param context optional an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection. The context can be specified as
+		 *             a selector, a list or using a single object, just like the first argument.
+		 *             The returned list will contain only descendants of the context nodes. All others will be filtered out. 
 		 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
 		 *             true, all descendants of the context will be included. 
 		 * @return the array-like ##list#Minified list## object containing the content specified by the selector. 
-		 *             Please note that that the first argument was a list, 
-		 *             the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. If you combined several selectors 
-		 *             using commas, only the individual results of the selectors will keep the document order, but will then be joined to form a single list. This list will, 
+		 *             Please note that if the first argument was a list, the existing order will be kept. If the first argument was a simple selector, the nodes are in document order. 
+		 *             If you combined several selectors using commas, only the individual results of the selectors will keep the document order, 
+		 *             but will then be joined to form a single list. This list will
 		 *             not be in document order anymore, unless you use a build without legacy IE support.
 		 *             Duplicate nodes will be removed from selectors, but not from lists.
+		 *             
+		 * @see #underscore#_() is Util's alternative constructor for ##list#Minified lists##
+		 * @see ##dollardollar#$$()## works like <var>$()</var>, but returns the resulting list's first element.
 		 */
 		'$': $,
 			
@@ -6000,7 +6040,7 @@ define('minified', function() {
 		 * @shortcut $$() - It is recommended that you assign MINI.$$ to a variable $$.
          * @module WEB
 		 * Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found. 
-		 * <var>$$</var> allows you to easily access an element directly. It is the equivalent to writing "$(selector)[0]".
+		 * <var>$$</var> allows you to easily access an element directly. It is the equivalent to writing <code>$(selector)[0]</code>.
 		 *
 		 * Please note that the function <var>$$</var> will not be automatically exported by Minified. You should always import it
 		 * using the recommended import statement:
@@ -6016,6 +6056,8 @@ define('minified', function() {
 		 * @param selector a simple, CSS-like selector for the element. Uses the full syntax described in #dollar#$(). The most common
 		 *                 parameter for this function is the id selector with the syntax "#id".
 		 * @return a DOM object of the first match, or <var>undefined</var> if the selector did not return at least one match
+		 * 
+		 * @see ##dollar#$()## creates a list using the selector, instead of returning only the first result.
 		 */
 	    '$$': $$,
 	

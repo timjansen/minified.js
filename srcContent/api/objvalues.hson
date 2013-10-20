@@ -24,116 +24,116 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Creates a <a href='list.html'>Minified list</a> containing all property values of the specified object. Only direct properies are
+<div class="description"><p>Creates a <a href='list.html' class='func'>Minified list</a> containing all property values of the specified object. Only direct properies are
 included, not inherited ones. The order of the values in the list is undefined and runtime-specific.</p><p></p></div>
 
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
-<div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a> <span class="tocMod">Web</span>
-</li><li><a href="length.html">list.length</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="dollardollar.html">$$()</a> <span class="tocMod">Web</span>
-</li><li><a href="defer.html">$.defer()</a> 
-</li><li><a href="delay.html">$.delay()</a> 
-</li><li><a href="getcookie.html">$.getCookie()</a> 
-</li><li><a href="loop.html">$.loop()</a> <span class="tocMod">Web</span>
-</li><li><a href="off.html">$.off()</a> <span class="tocMod">Web</span>
-</li><li><a href="parsejson.html">$.parseJSON()</a> <span class="tocMod">Web</span>
-</li><li><a href="ready.html">$.ready()</a> <span class="tocMod">Web</span>
-</li><li><a href="request.html">$.request()</a> <span class="tocMod">Web</span>
-</li><li><a href="setcookie.html">$.setCookie()</a> 
-</li><li><a href="tojson.html">$.toJSON()</a> <span class="tocMod">Web</span>
-</li><li><a href="wait.html">$.wait()</a> 
-</li><li><a href="add.html">.add()</a> <span class="tocMod">Web</span>
-</li><li><a href="addafter.html">.addAfter()</a> <span class="tocMod">Web</span>
-</li><li><a href="addbefore.html">.addBefore()</a> <span class="tocMod">Web</span>
-</li><li><a href="addfront.html">.addFront()</a> <span class="tocMod">Web</span>
-</li><li><a href="animate.html">.animate()</a> <span class="tocMod">Web</span>
-</li><li><a href="array.html">.array()</a> <span class="tocMod">Util</span>
-</li><li><a href="call.html">.call()</a> <span class="tocMod">Util</span>
-</li><li><a href="clone.html">.clone()</a> <span class="tocMod">Web</span>
-</li><li><a href="collect.html">.collect()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="contains.html">.contains()</a> <span class="tocMod">Util</span>
-</li><li><a href="dial.html">.dial()</a> <span class="tocMod">Web</span>
-</li><li><a href="each.html">.each()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="endswith.html">.endsWith()</a> <span class="tocMod">Util</span>
-</li><li><a href="equals.html">.equals()</a> <span class="tocMod">Util</span>
-</li><li><a href="fill.html">.fill()</a> <span class="tocMod">Web</span>
-</li><li><a href="filter.html">.filter()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="find.html">.find()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="findlast.html">.findLast()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="get.html">.get()</a> <span class="tocMod">Web</span>
-</li><li><a href="ht.html">.ht()</a> <span class="tocMod">Web</span>
-</li><li><a href="intersection.html">.intersection()</a> <span class="tocMod">Util</span>
-</li><li><a href="is.html">.is()</a> <span class="tocMod">Web</span>
-</li><li><a href="join.html">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="keys.html">.keys()</a> <span class="tocMod">Util</span>
-</li><li><a href="map.html">.map()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="offset.html">.offset()</a> 
-</li><li><a href="on.html">.on()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onover.html">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="only.html">.only()</a> <span class="tocMod"></span>
-</li><li><a href="remove.html">.remove()</a> <span class="tocMod">Web</span>
-</li><li><a href="replace.html">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html">.reverse()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="select.html">.select()</a> <span class="tocMod">Web</span>
-</li><li><a href="set.html">.set()</a> <span class="tocMod">Web</span>
-</li><li><a href="sort.html">.sort()</a> <span class="tocMod">Util</span>
-</li><li><a href="startswith.html">.startsWith()</a> <span class="tocMod">Util</span>
-</li><li><a href="sub.html">.sub()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="text.html">.text()</a> <span class="tocMod">Web</span>
-</li><li><a href="toobject.html">.toObject()</a> <span class="tocMod">Util</span>
-</li><li><a href="toggle.html">.toggle()</a> <span class="tocMod">Web</span>
-</li><li><a href="trav.html">.trav()</a> <span class="tocMod">Web</span>
-</li><li><a href="trigger.html">.trigger()</a> <span class="tocMod">Web</span>
-</li><li><a href="uniq.html">.uniq()</a> <span class="tocMod">Util</span>
-</li><li><a href="unite.html">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html">.values()</a> <span class="tocMod"></span>
-</li><li><a href="ee.html">EE()</a> <span class="tocMod">Web</span>
-</li><li><a href="html.html">HTML()</a> <span class="tocMod">Web</span>
-</li><li><a href="M.html">M</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="list.html">Minified Lists</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="promiseClass.html">Promise</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="underscore.html">_()</a> <span class="tocMod">Util</span>
-</li><li><a href="bind.html">_.bind()</a> <span class="tocMod">Util</span>
-</li><li><a href="copyobj.html">_.copyObj()</a> <span class="tocMod">Util</span>
-</li><li><a href="dateadd.html">_.dateAdd()</a> <span class="tocMod">Util</span>
-</li><li><a href="dateclone.html">_.dateClone()</a> <span class="tocMod">Util</span>
-</li><li><a href="datediff.html">_.dateDiff()</a> <span class="tocMod">Util</span>
-</li><li><a href="datemidnight.html">_.dateMidnight()</a> <span class="tocMod">Util</span>
-</li><li><a href="eachobj.html">_.eachObj()</a> <span class="tocMod">Util</span>
-</li><li><a href="escapehtml.html">_.escapeHtml()</a> <span class="tocMod">Util</span>
-</li><li><a href="escaperegexp.html">_.escapeRegExp()</a> <span class="tocMod">Util</span>
-</li><li><a href="filterobj.html">_.filterObj()</a> <span class="tocMod">Util</span>
-</li><li><a href="format.html">_.format()</a> <span class="tocMod">Util</span>
-</li><li><a href="formathtml.html">_.formatHtml()</a> <span class="tocMod">Util</span>
-</li><li><a href="formatvalue.html">_.formatValue()</a> <span class="tocMod">Util</span>
-</li><li><a href="isbool.html">_.isBool()</a> <span class="tocMod">Util</span>
-</li><li><a href="isdate.html">_.isDate()</a> <span class="tocMod">Util</span>
-</li><li><a href="isfunction.html">_.isFunction()</a> <span class="tocMod">Util</span>
-</li><li><a href="islist.html">_.isList()</a> <span class="tocMod">Util</span>
-</li><li><a href="isnumber.html">_.isNumber()</a> <span class="tocMod">Util</span>
-</li><li><a href="isobject.html">_.isObject()</a> <span class="tocMod">Util</span>
-</li><li><a href="isstring.html">_.isString()</a> <span class="tocMod">Util</span>
-</li><li><a href="isvalue.html">_.isValue()</a> <span class="tocMod">Util</span>
-</li><li><a href="mapobj.html">_.mapObj()</a> <span class="tocMod">Util</span>
-</li><li><a href="pad.html">_.pad()</a> <span class="tocMod">Util</span>
-</li><li><a href="parsedate.html">_.parseDate()</a> <span class="tocMod">Util</span>
-</li><li><a href="parsenumber.html">_.parseNumber()</a> <span class="tocMod">Util</span>
-</li><li><a href="partial.html">_.partial()</a> <span class="tocMod">Util</span>
-</li><li><a href="range.html">_.range()</a> <span class="tocMod"></span>
-</li><li><a href="template.html">_.template()</a> <span class="tocMod">Util</span>
-</li><li><a href="tostring.html">_.toString()</a> <span class="tocMod">Util</span>
-</li><li><a href="trim.html">_.trim()</a> <span class="tocMod">Util</span>
-</li><li><a href="objvalues.html">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html">promise()</a> 
-</li><li><a href="always.html">promise.always()</a> 
-</li><li><a href="error.html">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html">promise.state</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="then.html">promise.then()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="require.html">require()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="/docs/howto.html">How to...</a></li></ul></div>
+<div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
+</li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
+</li><li><a href="defer.html" class="func">$.defer()</a> 
+</li><li><a href="delay.html" class="func">$.delay()</a> 
+</li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
+</li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
+</li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
+</li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
+</li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
+</li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
+</li><li><a href="tojson.html" class="func">$.toJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="wait.html" class="func">$.wait()</a> 
+</li><li><a href="add.html" class="func">.add()</a> <span class="tocMod">Web</span>
+</li><li><a href="addafter.html" class="func">.addAfter()</a> <span class="tocMod">Web</span>
+</li><li><a href="addbefore.html" class="func">.addBefore()</a> <span class="tocMod">Web</span>
+</li><li><a href="addfront.html" class="func">.addFront()</a> <span class="tocMod">Web</span>
+</li><li><a href="animate.html" class="func">.animate()</a> <span class="tocMod">Web</span>
+</li><li><a href="array.html" class="func">.array()</a> <span class="tocMod">Util</span>
+</li><li><a href="call.html" class="func">.call()</a> <span class="tocMod">Util</span>
+</li><li><a href="clone.html" class="func">.clone()</a> <span class="tocMod">Web</span>
+</li><li><a href="collect.html" class="func">.collect()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="contains.html" class="func">.contains()</a> <span class="tocMod">Util</span>
+</li><li><a href="dial.html" class="func">.dial()</a> <span class="tocMod">Web</span>
+</li><li><a href="each.html" class="func">.each()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="endswith.html" class="func">.endsWith()</a> <span class="tocMod">Util</span>
+</li><li><a href="equals.html" class="func">.equals()</a> <span class="tocMod">Util</span>
+</li><li><a href="fill.html" class="func">.fill()</a> <span class="tocMod">Web</span>
+</li><li><a href="filter.html" class="func">.filter()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="ht.html" class="func">.ht()</a> <span class="tocMod">Web</span>
+</li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
+</li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
+</li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
+</li><li><a href="keys.html" class="func">.keys()</a> <span class="tocMod">Util</span>
+</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="offset.html" class="func">.offset()</a> 
+</li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
+</li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
+</li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
+</li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
+</li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
+</li><li><a href="startswith.html" class="func">.startsWith()</a> <span class="tocMod">Util</span>
+</li><li><a href="sub.html" class="func">.sub()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="text.html" class="func">.text()</a> <span class="tocMod">Web</span>
+</li><li><a href="toobject.html" class="func">.toObject()</a> <span class="tocMod">Util</span>
+</li><li><a href="toggle.html" class="func">.toggle()</a> <span class="tocMod">Web</span>
+</li><li><a href="trav.html" class="func">.trav()</a> <span class="tocMod">Web</span>
+</li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
+</li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
+</li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
+</li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
+</li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
+</li><li><a href="bind.html" class="func">_.bind()</a> <span class="tocMod">Util</span>
+</li><li><a href="copyobj.html" class="func">_.copyObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="dateadd.html" class="func">_.dateAdd()</a> <span class="tocMod">Util</span>
+</li><li><a href="dateclone.html" class="func">_.dateClone()</a> <span class="tocMod">Util</span>
+</li><li><a href="datediff.html" class="func">_.dateDiff()</a> <span class="tocMod">Util</span>
+</li><li><a href="datemidnight.html" class="func">_.dateMidnight()</a> <span class="tocMod">Util</span>
+</li><li><a href="eachobj.html" class="func">_.eachObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="escapehtml.html" class="func">_.escapeHtml()</a> <span class="tocMod">Util</span>
+</li><li><a href="escaperegexp.html" class="func">_.escapeRegExp()</a> <span class="tocMod">Util</span>
+</li><li><a href="filterobj.html" class="func">_.filterObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="format.html" class="func">_.format()</a> <span class="tocMod">Util</span>
+</li><li><a href="formathtml.html" class="func">_.formatHtml()</a> <span class="tocMod">Util</span>
+</li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
+</li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
+</li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
+</li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>
+</li><li><a href="isobject.html" class="func">_.isObject()</a> <span class="tocMod">Util</span>
+</li><li><a href="isstring.html" class="func">_.isString()</a> <span class="tocMod">Util</span>
+</li><li><a href="isvalue.html" class="func">_.isValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="mapobj.html" class="func">_.mapObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="pad.html" class="func">_.pad()</a> <span class="tocMod">Util</span>
+</li><li><a href="parsedate.html" class="func">_.parseDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="parsenumber.html" class="func">_.parseNumber()</a> <span class="tocMod">Util</span>
+</li><li><a href="partial.html" class="func">_.partial()</a> <span class="tocMod">Util</span>
+</li><li><a href="range.html" class="func">_.range()</a> <span class="tocMod"></span>
+</li><li><a href="template.html" class="func">_.template()</a> <span class="tocMod">Util</span>
+</li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
+</li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
+</li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="promise.html" class="func">promise()</a> 
+</li><li><a href="always.html" class="func">promise.always()</a> 
+</li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
 
 `
 }

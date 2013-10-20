@@ -9,8 +9,8 @@ main: `<div>
 <span class="summary">A short overview over all Minified Web features.</span></a></li>
 <li><a href="howto.html"><span class="link">How to... Common Minified Tasks</span><br/>
 <span class="summary">Shows you common tasks implemented with Minified.</span></a></li>
-<li><a href="https://docs.google.com/presentation/d/1Q-mT2K5MY7BXJo89fzrSmjWZxpCItVUJKPNovjp9hws/edit?usp=sharing"><span class="link">Slideshow: Minified.js in 20 Slides</span><br/>
-<span class="summary">Shows you the most important features in 20 slides.</span></a></li>
+<li><a href="https://docs.google.com/presentation/d/1N08me0gkOGWPtr0xzw8WrYY1guWZF7tPjCp4GpHt1dA/edit?usp=sharing"><span class="link">Slideshow: Minified.js in 25 Slides</span><br/>
+<span class="summary">Shows you the most important features in 25 slides.</span></a></li>
 <li><a href="fiddles.html"><span class="link">JSFiddle Examples</span><br/>
 <span class="summary">Experiment with Minified instantly.</span></a></li>
 <li><a href="/api/"><span class="link">API Reference</span><br/>

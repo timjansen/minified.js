@@ -9,11 +9,11 @@ var _ = require('minified-headless');
 function parseDescription(desc, paragraphSeparator, plainText) {
 	return _.toString(desc)
 		.replace(/##(\w+)#([^#]+)##/g, function(all, id, text) { // ##id#any text##
-			return plainText ? text :  "<a href='"+id.toLowerCase()+".html'>"+text+"</a>";
+			return plainText ? text :  "<a href='"+id.toLowerCase()+".html' class='func'>"+text+"</a>";
 		})
 		.replace(/#(\w*)#([\w$._]+)\(\)/g, function(all, id, name) { // #id#name()  and   ##name()
 			var rId = id || name.replace(/[_.$]+/g);
-			return plainText ? name : "<code><a href='"+rId.toLowerCase()+".html'>"+name+"()</a></code>";
+			return plainText ? name : "<code><a href='"+rId.toLowerCase()+".html' class='func'>"+name+"()</a></code>";
 		})
 		.replace(/\n\n/mg, paragraphSeparator || '')
 		.replace(/<var>/g, '<span class="var">')
@@ -86,9 +86,17 @@ function createDocs(sec) {
 		s += '<div class="examples">\n';
 		_.each(sec.example, function(example) {
 			s += '<h4>Example</h4>\n';
-			s += _.format('<div class="example"><p>{{EXAMPLE}}</p></div>\n', {EXAMPLE: parseDescription(example, '</p><p>').replace('&&', '&amp;&amp;')});
+			s += _.format('<div class="example"><p>{{EXAMPLE}}</p></div>\n', {EXAMPLE: parseDescription(example, '\n\n').replace('&&', '&amp;&amp;')});
 		});
 		s += '</div>\n\n';
+	}
+	
+	if (sec.see.length) {
+		s += '<h4>See also..</h4>\n<ul>';
+		_.each(sec.see, function(seeAlso) {
+			s += _.format('<li>{{SEEALSO}}</li>\n', {SEEALSO: parseDescription(seeAlso)});
+		});
+		s += '</ul>\n';
 	}
 	sec.htmldoc = s;
 }
@@ -111,10 +119,10 @@ function createTOCEntry(sec) {
 		return;
 	
 	sec.tocentries = {};
-	sec.tocentries[sec.name] = _.format('<a href="{{id}}.html">{{name}}</a> '+
+	sec.tocentries[sec.name] = _.format('<a href="{{id}}.html" class="func">{{name}}</a> '+
 			'{{if obj.module && !/WEB.UTIL/.test(obj.module)}}<span class="tocMod">{{if /WEB/.test(module) && !/UTIL/.test(module)}}Web{{else if /WEB/.test(module) && /UTIL/.test(module)}}Web, Util{{else if /UTIL/.test(module)}}Util{{/if}}</span>{{/if}}\n', sec);
 //	if (sec.altname)
-//		sec.tocentries[sec.altname] = _.format('<a href="{{id}}.html">{{altname}}</a>\n', sec);
+//		sec.tocentries[sec.altname] = _.format('<a href="{{id}}.html" class="func">{{altname}}</a>\n', sec);
 }
 
 function documentSections(docSections) {
@@ -165,7 +173,7 @@ function createToc(sections) {
 	_.each(tocEntries, function(te) {
 		html += '<li>'+te.html+'</li>';
 	});
-	html += '<li><a href="/docs/howto.html">How to...</a></li>';
+	html += '<li><a href="/docs/howto.html" class="func">How to...</a></li>';
 	html += '</ul></div>';
 	return html;
 }
@@ -173,7 +181,6 @@ function createToc(sections) {
 function createOverviewPage(sections) {
 	sortTocOrder(sections);
 	
-	// Gen
 	var html = '<div id="docmain"><p class="docHead"><h1>Minified API</h1>\n</p>\n';
 	_.each(sections, function(sec) {
 		html += sec.htmlpreview;

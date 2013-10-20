@@ -439,6 +439,8 @@ function dummy() {
      * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
      *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
      *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
+     * @see ##$.getCookie() reads a cookie.
+
      */
     'setCookie': function(name, value, dateOrDays, dontEscape) {
     	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
@@ -454,7 +456,7 @@ function dummy() {
      * @syntax $.getCookie(name)
      * @syntax $.getCookie(name, dontUnescape)
      * @module WEB+UTIL
-     * Tries to find the cookie with the given name and returns it.
+     * Returns the cookie with the given name. 
      *
      * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
      * <pre>
@@ -466,11 +468,12 @@ function dummy() {
      * </pre>
      *  
      * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
-     *             You may want to escape the name using <var>encodeURIComponent()</var> for all other characters.
+     *             You may want to escape the name using <var>encodeURIComponent()</var> if it contains any other characters.
      * @param dontUnescape optional if set and true, the value will be returned unescaped. Use this parameter only if the value has been encoded
-     *                     in a special way, and not with the JavaScript <var>encode()</var> method.
-     * @return the value of the cookie, or null if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
+     *                     in a special way and not with the standard JavaScript <var>encode()</var> method.
+     * @return the value of the cookie, or <var>null</var> if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
      *         using JavaScript's <code>unescape()</code> function.
+     * @see ##$.setCookie() sets a cookie.
      */
     'getCookie': function(name, dontUnescape) {
     	var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
@@ -486,15 +489,19 @@ function dummy() {
 	 * @syntax $.delay(durationMs, func, args)
 	 * @module WEB+UTIL
 	 * 
-	 * Executes the function with the given delay, optionally passing arguments to it.
+	 * Executes the function after the specified delay, optionally passing arguments to it. Please note that it only uses <var>setTimeout</var>
+	 * internally and there is not guarantee that it will be called exactly after the given amount of milliseconds.
 	 *
 	 * @param durationMs the number of milliseconds to wait. If null or 0, the promise will be fulfilled as soon as the browser can run it
 	 *                   from the event loop.
 	 * @param func the function to call
 	 * @param args optional an array or list of arguments to pass to the function
+	 * 
+	 * @see ##$.defer() works like <var>$.delay</var> invoked with a delay of 0.
+	 * @see ##$.wait() creates a ##promise#Promise## that will be fulfilled after the given duration.
 	 */
 	'delay': function(durationMs, func, args) {
-		delay(function() {call(func, args);}, durationMs); // TODO try partial()
+		delay(function() {call(func, args);}, durationMs);
 	},
 
 	/*$
@@ -506,11 +513,13 @@ function dummy() {
 	 * @syntax $.defer(func, args)
 	 * @module WEB+UTIL
 	 *	
-	 * Executes the function from the browser event loop, as soon as the browser can. Typically that means that
+	 * Executes the function in the browser event loop, as soon as the browser can. Typically that means that
 	 * the function is called after less than 10 milliseconds.
 	 *
 	 * @param func the function to call
 	 * @param args optional an array or list of arguments to pass to the function
+	 * 
+	 * @see ##$.delay() works like <var>$.defer()</var>, but delays the execution for the specified amount of time.
 	 */
 	'defer': defer,
 
@@ -525,10 +534,10 @@ function dummy() {
 	 * @syntax $.wait(durationMs, args)
 	 * @module WEB+UTIL
 	 *
-	 * Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
+	 * Creates a new  ##promise#Promise## that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
 	 * because it allows you to chain delays into your animation chain.
 	 *
-	 * @example Chained animation using ##promise#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
+	 * @example Chained animation using Promise callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
 	 *          and finally moves to 100/100.
 	 * <pre>
 	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
@@ -536,7 +545,7 @@ function dummy() {
 	 *    .then(function() {
 	 *           div.animate({$left: '200px', $top: '200px'}, 800, 0);
 	 *    }).then(function() {
-	 *    		 return _.wait(50);
+	 *    	     return _.wait(50);
 	 *    }).then(function() {
 	 *           div.animate({$left: '100px', $top: '100px'}, 400);
 	 *    });
@@ -549,6 +558,8 @@ function dummy() {
 	 * @param args optional an array of arguments to pass to the promise handler
 	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
 	 *         <var>args</var> parameter as given to <var>wait()</var>.
+	 *         
+	 * @see ##$.delay() calls a simple callback function after a specified waiting period.
 	 */
 	'wait': function(durationMs, args) {
 		var p = promise();

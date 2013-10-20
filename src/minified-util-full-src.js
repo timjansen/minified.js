@@ -2485,10 +2485,18 @@ define('minified', function() {
 	     * 
 	     * @param template The #template as a string. The template, once created, will be cached. 
 	     * @param object the object to format 
+	     * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
+	     *        to escape all output:
+	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
+	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
+	     *        If no escapeFunction has been given, the output will not be escaped.
+	     *        ##_.escapeHtml() can be used as a escape function for HTML, and ##_.escapeRegExp for regular expressions. 
+	     *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
+	     *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
 	     * @return the string created by the template
 	     */ 
-		'format': function(tpl, object) {
-			return template(tpl)(object);
+		'format': function(tpl, object, escapeFunction) {
+			return template(tpl, escapeFunction)(object);
 		},
 		
 
@@ -2605,7 +2613,8 @@ define('minified', function() {
 	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
 	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
 	     *        If no escapeFunction has been given, the output will not be escaped.
-	     *        ##_.escapeHtml() can be used as a escape function for HTML. 
+	     *        ##_.escapeHtml() can be used as a escape function for HTML, and ##_.escapeRegExp for regular expressions. 
+	     *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
 	     *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
 	     * @return the value returned by the last invocation of <var>func</var>
 	     */ 

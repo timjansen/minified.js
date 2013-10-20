@@ -60,4 +60,11 @@ div.availability {
 }
 
 div.examples h4 { margin-top: 2.5em !important; }
+div.examples { margin-bottom: 3.5em; }
+
+a.func {
+	text-decoration: none;
+	background-color: #f8f0f0;
+	padding: 2px;
+}
 

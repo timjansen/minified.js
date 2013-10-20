@@ -23,6 +23,7 @@ function parseSourceSections(src) {
 			requiredBy: {}, // contains ids->1
 			syntax: [],
 			example: [],
+			see: [],
 			params: [] // contains {name, desc} each; @return has '@return' as name
 		};
 	}
@@ -37,7 +38,7 @@ function parseSourceSections(src) {
 			if (tagmatch) { // comment tag found
 				var tag = tagmatch[1];
 				var content = _.trim(l.replace(/^\s*@[a-z]+\s*/, '')); // remove tag from line
-				if (tag == 'syntax' || tag == 'example')
+				if (tag == 'syntax' || tag == 'example' || tag == 'see')
 					currentSection[tag].push(content);
 				else if (tag == 'requires') {
 					if (content.length)
