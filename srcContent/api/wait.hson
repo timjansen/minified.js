@@ -9,7 +9,7 @@
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-wait">$.wait()</a></h2>
 <div class="summary">
-Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed.</div>
+Creates a new  Promise that will be fulfilled as soon as the specified number of milliseconds have passed.</div>
 
 <div class="availability">Complete distribution only, not available in stand-alone modules.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
@@ -27,17 +27,18 @@ from the event loop.</dd>
 <dd class="">an array of arguments to pass to the promise handler</dd>
 <dt id="wait_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="wait_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2">a <a href='promise.html' class='func'>Promise</a> object that will be fulfilled when the time is over. It will never fail. The promise argument is the
-<span class="var">args</span> parameter as given to <span class="var">wait()</span>.</dd>
+<span class="var">args</span> parameter as given to <span class="var">wait()</span>.
+</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>
-Creates a new promise that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
+Creates a new  <a href='promise.html' class='func'>Promise</a> that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
 because it allows you to chain delays into your animation chain.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Chained animation using <a href='promise.html' class='func'>Promise</a> callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms
+<div class="example"><p>Chained animation using Promise callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms
          and finally moves to 100/100.
 <pre>
 var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
@@ -45,7 +46,7 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
    .then(function() {
           div.animate({$left: '200px', $top: '200px'}, 800, 0);
    }).then(function() {
-   		 return _.wait(50);
+   	     return _.wait(50);
    }).then(function() {
           div.animate({$left: '100px', $top: '100px'}, 400);
    });
@@ -55,6 +56,9 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='undefineddelay.html' class='func'>$.delay()</a></code> calls a simple callback function after a specified waiting period.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>

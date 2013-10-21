@@ -35,7 +35,8 @@ Executes the function after the specified delay, optionally passing arguments to
 internally and there is not guarantee that it will be called exactly after the given amount of milliseconds.</p><p></p></div>
 
 <h4>See also..</h4>
-<ul><li><code><a href='undefineddefer.html' class='func'>_.defer()</a></code> works like <span class="var">$.delay</span> invoked with a delay of 0.</li>
+<ul><li><code><a href='undefineddefer.html' class='func'>$.defer()</a></code> works like <span class="var">$.delay</span> invoked with a delay of 0.</li>
+<li><code><a href='undefinedwait.html' class='func'>$.wait()</a></code> creates a <a href='promise.html' class='func'>Promise</a> that will be fulfilled after the given duration.</li>
 </ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>

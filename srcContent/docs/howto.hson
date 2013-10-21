@@ -16,6 +16,7 @@ main: `<div>
  <li><a href="#select_findparent">Find a Specific Parent</a></li>
  <li><a href="#select_checkparent">Check Whether an Element is a Parent</a></li>
  <li><a href="#select_sibling">Get an Element's Next Sibling</a></li>
+ <li><a href="#select_abort">Abort an each() Loop</a></li>
  <li><a href="#select_extend">Extend Minified Lists with New Methods</a></li>
 </ul></li>
 <li><a href="#html">Modify HTML Structure</a><ul>
@@ -48,6 +49,7 @@ main: `<div>
 <li><a href="#event">Events</a><ul>
  <li><a href="#event_events">Register / Unregister Event Handlers</a></li>
  <li><a href="#event_onover">Register for Mouseover Events</a></li>
+ <li><a href="#event_onchange">Monitor an Input Field</a></li>
  <li><a href="#event_selector">Select Bubbled Events (Live/Delegates Events)</a></li>
  <li><a href="#event_trigger">Trigger an Event</a></li>
  <li><a href="#event_custom">Create Custom Events</a></li>
@@ -56,8 +58,16 @@ main: `<div>
  <li><a href="#data_post">Do HTTP Requests (AJAX / XHR)</a></li>
  <li><a href="#data_values">Read and Submit a Form</a></li>
  <li><a href="#data_json">Use JSON</a></li>
+ <li><a href="#data_resttemplate">Create a Rest-style URL</a></li>
  <li><a href="#data_cookie">Read / Write / Delete Cookies</a></li>
 </ul></li>
+ <li><a href="#formats">Templates and Formats</a><ul>
+ <li><a href="#formats_formatnumber">Format a Number</a></li>
+ <li><a href="#formats_formatdate">Format a Date</a></li> 
+ <li><a href="#formats_parsedate">Parse a Date</a></li>
+ <li><a href="#formats_createtemplate">Formats and Templates</a></li>
+</ul></li>
+
 <li><a href="#something_missing">Missing Something?</a></li>
 </ul>
 
@@ -170,6 +180,22 @@ API: <a href="/api/trav.html">trav()</a>.<br/>
 </p>
 
 
+<h3><a name="select_abort">Abort an each() Loop</a></h3>
+<p>
+
+Just use <var>find()</var> instead of <var>each()</var>, and return a value to abort:
+<pre>$('#parent input').find(function(input, index) { 
+    if (input.value == '') {
+        alert('You must enter something into all fields');
+        return true;
+    }
+});</pre>
+</p>
+<p>
+API: <a href="/api/find.html">find()</a>.<br/>
+</p>
+
+
 <h3><a name="select_extend">Extend Minified Lists with New Methods</a></h3>
 <p>
 <pre>MINI.M.prototype.children = function() { return $('*', this, true); };
@@ -218,7 +244,8 @@ $$('#myElement').innerHTML = "My &lt;b>HTML&lt;/b>";</pre>
 </p>
 <p>
 API: <a href="/api/ht.html">ht()</a>, <a href="/api/set.html">set()</a>, <a href="/api/template.html">template()</a>, <a href="/api/dollardollar.html">$$()</a>.<br/>
-JSFiddle Examples: <a href="http://jsfiddle.net/tjansen/HUzFh/">ht()</a>, <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
+JSFiddle Examples: <a href="http://jsfiddle.net/tjansen/HUzFh/">ht()</a>, <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>,
+<a href="http://jsfiddle.net/tjansen/H3VLW/">Number Formats</a>, <a href="http://jsfiddle.net/tjansen/rtNG5/">Date Formats</a>.
 </p>
 
 <h3><a name="html_addhtml">Append HTML</a></h3>
@@ -239,7 +266,7 @@ If your list has more than one element,  you need to write a <span class="var">s
 </p>
 <p>
 API: <a href="/api/add.html">add()</a>, <a href="/api/html.html">HTML()</a>, <a href="/api/set.html">set()</a>, <a href="/api/dollardollar.html">$$()</a>.<br/>
-JSFiddle Examples: <a href="http://jsfiddle.net/tjansen/V5yWf/">HTML()</a>, <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>
+JSFiddle Examples: <a href="http://jsfiddle.net/tjansen/V5yWf/">HTML()</a>, <a href="http://jsfiddle.net/tjansen/tzett/">InnerHTML</a>.
 </p>
 
 
@@ -578,6 +605,20 @@ API: <a href="/api/onover.html">onOver()</a>, <a href="/api/toggle.html">toggle(
 </p>
 
 
+<h3><a name="event_onchange">Monitor a Text Field</a></h3>
+<p>
+<pre>$('#myNumber').onChange(function(newValue) { 
+
+    $('#output').fill(newValue);
+});</pre>
+<var>onChange()</var> allows you to register a callback function that will be called the content of an input field changes. It also works with checkboxes and radio boxes.
+</p>
+<p>
+API: <a href="/api/onchange.html">onChange()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/HUzFh/">onChange()</a>
+</p>
+
+
 <h3><a name="event_selector">Select Bubbled Events (Live/Delegates Events)</a></h3>
 <p>
 <pre>
@@ -663,6 +704,23 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/ncQrp/">Request / JSON</a
 </p>
 
 
+<h3><a name="data_resttemplate">Call a Rest-style URL</a></h3>
+<p>
+<var>$.request()</var> only supports URL-parameters out of the box, but not parameters baked into the URL. If you need them, 
+<var>_.format()</var> comes in handy:
+<pre>var url = _.format('http://myservice/weather/{{zip}}/dur/{{days}}/', {zip: 90210, days: 3}, escape);
+var response = $.request('get', url, {language: 'EN'});
+</pre>
+The example above creates a dynamic URL using <var>_.format()</var> and JavaScript's built-in <var>escape</var> function for URL escaping. 
+It also adds a regular URL parameter <var>language</var> in the <var>$.request()</var> invokation. The URL to be invoked by
+<var>$.request()</var> is:
+<pre>http://myservice/weather/90210/dur/3/?language=EN</pre>
+</p>
+<p>
+API: <a href="/api/format.html">_.format()</a>, <a href="/api/request.html">$.request()</a>.<br/>
+</p>
+
+
 <h3><a name="data_cookie">Read / Write / Delete Cookies</a></h3>
 <p><pre>$.setCookie('counter', (parseInt($.getCookie('counter')) || 0) + 1, 14); // 14 days valid 
 </pre>
@@ -673,6 +731,80 @@ To delete a cookie, set an expiration date in the past like this:
 <p>
 API: <a href="/api/getcookie.html">getCookie()</a>, <a href="/api/setcookie.html">setCookie</a>.<br/>
 </p>
+
+
+
+<h2><a name="formats">Formats and Templates</a></h2>
+<h3><a name="formats_formatnumber">Format a Number</a></h3>
+<p><pre>var n1 = _.formatValue('#.###', Math.PI); // n1 == '3.142'
+var n2 = _.formatValue('0.00', 4.2);      // n2 == '4.20'
+var n3 = _.formatValue('0000', 51.7);     // n3 == '0052'
+var n4 = _.formatValue('###.###.###,0', 8426.47);  // n4 == '8.426,5'
+</pre>
+<span class="var">_.formatValue()</span> formats a number into a string using the given format. 
+'#' is used as a placeholder for optional digits, and '0' is a placeholder for digits that are required.
+As decimal separator and for grouping you can either use ',' or '.', as required for internationalization.
+</p>
+<p>
+API: <a href="/api/formatvalue.html">_.formatValue()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/H3VLW/">Number Formats</a>
+</p>
+
+
+<h3><a name="formats_formatdate">Format a Date</a></h3>
+<p><pre>var d1 = _.formatValue('YY/MM/dd', new Date()); // e.g. '13/10/21'
+var d2 = _.formatValue('HH:mm:ss', new Date()); // e.g. '21:30:02'
+var d3 = _.formatValue('n MM y', new Date());   // e.g. 'Oct 21 2013'
+var d4 = _.formatValue('yyyy-MM-ddTHH:mm:ss.SS z', new Date());  // e.g. '2013-10-21T21:30:02.977 +0200'
+</pre>
+<span class="var">_.formatValue()</span> formats a Date into a string using the given format. 
+Please consult the API docs for the meaning of the placeholders.
+</p>
+<p>
+API: <a href="/api/formatvalue.html">_.formatValue()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/rtNG5/">Date Formats</a>
+</p>
+
+
+<h3><a name="formats_parsedate">Parse a Date</a></h3>
+<p><pre>var d1 = _.formatValue('YY/MM/dd', '13/10/21');
+</pre>
+<span class="var">_.parseDate()</span> parses the date in a string using a date format string that describes it.
+The format syntax is shared with <var>_.formatDate()</var>. Please consult the API docs for the meaning of the placeholders.
+</p>
+<p>
+API: <a href="/api/formatvalue.html">_.formatValue()</a>, <a href="/api/parsevalue.html">_.parseValue()</a>.<br/>
+JSFiddle Example: <a href="http://jsfiddle.net/tjansen/rtNG5/">Date Formats</a>
+</p>
+
+
+<h3><a name="formats_parsedate">Create a Template</a></h3>
+<p><pre>var tpl = _.template('{{if title}}{{title}} {{/if}}{{firstName}} {{lastName}}');
+var fullName1 = tpl({title: 'Dr', firstName: 'Yevgeniy', lastName: 'Petrov'});
+var fullName2 = tpl({firstName: 'Libby', lastName: 'Kegler'});
+</pre>
+<span class="var">_.template()</span> creates a template function that can be called with the template's arguments
+to create a string. Often it is more convenient to use <span class="var">_.format()</span> which uses the same syntax
+but does not require the extra-step of invoking the template: 
+<pre>var fullName = _.format('{{if title}}{{title}} {{/if}}{{firstName}} {{lastName}}', 
+        {title: 'Dr', firstName: 'Yevgeniy', lastName: 'Petrov'});
+</pre>
+Minified caches all templates that it creates. Unless you create a very large number of templates, there is no noticable performance 
+difference between <span class="var">_.template()</span> and <span class="var">_.format()</span>.
+</p>
+<p>Minified has a few additional functions that work with templates:
+<ul><li><var>formatHtml()</var> adds HTML-escaping to <span class="var">_.format()</span>.</li>
+<li><var>ht()</var> replaces the HTML of DOM elements with the template's output.</li>
+<li><var>HTML()</var> creates DOM elements with a template.</li> 
+</ul> 
+</p>
+<p>
+API: <a href="/api/format.html">_.format()</a>, <a href="/api/formathtml.html">_.formatHtml()</a>, 
+<a href="/api/ht.html">ht()</a>, <a href="/api/html.html">HTML()</a>, 
+<a href="/api/template.html">_.template()</a>.<br/>
+</p>
+
+
 
 
 <h3><a name="something_missing">Missing Something?</a></h3>

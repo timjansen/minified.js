@@ -34,7 +34,7 @@ If you build Minified without Internet Explorer compatibility, this is just an a
   <li>Boolean</li>
   <li>null</li>
 </ul>
-Any other types in your JSON tree, especially Dates, should be converted into Strings by you.</p><p></p></div>
+Any other types in your JSON tree, especially Dates, should be converted into Strings before being passed to <span class="var">toJSON</span>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

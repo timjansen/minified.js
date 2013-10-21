@@ -8,7 +8,7 @@
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-ready">$.ready()</a></h2>
-<div class="summary">Registers a handler to be called as soon as the HTML has been fully loaded.</div>
+<div class="summary">Registers a handler to be called as soon as the HTML has been fully loaded in the browser.</div>
 
 <div class="availability">Web module only.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -22,8 +22,8 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Registers a handler to be called as soon as the HTML has been fully loaded. Does not necessarily wait for images and other elements,
-only the main HTML document needs to be complete. On older browsers, it is the same as <span class="var">window.onload</span>.</p><p>If you call <span class="var">ready()</span> after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.</p><p></p></div>
+<div class="description"><p>Registers a handler to be called as soon as the HTML has been fully loaded in the browser. Does not necessarily wait for images and other elements,
+only the main HTML document needs to be complete. On older browsers it is the same as <span class="var">window.onload</span>.</p><p>If you call <span class="var">ready()</span> after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
