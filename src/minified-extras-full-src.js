@@ -39,7 +39,7 @@ function dummy() {
 		return this.set('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : /{{/.test(htmlTemplate) ? formatHtml(htmlTemplate, object) : htmlTemplate);
 	}
 	
-	function HTML(htmlTemplate, object, onCreate) {
+	function HTML(htmlTemplate, object) {
 		var tpl = isFunction(htmlTemplate) ? htmlTemplate : /{{/.test(htmlTemplate) ? template(htmlTemplate, escapeHtml) : function() { return htmlTemplate; };
 		var tmp = _document.createElement('div');
         tmp['innerHTML'] = tpl(object);
@@ -349,25 +349,25 @@ function dummy() {
 		 * Then the price can be set like this:
 		 * <pre>
 		 * var price = 14.9;
-		 * $('#price').ht('<b>${{::0.99}}</b>', price);
+		 * $('#price').ht('&lt;b>${{::0.99}}&lt;/b>', price);
 		 * </pre>
 		 * Results in:
 		 * <pre>
-		 * &lt;div id="price"><b>$14.90</b>&lt;/div>
+		 * &lt;div id="price">&lt;b>$14.90&lt;/b>&lt;/div>
 		 * </pre> 
 		 *
 		 * @example Render a list of names:
 		 * <pre>
 		 * var names = [ {first: 'James', last: 'Sullivan'}, 
 		 *               {first: 'Michael', last: 'Wazowski'} ];
-		 * $('#list').ht('<h2>{{listName}}</h2>\n'+
-		 *               '<ul>{{each n: names}}<li>{{n.first}} {{n.last}}</li>{{/each}}</ul>', 
+		 * $('#list').ht('&lt;h2>{{listName}}&lt;/h2>\n'+
+		 *               '&lt;ul>{{each n: names}}&lt;li>{{n.first}} {{n.last}}&lt;/li>{{/each}}&lt;/ul>', 
 		 *               {listName: 'Guys', names: names});
 		 * </pre>
 		 * The code creates this:
 		 * <pre>
-		 * <h2>Guys</h2>
-		 * <ul><li>James Sullivan<li><li>Michael Wazowski</li></ul>
+		 * &lt;h2>Guys&lt;/h2>
+		 * &lt;ul>&lt;li>James Sullivan&lt;li>&lt;li>Michael Wazowski&lt;/li>&lt;/ul>
 		 * </pre> 
 		 *
 		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
@@ -381,6 +381,8 @@ function dummy() {
 		 * @param object optional the object to pass to the template. If object is not set, the template is called with <var>undefined</var>
 		 *                        as object.
 		 * @return the current list
+		 * 
+		 * @see ##HTML() creates only the nodes and can be used with ##add() and other methods.
 		 */
 		'ht':ht
 		/*$
@@ -473,6 +475,7 @@ function dummy() {
      *                     in a special way and not with the standard JavaScript <var>encode()</var> method.
      * @return the value of the cookie, or <var>null</var> if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
      *         using JavaScript's <code>unescape()</code> function.
+     *
      * @see ##$.setCookie() sets a cookie.
      */
     'getCookie': function(name, dontUnescape) {
@@ -592,18 +595,16 @@ function dummy() {
 		 * @name HTML()
 		 * @syntax HTML(templateString)
 		 * @syntax HTML(templateString, object)
-		 * @syntax HTML(templateString, object, onCreate)
 		 * @syntax HTML(templateFunction)
 		 * @syntax HTML(templateFunction, object)
-		 * @syntax HTML(templateFunction, object, onCreate)
 	     * @module WEB
 		 * Creates a ##list#list of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
-		 * The template uses ##template() syntax with ##escapeHtml() escaping for values.
+		 * The template uses the ##template() syntax with ##escapeHtml() escaping for values.
 		 * 
 		 * Please note that the function <var>HTML</var> will not be automatically exported by Minified. You should always import it
 		 * using the recommended import statement:
 		 * <pre>
-		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, HTML = MINI.HTML;
+		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, <strong>HTML = MINI.HTML</strong>;
 		 * </pre>
 		 * 
 		 * @example Creating a HTML element to format a number:
@@ -613,22 +614,22 @@ function dummy() {
 		 * Then the price can be set like this:
 		 * <pre>
 		 * var price = 14.9;
-		 * $('#price').fill(HTML('<b>${{::0.99}}</b>', price));
+		 * $('#price').fill(HTML('&lt;b>${{::0.99}}&lt;/b>', price));
 		 * </pre>
 		 * Results in:
 		 * <pre>
-		 * &lt;div id="price"><b>$14.90</b>&lt;/div>
+		 * &lt;div id="price">&lt;b>$14.90&lt;/b>&lt;/div>
 		 * </pre> 
 		 *
-		 * @example Adding elements to an existign list:
+		 * @example Adding elements to an existing list:
 		 * <pre>
 		 * var names = [ {first: 'James', last: 'Sullivan'}, 
 		 *               {first: 'Michael', last: 'Wazowski'} ];
-		 * $('#list').add(HTML('{{each}}<li>{{this.first}} {{this.last}}</li>{{/each}}', names);
+		 * $('#list').add(HTML('{{each}}&lt;li>{{this.first}} {{this.last}}&lt;/li>{{/each}}', names);
 		 * </pre>
 		 * The code adds this to #list:
 		 * <pre>
-		 * <li>James Sullivan<li><li>Michael Wazowski</li>
+		 * &lt;li>James Sullivan&lt;li>&lt;li>Michael Wazowski&lt;/li>
 		 * </pre> 
 		 *
 		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
@@ -637,10 +638,13 @@ function dummy() {
 		 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
 		 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
 		 *                     unless you use triple curly-braces.
-		 * @param templateFunction instead of a HTML template <var>ht()</var> also accepts a template function, e.g. one
+		 * @param templateFunction instead of a HTML template <var>HTML()</var> also accepts a template function, e.g. one
 		 *                         created by ##template(). It will be invoked with the object as only argument.
 		 * @param object optional the object to pass to the template
-		 * @return the list containing the new HTML nodes 
+		 * @return the list containing the new HTML nodes
+		 *  
+		 * @see ##ht() is a shortcut for <code>fill(HTML())</code>.
+		 * @see ##EE() is a different way of creating HTML nodes.
 		 */
 		,'HTML': HTML
 		/*$

@@ -2649,7 +2649,7 @@ define('minified', function() {
 	 *             If the name is prefixed with '?', the event will only be passed through if the handler returns <var>true</var>. 
 	 * @param selector optional a selector string for ##dollar#$() to receive only events that match the selector. 
 	 *                Supports all valid parameters for ##dollar#$() except functions. Analog to ##is(), 
-	 *                 the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>

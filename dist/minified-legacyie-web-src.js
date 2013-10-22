@@ -1557,9 +1557,9 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .add()
 	 * @syntax list.add(text)
+	 * @syntax list.add(factoryFunction)
 	 * @syntax list.add(list)
 	 * @syntax list.add(node)
-	 * @syntax list.add(factoryFunction)
      * @module WEB
 	 * Adds the given node(s) as content to the list's HTML elements. If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
@@ -2575,7 +2575,7 @@ define('minified', function() {
 	 *             If the name is prefixed with '?', the event will only be passed through if the handler returns <var>true</var>. 
 	 * @param selector optional a selector string for ##dollar#$() to receive only events that match the selector. 
 	 *                Supports all valid parameters for ##dollar#$() except functions. Analog to ##is(), 
-	 *                 the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>
