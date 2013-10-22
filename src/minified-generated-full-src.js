@@ -2964,6 +2964,7 @@ define('minified', function() {
 	 * @syntax list.add(text)
 	 * @syntax list.add(list)
 	 * @syntax list.add(node)
+	 * @syntax list.add(factoryFunction)
      * @module WEB
 	 * Adds the given node(s) as content to the list's HTML elements. If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
@@ -3859,7 +3860,8 @@ define('minified', function() {
 	 * </pre>
 	 * 
 	 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
-	 * @return a map containing name->[value, value...] pairs, using strings as name and value. 
+	 * @return a map containing name->value pairs, using strings as name and value. If there is more than one value with the same name,
+	 *         <var>values()</var> creates an array containing all values. 
 	 */
 	'values': function(data) {
 		var r = data || {};
@@ -3872,7 +3874,7 @@ define('minified', function() {
 				// @condend
 				// @cond !ie9compatibility $(el['elements'])['values'](r);
 			else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
-				r[n] = collector(flexiEach, [r[n], v], nonOp);
+				r[n] = r[n] == null ? v : collector(flexiEach, [r[n], v], nonOp);
 			}
 		});
 		return r;

@@ -21,6 +21,8 @@
 <span class="summary">Demonstrates Minified's powerful element creation functions.</span></a></li>
 <li><a href="http://jsfiddle.net/tjansen/USMfD/"><span class="link">Fade/Slide Toggles</span><br/>
 <span class="summary">Shows you how to create toggles and use Fade/Slide effects.</span></a></li>
+<li><a href="http://jsfiddle.net/tjansen/VMeX5/"><span class="link">Dial</span><br/>
+<span class="summary">Shows you how to create and use a dial.</span></a></li>
 <li><a href="http://jsfiddle.net/tjansen/ncQrp/"><span class="link">Request + JSON</span><br/>
 <span class="summary">A simple example for HTTP requests and JSON that uses JSFiddle's echo service.</span></a></li>
 <li><a href="http://jsfiddle.net/tjansen/HUzFh/"><span class="link">HTML Templates with ht() and onChange()</span><br/>
