@@ -3768,7 +3768,8 @@ define('minified', function() {
 	 * Please note that a special property of bubble selectors is that they will even listen to events for
 	 * table rows that have been added <strong>after you registered for the events</strong>.
 	 * 
-	 * @param selector optional a selector string for ##dollar#$() to register the event on children of the list elements. 
+	 * @param selector optional a selector string for ##dollar#$() to register the event only on those children of the list elements that
+	 *                match the selector. 
 	 *                Supports all valid parameters for ##dollar#$() except functions.            
 	 * @param names the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
 	 *             the name must not used. You can register the handler for more than one event by specifying several 
@@ -3805,6 +3806,7 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .onOver()
 	 * @syntax list.onOver(handler)
+	 * @syntax list.onOver(subSelect, handler)
 	 * @module WEB
 	 * Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.
 	 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
@@ -3815,6 +3817,9 @@ define('minified', function() {
 	 * $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 500));
 	 * </pre>
 	 * 
+	 * @param selector optional a selector string for ##dollar#$() to register the event only on those children of the list elements that
+	 *                match the selector. 
+	 *                Supports all valid parameters for ##dollar#$() except functions.            
 	 * @param toggle the callback <code>function(isOver, index, event)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
@@ -3824,21 +3829,24 @@ define('minified', function() {
 	 *             'this' is set to the target element that caused the event.
 	 * @return the list
 	 */
-	'onOver': function(toggle) {
+	'onOver': function(subSelect, toggle) {
 		var self = this, curOverState = [];
-		return self['on']('|mouseover |mouseout', function(ev, index) {
-			var overState = ev['type'] != 'mouseout';
-			// @condblock ie9compatibility 
-			var relatedTarget = ev['relatedTarget'] || ev['toElement'];
-			// @condend
-			// @cond !ie9compatibility var relatedTarget = ev['relatedTarget'];
-			if (curOverState[index] !== overState) {
-				if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['trav']('parentNode', self[index]).length)) {
-					curOverState[index] = overState;
-					toggle.call(this, overState, index, ev);
+		if (!toggle)
+			return this['onOver'](null, subSelect);
+		else 
+			return self['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
+				var overState = ev['type'] != 'mouseout';
+				// @condblock ie9compatibility 
+				var relatedTarget = ev['relatedTarget'] || ev['toElement'];
+				// @condend
+				// @cond !ie9compatibility var relatedTarget = ev['relatedTarget'];
+				if (curOverState[index] !== overState) {
+					if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['trav']('parentNode', self[index]).length)) {
+						curOverState[index] = overState;
+						toggle.call(this, overState, index, ev);
+					}
 				}
-			}
-		});
+			});
 	},
 
 	/*$
@@ -3848,6 +3856,7 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .onOver()
 	 * @syntax list.onOver(handler)
+	 * @syntax list.onOver(subSelect, handler)
 	 * @module WEB
 	 * Registers a handler to be called whenever content of the list's input fields changes. The handler is
 	 * called in realtime and does not wait for the focus to change. Text fields as well
@@ -3859,6 +3868,9 @@ define('minified', function() {
 	 * $('#myField').onOver(function(newValue, index, ev) { $('#target').fill(newValue); });
 	 * </pre>
 	 * 
+	 * @param selector optional a selector string for ##dollar#$() to register the event only on those children of the list elements that
+	 *                match the selector. 
+	 *                Supports all valid parameters for ##dollar#$() except functions.            
 	 * @param handler the callback <code>function(newValue, index, ev)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>newValue</dt>For text fields the new <var>value</var> string. 
@@ -3868,24 +3880,27 @@ define('minified', function() {
 	 *             'this' is set to the target element that caused the event.
 	 * @return the list
 	 */
-	'onChange': function(handler) {
+	'onChange': function(subSelect, handler) {
 		var oldValues = [];
-		each(this, function(el, index) {
-			function register(eventNames, property, index) {
-				oldValues[index] = el[property];
-				$(el)['on'](eventNames, function() {
-					var newValue = el[property]; 
-					if (newValue != oldValues[index]) {
-						handler.call(this, newValue, index);
-						oldValues[index] = newValue;
-					}
-				});
-			}
-			if (/kbox|dio/i.test(el['type']))
-				register('|click', 'checked', index);
-			else 
-				register('|input |change |keyup', 'value', index);
-		});
+		if (!handler)
+			return this['onChange'](null, subSelect);
+		else 
+			return this['each'](function(el, index) {
+				function register(eventNames, property, index) {
+					oldValues[index] = el[property];
+					$(el)['on'](subSelect, eventNames, function() {
+						var newValue = el[property]; 
+						if (newValue != oldValues[index]) {
+							handler.call(this, newValue, index);
+							oldValues[index] = newValue;
+						}
+					});
+				}
+				if (/kbox|dio/i.test(el['type']))
+					register('|click', 'checked', index);
+				else 
+					register('|input |change |keyup', 'value', index);
+			});
 	},
 
 	/*$
