@@ -34,7 +34,8 @@ created by <code><a href='template.html' class='func'>template()</a></code>. It 
 <dd class="">the object to pass to the template. If object is not set, the template is called with <span class="var">undefined</span>
 as object.</dd>
 <dt id="ht_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="ht_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the current list</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the current list
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -50,11 +51,11 @@ as object.</dd>
 Then the price can be set like this:
 <pre>
 var price = 14.9;
-$('#price').ht('<b>${{::0.99}}</b>', price);
+$('#price').ht('&lt;b>${{::0.99}}&lt;/b>', price);
 </pre>
 Results in:
 <pre>
-&lt;div id="price"><b>$14.90</b>&lt;/div>
+&lt;div id="price">&lt;b>$14.90&lt;/b>&lt;/div>
 </pre>
 </p></div>
 <h4>Example</h4>
@@ -62,18 +63,21 @@ Results in:
 <pre>
 var names = [ {first: 'James', last: 'Sullivan'},
               {first: 'Michael', last: 'Wazowski'} ];
-$('#list').ht('<h2>{{listName}}</h2>\n'+
-              '<ul>{{each n: names}}<li>{{n.first}} {{n.last}}</li>{{/each}}</ul>',
+$('#list').ht('&lt;h2>{{listName}}&lt;/h2>\n'+
+              '&lt;ul>{{each n: names}}&lt;li>{{n.first}} {{n.last}}&lt;/li>{{/each}}&lt;/ul>',
               {listName: 'Guys', names: names});
 </pre>
 The code creates this:
 <pre>
-<h2>Guys</h2>
-<ul><li>James Sullivan<li><li>Michael Wazowski</li></ul>
+&lt;h2>Guys&lt;/h2>
+&lt;ul>&lt;li>James Sullivan&lt;li>&lt;li>Michael Wazowski&lt;/li>&lt;/ul>
 </pre>
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='html.html' class='func'>HTML()</a></code> creates only the nodes and can be used with <code><a href='add.html' class='func'>add()</a></code> and other methods.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>

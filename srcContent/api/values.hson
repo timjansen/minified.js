@@ -21,7 +21,8 @@
 <dt id="values_dataMap" class=""><a name="values_dataMap"><var>dataMap (optional)</var></a></dt>
 <dd class="">an optional map to write the values into. If not given, a new empty map will be created</dd>
 <dt id="values_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="values_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">a map containing name->[value, value...] pairs, using strings as name and value.</dd>
+<dd class="inSyntax0 inSyntax1">a map containing name->value pairs, using strings as name and value. If there is more than one value with the same name,
+<span class="var">values()</span> creates an array containing all values.</dd>
 </dl>
 
 <h4>Description</h4>

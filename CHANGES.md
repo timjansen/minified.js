@@ -19,6 +19,7 @@ Web module:
 * New method: onChange() invokes an event handler when an input's content changes.
 * New get()/set()/animate() properties: $$scrollX and $$scrollY.
 * New argument startIndex for find().
+* Changed on(): accepts sub-selectors. The bubble selector argument is now the last argument. 'this' has been removed.
 * Changed EE() and clone(): they return elements in a list, instead of element factories.
 * Changed add(), fill(), addBefore()...: will clone elements if added to more than one parent.
 * Changed filter(): removed value argument, only function possible.

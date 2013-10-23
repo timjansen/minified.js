@@ -57,6 +57,38 @@ describe('minified-web-event-test.js', function() {
 			check(error, null);
 		});
 		
+		it('works with sub-selectors', function() {
+			var p = $('#container2').fill();
+			var handler;
+			var callNum = 0, lastIndex = 0;
+			var expect = null, error = null;
+			var s, s2;
+			
+			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
+			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})[0]);
+			$(p).on('div', 'click', handler = function(e, index) {
+				callNum++;
+				lastIndex = index;
+				if (this != expect)
+					error = 'Did not get called on expected event';
+			});
+
+			check(handler.M != null);
+			check(handler.M.length, 2, 'Got handler');
+			
+			expect = s;
+			triggerEvent(s, createClick());
+			check(callNum, 1, "callNum");
+			check(lastIndex, 0, "index");
+			check(error, null);
+
+			expect = s2;
+			triggerEvent(s2, createClick());
+			check(callNum, 2, "callNum");
+			check(lastIndex, 0, "index");
+			check(error, null);
+		});
+		
 		it('bubbles correctly', function() {
 			var p = $('#container2');
 			var callNum = 0;
@@ -91,18 +123,18 @@ describe('minified-web-event-test.js', function() {
 			}, [1, 2, 3]);
 			$('div', p).on('click', function(x) {
 				callNum++;
-				if (this != "foo")
+				if (this != s)
 					error = 'this and arg: wrong this!';
 				if (x != "bar")
 					error = 'this and arg: arguments not passed';
-			}, "foo", ["bar"]);
+			}, ["bar"]);
 			
 			triggerEvent(s, createClick());
-			check(callNum, 2, "callNum");
 			check(error, null);
+			check(callNum, 2, "callNum");
 		});
 		
-		it('works with selectors', function() {
+		it('works with bubble', function() {
 			var p = $('#container2');
 			var s, c1, c2, c3;
 			var proofEek1 = 0, proofPropagation = 0, proofBoo = 0, proofClonk = 0;
@@ -111,14 +143,14 @@ describe('minified-web-event-test.js', function() {
 			$(s).add(c2 = EE('span', 'x')[0]);
 			$(s).add(c3 = EE('span', {$: 'supiClass'} ,'x')[0]);
 			
-			$(s).on('|eek', 'span.supiClass', function(e, index) { 
+			$(s).on('|eek', function(e, index) { 
 				check(e.success, true, 'success set'); 
 				check(index, 0, ' index set');
 				check(this, c3, 'this set', true);
 				proofEek1++; 
-			});
-			$(s).on('eek', 'span.supiClass', function() { check(++proofPropagation, proofEek1, "Propagation failed."); });
-			$(s).on('|eek', 'span.supiClass', function() { fail('stopping propagation failed');});
+			}, 'span.supiClass');
+			$(s).on('eek', function() { check(++proofPropagation, proofEek1, "Propagation failed."); }, 'span.supiClass');
+			$(s).on('|eek', function() { fail('stopping propagation failed');}, 'span.supiClass');
 			$(s).trigger('eek', {success:1});
 			check(proofEek1, 0, "eek not triggered / selector does not match parent");
 			$(c1).trigger('eek', {success:1});
@@ -131,11 +163,11 @@ describe('minified-web-event-test.js', function() {
 			check(proofEek1, 2, "eek triggered again");
 			check(proofPropagation, proofEek1, "Propagation missing.");
 
-			$(s).on('boo', 'span', function(e, index) { if (e.success && index==0 && this===c3) proofBoo++; });
+			$(s).on('boo', function(e, index) { if (e.success && index==0 && this===c3) proofBoo++; }, 'span');
 			$(c3).trigger('boo', {success:1});
 			check(proofBoo, 1, "boo triggered");
 
-			$(s).on('clonk', 'span', function(e, index) { if (e.success && index==0 && (this===c3 || this == c2)) proofClonk++; });
+			$(s).on('clonk', function(e, index) { if (e.success && index==0 && (this===c3 || this == c2)) proofClonk++; }, 'span');
 			$(c3).trigger('clonk', {success:1});
 			check(proofClonk, 1, "clonk triggered");
 			$(c2).trigger('clonk', {success:1});
@@ -152,10 +184,10 @@ describe('minified-web-event-test.js', function() {
 			$(s).add(EE('p','bla')[0]);
 			$(s).add(EE('span', 'x')[0]);
 			$(s).add(c3 = EE('span', {$: 'supiClass'} ,'x')[0]);
-			$(s).on('|eek', 'span', function(e, index) { if (e.success && index==0) proofTag++; });
-			$(s).on('|eek', '.supiClass', function(e, index) { if (e.success && index==0) proofClass++; });
-			$(s).on('|eek', 'a,.supiClass,form,.whatever', function(e, index) { if (e.success && index==0) proofComplexMatch++; });
-			$(s).on('|eek', 'form,.whatever,#nada', function(e, index) { if (e.success && index==0) proofComplexNonMatch++; });
+			$(s).on('|eek', function(e, index) { if (e.success && index==0) proofTag++; }, 'span');
+			$(s).on('|eek', function(e, index) { if (e.success && index==0) proofClass++; }, '.supiClass');
+			$(s).on('|eek', function(e, index) { if (e.success && index==0) proofComplexMatch++; }, 'a,.supiClass,form,.whatever');
+			$(s).on('|eek', function(e, index) { if (e.success && index==0) proofComplexNonMatch++; }, 'form,.whatever,#nada');
 			
 			$(c3).trigger('eek', {success:1});
 			check(proofTag, 1, "eek selector test / tag");
@@ -189,7 +221,7 @@ describe('minified-web-event-test.js', function() {
 			p.add(s = EE('div'));
 			s.add(c = EE('p', {$: 'x'}, g = EE('span', 'bla')));
 
-			s.on('click', 'p', function(e, index) { 
+			s.on('click', function(e, index) { 
 				if (index != 0)
 					error = 'index not 0';
 				else if (this === g[0])
@@ -199,7 +231,7 @@ describe('minified-web-event-test.js', function() {
 				else if (this !== c[0])
 					error = 'this wrong';
 				proof++; 
-			});
+			}, 'p');
 			triggerEvent(c[0], createClick());
 			check(error, null);
 			check(proof, 1, "click triggered without bubbling");
@@ -225,7 +257,7 @@ describe('minified-web-event-test.js', function() {
 			p.add(s = EE('div'));
 			s.add(c = EE('p', {$: 'x'}, g = EE('span', 'bla')));
 	
-			s.on('|eek', 'p', function(e, index) { 
+			s.on('|eek', function(e, index) { 
 				if (!e.success) 
 					error = 'arg not set';
 				else if (index != 0)
@@ -237,7 +269,7 @@ describe('minified-web-event-test.js', function() {
 				else if (this !== c[0])
 					error = 'this wrong';
 				proof++; 
-			});
+			}, 'p');
 			c.trigger('eek', {success:1});
 			check(error, null);
 			check(proof, 1, "eek triggered without bubbling");

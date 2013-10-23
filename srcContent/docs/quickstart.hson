@@ -366,19 +366,20 @@ Explorer equivalents. This means that if you add an event handler to a form subm
 anymore, unless you explicitly allow it. Similarly, a click handler on a link would prevent the link from changing the page.
 </p>
 
-<p>If you want to keep the browser's default action or allow bubbling, you have two options. Either let the handler return <code>true</code>:
+<p>If you want to keep the browser's default action or allow bubbling, you have two options. Either you prefix the event name with a '|' (pipe)
+:
 <pre>
-<a href="/api/dollar.html">$</a>('#submitButton').<a href="/api/on.html">on</a>('click', function() {
+<a href="/api/dollar.html">$</a>('#submitButton').<a href="/api/on.html">on</a>('|click', function() {
 	alert('Button pressed, will submit now!');
-	return true;
 });
 </pre>
 </p>
 
-<p>Or you can keep the default behaviour by prefixing the event name with a '|' (pipe):
+<p>Or you can keep the default behaviour by prefixing the name with a '?' (question mark) and let the handler return <code>true</code>:
 <pre>
-<a href="/api/dollar.html">$</a>('#submitButton').<a href="/api/on.html">on</a>('|click', function() {
+<a href="/api/dollar.html">$</a>('#submitButton').<a href="/api/on.html">on</a>('?click', function() {
 	alert('Button pressed, will submit now!');
+	return true;
 });
 </pre>
 </p>
@@ -408,8 +409,6 @@ function setZoomLevel(percentage) {
 <a href="/api/dollar.html">$</a>('#normalButton').<a href="/api/on.html">on</a>('click', setZoomLevel, [100]);
 <a href="/api/dollar.html">$</a>('#largeButton').<a href="/api/on.html">on</a>('click', setZoomLevel, [150]);
 </pre>
-If you pass custom arguments for an event handler, its return value will be ignored and Minified will always disable all further event processing. 
-Prefix the event name with a '|' to keep processing enabled.
 </p>
 
 <p>

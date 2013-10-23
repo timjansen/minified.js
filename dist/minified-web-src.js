@@ -298,47 +298,51 @@ define('minified', function() {
 
 
 
-
 	// @condblock !ie8compatibility 
-	function onNonCompat(eventName, handlerOrSelector, fThisOrArgsOrHandler, optArgs) {
-		return this['each'](function(registeredOn, index) {
-			flexiEach(eventName.split(/\s/), function(namePrefixed) {
-				var name = replace(namePrefixed, /[?|]/);
-				var prefix = replace(namePrefixed, /[^?|]/g);
-				var noSelector = isFunction(handlerOrSelector) || _null;
-				var handler = noSelector ? handlerOrSelector : fThisOrArgsOrHandler;
+	function onNonCompat(subSelector, eventSpec, handler, args, bubbleSelector) {
+		if (isFunction(eventSpec)) 
+			return this['on'](null, subSelector, eventSpec, handler, bubbleSelector);
+		else if (isString(args)) 
+			return this['on'](subSelector, eventSpec, handler, null, args);
+		else
+			return this['each'](function(baseElement, index) {
+				flexiEach(subSelector ? dollarRaw(subSelector, baseElement) : baseElement, function(registeredOn) {
+					flexiEach(eventSpec.split(/\s/), function(namePrefixed) {
+						var name = replace(namePrefixed, /[?|]/);
+						var prefix = replace(namePrefixed, /[^?|]/g);
 
-				var miniHandler = function(event, triggerOriginalTarget) {
-					var stop;
-					var match, el = noSelector ? registeredOn : (triggerOriginalTarget || event['target']);
-					if (!noSelector) {
-						var selectorFilter = getFilterFunc(handlerOrSelector, registeredOn);
-						while (el && el != registeredOn && !match)
-							if (selectorFilter(el))
-								match = _true;
-							else
-								el = el['parentNode'];
-					}
-					if ((noSelector || match) && (stop = (((!handler.apply((noSelector && optArgs && fThisOrArgsOrHandler) || el, 
-							noSelector && (optArgs || fThisOrArgsOrHandler) || [event, index])) || prefix=='') && prefix != '|')) && !triggerOriginalTarget) {
-						event['preventDefault']();
-						event['stopPropagation']();
-					}
-					return stop;
-				};
+						var miniHandler = function(event, triggerOriginalTarget) {
+							var stop;
+							var match = !bubbleSelector;
+							var el = bubbleSelector ? (triggerOriginalTarget || event['target']) : registeredOn;
+							if (bubbleSelector) {
+								var selectorFilter = getFilterFunc(bubbleSelector, registeredOn);
+								while (el && el != registeredOn && !match)
+									if (selectorFilter(el))
+										match = _true;
+									else
+										el = el['parentNode'];
+							}
+							if (match && (stop = (((!handler.apply(el, args || [event, index])) || prefix=='') && prefix != '|')) && !triggerOriginalTarget) {
+								event['preventDefault']();
+								event['stopPropagation']();
+							}
+							return stop;
+						};
 
-				var trigger = function(eventName, eventObj, element) {
-					return (name == eventName) && miniHandler(eventObj, element);
-				};
+						var trigger = function(eventName, eventObj, element) {
+							return (name == eventName) && miniHandler(eventObj, element);
+						};
 
-				(registeredOn['M'] = registeredOn['M'] || []).push(trigger);
-				(handler['M'] = handler['M'] || []).push(function () {
-					registeredOn.removeEventListener(name, miniHandler, _false);
-					removeFromArray(registeredOn['M'], trigger);
+						(registeredOn['M'] = registeredOn['M'] || []).push(trigger);
+						(handler['M'] = handler['M'] || []).push(function () {
+							registeredOn.removeEventListener(name, miniHandler, _false);
+							removeFromArray(registeredOn['M'], trigger);
+						});
+						registeredOn.addEventListener(name, miniHandler, _false);
+					});
 				});
-				registeredOn.addEventListener(name, miniHandler, _false);
 			});
-		});
 	}
 	// @condend !ie8compatibility 
 
@@ -464,7 +468,6 @@ define('minified', function() {
 
 		if (!isString(selector))
 		    return filterElements(selector); 
-
 
 
 
@@ -2370,9 +2373,11 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .on()
 	 * @syntax list.on(names, eventHandler)
-	 * @syntax list.on(names, selector, eventHandler)
+	 * @syntax list.on(selector names, eventHandler)
 	 * @syntax list.on(names, customFunc, args)
-	 * @syntax list.on(names, customFunc, fThis, args)
+	 * @syntax list.on(selector, names, customFunc, args)
+	 * @syntax list.on(names, eventHandler, bubbleSelector)
+	 * @syntax list.on(names, customFunc, args, bubbleSelector)
 	 * @module WEB
 	 * Registers the function as event handler for all items in the list.
 	 * 
@@ -2383,10 +2388,14 @@ define('minified', function() {
 	 * Handlers are called with the original event object as first argument, the index of the source element in the 
 	 * list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked). 
 	 * 
-	 * Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback. 
+	 * Instead of the event objects, you can also pass an array of arguments that will be passed instead of event object and index. 
+	 *
+	 * Optionally you can specify two a selector strings to qualify only certain events. The first one is the regular selector
+	 * that allows you to select only certain children of the list elements. This is mostly useful for adding events to DOM trees
+	 * generated using ##HTML() or ##EE.
 	 * 
-	 * Optionally you can specify a selector string to receive only events that bubbled up from elements matching the
-	 * selector. The selector is executed in the context of the element you registered on to identify whether the
+	 * The second type of selector is the bubble selector that allows you to receive only events that bubbled up from 
+	 * elements matching the selector. The selector is executed in the context of the element you registered on to identify whether the
 	 * original target of the event qualifies. If not, the handler is not called.
 	 * 
 	 * Minified always registers event handlers with event bubbling enabled. Event capture is not supported.
@@ -2403,12 +2412,12 @@ define('minified', function() {
 	 * @example Registers a handler to call a method setStatus('running') using an inline function:
 	 * <pre>
 	 * $('#myButton').on('click', function() {
-	 *    myObject.setStatus('running');
+	 *    setStatus('running');
 	 * });
 	 * </pre>
-	 * The previous example can bere written like this, using <var>on()</var>'s <var>args</var> and <var>fThis</var> parameters:
+	 * The previous example can bere written like this, using <var>on()</var>'s <var>args</var> parameter:
 	 * <pre>
-	 * $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
+	 * $('#myButton').on('click', setStatus, ['running']);
 	 * </pre>
 	 *
 	 * @example Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behaviour: 
@@ -2425,21 +2434,27 @@ define('minified', function() {
 	 * });
 	 * </pre>
 	 * 
-	 * @example Adds listeners for all clicks on a table's rows.
+	 * @example Adds a button and registers a click handler for it using a sub-selector.
+	 * <pre>
+	 * $('#myForm').add(HTML("<li><button>click me</button></li>").on('button', 'click', myClickHandler));
+	 * </pre>
+	 * 
+	 * @example Adds listeners for all clicks on a table's rows using the bubble selector 'tr'.
 	 * <pre>
 	 * $('#table').on('change', 'tr', function(event, index, selectedIndex) {
 	 *    alert("Click on table row number: " + selectedIndex);
-	 * });
+	 * }, 'tr');
 	 * </pre>
+	 * Please note that a special property of bubble selectors is that they will even listen to events for
+	 * table rows that have been added <strong>after you registered for the events</strong>.
 	 * 
+	 * @param selector optional a selector string for ##dollar#$() to register the event on children of the list elements. 
+	 *                Supports all valid parameters for ##dollar#$() except functions.            
 	 * @param names the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
 	 *             the name must not used. You can register the handler for more than one event by specifying several 
 	 *             space-separated event names. If the name is prefixed
 	 *             with '|' (pipe), the event will be passed through and the event's default actions will be executed by the browser. 
 	 *             If the name is prefixed with '?', the event will only be passed through if the handler returns <var>true</var>. 
-	 * @param selector optional a selector string for ##dollar#$() to receive only events that match the selector. 
-	 *                Supports all valid parameters for ##dollar#$() except functions. Analog to ##is(), 
-	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>
@@ -2451,10 +2466,12 @@ define('minified', function() {
 	 *             'this' is set to the target element that caused the event (the same as <var>event.target</var>).
 	 *             If the event name has been prefixed with '?', the return value will be evaluated to find out whether to
 	 *             cancel further event processing. In all other cases, the return value will be ignored.
-	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>
-	 *                   and optionally the 'this' context given using <var>fThis</var>.
-	 * @param fThis optional a value for 'this' in the custom callback, instead of the event target
+	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>.
 	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. 
+	 * @param bubbleSelector optional a selector string for ##dollar#$() to receive only events that bubbled up from an
+	 *                element that matches this selector.
+	 *                Supports all valid parameters for ##dollar#$() except functions. Analog to ##is(), 
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 */
 	'on': 

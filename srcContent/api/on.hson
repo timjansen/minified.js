@@ -13,23 +13,24 @@
 <div class="availability">Web module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.on(names, eventHandler)</div>
-<div class="syntax">list.on(names, selector, eventHandler)</div>
+<div class="syntax">list.on(selector names, eventHandler)</div>
 <div class="syntax">list.on(names, customFunc, args)</div>
-<div class="syntax">list.on(names, customFunc, fThis, args)</div>
+<div class="syntax">list.on(selector, names, customFunc, args)</div>
+<div class="syntax">list.on(names, eventHandler, bubbleSelector)</div>
+<div class="syntax">list.on(names, customFunc, args, bubbleSelector)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
+<dt id="on_selector" class=""><a name="on_selector"><var>selector (optional)</var></a></dt>
+<dd class="">a selector string for <a href='dollar.html' class='func'>$() to register the event on children of the list elements.
+Supports all valid parameters for </a>dollar#$() except functions.</dd>
 <dt id="on_names" class=""><a name="on_names"><var>names</var></a></dt>
 <dd class="">the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of
 the name must not used. You can register the handler for more than one event by specifying several
 space-separated event names. If the name is prefixed
 with '|' (pipe), the event will be passed through and the event's default actions will be executed by the browser.
 If the name is prefixed with '?', the event will only be passed through if the handler returns <span class="var">true</span>.</dd>
-<dt id="on_selector" class=""><a name="on_selector"><var>selector (optional)</var></a></dt>
-<dd class="">a selector string for <a href='dollar.html' class='func'>$() to receive only events that match the selector.
-Supports all valid parameters for </a>dollar#$() except functions. Analog to <code><a href='is.html' class='func'>is()</a></code>,
-the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.</dd>
 <dt id="on_eventHandler" class=""><a name="on_eventHandler"><var>eventHandler</var></a></dt>
 <dd class="">the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 <dl>
@@ -43,22 +44,26 @@ stopped and event bubbling will be disabled.</dd>
 If the event name has been prefixed with '?', the return value will be evaluated to find out whether to
 cancel further event processing. In all other cases, the return value will be ignored.</dd>
 <dt id="on_customFunc" class=""><a name="on_customFunc"><var>customFunc</var></a></dt>
-<dd class="">a function to be called instead of a regular event handler with the arguments given in <span class="var">args</span>
-and optionally the 'this' context given using <span class="var">fThis</span>.</dd>
-<dt id="on_fThis" class=""><a name="on_fThis"><var>fThis (optional)</var></a></dt>
-<dd class="">a value for 'this' in the custom callback, instead of the event target</dd>
+<dd class="">a function to be called instead of a regular event handler with the arguments given in <span class="var">args</span>.</dd>
 <dt id="on_args" class=""><a name="on_args"><var>args (optional)</var></a></dt>
 <dd class="">an array of arguments to pass to the custom callback function instead of the event objects.</dd>
-<dt id="on_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="on_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the list</dd>
+<dt id="on_bubbleSelector" class=""><a name="on_bubbleSelector"><var>bubbleSelector (optional)</var></a></dt>
+<dd class="">a selector string for <a href='dollar.html' class='func'>$() to receive only events that bubbled up from an
+element that matches this selector.
+Supports all valid parameters for </a>dollar#$() except functions. Analog to <code><a href='is.html' class='func'>is()</a></code>,
+the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.</dd>
+<dt id="on_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="on_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">the list</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>Registers the function as event handler for all items in the list.</p><p>By default, Minified cancels event propagation and disables element's default behaviour for all elements that have an event handler.
 You can override this, either by prefixing the event name with a '|', or by prefixing them with '?' and returning a <span class="var">true</span>
 in the handler. Both will reinstate the original JavaScript behaviour.</p><p>Handlers are called with the original event object as first argument, the index of the source element in the
-list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked).</p><p>Instead of the event objects, you can also pass an array of arguments and a new value for 'this' to the callback.</p><p>Optionally you can specify a selector string to receive only events that bubbled up from elements matching the
-selector. The selector is executed in the context of the element you registered on to identify whether the
+list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked).</p><p>Instead of the event objects, you can also pass an array of arguments that will be passed instead of event object and index.</p><p>Optionally you can specify two a selector strings to qualify only certain events. The first one is the regular selector
+that allows you to select only certain children of the list elements. This is mostly useful for adding events to DOM trees
+generated using <code><a href='html.html' class='func'>HTML()</a></code> or ##EE.</p><p>The second type of selector is the bubble selector that allows you to receive only events that bubbled up from
+elements matching the selector. The selector is executed in the context of the element you registered on to identify whether the
 original target of the event qualifies. If not, the handler is not called.</p><p>Minified always registers event handlers with event bubbling enabled. Event capture is not supported.</p><p>Event handlers can be unregistered using <code><a href='off.html' class='func'>$.off()</a></code>.</p><p></p></div>
 
 <div class="examples">
@@ -74,12 +79,12 @@ $('div').on('click', function() {
 <div class="example"><p>Registers a handler to call a method setStatus('running') using an inline function:
 <pre>
 $('#myButton').on('click', function() {
-   myObject.setStatus('running');
+   setStatus('running');
 });
 </pre>
-The previous example can bere written like this, using <span class="var">on()</span>'s <span class="var">args</span> and <span class="var">fThis</span> parameters:
+The previous example can bere written like this, using <span class="var">on()</span>'s <span class="var">args</span> parameter:
 <pre>
-$('#myButton').on('click', myObject.setStatus, myObject, ['running']);
+$('#myButton').on('click', setStatus, ['running']);
 </pre>
 </p></div>
 <h4>Example</h4>
@@ -99,12 +104,20 @@ $('#myLink').on('?click', function() {
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>Adds listeners for all clicks on a table's rows.
+<div class="example"><p>Adds a button and registers a click handler for it using a sub-selector.
+<pre>
+$('#myForm').add(HTML("<li><button>click me</button></li>").on('button', 'click', myClickHandler));
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Adds listeners for all clicks on a table's rows using the bubble selector 'tr'.
 <pre>
 $('#table').on('change', 'tr', function(event, index, selectedIndex) {
    alert("Click on table row number: " + selectedIndex);
-});
+}, 'tr');
 </pre>
+Please note that a special property of bubble selectors is that they will even listen to events for
+table rows that have been added <strong>after you registered for the events</strong>.
 </p></div>
 </div>
 

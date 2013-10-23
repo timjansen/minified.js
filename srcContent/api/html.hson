@@ -14,10 +14,8 @@
 <div class="syntaxVariant">
 <div class="syntax">HTML(templateString)</div>
 <div class="syntax">HTML(templateString, object)</div>
-<div class="syntax">HTML(templateString, object, onCreate)</div>
 <div class="syntax">HTML(templateFunction)</div>
 <div class="syntax">HTML(templateFunction, object)</div>
-<div class="syntax">HTML(templateFunction, object, onCreate)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -30,20 +28,21 @@ any template functionality (no {{}}), it does not need to be compiled and won't 
 The template will use <code><a href='escapehtml.html' class='func'>escapeHtml()</a></code> as escape function, so all template substitutions will be HTML-escaped,
 unless you use triple curly-braces.</dd>
 <dt id="html_templateFunction" class=""><a name="html_templateFunction"><var>templateFunction</var></a></dt>
-<dd class="">instead of a HTML template <span class="var">ht()</span> also accepts a template function, e.g. one
+<dd class="">instead of a HTML template <span class="var">HTML()</span> also accepts a template function, e.g. one
 created by <code><a href='template.html' class='func'>template()</a></code>. It will be invoked with the object as only argument.</dd>
 <dt id="html_object" class=""><a name="html_object"><var>object (optional)</var></a></dt>
 <dd class="">the object to pass to the template</dd>
-<dt id="html_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="html_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">the list containing the new HTML nodes</dd>
+<dt id="html_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="html_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the list containing the new HTML nodes
+</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>Creates a <a href='list.html' class='func'>list of HTML nodes from the given HTML template. The list is compatible with </a>add(), <code><a href='fill.html' class='func'>fill()</a></code> and related methods.
-The template uses <code><a href='template.html' class='func'>template()</a></code> syntax with <code><a href='escapehtml.html' class='func'>escapeHtml()</a></code> escaping for values.</p><p>Please note that the function <span class="var">HTML</span> will not be automatically exported by Minified. You should always import it
+The template uses the <code><a href='template.html' class='func'>template()</a></code> syntax with <code><a href='escapehtml.html' class='func'>escapeHtml()</a></code> escaping for values.</p><p>Please note that the function <span class="var">HTML</span> will not be automatically exported by Minified. You should always import it
 using the recommended import statement:
 <pre>
-var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, HTML = MINI.HTML;
+var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, <strong>HTML = MINI.HTML</strong>;
 </pre></p><p></p></div>
 
 <div class="examples">
@@ -55,27 +54,31 @@ var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, HTML = M
 Then the price can be set like this:
 <pre>
 var price = 14.9;
-$('#price').fill(HTML('<b>${{::0.99}}</b>', price));
+$('#price').fill(HTML('&lt;b>${{::0.99}}&lt;/b>', price));
 </pre>
 Results in:
 <pre>
-&lt;div id="price"><b>$14.90</b>&lt;/div>
+&lt;div id="price">&lt;b>$14.90&lt;/b>&lt;/div>
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>Adding elements to an existign list:
+<div class="example"><p>Adding elements to an existing list:
 <pre>
 var names = [ {first: 'James', last: 'Sullivan'},
               {first: 'Michael', last: 'Wazowski'} ];
-$('#list').add(HTML('{{each}}<li>{{this.first}} {{this.last}}</li>{{/each}}', names);
+$('#list').add(HTML('{{each}}&lt;li>{{this.first}} {{this.last}}&lt;/li>{{/each}}', names);
 </pre>
 The code adds this to #list:
 <pre>
-<li>James Sullivan<li><li>Michael Wazowski</li>
+&lt;li>James Sullivan&lt;li>&lt;li>Michael Wazowski&lt;/li>
 </pre>
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='ht.html' class='func'>ht()</a></code> is a shortcut for <code>fill(HTML())</code>.</li>
+<li><code><a href='ee.html' class='func'>EE()</a></code> is a different way of creating HTML nodes.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>

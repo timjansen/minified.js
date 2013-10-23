@@ -13,6 +13,7 @@
 <div class="availability">Web module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.add(text)</div>
+<div class="syntax">list.add(factoryFunction)</div>
 <div class="syntax">list.add(list)</div>
 <div class="syntax">list.add(node)</div>
 </div>
@@ -34,8 +35,8 @@ and attempt to add them to more than one element, the result is undefined. You s
 if you add DOM nodes to more than one element.</dd>
 <dt id="add_node" class=""><a name="add_node"><var>node</var></a></dt>
 <dd class="">a DOM node to add <strong>only to the first element</strong> of the list.</dd>
-<dt id="add_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="add_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">the current list</dd>
+<dt id="add_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="add_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the current list</dd>
 </dl>
 
 <h4>Description</h4>

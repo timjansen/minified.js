@@ -26,7 +26,8 @@ You may want to escape the name using <span class="var">encodeURIComponent()</sp
 in a special way and not with the standard JavaScript <span class="var">encode()</span> method.</dd>
 <dt id="getcookie_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="getcookie_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the value of the cookie, or <span class="var">null</span> if not found. Unless <span class="var">dontUnescape</span> has been set, the value has been unescaped
-using JavaScript's <code>unescape()</code> function.</dd>
+using JavaScript's <code>unescape()</code> function.
+</dd>
 </dl>
 
 <h4>Description</h4>
