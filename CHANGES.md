@@ -19,11 +19,12 @@ Web module:
 * New method: onChange() invokes an event handler when an input's content changes.
 * New get()/set()/animate() properties: $$scrollX and $$scrollY.
 * New argument startIndex for find().
-* Changed on(): accepts sub-selectors. The bubble selector argument is now the last argument. 'this' has been removed.
+* Changed on(): accepts sub-selectors. The bubble selector argument is now the last argument. The 'fThis' argument has been removed.
 * Changed EE() and clone(): they return elements in a list, instead of element factories.
 * Changed add(), fill(), addBefore()...: will clone elements if added to more than one parent.
 * Changed filter(): removed value argument, only function possible.
 * In on(), the handler's return value is always ignored, unless the event name is prefixed with '?'.
+* In on(), the event names parameter became optional. If not set, the default is 'submit' for forms and 'click' for everything else.
 * In values(), the returned map values will always be arrays.
 * In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead.
 * In animate(), removed animState param. stop() is now a property of the promise, time is returned by stop().

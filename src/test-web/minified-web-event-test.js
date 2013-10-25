@@ -38,7 +38,7 @@ describe('minified-web-event-test.js', function() {
 				callNum++;
 				lastIndex = index;
 				if (this != expect)
-					error = 'Did not get called on expected event';
+					error = 'Did not get called on expected element';
 			});
 
 			check(handler.M != null);
@@ -54,6 +54,38 @@ describe('minified-web-event-test.js', function() {
 			triggerEvent(s2, createClick());
 			check(callNum, 2, "callNum");
 			check(lastIndex, 1, "index");
+			check(error, null);
+		});
+		
+		it('supports default events', function() {
+			var p = $('#container2').fill();
+			var handler;
+			var callNum = 0;
+			var expectedEl = null, expectedType = null, error = null;
+			
+			p.add(EE('div', '10px'));
+			p.add(EE('form'));
+			$('*', p).on(handler = function(e) {
+				callNum++;
+				if (this != expectedEl[0])
+					error = 'Did not get called on expected element';
+				if (e.type != expectedType)
+					error = 'Did not get called on expected type';
+			});
+			
+			check(handler.M != null);
+			check(handler.M.length, 2, 'Got handler');
+			
+			expectedEl = $('div', p);
+			expectedType = 'click';
+			triggerEvent(expectedEl[0], createClick());
+			check(callNum, 1, "callNum");
+			check(error, null);
+
+			expectedEl = $('form', p);
+			expectedType = 'submit';
+			expectedEl.trigger('submit', {type: 'submit'});
+			check(callNum, 2, "callNum");
 			check(error, null);
 		});
 		
