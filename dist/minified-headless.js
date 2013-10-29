@@ -811,7 +811,7 @@ module.exports = (function() {
      * });
      * </pre>
      * 
-     * @param list a list to iterate. A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
+     * @param list a list to iterate. Can be an array, a ##list#Minified list## or any other array-like structure with 
      *             <var>length</var> property.
      * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
      *                 <dl><dt>item</dt><dd>The current list element.</dd>
@@ -940,7 +940,7 @@ module.exports = (function() {
      * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
-	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and be not added to 
+	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and not be added to 
 	 *        the new result list. </dd></dl>
      * @return the new ##list#list##
      */ 
@@ -1031,23 +1031,24 @@ module.exports = (function() {
 	 * @module UTIL
 	 * Checks whether two values, lists or objects are equal in a deep comparison.
 	 * 
-	 * First equals checks whether it got a function as parameter. If yes, it will be invoked without arguments and the function is called recursively with the function's result.
+	 * First <var>equals()</var> checks whether it got a function as parameter. 
+	 * If yes, it will be invoked without arguments and <var>equals()</var> calls itself recursively with the function's result.
 	 * 
 	 * Once both values are no functions anymore, the values will be evaluated, If the first value is...
 	 * <ul><li>...<var>null</var> or <var>undefined</var>, they are only equal if the other one is also either <var>null</var> or <var>undefined</var>.</li>
-	 * <li>...a value as defined by #_.isValue(), but not a Date, they are equal if the other value is the same type and is equal according to the '==' operator.</li>
+	 * <li>...a value as defined by ##_.isValue(), but not a Date, they are equal if the other value is the same type and is equal according to the '==' operator.</li>
 	 * <li>...a Date, they are equal if the other value is a Date representing the same time.</li>
 	 * <li>...a list or array, they are equal if the other value is also either a list or an array, has the same number of items and all items equal the items of the other
 	 *         list at the same position. The equality of list items is determined recursively using the same rules, so you can also nest lists.</li>
 	 * <li>...a function, it will be invoked without arguments and its return value is evaluated using these rules as if the value has been passed. </li>
-	 * <li>...any other object, they are equal if they contain exactly the same keys (as defined by #_.eachObj()) and all values are equal as determined using these rules
+	 * <li>...any other object, they are equal if they contain exactly the same keys (as defined by ##_.eachObj()) and all values are equal as determined using these rules
 	 *      recursively.</li>
 	 * </ul>
 	 * 
-	 * Please note that, according to the rules, a ##list#Minified list# is equal to an array, as long as their content is equal. <var>equals</var> does not 
+	 * Please note that, according to the rules, a ##list#Minified list## is equal to an array, as long as their content is equal. <var>equals</var> does not 
 	 * differentiate between <var>null</var> and <var>undefined</var>.
 	 *
-	 * <var>equals</var> is commutative. If you swap the parameters, the result should be the same.
+	 * <var>equals</var> is commutative. If you swap the parameters, the result is the same.
 	 * 
 	 * @example Compare a list and an array:
 	 *  <pre> 
@@ -1398,26 +1399,26 @@ module.exports = (function() {
      * @name .call()
      * @altname _.call()
      * @syntax list.call() 
-     * @syntax list.call(fThis) 
      * @syntax list.call(args) 
+     * @syntax list.call(fThis) 
      * @syntax list.call(fThis, args) 
      * @syntax _.call(list) 
-     * @syntax _.call(list, fThis) 
      * @syntax _.call(list, args) 
+     * @syntax _.call(list, fThis) 
      * @syntax _.call(list, fThis, args) 
      * @module UTIL
      * Calls all function in the list.
 	 *
 	 * <var>call</var> goes through all list items and, if they are functions, calls them with the specified arguments. 
 	 * Elements that are not functions will be ignored. The return values of the functions will be written into a list
-	 * in the same order as the functions. If a input list item is not a function, the value in the result list will
-	 * be <var>undefined</var>.
+	 * of the same size and order as original list. If a input list item is not a function, the corresponding value in the result 
+	 * list will be <var>undefined</var>.
      *
      * @param list A list containing the functions to call. Can be an array, a ##list#Minified list## or any other array-like structure with 
      *             <var>length</var> property.
+     * @param args optional A list or array of arguments to pass to the functions.
      * @param fThis optional If set, a value to pass as <var>this</var>. Please note that if you use a list as <var>fThis</var>,
      *              you must set <var>args</var> also to an (possibly empty) array.
-     * @param args optional A list or array of arguments to pass to the functions.
      * @return A list containing the return values of the called functions, or <var>undefined</var> for list items that were not 
      *         functions.
      */ 

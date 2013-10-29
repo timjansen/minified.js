@@ -942,7 +942,7 @@ define('minified', function() {
      * var elementIndex = $('li').find($$('#wanted'));
      * </pre> 
      * 
-     * @example Goes through the elements to find the first div that has the class 'myClass', and returns this element:
+     * @example Goes through all elements to find the first div that has the class 'myClass', and returns this element:
      * <pre> 
      * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
      * </pre> 
@@ -1558,23 +1558,23 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .add()
 	 * @syntax list.add(text)
-	 * @syntax list.add(factoryFunction)
-	 * @syntax list.add(list)
 	 * @syntax list.add(node)
+	 * @syntax list.add(list)
+	 * @syntax list.add(factoryFunction)
      * @module WEB
-	 * Adds the given node(s) as content to the list's HTML elements. If a string has been given, it will be added as text node.
+	 * Adds the given node(s) as children to the list's HTML elements. If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
      *
 	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
-	 * and ##clone#clones for all following list elements.
+	 * and ##clone#clones## to all following list elements.
 	 * 
-	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML nodes.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
 	 * &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
 	 * </pre> 
-	 * The next line appends a text node to the given 'comment' div:
+	 * The next line appends a text node to the div:
 	 * <pre>
 	 * $('#comments').add('Some additional text.');
 	 * </pre>
@@ -1606,28 +1606,27 @@ define('minified', function() {
 	 * @example Use a list to add several elements at once:
 	 * <pre>
 	 * $('#comments').add([
-	 * 		EE('br'), 
-	 *      'Some text', 
-	 *      EE('span', {'className': 'highlight'}, 'Some highlighted text')
+	 *      EE('br'), 
+	 *     'Some text', 
+	 *     EE('span', {'className': 'highlight'}, 'Some highlighted text')
 	 * ]);
 	 * </pre>
 	 *
-	 * @example You can implement functions to create elements depending on the context:
+	 * @example If you need to customize the content, you can write a factory function:
 	 * <pre>
 	 * $('.chapter').add(function(parent, index) { return EE('h2', 'Chapter number ' + index); });
 	 * </pre>
 	 *
 	 * @param text a string or number to add as text node
+	 * @param node a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
+	 *             For all additional elements, the node will be cloned using ##clone().
+	 * @param list a list containing text and/or nodes. May also contain nested lists with nodes or text..
 	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes: 
 	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
 	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
 	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
-	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
-	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
-	 * @param list a list containing text, functions, nodes or more lists. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is undefined. You should always use factories
-	 *             if you add DOM nodes to more than one element.
-	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
+	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
+	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
 	 */
 	'add': function (children, addFunction) {
@@ -1660,20 +1659,17 @@ define('minified', function() {
 	 * @name .fill()
 	 * @syntax list.fill()
 	 * @syntax list.fill(text)
-	 * @syntax list.fill(factoryFunction)
-	 * @syntax list.fill(list)
 	 * @syntax list.fill(node)
+	 * @syntax list.fill(list)
+	 * @syntax list.fill(factoryFunction)
      * @module WEB
 	 * Sets the content of the list's HTML elements, replacing old content. If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
 	 *
 	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
-	 * and ##clone#clones for all following list elements.
+	 * and ##clone#clones## to all following list elements.
 	 * 
-	 * You can also pass a function as argument. It will be invoked for each list element to create the node to add.  The 
-	 * function can return all values allowed by <var>add()</var>, including another function to be called.
-	 *
-	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>fill()</var> and can help you create new HTML ndoes.
 	 *
 	 * Call <var>fill()</var> without arguments to remove all children from a node.
 	 * 
@@ -1681,7 +1677,7 @@ define('minified', function() {
 	 * <pre>
 	 * &lt;div id="status">Done&lt;/div>
 	 * </pre> 
-	 * <var>fill()</var> with a simple string replaces the element's content with the text:
+	 * <var>fill()</var> with a simple string replaces the element's content with the new text:
 	 * <pre>
 	 * $('#status').fill('Please Wait..');
 	 * </pre>
@@ -1690,7 +1686,7 @@ define('minified', function() {
 	 * &lt;div id="status">Please Wait..&lt;/div>
 	 * </pre> 
 	 *
-	 * @example Pass an Element Factory to replace the old content with that:
+	 * @example Pass an element to replace the old content with the element:
 	 * <pre>
 	 * $('#status').fill(EE('span', {'className': 'bold'}, 'Please Wait...'));
 	 * </pre>
@@ -1728,18 +1724,15 @@ define('minified', function() {
 	 * </pre>
 	 *
 	 * @param text a string to set as text node of the list elements
+	 * @param node a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
+	 *             For all additional elements, the node will be cloned using ##clone().
+	 * @param list a list containing text and/or nodes. May also contain nested lists with nodes or text..
 	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes: 
 	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
 	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
 	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
-	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
-	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
-
-	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
-	 *             Minified list contains more than one item.
-	 * @param node a DOM node to set <strong>only in the first element</strong> of the list. 
-
+	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
+	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
 	 */
 	'fill': function (children) {
@@ -1753,26 +1746,23 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .addBefore()
 	 * @syntax list.addBefore(text)
-	 * @syntax list.addBefore(factoryFunction)
-	 * @syntax list.addBefore(list)
 	 * @syntax list.addBefore(node)
+	 * @syntax list.addBefore(list)
+	 * @syntax list.addBefore(factoryFunction)
      * @module WEB
-	 * Inserts the given text or element(s) as sibling in front of each HTML element in the list. 
+	 * Inserts the given text or element(s) as siblings in front of each HTML element in the list. 
 	 * If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
 	 *
 	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
-	 * and ##clone#clones for all following list elements.
+	 * and ##clone#clones## to all following list elements.
 	 * 
-	 * You can also pass a function as argument. It will be invoked for each list element to create the node to add.  The 
-	 * function can return all values allowed by <var>add()</var>, including another function to be called.
-	 *
-	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>addBefore()</var> and can help you create new HTML ndoes.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
 	 * &lt;div>
-	 *   <div id="mainText">Here is some text</div>
+	 *   &lt;div id="mainText">Here is some text&lt;/div>
 	 * &lt;/div>
 	 * </pre>  
 	 * addBefore() adds text in front of the selected list items.
@@ -1804,17 +1794,16 @@ define('minified', function() {
 	 * $('#status').addBefore([EE('hr'), 'WARNING']);
 	 * </pre>
 	 *
-	 * @param text a string to add as text node of the list elements
+	 * @param text a string to add as text node to the list elements
+	 * @param node a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
+	 *             For all additional elements, the node will be cloned using ##clone().
+	 * @param list a list containing text and/or nodes. May also contain nested lists with nodes or text..
 	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes: 
 	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
 	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
 	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
-	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
-	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
-	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
-	 *             Minified list contains more than one item.
-	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
+	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
+	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
 	 */
 	'addBefore': function (children) {
@@ -1828,21 +1817,18 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .addAfter()
 	 * @syntax list.addAfter(text)
-	 * @syntax list.addAfter(factoryFunction)
-	 * @syntax list.addAfter(list)
 	 * @syntax list.addAfter(node)
+	 * @syntax list.addAfter(list)
+	 * @syntax list.addAfter(factoryFunction)
      * @module WEB
-	 * Inserts the given text or element(s) as sibling after each HTML element in the list. 
+	 * Inserts the given text or element(s) as siblings after each HTML element in the list. 
 	 * If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
 	 *
 	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
-	 * and ##clone#clones for all following list elements.
+	 * and ##clone#clones## to all following list elements.
 	 * 
-	 * You can also pass a function as argument. It will be invoked for each list element to create the node to add.  The 
-	 * function can return all values allowed by <var>add()</var>, including another function to be called.
-	 *
-	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>addAfter()</var> and can help you create new HTML ndoes.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -1862,7 +1848,7 @@ define('minified', function() {
 	 * &lt;/div>
 	 * </pre>   
 	 *
-	 * @example You can also pass an Element Factory:
+	 * @example You can also pass an element:
 	 * <pre>
 	 * $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
 	 * </pre>
@@ -1874,17 +1860,16 @@ define('minified', function() {
 	 * &lt;/div>
 	 * </pre> 
 	 *
-	 * @param text a string to add as text node of the list elements
+	 * @param text a string to add as text node to the list elements
+	 * @param node a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
+	 *             For all additional elements, the node will be cloned using ##clone().
+	 * @param list a list containing text and/or nodes. May also contain nested lists with nodes or text..
 	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
 	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
 	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
 	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
-	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
-	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
-	 * @param list a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your
-	 *             Minified list contains more than one item.
-	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
+	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
+	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
 	 */
 	'addAfter': function (children) {
@@ -1898,27 +1883,24 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .addFront()
 	 * @syntax list.addFront(text)
-	 * @syntax list.addFront(factoryFunction)
-	 * @syntax list.addFront(list)
 	 * @syntax list.addFront(node)
+	 * @syntax list.addFront(list)
+	 * @syntax list.addFront(factoryFunction)
      * @module WEB
 	 * Adds the given node(s) as children to the list's HTML elements. Unlike ##add(), the new nodes will be the first children and not the last.
 	 * If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
 	 *
 	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
-	 * and ##clone#clones for all following list elements.
-	 * 
-	 * You can also pass a function as argument. It will be invoked for each list element to create the node to add.  The 
-	 * function can return all values allowed by <var>add()</var>, including another function to be called.
+	 * and ##clone#clones## to all following list elements.
 	 *
-	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>addFront()</var> and can help you create new HTML ndoes.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
 	 * &lt;div id="comments">Here is some text.&lt;br/>&lt;/div>
 	 * </pre> 
-	 * Add a text to the given 'comment' div:
+	 * Add a text to the div:
 	 * <pre>
 	 * $('#comments').addFront('Some additional text. ');
 	 * </pre>
@@ -1956,17 +1938,16 @@ define('minified', function() {
 	 * ]);
 	 * </pre>
 	 *
-	 * @param text a string to add as text node of the list elements
+	 * @param text a string to add as text node to the list elements
+	 * @param node a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
+	 *             For all additional elements, the node will be cloned using ##clone().
+	 * @param list a list containing text and/or nodes. May also contain nested lists with nodes or text..
 	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
 	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
 	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
 	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
-	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
-	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
-
-	 * @param list a list containing text, functions, nodes or nested lists containing those items. Please note that if you have DOM nodes in this list
-	 *             and attempt to add them to more than one element, the result is undefined. 
-	 * @param node a DOM node to add <strong>only to the first element</strong> of the list. 
+	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
+	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
 	 */
 	'addFront': function (children) {
@@ -1980,21 +1961,18 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .replace()
 	 * @syntax list.replace(text)
-	 * @syntax list.replace(factoryFunction)
-	 * @syntax list.replace(list)
 	 * @syntax list.replace(node)
+	 * @syntax list.replace(list)
+	 * @syntax list.replace(factoryFunction)
      * @module WEB
 	 * Replaces the list items with the the given node(s) in the DOM tree. 
 	 * If a string has been given, it will be set as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
 	 *
 	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
-	 * and ##clone#clones for all following list elements.
+	 * and ##clone#clones## to all following list elements.
 	 * 
-	 * You can also pass a function as argument. It will be invoked for each list element to create the node to add.  The 
-	 * function can return all values allowed by <var>add()</var>, including another function to be called.
-	 *
-	 * ##EE(), ##HTML() and ##clone() are compatible with <var>add()</var> and can help you create new HTML ndoes.
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>replace()</var> and can help you create new HTML ndoes.
 	 *
 	 * @example Using the following HTML:
 	 * <pre>
@@ -2036,14 +2014,15 @@ define('minified', function() {
 	 *
 	 *
 	 * @param text a text for the text nodes that replace the list elements
+	 * @param node a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
+	 *             For all additional elements, the node will be cloned using ##clone().
+	 * @param list a list containing text and/or nodes. May also contain nested lists with nodes or text..
 	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to determine its content: 
 	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
 	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
 	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
-	 * Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
-	 * If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl>
-	 * @param node content to replace <strong>only to the first element</strong> of the list with. The content can be a string for a text node,
-	 *              an HTML node or a list containing strings and/or HTML node.
+	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
+	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
 	 */
 	'replace': function (children) {
@@ -2203,8 +2182,8 @@ define('minified', function() {
 	 *         The fulfillment handler will be called as <code>function(list)</code>:
 	 *         <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl> 
 	 *         The rejection handler is called as <code>function()</code> without arguments. 
-	 *         The promise also contains a special property 'stop', which is a function that will interrupt a running
-	 *         animation and returns how long it ran in milliseconds.
+	 *         The returned promise also has property 'stop', which is a function. Invoke the function without arguments to
+	 *         interrupt a running  animation. It returns how long it ran in milliseconds.
 	 */	
 	'animate': function (properties, durationMs, linearity) {
 		var self = this;
@@ -2253,15 +2232,15 @@ define('minified', function() {
 	 * @module WEB
 	 * 
 	 * Creates a function allows you to set all list members to one of two states or any transitional state between them. 
-	 * The states are specified using a ##set() - compatible object maps containing the properties to set.
+	 * The states are specified using ##set() - compatible object maps containing the properties to set.
 	 * Pass 0 to the function to set the first state for all list members, or 1 to set the second state.
-	 * Any value between 0 and 1 will cause dial to interpolate between the two states.
+	 * Any value between 0 and 1 will cause <var>dial()</var> to interpolate between the two states.
 	 * Interpolation is supported for all numeric values, including those that have a string suffix (e.g. 'px' unit), 
-	 * and for colors in all CSS notations (e.g. '#f00', '#f0d1ff' or 'rgb(23,0,100)').
+	 * and for colors in all RGB notations (e.g. '#f00', '#f0d1ff' or 'rgb(23,0,100)').
 	 *
 	 * You can use the optional third parameter to define the kind of interpolation to use for values between 0 and 1.
 	 * If 0, the dial uses a smooth, cubic interpolation. For 1 it uses linear interpolation. Values between 0 and 1
-	 * will mix both algorithms. You can also specify an interpolation function.
+	 * will mix both algorithms. You can also specify your own interpolation function.
 	 *
 	 * See also ##toggle() for a similar function that allows you to set two states and automatically animate them.
 	 *
@@ -2275,10 +2254,10 @@ define('minified', function() {
 	 * </pre>
 	 * 
 	 * @param state1 a property map in ##set() syntax describing the first state of the properties. The properties will be set for all elements of the list.
-	 * @param state2 a property map describing the second state of the properties. Uses ##set() syntax, like the first state. 
+	 * @param state2 a property map describing the second state of the properties. Uses ##set() syntax. 
 	 * @param linearity optional defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.
-	 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> which will be called every 
-	 *     values when an interpolated value is required: 
+	 * @param interpolationFunc optional an interpolation <code>function(startValue, endValue, t)</code> which will be called every time
+	 *       an interpolated value is required: 
 	 *           <dl>
  	 *             <dt>startValue</dt><dd>The start value of the transition.</dd>
  	 *             <dt>endValue</dt><dd>The end value of the transition.</dd>
@@ -2287,7 +2266,7 @@ define('minified', function() {
  	 *             </dl> 		 
  	 * @return a dial function <code>function(newPosition)</code> that will set the state.
 	 *             <dl>
-	 *             <dt>newPosition</dt><dd>If 0 or lower, set the list members to the first step. 
+	 *             <dt>newPosition</dt><dd>If 0 or lower, set the list members to the first state. 
 	 *             If 1 or higher, sets them to the second state. For any value betweeen 0 and 1, the list members
 	 *             will be set to interpolated values.</dd>
 	 *             </dl>
@@ -2627,7 +2606,7 @@ define('minified', function() {
 	/*$
 	 * @id onover
 	 * @group EVENTS
-	 * @requires on dollar trav find
+	 * @requires on dollar 
 	 * @configurable default
 	 * @name .onOver()
 	 * @syntax list.onOver(handler)

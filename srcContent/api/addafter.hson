@@ -8,43 +8,41 @@
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-addafter">.addAfter()</a></h2>
-<div class="summary">Inserts the given text or element(s) as sibling after each HTML element in the list.</div>
+<div class="summary">Inserts the given text or element(s) as siblings after each HTML element in the list.</div>
 
 <div class="availability">Web module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.addAfter(text)</div>
-<div class="syntax">list.addAfter(factoryFunction)</div>
-<div class="syntax">list.addAfter(list)</div>
 <div class="syntax">list.addAfter(node)</div>
+<div class="syntax">list.addAfter(list)</div>
+<div class="syntax">list.addAfter(factoryFunction)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="addafter_text" class=""><a name="addafter_text"><var>text</var></a></dt>
-<dd class="">a string to add as text node of the list elements</dd>
+<dd class="">a string to add as text node to the list elements</dd>
+<dt id="addafter_node" class=""><a name="addafter_node"><var>node</var></a></dt>
+<dd class="">a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
+For all additional elements, the node will be cloned using <code><a href='clone.html' class='func'>clone()</a></code>.</dd>
+<dt id="addafter_list" class=""><a name="addafter_list"><var>list</var></a></dt>
+<dd class="">a list containing text and/or nodes. May also contain nested lists with nodes or text..</dd>
 <dt id="addafter_factoryFunction" class=""><a name="addafter_factoryFunction"><var>factoryFunction</var></a></dt>
 <dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
 <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
 <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
 <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
-Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes.
-If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl></dd>
-<dt id="addafter_list" class=""><a name="addafter_list"><var>list</var></a></dt>
-<dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list
-and attempt to add them to more than one element, the result is <span class="var">undefined</span>. You should always use factories if your
-Minified list contains more than one item.</dd>
-<dt id="addafter_node" class=""><a name="addafter_node"><var>node</var></a></dt>
-<dd class="">a DOM node to add <strong>only to the first element</strong> of the list.</dd>
+Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
+If a function is returned, it will be invoked recursively with the same arguments.</dd></dl></dd>
 <dt id="addafter_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="addafter_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the current list</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Inserts the given text or element(s) as sibling after each HTML element in the list.
+<div class="description"><p>Inserts the given text or element(s) as siblings after each HTML element in the list.
 If a string has been given, it will be added as text node.
 DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.</p><p>When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
-and <a href='clone.html' class='func'>clones for all following list elements.</p><p>You can also pass a function as argument. It will be invoked for each list element to create the node to add.  The
-function can return all values allowed by <span class="var">add()</span>, including another function to be called.</p><p></a>EE(), <code><a href='html.html' class='func'>HTML()</a></code> and <code><a href='clone.html' class='func'>clone()</a></code> are compatible with <span class="var">add()</span> and can help you create new HTML ndoes.</p><p></p></div>
+and <a href='clone.html' class='func'>clones</a> to all following list elements.</p><p><code><a href='ee.html' class='func'>EE()</a></code>, <code><a href='html.html' class='func'>HTML()</a></code> and <code><a href='clone.html' class='func'>clone()</a></code> are compatible with <span class="var">add()</span> and can help you create new HTML ndoes.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -67,7 +65,7 @@ This results in the following HTML:
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>You can also pass an Element Factory:
+<div class="example"><p>You can also pass an element:
 <pre>
 $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
 </pre>

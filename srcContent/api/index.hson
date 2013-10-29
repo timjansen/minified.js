@@ -55,13 +55,13 @@ Executes the function after the specified delay, optionally passing arguments to
 Creates a new  Promise that will be fulfilled as soon as the specified number of milliseconds have passed.</div>
 
 <h3><a href="add.html">.add()</a></h3>
-<div class="summary">Adds the given node(s) as content to the list's HTML elements.</div>
+<div class="summary">Adds the given node(s) as children to the list's HTML elements.</div>
 
 <h3><a href="addafter.html">.addAfter()</a></h3>
-<div class="summary">Inserts the given text or element(s) as sibling after each HTML element in the list.</div>
+<div class="summary">Inserts the given text or element(s) as siblings after each HTML element in the list.</div>
 
 <h3><a href="addbefore.html">.addBefore()</a></h3>
-<div class="summary">Inserts the given text or element(s) as sibling in front of each HTML element in the list.</div>
+<div class="summary">Inserts the given text or element(s) as siblings in front of each HTML element in the list.</div>
 
 <h3><a href="addfront.html">.addFront()</a></h3>
 <div class="summary">Adds the given node(s) as children to the list's HTML elements.</div>
