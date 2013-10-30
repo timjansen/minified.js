@@ -64,10 +64,10 @@ the destination values that have been specified in the given properties. Then <s
 specified properties in frequent intervals so that they transition to their destination values.</p><p>The start values will be obtained using <code><a href='get.html' class='func'>get()</a></code>. It is recommended to set the start values using <code><a href='set.html' class='func'>set()</a></code> before you start the animation, even if this is not
 always required.</p><p>You can define the kind of transition using the <span class="var">linearity</span> parameter. If you omit it or pass 0, animate's default algorithm will cause a smooth transition
 from the start value to the end value. If you pass 1, the transition will be linear, with a sudden start and end of the animation. Any value between 0 and 1
-is also allowed and will give you a transition that is 'somewhat smooth'.</p><p>Instead of the <span class="var">linearity</span> function you can also provide your own interpolation <code>function(startValue, endValue, t)</code> which will be
+is also allowed and will give you a transition that is 'somewhat smooth'.</p><p>Instead of the <span class="var">linearity</span> function you can provide your own interpolation <code>function(startValue, endValue, t)</code> which will be
 called every time an interpolated value is required. <span class="var">startValue</span> and <span class="var">endValue</span> define the start and end values. <span class="var">t</span>
-is a value between 0 and 1 that specifies the state of the transition. The function should return <span class="var">startValue</span> for 0 and
-<span class="var">endValue</span> for 1. For values between 0 and 1, the function should return a transitional value.</p><p>If the start value of a property is a string containing a number, <span class="var">animate()</span> will always ignore all the surrounding text and use the destination value as a template
+is a value between 0 and 1 that specifies the current state of the transition. The function must return the <span class="var">startValue</span> for 0 and
+the <span class="var">endValue</span> for 1. For values between 0 and 1, the function should return a transitional value.</p><p>If the start value of a property is a string containing a number, <span class="var">animate()</span> will always ignore all the surrounding text and use the destination value as a template
 for the value to write. This can cause problems if you mix units in CSS. For example, if the start value is '10%' and you specify an end value of '20px', animate
 will do an animation from '10px' to '20px'. It is not able to convert units.</p><p><span class="var">animate()</span> does not only support strings with units, but any string containing exactly one number. This allows you, among other things, with IE-specific CSS properties.
 For example, you can transition from a start value 'alpha(opacity = 0)' to 'alpha(opacity = 100)'.</p><p>When you animate colors, <span class="var">animate()</span> is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not
@@ -168,8 +168,8 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
@@ -202,6 +202,7 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="eachobj.html" class="func">_.eachObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="escapehtml.html" class="func">_.escapeHtml()</a> <span class="tocMod">Util</span>
 </li><li><a href="escaperegexp.html" class="func">_.escapeRegExp()</a> <span class="tocMod">Util</span>
+</li><li><a href="extend.html" class="func">_.extend()</a> <span class="tocMod">Util</span>
 </li><li><a href="filterobj.html" class="func">_.filterObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="format.html" class="func">_.format()</a> <span class="tocMod">Util</span>
 </li><li><a href="formathtml.html" class="func">_.formatHtml()</a> <span class="tocMod">Util</span>

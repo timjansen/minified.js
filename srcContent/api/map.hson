@@ -26,7 +26,8 @@
 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new list.</dd></dl></dd>
 <dt id="map_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="map_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the new <a href='list.html' class='func'>list</a></dd>
+<dd class="inSyntax0 inSyntax1">the new <a href='list.html' class='func'>list</a>
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -53,6 +54,9 @@ var texts = _.map([3, 7, 11, 5, 19, 3], function(number, index) {
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='collect.html' class='func'>collect()</a></code> is a more powerful version of <span class="var">map()</span>.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -97,8 +101,8 @@ var texts = _.map([3, 7, 11, 5, 19, 3], function(number, index) {
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
@@ -131,6 +135,7 @@ var texts = _.map([3, 7, 11, 5, 19, 3], function(number, index) {
 </li><li><a href="eachobj.html" class="func">_.eachObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="escapehtml.html" class="func">_.escapeHtml()</a> <span class="tocMod">Util</span>
 </li><li><a href="escaperegexp.html" class="func">_.escapeRegExp()</a> <span class="tocMod">Util</span>
+</li><li><a href="extend.html" class="func">_.extend()</a> <span class="tocMod">Util</span>
 </li><li><a href="filterobj.html" class="func">_.filterObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="format.html" class="func">_.format()</a> <span class="tocMod">Util</span>
 </li><li><a href="formathtml.html" class="func">_.formatHtml()</a> <span class="tocMod">Util</span>

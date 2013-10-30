@@ -103,8 +103,8 @@ _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
@@ -137,6 +137,7 @@ _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
 </li><li><a href="eachobj.html" class="func">_.eachObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="escapehtml.html" class="func">_.escapeHtml()</a> <span class="tocMod">Util</span>
 </li><li><a href="escaperegexp.html" class="func">_.escapeRegExp()</a> <span class="tocMod">Util</span>
+</li><li><a href="extend.html" class="func">_.extend()</a> <span class="tocMod">Util</span>
 </li><li><a href="filterobj.html" class="func">_.filterObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="format.html" class="func">_.format()</a> <span class="tocMod">Util</span>
 </li><li><a href="formathtml.html" class="func">_.formatHtml()</a> <span class="tocMod">Util</span>

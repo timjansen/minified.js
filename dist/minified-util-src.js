@@ -298,6 +298,14 @@ module.exports = (function() {
 		});
 		return to;
 	}
+	function extend(target) {
+		for (var i = 0; i < arguments.length; i++)
+			eachObj(arguments[i], function(name, value) {
+				if (value != undef)
+					target[name] = value;
+			});
+		return target;
+	}
 	function getFindFunc(findFunc) {
 		return isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 	}
@@ -976,6 +984,9 @@ module.exports = (function() {
 	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and not be added to 
 	 *        the new result list. </dd></dl>
      * @return the new ##list#list##
+     * 
+     * @see ##map() is a simpler version of <var>collect()</var> that can be useful if there is a 1:1 mapping between
+     *      input and output list.
      */ 
 	'collect': listBindArray(collect),
 
@@ -1015,6 +1026,8 @@ module.exports = (function() {
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new list.</dd></dl>
      * @return the new ##list#list##
+     * 
+     * @see ##collect() is a more powerful version of <var>map()</var>.
      */ 
 	'map': listBindArray(map),
 
@@ -1209,6 +1222,8 @@ module.exports = (function() {
      * <li>With a callback function. <var>find()</var> will then call the given function for each list element until the function 
      *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
      * </ol>
+     * 
+     * <var>find()</var can also be used as an alternative to ##each() if you need to abort the loop.
      *
      * @example Finds the first negative number in the list:
      * <pre> 
@@ -1240,6 +1255,8 @@ module.exports = (function() {
      * @param startIndex optional the 0-based index of the first element to search.
      * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
      *         it returns either the value returned by the callback or <var>undefined</var>.
+     *         
+     * @see ##findLast() is the equivalent to <var>find()</var> for the list's end.
      */ 
  	'find': listBind(find),
 
@@ -1298,6 +1315,8 @@ module.exports = (function() {
      * @param startIndex optional the 0-based index of the first element to search.
      * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
      *         it returns either the value returned by the callback or <var>undefined</var>.
+     *         
+     * @see ##find() is the equivalent to find values at the end of a list.
      */ 
  	'findLast': listBind(findLast),
 
@@ -1343,6 +1362,8 @@ module.exports = (function() {
      * @param baseString a string to check
      * @param otherString the string to find at the beginning of the other string
      * @return true if the base list or string starts with the other list/string. False otherwise.
+     * 
+     * @see ##endsWith() is the equivalen for the list's or string's end.
      */ 
  	'startsWith': listBind(startsWith),
 
@@ -1388,6 +1409,8 @@ module.exports = (function() {
      * @param baseString a string to check
      * @param otherString the string to find at the end of the other string
      * @return true if the base list or string ends with the other list/string. False otherwise.
+     * 
+     * @see ##startsWith() is the equalent for the beginning of a list or string.
      */ 
  	'endsWith': listBind(endsWith),
 
@@ -1421,6 +1444,9 @@ module.exports = (function() {
      *             <var>length</var> property.
      * @param item The item to search.
      * @return true if the list contains the item. False otherwise.
+     * 
+     * @see ##find() finds the position of a list element's fist occurrence.
+     * @see ##findLast() finds the last position of a list element.
      */ 
  	'contains': listBind(contains),
 
@@ -1440,7 +1466,7 @@ module.exports = (function() {
      * @syntax _.call(list, fThis) 
      * @syntax _.call(list, fThis, args) 
      * @module UTIL
-     * Calls all function in the list.
+     * Calls all functions in the list.
 	 *
 	 * <var>call</var> goes through all list items and, if they are functions, calls them with the specified arguments. 
 	 * Elements that are not functions will be ignored. The return values of the functions will be written into a list
@@ -1667,8 +1693,15 @@ module.exports = (function() {
 	     * Creates a ##list#Minified list## containing all property names of the specified object. Only direct properies are
 	     * included, not inherited ones. The order of the keys in the list is undefined and runtime-specific.
 		 *
+		 * @example Using <var>keys()</var>:
+		 * <pre>var obj = {a: 2, b: 52};
+		 * var keys = _.keys(obj);  // keys contains ['a', 'b'] now
+		 * </pre>
+		 *
 	     * @param object The object to gather keys from.
 	     * @return A Minified list containing the property names.
+	     * 
+	     * @see ##_.values() returns the values of an object as a list.
 	     */
 		'keys': funcArrayBind(keys),
 
@@ -1683,8 +1716,15 @@ module.exports = (function() {
 	     * Creates a ##list#Minified list## containing all property values of the specified object. Only direct properies are
 	     * included, not inherited ones. The order of the values in the list is undefined and runtime-specific.
 		 *
-	     * @param object The object to gather values from.
+		 * @example Using <var>values()</var>:
+		 * <pre>var obj = {a: 2, b: 52};
+		 * var values = _.values(obj);  // keys contains [2, 52] now
+		 * </pre>
+		 * 
+		 * @param object The object to gather values from.
 	     * @return A Minified list containing the property names.
+	     * 
+	     * @see ##_.keys() retrieves the property names of an object as a list.
 	     */
 		'values': funcArrayBind(values),
 
@@ -1709,8 +1749,43 @@ module.exports = (function() {
 		 * @param from the object to copy from
 		 * @param to the object to copy to
 		 * @return the object that has been copied to
+		 * 
+		 * @see ##extend() is very similar to <var>copyObj()</var>, but with a slightly different syntax.
 		 */
 		'copyObj': copyObj,
+
+		/*$
+		 * @id extend
+		 * @group OBJECT
+		 * @requires 
+		 * @configurable default
+		 * @name _.extend()
+		 * @syntax _.extend(target, src...)
+		 * @module UTIL
+		 * Copies every property of the source objects into the first object. The source objects are specified using variable arguments. 
+		 * There can be more than one. If a source parameter is <var>undefined</var> or <var>null</var>, it will be ignored.
+		 * The properties are copied as shallow-copies. <var>undefined</var> values will not be copied or inherited properties
+		 * will not be copied.
+		 * 
+		 * <b>Please note:</b> Unlike jQuery, <var>extend</var> is not neccessarily a function to extend Minified, but
+		 * you can use it to do this. To add a function to ##list#Minified lists##, add a property to
+		 * ##M#MINI.M##. If you want to extend <var>$</var> or <var>_</var>, just assign the new function(s) as property.
+		 * 
+		 *  @example Copying properties:
+		 * <pre>var target = {a:3, c: 3};
+		 * _.extend(target, {a: 1, b: 2}); // target is now {a: 1, b: 2, c: 3}</pre>
+		 *
+		 *  @example Using several source values:
+		 * <pre>var extend = _.copyObj({a: 1, b: 2}, {a:3, c: 3}, {d: 5}); // target is now {a: 1, b: 2, c: 3, d: 5}</pre>
+		 *
+		 * @param target the object to copy to
+		 * @param src the object(s) to copy from. Variable argument, there can be any number of sources. Nulls and <var>undefined</var>
+		 *            parameters will be ignored.
+		 * @return the target
+		 *
+		 * @see ##copyObj() is very similar to <var>extend()</var>, but with a slightly different and more straightforward syntax.
+		 */
+		'extend': extend,
 
 		/*$ 
 		 * @id range 

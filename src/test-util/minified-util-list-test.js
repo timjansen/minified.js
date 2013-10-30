@@ -648,7 +648,7 @@ function runTests(loadInContext) {
 	});
 	
 	describe('_.copyObj()', function() {
-		it('copy objects', function() {
+		it('copies objects', function() {
 			var _ = req();
 			var a = {a:2, b:1, c:4, '34':23, d:4};
 			var b = {a:2, b:1, d:4};
@@ -660,7 +660,7 @@ function runTests(loadInContext) {
 			assert(_.equals(_.copyObj(a, d), a));
 		});
 		
-		it('copy cond', function() {
+		it('copies cond', function() {
 			var _ = req();
 			var a = {a:2, b:1, c:4, '34':23, d:4};
 			var b = {a:2, b:1, d:4};
@@ -672,7 +672,23 @@ function runTests(loadInContext) {
 			assert(_.equals(_.copyObj(a, d, 1), a));
 		});
 	});
-		
+
+	describe('_.extend()', function() {
+		it('copies objects', function() {
+			var _ = req();
+			var a = {a:2, b:1, c:4, '34':23, d:4};
+			var b = {a:2, b:1, d:4};
+			var c = {a:2, b:2, c:4, '34':23, d:4};
+			var d = {};
+			assert(_.equals(_.extend({}), {}));
+			assert(_.equals(_.extend(d, {}, null, undef, {}), {}));
+			assert(_.equals(_.extend(d, {a: 222}, b, {a: undef}), b));
+			assert(_.equals(_.extend(d, null, {}, c), c));
+			assert(_.equals(_.extend(d, a), a));
+		});
+	});
+
+	
 	describe('_.trim()', function() {
 		it('strips space', function() {
 			var _ = req();

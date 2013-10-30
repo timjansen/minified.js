@@ -20,7 +20,8 @@
 <dt id="tojson_value" class=""><a name="tojson_value"><var>value</var></a></dt>
 <dd class="">the value (map-like object, array/list, string, number, boolean or null)</dd>
 <dt id="tojson_RETURN" class="returnValue inSyntax0"><a name="tojson_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the JSON string</dd>
+<dd class="inSyntax0">the JSON string
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -46,6 +47,9 @@ var jsonString = $.toJSON(myObj);
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='undefinedparsejon.html' class='func'>$.parseJON()</a></code> parses JSON structures.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -90,8 +94,8 @@ var jsonString = $.toJSON(myObj);
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
@@ -124,6 +128,7 @@ var jsonString = $.toJSON(myObj);
 </li><li><a href="eachobj.html" class="func">_.eachObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="escapehtml.html" class="func">_.escapeHtml()</a> <span class="tocMod">Util</span>
 </li><li><a href="escaperegexp.html" class="func">_.escapeRegExp()</a> <span class="tocMod">Util</span>
+</li><li><a href="extend.html" class="func">_.extend()</a> <span class="tocMod">Util</span>
 </li><li><a href="filterobj.html" class="func">_.filterObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="format.html" class="func">_.format()</a> <span class="tocMod">Util</span>
 </li><li><a href="formathtml.html" class="func">_.formatHtml()</a> <span class="tocMod">Util</span>

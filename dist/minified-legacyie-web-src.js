@@ -775,8 +775,11 @@ define('minified', function() {
      * @module WEB, UTIL
      * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
      * the zero-based index as second.
+     * 
+     * Please note that you can not abort an <var>each()</var> loop. If you need to abort your loop, you should use
+     * <var>find()</var>. 
      *
-     * @example This goes through all h2 elements of the class 'section' and changes their content:
+     * @example This goes through all &lt;h2> elements of the class 'section' and changes their content:
      * <pre>
      * $('h2.section').each(function(item, index) {
      *     item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
@@ -787,6 +790,9 @@ define('minified', function() {
      *                 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
      *                 The callback's return value will be ignored.
      * @return the list
+     * 
+     * @see ##find() can be used instead of <var>each()</var> if you need to abort the loop.
+     * @see ##eachObj() iterates through the properties of an object.
      */
 	'each': function (callback) {
 		return flexiEach(this, callback);
@@ -1154,12 +1160,14 @@ define('minified', function() {
  	 * var areRows = $('.myRows').is('tr'); 
  	 * </pre>
  	 * 
- 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists. Alternatively uou can pass
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists. Alternatively you can pass
  	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which checks whether all list items
  	 *        are HTML elements.
  	 * @return <var>true</var> if all list elements match the selector. <var>false</var> otherwise.
+ 	 * 
+ 	 * @see ##only() removes elements from a list that do not match a selector.
  	 */
 	'is': function(selector) {
 		var f = getFilterFunc(selector);
@@ -2076,7 +2084,7 @@ define('minified', function() {
 	 * @name .clone()
 	 * @syntax list.clone()
      * @module WEB
-     * Clones all HTML elements and text nodes in the given list by creating a deep copy. Strings in the list will remain unchanged,
+     * Clones all HTML elements and text nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
      * and everything else will be removed.
 	 *
 	 * <var>clone()</var> is very limited in what it will clone. Only elements, their attributes, text nodes,  CDATA nodes and strings will 
@@ -2102,6 +2110,8 @@ define('minified', function() {
 	 * </pre> 
 	 *
 	 * @return the list of containing copies of all supported items in the original list.
+	 * 
+	 * @see ##add() can add a cloned element to the HTML document.
 	 */
 	'clone':  function() {
 		return new M(clone(this)); // TODO: with Util use list bind func
@@ -2134,16 +2144,17 @@ define('minified', function() {
 	 * from the start value to the end value. If you pass 1, the transition will be linear, with a sudden start and end of the animation. Any value between 0 and 1 
 	 * is also allowed and will give you a transition that is 'somewhat smooth'. 
 	 * 
-	 * Instead of the <var>linearity</var> function you can also provide your own interpolation <code>function(startValue, endValue, t)</code> which will be
+	 * Instead of the <var>linearity</var> function you can provide your own interpolation <code>function(startValue, endValue, t)</code> which will be
 	 * called every time an interpolated value is required. <var>startValue</var> and <var>endValue</var> define the start and end values. <var>t</var>
-	 * is a value between 0 and 1 that specifies the state of the transition. The function should return <var>startValue</var> for 0 and 
-	 * <var>endValue</var> for 1. For values between 0 and 1, the function should return a transitional value.
+	 * is a value between 0 and 1 that specifies the current state of the transition. The function must return the <var>startValue</var> for 0 and 
+	 * the <var>endValue</var> for 1. For values between 0 and 1, the function should return a transitional value.
 	 *
 	 * If the start value of a property is a string containing a number, <var>animate()</var> will always ignore all the surrounding text and use the destination value as a template 
 	 * for the value to write. This can cause problems if you mix units in CSS. For example, if the start value is '10%' and you specify an end value of '20px', animate
 	 * will do an animation from '10px' to '20px'. It is not able to convert units. 
 	 *
-	 * <var>animate()</var> does not only support strings with units, but any string containing exactly one number. This allows you, among other things, with IE-specific CSS properties.
+	 * <var>animate()</var> does not only support strings with units, but any string containing exactly one number. This allows you, among other things, to work with 
+	 * IE-specific CSS properties.
 	 * For example, you can transition from a start value 'alpha(opacity = 0)' to 'alpha(opacity = 100)'. 
 	 *
 	 * When you animate colors, <var>animate()</var> is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not 
@@ -2151,9 +2162,9 @@ define('minified', function() {
 	 *
 	 * Instead of the end value, you can also specify a <code>function(oldValue, index, obj)</code> to calculate the actual end value. 
 	 *
-	 * To allow more complex animation, <var>animate()</var> returns a ##promiseClass#Promise## that is fulfulled when the animation has finished. 
+	 * To allow more complex animation, <var>animate()</var> returns a ##promiseClass#Promise## that is fulfilled when the animation has finished. 
 	 *
-	 * @example Move an element. 
+	 * @example Move an element:
 	 * <pre>
 	 * $('#myMovingDiv').set({$left: '0px', $top: '0px'})                // start values
 	 *                  .animate({$left: '50px', $top: '100px'}, 1000);  // animation
@@ -2223,6 +2234,9 @@ define('minified', function() {
 	 *         The rejection handler is called as <code>function()</code> without arguments. 
 	 *         The returned promise also has property 'stop', which is a function. Invoke the function without arguments to
 	 *         interrupt a running  animation. It returns how long it ran in milliseconds.
+	 *         
+	 * @see ##toggle() can be used to define animations between two states.
+	 * @see ##$.loop() allows you to write more complex animations.
 	 */	
 	'animate': function (properties, durationMs, linearity) {
 		var self = this;
@@ -2281,8 +2295,6 @@ define('minified', function() {
 	 * If 0, the dial uses a smooth, cubic interpolation. For 1 it uses linear interpolation. Values between 0 and 1
 	 * will mix both algorithms. You can also specify your own interpolation function.
 	 *
-	 * See also ##toggle() for a similar function that allows you to set two states and automatically animate them.
-	 *
 	 * @example Creates a dial function that changes the background color of the page.
 	 * <pre>
 	 * var light = $('body').dial({$backgroundColor: #000}, {$backgroundColor: #fff});
@@ -2309,6 +2321,8 @@ define('minified', function() {
 	 *             If 1 or higher, sets them to the second state. For any value betweeen 0 and 1, the list members
 	 *             will be set to interpolated values.</dd>
 	 *             </dl>
+	 *             
+	 * @see ##toggle() is a related function that allows you to define two states and automatically animate between them.
 	 */
 	'dial': function (properties1, properties2, linearity) {
 		var self = this;
@@ -2506,6 +2520,8 @@ define('minified', function() {
 	 *
 	 * @param element the element whose coordinates should be determined
 	 * @return an object containing pixel coordinates in two properties 'x' and 'y'
+	 * 
+	 * @see ##get() can be used to get more general properties of a list element.
 	 */
 	'offset': function() {
 		var elem = this[0];

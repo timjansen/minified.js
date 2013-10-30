@@ -36,7 +36,8 @@ For all additional elements, the node will be cloned using <code><a href='clone.
 Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
 If a function is returned, it will be invoked recursively with the same arguments.</dd></dl></dd>
 <dt id="fill_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4"><a name="fill_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">the current list</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">the current list
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -103,6 +104,14 @@ $('.listContainers').fill();
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='add.html' class='func'>add()</a></code> works like <span class="var">fill()</span>, but does not delete children.</li>
+<li><code><a href='addfront.html' class='func'>addFront()</a></code> adds nodes as first child, not as last.</li>
+<li><code><a href='addafter.html' class='func'>addAfter()</a></code> adds nodes not as children but as siblings.</li>
+<li><code><a href='addbefore.html' class='func'>addBefore()</a></code> also adds nodes not as children but as siblings.</li>
+<li><code><a href='replace.html' class='func'>replace()</a></code> replaces existing nodes.</li>
+<li><code><a href='ht.html' class='func'>ht()</a></code> is a alternative for replacing element content with a HTML snippet.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -147,8 +156,8 @@ $('.listContainers').fill();
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
@@ -181,6 +190,7 @@ $('.listContainers').fill();
 </li><li><a href="eachobj.html" class="func">_.eachObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="escapehtml.html" class="func">_.escapeHtml()</a> <span class="tocMod">Util</span>
 </li><li><a href="escaperegexp.html" class="func">_.escapeRegExp()</a> <span class="tocMod">Util</span>
+</li><li><a href="extend.html" class="func">_.extend()</a> <span class="tocMod">Util</span>
 </li><li><a href="filterobj.html" class="func">_.filterObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="format.html" class="func">_.format()</a> <span class="tocMod">Util</span>
 </li><li><a href="formathtml.html" class="func">_.formatHtml()</a> <span class="tocMod">Util</span>
