@@ -23,12 +23,12 @@ Creates a function allows you to set all list members to one of two states or an
 <dt id="dial_state1" class=""><a name="dial_state1"><var>state1</var></a></dt>
 <dd class="">a property map in <code><a href='set.html' class='func'>set()</a></code> syntax describing the first state of the properties. The properties will be set for all elements of the list.</dd>
 <dt id="dial_state2" class=""><a name="dial_state2"><var>state2</var></a></dt>
-<dd class="">a property map describing the second state of the properties. Uses <code><a href='set.html' class='func'>set()</a></code> syntax, like the first state.</dd>
+<dd class="">a property map describing the second state of the properties. Uses <code><a href='set.html' class='func'>set()</a></code> syntax.</dd>
 <dt id="dial_linearity" class=""><a name="dial_linearity"><var>linearity (optional)</var></a></dt>
 <dd class="">defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.</dd>
 <dt id="dial_interpolationFunc" class=""><a name="dial_interpolationFunc"><var>interpolationFunc (optional)</var></a></dt>
-<dd class="">an interpolation <code>function(startValue, endValue, t)</code> which will be called every
-values when an interpolated value is required:
+<dd class="">an interpolation <code>function(startValue, endValue, t)</code> which will be called every time
+an interpolated value is required:
 <dl>
 <dt>startValue</dt><dd>The start value of the transition.</dd>
 <dt>endValue</dt><dd>The end value of the transition.</dd>
@@ -38,7 +38,7 @@ values when an interpolated value is required:
 <dt id="dial_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="dial_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2">a dial function <code>function(newPosition)</code> that will set the state.
 <dl>
-<dt>newPosition</dt><dd>If 0 or lower, set the list members to the first step.
+<dt>newPosition</dt><dd>If 0 or lower, set the list members to the first state.
 If 1 or higher, sets them to the second state. For any value betweeen 0 and 1, the list members
 will be set to interpolated values.</dd>
 </dl></dd>
@@ -47,13 +47,13 @@ will be set to interpolated values.</dd>
 <h4>Description</h4>
 <div class="description"><p>
 Creates a function allows you to set all list members to one of two states or any transitional state between them.
-The states are specified using a <code><a href='set.html' class='func'>set()</a></code> - compatible object maps containing the properties to set.
+The states are specified using <code><a href='set.html' class='func'>set()</a></code> - compatible object maps containing the properties to set.
 Pass 0 to the function to set the first state for all list members, or 1 to set the second state.
-Any value between 0 and 1 will cause dial to interpolate between the two states.
+Any value between 0 and 1 will cause <span class="var">dial()</span> to interpolate between the two states.
 Interpolation is supported for all numeric values, including those that have a string suffix (e.g. 'px' unit),
-and for colors in all CSS notations (e.g. '#f00', '#f0d1ff' or 'rgb(23,0,100)').</p><p>You can use the optional third parameter to define the kind of interpolation to use for values between 0 and 1.
+and for colors in all RGB notations (e.g. '#f00', '#f0d1ff' or 'rgb(23,0,100)').</p><p>You can use the optional third parameter to define the kind of interpolation to use for values between 0 and 1.
 If 0, the dial uses a smooth, cubic interpolation. For 1 it uses linear interpolation. Values between 0 and 1
-will mix both algorithms. You can also specify an interpolation function.</p><p>See also <code><a href='toggle.html' class='func'>toggle()</a></code> for a similar function that allows you to set two states and automatically animate them.</p><p></p></div>
+will mix both algorithms. You can also specify your own interpolation function.</p><p>See also <code><a href='toggle.html' class='func'>toggle()</a></code> for a similar function that allows you to set two states and automatically animate them.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -104,7 +104,7 @@ light(0.25);  // interpolates between two states, sets background color to #444.
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
-</li><li><a href="ht.html" class="func">.ht()</a> <span class="tocMod">Web</span>
+</li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>

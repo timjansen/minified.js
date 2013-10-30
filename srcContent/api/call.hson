@@ -13,12 +13,12 @@
 <div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.call()</div>
-<div class="syntax">list.call(fThis)</div>
 <div class="syntax">list.call(args)</div>
+<div class="syntax">list.call(fThis)</div>
 <div class="syntax">list.call(fThis, args)</div>
 <div class="syntax">_.call(list)</div>
-<div class="syntax">_.call(list, fThis)</div>
 <div class="syntax">_.call(list, args)</div>
+<div class="syntax">_.call(list, fThis)</div>
 <div class="syntax">_.call(list, fThis, args)</div>
 </div>
 
@@ -27,11 +27,11 @@
 <dt id="call_list" class=""><a name="call_list"><var>list</var></a></dt>
 <dd class="">A list containing the functions to call. Can be an array, a <a href='list.html' class='func'>Minified list</a> or any other array-like structure with
 <span class="var">length</span> property.</dd>
+<dt id="call_args" class=""><a name="call_args"><var>args (optional)</var></a></dt>
+<dd class="">A list or array of arguments to pass to the functions.</dd>
 <dt id="call_fThis" class=""><a name="call_fThis"><var>fThis (optional)</var></a></dt>
 <dd class="">If set, a value to pass as <span class="var">this</span>. Please note that if you use a list as <span class="var">fThis</span>,
 you must set <span class="var">args</span> also to an (possibly empty) array.</dd>
-<dt id="call_args" class=""><a name="call_args"><var>args (optional)</var></a></dt>
-<dd class="">A list or array of arguments to pass to the functions.</dd>
 <dt id="call_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5 inSyntax6 inSyntax7"><a name="call_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5 inSyntax6 inSyntax7">A list containing the return values of the called functions, or <span class="var">undefined</span> for list items that were not
 functions.</dd>
@@ -40,8 +40,8 @@ functions.</dd>
 <h4>Description</h4>
 <div class="description"><p>Calls all function in the list.</p><p><span class="var">call</span> goes through all list items and, if they are functions, calls them with the specified arguments.
 Elements that are not functions will be ignored. The return values of the functions will be written into a list
-in the same order as the functions. If a input list item is not a function, the value in the result list will
-be <span class="var">undefined</span>.</p><p></p></div>
+of the same size and order as original list. If a input list item is not a function, the corresponding value in the result
+list will be <span class="var">undefined</span>.</p><p></p></div>
 
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
@@ -79,7 +79,7 @@ be <span class="var">undefined</span>.</p><p></p></div>
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
-</li><li><a href="ht.html" class="func">.ht()</a> <span class="tocMod">Web</span>
+</li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>

@@ -19,7 +19,7 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="each_list" class=""><a name="each_list"><var>list</var></a></dt>
-<dd class="">a list to iterate. A list to use as input. Can be an array, a <a href='list.html' class='func'>Minified list</a> or any other array-like structure with
+<dd class="">a list to iterate. Can be an array, a <a href='list.html' class='func'>Minified list</a> or any other array-like structure with
 <span class="var">length</span> property.</dd>
 <dt id="each_callback" class=""><a name="each_callback"><var>callback</var></a></dt>
 <dd class="">The callback <code>function(item, index)</code> to invoke for each list element.
@@ -99,7 +99,7 @@ $('h2.section').each(function(item, index) {
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
-</li><li><a href="ht.html" class="func">.ht()</a> <span class="tocMod">Web</span>
+</li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>

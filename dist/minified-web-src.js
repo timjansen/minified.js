@@ -1123,7 +1123,7 @@ define('minified', function() {
  	 * @syntax list.get(map, toNumber)
      * @module WEB
  	 * Retrieves properties, attributes and styles from the list's first element. The syntax to request those values is mostly identical with ##set(). You can either
- 	 * get a single value if you specify only one name, or get a name->value map when you specify several names using an array or a map.
+ 	 * get a single value if you specify only one name, or get an object map when you specify several names using an array or an object map.
  	 * 
  	 * @example Retrieves the id, title attribute and the background color of the element '#myElement':
  	 * <pre>
@@ -1151,24 +1151,26 @@ define('minified', function() {
  	 *
  	 * @param name the name of the property, attribute or style. To retrieve a JavaScript property, just use its name without prefix. To get an attribute value,
  	 *             prefix the name with a '@' for regular attributes or '%' to add a 'data-' prefix. 
- 	 *             A '$' prefix will retrieve a CSS style. The syntax for the CSS styles is camel-case (e.g. "backgroundColor", not "background-color"). 
- 	 *             Shorthand properties like "border" or "margin" are not supported. You must use the full name, e.g. "marginTop". Minified will try to determine the effective style
+ 	 *             A '$' prefix will retrieve a CSS style. The syntax for the CSS styles is camel-case (e.g. "$backgroundColor", not "$background-color"). 
+ 	 *             Shorthand properties like "border" or "margin" are not supported. You must use the full name, e.g. "$marginTop". Minified will try to determine the effective style
  	 *             and thus will return the value set in style sheets if not overwritten using a regular style.
  	 * 	  	    Using just '$' as name will retrieve the 'className' property of the object, a space-separated list of all CSS classes.
  	 *          The special name '$$' will set the element's style attribute in a browser independent way.
  	 *          '$$fade' returns a value between 0 and 1 that specifies the element's
  	 *          opacity. '$$slide' returns the height of the element in pixels, with a 'px' suffix. Both '$$fade' and '$$slide' will also check the CSS styles 'visibility' and 'display'
  	 *          to determine whether the object is visible at all. If not, they will return 0.
- 	 * @param list in order to retrieve more than one value, you can specify several names in an array or list. <var>get()</var> will then return a name->value map of results.
- 	 * @param map if you specify an object that is neither list nor string, <var>get()</var> will use it as a map of property names. Each property name will be requested. The values of the properties in 
- 	 *                   the map will be ignored. <var>get()</var> will then return a name->value map of results.
+ 	 * @param list in order to retrieve more than one value, you can specify several names in an array or list. <var>get()</var> will then return an object map
+ 	 *        containing the values.
+ 	 * @param map if you specify an object that is neither list nor string, <var>get()</var> will use it as a map of property names. Each property name will be requested. 
+ 	 * The values of the properties in the map will be ignored. <var>get()</var> will then return a new object map containing of results.
  	 * @param toNumber if 'true', <var>get()</var> converts all returned values into numbers. If they are strings, 
  	 *                 <var>get()</var> removes any non-numeric characters before the conversion. This is useful when you request 
  	 *                 a CSS property such as '$marginTop'  that returns a value with a unit suffix, like "21px". <var>get()</var> will convert it 
  	 *                 into a number and return 21. If the returned value is not parsable as a number, <var>NaN</var> will be returned.
  	 * @return if <var>get()</var> was called with a single name, it returns the corresponding value. 
- 	 *         If a list or map was given, <var>get()</var> returns a new map with the names as keys and the values as values.
- 	 *         Always returns <var>undefined</var> if the list is empty.
+ 	 *         If a list or map was given, <var>get()</var> returns a new object map with the names as keys and the values as values.
+ 	 *         It returns <var>undefined</var> if the list is empty.
+ 	 * @see ##set() sets values using the same property syntax.
  	 */
     'get': function(spec, toNumber) {
     	var self = this, element = self[0];
@@ -1497,6 +1499,12 @@ define('minified', function() {
 	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
 	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
+	 * 
+	 * @see ##fill() works like <var>add()</var>, but deletes all children before adding the new nodes.
+	 * @see ##addFront() adds nodes as first child, not as last.
+	 * @see ##addAfter() adds nodes not as children but as siblings.
+	 * @see ##addBefore() also adds nodes not as children but as siblings.
+	 * @see ##replace() replaces existing nodes.
 	 */
 	'add': function (children, addFunction) {
 		return this['each'](function(e, index) {
@@ -1603,6 +1611,13 @@ define('minified', function() {
 	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
 	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
+	 * 
+	 * @see ##add() works like <var>fill()</var>, but does not delete children.
+	 * @see ##addFront() adds nodes as first child, not as last.
+	 * @see ##addAfter() adds nodes not as children but as siblings.
+	 * @see ##addBefore() also adds nodes not as children but as siblings.
+	 * @see ##replace() replaces existing nodes.
+	 * @see ##ht() is a alternative for replacing element content with a HTML snippet.
 	 */
 	'fill': function (children) {
 		return this['each'](function(e) { $(e['childNodes'])['remove'](); }).add(children);
@@ -1674,6 +1689,12 @@ define('minified', function() {
 	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
 	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
+	 *
+	 * @see ##fill() replaces all children with new nodes.
+	 * @see ##add() adds elements as last child.
+	 * @see ##addFront() adds nodes as first child.
+	 * @see ##addAfter() adds nodes as siblings after the list element(s).
+	 * @see ##replace() replaces existing nodes.
 	 */
 	'addBefore': function (children) {
 		return this['add'](children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode); });
@@ -1740,6 +1761,12 @@ define('minified', function() {
 	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
 	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
+	 *
+	 * @see ##fill() replaces all children with new nodes.
+	 * @see ##add() adds elements as last child.
+	 * @see ##addFront() adds nodes as first child.
+	 * @see ##addBefore() also adds nodes as next sibling but as preceding sibling.
+	 * @see ##replace() replaces existing nodes.
 	 */
 	'addAfter': function (children) {
 		return this['add'](children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode.nextSibling); });
@@ -1818,6 +1845,12 @@ define('minified', function() {
 	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
 	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
+	 * 
+ 	 * @see ##fill() replaces all children with new nodes.
+	 * @see ##add() adds elements as last child.
+	 * @see ##addAfter() adds nodes not as children but as siblings.
+	 * @see ##addBefore() also adds nodes not as children but as siblings.
+	 * @see ##replace() replaces existing nodes.
 	 */
 	'addFront': function (children) {
 		return this['add'](children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
@@ -1893,6 +1926,12 @@ define('minified', function() {
 	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
 	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
 	 * @return the current list
+	 * 
+ 	 * @see ##fill() replaces all children with new nodes.
+	 * @see ##add() adds elements as last child.
+	 * @see ##addFront() adds nodes as first child.
+	 * @see ##addAfter() adds nodes not as children but as siblings.
+	 * @see ##addBefore() also adds nodes not as children but as siblings.
 	 */
 	'replace': function (children) {
 		return this['add'](children, function(newNode, refNode, parent) { parent.replaceChild(newNode, refNode); });
@@ -2697,6 +2736,9 @@ define('minified', function() {
 	*         <dt>text</dt><dd>the response's body text, if there was any, or the exception as string if the browser threw one.</dd></dl>
 	*         
 	* @see ##values() serializes an HTML form in a format ready to be sent by <var>$.request</var>.
+	* @see ##$.parseJSON() can be used to parse JSON responses.
+	* @see ##$.toJSON() can create JSON messages.
+	* @see ##_.format() can be useful for creating REST-like URLs, if you use JavaScript's built-in <var>escape()</var> function.
 	*/
 	'request': function (method, url, data, headers, username, password) {
 		/** @const */ var ContentType = 'Content-Type';
@@ -2781,6 +2823,8 @@ define('minified', function() {
     * 
     * @param value the value (map-like object, array/list, string, number, boolean or null)
     * @return the JSON string
+    * 
+    * @see ##$.parseJON() parses JSON structures.
     */
     'toJSON': _window.JSON && JSON.stringify,
 
@@ -2810,6 +2854,7 @@ define('minified', function() {
 	*
 	* @param text the JSON string
 	* @return the resulting JavaScript object. <var>Undefined</var> if not valid.
+	* @see ##$.toJSON() converts JavaScript objects to JSON.
 	*/
     'parseJSON': _window.JSON && JSON.parse,
 
@@ -2826,6 +2871,8 @@ define('minified', function() {
     * 
     * If you call <var>ready()</var> after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.
     *
+    * A shortcut for <var>ready()</var> is to call ##dollar#$()## with the handler function. It does the same with fewer characters.
+    *
     * @example Registers a handler that sets some text in an element:
     * <pre>
     * $.ready(function() {
@@ -2834,6 +2881,7 @@ define('minified', function() {
     * </pre>
     *
     * @param handler the <code>function()</code> to be called when the HTML is ready.
+    * @see ##dollar#$()## calls <var>ready()</var> when invoked with a function, offering a more convenient syntax.
     */
     'ready': ready,
 

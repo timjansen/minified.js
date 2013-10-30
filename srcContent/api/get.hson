@@ -25,8 +25,8 @@
 <dt id="get_name" class=""><a name="get_name"><var>name</var></a></dt>
 <dd class="">the name of the property, attribute or style. To retrieve a JavaScript property, just use its name without prefix. To get an attribute value,
 prefix the name with a '@' for regular attributes or '%' to add a 'data-' prefix.
-A '$' prefix will retrieve a CSS style. The syntax for the CSS styles is camel-case (e.g. "backgroundColor", not "background-color").
-Shorthand properties like "border" or "margin" are not supported. You must use the full name, e.g. "marginTop". Minified will try to determine the effective style
+A '$' prefix will retrieve a CSS style. The syntax for the CSS styles is camel-case (e.g. "$backgroundColor", not "$background-color").
+Shorthand properties like "border" or "margin" are not supported. You must use the full name, e.g. "$marginTop". Minified will try to determine the effective style
 and thus will return the value set in style sheets if not overwritten using a regular style.
 Using just '$' as name will retrieve the 'className' property of the object, a space-separated list of all CSS classes.
 The special name '$$' will set the element's style attribute in a browser independent way.
@@ -34,10 +34,11 @@ The special name '$$' will set the element's style attribute in a browser indepe
 opacity. '$$slide' returns the height of the element in pixels, with a 'px' suffix. Both '$$fade' and '$$slide' will also check the CSS styles 'visibility' and 'display'
 to determine whether the object is visible at all. If not, they will return 0.</dd>
 <dt id="get_list" class=""><a name="get_list"><var>list</var></a></dt>
-<dd class="">in order to retrieve more than one value, you can specify several names in an array or list. <span class="var">get()</span> will then return a name->value map of results.</dd>
+<dd class="">in order to retrieve more than one value, you can specify several names in an array or list. <span class="var">get()</span> will then return an object map
+containing the values.</dd>
 <dt id="get_map" class=""><a name="get_map"><var>map</var></a></dt>
-<dd class="">if you specify an object that is neither list nor string, <span class="var">get()</span> will use it as a map of property names. Each property name will be requested. The values of the properties in
-the map will be ignored. <span class="var">get()</span> will then return a name->value map of results.</dd>
+<dd class="">if you specify an object that is neither list nor string, <span class="var">get()</span> will use it as a map of property names. Each property name will be requested.
+The values of the properties in the map will be ignored. <span class="var">get()</span> will then return a new object map containing of results.</dd>
 <dt id="get_toNumber" class=""><a name="get_toNumber"><var>toNumber</var></a></dt>
 <dd class="">if 'true', <span class="var">get()</span> converts all returned values into numbers. If they are strings,
 <span class="var">get()</span> removes any non-numeric characters before the conversion. This is useful when you request
@@ -45,13 +46,13 @@ a CSS property such as '$marginTop'  that returns a value with a unit suffix, li
 into a number and return 21. If the returned value is not parsable as a number, <span class="var">NaN</span> will be returned.</dd>
 <dt id="get_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="get_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">if <span class="var">get()</span> was called with a single name, it returns the corresponding value.
-If a list or map was given, <span class="var">get()</span> returns a new map with the names as keys and the values as values.
-Always returns <span class="var">undefined</span> if the list is empty.</dd>
+If a list or map was given, <span class="var">get()</span> returns a new object map with the names as keys and the values as values.
+It returns <span class="var">undefined</span> if the list is empty.</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>Retrieves properties, attributes and styles from the list's first element. The syntax to request those values is mostly identical with <code><a href='set.html' class='func'>set()</a></code>. You can either
-get a single value if you specify only one name, or get a name->value map when you specify several names using an array or a map.</p><p></p></div>
+get a single value if you specify only one name, or get an object map when you specify several names using an array or an object map.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -119,7 +120,7 @@ Please note that the values of $top and $left in the <span class="var">get()</sp
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
-</li><li><a href="ht.html" class="func">.ht()</a> <span class="tocMod">Web</span>
+</li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>

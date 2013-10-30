@@ -10,7 +10,7 @@
 <h2><a name="doc-ht">.ht()</a></h2>
 <div class="summary">Replaces the content of the list elements with the HTML generated using the given template.</div>
 
-<div class="availability">Web module only.</div><h4>Syntax Variants</h4>
+<div class="availability">Complete distribution only, not available in stand-alone modules.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.ht(templateString)</div>
 <div class="syntax">list.ht(templateString, object)</div>
@@ -24,11 +24,11 @@
 <dd class="">the template using <code><a href='template.html' class='func'>template()</a></code> syntax. Please note, because this is a template, you should
 avoid creating the template itself dynamically, as compiling templates is expensive and
 Minified will cache only a limited number of templates. Exception: If the template string does not use
-any template functionality (no {{}}), it does not need to be compiled and won't be cached.
+any template functionality (no {{}}), it does not need to be compiled and won't be cached.<br/>
 The template will use <code><a href='escapehtml.html' class='func'>escapeHtml()</a></code> as escape function, so all template substitutions will be HTML-escaped,
 unless you use triple curly-braces.</dd>
 <dt id="ht_templateFunction" class=""><a name="ht_templateFunction"><var>templateFunction</var></a></dt>
-<dd class="">instead of a HTML template <span class="var">ht()</span> also accepts a template function, e.g. one
+<dd class="">instead of a HTML template, <span class="var">ht()</span> can also use a template function, e.g. one
 created by <code><a href='template.html' class='func'>template()</a></code>. It will be invoked with the object as only argument.</dd>
 <dt id="ht_object" class=""><a name="ht_object"><var>object (optional)</var></a></dt>
 <dd class="">the object to pass to the template. If object is not set, the template is called with <span class="var">undefined</span>
@@ -44,14 +44,14 @@ as object.</dd>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Using template to format a number:
+<div class="example"><p>When you have a HTML snippet like this:
 <pre>
-&lt;div id="price">-&lt;/div>
+&lt;div id="price">&lt;/div>
 </pre>
-Then the price can be set like this:
+Then you can format the price value like this:
 <pre>
 var price = 14.9;
-$('#price').ht('&lt;b>${{::0.99}}&lt;/b>', price);
+$('#price').ht('&lt;b>${{::0.00}}&lt;/b>', price);
 </pre>
 Results in:
 <pre>
@@ -63,7 +63,7 @@ Results in:
 <pre>
 var names = [ {first: 'James', last: 'Sullivan'},
               {first: 'Michael', last: 'Wazowski'} ];
-$('#list').ht('&lt;h2>{{listName}}&lt;/h2>\n'+
+$('#list').ht('&lt;h2>{{listName}}&lt;/h2>'+
               '&lt;ul>{{each n: names}}&lt;li>{{n.first}} {{n.last}}&lt;/li>{{/each}}&lt;/ul>',
               {listName: 'Guys', names: names});
 </pre>
@@ -114,7 +114,7 @@ The code creates this:
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
-</li><li><a href="ht.html" class="func">.ht()</a> <span class="tocMod">Web</span>
+</li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>

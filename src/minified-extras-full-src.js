@@ -338,18 +338,18 @@ function dummy() {
 		 * @syntax list.ht(templateString, object)
 		 * @syntax list.ht(templateFunction)
 		 * @syntax list.ht(templateFunction, object)
-	     * @module WEB
+	     * @module WEB+UTIL
 		 * Replaces the content of the list elements with the HTML generated using the given template. The template uses
 		 * ##template() syntax and HTML-escaped its output using ##escapeHtml(). 
 		 * 
-		 * @example Using template to format a number:
+		 * @example When you have a HTML snippet like this:
 		 * <pre>
-		 * &lt;div id="price">-&lt;/div>
+		 * &lt;div id="price">&lt;/div>
 		 * </pre> 
-		 * Then the price can be set like this:
+		 * Then you can format the price value like this:
 		 * <pre>
 		 * var price = 14.9;
-		 * $('#price').ht('&lt;b>${{::0.99}}&lt;/b>', price);
+		 * $('#price').ht('&lt;b>${{::0.00}}&lt;/b>', price);
 		 * </pre>
 		 * Results in:
 		 * <pre>
@@ -360,7 +360,7 @@ function dummy() {
 		 * <pre>
 		 * var names = [ {first: 'James', last: 'Sullivan'}, 
 		 *               {first: 'Michael', last: 'Wazowski'} ];
-		 * $('#list').ht('&lt;h2>{{listName}}&lt;/h2>\n'+
+		 * $('#list').ht('&lt;h2>{{listName}}&lt;/h2>'+
 		 *               '&lt;ul>{{each n: names}}&lt;li>{{n.first}} {{n.last}}&lt;/li>{{/each}}&lt;/ul>', 
 		 *               {listName: 'Guys', names: names});
 		 * </pre>
@@ -373,10 +373,10 @@ function dummy() {
 		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
 		 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
 		 *                     Minified will cache only a limited number of templates. Exception: If the template string does not use
-		 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
+		 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.<br/>
 		 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
 		 *                     unless you use triple curly-braces.
-		 * @param templateFunction instead of a HTML template <var>ht()</var> also accepts a template function, e.g. one
+		 * @param templateFunction instead of a HTML template, <var>ht()</var> can also use a template function, e.g. one
 		 *                         created by ##template(). It will be invoked with the object as only argument.
 		 * @param object optional the object to pass to the template. If object is not set, the template is called with <var>undefined</var>
 		 *                        as object.

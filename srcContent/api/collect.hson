@@ -25,7 +25,7 @@
 <dd class="">The callback <code>function(item, index)</code> to invoke for each item:
 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to
-the result list. Other objects will also be added. Nulls and <span class="var">undefined</span> will be ignored and be not added to
+the result list. Other objects will also be added. Nulls and <span class="var">undefined</span> will be ignored and not be added to
 the new result list. </dd></dl></dd>
 <dt id="collect_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="collect_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the new <a href='list.html' class='func'>list</a></dd>
@@ -122,7 +122,7 @@ var elements = $('input.myTexts').collect(function(item) {
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
-</li><li><a href="ht.html" class="func">.ht()</a> <span class="tocMod">Web</span>
+</li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>

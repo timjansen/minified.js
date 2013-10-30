@@ -1048,7 +1048,7 @@ module.exports = (function() {
 	 * Please note that, according to the rules, a ##list#Minified list## is equal to an array, as long as their content is equal. <var>equals</var> does not 
 	 * differentiate between <var>null</var> and <var>undefined</var>.
 	 *
-	 * <var>equals</var> is commutative. If you swap the parameters, the result is the same.
+	 * <var>equals</var> is commutative. If you swap the parameters, the result is the same as long as no functions are involved.
 	 * 
 	 * @example Compare a list and an array:
 	 *  <pre> 
@@ -1240,17 +1240,17 @@ module.exports = (function() {
      * var i = _(1, 2, -4, 5, 2, -1, 2).findLast(function(value, index) { if (value &lt; 0) return index; }); // returns 5
      * </pre> 
 	 *
-     * @example Finds the index of the first 5 in the array:
+     * @example Finds the index of the last 5 in the array:
      * <pre> 
      * var i = _.findLast([3, 6, 7, 6, 5, 4, 5], 5); // returns 6
      * </pre> 
 	 *
-     * @example Determines the last position of the element with the id '#wanted' among all li elements:
+     * @example Determines the last position of the element with the id '#wanted' among all &lt;li> elements:
      * <pre> 
      * var elementIndex = $('li').findLast($$('#wanted'));
      * </pre> 
      * 
-     * @example Goes through the elements to find the last div that has the class 'myClass', and returns this element:
+     * @example Goes through the elements to find the last &lt;div> that has the class 'myClass', and returns this element:
      * <pre> 
      * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
      * </pre> 

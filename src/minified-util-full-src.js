@@ -1288,17 +1288,17 @@ define('minified', function() {
      * var i = _(1, 2, -4, 5, 2, -1, 2).findLast(function(value, index) { if (value &lt; 0) return index; }); // returns 5
      * </pre> 
 	 *
-     * @example Finds the index of the first 5 in the array:
+     * @example Finds the index of the last 5 in the array:
      * <pre> 
      * var i = _.findLast([3, 6, 7, 6, 5, 4, 5], 5); // returns 6
      * </pre> 
 	 *
-     * @example Determines the last position of the element with the id '#wanted' among all li elements:
+     * @example Determines the last position of the element with the id '#wanted' among all &lt;li> elements:
      * <pre> 
      * var elementIndex = $('li').findLast($$('#wanted'));
      * </pre> 
      * 
-     * @example Goes through the elements to find the last div that has the class 'myClass', and returns this element:
+     * @example Goes through the elements to find the last &lt;div> that has the class 'myClass', and returns this element:
      * <pre> 
      * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
      * </pre> 
