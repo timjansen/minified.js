@@ -8,6 +8,7 @@ Ongoing
 * New distribution minified.js, containing both Util and Web.
 * Replaced ant-based build system with Grunt.
 * Converted all tests to use Mocha.
+* Packaged as Bower module.
 
 Full distribution only:
 * New method: ht() replaces node content with HTML template.

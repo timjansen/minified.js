@@ -1053,9 +1053,9 @@ define('minified', function() {
 	 * @name .remove()
 	 * @syntax list.remove()
      * @module WEB
-	 * Removes all nodes of the list from the DOM tree.
+	 * Removes all elements in the list from the DOM tree.
 	 * 
-	 * On Minified builds with IE compatibility, <var>remove()</var> will auto remove all event handlers in the
+	 * On Minified builds with IE compatibility, <var>remove()</var> will also remove all event handlers in the
 	 * removed DOM nodes to prevent memory leaks.
 	 * 
 	 * @example Removes the element with the id 'myContainer', including all children, from the DOM tree.
@@ -1092,7 +1092,7 @@ define('minified', function() {
  	 * This is done by going recursively through all elements and their children. The values of text and CDATA nodes
  	 * will be appended to the resulting string.
  	 * 
- 	 * Please note that, unlike jQuery's <var>text()</var>, Minified's will not set text content. Use ##fill() to do this.
+ 	 * Please note that, unlike jQuery's <var>text()</var>, Minified's will not set text content. Use ##fill() to set text.
  	 * 
  	 * @example Returns the text of the element with the id 'myContainer'.
  	 * <pre>
@@ -1124,11 +1124,13 @@ define('minified', function() {
  	 * @syntax list.trav(property, selector)
  	 * @syntax list.trav(property, selector, maxDepth)
  	 * @syntax list.trav(property, maxDepth)
+ 	 * @syntax list.trav(property, filterFunc)
+ 	 * @syntax list.trav(property, filterFunc, maxDepth)
      * @module WEB
  	 * Traverses each DOM node in the list using the given property; creates a new list that includes each visited node,
  	 * optionally filtered by the given selector.
  	 * 
- 	 * <var>trav()</var> traverses the DOM tree for each list element it finds a <var>null</var>.  
+ 	 * <var>trav()</var> traverses the DOM tree for each list element until it finds a <var>null</var>.  
  	 * All visited nodes that match the given selector are added to the result list. If no selector is given,
  	 * only elements will be added.
  	 * 
@@ -1153,11 +1155,11 @@ define('minified', function() {
  	 * </pre>
  	 *
   	 * @parm property the name of the property to traverse.
- 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists. Alternatively you can pass
- 	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements
  	 *        (but no other nodes such as text nodes).
+     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
  	 * @param maxDepth optional the maximum number of steps to traverse. Defaults to unlimited.
  	 * @return the new list containing all visited nodes. Nodes of the original list are not included, unless they
  	 *         have been visited when traversing another node. Duplicate nodes will be automatically removed.
@@ -1183,10 +1185,10 @@ define('minified', function() {
  	 * @configurable default
  	 * @name .select()
  	 * @syntax list.select(selector)
- 	 * @syntax list.select(selector, childOnly)
+ 	 * @syntax list.select(selector, childrenOnly)
      * @module WEB
- 	 * Executes a selector with the list as context. <code>list.select(selector, childOnly)</code> is equivalent 
- 	 * to <code>$(selector, list, childOnly)</code>. 
+ 	 * Executes a selector with the list as context. <code>list.select(selector, childrenOnly)</code> is equivalent 
+ 	 * to <code>$(selector, list, childrenOnly)</code>. 
  	 * 
  	 * @example Returns a list of all list elements:
  	 * <pre>
@@ -1199,9 +1201,11 @@ define('minified', function() {
  	 * </pre>
  	 * 
  	 * @param selector a selector or any other valid first argument for #dollar#$().
- 	 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
+ 	 * @param childrenOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
  	 *             true, all descendants of the context will be included. 
  	 * @return the new list containing the selected descendants.
+ 	 * 
+ 	 * @see ##only() executes a selector on the list elements, instead of their descendants.
  	 */
 	'select': function(selector, childOnly) {
 		return $(selector, this, childOnly);
@@ -1215,9 +1219,12 @@ define('minified', function() {
  	 * @name .is()
  	 * @syntax list.is()
  	 * @syntax list.is(selector)
+ 	 * @syntax list.is(filterFunc)
      * @module WEB
  	 * Checks whether all elements in the list match the given selector. Returns <var>true</var> if they all do, or <var>false</var>
  	 * if at least one does not.
+ 	 * 
+ 	 * One common use for <var>is()</var> is to check whether an element has a certain CSS class.
  	 * 
  	 * Please note that this method is optimized for the four simple selector forms '*', '.classname', 'tagname' 
  	 * and 'tagname.classname'. If you use any other kind of selector, be aware that selectors that match
@@ -1233,11 +1240,11 @@ define('minified', function() {
  	 * var areRows = $('.myRows').is('tr'); 
  	 * </pre>
  	 * 
- 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists. Alternatively you can pass
- 	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which checks whether all list items
  	 *        are HTML elements.
+ 	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
  	 * @return <var>true</var> if all list elements match the selector. <var>false</var> otherwise.
  	 * 
  	 * @see ##only() removes elements from a list that do not match a selector.
@@ -1259,7 +1266,8 @@ define('minified', function() {
  	 * @syntax list.only(index)
      * @module COMMENT only(index) is always available. All others variants are only in the Web module.
  	 * Returns a new list that contains only those elements that match the given selector, match the callback function
- 	 * or have the given index. If no parameter has been given, the method returns all elements (same as '*').
+ 	 * or have the given index. If no parameter has been given, the method keeps all HTML elements 
+ 	 * and removes everything else (same as '*').
  	 * 
  	 * When you use selectors, please note that this method is optimized for the four simple 
  	 * selector forms '*', '.classname', 'tagname' and 'tagname.classname'. If you use any other kind of 
@@ -1277,12 +1285,14 @@ define('minified', function() {
  	 * 
  	 * @param selector any selector valid for #dollar#$(), including CSS selectors and lists. 
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
- 	 *        is relative to the number of matches for the selector in the document. Default is '*', which keeps all elements
+ 	 *        depends on the number of matches for the selector in the document. Default is '*', which keeps all elements
  	 *        (but no other nodes such as text nodes).
  	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
  	 * @param index the index of the element to keep. All elements with other index will be omitted. If there is no element
  	 *        with this index in the list, the returned list is empty.
  	 * @return a new list containing only elements matched by the selector/function/index.
+ 	 * 
+ 	 * @see ##select() executes a selector on the descendants of the list elements.
  	 */
 	'only': function(selector) {
 		return this['filter'](getFilterFunc(selector));
@@ -1431,10 +1441,10 @@ define('minified', function() {
 	 * 
 	 * Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes. You can either supply a 
 	 * single name and value to set only one property, or you can provide an object that contains name/value pairs to describe more than one property.
-	 * More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will
+	 * More complex operations can be accomplished by supplying functions as values. They will then be called for each element that will
 	 * be set.
 	 *
-	 * The name given to <var>set()</var> defines what kind of data you are setting. The following name schemes are supported:
+	 * The <var>name</var> parameter defines what kind of data you are setting. The following name schemes are supported:
 	 * 
 	 * <table>
 	 * <tr><th>Name Schema</th><th>Example</th><th>Sets what?</th><th>Description</th></tr>
@@ -1483,7 +1493,7 @@ define('minified', function() {
 	 * 
 	 * @example Changing styles:
 	 * <pre>
-	 * $('.bigText').set('$font-size', 'x-large');
+	 * $('.bigText').set('$fontSize', 'x-large');
 	 * </pre>
 	 * 
 	 * @example Adding and removing CSS classes:
@@ -1514,7 +1524,7 @@ define('minified', function() {
 	 * @example Using a map to change several properties:
 	 * <pre>
 	 * $('input.checkbox').set({checked: false,
-	 *                          'parentNode.@title': 'Check this'});
+	 *                          '@title': 'Check this'});
 	 * </pre>
 	 * 
 	 * @example Changing CSS with a map:
@@ -1534,25 +1544,25 @@ define('minified', function() {
 	 * 
 	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
 	 *             '%' also is used to set attributes, but automatically adds 'data-' to the name. 
-	 *             A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
+	 *             A dollar ('$') prefix is a shortcut for CSS styles. The special name dollar ('$') modifies CSS classes.
 	 *             The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
 	 *             The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1. 
 	 *             The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use only on <code>$(window)</code>!). 
 	 *             
 	 * 
-	 * @param value the value to set. If value is null and name specified an attribute, the attribute will be removed.
-	 * If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
+	 * @param value the value to set. If value is <var>null</var> and name specified an attribute, the attribute will be removed.
+	 * If dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
 	 * with a '-' prefix the class will be removed. Without prefix, the class will be toggled.
 	 * If <var>value</var> is a function, the <code>function(oldValue, index, obj)</code> will be invoked for each list element 
 	 * to evaluate the new value: 
 	 * <dl><dt>oldValue</dt><dd>The old value of the property to be changed, as returned by ##get().
 	 * For the CSS style names, this is the computed style of the property </dd>
 	 * <dt>index</dt><dd>The list index of the object owning the property</dd>
-	 * <dt>obj</dt><dd>The list element owning the property.<dd>
+	 * <dt>obj</dt><dd>The list element owning the property.</dd>
 	 * <dt class="returnValue">(callback return value)</dt><dd>The value to be set.</dd></dl>
 	 * Functions are not supported by '$'.
-	 * @param properties a Object as map containing names as keys and the values to set as map values. See above for the name syntax.
-	 * @param cssClasses if <var>set()</var> is invoked with a string as single argument, the name "$" (CSS classes) is used and the argument is the
+	 * @param properties a Object as map containing names as keys and the values to set as map values. See above for the name and value syntax.
+	 * @param cssClasses if <var>set()</var> is invoked with a string as single argument, the name "$" (CSS classes) is assumed and the argument is the
 	 *                   value. See above for CSS syntax.
 	 *                   Instead of a string, you can also specify a <code>function(oldValue, index, obj)</code> to modify the existing classes. 
 	 * @return the list
@@ -2453,7 +2463,6 @@ define('minified', function() {
      * uses ##animate() to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the 
      * animation and returns to the other state.
 	 *
-	 * See also ##dial() for a similar function that allows you to interpolate between two states.
 	 *
 	 * @example Creates a toggle function that changes the background color of the page.
 	 * <pre>
@@ -2505,10 +2514,13 @@ define('minified', function() {
  	 *             </dl> 		 
  	 * @return a toggle function <code>function(newState)</code> that will toggle between the two states, or set a specific state.
 	 *             <dl>
-	 *             <dt>newState (optional)</dt><dd>If a boolean <var>true</var or <var>false</var> is given, 
-	 *             the toggle will set the first or second state, respectively. If called with any other value, or without a value,
+	 *             <dt>newState (optional)</dt><dd>If a boolean <var>true</var> or <var>false</var> is given, 
+	 *             the toggle will set the first or second state respectively. If called with any other value, or without a value,
 	 *             the function toggles to the other state.</dd>
 	 *             </dl>
+	 *             
+	 * @see ##dial() is a similar function that allows you to smoothly interpolate between two states.
+	 *
 	 */
 	'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
 		var self = this;
@@ -2535,15 +2547,16 @@ define('minified', function() {
 
 	/*$
 	 * @id values
-	 * @module REQUEST
+	 * @group REQUEST
 	 * @requires each
 	 * @configurable default
 	 * @name .values()
 	 * @syntax list.values()
 	 * @syntax list.values(dataMap)
+	 * @module WEB
 	 * Creates a name/value map from the given form. values() looks at the list's form elements and writes each element's name into the map,
 	 * using the element name as key and the element's value as value. As there can be more than one value with the same name, 
-	 * the map's values will always be arrays of values. Form elements without name will be ignored.
+	 * the map's values are arrays if there is more than one value with the same name in the form. Form elements without name will be ignored.
 	 *
 	 * values() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
 	 * elements will be serialized.
@@ -2566,6 +2579,8 @@ define('minified', function() {
 	 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
 	 * @return a map containing name->value pairs, using strings as name and value. If there is more than one value with the same name,
 	 *         <var>values()</var> creates an array containing all values. 
+	 *       
+	 * @see ##$.request() can submit form data serialized by <var>values()</var> as HTTP POST.
 	 */
 	'values': function(data) {
 		var r = data || {};
@@ -2597,13 +2612,13 @@ define('minified', function() {
 	 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
 	 * <pre>
 	 * var pos = $('#myElement').offset();
-	 * $('#resultElement').fill('#myElement's position is left=' + pos.x + ' top=' + pos.y);
+	 * $('#resultElement').ht('#myElement's position is left={x} top={y}', pos);
 	 * </pre>
 	 *
 	 * @param element the element whose coordinates should be determined
 	 * @return an object containing pixel coordinates in two properties 'x' and 'y'
 	 * 
-	 * @see ##get() can be used to get more general properties of a list element.
+	 * @see ##get() can be used to read more general properties of a list element.
 	 */
 	'offset': function() {
 		var elem = this[0];
@@ -2641,9 +2656,9 @@ define('minified', function() {
 	 * 
 	 * Instead of the event objects, you can also pass an array of arguments that will be passed instead of event object and index. 
 	 *
-	 * Optionally you can specify two a selector strings to qualify only certain events. The first one is the regular selector
-	 * that allows you to select only certain children of the list elements. This is mostly useful for adding events to DOM trees
-	 * generated using ##HTML() or ##EE.
+	 * Optionally you can specify two a selector strings to qualify only certain events. The first one is a selector
+	 * that allows you to select only specific children of the list elements. This is mostly useful for adding events to DOM trees
+	 * generated using ##HTML() or ##EE().
 	 * 
 	 * The second type of selector is the bubble selector that allows you to receive only events that bubbled up from 
 	 * elements matching the selector. The selector is executed in the context of the element you registered on to identify whether the
@@ -2692,7 +2707,7 @@ define('minified', function() {
 	 * 
 	 * @example Adds a button and registers a click handler for it using a sub-selector.
 	 * <pre>
-	 * $('#myForm').add(HTML("<li><button>click me</button></li>").on('button', 'click', myClickHandler));
+	 * $('#myForm').add(HTML("&lt;li>&ltbutton>click me&lt/button>&lt/li>").on('button', 'click', myClickHandler));
 	 * </pre>
 	 * 
 	 * @example Adds listeners for all clicks on a table's rows using the bubble selector 'tr'.
@@ -2701,12 +2716,12 @@ define('minified', function() {
 	 *    alert("Click on table row number: " + selectedIndex);
 	 * }, 'tr');
 	 * </pre>
-	 * Please note that a special property of bubble selectors is that they will even listen to events for
+	 * Please note that bubble selectors will even listen to events for
 	 * table rows that have been added <strong>after you registered for the events</strong>.
 	 * 
-	 * @param selector optional a selector string for ##dollar#$() to register the event only on those children of the list elements that
+	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
 	 *                match the selector. 
-	 *                Supports all valid parameters for ##dollar#$() except functions.            
+	 *                Supports all valid parameters for <var>$()</var> except functions.            
 	 * @param names optional the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
 	 *             the name must not used. You can register the handler for more than one event by specifying several 
 	 *             space-separated event names. If the name is prefixed
@@ -2718,18 +2733,18 @@ define('minified', function() {
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>
  	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
- 	 *             <dt class="returnValue">(callback return value)</dt><dd>Unless the handler returns <var>true</var> 
- 	 *             or the event name is prefixed by '|', all further processing of the event will be 
-	 *                stopped and event bubbling will be disabled.</dd>
+ 	 *             <dt class="returnValue">(callback return value)</dt><dd>The return value will only be used if the event name prefix was '?'.
+ 	 *             Then, a return value <var>false</var> will stop all further processing of the event and disable event bubbling.
+ 	 *             <var>true</var> will keep the event alive.</dd>
  	 *             </dl>
-	 *             'this' is set to the target element that caused the event (the same as <var>event.target</var>).
-	 *             If the event name has been prefixed with '?', the return value will be evaluated to find out whether to
-	 *             cancel further event processing. In all other cases, the return value will be ignored.
+	 *             'this' will be set to the target element that caused the event (the same as <var>event.target</var>).
 	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>.
-	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. 
-	 * @param bubbleSelector optional a selector string for ##dollar#$() to receive only events that bubbled up from an
+	 *                   'this' will be set to the target element that caused the event (the same as <var>event.target</var>).
+	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the
+	 *             <var>customFunc</var> is called without arguments.
+	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
 	 *                element that matches this selector.
-	 *                Supports all valid parameters for ##dollar#$() except functions. Analog to ##is(), 
+	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
 	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 */
@@ -2759,9 +2774,9 @@ define('minified', function() {
 	 * $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 500));
 	 * </pre>
 	 * 
-	 * @param selector optional a selector string for ##dollar#$() to register the event only on those children of the list elements that
+	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
 	 *                match the selector. 
-	 *                Supports all valid parameters for ##dollar#$() except functions.            
+	 *                Supports all valid parameters for <var>$()</var> except functions.           
 	 * @param toggle the callback <code>function(isOver, index, event)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
@@ -2796,9 +2811,9 @@ define('minified', function() {
 	 * @group EVENTS
 	 * @requires on dollar
 	 * @configurable default
-	 * @name .onOver()
-	 * @syntax list.onOver(handler)
-	 * @syntax list.onOver(subSelect, handler)
+	 * @name .onChange()
+	 * @syntax list.onChange(handler)
+	 * @syntax list.onChange(subSelect, handler)
 	 * @module WEB
 	 * Registers a handler to be called whenever content of the list's input fields changes. The handler is
 	 * called in realtime and does not wait for the focus to change. Text fields as well
@@ -2807,16 +2822,16 @@ define('minified', function() {
 	 * 
 	 * @example Creates a handler that writes the input's content into a text node:
 	 * <pre>
-	 * $('#myField').onOver(function(newValue, index, ev) { $('#target').fill(newValue); });
+	 * $('#myField').onChange(function(newValue, index, ev) { $('#target').fill(newValue); });
 	 * </pre>
 	 * 
-	 * @param selector optional a selector string for ##dollar#$() to register the event only on those children of the list elements that
+	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
 	 *                match the selector. 
-	 *                Supports all valid parameters for ##dollar#$() except functions.            
+	 *                Supports all valid parameters for <var>$()</var> except functions.            
 	 * @param handler the callback <code>function(newValue, index, ev)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
- 	 *             <dt>newValue</dt>For text fields the new <var>value</var> string. 
- 	 *              For checkboxes/radio buttons boolean from <var>checked</var>.</dd>
+ 	 *             <dt>newValue</dt><dd>For text fields the new <var>value</var> string. 
+ 	 *              For checkboxes/radio buttons it is the boolean returned by <var>checked</var>.</dd>
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
  	 *             </dl>
 	 *             'this' is set to the target element that caused the event.
@@ -3506,11 +3521,9 @@ define('minified', function() {
 		 * @syntax EE(elementName, properties)
 		 * @syntax EE(elementName, children)
 		 * @syntax EE(elementName, properties, children)
-		 * @syntax EE(elementName, properties, children, onCreate)
 		 * @shortcut EE() - It is recommended that you assign MINI.EE to a variable EE.
          * @module WEB
-		 * Creates a new Element Factory. An Element Factory is a function without arguments that returns a ##list#Minified list##
-		 * containing a newly created DOM element, optionally with attributes and children.
+		 * Creates a new HTML Element, wrapped in a  ##list#Minified list##, optionally with attributes and children.
 		 * Typically it will be used to insert elements into the DOM tree using ##add() or a similar function. 
 		 *
 		 * Please note that the function <var>EE</var> will not be automatically exported by Minified. You should always import it
@@ -3519,24 +3532,24 @@ define('minified', function() {
 		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 		 * </pre>
 		 * 
-		 * @example Creating a simple factory for a &lt;span> element with some text:
+		 * @example Creating a simple &lt;span> element with some text:
 		 * <pre>
 		 * var mySpan = EE('span', 'Hello World'); 
 		 * </pre>
-		 * creates a factory to produce this:
+		 * This is the result:
 		 * <pre>
 		 *  &lt;span>Hello World&lt;/span> 
 		 * </pre>
 		 * 
-		 * @example Adding the 'Hello World; &lt;span> element to all elements with the class '.greeting':
+		 * @example Adding the '&lt;span>Hello World; &lt;span> element to all elements with the class '.greeting':
 		 * <pre>
 		 * $('.greeting').add(EE('span', 'Hello World')); 
 		 * 
-		 * @example Creating a factory for a &lt;span> element with style and some text:
+		 * @example Creating a &lt;span> element with style and some text:
 		 * <pre>
 		 * var span2 = EE('span', {'@title': 'Greetings'}, 'Hello World'); 
 		 * </pre>
-		 * The factory creates this:
+		 * The last line creates this:
 		 * <pre>
 		 *  &lt;span title="Greetings">Hello World&lt;/span> 
 		 * </pre>
@@ -3580,10 +3593,9 @@ define('minified', function() {
 		 * var myStylesSpan = EE('span', {$color: "red", $fontWeight: "bold"}, "I'm styled");
 		 * </pre>
 		 * 
-		 * @example To add event handlers, use the fourth argument:
+		 * @example ##on() makes it very easy to attach event handlers to the new elements directly after creating them:
 		 * <pre>
-		 * var myStylesSpan = EE('input', {'@name': "myInput"}, null, function(e) {
-		 *     e.on('change', inputChanged);
+		 * $('#target').add(EE('input', {'@name': "myInput"}).on('change', inputChanged));
 		 * });
 		 * </pre>
 		 * 
@@ -3599,13 +3611,7 @@ define('minified', function() {
 		 *                         Functions will be invoked and their return value will be used. Lists can be 
 		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored. 
 		 *                         The syntax is exactly like ##add().
-		 * @param onCreate optional a <code>function(elementList)</code> that will be called each time an element had been created. 
-		 *                 <dl><dt>elementList</dt><dd>The newly created element wrapped in a Minified list.  </dd></dl>
-		 *                 The function's return value will be ignored. 
-		 *                 The callback allows you, for example, to add event handlers to the element using ##on().
-		 * @return a Element Factory function, which returns a Minified list containing the DOM HTMLElement that has been created or 
-		 *         modified, as only element. The factory function can be called repeatedly and will create a new set of DOM nodes on 
-		 *         each invocation. 
+		 * @return the HTML Element wrapped in a Minified list
 		 */
 		'EE': EE,
 		
@@ -3653,26 +3659,14 @@ define('minified', function() {
  * 
  * <i>Minified lists</i> are Array-like objects provided by Minified. Like a regular JavaScript array, 
  * they provide a <var>length</var> property and you can access their content using the index operator (<code>a[5]</code>). 
- * However, they do not provide the same methods as JavaScript's native array.
+ * However, they do not provide the same methods as JavaScript's native array and are designed to be immutable, so
+ * there is no direct way to add something to a Minified list. Instead Minified provides a number of functions and methods
+ * that take a list and create a modified copy which, for example, may contain additional elements.
  *
- * Minified lists are usually created using the #dollar#$()</a></code> function. You can
- * also use  <code>$()</code> to convert a JavaScript array into a Minified list, just be aware that <code>$()</code> will
- * remove nulls from the lists and will flatten nested lists.
+ * Minified lists are typically created either using the Web module's #dollar#$()</a></code> function or with the Util module's
+ * #underscore#_()</a></code> function, but many functions in the Util module also return a Minified list.
  * 
- * There is currently no function to convert a Minified list into a JavaScript array. The upcoming Utility module 
- * will provide one though. 
- * 
- * The Minified Web module provides HTML-node oriented functions like ##set() to modify a list of nodes. It also has a 
- * number of helper methods for working with Minified lists:
- * <ul>
- * <li>##collect() creates a new list using the collect function which can 
- *  transform list elements or collect data from them ("map() on steriods")</li>
- * <li>##each() iterates through all list elements</li>
- * <li>##filter() creates a new list that contains only elements that pass the 
- *  filter function's test</li>
- * <li>##find() finds a list element or its position</li>
- * <li>##sub() creates a list that copies the elements from the specified index range </li>
- * </ul>
+ * The Util module provides a function ##_.array() that converts a Minified list to a regular JavaScript array.
  */
         
 /*$
@@ -3686,8 +3680,7 @@ define('minified', function() {
  * Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
  * be able to interoperate with most other Promises implementations.
  * 
- * What may be somewhat surprising about this Promises specification is that there is no direct way to find out the state of the operation.
- * There is neither a property nor a function to get result directly or find out whether it is available. Instead, you always have to 
+ * What may be somewhat surprising about this Promises specification is that the only standard-compliant way to access the result is to 
  * register callbacks to find out the result. They will be invoked as soon as the operation is finished. 
  * If the operation already ended when you register the callbacks, the callback will then just be called from the event loop as soon
  * as possible (but never while the ##then() you register them with is still running).<br/>
@@ -3756,7 +3749,7 @@ define('minified', function() {
  * Only the full Minified distribution allows you to create promises yourself, using the ##promise() function. The Promises/A+ 
  * specification does not specify how to fulfill a promise, but in Minified's implementation every Promise object is a function  
  * that needs to be called when the promise result is ready. It requires two arguments.
- * The first is a boolean, true for a successful operation and false for a failure. The second is an array or list containing the
+ * The first is a boolean, <var>true</var> for a successful operation and <var>false</var> for a failure. The second is an array or list containing the
  * arguments to call the corresponding ##then() handler with.
  * 
  * The following example is a function, similar to ##wait(), that returns a Promise which succeeds after the given amount 

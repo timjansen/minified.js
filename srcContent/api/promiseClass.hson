@@ -15,8 +15,7 @@
 <div class="description"><p>
 <i>Promises</i> are objects that represent the future result of an asynchronous operation. When you start such an operation, using <code><a href='request.html' class='func'>$.request()</a></code>,
 <code><a href='animate.html' class='func'>animate()</a></code>, or <code><a href='wait.html' class='func'>wait()</a></code>, you will get a Promise object that allows you to get the result as soon as the operation is finished.</p><p>Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
-be able to interoperate with most other Promises implementations.</p><p>What may be somewhat surprising about this Promises specification is that there is no direct way to find out the state of the operation.
-There is neither a property nor a function to get result directly or find out whether it is available. Instead, you always have to
+be able to interoperate with most other Promises implementations.</p><p>What may be somewhat surprising about this Promises specification is that the only standard-compliant way to access the result is to
 register callbacks to find out the result. They will be invoked as soon as the operation is finished.
 If the operation already ended when you register the callbacks, the callback will then just be called from the event loop as soon
 as possible (but never while the <code><a href='then.html' class='func'>then()</a></code> you register them with is still running).<br/>
@@ -71,7 +70,7 @@ $.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
 </pre></p><p>Only the full Minified distribution allows you to create promises yourself, using the <code><a href='promise.html' class='func'>promise()</a></code> function. The Promises/A+
 specification does not specify how to fulfill a promise, but in Minified's implementation every Promise object is a function
 that needs to be called when the promise result is ready. It requires two arguments.
-The first is a boolean, true for a successful operation and false for a failure. The second is an array or list containing the
+The first is a boolean, <span class="var">true</span> for a successful operation and <span class="var">false</span> for a failure. The second is an array or list containing the
 arguments to call the corresponding <code><a href='then.html' class='func'>then()</a></code> handler with.</p><p>The following example is a function, similar to <code><a href='wait.html' class='func'>wait()</a></code>, that returns a Promise which succeeds after the given amount
 of milliseconds has passed.
 It then fulfills the promise with the number of milliseconds as argument.</p><p><pre>
@@ -98,6 +97,7 @@ timeout(1000).then(function(ms) { window.alert(ms+ ' milliseconds have passed.')
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -130,12 +130,12 @@ timeout(1000).then(function(ms) { window.alert(ms+ ' milliseconds have passed.')
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -148,7 +148,7 @@ timeout(1000).then(function(ms) { window.alert(ms+ ' milliseconds have passed.')
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -187,7 +187,6 @@ timeout(1000).then(function(ms) { window.alert(ms+ ' milliseconds have passed.')
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

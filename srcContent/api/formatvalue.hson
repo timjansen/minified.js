@@ -23,7 +23,8 @@ Formats a single value as a string, using the given format template.</div>
 <dt id="formatvalue_value" class=""><a name="formatvalue_value"><var>value</var></a></dt>
 <dd class="">the value to format. Either a Date, a number, a string or a value that can be converted to a string.</dd>
 <dt id="formatvalue_RETURN" class="returnValue inSyntax0"><a name="formatvalue_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the string-formatted value</dd>
+<dd class="inSyntax0">the string-formatted value
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -31,18 +32,17 @@ Formats a single value as a string, using the given format template.</div>
 Formats a single value as a string, using the given format template.  It has support for numbers, dates, booleans and strings.</p><p><b>Choice Formatting</b><br/>
 With a choice format, you can map input values into output values. In the format string the choices are separated by pipes ('|')
 and each choice has the format <code>&ltcmp>&ltvalue>:&lt;result></code>:
-<ul><li>&lt;cmp> is a comparison operator ('=', '>', '&lt;', '>=', '&lt;=') and can be omitted for equality.</li>
+<ul><li>&lt;cmp> is a comparison operator ('=', '>', '&lt;', '>=', '&lt;='), but can be omitted to check for equality.</li>
 <li>&lt;value> is the value as string.</li>
 <li>&lt;result> is the result, either a string or a number format</li></ul>
 You can have a default choice at the end without &lt;cmp> or &lt;value>.</p><p><b>Examples</b>
-<pre>_.formatValue('true:is True|isFalse', value);
+<pre>_.formatValue('true:is True|is False', value);
 _.formatValue('&lt;5:under 5|&gt;=15:at least 15|=7:is seven|some other number', value);
 _.formatValue('1:one item|2:two items|&gt;3:many items', value);
 _.formatValue('ERR:error|WARN:warning|INFO:info|debug', value);
 </pre></p><p><b>Number Formatting</b><br/>
 Number formatting allows you to specify the number of digits before and optionally after the decimal separator, the decimal separator itself
-as well as how to group digits. The following characters are used in the format:
-<table></p><p><tr><th>Character</th><th>Description</th></tr>
+as well as how to group digits. The following characters are used in the format:</p><p><table><tr><th>Character</th><th>Description</th></tr>
 <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
 <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
 <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
@@ -60,7 +60,7 @@ var v5  = _.formatValue('#.000', 15.14274); // '15.143'
 var v6  = _.formatValue('#.###', 15.1);     // '15.1'
 var v7  = _.formatValue('#.000', 15.1);     // '15.100'
 var v8  = _.formatValue('000,000', 15.1);   // '015,100'
-var v9 = _.formatValue('#.###', 15);     // '15'
+var v9  = _.formatValue('#.###', 15);     // '15'
 var v10 = _.formatValue('#.000', 15);    // '15.000'
 var v11 = _.formatValue('#,###', 15.1);  // '15,1' (comma as decimal separator)
 var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
@@ -69,6 +69,10 @@ var v14 = _.formatValue('000.000,###', 92548.42); // '92.548,42' (comma as separ
 var v15 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 7.356); // '7.36' (choice format)
 var v16 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 25.04); // '25.0'
 var v17 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 71.51); // '72'
+</pre></p><p><b>Choice Number Formatting</b><br/>
+It is possible to combine number formatting with choices. You can also use additional characters in a number format.</p><p><b>Examples</b>
+<pre>_.formatValue('$#.00', 17);  // '$17.00'
+_.formatValue('0:no eggs|1:1 egg|>1:# eggs', 12);  // '12 eggs'
 </pre></p><p><b>Date Formatting</b><br/>
 In a date format, there are a number of reserved characters that represent parts of the date. If you repeat the same character, you
 specify the minimum number of digits. Some elements allow a comma-separated list of translations in angular brackets, see below.
@@ -77,7 +81,7 @@ specify the minimum number of digits. Some elements allow a comma-separated list
 <tr><td>y</td><td>Year (4 digits)</td></tr>
 <tr><td>Y</td><td>Year (2 digits)</td></tr>
 <tr><td>M</td><td>Month (1-12)</td></tr>
-<tr><td>n/td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
+<tr><td>n</td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
 <tr><td>N</td><td>Month as long name ('January', 'February'...). Supports translations.</td></tr>
 <tr><td>d</td><td>Day of month (1-31)</td></tr>
 <tr><td>m</td><td>Minutes (0-59)</td></tr>
@@ -103,11 +107,17 @@ var v5  = _.formatValue('dd.MM.yyyy HH:mm:ss', now);      // e.g. '09.07.2013 23
 var v6  = _.formatValue('H:mm', now);                // e.g. '23:07'
 var v7  = _.formatValue('W, N d y', now);            // e.g. 'Tuesday, July 9 2013'
 var v8  = _.formatValue('Nd', now);                  // e.g. 'July9'
-var v9  = _.formatValue('d.N[Januar,Februar,M�rz,April,Mai,Juni,Juli,'+
+var v9  = _.formatValue('d.N[Januar,Februar,M&auml;rz,April,Mai,Juni,Juli,'+
             'August,September,Oktober,November,Dezember]', now); // German translation: '9. Juli'
 var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', now);  // different timezone: '2013-07-09 5:07 pm'
 </pre></p><p></p></div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='undefinedpad.html' class='func'>_.pad()</a></code> will pad a number with zeros.</li>
+<li><code><a href='undefinedparsedate.html' class='func'>_.parseDate()</a></code> parses a date.</li>
+<li><code><a href='undefinedparsenumber.html' class='func'>_.parseNumber()</a></code> parses a number.</li>
+<li><code><a href='undefinedformat.html' class='func'>_.format()</a></code> allows more complex formats.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -120,6 +130,7 @@ var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', now);  // different timezone
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -152,12 +163,12 @@ var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', now);  // different timezone
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -170,7 +181,7 @@ var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', now);  // different timezone
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -209,7 +220,6 @@ var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', now);  // different timezone
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

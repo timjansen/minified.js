@@ -31,7 +31,7 @@ function createDocs(sec) {
 	
 	var avail;
 	if (/COMMENT/.test(sec.module))
-		avail = sec.module.replace(/\s*COMMENT\s*/);
+		avail = sec.module.replace(/\s*COMMENT\s*/, '');
 	else if (/WEB.UTIL/.test(sec.module) || /UTIL.WEB/.test(sec.module))
 		avail = 'Complete distribution only, not available in stand-alone modules.';
 	else if (/WEB/.test(sec.module) && /UTIL/.test(sec.module))

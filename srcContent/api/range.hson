@@ -34,10 +34,10 @@ until <span class="var">end</span> (exclusive). <span class="var">start</span> c
 <div class="examples">
 <h4>Example</h4>
 <div class="example"><p>Creates some ranges
-<pre>var l123 = _.range(1, 4); // same as _(1, 2, 3)
-var l0123 = _.range(3); // same as _(0, 1, 2)
-var neg123 = _.range(-3, 0); // same as _(-3, -2, -1)
-var empty = _.range(2,1); // same as _()</pre>
+<pre>var l123 = _.range(1, 4);      // same as _(1, 2, 3)
+var l0123 = _.range(3);        // same as _(0, 1, 2)
+var neg123 = _.range(-3, 0);   // same as _(-3, -2, -1)
+var empty = _.range(2,1);      // same as _()</pre>
 </p></div>
 </div>
 
@@ -53,6 +53,7 @@ var empty = _.range(2,1); // same as _()</pre>
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -85,12 +86,12 @@ var empty = _.range(2,1); // same as _()</pre>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -103,7 +104,7 @@ var empty = _.range(2,1); // same as _()</pre>
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -142,7 +143,6 @@ var empty = _.range(2,1); // same as _()</pre>
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

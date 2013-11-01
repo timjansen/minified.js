@@ -54,7 +54,8 @@ The fulfillment handler will be called as <code>function(list)</code>:
 <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl>
 The rejection handler is called as <code>function()</code> without arguments.
 The returned promise also has property 'stop', which is a function. Invoke the function without arguments to
-interrupt a running  animation. It returns how long it ran in milliseconds.</dd>
+interrupt a running  animation. It returns how long it ran in milliseconds.
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -69,13 +70,14 @@ called every time an interpolated value is required. <span class="var">startValu
 is a value between 0 and 1 that specifies the current state of the transition. The function must return the <span class="var">startValue</span> for 0 and
 the <span class="var">endValue</span> for 1. For values between 0 and 1, the function should return a transitional value.</p><p>If the start value of a property is a string containing a number, <span class="var">animate()</span> will always ignore all the surrounding text and use the destination value as a template
 for the value to write. This can cause problems if you mix units in CSS. For example, if the start value is '10%' and you specify an end value of '20px', animate
-will do an animation from '10px' to '20px'. It is not able to convert units.</p><p><span class="var">animate()</span> does not only support strings with units, but any string containing exactly one number. This allows you, among other things, with IE-specific CSS properties.
+will do an animation from '10px' to '20px'. It is not able to convert units.</p><p><span class="var">animate()</span> does not only support strings with units, but any string containing exactly one number. This allows you, among other things, to work with
+IE-specific CSS properties.
 For example, you can transition from a start value 'alpha(opacity = 0)' to 'alpha(opacity = 100)'.</p><p>When you animate colors, <span class="var">animate()</span> is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not
-use color names such as 'red'.</p><p>Instead of the end value, you can also specify a <code>function(oldValue, index, obj)</code> to calculate the actual end value.</p><p>To allow more complex animation, <span class="var">animate()</span> returns a <a href='promiseclass.html' class='func'>Promise</a> that is fulfulled when the animation has finished.</p><p></p></div>
+use color names such as 'red'.</p><p>Instead of the end value, you can also specify a <code>function(oldValue, index, obj)</code> to calculate the actual end value.</p><p>To allow more complex animation, <span class="var">animate()</span> returns a <a href='promiseclass.html' class='func'>Promise</a> that is fulfilled when the animation has finished.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Move an element.
+<div class="example"><p>Move an element:
 <pre>
 $('#myMovingDiv').set({$left: '0px', $top: '0px'})                // start values
                  .animate({$left: '50px', $top: '100px'}, 1000);  // animation
@@ -124,6 +126,10 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='toggle.html' class='func'>toggle()</a></code> can be used to define animations between two states.</li>
+<li><code><a href='undefinedloop.html' class='func'>$.loop()</a></code> allows you to write more complex animations.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -136,6 +142,7 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -168,12 +175,12 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -186,7 +193,7 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -225,7 +232,6 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

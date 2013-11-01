@@ -216,6 +216,10 @@ All tests have been converted to <a href="http://visionmedia.github.io/mocha/">M
 <pre> grunt code</pre>
 
 
+<h2>Distribution: Support for Bower</h2>
+<p>Minified is now available as a Bower package. The package name is 'Minified'.<p>
+
+
 <h2>Download</h2>
 <p>You can download beta 3 on the <a href="/download">download page</a>.</p>
 

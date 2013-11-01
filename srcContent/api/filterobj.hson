@@ -25,7 +25,8 @@
 <dt>value</dt><dd>The value of the current property.</dd>
 <dt class="returnValue">(callback return value)</dt><dd><span class="var">true</span> to include the property in the new object, <span class="var">false</span> to omit it.</dd></dl></dd>
 <dt id="filterobj_RETURN" class="returnValue inSyntax0"><a name="filterobj_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the new object</dd>
+<dd class="inSyntax0">the new object
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -42,6 +43,9 @@ var list = _.filterObj({a: 4, b: 22, c: 7, d: 2, e: 19}, function(key, value) {
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='undefinedmapobj.html' class='func'>_.mapObj()</a></code> can be used to modify the values og an object.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -54,6 +58,7 @@ var list = _.filterObj({a: 4, b: 22, c: 7, d: 2, e: 19}, function(key, value) {
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -86,12 +91,12 @@ var list = _.filterObj({a: 4, b: 22, c: 7, d: 2, e: 19}, function(key, value) {
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -104,7 +109,7 @@ var list = _.filterObj({a: 4, b: 22, c: 7, d: 2, e: 19}, function(key, value) {
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -143,7 +148,6 @@ var list = _.filterObj({a: 4, b: 22, c: 7, d: 2, e: 19}, function(key, value) {
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

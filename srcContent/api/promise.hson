@@ -2,27 +2,27 @@
 /*
    Auto-generated using docbuilder.js. Do not edit manually. 
 */
-	title: `promise() - Minified.js`,
+	title: `$.promise() - Minified.js`,
 	section:"reference",
 	externalCss: ["../css/reference.css"],
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-promise">promise()</a></h2>
+<h2><a name="doc-promise">$.promise()</a></h2>
 <div class="summary">
 Creates a new Promise, optionally assimilating other promises.</div>
 
 <div class="availability">Complete distribution only, not available in stand-alone modules.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">promise()</div>
-<div class="syntax">promise(otherPromise1, otherPromise2, ...)</div>
+<div class="syntax">$.promise()</div>
+<div class="syntax">$.promise(otherPromise...)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="promise_otherPromise" class=""><a name="promise_otherPromise"><var>otherPromise</var></a></dt>
-<dd class="">varargs one or more promises to assimilate</dd>
+<dd class="">one or more promises to assimilate</dd>
 <dt id="promise_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="promise_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
+<dd class="inSyntax0 inSyntax1">the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
 <dl><dt>state</dt><dd><span class="var">true</span> to set the Promise to fulfilled, <span class="var">false</span> to set the state as rejected</dd>
 <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
 <span class="var">state</span>).</dd></dl>
@@ -32,15 +32,15 @@ be ignored.</dd>
 
 <h4>Description</h4>
 <div class="description"><p>
-Creates a new <a href='promiseclass.html' class='func'>Promise</a>, optionally assimilating other promises. If no other promise is given, a promise controlled
-directly by you is returned. The returned promise is a function that can be called directly to change the
-promises state.</p><p>If if one promise is given, this promise assimilates the given promise as-is, and just forwards
+Creates a new <a href='promiseclass.html' class='func'>Promise</a>, optionally assimilating other promises. If no other promise is given,
+fresh new promise is returned. The returned promise is a function that can be called directly to change the
+promises state.</p><p>If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards
 fulfillment and rejection with the original values.</p><p>If more than one promise are given, it will assimilate all of them with slightly different rules:
 <ul><li>the new promise is fulfilled if all assimilated promises have been fulfilled. The fulfillment values
         of all assimilated promises are given to the handler as arguments. Note that the fulfillment values themselves are always
         arrays, as a promise can have several fulfillment values in Minified's implementation.</li>
 <li>when one of the promises is rejected, the new promise is rejected immediately. The rejection handler gets the
-    promises rejection value (first argument is it got several) as first argument, an array of the result values
+    promises rejection value (first argument if it got several) as first argument, an array of the result values
     of all promises as a second (that means one array of arguments for each promise), and the index of the failed
     promise as third.
 </li></ul></p><p></p></div>
@@ -68,6 +68,7 @@ setTimeout(function() {
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -100,12 +101,12 @@ setTimeout(function() {
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -118,7 +119,7 @@ setTimeout(function() {
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -157,7 +158,6 @@ setTimeout(function() {
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

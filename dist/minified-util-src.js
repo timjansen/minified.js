@@ -1003,19 +1003,19 @@ module.exports = (function() {
      * Creates a new ##list#Minified list## from the current list using the given callback function. 
      * The callback is invoked once for each element of the current list. The callback results will be added to the result list.
      *  
-	 * <var>map()</var> is a simpler version of ##collect() that creates lists of the same size as the input list. It is easier to use
-	 * if the resulting list should contain nulls or nested list.
+	 * <var>map()</var> is a simpler version of ##collect(). Unlike <var>collect()</var>, it always creates lists of the same size as the input list, but 
+	 * it is easier to use if the resulting list should contain nulls or nested list.
      * 
      * @example Goes through a list of numbers and creates a new list with each value increased by 1:
      * <pre> 
-     * var texts = _(3, 7, 11, 5, 19, 3).map(function(number, index) { 
+     * var inced = _(3, 7, 11, 5, 19, 3).map(function(number, index) { 
      *     return number + 1;
      * }); 
      * </pre> 
      * 
 	 * @example The previous example with a native array is input. Note that the result is always a ##list#Minified list##:
      * <pre> 
-     * var texts = _.map([3, 7, 11, 5, 19, 3], function(number, index) { 
+     * var inced = _.map([3, 7, 11, 5, 19, 3], function(number, index) { 
      *     return number + 1;
      * }); 
      * </pre> 
@@ -1038,29 +1038,24 @@ module.exports = (function() {
 	 * @configurable default 
 	 * @name .toObject()
      * @altname _.toObject()
-	 * @syntax list.toObject(valueList)
-	 * @syntax _.toObject(keyList, valueList)
+	 * @syntax list.toObject(value)
+	 * @syntax _.toObject(keyList, value)
 	 * @module UTIL
-	 * Creates an object map from a list of keys and a list of values.
-	 * <var>toObject()</var> goes through all values of the key list and adds a property with this key and a value taken from the
-	 * value list at the same index. If you call toObject as method on a list, this list is the key list.
-	 * 
-	 * If the key list is longer than the value list, the remaining properties will use <var>undefined</var> as value.
-	 * If the value list is longer, the remaining values will be ignored.
-	 * 
+	 * Creates an object map from a list of keys and a single values.
+	 * <var>toObject()</var> goes through all values of the key list and adds a property with this key and the given a value.
+
 	 * @example Create a simple object map:
 	 *  <pre> 
-	 *  var map = _.toObject(['a', 'b', 'c'], [1, 2, 3]);  // creates {a:1, b:2, c:3}
+	 *  var map = _.toObject(['a', 'b', 'c'], 1);  // creates {a:1, b:1, c:1}
 	 * </pre> 
 	 * 
 	 * @example Same result, but with a list method:
 	 *  <pre> 
-	 *  var map = _('a', 'b', 'c').toObject([1, 2, 3]);  // creates {a:1, b:2, c:3}
+	 *  var map = _('a', 'b', 'c').toObject(1);  // creates {a:1, b:1, c:1}
 	 * </pre> 
 	 * 
 	 * @param keyList A list or array to use for the keys of the new object.
-	 * @param valueList A list or array to use for the values of the new object. There should be a value for each key. Otherwise the value will be
-	 *                           <var>undefined</var>.
+	 * @param value the value to use
      * @return the new object
      */ 
 	'toObject': listBind(toObject),
@@ -1174,8 +1169,8 @@ module.exports = (function() {
      * @altname _.reverse()
      * @syntax list.reverse() 
      * @syntax _.reverse(list) 
-     * @module WEB, UTIL
-     * Returns a new ##list#Minified list## with the input list's elements in reverse order. So the first element is swapped 
+     * @module UTIL
+     * Returns a new ##list#Minified list## with the input list's elements in reverse order. The first element is swapped 
      * with the last, the second with the second to last and so on.
      *
      * @example Changes the order of a list:
@@ -1190,10 +1185,6 @@ module.exports = (function() {
      * 
      * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
      *             <var>length</var> property.
-     * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and the position is relative
-     *                   to the list's end.
-     * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
-     *                   to the list's end. If omitted or null, all elements following the <var>startIndex</var> are included in the result.
      * @return a new ##list#list## containing only the items in the index range. 
      */ 
 	'reverse': listBindArray(reverse),
@@ -1276,7 +1267,7 @@ module.exports = (function() {
      * @syntax _.findLast(list, findFunc, startIndex) 
      * @syntax _.findLast(list, element, startIndex) 
      * @module WEB, UTIL
-     * Finds a the last occurrence of specific value in the list. There are two ways of calling <var>findLast()</var>:
+     * Finds the last occurrence of value in the list. There are two ways of calling <var>findLast()</var>:
      * <ol>
      * <li>With a value as argument. Then <var>findLast()</var> will search for the first occurrence of an identical value in the list,
      *     using the '===' operator for comparisons, and return the index. If it is not found,
@@ -1363,7 +1354,7 @@ module.exports = (function() {
      * @param otherString the string to find at the beginning of the other string
      * @return true if the base list or string starts with the other list/string. False otherwise.
      * 
-     * @see ##endsWith() is the equivalen for the list's or string's end.
+     * @see ##endsWith() is the equivalent for the list's or string's end.
      */ 
  	'startsWith': listBind(startsWith),
 
@@ -1767,8 +1758,8 @@ module.exports = (function() {
 		 * The properties are copied as shallow-copies. <var>undefined</var> values will not be copied or inherited properties
 		 * will not be copied.
 		 * 
-		 * <b>Please note:</b> Unlike jQuery, <var>extend</var> is not neccessarily a function to extend Minified, but
-		 * you can use it to do this. To add a function to ##list#Minified lists##, add a property to
+		 * <b>Please note:</b> Unlike jQuery, <var>extend</var> does not directly a function to extend Minified, although
+		 * you can use it to for this. To add a function to ##list#Minified lists##, add a property to
 		 * ##M#MINI.M##. If you want to extend <var>$</var> or <var>_</var>, just assign the new function(s) as property.
 		 * 
 		 *  @example Copying properties:
@@ -1800,10 +1791,10 @@ module.exports = (function() {
 		 * until <var>end</var> (exclusive). <var>start</var> can also be omitted to start at 0.
 		 *
 		 * @example Creates some ranges
-		 * <pre>var l123 = _.range(1, 4); // same as _(1, 2, 3)
-		 * var l0123 = _.range(3); // same as _(0, 1, 2)
-		 * var neg123 = _.range(-3, 0); // same as _(-3, -2, -1)
-		 * var empty = _.range(2,1); // same as _()</pre>	
+		 * <pre>var l123 = _.range(1, 4);      // same as _(1, 2, 3)
+		 * var l0123 = _.range(3);        // same as _(0, 1, 2)
+		 * var neg123 = _.range(-3, 0);   // same as _(-3, -2, -1)
+		 * var empty = _.range(2,1);      // same as _()</pre>	
 		 *
 		 * @param start optional the start number. If omitted, the range starts at 0.
 		 * @param end the end of the range (exclusive)
@@ -1841,7 +1832,8 @@ module.exports = (function() {
 		 * var myList5 = mulMyList(); // returns _(5, 10, 15)</pre>	
 		 *
 		 * @param f the function to bind
-		 * @param fThis the object to pass as 'this'
+		 * @param fThis the object to pass as 'this'. Please note JavaScript's limitations for 'this'. If you attempt to pass a string or number, they will be wrapped using
+		 *              JavaScript's wrapper classes String and Number.
 		 * @param beforeArgs optional either a list of values to insert in front of the arguments, or a single non-list value to put in front. If null or not set,
 		 *                             there won't be any arguments inserted. If you need to insert a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
 		 *                             (e.g. <code>[null]</code>).
@@ -1849,6 +1841,8 @@ module.exports = (function() {
 		 *                             there won't be any arguments appended. If you need to append a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
 		 *                             (e.g. <code>[null]</code>).
 		 * @return the new function that will invoke <var>f</var> with its arguments modified as specified about.
+		 * 
+		 * @see _.partial() is similar to <var>bind()</var>, but without the 'this' argument.
 		 */
 		'bind': bind,
 
@@ -1874,16 +1868,20 @@ module.exports = (function() {
 		 *
 		 * @example Create functions that remove characters from the beginning and/or end of a string:
 		 * <pre>// This function multiplies the first <var>count</var> items of the <var>list</var> by <var>factor</var>
-		 * function multiply(list, count, factor) { return list.map(function(v, index) { return index &lt; count ? factor * v : v; }); }
+		 * function multiply(list, count, factor) { 
+		 *     return list.map(function(v, index) { 
+		 *         return index &lt; count ? factor * v : v; 
+		 *     }); 
+		 * }
 		 * 
 		 * var mul3by2 = _.partial(multiply, null, [3, 2]); 
-		 * var r1 = mul10by2(_(1, 2, 3, 4, 5)); // returns _(2, 4, 6, 4, 5)
+		 * var r1 = mul10by2(_(1, 2, 3, 4, 5));   // returns _(2, 4, 6, 4, 5)
 		 * 
-		 * var mul123 = _.partial(multiply, [_(1, 2, 3)]);  // array wrapper required to pass a list!
+		 * var mul123 = _.partial(multiply, [_(1, 2, 3)]);                // array wrapper required to pass a list!
 		 * var r2 = mul123(2, 5);                 // returns _(5, 10, 3)
 		 * 
 		 * var mul12345By2 = _.partial(multiply, [_(1, 2, 3, 4, 5)], 2);  // array wrapper required!
-		 * var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
+		 * var r3 = mul12345By2(3);               // returns _(2, 4, 6, 4, 5)
 		 * </pre>
 		 *
 		 * @param f the function to bind
@@ -1894,6 +1892,8 @@ module.exports = (function() {
 		 *                             there won't be any arguments appended. If you need to append a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
 		 *                             (e.g. <code>[null]</code>).
 		 * @return the resulting string
+		 * 
+		 * @see ##_.bind() is similar to <var>partial()</var>, but allows you to set 'this'.
 		 */
 		'partial': partial,
 
@@ -1905,7 +1905,7 @@ module.exports = (function() {
 		 * @name _.eachObj()
 		 * @syntax _.eachObj(obj, callback)
 		 * @module UTIL
-		 * Invokes the given function once for each property of the given object. 
+		 * Invokes the given function once for each property of the given object. The callback is not invoked for inherited properties.
 		 *
 		 * @example Dumps all properties of an object.
 		 * <pre>
@@ -1921,6 +1921,8 @@ module.exports = (function() {
 		 *                 <dt>value</dt><dd>The value of the current property.</dd></dl>
 		 *                 The callback's return value will be ignored.
 		 * @return the object
+		 * 
+		 * @see ##_.each() iterates through a list.
 		 */
 		'eachObj': eachObj,
 
@@ -1949,6 +1951,9 @@ module.exports = (function() {
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new object.</dd></dl>
 		 * @return the new object
+		 * 
+		 * @see ##_.filterObj() filters an object.
+		 * @see ##map() maps a list.
 		 */
 		'mapObj': mapObj,
 
@@ -1977,6 +1982,8 @@ module.exports = (function() {
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the property in the new object, <var>false</var> to omit it.</dd></dl>
 		 * @return the new object
+		 * 
+		 * @see ##_.mapObj() can be used to modify the values og an object.
 		 */
 		'filterObj': filterObj,
 
@@ -2038,6 +2045,8 @@ module.exports = (function() {
 		 *
 		 * @param obj the object to test
 		 * @return <var>true</var> if the object is a number, <var>false</var> otherwise.
+		 * 
+		 * @see ##_.isValue() matches basic types such as dates numbers.
 		 */
 		'isNumber': isNumber,
 
@@ -2053,6 +2062,8 @@ module.exports = (function() {
 		 *
 		 * @param obj the object to test
 		 * @return <var>true</var> if the object is a boolean, <var>false</var> otherwise.
+		 *
+		 * @see ##_.isValue() matches basic types such as booleans.
 		 */
 		'isBool': isBool,
 
@@ -2065,10 +2076,12 @@ module.exports = (function() {
 		 * @syntax _.isDate(obj)
 		 * @module UTIL
 		 * Checks whether the given object is a <var>Date</var>. To be recognized as a date, the object
-		 * must pass #_.isObject() and have a <var>getDate</var> property.
+		 * must pass ##_.isObject() and have a <var>getDate</var> property.
 		 *
 		 * @param obj the object to test
 		 * @return <var>true</var> if the object is a <var>Date</var>, <var>false</var> otherwise.
+		 * 
+		 * @see ##_.isValue() matches basic types such as dates.
 		 */
 		'isDate': isDate,
 
@@ -2085,6 +2098,11 @@ module.exports = (function() {
 		 *
 		 * @param obj the object to test
 		 * @return <var>true</var> if the object is a value, <var>false</var> otherwise.
+		 * 
+		 * @see ##_.isString() checks for a string.
+		 * @see ##_.isNumber() checks for a number.
+		 * @see ##_.isBool() checks for a boolean.
+		 * @see ##_.isDate() checks for a date.
 		 */
 		'isValue': isValue,
 
@@ -2100,6 +2118,8 @@ module.exports = (function() {
 		 *
 		 * @param obj the object to test
 		 * @return <var>true</var> if the object is a string, <var>false</var> otherwise.
+		 * 
+		 * @see ##_.isValue() matches basic types such as strings.
 		 */
 		'isString': isString,
 
@@ -2146,10 +2166,10 @@ module.exports = (function() {
 		 * 
 		 * @example Calculate some dates based on the current time:
 		 * <pre>var now = new Date();
-		 *  var yesterday = _.dateAdd(now, 'date', -1);
-		 *  var inOneHour = _.dateAdd(now, 'hours', 1);
-		 *  var tomorrow = _.dateAdd(now, 'date', 1);
-		 *  var inThreeMonths = _.dateAdd(now, 'month', 3);</pre>
+		 * var yesterday = _.dateAdd(now, 'date', -1);
+		 * var inOneHour = _.dateAdd(now, 'hours', 1);
+		 * var tomorrow = _.dateAdd(now, 'date', 1);
+		 * var inThreeMonths = _.dateAdd(now, 'month', 3);</pre>
 		 *
 		 * @param date the <var>Date</var> to add to
 		 * @param property a property name to represent the unit of the <var>value</var>. Can be 'fullYear', 'month', 'date', 'hours', 'minutes', 'seconds' or 'milliseconds'.
@@ -2222,6 +2242,8 @@ module.exports = (function() {
 		 * @param digits the minimum number of digits for the number
 		 * @param number the number to format
 		 * @return the number converted to a string and padded with zeros
+		 * 
+		 * @see ##_.formatValue() offers real formatting of numbers.
 		 */
 		'pad' : pad,
 
@@ -2239,13 +2261,13 @@ module.exports = (function() {
 		 * <b>Choice Formatting</b><br/>
 		 * With a choice format, you can map input values into output values. In the format string the choices are separated by pipes ('|')
 		 * and each choice has the format <code>&ltcmp>&ltvalue>:&lt;result></code>:
-		 * <ul><li>&lt;cmp> is a comparison operator ('=', '>', '&lt;', '>=', '&lt;=') and can be omitted for equality.</li>
+		 * <ul><li>&lt;cmp> is a comparison operator ('=', '>', '&lt;', '>=', '&lt;='), but can be omitted to check for equality.</li>
 		 * <li>&lt;value> is the value as string.</li>
 		 * <li>&lt;result> is the result, either a string or a number format</li></ul>
 		 * You can have a default choice at the end without &lt;cmp> or &lt;value>.
 		 * 
 		 * <b>Examples</b> 
-		 * <pre>_.formatValue('true:is True|isFalse', value);
+		 * <pre>_.formatValue('true:is True|is False', value);
 		 * _.formatValue('&lt;5:under 5|&gt;=15:at least 15|=7:is seven|some other number', value);
 		 * _.formatValue('1:one item|2:two items|&gt;3:many items', value);
 		 * _.formatValue('ERR:error|WARN:warning|INFO:info|debug', value);
@@ -2254,9 +2276,8 @@ module.exports = (function() {
 		 * <b>Number Formatting</b><br/> 
 		 * Number formatting allows you to specify the number of digits before and optionally after the decimal separator, the decimal separator itself
 		 * as well as how to group digits. The following characters are used in the format:
-		 * <table>
 		 * 
-		 * <tr><th>Character</th><th>Description</th></tr>
+		 * <table><tr><th>Character</th><th>Description</th></tr>
 		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
 		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
 		 * <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
@@ -2278,7 +2299,7 @@ module.exports = (function() {
 		 * var v6  = _.formatValue('#.###', 15.1);     // '15.1'
 		 * var v7  = _.formatValue('#.000', 15.1);     // '15.100'
 		 * var v8  = _.formatValue('000,000', 15.1);   // '015,100'
-		 * var v9 = _.formatValue('#.###', 15);     // '15'
+		 * var v9  = _.formatValue('#.###', 15);     // '15'
 		 * var v10 = _.formatValue('#.000', 15);    // '15.000'
 		 * var v11 = _.formatValue('#,###', 15.1);  // '15,1' (comma as decimal separator)
 		 * var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
@@ -2287,6 +2308,14 @@ module.exports = (function() {
 		 * var v15 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 7.356); // '7.36' (choice format)
 		 * var v16 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 25.04); // '25.0' 
 		 * var v17 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 71.51); // '72' 
+		 * </pre>
+		 * 
+		 * <b>Choice Number Formatting</b><br/>
+		 * It is possible to combine number formatting with choices. You can also use additional characters in a number format.
+		 * 
+		 * <b>Examples</b> 
+		 * <pre>_.formatValue('$#.00', 17);  // '$17.00'
+		 * _.formatValue('0:no eggs|1:1 egg|>1:# eggs', 12);  // '12 eggs'
 		 * </pre>
 		 *
 		 * <b>Date Formatting</b><br/> 
@@ -2297,7 +2326,7 @@ module.exports = (function() {
 		 * <tr><td>y</td><td>Year (4 digits)</td></tr>
 		 * <tr><td>Y</td><td>Year (2 digits)</td></tr>
 		 * <tr><td>M</td><td>Month (1-12)</td></tr>
-		 * <tr><td>n/td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
+		 * <tr><td>n</td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
 		 * <tr><td>N</td><td>Month as long name ('January', 'February'...). Supports translations.</td></tr>
 		 * <tr><td>d</td><td>Day of month (1-31)</td></tr>
 		 * <tr><td>m</td><td>Minutes (0-59)</td></tr> 
@@ -2325,7 +2354,7 @@ module.exports = (function() {
 		 * var v6  = _.formatValue('H:mm', now);                // e.g. '23:07'
 		 * var v7  = _.formatValue('W, N d y', now);            // e.g. 'Tuesday, July 9 2013'
 		 * var v8  = _.formatValue('Nd', now);                  // e.g. 'July9'
-		 * var v9  = _.formatValue('d.N[Januar,Februar,M�rz,April,Mai,Juni,Juli,'+
+		 * var v9  = _.formatValue('d.N[Januar,Februar,M&auml;rz,April,Mai,Juni,Juli,'+
 		 *             'August,September,Oktober,November,Dezember]', now); // German translation: '9. Juli'
 		 * var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', now);  // different timezone: '2013-07-09 5:07 pm' 
 		 * </pre>
@@ -2333,6 +2362,11 @@ module.exports = (function() {
 		 * @param format the format that describes the output
 		 * @param value the value to format. Either a Date, a number, a string or a value that can be converted to a string.
 		 * @return the string-formatted value
+		 * 
+		 * @see ##_.pad() will pad a number with zeros.
+		 * @see ##_.parseDate() parses a date.
+		 * @see ##_.parseNumber() parses a number.
+		 * @see ##_.format() allows more complex formats.
 		 */
 		'formatValue': formatValue,
 
@@ -2360,7 +2394,7 @@ module.exports = (function() {
 		 * <tr><td>y</td><td>Year (4 digits)</td></tr>
 		 * <tr><td>Y</td><td>Year (2 digits, 2000-based)</td></tr>
 		 * <tr><td>M</td><td>Month (1-12)</td></tr>
-		 * <tr><td>n/td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
+		 * <tr><td>n</td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
 		 * <tr><td>N</td><td>Month as long name ('January', 'February'...). Supports translations.</td></tr>
 		 * <tr><td>d</td><td>Day of month (1-31)</td></tr>
 		 * <tr><td>m</td><td>Minutes (0-59)</td></tr> 
@@ -2404,6 +2438,8 @@ module.exports = (function() {
 		 * @param dateString the string-formatted date to parse
 		 * @return the Date; <var>undefined</var> if parsing failed; or <var>null</var> if the string was empty and 
 		 *              the date format is flagged as optional ('?' at the beginning)
+		 *              
+		 * @see ##_.formatValue() can format dates using the same syntax.
 		 */
 		'parseDate': parseDate,
 
@@ -2435,7 +2471,7 @@ module.exports = (function() {
 		 * If you prefix the input string with a question mark ('?'), this means that the number is optional. If the input string is empty or consists
 		 * solely of whitespace, <var>parseNumber</var> will return null.
 		 *
-		 * If the input string is not valid and can not be parse,  <var>parseNumber</var> will return <var>undefined</var>.
+		 * If the input string is not valid and can not be parsed,  <var>parseNumber</var> will return <var>undefined</var>.
 		 *
 		 * @example Parsing numbers in various formats.
 		 * <pre>
@@ -2454,6 +2490,8 @@ module.exports = (function() {
 		 * @param numberString the string-formatted number to parse
 		 * @return the resulting number; <var>undefined</var> if parsing failed; or <var>null</var> if the string was empty and 
 		 *              the number format is flagged as optional ('?' at the beginning)
+		 *              
+		 * @see ##_.formatValue() can format numbers using the same syntax.
 		 */
 		'parseNumber': parseNumber,
 
@@ -2472,7 +2510,7 @@ module.exports = (function() {
 		 * _.trim('  abc '); // returns 'abc'
 		 * _.trim(' a b c '); // returns 'a b c' (only whitespace at beginning and end is removed)</pre>
 		 *
-		 * @param s the string to trim
+		 * @param s the string to trim. If not a string, it will be converted using ##_.toString().
 		 * @return the trimmed string
 		 */
 		'trim': trim,
@@ -2494,6 +2532,9 @@ module.exports = (function() {
 		 *
 		 * @param s the string to escape
 		 * @return the escaped string
+		 * 
+		 * @see _.format() can use <var>escapeRegExp</var> as escape function.
+		 * @see _.template() can use <var>escapeRegExp</var> as escape function.
 		 */
 		'escapeRegExp': escapeRegExp,
 
@@ -2515,6 +2556,10 @@ module.exports = (function() {
 		 *
 		 * @param s the string to escape
 		 * @return the escaped string
+		 * 
+		 * @see _.formatHtml() uses <var>escapeHtml</var> for escaping.
+		 * @see _.format() can use <var>escapeHtml</var> as escape function.
+		 * @see _.template() can use <var>escapeHtml</var> as escape function.
 		 */
 		'escapeHtml': escapeHtml,
 
@@ -2527,7 +2572,7 @@ module.exports = (function() {
 	     * @syntax _.format()
 	     * @syntax _.format(template, object)
 	   	 * @module UTIL
-	     * Formats an object using a #template#template. The template syntax is shared with ##_.template(). The only difference is that
+	     * Formats an object using a ##template#template##. The template syntax is shared with ##_.template(). The only difference is that
 	     * <var>format()</var> frees you from the extra step of creating the template. In any case, whether you use 
 	     * <var>format()</var> or ##_.template(), the template will be cached. Be careful when you create templates dynamically, as 
 	     * every template is cached and consumes memory.<br/>
@@ -2536,17 +2581,22 @@ module.exports = (function() {
 	     * @example Format a list of dates:
 	     * <pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
 	     * 
-	     * @param template The #template as a string. The template, once created, will be cached. 
+	     * @param template The ##template#template## as a string. The template, once created, will be cached. 
 	     * @param object the object to format 
 	     * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
 	     *        to escape all output:
 	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
 	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
 	     *        If no escapeFunction has been given, the output will not be escaped.
-	     *        ##_.escapeHtml() can be used as a escape function for HTML, and ##_.escapeRegExp for regular expressions. 
+	     *        ##_.escapeHtml() can be used as an escape function for HTML, and ##_.escapeRegExp() for regular expressions. 
 	     *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
 	     *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
 	     * @return the string created by the template
+	     * 
+	     * @see ##_.template() creates a template function, using the same syntax. 
+	     * @see ##_.formatHtml() is a variant of <var>format()</var> with HTML-escpaping built it.
+	     * @see ##_.formatValue() formats a single number or date.
+	     * @see ##_.escapeRegExp() can be used by <var>format()</var> to escape regular expressions. 
 	     */ 
 		'format': function(tpl, object, escapeFunction) {
 			return template(tpl, escapeFunction)(object);
@@ -2567,7 +2617,7 @@ module.exports = (function() {
 	     * <a href="http://handlebarsjs.com/">Handlebars</a>. Unlike Handlebars, it is based on raw JavaScript expressions and thus gives you
 	     * complete freedom, but also offers you shortcuts for formatting, iteration and conditionals. 
 	     * 
-	     * Every template can receive exactly one object as input. If you need more than one value as input, put all requires values
+	     * Every template can receive exactly one object as input. If you need more than one value as input, put all required values
 	     * into an object.
 	     * 
 	     * Use double curly braces to embed a JavaScript expression and insert its result:
@@ -2593,7 +2643,7 @@ module.exports = (function() {
 	     * <pre>The price is {{obj::#.00}}.</pre>	     
 	     * 
 	     * Conditions can be expressed using <code>if</code> and <code>else</code>:
-	     * <pre>Hello {{if visits==0}}New{{else if visits&lt;10}}Returning{{else}}Regular{{/if}} Customer.<pre>
+	     * <pre>Hello {{if visits==0}}New{{else if visits&lt;10}}Returning{{else}}Regular{{/if}} Customer.</pre>
 	     * You can use any JavaScript expression as condition.
 	     * 
 	     * Use <code>each</code> to iterate through a list:
@@ -2603,13 +2653,13 @@ module.exports = (function() {
 	     *                                  {firstName: 'Marc', lastName: 'Meyer'}]});</pre>
 	     * <code>each</code> will iterate through the members of the given object. It 
 	     * calls its body for each item and put a reference to the item into <var>this</var>.
-	     * Optionally, you can specify up to two variables to store the value in (instead of this) and
+	     * Optionally, you can specify up to two variables to store the value in and
 	     * the zero-based index of the current item:
 	     * <pre>var myTemplate = _.template(
 	     * 	   '{{each value, index: names}}{{index}}. {{value.firstName}} {{value.lastName}}{{/each}}');
 		 * </pre>
 	     *
-	     * If you do not pass an expression to <code>each</var>, it will take the list from <var>this</var>:
+	     * If you do not pass an expression to <code>each</code>, it will take the list from <var>this</var>:
 	     * <pre>var myTemplate = _.template('{{each value:}}{{value}};{{/each}}');
 	     * var result = myTemplate([1, 2, 3]);</pre>
 	     *  
@@ -2624,7 +2674,7 @@ module.exports = (function() {
 	     * If you do not need the key, you can omit the variable specification:
 	     * <pre>var myTemplate = _.template('{{each nicknames}}{{this}}{{/each}}');</pre>
 		 *
-		 * You can also define your own variables, using the regular JavaScript syntax, with 'var':
+		 * You can define your own variables, using the regular JavaScript syntax, with 'var':
 	     * <pre>var myTemplate = _.template('{{var s=very.long.name, sum=a+b;}}{{s.desc}}, {{sum}}');</pre>
 		 *
 	     * In some situations, it may be inevitable to embed raw JavaScript in the template. 
@@ -2641,7 +2691,7 @@ module.exports = (function() {
 	     * following variables for you:
 	     * <table>
 	     * <tr><th>Name</th><th>Desciption</th></tr>
-	     * <tr><td>this</td><td>The template object outside of <code>each</code>. Inside eachs, the current value.</td></tr>
+	     * <tr><td>this</td><td>The template object outside of <code>each</code>. Inside <code>each</code>s, the current value.</td></tr>
 	     * <tr><td>obj</td><td>The parameter given to the template function.</td></tr>
 	     * <tr><td>_</td><td>A reference to Minified Util.</td></tr>
 	     * <tr><td>esc</td><td>The escape function given when the template has been defined. If no function has been given,
@@ -2654,20 +2704,22 @@ module.exports = (function() {
 	     * 
 	     * Every template you create is already cached, so it not an expensive operation to call ##_.template() a second
 	     * time with the same template. However, because of caching, you should be careful when creating templates
-	     * dynamically, as every new template requires memory that will not be freed.
+	     * dynamically, as this will fill the cache up quickly.
 	     * 
-	     * See also ##_.format() as an alternative to using ##template(), as it will save you the template invocation.
-	     *  
-	     * @param template The template as a string using the syntax described above. 
+	     * @param template The template as a string using the syntax described below. 
 	     * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
 	     *        to escape all output:
 	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
 	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
 	     *        If no escapeFunction has been given, the output will not be escaped.
-	     *        ##_.escapeHtml() can be used as a escape function for HTML, and ##_.escapeRegExp for regular expressions. 
+	     *        ##_.escapeHtml() can be used as an escape function for HTML, and ##_.escapeRegExp() for regular expressions. 
 	     *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
-	     *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
 	     * @return the value returned by the last invocation of <var>func</var>
+	     * 
+	     * @see ##_.format() shares <var>template()</var>'s syntax but returns the result directly.
+	     * @see ##_.formatHtml() is a variant of <var>format()</var> with HTML escaping.
+	     * @see ##_.escapeHtml() can be used by <var>template()</var> to escape HTML. 
+	     * @see ##_.escapeRegExp() can be used by <var>template()</var> to escape regular expressions. 
 	     */ 
 		'template': template,
 
@@ -2680,7 +2732,7 @@ module.exports = (function() {
 	     * @syntax _.formatHtml()
 	     * @syntax _.formatHtml(template, object)
 	   	 * @module UTIL
-	     * Formats an object using a #template#template with HTML escaping for the output. 
+	     * Formats an object using a ##template#template## with HTML escaping for the output. 
 	     * The template syntax is shared with ##_.template(). Output in double curly braces is automatically escaped using ##_.escapeHtml(). 
 	     * <var>formatHtml()</var> just creates a new template with HTML escaping and invokes it immediately.
 	     * The template will be cached. Be careful when you create templates dynamically, as 
@@ -2693,6 +2745,11 @@ module.exports = (function() {
 	     * @param template The #template as a string. The template, once created, will be cached.
 	     * @param object the object to format 
 	     * @return the string created by the template
+		 *
+		 * @see ##ht() works uses <var>formatHtml</var> to set element's innerHTML. 
+		 * @see ##HTML() create HTML nodes using <var>formatHtml</var>. 
+	     * @see ##_.template() creates a template function, using the same syntax. 
+	     * @see ##_.format() allows you to specify alternative escape mechanisms.
 	     */ 
 		 'formatHtml': formatHtml
 		/*$

@@ -8,7 +8,7 @@
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-clone">.clone()</a></h2>
-<div class="summary">Clones all HTML elements and text nodes in the given list by creating a deep copy.</div>
+<div class="summary">Clones all HTML elements and text nodes in the given list by creating a deep copy of them.</div>
 
 <div class="availability">Web module only.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -18,11 +18,12 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="clone_RETURN" class="returnValue inSyntax0"><a name="clone_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the list of containing copies of all supported items in the original list.</dd>
+<dd class="inSyntax0">the list of containing copies of all supported items in the original list.
+</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Clones all HTML elements and text nodes in the given list by creating a deep copy. Strings in the list will remain unchanged,
+<div class="description"><p>Clones all HTML elements and text nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
 and everything else will be removed.</p><p><span class="var">clone()</span> is very limited in what it will clone. Only elements, their attributes, text nodes,  CDATA nodes and strings will
 be copied. Nested lists will be automatically flattened.
 Modifications of the elements, such as event handlers, will not be cloned.</p><p>Please note that id attributes will be automatically skipped by the <span class="var">clone()</span>. This allows you to address the element to
@@ -47,6 +48,9 @@ $('#comments').add(myClone);
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='add.html' class='func'>add()</a></code> can add a cloned element to the HTML document.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -59,6 +63,7 @@ $('#comments').add(myClone);
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -91,12 +96,12 @@ $('#comments').add(myClone);
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -109,7 +114,7 @@ $('#comments').add(myClone);
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -148,7 +153,6 @@ $('#comments').add(myClone);
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

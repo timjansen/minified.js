@@ -49,17 +49,17 @@ function dummy() {
 	/*$
 	 * @id promise
 	 * @group REQUEST
-	 * @name promise()
+	 * @name $.promise()
 	 * @configurable default
-	 * @syntax promise()
-	 * @syntax promise(otherPromise1, otherPromise2, ...)
+	 * @syntax $.promise()
+	 * @syntax $.promise(otherPromise...)
 	 * @module WEB+UTIL
 	 * 
-	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, a promise controlled
-	 * directly by you is returned. The returned promise is a function that can be called directly to change the 
+	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, 
+	 * fresh new promise is returned. The returned promise is a function that can be called directly to change the 
 	 * promises state.
 	 * 
-	 * If if one promise is given, this promise assimilates the given promise as-is, and just forwards 
+	 * If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards 
 	 * fulfillment and rejection with the original values.
 	 *
 	 * If more than one promise are given, it will assimilate all of them with slightly different rules:
@@ -67,7 +67,7 @@ function dummy() {
 	 *         of all assimilated promises are given to the handler as arguments. Note that the fulfillment values themselves are always 
 	 *         arrays, as a promise can have several fulfillment values in Minified's implementation.</li>
 	 * <li>when one of the promises is rejected, the new promise is rejected immediately. The rejection handler gets the 
-	 *     promises rejection value (first argument is it got several) as first argument, an array of the result values 
+	 *     promises rejection value (first argument if it got several) as first argument, an array of the result values 
 	 *     of all promises as a second (that means one array of arguments for each promise), and the index of the failed 
 	 *     promise as third.
 	 * </li></ul>
@@ -79,8 +79,8 @@ function dummy() {
 	 * }, 1000);
 	 * </pre>
 	 * 
-	 * @param otherPromise varargs one or more promises to assimilate
-	 * @return a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
+	 * @param otherPromise one or more promises to assimilate
+	 * @return the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
      * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected</dd>
      * <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
      * <var>state</var>).</dd></dl>
@@ -265,7 +265,7 @@ function dummy() {
     	 * @configurable default
     	 * @module WEB, UTIL
     	 * Registers a callback that will be called when the operation failed.
-    	 * This is a convenience function that will invoke ##then() with the only the second argument set.  It shares all of its semantics.
+    	 * This is a convenience function that will invoke ##then() with only the second argument set.  It shares all of its semantics.
     	 *
     	 * @example Simple handler for a HTTP request.
     	 * <pre>
@@ -382,7 +382,7 @@ function dummy() {
 		 *                        as object.
 		 * @return the current list
 		 * 
-		 * @see ##HTML() creates only the nodes and can be used with ##add() and other methods.
+		 * @see ##HTML() creates only the nodes and can be used with ##add() and other methods to add the nodes to the DOM, giving you more flexibility than <var>ht()</var>.
 		 */
 		'ht':ht
 		/*$
@@ -598,7 +598,7 @@ function dummy() {
 		 * @syntax HTML(templateFunction)
 		 * @syntax HTML(templateFunction, object)
 	     * @module WEB
-		 * Creates a ##list#list of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
+		 * Creates a ##list#list## of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
 		 * The template uses the ##template() syntax with ##escapeHtml() escaping for values.
 		 * 
 		 * Please note that the function <var>HTML</var> will not be automatically exported by Minified. You should always import it
@@ -607,7 +607,7 @@ function dummy() {
 		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, <strong>HTML = MINI.HTML</strong>;
 		 * </pre>
 		 * 
-		 * @example Creating a HTML element to format a number:
+		 * @example Creating a HTML element showing a number:
 		 * <pre>
 		 * &lt;div id="price">-&lt;/div>
 		 * </pre> 

@@ -8,7 +8,7 @@
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-format">_.format()</a></h2>
-<div class="summary">Formats an object using a #template#template.</div>
+<div class="summary">Formats an object using a template.</div>
 
 <div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
@@ -19,7 +19,7 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="format_template" class=""><a name="format_template"><var>template</var></a></dt>
-<dd class="">The #template as a string. The template, once created, will be cached.</dd>
+<dd class="">The <a href='template.html' class='func'>template</a> as a string. The template, once created, will be cached.</dd>
 <dt id="format_object" class=""><a name="format_object"><var>object</var></a></dt>
 <dd class="">the object to format</dd>
 <dt id="format_escapeFunction" class=""><a name="format_escapeFunction"><var>escapeFunction (optional)</var></a></dt>
@@ -28,15 +28,16 @@ to escape all output:
 <dl><dt>inputString</dt><dd>The string to escape.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
 If no escapeFunction has been given, the output will not be escaped.
-<code><a href='undefinedescapehtml.html' class='func'>_.escapeHtml()</a></code> can be used as a escape function for HTML, and ##_.escapeRegExp for regular expressions.
+<code><a href='undefinedescapehtml.html' class='func'>_.escapeHtml()</a></code> can be used as an escape function for HTML, and <code><a href='undefinedescaperegexp.html' class='func'>_.escapeRegExp()</a></code> for regular expressions.
 JavaScript's built-in <span class="var">escape()</span> function can escape URL components.
 See <code><a href='undefinedhtmlformat.html' class='func'>_.htmlFormat()</a></code> for a version of <span class="var">format()</span> that already includes HTML escaping.</dd>
 <dt id="format_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="format_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the string created by the template</dd>
+<dd class="inSyntax0 inSyntax1">the string created by the template
+</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Formats an object using a #template#template. The template syntax is shared with <code><a href='undefinedtemplate.html' class='func'>_.template()</a></code>. The only difference is that
+<div class="description"><p>Formats an object using a <a href='template.html' class='func'>template</a>. The template syntax is shared with <code><a href='undefinedtemplate.html' class='func'>_.template()</a></code>. The only difference is that
 <span class="var">format()</span> frees you from the extra step of creating the template. In any case, whether you use
 <span class="var">format()</span> or <code><a href='undefinedtemplate.html' class='func'>_.template()</a></code>, the template will be cached. Be careful when you create templates dynamically, as
 every template is cached and consumes memory.<br/>
@@ -49,6 +50,12 @@ If you only want to format a single value, use <code><a href='undefinedformatval
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='undefinedtemplate.html' class='func'>_.template()</a></code> creates a template function, using the same syntax.</li>
+<li><code><a href='undefinedformathtml.html' class='func'>_.formatHtml()</a></code> is a variant of <span class="var">format()</span> with HTML-escpaping built it.</li>
+<li><code><a href='undefinedformatvalue.html' class='func'>_.formatValue()</a></code> formats a single number or date.</li>
+<li><code><a href='undefinedescaperegexp.html' class='func'>_.escapeRegExp()</a></code> can be used by <span class="var">format()</span> to escape regular expressions.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -61,6 +68,7 @@ If you only want to format a single value, use <code><a href='undefinedformatval
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -93,12 +101,12 @@ If you only want to format a single value, use <code><a href='undefinedformatval
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -111,7 +119,7 @@ If you only want to format a single value, use <code><a href='undefinedformatval
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -150,7 +158,6 @@ If you only want to format a single value, use <code><a href='undefinedformatval
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

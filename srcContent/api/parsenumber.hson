@@ -24,7 +24,8 @@ Parses the given string as number using the given format.</div>
 <dd class="">the string-formatted number to parse</dd>
 <dt id="parsenumber_RETURN" class="returnValue inSyntax0"><a name="parsenumber_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0">the resulting number; <span class="var">undefined</span> if parsing failed; or <span class="var">null</span> if the string was empty and
-the number format is flagged as optional ('?' at the beginning)</dd>
+the number format is flagged as optional ('?' at the beginning)
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -40,7 +41,7 @@ but does not support choices. These are the allowed placeholders in the format:
 <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
 <tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
 </table></p><p>The format string is mainly used to find out what the decimal separator is ('.' or ','). It defaults to '.'.</p><p><span class="var">parseNumber</span> will ignore any non-numeric characters at the beginning or end of the input string.</p><p>If you prefix the input string with a question mark ('?'), this means that the number is optional. If the input string is empty or consists
-solely of whitespace, <span class="var">parseNumber</span> will return null.</p><p>If the input string is not valid and can not be parse,  <span class="var">parseNumber</span> will return <span class="var">undefined</span>.</p><p></p></div>
+solely of whitespace, <span class="var">parseNumber</span> will return null.</p><p>If the input string is not valid and can not be parsed,  <span class="var">parseNumber</span> will return <span class="var">undefined</span>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -59,6 +60,9 @@ _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='undefinedformatvalue.html' class='func'>_.formatValue()</a></code> can format numbers using the same syntax.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -71,6 +75,7 @@ _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -103,12 +108,12 @@ _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -121,7 +126,7 @@ _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -160,7 +165,6 @@ _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

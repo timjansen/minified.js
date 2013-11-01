@@ -19,24 +19,24 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="template_template" class=""><a name="template_template"><var>template</var></a></dt>
-<dd class="">The template as a string using the syntax described above.</dd>
+<dd class="">The template as a string using the syntax described below.</dd>
 <dt id="template_escapeFunction" class=""><a name="template_escapeFunction"><var>escapeFunction (optional)</var></a></dt>
 <dd class="">The callback <code>function(inputString)</code> that will be used
 to escape all output:
 <dl><dt>inputString</dt><dd>The string to escape.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
 If no escapeFunction has been given, the output will not be escaped.
-<code><a href='undefinedescapehtml.html' class='func'>_.escapeHtml()</a></code> can be used as a escape function for HTML, and ##_.escapeRegExp for regular expressions.
-JavaScript's built-in <span class="var">escape()</span> function can escape URL components.
-See <code><a href='undefinedhtmlformat.html' class='func'>_.htmlFormat()</a></code> for a version of <span class="var">format()</span> that already includes HTML escaping.</dd>
+<code><a href='undefinedescapehtml.html' class='func'>_.escapeHtml()</a></code> can be used as an escape function for HTML, and <code><a href='undefinedescaperegexp.html' class='func'>_.escapeRegExp()</a></code> for regular expressions.
+JavaScript's built-in <span class="var">escape()</span> function can escape URL components.</dd>
 <dt id="template_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="template_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the value returned by the last invocation of <span class="var">func</span></dd>
+<dd class="inSyntax0 inSyntax1">the value returned by the last invocation of <span class="var">func</span>
+</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>Parses a Handlebars-like template to create a reusable template function.</p><p>The syntax of the template uses a syntax that superficially looks like
 <a href="http://handlebarsjs.com/">Handlebars</a>. Unlike Handlebars, it is based on raw JavaScript expressions and thus gives you
-complete freedom, but also offers you shortcuts for formatting, iteration and conditionals.</p><p>Every template can receive exactly one object as input. If you need more than one value as input, put all requires values
+complete freedom, but also offers you shortcuts for formatting, iteration and conditionals.</p><p>Every template can receive exactly one object as input. If you need more than one value as input, put all required values
 into an object.</p><p>Use double curly braces to embed a JavaScript expression and insert its result:
 <pre>{{a}} plus {{b}} is {{a+b}}</pre></p><p>To use such a template, create it with <span class="var">template()</span> and then execute the resulting function:
 <pre>var myTemplate = _.template('{{a}} plus {{b}} is {{a+b}}');
@@ -52,7 +52,7 @@ such as Number and Boolean. <span class="var">this</span> is the default, so you
 var result = myTemplate(17);</pre></p><p>Minified templates can use <code><a href='undefinedformatvalue.html' class='func'>_.formatValue()</a></code> formats directly. Just separate them from the expression by
 a double-colon:
 <pre>The price is {{obj::#.00}}.</pre></p><p>Conditions can be expressed using <code>if</code> and <code>else</code>:
-<pre>Hello {{if visits==0}}New{{else if visits&lt;10}}Returning{{else}}Regular{{/if}} Customer.<pre>
+<pre>Hello {{if visits==0}}New{{else if visits&lt;10}}Returning{{else}}Regular{{/if}} Customer.</pre>
 You can use any JavaScript expression as condition.</p><p>Use <code>each</code> to iterate through a list:
 <pre>var myTemplate = _.template(
 	   '{{each names}}{{this.firstName}} {{this.lastName}}{{/each}}');
@@ -60,18 +60,18 @@ var result = myTemplate({names: [{firstName: 'Joe', lastName: 'Jones'},
                                  {firstName: 'Marc', lastName: 'Meyer'}]});</pre>
 <code>each</code> will iterate through the members of the given object. It
 calls its body for each item and put a reference to the item into <span class="var">this</span>.
-Optionally, you can specify up to two variables to store the value in (instead of this) and
+Optionally, you can specify up to two variables to store the value in and
 the zero-based index of the current item:
 <pre>var myTemplate = _.template(
 	   '{{each value, index: names}}{{index}}. {{value.firstName}} {{value.lastName}}{{/each}}');
-</pre></p><p>If you do not pass an expression to <code>each</span>, it will take the list from <span class="var">this</span>:
+</pre></p><p>If you do not pass an expression to <code>each</code>, it will take the list from <span class="var">this</span>:
 <pre>var myTemplate = _.template('{{each value:}}{{value}};{{/each}}');
 var result = myTemplate([1, 2, 3]);</pre></p><p>Beside lists, you can also iterate through the properties of an object. The property name will be stored
 in the first given parameter and the value in <span class="var">this</span> and the second parameter:
 <pre>var myTemplate = _.template('{{each key, value: nicknames}}{{key}}: {{value}}{{/each}}');
 var result = myTemplate({nicknames: {Matt: 'Matthew', John: 'Jonathan'} });</pre></p><p>Shorter version of the previous example that uses <span class="var">this</span> for the value:
 <pre>var myTemplate = _.template('{{each key: nicknames}}{{key}}: {{this}}{{/each}}');</pre></p><p>If you do not need the key, you can omit the variable specification:
-<pre>var myTemplate = _.template('{{each nicknames}}{{this}}{{/each}}');</pre></p><p>You can also define your own variables, using the regular JavaScript syntax, with 'var':
+<pre>var myTemplate = _.template('{{each nicknames}}{{this}}{{/each}}');</pre></p><p>You can define your own variables, using the regular JavaScript syntax, with 'var':
 <pre>var myTemplate = _.template('{{var s=very.long.name, sum=a+b;}}{{s.desc}}, {{sum}}');</pre></p><p>In some situations, it may be inevitable to embed raw JavaScript in the template.
 To embed JavaScript code, prefix the code with a '#':
 <pre>var myTemplate = _.template(
@@ -82,7 +82,7 @@ By default, all output will be escaped. You can prevent this by using triple-cur
 following variables for you:
 <table>
 <tr><th>Name</th><th>Desciption</th></tr>
-<tr><td>this</td><td>The template object outside of <code>each</code>. Inside eachs, the current value.</td></tr>
+<tr><td>this</td><td>The template object outside of <code>each</code>. Inside <code>each</code>s, the current value.</td></tr>
 <tr><td>obj</td><td>The parameter given to the template function.</td></tr>
 <tr><td>_</td><td>A reference to Minified Util.</td></tr>
 <tr><td>esc</td><td>The escape function given when the template has been defined. If no function has been given,
@@ -93,8 +93,14 @@ The <span class="var">eachCallback</span> is a <code>function(key, value)</code>
 for arrays that will be invoked for each item.
 </table></p><p>Every template you create is already cached, so it not an expensive operation to call <code><a href='undefinedtemplate.html' class='func'>_.template()</a></code> a second
 time with the same template. However, because of caching, you should be careful when creating templates
-dynamically, as every new template requires memory that will not be freed.</p><p>See also <code><a href='undefinedformat.html' class='func'>_.format()</a></code> as an alternative to using <code><a href='template.html' class='func'>template()</a></code>, as it will save you the template invocation.</p><p></p></div>
+dynamically, as this will fill the cache up quickly.</p><p></p></div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='undefinedformat.html' class='func'>_.format()</a></code> shares <span class="var">template()</span>'s syntax but returns the result directly.</li>
+<li><code><a href='undefinedformathtml.html' class='func'>_.formatHtml()</a></code> is a variant of <span class="var">format()</span> with HTML escaping.</li>
+<li><code><a href='undefinedescapehtml.html' class='func'>_.escapeHtml()</a></code> can be used by <span class="var">template()</span> to escape HTML.</li>
+<li><code><a href='undefinedescaperegexp.html' class='func'>_.escapeRegExp()</a></code> can be used by <span class="var">template()</span> to escape regular expressions.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -107,6 +113,7 @@ dynamically, as every new template requires memory that will not be freed.</p><p
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -139,12 +146,12 @@ dynamically, as every new template requires memory that will not be freed.</p><p
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -157,7 +164,7 @@ dynamically, as every new template requires memory that will not be freed.</p><p
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -196,7 +203,6 @@ dynamically, as every new template requires memory that will not be freed.</p><p
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

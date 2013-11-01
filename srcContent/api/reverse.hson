@@ -10,7 +10,7 @@
 <h2><a name="doc-reverse">.reverse()</a></h2>
 <div class="summary">Returns a new Minified list with the input list's elements in reverse order.</div>
 
-<div class="availability">Available in all modules.</div><h4>Syntax Variants</h4>
+<div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.reverse()</div>
 <div class="syntax">_.reverse(list)</div>
@@ -21,18 +21,12 @@
 <dt id="reverse_list" class=""><a name="reverse_list"><var>list</var></a></dt>
 <dd class="">A list to use as input. Can be an array, a <a href='list.html' class='func'>Minified list</a> or any other array-like structure with
 <span class="var">length</span> property.</dd>
-<dt id="reverse_startIndex" class=""><a name="reverse_startIndex"><var>startIndex</var></a></dt>
-<dd class="">the 0-based position of the sub-list start. If negative, the list's length is added and the position is relative
-to the list's end.</dd>
-<dt id="reverse_endIndex" class=""><a name="reverse_endIndex"><var>endIndex (optional)</var></a></dt>
-<dd class="">the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
-to the list's end. If omitted or null, all elements following the <span class="var">startIndex</span> are included in the result.</dd>
 <dt id="reverse_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="reverse_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">a new <a href='list.html' class='func'>list</a> containing only the items in the index range.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Returns a new <a href='list.html' class='func'>Minified list</a> with the input list's elements in reverse order. So the first element is swapped
+<div class="description"><p>Returns a new <a href='list.html' class='func'>Minified list</a> with the input list's elements in reverse order. The first element is swapped
 with the last, the second with the second to last and so on.</p><p></p></div>
 
 <div class="examples">
@@ -62,6 +56,7 @@ var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -94,12 +89,12 @@ var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -112,7 +107,7 @@ var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -151,7 +146,6 @@ var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

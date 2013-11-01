@@ -29,7 +29,8 @@ there won't be any arguments inserted. If you need to insert a <span class="var"
 there won't be any arguments appended. If you need to append a <span class="var">null</span>, <span class="var">undefined</span> or a list, just wrap them in an array
 (e.g. <code>[null]</code>).</dd>
 <dt id="partial_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="partial_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the resulting string</dd>
+<dd class="inSyntax0 inSyntax1">the resulting string
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -47,20 +48,27 @@ var divBy5 = _.partial(add, null, 5); // like function(a) { return a / 5; }
 <h4>Example</h4>
 <div class="example"><p>Create functions that remove characters from the beginning and/or end of a string:
 <pre>// This function multiplies the first <span class="var">count</span> items of the <span class="var">list</span> by <span class="var">factor</span>
-function multiply(list, count, factor) { return list.map(function(v, index) { return index &lt; count ? factor * v : v; }); }
+function multiply(list, count, factor) {
+    return list.map(function(v, index) {
+        return index &lt; count ? factor * v : v;
+    });
+}
 
 var mul3by2 = _.partial(multiply, null, [3, 2]);
-var r1 = mul10by2(_(1, 2, 3, 4, 5)); // returns _(2, 4, 6, 4, 5)
+var r1 = mul10by2(_(1, 2, 3, 4, 5));   // returns _(2, 4, 6, 4, 5)
 
-var mul123 = _.partial(multiply, [_(1, 2, 3)]);  // array wrapper required to pass a list!
+var mul123 = _.partial(multiply, [_(1, 2, 3)]);                // array wrapper required to pass a list!
 var r2 = mul123(2, 5);                 // returns _(5, 10, 3)
 
 var mul12345By2 = _.partial(multiply, [_(1, 2, 3, 4, 5)], 2);  // array wrapper required!
-var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
+var r3 = mul12345By2(3);               // returns _(2, 4, 6, 4, 5)
 </pre>
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='undefinedbind.html' class='func'>_.bind()</a></code> is similar to <span class="var">partial()</span>, but allows you to set 'this'.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -73,6 +81,7 @@ var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -105,12 +114,12 @@ var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -123,7 +132,7 @@ var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -162,7 +171,6 @@ var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

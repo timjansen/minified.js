@@ -1220,17 +1220,17 @@ define('minified', function() {
 	/*$
 	 * @id promise
 	 * @group REQUEST
-	 * @name promise()
+	 * @name $.promise()
 	 * @configurable default
-	 * @syntax promise()
-	 * @syntax promise(otherPromise1, otherPromise2, ...)
+	 * @syntax $.promise()
+	 * @syntax $.promise(otherPromise...)
 	 * @module WEB+UTIL
 	 * 
-	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, a promise controlled
-	 * directly by you is returned. The returned promise is a function that can be called directly to change the 
+	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, 
+	 * fresh new promise is returned. The returned promise is a function that can be called directly to change the 
 	 * promises state.
 	 * 
-	 * If if one promise is given, this promise assimilates the given promise as-is, and just forwards 
+	 * If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards 
 	 * fulfillment and rejection with the original values.
 	 *
 	 * If more than one promise are given, it will assimilate all of them with slightly different rules:
@@ -1238,7 +1238,7 @@ define('minified', function() {
 	 *         of all assimilated promises are given to the handler as arguments. Note that the fulfillment values themselves are always 
 	 *         arrays, as a promise can have several fulfillment values in Minified's implementation.</li>
 	 * <li>when one of the promises is rejected, the new promise is rejected immediately. The rejection handler gets the 
-	 *     promises rejection value (first argument is it got several) as first argument, an array of the result values 
+	 *     promises rejection value (first argument if it got several) as first argument, an array of the result values 
 	 *     of all promises as a second (that means one array of arguments for each promise), and the index of the failed 
 	 *     promise as third.
 	 * </li></ul>
@@ -1250,8 +1250,8 @@ define('minified', function() {
 	 * }, 1000);
 	 * </pre>
 	 * 
-	 * @param otherPromise varargs one or more promises to assimilate
-	 * @return a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
+	 * @param otherPromise one or more promises to assimilate
+	 * @return the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
      * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected</dd>
      * <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
      * <var>state</var>).</dd></dl>
@@ -1435,7 +1435,7 @@ define('minified', function() {
     	 * @configurable default
     	 * @module WEB, UTIL
     	 * Registers a callback that will be called when the operation failed.
-    	 * This is a convenience function that will invoke ##then() with the only the second argument set.  It shares all of its semantics.
+    	 * This is a convenience function that will invoke ##then() with only the second argument set.  It shares all of its semantics.
     	 *
     	 * @example Simple handler for a HTTP request.
     	 * <pre>
@@ -1707,19 +1707,19 @@ define('minified', function() {
      * Creates a new ##list#Minified list## from the current list using the given callback function. 
      * The callback is invoked once for each element of the current list. The callback results will be added to the result list.
      *  
-	 * <var>map()</var> is a simpler version of ##collect() that creates lists of the same size as the input list. It is easier to use
-	 * if the resulting list should contain nulls or nested list.
+	 * <var>map()</var> is a simpler version of ##collect(). Unlike <var>collect()</var>, it always creates lists of the same size as the input list, but 
+	 * it is easier to use if the resulting list should contain nulls or nested list.
      * 
      * @example Goes through a list of numbers and creates a new list with each value increased by 1:
      * <pre> 
-     * var texts = _(3, 7, 11, 5, 19, 3).map(function(number, index) { 
+     * var inced = _(3, 7, 11, 5, 19, 3).map(function(number, index) { 
      *     return number + 1;
      * }); 
      * </pre> 
      * 
 	 * @example The previous example with a native array is input. Note that the result is always a ##list#Minified list##:
      * <pre> 
-     * var texts = _.map([3, 7, 11, 5, 19, 3], function(number, index) { 
+     * var inced = _.map([3, 7, 11, 5, 19, 3], function(number, index) { 
      *     return number + 1;
      * }); 
      * </pre> 
@@ -1742,29 +1742,24 @@ define('minified', function() {
 	 * @configurable default 
 	 * @name .toObject()
      * @altname _.toObject()
-	 * @syntax list.toObject(valueList)
-	 * @syntax _.toObject(keyList, valueList)
+	 * @syntax list.toObject(value)
+	 * @syntax _.toObject(keyList, value)
 	 * @module UTIL
-	 * Creates an object map from a list of keys and a list of values.
-	 * <var>toObject()</var> goes through all values of the key list and adds a property with this key and a value taken from the
-	 * value list at the same index. If you call toObject as method on a list, this list is the key list.
-	 * 
-	 * If the key list is longer than the value list, the remaining properties will use <var>undefined</var> as value.
-	 * If the value list is longer, the remaining values will be ignored.
-	 * 
+	 * Creates an object map from a list of keys and a single values.
+	 * <var>toObject()</var> goes through all values of the key list and adds a property with this key and the given a value.
+
 	 * @example Create a simple object map:
 	 *  <pre> 
-	 *  var map = _.toObject(['a', 'b', 'c'], [1, 2, 3]);  // creates {a:1, b:2, c:3}
+	 *  var map = _.toObject(['a', 'b', 'c'], 1);  // creates {a:1, b:1, c:1}
 	 * </pre> 
 	 * 
 	 * @example Same result, but with a list method:
 	 *  <pre> 
-	 *  var map = _('a', 'b', 'c').toObject([1, 2, 3]);  // creates {a:1, b:2, c:3}
+	 *  var map = _('a', 'b', 'c').toObject(1);  // creates {a:1, b:1, c:1}
 	 * </pre> 
 	 * 
 	 * @param keyList A list or array to use for the keys of the new object.
-	 * @param valueList A list or array to use for the values of the new object. There should be a value for each key. Otherwise the value will be
-	 *                           <var>undefined</var>.
+	 * @param value the value to use
      * @return the new object
      */ 
 	'toObject': listBind(toObject),
@@ -1878,8 +1873,8 @@ define('minified', function() {
      * @altname _.reverse()
      * @syntax list.reverse() 
      * @syntax _.reverse(list) 
-     * @module WEB, UTIL
-     * Returns a new ##list#Minified list## with the input list's elements in reverse order. So the first element is swapped 
+     * @module UTIL
+     * Returns a new ##list#Minified list## with the input list's elements in reverse order. The first element is swapped 
      * with the last, the second with the second to last and so on.
      *
      * @example Changes the order of a list:
@@ -1894,10 +1889,6 @@ define('minified', function() {
      * 
      * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
      *             <var>length</var> property.
-     * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and the position is relative
-     *                   to the list's end.
-     * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
-     *                   to the list's end. If omitted or null, all elements following the <var>startIndex</var> are included in the result.
      * @return a new ##list#list## containing only the items in the index range. 
      */ 
 	'reverse': listBindArray(reverse),
@@ -1980,7 +1971,7 @@ define('minified', function() {
      * @syntax _.findLast(list, findFunc, startIndex) 
      * @syntax _.findLast(list, element, startIndex) 
      * @module WEB, UTIL
-     * Finds a the last occurrence of specific value in the list. There are two ways of calling <var>findLast()</var>:
+     * Finds the last occurrence of value in the list. There are two ways of calling <var>findLast()</var>:
      * <ol>
      * <li>With a value as argument. Then <var>findLast()</var> will search for the first occurrence of an identical value in the list,
      *     using the '===' operator for comparisons, and return the index. If it is not found,
@@ -2067,7 +2058,7 @@ define('minified', function() {
      * @param otherString the string to find at the beginning of the other string
      * @return true if the base list or string starts with the other list/string. False otherwise.
      * 
-     * @see ##endsWith() is the equivalen for the list's or string's end.
+     * @see ##endsWith() is the equivalent for the list's or string's end.
      */ 
  	'startsWith': listBind(startsWith),
 
@@ -2331,9 +2322,9 @@ define('minified', function() {
 	 * @name .remove()
 	 * @syntax list.remove()
      * @module WEB
-	 * Removes all nodes of the list from the DOM tree.
+	 * Removes all elements in the list from the DOM tree.
 	 * 
-	 * On Minified builds with IE compatibility, <var>remove()</var> will auto remove all event handlers in the
+	 * On Minified builds with IE compatibility, <var>remove()</var> will also remove all event handlers in the
 	 * removed DOM nodes to prevent memory leaks.
 	 * 
 	 * @example Removes the element with the id 'myContainer', including all children, from the DOM tree.
@@ -2370,7 +2361,7 @@ define('minified', function() {
  	 * This is done by going recursively through all elements and their children. The values of text and CDATA nodes
  	 * will be appended to the resulting string.
  	 * 
- 	 * Please note that, unlike jQuery's <var>text()</var>, Minified's will not set text content. Use ##fill() to do this.
+ 	 * Please note that, unlike jQuery's <var>text()</var>, Minified's will not set text content. Use ##fill() to set text.
  	 * 
  	 * @example Returns the text of the element with the id 'myContainer'.
  	 * <pre>
@@ -2402,11 +2393,13 @@ define('minified', function() {
  	 * @syntax list.trav(property, selector)
  	 * @syntax list.trav(property, selector, maxDepth)
  	 * @syntax list.trav(property, maxDepth)
+ 	 * @syntax list.trav(property, filterFunc)
+ 	 * @syntax list.trav(property, filterFunc, maxDepth)
      * @module WEB
  	 * Traverses each DOM node in the list using the given property; creates a new list that includes each visited node,
  	 * optionally filtered by the given selector.
  	 * 
- 	 * <var>trav()</var> traverses the DOM tree for each list element it finds a <var>null</var>.  
+ 	 * <var>trav()</var> traverses the DOM tree for each list element until it finds a <var>null</var>.  
  	 * All visited nodes that match the given selector are added to the result list. If no selector is given,
  	 * only elements will be added.
  	 * 
@@ -2431,11 +2424,11 @@ define('minified', function() {
  	 * </pre>
  	 *
   	 * @parm property the name of the property to traverse.
- 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists. Alternatively you can pass
- 	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements
  	 *        (but no other nodes such as text nodes).
+     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
  	 * @param maxDepth optional the maximum number of steps to traverse. Defaults to unlimited.
  	 * @return the new list containing all visited nodes. Nodes of the original list are not included, unless they
  	 *         have been visited when traversing another node. Duplicate nodes will be automatically removed.
@@ -2461,10 +2454,10 @@ define('minified', function() {
  	 * @configurable default
  	 * @name .select()
  	 * @syntax list.select(selector)
- 	 * @syntax list.select(selector, childOnly)
+ 	 * @syntax list.select(selector, childrenOnly)
      * @module WEB
- 	 * Executes a selector with the list as context. <code>list.select(selector, childOnly)</code> is equivalent 
- 	 * to <code>$(selector, list, childOnly)</code>. 
+ 	 * Executes a selector with the list as context. <code>list.select(selector, childrenOnly)</code> is equivalent 
+ 	 * to <code>$(selector, list, childrenOnly)</code>. 
  	 * 
  	 * @example Returns a list of all list elements:
  	 * <pre>
@@ -2477,9 +2470,11 @@ define('minified', function() {
  	 * </pre>
  	 * 
  	 * @param selector a selector or any other valid first argument for #dollar#$().
- 	 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
+ 	 * @param childrenOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
  	 *             true, all descendants of the context will be included. 
  	 * @return the new list containing the selected descendants.
+ 	 * 
+ 	 * @see ##only() executes a selector on the list elements, instead of their descendants.
  	 */
 	'select': function(selector, childOnly) {
 		return $(selector, this, childOnly);
@@ -2493,9 +2488,12 @@ define('minified', function() {
  	 * @name .is()
  	 * @syntax list.is()
  	 * @syntax list.is(selector)
+ 	 * @syntax list.is(filterFunc)
      * @module WEB
  	 * Checks whether all elements in the list match the given selector. Returns <var>true</var> if they all do, or <var>false</var>
  	 * if at least one does not.
+ 	 * 
+ 	 * One common use for <var>is()</var> is to check whether an element has a certain CSS class.
  	 * 
  	 * Please note that this method is optimized for the four simple selector forms '*', '.classname', 'tagname' 
  	 * and 'tagname.classname'. If you use any other kind of selector, be aware that selectors that match
@@ -2511,11 +2509,11 @@ define('minified', function() {
  	 * var areRows = $('.myRows').is('tr'); 
  	 * </pre>
  	 * 
- 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists. Alternatively you can pass
- 	 *        a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which checks whether all list items
  	 *        are HTML elements.
+ 	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
  	 * @return <var>true</var> if all list elements match the selector. <var>false</var> otherwise.
  	 * 
  	 * @see ##only() removes elements from a list that do not match a selector.
@@ -2537,7 +2535,8 @@ define('minified', function() {
  	 * @syntax list.only(index)
      * @module COMMENT only(index) is always available. All others variants are only in the Web module.
  	 * Returns a new list that contains only those elements that match the given selector, match the callback function
- 	 * or have the given index. If no parameter has been given, the method returns all elements (same as '*').
+ 	 * or have the given index. If no parameter has been given, the method keeps all HTML elements 
+ 	 * and removes everything else (same as '*').
  	 * 
  	 * When you use selectors, please note that this method is optimized for the four simple 
  	 * selector forms '*', '.classname', 'tagname' and 'tagname.classname'. If you use any other kind of 
@@ -2555,12 +2554,14 @@ define('minified', function() {
  	 * 
  	 * @param selector any selector valid for #dollar#$(), including CSS selectors and lists. 
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
- 	 *        is relative to the number of matches for the selector in the document. Default is '*', which keeps all elements
+ 	 *        depends on the number of matches for the selector in the document. Default is '*', which keeps all elements
  	 *        (but no other nodes such as text nodes).
  	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
  	 * @param index the index of the element to keep. All elements with other index will be omitted. If there is no element
  	 *        with this index in the list, the returned list is empty.
  	 * @return a new list containing only elements matched by the selector/function/index.
+ 	 * 
+ 	 * @see ##select() executes a selector on the descendants of the list elements.
  	 */
 	'only': function(selector) {
 		return this['filter'](getFilterFunc(selector));
@@ -2707,10 +2708,10 @@ define('minified', function() {
 	 * 
 	 * Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes. You can either supply a 
 	 * single name and value to set only one property, or you can provide an object that contains name/value pairs to describe more than one property.
-	 * More complex operations can be accomplished by supplying a function as value. It will then be called for each element that will
+	 * More complex operations can be accomplished by supplying functions as values. They will then be called for each element that will
 	 * be set.
 	 *
-	 * The name given to <var>set()</var> defines what kind of data you are setting. The following name schemes are supported:
+	 * The <var>name</var> parameter defines what kind of data you are setting. The following name schemes are supported:
 	 * 
 	 * <table>
 	 * <tr><th>Name Schema</th><th>Example</th><th>Sets what?</th><th>Description</th></tr>
@@ -2759,7 +2760,7 @@ define('minified', function() {
 	 * 
 	 * @example Changing styles:
 	 * <pre>
-	 * $('.bigText').set('$font-size', 'x-large');
+	 * $('.bigText').set('$fontSize', 'x-large');
 	 * </pre>
 	 * 
 	 * @example Adding and removing CSS classes:
@@ -2790,7 +2791,7 @@ define('minified', function() {
 	 * @example Using a map to change several properties:
 	 * <pre>
 	 * $('input.checkbox').set({checked: false,
-	 *                          'parentNode.@title': 'Check this'});
+	 *                          '@title': 'Check this'});
 	 * </pre>
 	 * 
 	 * @example Changing CSS with a map:
@@ -2810,25 +2811,25 @@ define('minified', function() {
 	 * 
 	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
 	 *             '%' also is used to set attributes, but automatically adds 'data-' to the name. 
-	 *             A dollar ('$') prefix is a shortcut for CSS styles. A simple dollar ('$') as name modifies CSS classes.
+	 *             A dollar ('$') prefix is a shortcut for CSS styles. The special name dollar ('$') modifies CSS classes.
 	 *             The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
 	 *             The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1. 
 	 *             The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use only on <code>$(window)</code>!). 
 	 *             
 	 * 
-	 * @param value the value to set. If value is null and name specified an attribute, the attribute will be removed.
-	 * If a dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
+	 * @param value the value to set. If value is <var>null</var> and name specified an attribute, the attribute will be removed.
+	 * If dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
 	 * with a '-' prefix the class will be removed. Without prefix, the class will be toggled.
 	 * If <var>value</var> is a function, the <code>function(oldValue, index, obj)</code> will be invoked for each list element 
 	 * to evaluate the new value: 
 	 * <dl><dt>oldValue</dt><dd>The old value of the property to be changed, as returned by ##get().
 	 * For the CSS style names, this is the computed style of the property </dd>
 	 * <dt>index</dt><dd>The list index of the object owning the property</dd>
-	 * <dt>obj</dt><dd>The list element owning the property.<dd>
+	 * <dt>obj</dt><dd>The list element owning the property.</dd>
 	 * <dt class="returnValue">(callback return value)</dt><dd>The value to be set.</dd></dl>
 	 * Functions are not supported by '$'.
-	 * @param properties a Object as map containing names as keys and the values to set as map values. See above for the name syntax.
-	 * @param cssClasses if <var>set()</var> is invoked with a string as single argument, the name "$" (CSS classes) is used and the argument is the
+	 * @param properties a Object as map containing names as keys and the values to set as map values. See above for the name and value syntax.
+	 * @param cssClasses if <var>set()</var> is invoked with a string as single argument, the name "$" (CSS classes) is assumed and the argument is the
 	 *                   value. See above for CSS syntax.
 	 *                   Instead of a string, you can also specify a <code>function(oldValue, index, obj)</code> to modify the existing classes. 
 	 * @return the list
@@ -3724,7 +3725,6 @@ define('minified', function() {
      * uses ##animate() to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the 
      * animation and returns to the other state.
 	 *
-	 * See also ##dial() for a similar function that allows you to interpolate between two states.
 	 *
 	 * @example Creates a toggle function that changes the background color of the page.
 	 * <pre>
@@ -3776,10 +3776,13 @@ define('minified', function() {
  	 *             </dl> 		 
  	 * @return a toggle function <code>function(newState)</code> that will toggle between the two states, or set a specific state.
 	 *             <dl>
-	 *             <dt>newState (optional)</dt><dd>If a boolean <var>true</var or <var>false</var> is given, 
-	 *             the toggle will set the first or second state, respectively. If called with any other value, or without a value,
+	 *             <dt>newState (optional)</dt><dd>If a boolean <var>true</var> or <var>false</var> is given, 
+	 *             the toggle will set the first or second state respectively. If called with any other value, or without a value,
 	 *             the function toggles to the other state.</dd>
 	 *             </dl>
+	 *             
+	 * @see ##dial() is a similar function that allows you to smoothly interpolate between two states.
+	 *
 	 */
 	'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
 		var self = this;
@@ -3804,15 +3807,16 @@ define('minified', function() {
 
 	/*$
 	 * @id values
-	 * @module REQUEST
+	 * @group REQUEST
 	 * @requires each
 	 * @configurable default
 	 * @name .values()
 	 * @syntax list.values()
 	 * @syntax list.values(dataMap)
+	 * @module WEB
 	 * Creates a name/value map from the given form. values() looks at the list's form elements and writes each element's name into the map,
 	 * using the element name as key and the element's value as value. As there can be more than one value with the same name, 
-	 * the map's values will always be arrays of values. Form elements without name will be ignored.
+	 * the map's values are arrays if there is more than one value with the same name in the form. Form elements without name will be ignored.
 	 *
 	 * values() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
 	 * elements will be serialized.
@@ -3835,6 +3839,8 @@ define('minified', function() {
 	 * @param dataMap optional an optional map to write the values into. If not given, a new empty map will be created
 	 * @return a map containing name->value pairs, using strings as name and value. If there is more than one value with the same name,
 	 *         <var>values()</var> creates an array containing all values. 
+	 *       
+	 * @see ##$.request() can submit form data serialized by <var>values()</var> as HTTP POST.
 	 */
 	'values': function(data) {
 		var r = data || {};
@@ -3866,13 +3872,13 @@ define('minified', function() {
 	 * @example Displays the position of the element with the id 'myElement' in the element 'resultElement':
 	 * <pre>
 	 * var pos = $('#myElement').offset();
-	 * $('#resultElement').fill('#myElement's position is left=' + pos.x + ' top=' + pos.y);
+	 * $('#resultElement').ht('#myElement's position is left={x} top={y}', pos);
 	 * </pre>
 	 *
 	 * @param element the element whose coordinates should be determined
 	 * @return an object containing pixel coordinates in two properties 'x' and 'y'
 	 * 
-	 * @see ##get() can be used to get more general properties of a list element.
+	 * @see ##get() can be used to read more general properties of a list element.
 	 */
 	'offset': function() {
 		var elem = this[0];
@@ -3910,9 +3916,9 @@ define('minified', function() {
 	 * 
 	 * Instead of the event objects, you can also pass an array of arguments that will be passed instead of event object and index. 
 	 *
-	 * Optionally you can specify two a selector strings to qualify only certain events. The first one is the regular selector
-	 * that allows you to select only certain children of the list elements. This is mostly useful for adding events to DOM trees
-	 * generated using ##HTML() or ##EE.
+	 * Optionally you can specify two a selector strings to qualify only certain events. The first one is a selector
+	 * that allows you to select only specific children of the list elements. This is mostly useful for adding events to DOM trees
+	 * generated using ##HTML() or ##EE().
 	 * 
 	 * The second type of selector is the bubble selector that allows you to receive only events that bubbled up from 
 	 * elements matching the selector. The selector is executed in the context of the element you registered on to identify whether the
@@ -3961,7 +3967,7 @@ define('minified', function() {
 	 * 
 	 * @example Adds a button and registers a click handler for it using a sub-selector.
 	 * <pre>
-	 * $('#myForm').add(HTML("<li><button>click me</button></li>").on('button', 'click', myClickHandler));
+	 * $('#myForm').add(HTML("&lt;li>&ltbutton>click me&lt/button>&lt/li>").on('button', 'click', myClickHandler));
 	 * </pre>
 	 * 
 	 * @example Adds listeners for all clicks on a table's rows using the bubble selector 'tr'.
@@ -3970,12 +3976,12 @@ define('minified', function() {
 	 *    alert("Click on table row number: " + selectedIndex);
 	 * }, 'tr');
 	 * </pre>
-	 * Please note that a special property of bubble selectors is that they will even listen to events for
+	 * Please note that bubble selectors will even listen to events for
 	 * table rows that have been added <strong>after you registered for the events</strong>.
 	 * 
-	 * @param selector optional a selector string for ##dollar#$() to register the event only on those children of the list elements that
+	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
 	 *                match the selector. 
-	 *                Supports all valid parameters for ##dollar#$() except functions.            
+	 *                Supports all valid parameters for <var>$()</var> except functions.            
 	 * @param names optional the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
 	 *             the name must not used. You can register the handler for more than one event by specifying several 
 	 *             space-separated event names. If the name is prefixed
@@ -3987,18 +3993,18 @@ define('minified', function() {
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>
  	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
- 	 *             <dt class="returnValue">(callback return value)</dt><dd>Unless the handler returns <var>true</var> 
- 	 *             or the event name is prefixed by '|', all further processing of the event will be 
-	 *                stopped and event bubbling will be disabled.</dd>
+ 	 *             <dt class="returnValue">(callback return value)</dt><dd>The return value will only be used if the event name prefix was '?'.
+ 	 *             Then, a return value <var>false</var> will stop all further processing of the event and disable event bubbling.
+ 	 *             <var>true</var> will keep the event alive.</dd>
  	 *             </dl>
-	 *             'this' is set to the target element that caused the event (the same as <var>event.target</var>).
-	 *             If the event name has been prefixed with '?', the return value will be evaluated to find out whether to
-	 *             cancel further event processing. In all other cases, the return value will be ignored.
+	 *             'this' will be set to the target element that caused the event (the same as <var>event.target</var>).
 	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>.
-	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. 
-	 * @param bubbleSelector optional a selector string for ##dollar#$() to receive only events that bubbled up from an
+	 *                   'this' will be set to the target element that caused the event (the same as <var>event.target</var>).
+	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the
+	 *             <var>customFunc</var> is called without arguments.
+	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
 	 *                element that matches this selector.
-	 *                Supports all valid parameters for ##dollar#$() except functions. Analog to ##is(), 
+	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
 	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 */
@@ -4027,9 +4033,9 @@ define('minified', function() {
 	 * $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 500));
 	 * </pre>
 	 * 
-	 * @param selector optional a selector string for ##dollar#$() to register the event only on those children of the list elements that
+	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
 	 *                match the selector. 
-	 *                Supports all valid parameters for ##dollar#$() except functions.            
+	 *                Supports all valid parameters for <var>$()</var> except functions.           
 	 * @param toggle the callback <code>function(isOver, index, event)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
@@ -4064,9 +4070,9 @@ define('minified', function() {
 	 * @group EVENTS
 	 * @requires on dollar
 	 * @configurable default
-	 * @name .onOver()
-	 * @syntax list.onOver(handler)
-	 * @syntax list.onOver(subSelect, handler)
+	 * @name .onChange()
+	 * @syntax list.onChange(handler)
+	 * @syntax list.onChange(subSelect, handler)
 	 * @module WEB
 	 * Registers a handler to be called whenever content of the list's input fields changes. The handler is
 	 * called in realtime and does not wait for the focus to change. Text fields as well
@@ -4075,16 +4081,16 @@ define('minified', function() {
 	 * 
 	 * @example Creates a handler that writes the input's content into a text node:
 	 * <pre>
-	 * $('#myField').onOver(function(newValue, index, ev) { $('#target').fill(newValue); });
+	 * $('#myField').onChange(function(newValue, index, ev) { $('#target').fill(newValue); });
 	 * </pre>
 	 * 
-	 * @param selector optional a selector string for ##dollar#$() to register the event only on those children of the list elements that
+	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
 	 *                match the selector. 
-	 *                Supports all valid parameters for ##dollar#$() except functions.            
+	 *                Supports all valid parameters for <var>$()</var> except functions.            
 	 * @param handler the callback <code>function(newValue, index, ev)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
- 	 *             <dt>newValue</dt>For text fields the new <var>value</var> string. 
- 	 *              For checkboxes/radio buttons boolean from <var>checked</var>.</dd>
+ 	 *             <dt>newValue</dt><dd>For text fields the new <var>value</var> string. 
+ 	 *              For checkboxes/radio buttons it is the boolean returned by <var>checked</var>.</dd>
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
  	 *             </dl>
 	 *             'this' is set to the target element that caused the event.
@@ -4225,7 +4231,7 @@ define('minified', function() {
 		 *                        as object.
 		 * @return the current list
 		 * 
-		 * @see ##HTML() creates only the nodes and can be used with ##add() and other methods.
+		 * @see ##HTML() creates only the nodes and can be used with ##add() and other methods to add the nodes to the DOM, giving you more flexibility than <var>ht()</var>.
 		 */
 		'ht':ht
 		/*$
@@ -4737,8 +4743,8 @@ define('minified', function() {
 		 * The properties are copied as shallow-copies. <var>undefined</var> values will not be copied or inherited properties
 		 * will not be copied.
 		 * 
-		 * <b>Please note:</b> Unlike jQuery, <var>extend</var> is not neccessarily a function to extend Minified, but
-		 * you can use it to do this. To add a function to ##list#Minified lists##, add a property to
+		 * <b>Please note:</b> Unlike jQuery, <var>extend</var> does not directly a function to extend Minified, although
+		 * you can use it to for this. To add a function to ##list#Minified lists##, add a property to
 		 * ##M#MINI.M##. If you want to extend <var>$</var> or <var>_</var>, just assign the new function(s) as property.
 		 * 
 		 *  @example Copying properties:
@@ -4770,10 +4776,10 @@ define('minified', function() {
 		 * until <var>end</var> (exclusive). <var>start</var> can also be omitted to start at 0.
 		 *
 		 * @example Creates some ranges
-		 * <pre>var l123 = _.range(1, 4); // same as _(1, 2, 3)
-		 * var l0123 = _.range(3); // same as _(0, 1, 2)
-		 * var neg123 = _.range(-3, 0); // same as _(-3, -2, -1)
-		 * var empty = _.range(2,1); // same as _()</pre>	
+		 * <pre>var l123 = _.range(1, 4);      // same as _(1, 2, 3)
+		 * var l0123 = _.range(3);        // same as _(0, 1, 2)
+		 * var neg123 = _.range(-3, 0);   // same as _(-3, -2, -1)
+		 * var empty = _.range(2,1);      // same as _()</pre>	
 		 *
 		 * @param start optional the start number. If omitted, the range starts at 0.
 		 * @param end the end of the range (exclusive)
@@ -4811,7 +4817,8 @@ define('minified', function() {
 		 * var myList5 = mulMyList(); // returns _(5, 10, 15)</pre>	
 		 *
 		 * @param f the function to bind
-		 * @param fThis the object to pass as 'this'
+		 * @param fThis the object to pass as 'this'. Please note JavaScript's limitations for 'this'. If you attempt to pass a string or number, they will be wrapped using
+		 *              JavaScript's wrapper classes String and Number.
 		 * @param beforeArgs optional either a list of values to insert in front of the arguments, or a single non-list value to put in front. If null or not set,
 		 *                             there won't be any arguments inserted. If you need to insert a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
 		 *                             (e.g. <code>[null]</code>).
@@ -4819,6 +4826,8 @@ define('minified', function() {
 		 *                             there won't be any arguments appended. If you need to append a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
 		 *                             (e.g. <code>[null]</code>).
 		 * @return the new function that will invoke <var>f</var> with its arguments modified as specified about.
+		 * 
+		 * @see _.partial() is similar to <var>bind()</var>, but without the 'this' argument.
 		 */
 		'bind': bind,
 
@@ -4844,16 +4853,20 @@ define('minified', function() {
 		 *
 		 * @example Create functions that remove characters from the beginning and/or end of a string:
 		 * <pre>// This function multiplies the first <var>count</var> items of the <var>list</var> by <var>factor</var>
-		 * function multiply(list, count, factor) { return list.map(function(v, index) { return index &lt; count ? factor * v : v; }); }
+		 * function multiply(list, count, factor) { 
+		 *     return list.map(function(v, index) { 
+		 *         return index &lt; count ? factor * v : v; 
+		 *     }); 
+		 * }
 		 * 
 		 * var mul3by2 = _.partial(multiply, null, [3, 2]); 
-		 * var r1 = mul10by2(_(1, 2, 3, 4, 5)); // returns _(2, 4, 6, 4, 5)
+		 * var r1 = mul10by2(_(1, 2, 3, 4, 5));   // returns _(2, 4, 6, 4, 5)
 		 * 
-		 * var mul123 = _.partial(multiply, [_(1, 2, 3)]);  // array wrapper required to pass a list!
+		 * var mul123 = _.partial(multiply, [_(1, 2, 3)]);                // array wrapper required to pass a list!
 		 * var r2 = mul123(2, 5);                 // returns _(5, 10, 3)
 		 * 
 		 * var mul12345By2 = _.partial(multiply, [_(1, 2, 3, 4, 5)], 2);  // array wrapper required!
-		 * var r3 = mul12345By2(3);                 // returns _(2, 4, 6, 4, 5)
+		 * var r3 = mul12345By2(3);               // returns _(2, 4, 6, 4, 5)
 		 * </pre>
 		 *
 		 * @param f the function to bind
@@ -4864,6 +4877,8 @@ define('minified', function() {
 		 *                             there won't be any arguments appended. If you need to append a <var>null</var>, <var>undefined</var> or a list, just wrap them in an array 
 		 *                             (e.g. <code>[null]</code>).
 		 * @return the resulting string
+		 * 
+		 * @see ##_.bind() is similar to <var>partial()</var>, but allows you to set 'this'.
 		 */
 		'partial': partial,
 
@@ -4875,7 +4890,7 @@ define('minified', function() {
 		 * @name _.eachObj()
 		 * @syntax _.eachObj(obj, callback)
 		 * @module UTIL
-		 * Invokes the given function once for each property of the given object. 
+		 * Invokes the given function once for each property of the given object. The callback is not invoked for inherited properties.
 		 *
 		 * @example Dumps all properties of an object.
 		 * <pre>
@@ -4891,6 +4906,8 @@ define('minified', function() {
 		 *                 <dt>value</dt><dd>The value of the current property.</dd></dl>
 		 *                 The callback's return value will be ignored.
 		 * @return the object
+		 * 
+		 * @see ##_.each() iterates through a list.
 		 */
 		'eachObj': eachObj,
 
@@ -4919,6 +4936,9 @@ define('minified', function() {
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new object.</dd></dl>
 		 * @return the new object
+		 * 
+		 * @see ##_.filterObj() filters an object.
+		 * @see ##map() maps a list.
 		 */
 		'mapObj': mapObj,
 
@@ -4947,6 +4967,8 @@ define('minified', function() {
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the property in the new object, <var>false</var> to omit it.</dd></dl>
 		 * @return the new object
+		 * 
+		 * @see ##_.mapObj() can be used to modify the values og an object.
 		 */
 		'filterObj': filterObj,
 
@@ -5008,6 +5030,8 @@ define('minified', function() {
 		 *
 		 * @param obj the object to test
 		 * @return <var>true</var> if the object is a number, <var>false</var> otherwise.
+		 * 
+		 * @see ##_.isValue() matches basic types such as dates numbers.
 		 */
 		'isNumber': isNumber,
 
@@ -5023,6 +5047,8 @@ define('minified', function() {
 		 *
 		 * @param obj the object to test
 		 * @return <var>true</var> if the object is a boolean, <var>false</var> otherwise.
+		 *
+		 * @see ##_.isValue() matches basic types such as booleans.
 		 */
 		'isBool': isBool,
 
@@ -5035,10 +5061,12 @@ define('minified', function() {
 		 * @syntax _.isDate(obj)
 		 * @module UTIL
 		 * Checks whether the given object is a <var>Date</var>. To be recognized as a date, the object
-		 * must pass #_.isObject() and have a <var>getDate</var> property.
+		 * must pass ##_.isObject() and have a <var>getDate</var> property.
 		 *
 		 * @param obj the object to test
 		 * @return <var>true</var> if the object is a <var>Date</var>, <var>false</var> otherwise.
+		 * 
+		 * @see ##_.isValue() matches basic types such as dates.
 		 */
 		'isDate': isDate,
 
@@ -5055,6 +5083,11 @@ define('minified', function() {
 		 *
 		 * @param obj the object to test
 		 * @return <var>true</var> if the object is a value, <var>false</var> otherwise.
+		 * 
+		 * @see ##_.isString() checks for a string.
+		 * @see ##_.isNumber() checks for a number.
+		 * @see ##_.isBool() checks for a boolean.
+		 * @see ##_.isDate() checks for a date.
 		 */
 		'isValue': isValue,
 
@@ -5070,6 +5103,8 @@ define('minified', function() {
 		 *
 		 * @param obj the object to test
 		 * @return <var>true</var> if the object is a string, <var>false</var> otherwise.
+		 * 
+		 * @see ##_.isValue() matches basic types such as strings.
 		 */
 		'isString': isString,
 
@@ -5116,10 +5151,10 @@ define('minified', function() {
 		 * 
 		 * @example Calculate some dates based on the current time:
 		 * <pre>var now = new Date();
-		 *  var yesterday = _.dateAdd(now, 'date', -1);
-		 *  var inOneHour = _.dateAdd(now, 'hours', 1);
-		 *  var tomorrow = _.dateAdd(now, 'date', 1);
-		 *  var inThreeMonths = _.dateAdd(now, 'month', 3);</pre>
+		 * var yesterday = _.dateAdd(now, 'date', -1);
+		 * var inOneHour = _.dateAdd(now, 'hours', 1);
+		 * var tomorrow = _.dateAdd(now, 'date', 1);
+		 * var inThreeMonths = _.dateAdd(now, 'month', 3);</pre>
 		 *
 		 * @param date the <var>Date</var> to add to
 		 * @param property a property name to represent the unit of the <var>value</var>. Can be 'fullYear', 'month', 'date', 'hours', 'minutes', 'seconds' or 'milliseconds'.
@@ -5192,6 +5227,8 @@ define('minified', function() {
 		 * @param digits the minimum number of digits for the number
 		 * @param number the number to format
 		 * @return the number converted to a string and padded with zeros
+		 * 
+		 * @see ##_.formatValue() offers real formatting of numbers.
 		 */
 		'pad' : pad,
 
@@ -5209,13 +5246,13 @@ define('minified', function() {
 		 * <b>Choice Formatting</b><br/>
 		 * With a choice format, you can map input values into output values. In the format string the choices are separated by pipes ('|')
 		 * and each choice has the format <code>&ltcmp>&ltvalue>:&lt;result></code>:
-		 * <ul><li>&lt;cmp> is a comparison operator ('=', '>', '&lt;', '>=', '&lt;=') and can be omitted for equality.</li>
+		 * <ul><li>&lt;cmp> is a comparison operator ('=', '>', '&lt;', '>=', '&lt;='), but can be omitted to check for equality.</li>
 		 * <li>&lt;value> is the value as string.</li>
 		 * <li>&lt;result> is the result, either a string or a number format</li></ul>
 		 * You can have a default choice at the end without &lt;cmp> or &lt;value>.
 		 * 
 		 * <b>Examples</b> 
-		 * <pre>_.formatValue('true:is True|isFalse', value);
+		 * <pre>_.formatValue('true:is True|is False', value);
 		 * _.formatValue('&lt;5:under 5|&gt;=15:at least 15|=7:is seven|some other number', value);
 		 * _.formatValue('1:one item|2:two items|&gt;3:many items', value);
 		 * _.formatValue('ERR:error|WARN:warning|INFO:info|debug', value);
@@ -5224,9 +5261,8 @@ define('minified', function() {
 		 * <b>Number Formatting</b><br/> 
 		 * Number formatting allows you to specify the number of digits before and optionally after the decimal separator, the decimal separator itself
 		 * as well as how to group digits. The following characters are used in the format:
-		 * <table>
 		 * 
-		 * <tr><th>Character</th><th>Description</th></tr>
+		 * <table><tr><th>Character</th><th>Description</th></tr>
 		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
 		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
 		 * <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
@@ -5248,7 +5284,7 @@ define('minified', function() {
 		 * var v6  = _.formatValue('#.###', 15.1);     // '15.1'
 		 * var v7  = _.formatValue('#.000', 15.1);     // '15.100'
 		 * var v8  = _.formatValue('000,000', 15.1);   // '015,100'
-		 * var v9 = _.formatValue('#.###', 15);     // '15'
+		 * var v9  = _.formatValue('#.###', 15);     // '15'
 		 * var v10 = _.formatValue('#.000', 15);    // '15.000'
 		 * var v11 = _.formatValue('#,###', 15.1);  // '15,1' (comma as decimal separator)
 		 * var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
@@ -5257,6 +5293,14 @@ define('minified', function() {
 		 * var v15 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 7.356); // '7.36' (choice format)
 		 * var v16 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 25.04); // '25.0' 
 		 * var v17 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 71.51); // '72' 
+		 * </pre>
+		 * 
+		 * <b>Choice Number Formatting</b><br/>
+		 * It is possible to combine number formatting with choices. You can also use additional characters in a number format.
+		 * 
+		 * <b>Examples</b> 
+		 * <pre>_.formatValue('$#.00', 17);  // '$17.00'
+		 * _.formatValue('0:no eggs|1:1 egg|>1:# eggs', 12);  // '12 eggs'
 		 * </pre>
 		 *
 		 * <b>Date Formatting</b><br/> 
@@ -5267,7 +5311,7 @@ define('minified', function() {
 		 * <tr><td>y</td><td>Year (4 digits)</td></tr>
 		 * <tr><td>Y</td><td>Year (2 digits)</td></tr>
 		 * <tr><td>M</td><td>Month (1-12)</td></tr>
-		 * <tr><td>n/td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
+		 * <tr><td>n</td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
 		 * <tr><td>N</td><td>Month as long name ('January', 'February'...). Supports translations.</td></tr>
 		 * <tr><td>d</td><td>Day of month (1-31)</td></tr>
 		 * <tr><td>m</td><td>Minutes (0-59)</td></tr> 
@@ -5295,7 +5339,7 @@ define('minified', function() {
 		 * var v6  = _.formatValue('H:mm', now);                // e.g. '23:07'
 		 * var v7  = _.formatValue('W, N d y', now);            // e.g. 'Tuesday, July 9 2013'
 		 * var v8  = _.formatValue('Nd', now);                  // e.g. 'July9'
-		 * var v9  = _.formatValue('d.N[Januar,Februar,M�rz,April,Mai,Juni,Juli,'+
+		 * var v9  = _.formatValue('d.N[Januar,Februar,M&auml;rz,April,Mai,Juni,Juli,'+
 		 *             'August,September,Oktober,November,Dezember]', now); // German translation: '9. Juli'
 		 * var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', now);  // different timezone: '2013-07-09 5:07 pm' 
 		 * </pre>
@@ -5303,6 +5347,11 @@ define('minified', function() {
 		 * @param format the format that describes the output
 		 * @param value the value to format. Either a Date, a number, a string or a value that can be converted to a string.
 		 * @return the string-formatted value
+		 * 
+		 * @see ##_.pad() will pad a number with zeros.
+		 * @see ##_.parseDate() parses a date.
+		 * @see ##_.parseNumber() parses a number.
+		 * @see ##_.format() allows more complex formats.
 		 */
 		'formatValue': formatValue,
 
@@ -5330,7 +5379,7 @@ define('minified', function() {
 		 * <tr><td>y</td><td>Year (4 digits)</td></tr>
 		 * <tr><td>Y</td><td>Year (2 digits, 2000-based)</td></tr>
 		 * <tr><td>M</td><td>Month (1-12)</td></tr>
-		 * <tr><td>n/td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
+		 * <tr><td>n</td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
 		 * <tr><td>N</td><td>Month as long name ('January', 'February'...). Supports translations.</td></tr>
 		 * <tr><td>d</td><td>Day of month (1-31)</td></tr>
 		 * <tr><td>m</td><td>Minutes (0-59)</td></tr> 
@@ -5374,6 +5423,8 @@ define('minified', function() {
 		 * @param dateString the string-formatted date to parse
 		 * @return the Date; <var>undefined</var> if parsing failed; or <var>null</var> if the string was empty and 
 		 *              the date format is flagged as optional ('?' at the beginning)
+		 *              
+		 * @see ##_.formatValue() can format dates using the same syntax.
 		 */
 		'parseDate': parseDate,
 
@@ -5405,7 +5456,7 @@ define('minified', function() {
 		 * If you prefix the input string with a question mark ('?'), this means that the number is optional. If the input string is empty or consists
 		 * solely of whitespace, <var>parseNumber</var> will return null.
 		 *
-		 * If the input string is not valid and can not be parse,  <var>parseNumber</var> will return <var>undefined</var>.
+		 * If the input string is not valid and can not be parsed,  <var>parseNumber</var> will return <var>undefined</var>.
 		 *
 		 * @example Parsing numbers in various formats.
 		 * <pre>
@@ -5424,6 +5475,8 @@ define('minified', function() {
 		 * @param numberString the string-formatted number to parse
 		 * @return the resulting number; <var>undefined</var> if parsing failed; or <var>null</var> if the string was empty and 
 		 *              the number format is flagged as optional ('?' at the beginning)
+		 *              
+		 * @see ##_.formatValue() can format numbers using the same syntax.
 		 */
 		'parseNumber': parseNumber,
 
@@ -5442,7 +5495,7 @@ define('minified', function() {
 		 * _.trim('  abc '); // returns 'abc'
 		 * _.trim(' a b c '); // returns 'a b c' (only whitespace at beginning and end is removed)</pre>
 		 *
-		 * @param s the string to trim
+		 * @param s the string to trim. If not a string, it will be converted using ##_.toString().
 		 * @return the trimmed string
 		 */
 		'trim': trim,
@@ -5464,6 +5517,9 @@ define('minified', function() {
 		 *
 		 * @param s the string to escape
 		 * @return the escaped string
+		 * 
+		 * @see _.format() can use <var>escapeRegExp</var> as escape function.
+		 * @see _.template() can use <var>escapeRegExp</var> as escape function.
 		 */
 		'escapeRegExp': escapeRegExp,
 
@@ -5485,6 +5541,10 @@ define('minified', function() {
 		 *
 		 * @param s the string to escape
 		 * @return the escaped string
+		 * 
+		 * @see _.formatHtml() uses <var>escapeHtml</var> for escaping.
+		 * @see _.format() can use <var>escapeHtml</var> as escape function.
+		 * @see _.template() can use <var>escapeHtml</var> as escape function.
 		 */
 		'escapeHtml': escapeHtml,
 
@@ -5497,7 +5557,7 @@ define('minified', function() {
 	     * @syntax _.format()
 	     * @syntax _.format(template, object)
 	   	 * @module UTIL
-	     * Formats an object using a #template#template. The template syntax is shared with ##_.template(). The only difference is that
+	     * Formats an object using a ##template#template##. The template syntax is shared with ##_.template(). The only difference is that
 	     * <var>format()</var> frees you from the extra step of creating the template. In any case, whether you use 
 	     * <var>format()</var> or ##_.template(), the template will be cached. Be careful when you create templates dynamically, as 
 	     * every template is cached and consumes memory.<br/>
@@ -5506,17 +5566,22 @@ define('minified', function() {
 	     * @example Format a list of dates:
 	     * <pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
 	     * 
-	     * @param template The #template as a string. The template, once created, will be cached. 
+	     * @param template The ##template#template## as a string. The template, once created, will be cached. 
 	     * @param object the object to format 
 	     * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
 	     *        to escape all output:
 	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
 	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
 	     *        If no escapeFunction has been given, the output will not be escaped.
-	     *        ##_.escapeHtml() can be used as a escape function for HTML, and ##_.escapeRegExp for regular expressions. 
+	     *        ##_.escapeHtml() can be used as an escape function for HTML, and ##_.escapeRegExp() for regular expressions. 
 	     *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
 	     *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
 	     * @return the string created by the template
+	     * 
+	     * @see ##_.template() creates a template function, using the same syntax. 
+	     * @see ##_.formatHtml() is a variant of <var>format()</var> with HTML-escpaping built it.
+	     * @see ##_.formatValue() formats a single number or date.
+	     * @see ##_.escapeRegExp() can be used by <var>format()</var> to escape regular expressions. 
 	     */ 
 		'format': function(tpl, object, escapeFunction) {
 			return template(tpl, escapeFunction)(object);
@@ -5537,7 +5602,7 @@ define('minified', function() {
 	     * <a href="http://handlebarsjs.com/">Handlebars</a>. Unlike Handlebars, it is based on raw JavaScript expressions and thus gives you
 	     * complete freedom, but also offers you shortcuts for formatting, iteration and conditionals. 
 	     * 
-	     * Every template can receive exactly one object as input. If you need more than one value as input, put all requires values
+	     * Every template can receive exactly one object as input. If you need more than one value as input, put all required values
 	     * into an object.
 	     * 
 	     * Use double curly braces to embed a JavaScript expression and insert its result:
@@ -5563,7 +5628,7 @@ define('minified', function() {
 	     * <pre>The price is {{obj::#.00}}.</pre>	     
 	     * 
 	     * Conditions can be expressed using <code>if</code> and <code>else</code>:
-	     * <pre>Hello {{if visits==0}}New{{else if visits&lt;10}}Returning{{else}}Regular{{/if}} Customer.<pre>
+	     * <pre>Hello {{if visits==0}}New{{else if visits&lt;10}}Returning{{else}}Regular{{/if}} Customer.</pre>
 	     * You can use any JavaScript expression as condition.
 	     * 
 	     * Use <code>each</code> to iterate through a list:
@@ -5573,13 +5638,13 @@ define('minified', function() {
 	     *                                  {firstName: 'Marc', lastName: 'Meyer'}]});</pre>
 	     * <code>each</code> will iterate through the members of the given object. It 
 	     * calls its body for each item and put a reference to the item into <var>this</var>.
-	     * Optionally, you can specify up to two variables to store the value in (instead of this) and
+	     * Optionally, you can specify up to two variables to store the value in and
 	     * the zero-based index of the current item:
 	     * <pre>var myTemplate = _.template(
 	     * 	   '{{each value, index: names}}{{index}}. {{value.firstName}} {{value.lastName}}{{/each}}');
 		 * </pre>
 	     *
-	     * If you do not pass an expression to <code>each</var>, it will take the list from <var>this</var>:
+	     * If you do not pass an expression to <code>each</code>, it will take the list from <var>this</var>:
 	     * <pre>var myTemplate = _.template('{{each value:}}{{value}};{{/each}}');
 	     * var result = myTemplate([1, 2, 3]);</pre>
 	     *  
@@ -5594,7 +5659,7 @@ define('minified', function() {
 	     * If you do not need the key, you can omit the variable specification:
 	     * <pre>var myTemplate = _.template('{{each nicknames}}{{this}}{{/each}}');</pre>
 		 *
-		 * You can also define your own variables, using the regular JavaScript syntax, with 'var':
+		 * You can define your own variables, using the regular JavaScript syntax, with 'var':
 	     * <pre>var myTemplate = _.template('{{var s=very.long.name, sum=a+b;}}{{s.desc}}, {{sum}}');</pre>
 		 *
 	     * In some situations, it may be inevitable to embed raw JavaScript in the template. 
@@ -5611,7 +5676,7 @@ define('minified', function() {
 	     * following variables for you:
 	     * <table>
 	     * <tr><th>Name</th><th>Desciption</th></tr>
-	     * <tr><td>this</td><td>The template object outside of <code>each</code>. Inside eachs, the current value.</td></tr>
+	     * <tr><td>this</td><td>The template object outside of <code>each</code>. Inside <code>each</code>s, the current value.</td></tr>
 	     * <tr><td>obj</td><td>The parameter given to the template function.</td></tr>
 	     * <tr><td>_</td><td>A reference to Minified Util.</td></tr>
 	     * <tr><td>esc</td><td>The escape function given when the template has been defined. If no function has been given,
@@ -5624,20 +5689,22 @@ define('minified', function() {
 	     * 
 	     * Every template you create is already cached, so it not an expensive operation to call ##_.template() a second
 	     * time with the same template. However, because of caching, you should be careful when creating templates
-	     * dynamically, as every new template requires memory that will not be freed.
+	     * dynamically, as this will fill the cache up quickly.
 	     * 
-	     * See also ##_.format() as an alternative to using ##template(), as it will save you the template invocation.
-	     *  
-	     * @param template The template as a string using the syntax described above. 
+	     * @param template The template as a string using the syntax described below. 
 	     * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
 	     *        to escape all output:
 	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
 	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
 	     *        If no escapeFunction has been given, the output will not be escaped.
-	     *        ##_.escapeHtml() can be used as a escape function for HTML, and ##_.escapeRegExp for regular expressions. 
+	     *        ##_.escapeHtml() can be used as an escape function for HTML, and ##_.escapeRegExp() for regular expressions. 
 	     *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
-	     *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
 	     * @return the value returned by the last invocation of <var>func</var>
+	     * 
+	     * @see ##_.format() shares <var>template()</var>'s syntax but returns the result directly.
+	     * @see ##_.formatHtml() is a variant of <var>format()</var> with HTML escaping.
+	     * @see ##_.escapeHtml() can be used by <var>template()</var> to escape HTML. 
+	     * @see ##_.escapeRegExp() can be used by <var>template()</var> to escape regular expressions. 
 	     */ 
 		'template': template,
 
@@ -5650,7 +5717,7 @@ define('minified', function() {
 	     * @syntax _.formatHtml()
 	     * @syntax _.formatHtml(template, object)
 	   	 * @module UTIL
-	     * Formats an object using a #template#template with HTML escaping for the output. 
+	     * Formats an object using a ##template#template## with HTML escaping for the output. 
 	     * The template syntax is shared with ##_.template(). Output in double curly braces is automatically escaped using ##_.escapeHtml(). 
 	     * <var>formatHtml()</var> just creates a new template with HTML escaping and invokes it immediately.
 	     * The template will be cached. Be careful when you create templates dynamically, as 
@@ -5663,6 +5730,11 @@ define('minified', function() {
 	     * @param template The #template as a string. The template, once created, will be cached.
 	     * @param object the object to format 
 	     * @return the string created by the template
+		 *
+		 * @see ##ht() works uses <var>formatHtml</var> to set element's innerHTML. 
+		 * @see ##HTML() create HTML nodes using <var>formatHtml</var>. 
+	     * @see ##_.template() creates a template function, using the same syntax. 
+	     * @see ##_.format() allows you to specify alternative escape mechanisms.
 	     */ 
 		 'formatHtml': formatHtml
 		/*$
@@ -5892,12 +5964,12 @@ define('minified', function() {
 		 * @syntax _(item...)
 		 * @configurable default
 		 * @module UTIL
-		 * Creates a new Minified list. Supports variable arguments so you can add items directly to the list.For arguments that are lists 
-		 * (as defined by ##_.isList()), the list content will be added to the new list. Unlike ##dollar#$()#, this is not done recursively
+		 * Creates a new Minified list. Supports variable arguments so you can add items directly to the list. For arguments that are lists 
+		 * (as defined by ##_.isList()), the list content will be added to the new list. Unlike #dollar#$()#, this is not done recursively
 		 * and thus you can create a list of lists by wrapping arguments in a list. Another difference between <var>_()</var> and <var>$()</var>
 		 * is that <var>$()</var> will automatically remove <var>null</var> values while <var>_()</var> will keep them.
 		 * 
-		 * @example Creating an empty list
+		 * @example Creating an empty list:
 		 * <pre>_()</pre>
 		 * 
 		 * @example Creating a list with three items:
@@ -5924,7 +5996,7 @@ define('minified', function() {
 		 * <pre>_(1, [], [2, 3], _(), _(4, 5)); // same content as _(1, 2, 3, 4, 5)</pre>
 		 * 
 		 * @param item an item to add to the new list. If it is a list (as defined by ##_.isList()), its content will be to the new
-		 *        ##Minified list#list# (but NOT recursively).
+		 *        ##Minified list#list## (but NOT recursively).
 		 */
 		'_': _,
 		///#/snippet utilExports
@@ -6118,11 +6190,9 @@ define('minified', function() {
 		 * @syntax EE(elementName, properties)
 		 * @syntax EE(elementName, children)
 		 * @syntax EE(elementName, properties, children)
-		 * @syntax EE(elementName, properties, children, onCreate)
 		 * @shortcut EE() - It is recommended that you assign MINI.EE to a variable EE.
          * @module WEB
-		 * Creates a new Element Factory. An Element Factory is a function without arguments that returns a ##list#Minified list##
-		 * containing a newly created DOM element, optionally with attributes and children.
+		 * Creates a new HTML Element, wrapped in a  ##list#Minified list##, optionally with attributes and children.
 		 * Typically it will be used to insert elements into the DOM tree using ##add() or a similar function. 
 		 *
 		 * Please note that the function <var>EE</var> will not be automatically exported by Minified. You should always import it
@@ -6131,24 +6201,24 @@ define('minified', function() {
 		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 		 * </pre>
 		 * 
-		 * @example Creating a simple factory for a &lt;span> element with some text:
+		 * @example Creating a simple &lt;span> element with some text:
 		 * <pre>
 		 * var mySpan = EE('span', 'Hello World'); 
 		 * </pre>
-		 * creates a factory to produce this:
+		 * This is the result:
 		 * <pre>
 		 *  &lt;span>Hello World&lt;/span> 
 		 * </pre>
 		 * 
-		 * @example Adding the 'Hello World; &lt;span> element to all elements with the class '.greeting':
+		 * @example Adding the '&lt;span>Hello World; &lt;span> element to all elements with the class '.greeting':
 		 * <pre>
 		 * $('.greeting').add(EE('span', 'Hello World')); 
 		 * 
-		 * @example Creating a factory for a &lt;span> element with style and some text:
+		 * @example Creating a &lt;span> element with style and some text:
 		 * <pre>
 		 * var span2 = EE('span', {'@title': 'Greetings'}, 'Hello World'); 
 		 * </pre>
-		 * The factory creates this:
+		 * The last line creates this:
 		 * <pre>
 		 *  &lt;span title="Greetings">Hello World&lt;/span> 
 		 * </pre>
@@ -6192,10 +6262,9 @@ define('minified', function() {
 		 * var myStylesSpan = EE('span', {$color: "red", $fontWeight: "bold"}, "I'm styled");
 		 * </pre>
 		 * 
-		 * @example To add event handlers, use the fourth argument:
+		 * @example ##on() makes it very easy to attach event handlers to the new elements directly after creating them:
 		 * <pre>
-		 * var myStylesSpan = EE('input', {'@name': "myInput"}, null, function(e) {
-		 *     e.on('change', inputChanged);
+		 * $('#target').add(EE('input', {'@name': "myInput"}).on('change', inputChanged));
 		 * });
 		 * </pre>
 		 * 
@@ -6211,13 +6280,7 @@ define('minified', function() {
 		 *                         Functions will be invoked and their return value will be used. Lists can be 
 		 *                         nested and will then automatically be flattened. Null elements in lists will be ignored. 
 		 *                         The syntax is exactly like ##add().
-		 * @param onCreate optional a <code>function(elementList)</code> that will be called each time an element had been created. 
-		 *                 <dl><dt>elementList</dt><dd>The newly created element wrapped in a Minified list.  </dd></dl>
-		 *                 The function's return value will be ignored. 
-		 *                 The callback allows you, for example, to add event handlers to the element using ##on().
-		 * @return a Element Factory function, which returns a Minified list containing the DOM HTMLElement that has been created or 
-		 *         modified, as only element. The factory function can be called repeatedly and will create a new set of DOM nodes on 
-		 *         each invocation. 
+		 * @return the HTML Element wrapped in a Minified list
 		 */
 		'EE': EE,
 
@@ -6251,7 +6314,7 @@ define('minified', function() {
 		 * @syntax HTML(templateFunction)
 		 * @syntax HTML(templateFunction, object)
 	     * @module WEB
-		 * Creates a ##list#list of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
+		 * Creates a ##list#list## of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
 		 * The template uses the ##template() syntax with ##escapeHtml() escaping for values.
 		 * 
 		 * Please note that the function <var>HTML</var> will not be automatically exported by Minified. You should always import it
@@ -6260,7 +6323,7 @@ define('minified', function() {
 		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, <strong>HTML = MINI.HTML</strong>;
 		 * </pre>
 		 * 
-		 * @example Creating a HTML element to format a number:
+		 * @example Creating a HTML element showing a number:
 		 * <pre>
 		 * &lt;div id="price">-&lt;/div>
 		 * </pre> 
@@ -6324,26 +6387,14 @@ define('minified', function() {
  * 
  * <i>Minified lists</i> are Array-like objects provided by Minified. Like a regular JavaScript array, 
  * they provide a <var>length</var> property and you can access their content using the index operator (<code>a[5]</code>). 
- * However, they do not provide the same methods as JavaScript's native array.
+ * However, they do not provide the same methods as JavaScript's native array and are designed to be immutable, so
+ * there is no direct way to add something to a Minified list. Instead Minified provides a number of functions and methods
+ * that take a list and create a modified copy which, for example, may contain additional elements.
  *
- * Minified lists are usually created using the #dollar#$()</a></code> function. You can
- * also use  <code>$()</code> to convert a JavaScript array into a Minified list, just be aware that <code>$()</code> will
- * remove nulls from the lists and will flatten nested lists.
+ * Minified lists are typically created either using the Web module's #dollar#$()</a></code> function or with the Util module's
+ * #underscore#_()</a></code> function, but many functions in the Util module also return a Minified list.
  * 
- * There is currently no function to convert a Minified list into a JavaScript array. The upcoming Utility module 
- * will provide one though. 
- * 
- * The Minified Web module provides HTML-node oriented functions like ##set() to modify a list of nodes. It also has a 
- * number of helper methods for working with Minified lists:
- * <ul>
- * <li>##collect() creates a new list using the collect function which can 
- *  transform list elements or collect data from them ("map() on steriods")</li>
- * <li>##each() iterates through all list elements</li>
- * <li>##filter() creates a new list that contains only elements that pass the 
- *  filter function's test</li>
- * <li>##find() finds a list element or its position</li>
- * <li>##sub() creates a list that copies the elements from the specified index range </li>
- * </ul>
+ * The Util module provides a function ##_.array() that converts a Minified list to a regular JavaScript array.
  */
 
 /*$
@@ -6357,8 +6408,7 @@ define('minified', function() {
  * Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
  * be able to interoperate with most other Promises implementations.
  * 
- * What may be somewhat surprising about this Promises specification is that there is no direct way to find out the state of the operation.
- * There is neither a property nor a function to get result directly or find out whether it is available. Instead, you always have to 
+ * What may be somewhat surprising about this Promises specification is that the only standard-compliant way to access the result is to 
  * register callbacks to find out the result. They will be invoked as soon as the operation is finished. 
  * If the operation already ended when you register the callbacks, the callback will then just be called from the event loop as soon
  * as possible (but never while the ##then() you register them with is still running).<br/>
@@ -6427,7 +6477,7 @@ define('minified', function() {
  * Only the full Minified distribution allows you to create promises yourself, using the ##promise() function. The Promises/A+ 
  * specification does not specify how to fulfill a promise, but in Minified's implementation every Promise object is a function  
  * that needs to be called when the promise result is ready. It requires two arguments.
- * The first is a boolean, true for a successful operation and false for a failure. The second is an array or list containing the
+ * The first is a boolean, <var>true</var> for a successful operation and <var>false</var> for a failure. The second is an array or list containing the
  * arguments to call the corresponding ##then() handler with.
  * 
  * The following example is a function, similar to ##wait(), that returns a Promise which succeeds after the given amount 

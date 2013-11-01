@@ -11,7 +11,7 @@
 <div class="summary">Returns a new list that contains only those elements that match the given selector, match the callback function
 or have the given index.</div>
 
-<div class="availability">undefinedonly(index) is always available. All others variants are only in the Web module.</div><h4>Syntax Variants</h4>
+<div class="availability">only(index) is always available. All others variants are only in the Web module.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.only()</div>
 <div class="syntax">list.only(selector)</div>
@@ -24,7 +24,7 @@ or have the given index.</div>
 <dt id="only_selector" class=""><a name="only_selector"><var>selector</var></a></dt>
 <dd class="">any selector valid for <code><a href='dollar.html' class='func'>$()</a></code>, including CSS selectors and lists.
 <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
-is relative to the number of matches for the selector in the document. Default is '*', which keeps all elements
+depends on the number of matches for the selector in the document. Default is '*', which keeps all elements
 (but no other nodes such as text nodes).</dd>
 <dt id="only_filterFunc" class=""><a name="only_filterFunc"><var>filterFunc</var></a></dt>
 <dd class="">a <code>function(node)</code> returning <span class="var">true</span> for those nodes that are approved.</dd>
@@ -32,12 +32,14 @@ is relative to the number of matches for the selector in the document. Default i
 <dd class="">the index of the element to keep. All elements with other index will be omitted. If there is no element
 with this index in the list, the returned list is empty.</dd>
 <dt id="only_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="only_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">a new list containing only elements matched by the selector/function/index.</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">a new list containing only elements matched by the selector/function/index.
+</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>Returns a new list that contains only those elements that match the given selector, match the callback function
-or have the given index. If no parameter has been given, the method returns all elements (same as '*').</p><p>When you use selectors, please note that this method is optimized for the four simple
+or have the given index. If no parameter has been given, the method keeps all HTML elements
+and removes everything else (same as '*').</p><p>When you use selectors, please note that this method is optimized for the four simple
 selector forms '*', '.classname', 'tagname' and 'tagname.classname'. If you use any other kind of
 selector, please be aware that selectors that match many elements can be slow.</p><p></p></div>
 
@@ -56,6 +58,9 @@ var forms = $('#content *').only('form');
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='select.html' class='func'>select()</a></code> executes a selector on the descendants of the list elements.</li>
+</ul>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -68,6 +73,7 @@ var forms = $('#content *').only('form');
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -100,12 +106,12 @@ var forms = $('#content *').only('form');
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -118,7 +124,7 @@ var forms = $('#content *').only('form');
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -157,7 +163,6 @@ var forms = $('#content *').only('form');
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>

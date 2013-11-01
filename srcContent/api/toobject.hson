@@ -8,42 +8,39 @@
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-toobject">.toObject()</a></h2>
-<div class="summary">Creates an object map from a list of keys and a list of values.</div>
+<div class="summary">Creates an object map from a list of keys and a single values.</div>
 
 <div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">list.toObject(valueList)</div>
-<div class="syntax">_.toObject(keyList, valueList)</div>
+<div class="syntax">list.toObject(value)</div>
+<div class="syntax">_.toObject(keyList, value)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="toobject_keyList" class=""><a name="toobject_keyList"><var>keyList</var></a></dt>
 <dd class="">A list or array to use for the keys of the new object.</dd>
-<dt id="toobject_valueList" class=""><a name="toobject_valueList"><var>valueList</var></a></dt>
-<dd class="">A list or array to use for the values of the new object. There should be a value for each key. Otherwise the value will be
-<span class="var">undefined</span>.</dd>
+<dt id="toobject_value" class=""><a name="toobject_value"><var>value</var></a></dt>
+<dd class="">the value to use</dd>
 <dt id="toobject_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="toobject_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the new object</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Creates an object map from a list of keys and a list of values.
-<span class="var">toObject()</span> goes through all values of the key list and adds a property with this key and a value taken from the
-value list at the same index. If you call toObject as method on a list, this list is the key list.</p><p>If the key list is longer than the value list, the remaining properties will use <span class="var">undefined</span> as value.
-If the value list is longer, the remaining values will be ignored.</p><p></p></div>
+<div class="description"><p>Creates an object map from a list of keys and a single values.
+<span class="var">toObject()</span> goes through all values of the key list and adds a property with this key and the given a value.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
 <div class="example"><p>Create a simple object map:
  <pre>
- var map = _.toObject(['a', 'b', 'c'], [1, 2, 3]);  // creates {a:1, b:2, c:3}
+ var map = _.toObject(['a', 'b', 'c'], 1);  // creates {a:1, b:1, c:1}
 </pre>
 </p></div>
 <h4>Example</h4>
 <div class="example"><p>Same result, but with a list method:
  <pre>
- var map = _('a', 'b', 'c').toObject([1, 2, 3]);  // creates {a:1, b:2, c:3}
+ var map = _('a', 'b', 'c').toObject(1);  // creates {a:1, b:1, c:1}
 </pre>
 </p></div>
 </div>
@@ -60,6 +57,7 @@ If the value list is longer, the remaining values will be ignored.</p><p></p></d
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -92,12 +90,12 @@ If the value list is longer, the remaining values will be ignored.</p><p></p></d
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
-</li><li><a href="onchange.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
-</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
@@ -110,7 +108,7 @@ If the value list is longer, the remaining values will be ignored.</p><p></p></d
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
-</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod"></span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
@@ -149,7 +147,6 @@ If the value list is longer, the remaining values will be ignored.</p><p></p></d
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
-</li><li><a href="promise.html" class="func">promise()</a> 
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
