@@ -504,7 +504,7 @@ function dummy() {
 	 * @see ##$.wait() creates a ##promise#Promise## that will be fulfilled after the given duration.
 	 */
 	'delay': function(durationMs, func, args) {
-		delay(function() {call(func, args);}, durationMs);
+		delay(partial(func, args), durationMs);
 	},
 
 	/*$
@@ -566,7 +566,7 @@ function dummy() {
 	 */
 	'wait': function(durationMs, args) {
 		var p = promise();
-		delay(function() {p(true, args);}, durationMs);
+		delay(partial(p, args), durationMs);
 		return p;
 	}
 	

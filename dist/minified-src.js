@@ -5666,7 +5666,7 @@ define('minified', function() {
 	 * @see ##$.wait() creates a ##promise#Promise## that will be fulfilled after the given duration.
 	 */
 	'delay': function(durationMs, func, args) {
-		delay(function() {call(func, args);}, durationMs);
+		delay(partial(func, args), durationMs);
 	},
 
 	/*$
@@ -5727,7 +5727,7 @@ define('minified', function() {
 	 */
 	'wait': function(durationMs, args) {
 		var p = promise();
-		delay(function() {p(true, args);}, durationMs);
+		delay(partial(p, args), durationMs);
 		return p;
 	}
 
@@ -6208,7 +6208,7 @@ define('minified', function() {
  * be able to interoperate with most other Promises implementations.
  * 
  * What may be somewhat surprising about this Promises specification is that the only standard-compliant way to access the result is to 
- * register callbacks to find out the result. They will be invoked as soon as the operation is finished. 
+ * register callbacks. They will be invoked as soon as the operation is finished. 
  * If the operation already ended when you register the callbacks, the callback will then just be called from the event loop as soon
  * as possible (but never while the ##then() you register them with is still running).<br/>
  * This design forces you to handle the operation result asynchronously and disencourages 'bad' techniques such as polling.

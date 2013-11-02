@@ -77,10 +77,10 @@ main: `<div>
 <p>
 Creating a list containing only the element with the id 'a':
 <pre>var l = $('#a');</pre>
-Creating a list containing only the element with the class 'b':
+Creating a list containing only those element that have the class 'b':
 <pre>var l = $('.b');</pre>
-You can use all valid CSS1 selectors with <span class="var">$()</span>. If you are using a build without IE7 support, 
-all selectors supported by the browser are possible. 
+The default build of Minified uses the browser's built-in engine for selectors. If you chose a build with
+legacy Internet Explorer compatibility, you are limited to CSS1 selectors. 
 </p>
 <p>
 API: <a href="/api/dollar.html">$()</a>.<br/>
@@ -129,12 +129,18 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/FXGce/">Filter</a>
 
 <h3><a name="select_combinechildren">Combine Lists</a></h3>
 <p>
+If you have the Util module, use <var>_()</var>:
+<pre>var l = _([list1, list2]);</pre>
+The Web module's <var>$()</var> is similar:
 <pre>var l = $([list1, list2]);</pre>
-Use the selector function <span class="var">$()</span> to combine lists. Nested lists will automatically be flattened 
-and <span class="var">null</span> elements will be removed.<br/>
+The difference between both ways is that <var>$()</var> will automatically flatten nested lists  
+and <span class="var">null</span> elements will be removed. <var>_()</var> will not modify the lists
+but just concatenate them.<br/>
 You can also use the same syntax to add elements to the list:
+<pre>var l2 = _([list1, element1, element2]);</pre>
+or 
 <pre>var l2 = $([list1, element1, element2]);</pre>
-Again, null elements will be automatically removed.
+Again, <var>$()</var> will remove null elements from the resuls, but <var>_()</var> will not.
 </p>
 <p>
 API: <a href="/api/dollar.html">$()</a>.<br/>
@@ -160,7 +166,7 @@ The easiest way to find out whether an element is a parent node is to use <span 
 The second parameter specifies that only <span class="var">parent</span> matches. Thus you get an empty list 
 if <span class="var">parent</span> is not 
 the parent of <span class="var">child</span>, or a list containing <span class="var">parent</span> if it is.</p><p>
-There is an alternative way to do this, by selecting all children of the parent, but it is much slower in most 
+There is an alternative way to do this, by selecting all descendants of the parent, but it is much slower in most 
 situations:
 <pre>var isParent = $('*', parent).find(child) != null;</pre>
 </p>
@@ -260,7 +266,7 @@ You can create one or more DOM nodes using <span class="var">HTML()</span>. They
 Please note that <span class="var">HTML()</span> requires the complete Minfied distribution. If you only want to use the Web module, 
 you need to resort to set() or using <span class="var">innerHTML</span> directly:
 <pre>$$('#myElement').innerHTML += "&lt;hr/>My Footer";</pre>
-Modifing the <span class="var">innerHTML</span> property like that is only possible when you modify only one element. 
+Modifing the <span class="var">innerHTML</span> property like that is only possible when you modify a single element. 
 If your list has more than one element,  you need to write a <span class="var">set()</span> callback like this:
 <pre>$('.display').set("innerHTML", function(old) {return old + "My &lt;b>HTML&lt;/b>"; });</pre>
 </p>
@@ -318,10 +324,10 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/uRC8Y/">EE and add()</a>
 
 <h3><a name="html_add">Add HTML Elements or Text</a></h3>
 <p>
-<pre>$('.container').add('Some text'); // add text node
-$('.container').add(EE('br'));         // add &lt;br> element
-$('.container').add(HTML('&lt;br>'));  // alternative syntax
-$('.container').add(document.createElement('br'); // another one
+<pre>$('.container').add('Some text');                        // add text node
+$('.container').add(EE('br'));                             // add &lt;br> element
+$('.container').add(HTML('&lt;br>'));                         // alternative syntax
+$('.container').add(document.createElement('br');          // another one
 $('.container').add(['Some text', EE('br'), 'More text']); // add text and elements at once
 </pre>
 Beside <span class="var">add()</span>, you can use <span class="var">fill()</span> to replace children or <span class="var">addAfter()</span>, 
@@ -384,11 +390,9 @@ API: <a href="/api/get.html">get()</a>, <a href="/api/set.html">set()</a>.<br/>
 <h3><a name="html_clone">Clone Elements</a></h3>
 <p>
 <pre>var createSheep = $('.sheep').clone();</pre>
-<span class="var">clone()</span> create an element factory that will create the cloned list with all elements, attributes and text nodes. 
-You can use the element factory with <span class="var">add()</span> and its variants:
+<span class="var">clone()</span> creates a copy of the list's elements, their attributes and text nodes. 
+You can add the copy to the HTML document using <span class="var">add()</span> and its variants:
 <pre>$('#destination').add(createSheep);</pre>
-Or just call the factory to create new instances:
-<pre>var clone = createSheep();</pre>
 </p>
 <p>
 API: <a href="/api/add.html">add()</a>, <a href="/api/clone.html">clone()</a>, 
@@ -434,10 +438,11 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/ghPaC/">CSS Classes</a>
 
 <h3><a name="style_set">Get and Set CSS Style</a></h3>
 <p>
-<pre>$('#someSpan').set({$color: '#ff0'});</pre>
+<pre>$('#someSpan').set({$backgroundColor: '#ff0'});</pre>
 Use <span class="var">set()</span> with a '$'-prefixed name to set CSS styles. <span class="var">get()</span> reads the effective CSS 
 style of the first element in the list:
-<pre>var color = $('#someSpan').get('$color');</pre>
+<pre>var color = $('#someSpan').get('$backgroundColor');</pre>
+Please note that Minified uses camel case for CSS names, so it is "$backgroundColor", not "$background-color". 
 </p>
 <p>
 API: <a href="/api/get.html">get()</a>, <a href="/api/set.html">set()</a>.<br/>
@@ -578,8 +583,8 @@ $('#myButton').on('click', buttonHandler);</pre>
 Use <span class="var">on()</span> to register an event handler for one or more events. <span class="var">$.off()</span> 
 unregisters event handlers.<br/>
 Please note that <span class="var">on()</span> is a bit different than other libraries' event registration: by default, Minified will disable 
-event forwarding and the event's default action. If you want to allow event processing, you must either prefix the event name with a 
-pipe ('|') or let the handler return <span class="var">true</span>.
+event forwarding and the event's default action. If you want to allow event processing, you must prefix the event name with a 
+pipe ('|'). A '?' prefix will let the handler decide whether to stop even processing. Return <span class="var">false</span> to stop it.
 </p>
 <p>
 API: <a href="/api/on.html">on()</a>, <a href="/api/off.html">off()</a>.<br/>
@@ -608,7 +613,6 @@ API: <a href="/api/onover.html">onOver()</a>, <a href="/api/toggle.html">toggle(
 <h3><a name="event_onchange">Monitor a Text Field</a></h3>
 <p>
 <pre>$('#myNumber').onChange(function(newValue) { 
-
     $('#output').fill(newValue);
 });</pre>
 <var>onChange()</var> allows you to register a callback function that will be called the content of an input field changes. It also works with checkboxes and radio boxes.
@@ -622,7 +626,7 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/HUzFh/">onChange()</a>
 <h3><a name="event_selector">Select Bubbled Events (Live/Delegates Events)</a></h3>
 <p>
 <pre>
-$('#container').on('click', 'div.monitored', myHandler);</pre>
+$('#container').on('click', myHandler, 'div.monitored');</pre>
 Using an extra selector you can make <span class="var">on()</span> limit events to those that bubbled up from elements 
 described by the selector. This allows you to set up event handlers in parent elements and let events bubble up, 
 so you need less (potentially resource-hungry) event handlers. Also, you may not need to add new event handlers 

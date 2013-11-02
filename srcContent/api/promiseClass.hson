@@ -16,7 +16,7 @@
 <i>Promises</i> are objects that represent the future result of an asynchronous operation. When you start such an operation, using <code><a href='request.html' class='func'>$.request()</a></code>,
 <code><a href='animate.html' class='func'>animate()</a></code>, or <code><a href='wait.html' class='func'>wait()</a></code>, you will get a Promise object that allows you to get the result as soon as the operation is finished.</p><p>Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
 be able to interoperate with most other Promises implementations.</p><p>What may be somewhat surprising about this Promises specification is that the only standard-compliant way to access the result is to
-register callbacks to find out the result. They will be invoked as soon as the operation is finished.
+register callbacks. They will be invoked as soon as the operation is finished.
 If the operation already ended when you register the callbacks, the callback will then just be called from the event loop as soon
 as possible (but never while the <code><a href='then.html' class='func'>then()</a></code> you register them with is still running).<br/>
 This design forces you to handle the operation result asynchronously and disencourages 'bad' techniques such as polling.</p><p>The central method of a Promise, and indeed the only required function in Promises/A+, is <code><a href='then.html' class='func'>then()</a></code>. It allows you to register

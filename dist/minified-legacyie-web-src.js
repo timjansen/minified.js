@@ -3579,7 +3579,7 @@ define('minified', function() {
  * be able to interoperate with most other Promises implementations.
  * 
  * What may be somewhat surprising about this Promises specification is that the only standard-compliant way to access the result is to 
- * register callbacks to find out the result. They will be invoked as soon as the operation is finished. 
+ * register callbacks. They will be invoked as soon as the operation is finished. 
  * If the operation already ended when you register the callbacks, the callback will then just be called from the event loop as soon
  * as possible (but never while the ##then() you register them with is still running).<br/>
  * This design forces you to handle the operation result asynchronously and disencourages 'bad' techniques such as polling.
