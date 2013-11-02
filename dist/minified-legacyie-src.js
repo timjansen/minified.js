@@ -4139,7 +4139,7 @@ define('minified', function() {
 	 * <pre>
 	 * $('#myButton').trigger('click');
 	 * </pre>
-	 * 
+	 *
 	 * @param name a single event name to trigger
 	 * @param eventObj optional an object to pass to the event handler, provided the handler does not have custom arguments.
 	 *                 Anything you pass here will be directly given to event handlers as event object, so you need to know what 

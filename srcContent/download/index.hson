@@ -7,26 +7,43 @@ main: `<div>
 
 <h3>Standard Builds</h3>
 <table class="links">
-	<tr><th></th><th>with IE 6+ compatibility</th><th>with IE9+ compatibility</th></tr>
-	<tr><th>Development</th>
-		<td><a href="/download/minified-web-src.js"><span class="link">minified-web-src.js</span><br/>
-			<span class="summary">Version: beta2</span><br/>
-			<span class="summary">Size: 152 kBytes</span><br/>
-			<span class="summary">Sourcecode with full IE compatibility.</span></a></td>
-		<td><a href="/download/minified-noie-web-src.js"><span class="link">minified-noie-web-src.js</span><br/>
-			<span class="summary">Version: beta2</span><br/>
-			<span class="summary">Size: 145 kBytes</span><br/>
-			<span class="summary">Sourcecode, IE6-8 support removed.</span></a></td>
+	<tr><th></th><th>IE9+ compatibility only</th><th>with IE 6+ compatibility</th></tr>
+	<tr><th>Development<br/><span class="smaller">(full distribution)</span></th>
+		<td><a href="/download/minified-src.js"><span class="link">minified-src.js</span><br/>
+			<span class="summary">Version: beta3</span><br/>
+			<span class="summary">Size: 262 kBytes</span><br/>
+			<span class="summary">Sourcecode, Web and Util module, IE9+ only.</span></a></td>
+		<td><a href="/download/minified-legacyie-src.js"><span class="link">minified-legacyie-src.js</span><br/>
+			<span class="summary">Version: beta3</span><br/>
+			<span class="summary">Size: 271 kBytes</span><br/>
+			<span class="summary">Sourcecode, Web and Util module, with IE6+ support.</span></a></td>
 	</tr>
-	<tr><th>Production</th>
+	<tr><th>Production<br/><span class="smaller">(full distribution)</span></th>
+		<td><a href="/download/minified.js"><span class="link"><strong>minified.js</strong></span><br/>
+			<span class="summary">Version: beta3</span><br/>
+			<span class="summary">Size: <strong>8081 bytes</strong> (gzip'd)</span><br/>
+			<span class="summary">Compiled Version, Web and Util module, IE9+ only.</span></a></td>
+		<td><a href="/download/minified-legacyie.js"><span class="link">minified-legacyie.js</span><br/>
+			<span class="summary">Version: beta3</span><br/>
+			<span class="summary">Size: 8829 bytes (gzip'd)</span><br/>
+			<span class="summary">Compiled Version, Web and Util module, with IE6+ support.</span></a></td>
+	</tr>
+	<tr><th>Web Module only</span></th>
 		<td><a href="/download/minified-web.js"><span class="link">minified-web.js</span><br/>
-			<span class="summary">Version: beta2</span><br/>
-			<span class="summary">Size: 4838 bytes (gzip'd)</span><br/>
-			<span class="summary">Compiled Version with full IE compatibility.</span></a></td>
-		<td><a href="/download/minified-noie-web.noie.js"><span class="link">minified-noie-web.js</span><br/>
-			<span class="summary">Version: beta2</span><br/>
-			<span class="summary">Size: <strong>4092 bytes</strong> (gzip'd)</span><br/>
-			<span class="summary">Compiled Version, no IE6-8 compatibility.</span></a></td>
+			<span class="summary">Version: beta3</span><br/>
+			<span class="summary">Size: <strong>4093 bytes</strong> (gzip'd)</span><br/>
+			<span class="summary">Compiled Version, Web module only, IE9+ only.</span></a></td>
+		<td><a href="/download/minified-legacyie-web.js"><span class="link">minified-legacyie-web.js</span><br/>
+			<span class="summary">Version: beta3</span><br/>
+			<span class="summary">Size: 4897 bytes (gzip'd)</span><br/>
+			<span class="summary">Compiled Version, Web module only, with IE6+ support.</span></a></td>
+	</tr>
+	<tr><th>Util Module only</span></th>
+		<td></td>
+		<td><a href="/download/minified-util.js"><span class="link">minified-util.js</span><br/>
+			<span class="summary">Version: beta3</span><br/>
+			<span class="summary">Size: 4271 bytes (gzip'd)</span><br/>
+			<span class="summary">Compiled Version, Util module only, all browsers.</span></a></td>
 	</tr>
 </table>
 
@@ -34,6 +51,10 @@ main: `<div>
 <ul class="links">
 <li><a href="/builder/"><span class="link">Builder</span><br/>
 <span class="summary">Create your own custom-build of Minified.</span></a></li>
+<li><a href="http://sindresorhus.com/bower-components/#!/search/Minified"><span class="link">Bower Module</span><br/>
+<span class="summary">Minified packaged for Bower.</span></a></li>
+<li><a href="https://npmjs.org/package/minified-headless"><span class="link">Minified Util for Node.js</span><br/>
+<span class="summary">Get a headless Minified Util version as npm module for use in node.js.</span></a></li>
 <li><a href="https://github.com/timjansen/minified.js/"><span class="link">Minified on GitHub</span><br/>
 <span class="summary">Complete source code for Minified, unit tests, this site and more.</span></a></li>
 </ul>

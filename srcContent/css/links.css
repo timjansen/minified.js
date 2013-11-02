@@ -49,3 +49,7 @@ ul.links {
 .links tr th:not(:last-child), .links tr td:not(:last-child)  {
 	border-right: 1px solid black;
 }
+.smaller {
+	font-size: smaller; 
+	font-weight: normal;
+}

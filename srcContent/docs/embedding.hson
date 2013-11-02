@@ -3,7 +3,7 @@ title: 'Embedding &amp; Compiling Minified.js',
 section: docs,
 externalCss: ['../css/doc.css'],
 main: `<div>
-  <h1>Embedding &amp; Compiling Minified.js</h1>
+  <h1>Embedding & Compiling Minified.js</h1>
 
 <h2>Why Should I Embed Minified.js?</h2>
 <p>

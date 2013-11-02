@@ -50,15 +50,6 @@ var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
 Please note that this works even without an AMD loader. Minified provides its own <code>require</code> function if no AMD loader is present.
 </p>
 
-<h2>How to work with Minified Modules</h2>
-<p>This is relatively simple. For both modules you need to <code>require('minified')</code>. 
-<ul>All Web-module functions use <code>$</code> as entry point.</ul>
-<ul><code>$$</code> and <code>EE</code> are two additional top-level functions in the Web module</ul>
-<ul>All Util-module functions use <code>_</code> as entry point.</ul>
-<ul><code>HTML</code> is only available in the full distribution of Web AND Util.</ul>
-</ul>
-</p>
-
 <h2>Running Your Script at the Right Time</h2>
 <p>
 When you just include your script at the top of the page, you will not be able to reference HTML elements that are defined down below. A
@@ -88,8 +79,8 @@ $(function() {
 	var listItems = <a href="/api/dollar.html">$</a>('#myList li');
 });
 </pre>
-In the default configuration with IE6/IE7 compatibility, you can only use CSS1 selectors without pseudo-classes. If you use a build without IE6/IE7 compatibility,
-you are using browser's CSS engine directly and have access to all its features.
+With the default Minified build you are using browser's CSS engine directly and have access to all its features.
+If you are working with a version that comes with IE6/IE7 compatibility, you can only use CSS1 selectors without pseudo-classes. 
 </p>
 
 <p>Here some more examples of valid selectors:
@@ -111,7 +102,8 @@ var plus1 = <a href="/api/dollar.html">$</a>([<a href="/api/dollar.html">$</a>('
 </pre>
 </p>
 
-<p>Selectors can have a context. If a context is set, you limit the result set to those elements whose parent is one of the context nodes.The context can be specified in the same way as the selector itself, using a selector string, a DOM node or a list of nodes:
+<p>Selectors can have a context. If a context is set, you limit the result set to those elements whose parent is one of the context nodes.
+The context can be specified in the same way as the selector itself, using a selector string, a DOM node or a list of nodes:
 <pre>
 var cells = <a href="/api/dollar.html">$</a>('td, th', '#myTable'); // all td and th element in #myTable
 var cells1 = <a href="/api/dollar.html">$</a>('td, th', document.getElementById('myTable')); // same as above
@@ -167,7 +159,7 @@ var parent2 = <a href="/api/dollar.html">$</a>('#myElement')[0].parentNode;     
 <p>Minified has two constructors for Minified list. The previous sections showed <a href="/api/dollar.html"><code>$()</code></a>, which is 
 designed to create lists of DOM nodes and is contained in the Web module. The Util module contains a second constructor, 
 <a href="/api/underscore.html"><code>_()</code></a>. It supports varargs, does not remove nulls and flattens only the first level of lists. Selectors 
-and other HTML-specific things are not supported by <a href="/api/underscore.html"><code>_()</code></a>.
+are not supported by <a href="/api/underscore.html"><code>_()</code></a>.
 <pre>
 <a href="/api/underscore.html">_</a>(1, 2, 3, 4, 5);         // list contains numbers 1 to 5   
 <a href="/api/underscore.html">_</a>([1, 2, 3, 4, 5]);       // same content!    
@@ -310,14 +302,14 @@ var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
 <a href="/api/dollar.html">$</a>('#linkContainer').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('a', {'@href': 'http://acme.com'}, "ACME"));  // creates &lt;a href="http://acme.com">ACME&lt;/a>
 <a href="/api/dollar.html">$</a>('#header').<a href="/api/add.html">add</a>([<a href="/api/ee.html">EE</a>('br'), "Single line", <a href="/api/ee.html">EE</a>('br')]);                        // add &lt;br/>Single line&lt;br/>
 <a href="/api/dollar.html">$</a>('#list').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('ul', [  // &lt;ul>
-                                      <a href="/api/ee.html">EE</a>('li', {$: 'first'}, "First item"), // &lt;li class="first">First Item&lt;/li>
-                                      <a href="/api/ee.html">EE</a>('li', "Second item"),              // &lt;li>Second Item&lt;/li>
-                                      <a href="/api/ee.html">EE</a>('li', "Third item"),               // &lt;li>Third Item&lt;/li>
-                                   ])); // &lt;/ul>
+            <a href="/api/ee.html">EE</a>('li', {$: 'first'}, "First item"), // &lt;li class="first">First Item&lt;/li>
+            <a href="/api/ee.html">EE</a>('li', "Second item"),              // &lt;li>Second Item&lt;/li>
+            <a href="/api/ee.html">EE</a>('li', "Third item"),               // &lt;li>Third Item&lt;/li>
+])); // &lt;/ul>
 </pre>
 
 
-<a href="/api/html.html"><code>HTML()</code></a> does the same, but uses a HTML snippet to create the elements:
+<a href="/api/html.html"><code>HTML()</code></a> does the same, but uses a HTML string to create the elements:
 <pre>
 var MINI = require('minified');
 var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
@@ -326,16 +318,16 @@ var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
 <a href="/api/dollar.html">$</a>('#linkContainer').<a href="/api/fill.html">fill</a>(<a href="/api/html.html">HTML</a>('&lt;a href="http://acme.com">ACME&lt;/a>'));
 <a href="/api/dollar.html">$</a>('#header').<a href="/api/add.html">add</a>([<a href="/api/html.html">HTML</a>('&lt;br/>'), "Single line", <a href="/api/html.html">HTML</a>('&lt;br/>')]);
 <a href="/api/dollar.html">$</a>('#list').<a href="/api/fill.html">fill</a>(<a href="/api/html.html">HTML</a>('&lt;ul>'+
-                                      '&lt;li class="first">First item&lt;/li>'+
-                                      '&lt;li>Second item&lt;/li>'+
-                                      '&lt;li>Third item&lt;/li>'+
-                                      '&lt;/ul>'));
+            '&lt;li class="first">First item&lt;/li>'+
+            '&lt;li>Second item&lt;/li>'+
+            '&lt;li>Third item&lt;/li>'+
+'&lt;/ul>'));
 </pre>
 HTML can not only handle HTML strings, but supports <a href="/api/template.html">Minified templates</a>:
 <pre>var nameList = ['Joe', 'James', 'Jim', 'Jumbo'];
 <a href="/api/dollar.html">$</a>('#list').<a href="/api/fill.html">fill</a>(<a href="/api/html.html">HTML</a>('&lt;ul>'+
-                                      '{{each names}}&lt;li>{{this}}&lt;/li>{{/each}}'+
-                                      '&lt;/ul>', {names: nameList}));
+            '{{each names}}&lt;li>{{this}}&lt;/li>{{/each}}'+
+            '&lt;/ul>', {names: nameList}));
 </pre>
 Please refer to the <a href="/api/template.html"><code>template()</code></a> API documentation for the full template syntax. 
 </p>
@@ -458,7 +450,7 @@ light(false);  // turn the light off (state 1)
 var dimmer = <a href="/api/dollar.html">$</a>('body').toggle(
  {$backgroundColor: '#000'},  // light off
  {$backgroundColor: '#fff'},  // light on
- 750                        // 750ms
+ 750                          // 750ms
 );
 </pre>
 </p>
@@ -499,7 +491,7 @@ all other asynchronous HTTP requests:
     });
 </pre>
 The third argument is a map containing parameters that, when set, will be automatically added as URL parameters. So the actual URL
-being called in the previous example is <code>http://example.org/weatherService?zip=90210</code>.
+being called in the previous example is <code>http://example.org/weatherService?zip=90210</code>.<br/>
 <code>$.request()</code> returns a <a href="/api/promise.html">Promise</a> that you can use to register handlers
 for success and error.</p>
 
