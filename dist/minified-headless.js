@@ -41,6 +41,10 @@ module.exports = (function() {
 	/** @const */
 	var undef;
 
+    /*$
+	 * @id date_constants
+	 * @dependency
+     */
 	function val3(v) {return v.substr(0,3);}
 	var MONTH_LONG_NAMES = split('January,February,March,April,May,June,July,August,September,October,November,December', /,/g);
 	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, val3); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -90,6 +94,10 @@ module.exports = (function() {
 			'S':  6,
 			'a': [3, MERIDIAN_NAMES]
 		};
+
+    /*$
+	 * @stop
+     */
 
 	var MAX_CACHED_TEMPLATES = 99;
 	var templateCache={}; // template -> function
@@ -382,6 +390,11 @@ module.exports = (function() {
 	}
 	function callList(list, fThisOrArgs, args) {
 		return map(list, function(f) { if (isFunction(f)) return call(f, fThisOrArgs, args); else return undef;});
+	}
+	function fixFunc(f, args) {
+		return function() {
+			return call(f, _null, args);
+		};
 	}
 	function bind(f, fThis, beforeArgs, afterArgs) {
 		return function() {
@@ -1573,10 +1586,10 @@ module.exports = (function() {
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
 	},
-	///#/snippet utilListFuncs
 	/*$
- 	 * @stop
- 	 */
+	 * @stop 
+	 */
+	///#/snippet utilListFuncs
 	dummy:0
 	}, M.prototype);
 
@@ -1645,7 +1658,7 @@ module.exports = (function() {
 	     * @group OBJECT 
 	     * @requires
 	     * @configurable default 
-	     * @name .keys() 
+	     * @name _.keys() 
 	     * @syntax _.keys(obj) 
 	     * @module UTIL
 	     * Creates a ##list#Minified list## containing all property names of the specified object. Only direct properies are
@@ -2217,7 +2230,7 @@ module.exports = (function() {
 		/*$
 		 * @id formatvalue
 		 * @group FORMAT
-		 * @requires 
+		 * @requires date_constants
 		 * @configurable default
 		 * @name _.formatValue()
 		 * @syntax _.formatValue(format, value)
@@ -2340,7 +2353,7 @@ module.exports = (function() {
 		/*$
 		 * @id parsedate
 		 * @group FORMAT
-		 * @requires 
+		 * @requires date_constants
 		 * @configurable default
 		 * @name _.parseDate()
 		 * @syntax _.parseDate(format, dateString)
@@ -2533,7 +2546,7 @@ module.exports = (function() {
 		/*$ 
 	     * @id format 
 	     * @group FORMAT
-	     * @requires 
+	     * @requires template
 	     * @configurable default 
 	     * @name _.format() 
 	     * @syntax _.format()
@@ -2572,7 +2585,7 @@ module.exports = (function() {
 		/*$ 
 	     * @id template 
 	     * @group FORMAT
-	     * @requires 
+	     * @requires date_constants
 	     * @configurable default 
 	     * @name _.template() 
 	     * @syntax _.template(template)
@@ -2693,7 +2706,7 @@ module.exports = (function() {
 		/*$ 
 	     * @id formathtml 
 	     * @group FORMAT
-	     * @requires 
+	     * @requires template
 	     * @configurable default 
 	     * @name _.formatHtml() 
 	     * @syntax _.formatHtml()
@@ -2738,8 +2751,4 @@ module.exports = (function() {
 _.M=M; _._=_;
 return _;
 })();
-
-/*$
- * @stop 
- */
 

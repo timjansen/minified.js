@@ -2,12 +2,12 @@
 /*
    Auto-generated using docbuilder.js. Do not edit manually. 
 */
-	title: `.keys() - Minified.js`,
+	title: `_.keys() - Minified.js`,
 	section:"reference",
 	externalCss: ["../css/reference.css"],
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-keys">.keys()</a></h2>
+<h2><a name="doc-keys">_.keys()</a></h2>
 <div class="summary">Creates a Minified list containing all property names of the specified object.</div>
 
 <div class="availability">Util module only.</div><h4>Syntax</h4>
@@ -81,7 +81,6 @@ var keys = _.keys(obj);  // keys contains ['a', 'b'] now
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="keys.html" class="func">.keys()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
@@ -132,6 +131,7 @@ var keys = _.keys(obj);  // keys contains ['a', 'b'] now
 </li><li><a href="isobject.html" class="func">_.isObject()</a> <span class="tocMod">Util</span>
 </li><li><a href="isstring.html" class="func">_.isString()</a> <span class="tocMod">Util</span>
 </li><li><a href="isvalue.html" class="func">_.isValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="keys.html" class="func">_.keys()</a> <span class="tocMod">Util</span>
 </li><li><a href="mapobj.html" class="func">_.mapObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="pad.html" class="func">_.pad()</a> <span class="tocMod">Util</span>
 </li><li><a href="parsedate.html" class="func">_.parseDate()</a> <span class="tocMod">Util</span>

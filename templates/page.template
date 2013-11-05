@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>{{title}}</title>
-{{if this.externalCss && externalCss.length == 0}}<link rel="stylesheet" type="text/css" href="/css/minimum.css"/>{{/if}}
+{{if !this.externalCss || externalCss.length == 0}}<link rel="stylesheet" type="text/css" href="/css/minimum.css"/>{{/if}}
 {{each link: this.externalCss}}<link rel="stylesheet" type="text/css" href="{{link}}"/>{{/each}}
 {{if this.inlineCss}}<style type="text/css">{{this.inlineCss}}</style>{{/if}}
 {{each link: this.asyncCss}}<script type="text/javascript" src="{{link}}" async="async"></script>{{/each}}
@@ -34,7 +34,7 @@
 <div id="foot">
 	<div class="container">
 		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="https://plus.google.com/100950045026999226880/posts">Google+ page</a>.
+		<a href="google.com/+Minifiedjs">Google+ page</a>.
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

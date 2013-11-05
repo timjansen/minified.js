@@ -78,7 +78,6 @@ If you don't, the list elements will be converted into strings and sorted lexico
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="keys.html" class="func">.keys()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
@@ -129,6 +128,7 @@ If you don't, the list elements will be converted into strings and sorted lexico
 </li><li><a href="isobject.html" class="func">_.isObject()</a> <span class="tocMod">Util</span>
 </li><li><a href="isstring.html" class="func">_.isString()</a> <span class="tocMod">Util</span>
 </li><li><a href="isvalue.html" class="func">_.isValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="keys.html" class="func">_.keys()</a> <span class="tocMod">Util</span>
 </li><li><a href="mapobj.html" class="func">_.mapObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="pad.html" class="func">_.pad()</a> <span class="tocMod">Util</span>
 </li><li><a href="parsedate.html" class="func">_.parseDate()</a> <span class="tocMod">Util</span>

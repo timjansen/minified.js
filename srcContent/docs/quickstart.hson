@@ -370,8 +370,7 @@ anymore, unless you explicitly allow it. Similarly, a click handler on a link wo
 <p>Or you can keep the default behaviour by prefixing the name with a '?' (question mark) and let the handler return <code>true</code>:
 <pre>
 <a href="/api/dollar.html">$</a>('#submitButton').<a href="/api/on.html">on</a>('?click', function() {
-	alert('Button pressed, will submit now!');
-	return true;
+	return confirm('Button pressed, really submit?');
 });
 </pre>
 </p>

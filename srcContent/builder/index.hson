@@ -10,7 +10,8 @@ inlineCss: `
 		#resultGzippedComment {font-size: small;}
 		#resultDiv th, #resultDiv td { vertical-align: top;}
 `,
-externalJs: ["/js/builder.js"],
+//externalJs: ["/js/builder.js"],
+externalJs: ["/download/minified-src.js", "/js/parser-src.js", "/js/builder-src.js"],
 main: `<div>
   		<h1>Minified Builder</h1>
   		<div id="builderDiv">
@@ -41,9 +42,12 @@ main: `<div>
 			<table>
 				<tr><th>Resulting size</th><td id="resultPlain"></td></tr>
 				<tr id="gzipRow"><th>Resulting size (gzip'd)</th><td><span id="resultGzippedSize"></span>
-				<span id="resultGzippedComment">Note: Builder-generated files may have sizes >4kb, because the Builder
+				<span id="resultGzippedComment">Note: Builder-generated files may have sizes >8kb, because the Builder
 				currently can't execute an additional UglifyJS step.</span></td></tr>
 				<tr id="downloadRow"><th>Download</th><td><a id="resultLink" href="#">minified-custom.js</a></td></tr>
+				<tr><td colspan="2"><strong style="color: red">Warning:</strong> The builder is an experimental feature. If it does not work for you,
+					please send your configuration to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. Thanks!
+				</td></tr>
 			</table>
 			<textarea id="resultSrc" rows="12" cols="140"></textarea>
 		</div>

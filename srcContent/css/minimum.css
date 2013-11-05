@@ -1,4 +1,4 @@
-body {margin: 0; font-family: helvetica, verdana, arial, freesans, clean, sans-serif;}
+body {margin: 0; line-height: 1.5; font-family: helvetica, verdana, arial, freesans, clean, sans-serif;}
 img { border: 0; }
 a { color: #000; }
 
@@ -6,7 +6,7 @@ a { color: #000; }
 .container { margin: auto; min-width: 950px; max-width: 67em; }
 #head .container { height: 1.9em; border-bottom: 1px solid #aaa;}
 #head .container img { height: 1.7em; float: left; margin: 0.1em 0.5em;} 
-#topMenu { text-align: right;}
+#topMenu { text-align: right; line-height: normal; }
 #topMenu a { display: inline-block; height: 1.4em; padding: 0.5em 1em 0em; color: black; text-decoration: none; vertical-align: middle;}
 #topMenu a:hover { color: white; background-color: #f80; }
 #topMenu a.selected,  #topMenu a:hover.selected { color: white; background-color: black; }

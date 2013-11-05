@@ -1,10 +1,10 @@
 var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = MINI._;
 
-var MAX_SIZE = 4095;
-var SRC='/download/minified-web-src.js';
+var MAX_SIZE = 8191;
+var SRC='/download/minified-legacyie-src.js';
 
-var GROUPS = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION', 'OPTIONS'];
+var GROUPS = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION',  'LIST', 'OBJECT', 'FUNC', 'FORMAT', 'TYPE', 'DATE', 'STRING', 'OPTIONS'];
 
 //submits the given source code (src) to the Closure online compiler. When finished, will invoke given callback cb with JSON result. 
 //On error, it passes null to the callback.
@@ -25,7 +25,7 @@ function closureCompile(src, advanced, cb) {
 				cb&&cb($.parseJSON(txt));
 			}, onError)
 			.error(function(txt) {
-				window.console && console.log(txt);
+				window.console && console.log(txt, txt.stack || '');
 			});
 }
 
@@ -48,7 +48,7 @@ function setUpConfigurationUI(s) {
 				$('#resultDiv').animate({$$slide: 1});
 				if (closureResult) {
 					$('#gzipRow, #downloadRow').set({$display: 'table-row'});
-					$$('#resultSrc').value = header + '\n' + closureResult.compiledCode;
+					$$('#resultSrc').value = header + closureResult.compiledCode;
 					$('#resultPlain').fill((closureResult.statistics.compressedSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedSize + ' bytes)');
 					$('#resultGzippedSize').fill((closureResult.statistics.compressedGzipSize/1024).toFixed(2) + 'kb (' + closureResult.statistics.compressedGzipSize + ' bytes)');
 					$$('#resultLink').setAttribute('href', 'http://closure-compiler.appspot.com' +closureResult.outputFilePath);
@@ -59,13 +59,10 @@ function setUpConfigurationUI(s) {
 			});
 		}
 		else  {
-try {
 			$('#resultDiv').animate({$$slide: 1});
 			$$('#resultSrc').value = header + src;
 			$('#resultPlain').fill((src.length/1024).toFixed(2) + 'kb');
 			$('#gzipRow, #downloadRow').set({$display: 'none'});
-}
-catch (e) {console.log(e);}
 		}
 		return false;
 	}
@@ -125,13 +122,12 @@ catch (e) {console.log(e);}
 	$('#sectionCheckboxes').fill();
 	for (var i = 1; i < GROUPS.length; i++) {
 		var groupCheckBox, div;
-		$('#sectionCheckboxes').add(div = EE('div', {'@id': 'divMod-'+i}, EE('div', {'className': 'groupDescriptor'}, [
-			groupCheckBox = EE('input', {'@id': 'mod-'+i, 'className': 'modCheck', '@type':'checkbox', checked: 'checked'})(),
+		$('#sectionCheckboxes').add(div = EE('div', {'@id': 'divMod-'+i}, EE('div', {$: 'groupDescriptor'}, [
+			groupCheckBox = EE('input', {'@id': 'mod-'+i, $: 'modCheck', '@type':'checkbox', checked: 'checked'}),
 			EE('label', {'@for': 'mod-'+i}, GROUPS[i])     
-		]))());
+		])));
 
-		$(groupCheckBox).on('change', function() {
-			var b = this.checked;
+		groupCheckBox.onChange(function(b) {
 			$('.secCheck', this.parentNode.parentNode)
 			 .each(function(cb) {
 				 cb.checked = b;
@@ -178,16 +174,15 @@ catch (e) {console.log(e);}
 			var requiredBy = createReqList('Required by ', sec.requiredBy);
 			var requires = createReqList('Requires ', sec.requires);
 		
-			div.add(EE('div', {'className': 'sectionDescriptor'}, [
-				sectionCheckBox = EE('input', {'className': 'secCheck', '@type': 'checkbox', '@id': 'sec-'+sec.id, checked: sec.configurable=='default' ? 'checked' : null})(),
+			div.add(EE('div', {$: 'sectionDescriptor'}, [
+				sectionCheckBox = EE('input', {$: 'secCheck', '@type': 'checkbox', '@id': 'sec-'+sec.id, checked: sec.configurable=='default' ? 'checked' : null}),
 				EE('label', {'@for': 'sec-'+sec.id}, sec.name || sec.id),
-				EE('div', {'className': 'requirements'}, [requiredBy ? [requiredBy, EE('br')] : null , requires])
+				EE('div', {$: 'requirements'}, [requiredBy ? [requiredBy, EE('br')] : null , requires])
 			]));
 			
-			$(sectionCheckBox).on('change', function() {
+			sectionCheckBox.onChange(function() {
 				fulfillSectionDependencies(this);
 				setGroupCheckboxes();
-				return true;
 			});
 		});
 	}
@@ -204,7 +199,7 @@ $(function() {
 			setUpConfigurationUI(prepareSections(src));
 		})
 		.error(function(txt) {
-			window.console && console.log(txt);
+			window.console && console.log(txt, txt.stack || '');
 		});
 	}
 });

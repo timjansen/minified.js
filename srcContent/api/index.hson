@@ -128,9 +128,6 @@ Creates a function allows you to set all list members to one of two states or an
 <h3><a href="join.html">.join()</a></h3>
 <div class="summary">Converts list elements into strings and joins them into a single string, optionally separated with the given separator.</div>
 
-<h3><a href="keys.html">.keys()</a></h3>
-<div class="summary">Creates a Minified list containing all property names of the specified object.</div>
-
 <h3><a href="map.html">.map()</a></h3>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
 
@@ -294,6 +291,9 @@ Formats a single value as a string, using the given format template.</div>
 <h3><a href="isvalue.html">_.isValue()</a></h3>
 <div class="summary">Checks whether the given object is a value.</div>
 
+<h3><a href="keys.html">_.keys()</a></h3>
+<div class="summary">Creates a Minified list containing all property names of the specified object.</div>
+
 <h3><a href="mapobj.html">_.mapObj()</a></h3>
 <div class="summary">Creates a new object with the same properties but different values using the given callback function.</div>
 
@@ -386,7 +386,6 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="keys.html" class="func">.keys()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
@@ -437,6 +436,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="isobject.html" class="func">_.isObject()</a> <span class="tocMod">Util</span>
 </li><li><a href="isstring.html" class="func">_.isString()</a> <span class="tocMod">Util</span>
 </li><li><a href="isvalue.html" class="func">_.isValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="keys.html" class="func">_.keys()</a> <span class="tocMod">Util</span>
 </li><li><a href="mapobj.html" class="func">_.mapObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="pad.html" class="func">_.pad()</a> <span class="tocMod">Util</span>
 </li><li><a href="parsedate.html" class="func">_.parseDate()</a> <span class="tocMod">Util</span>

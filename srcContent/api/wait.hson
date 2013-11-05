@@ -24,7 +24,7 @@ Creates a new  Promise that will be fulfilled as soon as the specified number of
 <dd class="">the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
 from the event loop.</dd>
 <dt id="wait_args" class=""><a name="wait_args"><var>args (optional)</var></a></dt>
-<dd class="">an array of arguments to pass to the promise handler</dd>
+<dd class="">an array or list of arguments to pass to the promise handler</dd>
 <dt id="wait_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="wait_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2">a <a href='promise.html' class='func'>Promise</a> object that will be fulfilled when the time is over. It will never fail. The promise argument is the
 <span class="var">args</span> parameter as given to <span class="var">wait()</span>.
@@ -100,7 +100,6 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="keys.html" class="func">.keys()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
@@ -151,6 +150,7 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
 </li><li><a href="isobject.html" class="func">_.isObject()</a> <span class="tocMod">Util</span>
 </li><li><a href="isstring.html" class="func">_.isString()</a> <span class="tocMod">Util</span>
 </li><li><a href="isvalue.html" class="func">_.isValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="keys.html" class="func">_.keys()</a> <span class="tocMod">Util</span>
 </li><li><a href="mapobj.html" class="func">_.mapObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="pad.html" class="func">_.pad()</a> <span class="tocMod">Util</span>
 </li><li><a href="parsedate.html" class="func">_.parseDate()</a> <span class="tocMod">Util</span>

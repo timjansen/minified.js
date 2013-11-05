@@ -18,13 +18,16 @@ module.exports = function(grunt) {
 		});
 
 		var resultsToDo = this.filesSrc.length;
-		var results = {};
+		var results = {}; // filename -> {compressed: 0, uncompressed: 0}
 		
 		this.filesSrc.forEach(function(f) {
 			if (!grunt.file.exists(f)) {
 				grunt.log.error('Input file "' + srcPath + '" not found.');
 				return;
 			}
+			var result = { uncompressed: fs.statSync(f).size };
+			results[f.replace(/^.*\//, '')] = result;
+			
 			var gzip = zlib.createDeflate({level: 9});
 			var src = fs.createReadStream(f);
 			var gzipStream = src.pipe(gzip);
@@ -34,11 +37,12 @@ module.exports = function(grunt) {
 		    });
 		    
 			gzipStream.on('end', function() {
-		    	results[f.replace(/^.*\//, '')] = size;
+		    	result.compressed = size;
 		        if (!--resultsToDo) {
 		        	grunt.log.writeln('GZip Results:');
 		        	_.keys(results).sort().each(function(file) {
-			        	grunt.log.writeln(_.format('  {{file}}: {{size}} bytes', {file:file, size:results[file]}));
+			        	grunt.log.writeln(_.format('  {{file}}: {{size}} bytes compressed ({{unsize}} bytes uncompressed)', 
+			        			{file:file, size: results[file].compressed, unsize: results[file].uncompressed}));
 		        	});
 		        	if (options.destFile)
 		        		grunt.file.write(options.destFile, JSON.stringify(results));

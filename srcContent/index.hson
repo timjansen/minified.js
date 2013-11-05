@@ -88,15 +88,16 @@ own. Or go to <a href="https://docs.google.com/presentation/d/1N08me0gkOGWPtr0xz
   <h2><a name="sizeCmp">Size Comparison</a></h2>
   <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><th>Minified</th><td>no</td><td>10.8kb</td><td>4838 bytes</td></tr>
-<tr><th>...with IE6-8 support</th><td>no</td><td>9.3kb</td><td><strong>4094 bytes</strong></td></tr>
-<tr><th>...Web Module only</th><td>yes</td><td>9.3kb</td><td><strong>4094 bytes</strong></td></tr>
-<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>9.3kb</td><td><strong>4094 bytes</strong></td></tr>
+<tr><th>Minified</th><td>no</td><td>19.1kb</td><td><strong>8081 bytes</strong></td></tr>
+<tr><th>...with IE6-8 support</th><td>no</td><td>20.9kb</td><td><strong>8829 bytes</strong></td></tr>
+<tr><th>...Web Module only</th><td>yes</td><td>9.4kb</td><td><strong>4093 bytes</strong></td></tr>
+<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>11.2kb</td><td><strong>4897 bytes</strong></td></tr>
 <tr><th>jQuery 1.10.2</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
 <tr><th>jQuery 2.0.3</th><td>no</td><td>82kb</td><td>29kb</td></tr>
 <tr><th>MooTools Core NoCompat 1.4.5</th><td>yes</td><td>88kb</td><td>29kb</td></tr>
 <tr><th>Zepto.js 1.0</th><td>no</td><td>27kb</td><td>9.7kb</td></tr>
 </table>
+
 
 
 <h2><a name="featCmp">Feature Comparison</a></h2>
@@ -125,7 +126,6 @@ own. Or go to <a href="https://docs.google.com/presentation/d/1N08me0gkOGWPtr0xz
 <tr><th>Date Arithmetic</th> <td>yes</td><td>no</td> <td>no</td> <td>no</td> <td>no</td></tr>
 <tr><th>Online Builder</th> <td>yes<div class="cmpExpl">modules and functions</div></td><td>yes<div class="cmpExpl">modules and functions</div></td> <td>no</td> <td>yes<div class="cmpExpl">modules</div></td> <td>no</td></tr>
 <tr><th>Internet Explorer 6-8 compatible</th> <td>yes<div class="cmpExpl">IE-support optional</div></td><td>yes<div class="cmpExpl">IE-support optional</div></td> <td>yes<div class="cmpExpl">jQuery 1.x only</div></td> <td>yes</td> <td>no</td></tr>
-
 </table>
 
  

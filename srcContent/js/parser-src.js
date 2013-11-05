@@ -232,7 +232,7 @@ function serializeEnabledSections(sections, enabledSections) {
 		}
 	});
 	txt = txt.replace(/,\s*$/, '.\n'); // remove last comma with period
-	return txt;
+	return txt + "\n\n";
 }
 
 //adds possibly missing sections to configuration

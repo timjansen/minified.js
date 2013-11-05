@@ -7,8 +7,9 @@
 		#container .test { border: 1px solid black; position: absolute; width: 300px; height: 300px; } 
 		#overDiv  { left: 10px;  top: 10px; }
 		#memLeakDiv  { left: 320px; top: 10px; }
-		#u2Div { left: 10px;  top: 320px; }
+		#changeDiv { left: 10px;  top: 320px; }
 		#u3Div  { left: 320px; top: 320px; }
+		#changeDiv div.spacer { padding: 0.5em; }
 		
 		#overDiv { background-color: #fff; }
 		#overInner1 { position: absolute; width: 200px; height: 200px; left: 50px; top: 50px; background-color: #f00;}
@@ -21,8 +22,9 @@
 	// Load the right source, depending on whether 'compiled' is in the URL query
 	
 	var q = window.location.search, undefined;
-	var srcFiles = ["dist/minified-web-src.js", "dist/minified-web.js", "dist/minified-web-src.noie.js", "dist/minified-web.noie.js"];
-	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie version on old ie
+	var srcFiles = ["dist/minified-web-src.js", "dist/minified-web.js", "dist/minified-legacyie-web-src.js", "dist/minified-legacyie-web.js", 
+	                "dist/minified-legacyie.js"];
+	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie versions on old ie
 	
 	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;
 	var file = srcFiles[srcNum] + '?rnd=' + (new Date().getTime());
@@ -63,6 +65,13 @@
 				timeoutId = window.setInterval(createOne, 1);
 			}
 		});
+		
+		// Test 3 / onChange()
+		$('#changeDiv input').onChange(function(value) {
+			var span = $(this).trav('nextSibling', 'span');
+			var oldCount = parseInt(span.text().replace(/\D.$/, ''));
+			span.fill((oldCount+1) + " (" + value + ")");
+		});
 	});
 	
 	</script>
@@ -72,7 +81,7 @@
 	<div id="container">
 		<div id="overDiv" class="test"><span class="counter">0</span>
 			<div id="overInner1"><span class="counter">0</span><div id="overInner2"><span class="counter">0</span><div id="overInner3"></div></div></div>
-			<span class="desc">onOver() test of nexted &lt;divs>. Counters increase for each event.</span>
+			<span class="desc">onOver() test of nested &lt;divs>. Counters increase for each event.</span>
 		</div>
 		<div id="memLeakDiv" class="test">
 			<div style="margin: 10px;">
@@ -81,7 +90,13 @@
 				<span class="desc">Quickly creates elements, adds events to them and removes them. Monitor browser to find memory leaks.</span>
 			</div>
 		</div>
-		<div id="u2Div" class="test"></div>
+		<div id="changeDiv" class="test">
+			<div class="spacer">
+				<div><input id="changingText" value="change me..."/> <span>0</span></div>
+				<div><input id="changingCheckbox" value="x" type="checkbox"/> <span>0</span> </div>
+				<span class="desc">onChange() test of input field and checkbox</span>
+			</div>
+		</div>
 		<div id="u3Div" class="test"></div>
 	</div>
 	<div id="rerun" >

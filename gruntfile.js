@@ -162,7 +162,7 @@ module.exports = function(grunt) {
 					}					
 				},
 				files: {
-					'WebContent/js/builder.js': ['src/minified-src.js', 'srcContent/js/parser-src.js', 'srcContent/js/builder-src.js'],
+					'WebContent/js/builder.js': ['src/minified-generated-full-src.js', 'srcContent/js/parser-src.js', 'srcContent/js/builder-src.js'],
 					'WebContent/js/homepage.js': ['srcContent/js/minified-homepage.js', 'srcContent/js/homepage-src.js']
 				}
 			}
@@ -204,8 +204,13 @@ module.exports = function(grunt) {
 		            src: ['*.js'],
 		            dest: 'WebContent/test/'
 		      }]
+			},
+			buildersrc: {
+				files: {
+					'WebContent/js/parser-src.js':  'srcContent/js/parser-src.js',
+					'WebContent/js/builder-src.js': 'srcContent/js/builder-src.js'
+				}
 			}
-
 		},
 		
 		cssmin: {

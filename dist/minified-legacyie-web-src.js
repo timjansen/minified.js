@@ -147,8 +147,8 @@ define('minified', function() {
 
 	/*$
 	 * @id ie8compatibility
-	 * @requires ie9compatibility 
 	 * @group OPTIONS
+	 * @requires ie9compatibility 
 	 * @configurable default
 	 * @doc no
 	 * @name Backward-Compatibility for IE8 and similar browsers
@@ -165,8 +165,8 @@ define('minified', function() {
 	 // @cond !ready_vars var IS_PRE_IE9 = !!_document.all && ![].map;
 	/*$
 	 * @id ie7compatibility
-	 * @requires ie8compatibility 
 	 * @group OPTIONS
+	 * @requires ie8compatibility 
 	 * @configurable default
 	 * @doc no
 	 * @name Backward-Compatibility for IE7 and similar browsers
@@ -175,13 +175,9 @@ define('minified', function() {
 	 */
 
 	/*$
-	 * @stop
-	 */
-
-	/*$
 	 * @id ie6compatibility
-	 * @requires ie7compatibility 
 	 * @group OPTIONS
+	 * @requires ie7compatibility 
 	 * @configurable default
 	 * @doc no
 	 * @name Backward-Compatibility for IE6 and similar browsers
@@ -370,17 +366,14 @@ define('minified', function() {
 		function push(obj, prop, value) {
 			(obj[prop] = (obj[prop] || [])).push(value);
 		}
-		if (isFunction(subSelector)) 
-			return this['on'](null, null, subSelector, eventSpec, handler);
-		else if (isFunction(eventSpec)) 
+		if (isFunction(eventSpec)) 
 			return this['on'](null, subSelector, eventSpec, handler, bubbleSelector);
 		else if (isString(args)) 
 			return this['on'](subSelector, eventSpec, handler, null, args);
 		else
 			return this['each'](function(baseElement, index) {
 				flexiEach(subSelector ? dollarRaw(subSelector, baseElement) : baseElement, function(el) {
-					flexiEach(toString(eventSpec).split(/\s/), function(evSpec) {
-						var namePrefixed = evSpec || (/form/i.test(el['tagName']) ? 'submit' : 'click');
+					flexiEach(toString(eventSpec).split(/\s/), function(namePrefixed) {
 						var name = replace(namePrefixed, /[?|]/);
 						var miniHandler = createEventHandler(handler, el, args,	index, replace(namePrefixed, /[^?|]/g), bubbleSelector && getFilterFunc(bubbleSelector, el));
 
@@ -1306,19 +1299,19 @@ define('minified', function() {
 						s = element.getAttribute('style');
 				}
 				// @condblock fadeslide
-				else if (/^\$\$/.test(spec) && (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')) {
-					s = 0;
-				}
-				else if (spec == '$$fade') {
-					s = isNaN(s = 
-					// @condblock ie8compatibility
-						  IS_PRE_IE9 ? extractNumber(element['style']['filter'])/100 :
-					// @condend
-						  extractNumber(element['style']['opacity']) 
-						 ) ? 1 : s;
-				}
-				else if (spec == '$$slide') {
-					s = self['get']('$height');
+				else if (spec == '$$fade' || spec == '$$slide') {
+					if  (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')
+						s = 0;
+					else if (spec == '$$fade') {
+						s = isNaN(s = 
+						// @condblock ie8compatibility
+							  IS_PRE_IE9 ? extractNumber(element['style']['filter'])/100 :
+						// @condend
+							  extractNumber(element['style']['opacity']) 
+							 ) ? 1 : s;
+					}
+					else   // '$$slide'
+						s = self['get']('$height');
 				}
 				// @condend fadeslide
 				// @condblock scrollxy
@@ -1393,7 +1386,7 @@ define('minified', function() {
 	 *             'visible' and the display style to 'block'. '$$slide' only works with block elements.</td></tr>
 	 * <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
 	 *             '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document.
-	 *             The coordinates are specified in pixels.</td></tr>
+	 *             The coordinates are specified in pixels, but must not use a 'px' unit postfix.</td></tr>
 	 * </table>
 	 *  (use on <code>$(window)</code>)
 	 * @example Unchecking checkboxes:
@@ -1509,7 +1502,7 @@ define('minified', function() {
     			 self.set({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block'})
     			     .set((name == '$$fade')  ? (
     			 // @condblock ie8compatibility 
-    			    	  IS_PRE_IE9 ? {'$filter': 'alpha(opacity = '+(100*v)+')', '$zoom': 1} :
+    			    	  IS_PRE_IE9 ? (v < 1 ? {'$filter': 'alpha(opacity = '+(100*v)+')', '$zoom': 1} : {'$filter': ''}) :
     			 // @condend ie8compatibility
     			    	  {'$opacity': v})
     			        :
@@ -2454,7 +2447,7 @@ define('minified', function() {
 						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
 
 						if (durationMs) 
-							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity)).then(function(){promise=_null;});
+							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity))['then'](function(){promise=_null;});
 						else
 							self['set'](stateDesc) && undef;
 					}
@@ -2555,7 +2548,6 @@ define('minified', function() {
 	 * @requires dollar each
 	 * @configurable default
 	 * @name .on()
-	 * @syntax list.on(eventHandler)
 	 * @syntax list.on(names, eventHandler)
 	 * @syntax list.on(selector names, eventHandler)
 	 * @syntax list.on(names, customFunc, args)
@@ -2604,11 +2596,6 @@ define('minified', function() {
 	 * $('#myButton').on('click', setStatus, ['running']);
 	 * </pre>
 	 *
-	 * As 'click' is the default event for buttons, you can also omit it here:
-	 * <pre>
-	 * $('#myButton').on(setStatus, ['running']);
-	 * </pre>
-	 *
 	 * @example Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behaviour: 
 	 * <pre>
 	 * $('#myInput').on('|keypress |keydown', function() {
@@ -2640,13 +2627,11 @@ define('minified', function() {
 	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
 	 *                match the selector. 
 	 *                Supports all valid parameters for <var>$()</var> except functions.            
-	 * @param names optional the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
+	 * @param names the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
 	 *             the name must not used. You can register the handler for more than one event by specifying several 
 	 *             space-separated event names. If the name is prefixed
 	 *             with '|' (pipe), the event will be passed through and the event's default actions will be executed by the browser. 
 	 *             If the name is prefixed with '?', the event will only be passed through if the handler returns <var>true</var>.
-	 *             If you omit the parameter, Minified will chose the default event type for each element. The default is 'submit' for
-	 *             forms and 'click' for everything else. 
 	 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>
@@ -2726,7 +2711,7 @@ define('minified', function() {
 	/*$
 	 * @id onchange
 	 * @group EVENTS
-	 * @requires on dollar
+	 * @requires on dollar each
 	 * @configurable default
 	 * @name .onChange()
 	 * @syntax list.onChange(handler)
@@ -2843,8 +2828,8 @@ define('minified', function() {
 	/*$
 	* @id request
 	* @group REQUEST
-	* @requires 
-	* @configurable default promise
+	* @requires promise
+	* @configurable default
 	* @name $.request()
 	* @syntax $.request(method, url)
 	* @syntax $.request(method, url, data)
@@ -3530,12 +3515,10 @@ define('minified', function() {
 		 * </pre>
 		 */
 		'M': M
-
+		/*$
+		 * @stop 
+		 */
 		///#/snippet webExports
-
-	 	/*$
-	 	 * @stop
-	 	 */
 
 	};
 	// @cond !amdsupport _window['require'] = function(n) { if (n == 'minified') return MINI; };

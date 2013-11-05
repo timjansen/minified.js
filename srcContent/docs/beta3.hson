@@ -22,7 +22,7 @@ Here's an overview over Minified's distributions:
 </p>
 
 
-<h2>New: New Util module (minified-util.js)</h2>
+<h2>New: Util module (minified-util.js)</h2>
 <p>
 Util provides general utility functions for JavaScript that are also useful outside of a browser. All Util functions are in the default namespace '_',
 so you can easily see which functions are located in Util. There is only one <a href="/api/list.html">Minified list</a> implementation though,
@@ -91,28 +91,10 @@ var r5 = template5({names: [{firstName: 'Joe', lastName: 'Jones'},
                                         {firstName: 'Marc', lastName: 'Meyer'}]});
 </pre>
 
-<h2>New: Creating Promises with _.promise()</h2>
-You can now use <span class="var"><a href="/api/promise.html">promise()</a></span> to create your own promises. To fulfill or pass them, just call the promise
-as a function. The constructor also allows you to unite promises, so it creates a promise that is fulfilled when either all promises succeeded or one failed.
-<pre>
-function animateAndRequest() {
-	var prom1 = $('.animated').animate({$backgroundColor: '#fff'}, 1000);
-	var prom2 = $.request('get', '/some/data');
-	return _.promise(prom1, prom2); // promise fulfilled when both animation and HTTP request end
-}
-
-function myTimeout(ms) {
-	var p = _.promise();
-	setTimeout(function() { p(true, ['Timeout over']); }, ms);
-	return p;
-}
-</pre>
-
-
 <h2>New: HTML templates with ht()</h2>
 <p><span class="var"><a href="/api/ht.html">ht()</a></span> executes a HTML <a href="/api/template.html">template</a> and replaces the 
 list elements' content with the created HTML.<br/>
-Please note that ht() is only available in the full distribution (minified.js / minified.noie.js).</p>
+Please note that ht() is only available in the full distribution.</p>
 <pre>
 $('#name').ht('<b>{{first}} {{last}}</b>', {first: 'Tim', last: 'Taylor'});
 </pre>
@@ -120,7 +102,7 @@ $('#name').ht('<b>{{first}} {{last}}</b>', {first: 'Tim', last: 'Taylor'});
 
 <h2>New: Creating HTML Elements with HTML()</h2>
 <p><span class="var"><a href="/api/html.html">HTML()</a></span> creates a list of elements from the given HTML <a href="/api/template.html">template</a>.<br/>
-Please note that HTML() is only available in the full distribution (minified.js / minified.noie.js).</p>
+Please note that HTML() is only available in the full distribution.</p>
 <pre>
 $('ul.users').add(HTML('<li>{{first}} {{last}}</li>', {first: 'Tim', last: 'Taylor'}));
 </pre>
@@ -174,13 +156,31 @@ $('.animated').animate({$top: function(oldValue, index, obj) { return (parseInt(
 </pre>
 
 
+<h2>New: Creating Promises with _.promise()</h2>
+You can now use <span class="var"><a href="/api/promise.html">promise()</a></span> to create your own promises. To fulfill or pass them, just call the promise
+as a function. The constructor also allows you to unite promises, so it creates a promise that is fulfilled when either all promises succeeded or one failed.
+<pre>
+function animateAndRequest() {
+	var prom1 = $('.animated').animate({$backgroundColor: '#fff'}, 1000);
+	var prom2 = $.request('get', '/some/data');
+	return _.promise(prom1, prom2); // promise fulfilled when both animation and HTTP request end
+}
+
+function myTimeout(ms) {
+	var p = _.promise();
+	setTimeout(function() { p(true, ['Timeout over']); }, ms);
+	return p;
+}
+</pre>
+
+
 <h2>Change: Sub-selectors and different invocation of on()</h2>
 <p><span class="var"><a href="/api/on.html">on()</a></span>'s syntax for selectors have changed. You can now specify an selector
 to register directly for children of the list. This is mostly useful if you create new elements using 
 <span class="var"><a href="/api/html.html">HTML()</a></span> and want to register events in the same step.
 The selector for event bubbling moved to the last argument. Support for 'this' has been removed to simplify the invocation.
 .</p>
-<pre>$('#myForm').add(HTML("<li><button>click me</button></li>").on('button', 'click', myClickHandler));</pre>
+<pre>$('#myForm').add(HTML("&lt;li>&lt;button>click me&lt;/button>&lt;/li>").on('button', 'click', myClickHandler));</pre>
 
 
 <h2>Change: Optional cancelling of events with on()</h2>
@@ -191,14 +191,14 @@ handler will be ignored now.
 <pre>$('#myForm').on('?submit', function() { return window.confirm('Really submit?'); });</pre>
 
 
-h2>Change: Replacing 'element factory' concept with smarter add()</h2>
+<h2>Change: Replacing 'element factory' concept with smarter add()</h2>
 <p>Before beta 3, <span class="var"><a href="/api/ee.html">EE()</a></span> and <span class="var"><a href="/api/clone.html">clone()</a></span> returned 
 an 'element factory' (a function creating the actual elements). I abandoned this concept as it was too complex and hard to understand. Instead 
 both function will now return regular lists containing the new elements.<br/>
 <span class="var">The new <a href="/api/add.html">add()</a></span> (and all the methods based on it, such as <span class="var"><a href="/api/fill.html">fill()</a></span> 
 and <span class="var"><a href="/api/replace.html">replace()</a></span>) will clone HTML nodes if they are added more than once to a document.</p>
 
-h2>Change: New prefix '?' in on()</h2>
+<h2>Change: New prefix '?' in on()</h2>
 <p>Before beta 3, the return value of event handlers was evaluated by default. Event processing would be aborted unless the handler returned true.<br/>
 Now the return value will be ignored by default. A new event name prefix '?' allows you to specify that the return value must be used.
 

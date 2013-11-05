@@ -87,7 +87,8 @@
 	<body>
 		<div id="pageContainer">
 		<h2 id="title">Minified Web Test: {{file}}</h2>
-		<div><button onclick="document.location.href = 'autorun.html'; return false;">Rerun All Tests</button></div>
+		<div><button onclick="document.location.href = 'autorun.html'; return false;">Rerun All Tests</button> 
+		<button onclick="document.location.href = 'vistest.html'; return false;">Vistest</button></div>
 
 		<div id="mocha"></div>
 		

@@ -1,4 +1,8 @@
 
+.links {
+	line-height: normal;
+}
+
 ul.links {
 	list-style-type: none;
 	margin: 0; 

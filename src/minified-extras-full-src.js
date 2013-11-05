@@ -319,6 +319,9 @@ function dummy() {
 	 *    sum += list[i];
 	 * </pre>
 	 */
+	/*$
+	 * @stop 
+	 */
 	///#/snippet extrasDocs
 
 	
@@ -331,7 +334,7 @@ function dummy() {
 		/*$
 		 * @id ht
 		 * @group ELEMENT
-		 * @requires set
+		 * @requires set template
 		 * @configurable default
 		 * @name .ht()
 		 * @syntax list.ht(templateString)
@@ -485,6 +488,7 @@ function dummy() {
 	
 	/*$
 	 * @id delay
+	 * @group EVENTS
 	 * @configurable default
 	 * @requires
 	 * @name $.delay()
@@ -509,6 +513,7 @@ function dummy() {
 
 	/*$
 	 * @id defer
+	 * @group EVENTS
 	 * @configurable default
 	 * @requires
 	 * @name $.defer()
@@ -529,6 +534,7 @@ function dummy() {
 	
 	/*$
 	 * @id wait
+	 * @group EVENTS
 	 * @configurable default
 	 * @requires promise
 	 * @name $.wait()
@@ -558,7 +564,7 @@ function dummy() {
 	 *
 	 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
 	 *                   from the event loop.
-	 * @param args optional an array of arguments to pass to the promise handler
+	 * @param args optional an array or list of arguments to pass to the promise handler
 	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
 	 *         <var>args</var> parameter as given to <var>wait()</var>.
 	 *         
@@ -566,7 +572,9 @@ function dummy() {
 	 */
 	'wait': function(durationMs, args) {
 		var p = promise();
-		delay(partial(p, args), durationMs);
+		delay(function() { 
+			call(p, null, [true, args]); 
+		}, durationMs);
 		return p;
 	}
 	
@@ -590,7 +598,7 @@ function dummy() {
 		/*$
 		 * @id html
 		 * @group ELEMENT
-		 * @requires 
+		 * @requires template
 		 * @configurable default
 		 * @name HTML()
 		 * @syntax HTML(templateString)

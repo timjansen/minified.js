@@ -1,11 +1,11 @@
 {
-title: 'Embedding &amp; Compiling Minified.js',
+title: 'Embedding & Compiling Minified.js',
 section: docs,
 externalCss: ['../css/doc.css'],
 main: `<div>
   <h1>Embedding & Compiling Minified.js</h1>
 
-<h2>Why Should I Embed Minified.js?</h2>
+<h2>Why should I embed Minified.js?</h2>
 <p>
 The easiest way to use Minfied is the traditional way, just add a script tag on your page and point it to one of the precompiled versions that
 you can <a href="/download">download</a>:
@@ -25,43 +25,28 @@ with a single file.</li>
 </ul>
 </p>
 
-<h2>How can I Embed Minified.js?</h2>
+<h2>How can I embed Minified.js?</h2>
 <p>Embedding Minified can be as easy as taking the content of a Minified source file and copying it at the top of your source code. 
 Usually this is not practical though. Unless only have a few lines of code and can live with scrolling down to edit your own code,
 you need to set up a small build system that combines several source files into a single result file. On the command line, a
 <code>cat</code> command should be sufficient for that. When you use a compiler like Google Closure or UglifyJS, they are usually 
-already capable of combining files. Personally, I prefer to use <a href="http://ant.apache.org">Ant</a> as build system. Combining
-several source files using Ant and Google Closure is as easy as this:
-<pre>
-&lt;java jar="thirdPartyLibs/closure-compiler/compiler.jar" failonerror="true" fork="true">
- 	&lt;arg value="--compilation_level=SIMPLE_OPTIMIZATIONS" />
-	&lt;arg value="--js=minified-src.js"/>         &lt!-- First input file -->
-	&lt;arg value="--js=yourfile1.js"/>            &lt!-- Second input file -->
-	&lt;arg value="--js=yourfile2.js"/>            &lt!-- 3rd input file -->
-	&lt;arg value="--js=yourfile3.js"/>            &lt!-- 4th input file -->
-  	&lt;arg value="--js_output_file=output.js"/>   &lt!-- Output file -->
-&lt;/java>
-</pre>
-Ant is perfect for using tools written in Java, such as Closure and YUI compressor, but makes it a bit difficult to use other tools.
-In that case, <a href="http://gruntjs.com/">Grunt</a> is another great and very popular choice for automization with a heavy 
-focus on JavaScript. 
-</p>
+already capable of combining files.</p>
 
-<h2>How can I Compile Minified.js with Closure?</h2>
+<h2>How can I compile Minified.js with Closure?</h2>
 <p>Most compilers / minification tools will work just fine with Minified.js, but there is one exception: 
 the Google Closure Compiler with Advanced Optimization. While Closure's Simple Optimization does not cause any problem,  
 the Advanced Optimization options require a lot of annotations to work correctly for a library. The compilation process removes 
 the annotations and thus, if you want to embed Minified and use Advanced Optimizations, you must use the plain source code version of Minified.
 </p>
 
-<h2>How can I Compile Minified.js with UglifyJS / YUI Compressor / Closure Simple Optimization?</h2>
+<h2>How can I compile Minified.js with UglifyJS / YUI Compressor / Closure Simple Optimization?</h2>
 <p>You can embed and compile both the plain source versions and the pre-compiled release of Minified. 
 However, unless you are using Google Closure, I recommend using the pre-compiled version, as the other tools can't reduce the size as 
 much as Closure's Advanced Optimization. Compiling twice does not hurt as long as you don't use Closure Advanced Optimization twice. 
 In fact, the offical Minifed releases are also compiled twice.
 </p>
 
-<h2>How are Minified's Releases Compiled?</h2>
+<h2>How are Minified's releases compiled?</h2>
 <p>The compiled versions of Minified.js are first compiled with the Google Closure Compiler with Advanced Optimization, and the result
 is then compiled again using UglifyJS. In the first step, the size is reduced from over 100kb to about 9kb. In the second step, UglifyJS removes
 about 80 bytes. After GZip'ing the difference is only about 30 bytes.<br/>

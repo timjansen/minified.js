@@ -67,7 +67,11 @@ define('minified', function() {
 
 	/** @const */
 	var undef;
-	
+
+    /*$
+	 * @id date_constants
+	 * @dependency
+     */
 	function val3(v) {return v.substr(0,3);}
 	var MONTH_LONG_NAMES = split('January,February,March,April,May,June,July,August,September,October,November,December', /,/g);
 	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, val3); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -117,6 +121,10 @@ define('minified', function() {
 			'S':  6,
 			'a': [3, MERIDIAN_NAMES]
 		};
+	
+    /*$
+	 * @stop
+     */
 	
 	var MAX_CACHED_TEMPLATES = 99;
 	var templateCache={}; // template -> function
@@ -411,6 +419,11 @@ define('minified', function() {
 	}
 	function callList(list, fThisOrArgs, args) {
 		return map(list, function(f) { if (isFunction(f)) return call(f, fThisOrArgs, args); else return undef;});
+	}
+	function fixFunc(f, args) {
+		return function() {
+			return call(f, _null, args);
+		};
 	}
 	function bind(f, fThis, beforeArgs, afterArgs) {
 		return function() {
@@ -1621,10 +1634,10 @@ define('minified', function() {
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
 	},
-	///#/snippet utilListFuncs
 	/*$
- 	 * @stop
- 	 */
+	 * @stop 
+	 */
+	///#/snippet utilListFuncs
 	dummy:0
 	}, M.prototype);
      
@@ -1697,7 +1710,7 @@ define('minified', function() {
 	     * @group OBJECT 
 	     * @requires
 	     * @configurable default 
-	     * @name .keys() 
+	     * @name _.keys() 
 	     * @syntax _.keys(obj) 
 	     * @module UTIL
 	     * Creates a ##list#Minified list## containing all property names of the specified object. Only direct properies are
@@ -2273,7 +2286,7 @@ define('minified', function() {
 		/*$
 		 * @id formatvalue
 		 * @group FORMAT
-		 * @requires 
+		 * @requires date_constants
 		 * @configurable default
 		 * @name _.formatValue()
 		 * @syntax _.formatValue(format, value)
@@ -2396,7 +2409,7 @@ define('minified', function() {
 		/*$
 		 * @id parsedate
 		 * @group FORMAT
-		 * @requires 
+		 * @requires date_constants
 		 * @configurable default
 		 * @name _.parseDate()
 		 * @syntax _.parseDate(format, dateString)
@@ -2589,7 +2602,7 @@ define('minified', function() {
 		/*$ 
 	     * @id format 
 	     * @group FORMAT
-	     * @requires 
+	     * @requires template
 	     * @configurable default 
 	     * @name _.format() 
 	     * @syntax _.format()
@@ -2630,7 +2643,7 @@ define('minified', function() {
 		/*$ 
 	     * @id template 
 	     * @group FORMAT
-	     * @requires 
+	     * @requires date_constants
 	     * @configurable default 
 	     * @name _.template() 
 	     * @syntax _.template(template)
@@ -2752,7 +2765,7 @@ define('minified', function() {
 		/*$ 
 	     * @id formathtml 
 	     * @group FORMAT
-	     * @requires 
+	     * @requires template
 	     * @configurable default 
 	     * @name _.formatHtml() 
 	     * @syntax _.formatHtml()
@@ -2798,6 +2811,7 @@ define('minified', function() {
 		///#snippet utilExports
 		/*$
 		 * @id underscore
+		 * @group LIST
 		 * @name _()
 		 * @syntax _(item...)
 		 * @configurable default
@@ -2837,6 +2851,9 @@ define('minified', function() {
 		 *        ##Minified list#list## (but NOT recursively).
 		 */
 		'_': _,
+		/*$
+		 * @stop 
+		 */
 		///#/snippet utilExports
 		'M': M
 	};
@@ -2849,9 +2866,7 @@ define('minified', function() {
 //@cond commonjs })();
 
 
-/*$
- * @stop 
- */
+
 
 
 

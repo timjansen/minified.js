@@ -12,7 +12,6 @@
 
 <div class="availability">Web module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">list.on(eventHandler)</div>
 <div class="syntax">list.on(names, eventHandler)</div>
 <div class="syntax">list.on(selector names, eventHandler)</div>
 <div class="syntax">list.on(names, customFunc, args)</div>
@@ -27,14 +26,12 @@
 <dd class="">a selector string for <a href='dollar.html' class='func'>$()</a> to register the event only on those children of the list elements that
 match the selector.
 Supports all valid parameters for <span class="var">$()</span> except functions.</dd>
-<dt id="on_names" class=""><a name="on_names"><var>names (optional)</var></a></dt>
+<dt id="on_names" class=""><a name="on_names"><var>names</var></a></dt>
 <dd class="">the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of
 the name must not used. You can register the handler for more than one event by specifying several
 space-separated event names. If the name is prefixed
 with '|' (pipe), the event will be passed through and the event's default actions will be executed by the browser.
-If the name is prefixed with '?', the event will only be passed through if the handler returns <span class="var">true</span>.
-If you omit the parameter, Minified will chose the default event type for each element. The default is 'submit' for
-forms and 'click' for everything else.</dd>
+If the name is prefixed with '?', the event will only be passed through if the handler returns <span class="var">true</span>.</dd>
 <dt id="on_eventHandler" class=""><a name="on_eventHandler"><var>eventHandler</var></a></dt>
 <dd class="">the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 <dl>
@@ -56,8 +53,8 @@ Then, a return value <span class="var">false</span> will stop all further proces
 element that matches this selector.
 Supports all valid parameters for <span class="var">$()</span> except functions. Analog to <code><a href='is.html' class='func'>is()</a></code>,
 the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.</dd>
-<dt id="on_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5 inSyntax6"><a name="on_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5 inSyntax6">the list</dd>
+<dt id="on_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="on_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">the list</dd>
 </dl>
 
 <h4>Description</h4>
@@ -89,11 +86,6 @@ $('#myButton').on('click', function() {
 The previous example can bere written like this, using <span class="var">on()</span>'s <span class="var">args</span> parameter:
 <pre>
 $('#myButton').on('click', setStatus, ['running']);
-</pre>
-
-As 'click' is the default event for buttons, you can also omit it here:
-<pre>
-$('#myButton').on(setStatus, ['running']);
 </pre>
 </p></div>
 <h4>Example</h4>
@@ -171,7 +163,6 @@ table rows that have been added <strong>after you registered for the events</str
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="keys.html" class="func">.keys()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
@@ -222,6 +213,7 @@ table rows that have been added <strong>after you registered for the events</str
 </li><li><a href="isobject.html" class="func">_.isObject()</a> <span class="tocMod">Util</span>
 </li><li><a href="isstring.html" class="func">_.isString()</a> <span class="tocMod">Util</span>
 </li><li><a href="isvalue.html" class="func">_.isValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="keys.html" class="func">_.keys()</a> <span class="tocMod">Util</span>
 </li><li><a href="mapobj.html" class="func">_.mapObj()</a> <span class="tocMod">Util</span>
 </li><li><a href="pad.html" class="func">_.pad()</a> <span class="tocMod">Util</span>
 </li><li><a href="parsedate.html" class="func">_.parseDate()</a> <span class="tocMod">Util</span>
