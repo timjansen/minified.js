@@ -30,25 +30,24 @@
 	// Load the right source, depending on whether 'compiled' is in the URL query
 	
 	var q = window.location.search, undefined;
-	var srcFiles = ["dist/minified-web-src.js", "dist/minified-web.js", "dist/minified-legacyie-web-src.js", "dist/minified-legacyie-web.js", 
+	var srcFiles = ["dist/minified-web-src.js", "dist/minified-web.js", "dist/minified-src.js", "dist/minified.js", 
+	                "dist/minified-legacyie-web-src.js", "dist/minified-legacyie-web.js", 
 	                "dist/minified-legacyie.js"];
-	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie versions on old ie
+	if (!!document.all && ![].map) srcFiles = srcFiles.slice(4); // remove non-ie versions on old ie
 	
 	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;
 	var file = srcFiles[srcNum] + '?rnd=' + (new Date().getTime());
     document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
+ 
 	</script>
 	
 	<script type="text/javascript">
-	var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
-	
-	$(function() {
-		$('#libName').fill(srcFiles[srcNum]);
+	window.onload = function() {	// onload required for IE6
+			
+		var MINI = this.require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
+		$('#libName').fill(file);
 		$$('#srcNum').value = (srcNum + 1) % srcFiles.length;
-	});
-
-	$(function() {
-		
+	
 		function startAnim() {
 			$('.animD').each(function(div, index) {
 				function step(promise) {
@@ -72,14 +71,14 @@
 		}
 		startAnim();
 		window.setInterval(startAnim, 7000);
-
+	
 		var fadeToggle = $('#fadeDiv div').toggle({$$fade: 1}, {$$fade: 0}, 1500, 1);
 		window.setInterval(fadeToggle, 2000);
-
-
+	
+	
 		var slideToggle = $('#slideDiv div').toggle({$$slide: 1}, {$$slide: 0}, 900);
 		window.setInterval(slideToggle, 1500);
-
+	
 		var DURMS = 4000;
 		function startLoop() {
 			$.loop(function(ts, stop) {
@@ -113,9 +112,8 @@
 		}
 		backNForth();
 		window.setInterval(backNForth, 20000);
-		
-	});
-	
+			
+	}	
 	</script>
 	
 	</head>

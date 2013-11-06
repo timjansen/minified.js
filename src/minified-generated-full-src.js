@@ -3889,7 +3889,7 @@ define('minified', function() {
 			    function(newState) {
 					if (newState !== state) {
 						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
-						
+
 						if (durationMs) 
 							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity))['then'](function(){promise=_null;});
 						else
@@ -3899,7 +3899,7 @@ define('minified', function() {
 		else
 			return self['toggle'](replace(stateDesc1, regexg, '-'), replace(stateDesc1, regexg, '+'));
 	},
-	
+
 	
 
 	/*$

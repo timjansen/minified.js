@@ -2531,7 +2531,7 @@ define('minified', function() {
 		else
 			return self['toggle'](replace(stateDesc1, regexg, '-'), replace(stateDesc1, regexg, '+'));
 	},
-	
+
 	
 
 	/*$

@@ -228,7 +228,7 @@ describe('minified-web-element-test.js', function() {
 			var sl = $('#cloneId').clone();
 			check(sl.length, 1);
 			$('#container2').fill(sl);
-			check(/id=/.test($$('#container2').innerHTML), false, 'Clone() id removal');
+			check(/cloneId/i.test($$('#container2').innerHTML), false, 'Clone() id removal');
 			check(/nonono/.test($$('#container2').innerHTML), true, 'Clone() id / content');
 		});
 	});
