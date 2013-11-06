@@ -959,10 +959,9 @@ define('minified', function() {
 					e['preventDefault']();
 					e['stopPropagation']();
 				}
-				e.returnValue = _false; // cancel for IE
-				e.cancelBubble = _true; // cancel bubble for IE
+				e['cancelBubble'] = _true; // cancel bubble for IE
 			}
-			return stop;
+			return !stop;
 		};
 	}
 
@@ -4116,10 +4115,15 @@ define('minified', function() {
 						}
 					});
 				}
-				if (/kbox|dio/i.test(el['type']))
+				if (/kbox|dio/i.test(el['type'])) {
 					register('|click', 'checked', index);
-				else 
-					register('|input |change |keyup', 'value', index);
+				}
+				else { 
+					// @condblock ie8compatibility
+					register(IS_PRE_IE9 ? '|propertychange' : '|input |change |keyup', 'value', index);
+					// @condend
+					// @cond !ie8compatibility register('|input |change |keyup', 'value', index);
+				}
 			});
 	},
 
@@ -4160,7 +4164,7 @@ define('minified', function() {
 						IS_PRE_IE9 ? registeredEvents[el[MINIFIED_MAGIC_NODEID]] :
 						el['M'], function(hDesc) {
 							if (hDesc['n'] == eventName)
-								stopBubble = stopBubble || hDesc['h'](eventObj, element);
+								stopBubble = stopBubble || !hDesc['h'](eventObj, element);
 						});
 				el = el['parentNode'];
 			}

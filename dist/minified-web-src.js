@@ -323,11 +323,11 @@ define('minified', function() {
 								event['preventDefault']();
 								event['stopPropagation']();
 							}
-							return stop;
+							return !stop;
 						};
 
 						var trigger = function(eventName, eventObj, element) {
-							return (name == eventName) && miniHandler(eventObj, element);
+							return (name == eventName) && !miniHandler(eventObj, element);
 						};
 
 						(registeredOn['M'] = registeredOn['M'] || []).push(trigger);
@@ -2621,10 +2621,12 @@ define('minified', function() {
 						}
 					});
 				}
-				if (/kbox|dio/i.test(el['type']))
+				if (/kbox|dio/i.test(el['type'])) {
 					register('|click', 'checked', index);
-				else 
+				}
+				else { 
 					register('|input |change |keyup', 'value', index);
+				}
 			});
 	},
 
