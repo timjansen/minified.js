@@ -2,7 +2,7 @@ Minified Change Log
 ====================
 
 
-Ongoing
+Beta 3 (2013-11-07)
 --------------------
 * Added Util module.
 * New distribution minified.js, containing both Util and Web.
@@ -25,7 +25,6 @@ Web module:
 * Changed add(), fill(), addBefore()...: will clone elements if added to more than one parent.
 * Changed filter(): removed value argument, only function possible.
 * In on(), the handler's return value is always ignored, unless the event name is prefixed with '?'.
-* In on(), the event names parameter became optional. If not set, the default is 'submit' for forms and 'click' for everything else.
 * In values(), the returned map values will always be arrays.
 * In animate(), removed the '+=10px' syntax, added function(oldValue, index, obj) support instead.
 * In animate(), removed animState param. stop() is now a property of the promise, time is returned by stop().

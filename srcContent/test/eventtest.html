@@ -8,7 +8,7 @@
 		#overDiv  { left: 10px;  top: 10px; }
 		#memLeakDiv  { left: 320px; top: 10px; }
 		#changeDiv { left: 10px;  top: 320px; }
-		#u3Div  { left: 320px; top: 320px; }
+		#cancelDiv  { left: 320px; top: 320px; }
 		#changeDiv div.spacer { padding: 0.5em; }
 		
 		#overDiv { background-color: #fff; }
@@ -71,6 +71,20 @@
 			var oldCount = parseInt(span.text().replace(/\D.$/, ''));
 			span.fill((oldCount+1) + " (" + value + ")");
 		});
+		
+		// Test 4 / event cancellation
+			function cancelCounter() {
+				var span = $(this).trav('nextSibling', 'span');
+				var oldCount = parseInt(span.text().replace(/\D.$/, ''));
+				span.fill((oldCount+1) + "");
+			}		
+			$('#regularCheckbox').on('|click', cancelCounter);
+			$('#blockedCheckbox').on('click', cancelCounter);
+			$('#semiblockedCheckbox').on('?click', function() {
+				cancelCounter.call(this);
+				return $$('#regularCheckbox').checked;
+			});
+		
 	};	
 	</script>
 	
@@ -95,7 +109,14 @@
 				<span class="desc">onChange() test of input field and checkbox</span>
 			</div>
 		</div>
-		<div id="u3Div" class="test"></div>
+		<div id="cancelDiv" class="test">
+			<div class="spacer">
+				<div>Check 1 (normal): <input id="regularCheckbox" value="x" type="checkbox"/> <span>0</span></div>
+				<div>Check 2 (blocked): <input id="blockedCheckbox" value="x" type="checkbox"/> <span>0</span> </div>
+				<div>Check 3 (blocked unless check1): <input id="semiblockedCheckbox" value="x" type="checkbox"/> <span>0</span> </div>
+				<span class="desc">Tests event cancellation</span>
+			</div>
+		</div>
 	</div>
 	<div id="rerun" >
 		<strong>Library: </strong><span id="libName">error</span>
