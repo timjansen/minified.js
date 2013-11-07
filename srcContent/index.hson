@@ -88,10 +88,10 @@ own. Or go to <a href="https://docs.google.com/presentation/d/1N08me0gkOGWPtr0xz
   <h2><a name="sizeCmp">Size Comparison</a></h2>
   <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><th>Minified</th><td>no</td><td>19.1kb</td><td><strong>8056 bytes</strong></td></tr>
-<tr><th>...with IE6-8 support</th><td>no</td><td>20.9kb</td><td><strong>8803 bytes</strong></td></tr>
-<tr><th>...Web Module only</th><td>yes</td><td>9.4kb</td><td><strong>4058 bytes</strong></td></tr>
-<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>11.2kb</td><td><strong>4862 bytes</strong></td></tr>
+<tr><th>Minified</th><td>no</td><td>19.1kb</td><td><strong>8058 bytes</strong></td></tr>
+<tr><th>...with IE6-8 support</th><td>no</td><td>20.8kb</td><td><strong>8807 bytes</strong></td></tr>
+<tr><th>...Web Module only</th><td>yes</td><td>9.3kb</td><td><strong>4060 bytes</strong></td></tr>
+<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>11.1kb</td><td><strong>4866 bytes</strong></td></tr>
 <tr><th>jQuery 1.10.2</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
 <tr><th>jQuery 2.0.3</th><td>no</td><td>82kb</td><td>29kb</td></tr>
 <tr><th>MooTools Core NoCompat 1.4.5</th><td>yes</td><td>88kb</td><td>29kb</td></tr>
