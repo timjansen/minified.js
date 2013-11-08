@@ -97,7 +97,7 @@ var secondsPasses = _.dateDiff(inputDate1, inputDate2, 'second');
 <h5>Example: Using Templates</h5>
 <pre>
 var template1 = _.template('{{a}} plus {{b}} is {{a+b}}');
-var r1 = template1({a: 2, b: 9});  // returns '2 plus 9 is 11'
+var r1 = template1({a: 2, b: 9});                              // returns '2 plus 9 is 11'
 
 var r2 = _.format('{{a}} plus {{b}} is {{a+b}}'{a: 2, b: 9});  // templated compiled (and cached) on-the-fly
 
@@ -108,7 +108,7 @@ var r4 = template4({visits: 2});   //returns 'Hello Returning Customer.'
 
 var template5 = _.template('{{each n: names}}{{n.firstName}} {{n.lastName}}\n{{/each}}');
 var r5 = template5({names: [{firstName: 'Joe', lastName: 'Jones'}, 
-                                        {firstName: 'Marc', lastName: 'Meyer'}]});
+                            {firstName: 'Marc', lastName: 'Meyer'}]});
 </pre>
 
 <h2>New: HTML templates with ht()</h2>
