@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>_.formatValue() - Minified.js</title>
+
+<link rel="stylesheet" type="text/css" href="../css/reference.css">
+
+
+
+
+</head>
+<body>
+<div id="head">
+	<div class="container">
+		
+		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt='Minified'><![endif]-->
+		<!--[if gt IE 8]><img src='/img/minified.svg' alt='Minified'><![endif]-->
+		<!--[if !IE]>--><img src="/img/minified.svg" alt="Minified"><!--<![endif]--></a>
+
+		<div id="topMenu">
+			<a class="notSelected" href="/">Home</a>
+			<a class="notSelected" href="/download/">Download</a>
+			<a class="notSelected" href="/builder/">Build</a>
+			<a class="notSelected" href="/docs/">Documentation</a>
+			<a class="selected" href="/api/">API</a>
+			<a class="notSelected" href="/about/">About</a>
+		</div>
+	</div>
+</div>
+<div id="main">
+	<div class="container">
+<div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
+<h2><a name="doc-formatvalue">_.formatValue()</a></h2>
+<div class="summary">
+Formats a single value as a string, using the given format template.</div>
+
+<div class="availability">Util module only.</div><h4>Syntax</h4>
+<div class="syntaxVariant">
+<div class="syntax">_.formatValue(format, value)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="formatvalue_format" class=""><a name="formatvalue_format"><var>format</var></a></dt>
+<dd class="">the format that describes the output</dd>
+<dt id="formatvalue_value" class=""><a name="formatvalue_value"><var>value</var></a></dt>
+<dd class="">the value to format. Either a Date, a number, a string or a value that can be converted to a string.</dd>
+<dt id="formatvalue_RETURN" class="returnValue inSyntax0"><a name="formatvalue_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0">the string-formatted value
+</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description"><p>
+Formats a single value as a string, using the given format template.  It has support for numbers, dates, booleans and strings.</p><p><b>Choice Formatting</b><br>
+With a choice format, you can map input values into output values. In the format string the choices are separated by pipes ('|')
+and each choice has the format <code>&ltcmp>&ltvalue>:&lt;result></code>:
+<ul><li>&lt;cmp> is a comparison operator ('=', '>', '&lt;', '>=', '&lt;='), but can be omitted to check for equality.</li>
+<li>&lt;value> is the value as string.</li>
+<li>&lt;result> is the result, either a string or a number format</li></ul>
+You can have a default choice at the end without &lt;cmp> or &lt;value>.</p><p><b>Examples</b>
+<pre>_.formatValue('true:is True|is False', value);
+_.formatValue('&lt;5:under 5|&gt;=15:at least 15|=7:is seven|some other number', value);
+_.formatValue('1:one item|2:two items|&gt;3:many items', value);
+_.formatValue('ERR:error|WARN:warning|INFO:info|debug', value);
+</pre></p><p><b>Number Formatting</b><br>
+Number formatting allows you to specify the number of digits before and optionally after the decimal separator, the decimal separator itself
+as well as how to group digits. The following characters are used in the format:</p><p><table><tr><th>Character</th><th>Description</th></tr>
+<tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
+<tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
+<tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+<tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+</table></p><p>If you only define a group separator, but not a decimal separator, the group separator must appear
+at least twice in the format. Otherwise it will be considered a decimal separator. Please note that when you
+have several group separators, Minified counts only the number of digit between its first and second
+appearance to determine how to group the digits. If you have only one group separator and a decimal separator,
+the number of digits between them is used to format the number.</p><p><b>Examples</b>
+<pre>var v1  = _.formatValue('#', 15); // '15'
+var v2  = _.formatValue('####', 15);   // '15' (same as '#')
+var v3  = _.formatValue('0000', 15);   // '0015'
+var v4  = _.formatValue('#.###', 15.14274); // '15.143'
+var v5  = _.formatValue('#.000', 15.14274); // '15.143'
+var v6  = _.formatValue('#.###', 15.1);     // '15.1'
+var v7  = _.formatValue('#.000', 15.1);     // '15.100'
+var v8  = _.formatValue('000,000', 15.1);   // '015,100'
+var v9  = _.formatValue('#.###', 15);     // '15'
+var v10 = _.formatValue('#.000', 15);    // '15.000'
+var v11 = _.formatValue('#,###', 15.1);  // '15,1' (comma as decimal separator)
+var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
+var v13 = _.formatValue('000,000.###', 92548.42); // '92,548.42'
+var v14 = _.formatValue('000.000,###', 92548.42); // '92.548,42' (comma as separator)
+var v15 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 7.356); // '7.36' (choice format)
+var v16 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 25.04); // '25.0'
+var v17 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 71.51); // '72'
+</pre></p><p><b>Choice Number Formatting</b><br>
+It is possible to combine number formatting with choices. You can also use additional characters in a number format.</p><p><b>Examples</b>
+<pre>_.formatValue('$#.00', 17);  // '$17.00'
+_.formatValue('0:no eggs|1:1 egg|>1:# eggs', 12);  // '12 eggs'
+</pre></p><p><b>Date Formatting</b><br>
+In a date format, there are a number of reserved characters that represent parts of the date. If you repeat the same character, you
+specify the minimum number of digits. Some elements allow a comma-separated list of translations in angular brackets, see below.
+<table>
+<tr><th>Character</th><th>Description</th></tr>
+<tr><td>y</td><td>Year (4 digits)</td></tr>
+<tr><td>Y</td><td>Year (2 digits)</td></tr>
+<tr><td>M</td><td>Month (1-12)</td></tr>
+<tr><td>n</td><td>Month as short name ('Jan', 'Feb'...). Supports translations.</td></tr>
+<tr><td>N</td><td>Month as long name ('January', 'February'...). Supports translations.</td></tr>
+<tr><td>d</td><td>Day of month (1-31)</td></tr>
+<tr><td>m</td><td>Minutes (0-59)</td></tr>
+<tr><td>H</td><td>Hours in 24h format (0-23)</td></tr>
+<tr><td>h</td><td>Hours in 12h format (1-12)</td></tr>
+<tr><td>K</td><td>Hours in 0-based 12h format (0-11)</td></tr>
+<tr><td>k</td><td>Hours in 1-based 24h format (1-24)</td></tr>
+<tr><td>s</td><td>Seconds (0-59)</td></tr>
+<tr><td>S</td><td>Milliseconds (0-999)</td></tr>
+<tr><td>a</td><td>Either 'am' or 'pm'. Supports translations.</td></tr>
+<tr><td>w</td><td>Day of week as short name ('Sun', 'Mon'...). Supports translations.</td></tr>
+<tr><td>W</td><td>Day of week as long name ('Sunday', 'Monday'...). Supports translations.</td></tr>
+<tr><td>z</td><td>Timezone offset, e.g. '+0700'</td></tr>
+</table>
+<span class="var">formatValue</span> also supports formatting a date in a different timezone. You only need to put the timezone in brackets at the front of
+the format, e.g. '[+0100]'.</p><p><b>Examples</b>
+<pre>var now = new Date();
+var v1  = _.formatValue('y-M-d', now);       // e.g. '2013-7-9'
+var v2  = _.formatValue('yyyy-MM-dd', now);  // e.g. '2013-07-09'
+var v3  = _.formatValue('yyyy-MM-ddTHH:mm:ss.SS z', now); // e.g. '2013-07-09T23:07:38.472 +0700'
+var v4  = _.formatValue('MM/dd/YY h:mm:ss a', now);       // e.g. '07/09/13 11:07:38 pm'
+var v5  = _.formatValue('dd.MM.yyyy HH:mm:ss', now);      // e.g. '09.07.2013 23:07:38'
+var v6  = _.formatValue('H:mm', now);                // e.g. '23:07'
+var v7  = _.formatValue('W, N d y', now);            // e.g. 'Tuesday, July 9 2013'
+var v8  = _.formatValue('Nd', now);                  // e.g. 'July9'
+var v9  = _.formatValue('d.N[Januar,Februar,M&auml;rz,April,Mai,Juni,Juli,'+
+            'August,September,Oktober,November,Dezember]', now); // German translation: '9. Juli'
+var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', now);  // different timezone: '2013-07-09 5:07 pm'
+</pre></p><p></p></div>
+
+<h4>See also..</h4>
+<ul><li><code><a href="undefinedpad.html" class="func">_.pad()</a></code> will pad a number with zeros.</li>
+<li><code><a href="undefinedparsedate.html" class="func">_.parseDate()</a></code> parses a date.</li>
+<li><code><a href="undefinedparsenumber.html" class="func">_.parseNumber()</a></code> parses a number.</li>
+<li><code><a href="undefinedformat.html" class="func">_.format()</a></code> allows more complex formats.</li>
+</ul>
+
+<p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
+</div>
+<div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
+</li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
+</li><li><a href="defer.html" class="func">$.defer()</a> 
+</li><li><a href="delay.html" class="func">$.delay()</a> 
+</li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
+</li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
+</li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
+</li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
+</li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
+</li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
+</li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
+</li><li><a href="tojson.html" class="func">$.toJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="wait.html" class="func">$.wait()</a> 
+</li><li><a href="add.html" class="func">.add()</a> <span class="tocMod">Web</span>
+</li><li><a href="addafter.html" class="func">.addAfter()</a> <span class="tocMod">Web</span>
+</li><li><a href="addbefore.html" class="func">.addBefore()</a> <span class="tocMod">Web</span>
+</li><li><a href="addfront.html" class="func">.addFront()</a> <span class="tocMod">Web</span>
+</li><li><a href="animate.html" class="func">.animate()</a> <span class="tocMod">Web</span>
+</li><li><a href="array.html" class="func">.array()</a> <span class="tocMod">Util</span>
+</li><li><a href="call.html" class="func">.call()</a> <span class="tocMod">Util</span>
+</li><li><a href="clone.html" class="func">.clone()</a> <span class="tocMod">Web</span>
+</li><li><a href="collect.html" class="func">.collect()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="contains.html" class="func">.contains()</a> <span class="tocMod">Util</span>
+</li><li><a href="dial.html" class="func">.dial()</a> <span class="tocMod">Web</span>
+</li><li><a href="each.html" class="func">.each()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="endswith.html" class="func">.endsWith()</a> <span class="tocMod">Util</span>
+</li><li><a href="equals.html" class="func">.equals()</a> <span class="tocMod">Util</span>
+</li><li><a href="fill.html" class="func">.fill()</a> <span class="tocMod">Web</span>
+</li><li><a href="filter.html" class="func">.filter()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="ht.html" class="func">.ht()</a> 
+</li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
+</li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
+</li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
+</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="offset.html" class="func">.offset()</a> 
+</li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
+</li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
+</li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
+</li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
+</li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
+</li><li><a href="startswith.html" class="func">.startsWith()</a> <span class="tocMod">Util</span>
+</li><li><a href="sub.html" class="func">.sub()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="text.html" class="func">.text()</a> <span class="tocMod">Web</span>
+</li><li><a href="toobject.html" class="func">.toObject()</a> <span class="tocMod">Util</span>
+</li><li><a href="toggle.html" class="func">.toggle()</a> <span class="tocMod">Web</span>
+</li><li><a href="trav.html" class="func">.trav()</a> <span class="tocMod">Web</span>
+</li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
+</li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
+</li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
+</li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
+</li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
+</li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
+</li><li><a href="bind.html" class="func">_.bind()</a> <span class="tocMod">Util</span>
+</li><li><a href="copyobj.html" class="func">_.copyObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="dateadd.html" class="func">_.dateAdd()</a> <span class="tocMod">Util</span>
+</li><li><a href="dateclone.html" class="func">_.dateClone()</a> <span class="tocMod">Util</span>
+</li><li><a href="datediff.html" class="func">_.dateDiff()</a> <span class="tocMod">Util</span>
+</li><li><a href="datemidnight.html" class="func">_.dateMidnight()</a> <span class="tocMod">Util</span>
+</li><li><a href="eachobj.html" class="func">_.eachObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="escapehtml.html" class="func">_.escapeHtml()</a> <span class="tocMod">Util</span>
+</li><li><a href="escaperegexp.html" class="func">_.escapeRegExp()</a> <span class="tocMod">Util</span>
+</li><li><a href="extend.html" class="func">_.extend()</a> <span class="tocMod">Util</span>
+</li><li><a href="filterobj.html" class="func">_.filterObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="format.html" class="func">_.format()</a> <span class="tocMod">Util</span>
+</li><li><a href="formathtml.html" class="func">_.formatHtml()</a> <span class="tocMod">Util</span>
+</li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
+</li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
+</li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
+</li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>
+</li><li><a href="isobject.html" class="func">_.isObject()</a> <span class="tocMod">Util</span>
+</li><li><a href="isstring.html" class="func">_.isString()</a> <span class="tocMod">Util</span>
+</li><li><a href="isvalue.html" class="func">_.isValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="keys.html" class="func">_.keys()</a> <span class="tocMod">Util</span>
+</li><li><a href="mapobj.html" class="func">_.mapObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="pad.html" class="func">_.pad()</a> <span class="tocMod">Util</span>
+</li><li><a href="parsedate.html" class="func">_.parseDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="parsenumber.html" class="func">_.parseNumber()</a> <span class="tocMod">Util</span>
+</li><li><a href="partial.html" class="func">_.partial()</a> <span class="tocMod">Util</span>
+</li><li><a href="range.html" class="func">_.range()</a> <span class="tocMod"></span>
+</li><li><a href="template.html" class="func">_.template()</a> <span class="tocMod">Util</span>
+</li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
+</li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
+</li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="always.html" class="func">promise.always()</a> 
+</li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
+
+</div>
+</div>
+<div id="foot">
+	<div class="container">
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
+		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
+	</div>
+</div>
+
+
+</body>
+</html>

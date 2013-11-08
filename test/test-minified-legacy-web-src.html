@@ -1,0 +1,195 @@
+<html>
+	<head><title>Minified Web Test: dist/minified-legacyie-web-src.js</title>
+
+	<style type="text/css">
+		body { font: 20px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif; }
+		#pageContainer { margin: 0.5em; }
+		h1, h2, h3, h4 { font-weight: 200; }
+		#container, #container2, #cloneTest { display: none; }
+		
+		.x { margin-top: 2px; }	/* required for testing computed css in minified-web-getset-test.js */
+	</style> 
+	<link rel="stylesheet" href="mocha.css" />
+
+	<script type="text/javascript" src="sparkplug.js"></script>
+	<script type="text/javascript">
+		var q = window.location.search, undefined;
+		var isLegacyIE = (!!document.all && ![].map); // remove non-ie versions on old ie
+		
+		function fail(text) {
+			throw new Error(text);
+		}
+
+		function check(value, expected, extraMsg) {
+			var undefined;
+			if (expected === undefined) {
+				if (!value) {
+					if (window.console) console.log("Check for true failed, given:", value, extraMsg?extraMsg:'');
+					fail("Value '"+value+"' is not true. " + (extraMsg?extraMsg:''));
+				}
+			}
+			else
+				if (value != expected) {
+					if (window.console) { 
+						console.log("Check failed, given:", value, " expected:", expected, extraMsg?extraMsg:'');
+						if (typeof value == 'string' && typeof expected == 'string' && value.length+expected.length > 15) {
+							for (var i = 0; i<value.length && i<expected.length; i++)
+								if (value.charAt(i) != expected.charAt(i)) {
+									console.log("Diff at ", i, ": '", value.charAt(i), "' != '", expected.charAt(i) + "'")
+									break;
+								}
+						}
+					}
+					fail("Value '"+value+"' given, but expected '"+expected+"'. " + (extraMsg?extraMsg:''));
+				}
+		}
+		
+		function contains(list, value, checkIdentity, extraMsg) {
+			for (var i = 0; i < list.length; i++)
+				if (list[i] === value || (!checkIdentity && list[i] == value))
+					return true;
+			fail("Can not find '"+value+"' in list. " + extraMsg?extraMsg:'');
+		}
+		
+		function containsAll(list, expectedValueList, checkIdentity, extraMsg) {
+			check(list.length, expectedValueList.length, 'Testing for array length' + (extraMsg?(': '+extraMsg):''));
+			for (var i = 0; i < expectedValueList.length; i++)
+				contains(list, expectedValueList[i], checkIdentity, 'Checked index='+i+'.' + (extraMsg?(': '+extraMsg):''));
+		}
+		
+		function forward() {
+			if (/forward/.test(q) && (isLegacyIE ? 'test-minified-legacy-src.html?forward' : 'test-minified-legacy-src.html?forward'))
+				document.location.href = isLegacyIE ? 'test-minified-legacy-src.html?forward' : 'test-minified-legacy-src.html?forward';
+		}
+  	</script>
+	<script type="text/javascript" src="dist/minified-legacyie-web-src.js"></script>
+  	<script src="mocha.js"></script>
+  	<script>
+  		var MINI = require('minified'), $ = MINI.$, $$=MINI.$$, EE = MINI.EE, HTML = MINI.HTML;
+  		var _ = MINI._;
+  	
+  		var isPhantomJS = /PhantomJS/.test(navigator.userAgent);
+  	
+  		mocha.setup('bdd');
+  	</script>
+  	<script src="minified-web-selector-test.js"></script>
+  	<script src="minified-web-element-test.js"></script>
+  	<script src="minified-web-class-test.js"></script>
+  	<script src="minified-web-cookies-test.js"></script>
+  	<script src="minified-web-event-test.js"></script>
+  	<script src="minified-web-forms-test.js"></script>
+  	<script src="minified-web-getset-test.js"></script>
+  	<script src="minified-web-json-test.js"></script>
+  	<script src="minified-web-lists-test.js"></script>
+  	<script src="minified-web-toggle-test.js"></script>
+  	<script src="minified-web-promises-test.js"></script>
+	</head>
+	<body>
+		<div id="pageContainer">
+		<h2 id="title">Minified Web Test: dist/minified-legacyie-web-src.js</h2>
+		<div><button onclick="document.location.href = 'autorun.html'; return false;">Rerun All Tests</button> 
+		<button onclick="document.location.href = 'vistest.html'; return false;">Vistest</button></div>
+
+		<div id="mocha"></div>
+		
+		
+		
+		<div id="container">
+			<div id="a" class="x" style="margin-top: 5px;" title="tititi" data-x="bar" data-yy="foo">
+				<p><b>div id="a" class="x"</b></p>
+				<div id="a_a" class="y z">
+					<p>div id="a_a" class="y z"</p>
+				</div>
+				<div id="a_b" class="m x z">
+					<p>div id="a_b" class="m x z"</p>
+				</div>
+			</div>
+
+			<div id="b" class="n">
+				<p><b>div id="b" class="n"</b></p>
+				<div id="b_a" class="x y">
+					<p>div id="b_a" class="x y"</p>
+				</div>
+				<div id="b_b" class="n x">
+					<p>div id="b_b" class="n x"</p>
+				</div>
+			</div>
+
+			<div id="c" class="m">
+				<p><b>div id="b" class="m"</b></p>
+				<div id="c_a" class="x y r-r">
+					<p>div id="c_a" class="x y r-r"</p>
+				</div>
+				<div id="c_b" class="m z">
+					<p>div id="c_b" class="m z"</p>
+				</div>
+			</div>
+			
+		</div>
+		<div id="container2">
+		</div>
+		<div id="cloneTest">
+			<div class="cloneMe">
+				<p>Test</p> 
+				UglyChar: &szlig;
+				<a href="http://example.com/" title="Teest">Test</a>
+				<strong><span class="bla342">abc<code>def</code>ds</span></strong>
+				<span style="margin: 1px">dd</span>
+			</div>
+			<div id="cloneId">nonono</div>
+		</div>
+		<div id="playground">
+		</div>
+
+		<div id="formContainer" style="display: none">
+			<form id="id1" name="form1">
+	   		 	<input id="id1_1" name="i1_1" value="a" />
+	   		 	<input id="id1_2a" name="i1_2" value="b1" />
+	   		 	<input id="id1_2b" name="i1_2" value="b2" />
+	   		 	<input id="id1_2c" name="i1_2" value="b3" />
+	   		 	<input id="id1_3" name="i1_3" value="c" type="hidden" />
+	   		 	<input id="id1_4" name="i1_4" value="d" type="password" />
+	   		 	<input id="id1_5" name="i1_5" value="e" type="checkbox" />
+	   		 	<input id="id1_6a" name="i1_6" value="f" type="checkbox"  checked="checked"/>
+	   		 	<input id="id1_6b" name="i1_6" value="g" type="checkbox"  checked="checked"/>
+	   		 	<input id="id1_6c" name="i1_6" value="h" type="checkbox" />
+	   		 	<input id="id1_6d" name="i1_6" value="i" type="checkbox"  checked="checked"/>
+	   		 	<input id="id1_7" name="i1_7" value="j" type="checkbox"  checked="checked"/>
+	   		 	<input id="id1_8a" name="i1_8" value="x" type="radio" />
+	   		 	<input id="id1_8b" name="i1_8" value="y" type="radio" checked="checked" />
+	   		 	<input id="id1_8c" name="i1_8" value="z" type="radio" />
+	   		 	<textarea id="id1_9" name="i1_9">abc</textarea>
+	   		 	<input id="id1_10" name="i1_10"  />
+	   		 </form>
+   		 
+			<form id="id2" name="form2">
+				<input id="id2_1" name="i2_1" value="bb" />
+				<input id="id2_2" name="i2_2" value="bc" />
+			</form>
+
+   		 	<input id="id3_1" name="i3_1" value="ttt" />
+   		 	<span>test</span>
+		</div>
+
+		</div>		
+	</body>
+	<script type="text/javascript">
+		var failures = 0;
+		mocha._reporter = function MHTML(runner, base) {
+			this.html = new Mocha.reporters.HTML(runner, base);
+			runner.on('fail', function() {
+				failures++;
+			});
+		};
+		
+    	mocha.checkLeaks();
+    	
+    	if (!isPhantomJS) 
+			mocha.run(function() {
+				if (failures == 0)
+					forward();
+				document.getElementById('title').style.color = failures ? 'red' : 'black';
+			});
+	</script>
+</html>
+
