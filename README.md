@@ -17,9 +17,9 @@ For beta 3:
 <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
 <tr><th>Minified</th><td>no</td><td>19.1kb</td><td><strong>8058 bytes</strong></td></tr>
-<tr><th>...with IE6-8 support</th><td>no</td><td>20.8kb</td><td><strong>8807 bytes</strong></td></tr>
+<tr><th>...with IE6-8 support</th><td>no</td><td>20.8kb</td><td>8807 bytes</td></tr>
 <tr><th>...Web Module only</th><td>yes</td><td>9.3kb</td><td><strong>4060 bytes</strong></td></tr>
-<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>11.1kb</td><td><strong>4866 bytes</strong></td></tr>
+<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>11.1kb</td><td>4866 bytes</td></tr>
 <tr><th>jQuery 1.10.2</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
 <tr><th>jQuery 2.0.3</th><td>no</td><td>82kb</td><td>29kb</td></tr>
 <tr><th>MooTools Core NoCompat 1.4.5</th><td>yes</td><td>88kb</td><td>29kb</td></tr>
@@ -62,7 +62,7 @@ The goal of Minified is to provide all the basics that you may need on an HTML p
 What you can expect from Minified Web 
 --------------------------------------
 * General purpose functions to effectively write HTML-based web applications
-* A very small footprint. The complete distribution will always be smaller than 4kB, and the Web module under 4kb.
+* A very small footprint. The complete distribution will always be smaller than 8kB, and the Web module under 4kb.
 * A clean and simple, easy to use API.
 * A stable API that won't change.
 

@@ -14,7 +14,7 @@ main:`<div>
   	<div style="float: left; width: 20%; text-align: center;" class="wword">Wh<span class="colored">a</span>t?</div>
   	<div style="float: right; width: 80%; padding-top: 0.5em;"><div style="max-width: 45em;">Minified.js is a client-side JavaScript 
   	library with low footprint (&lt;8kB) and a large feature set. It offers jQuery-like features (DOM manipulation, animation, 
-  	events, HTTP requests) and utility functions (collections, date&amp;number formatting, date arithmtic, templates) with a simple, coherent API.</div></div>
+  	events, HTTP requests) and utility functions (collections, date&amp;number formatting, date arithmetic, templates) with a simple, coherent API.</div></div>
   	<div style="clear: both;"></div>
   </div>
 
@@ -65,6 +65,7 @@ main:`<div>
  <div class="newsItem"><strong>July 20, 2013</strong>: <a href="https://plus.google.com/u/0/b/100950045026999226880/100950045026999226880/posts/fy2GCAEsJgD">Redefining the 4kB size limit</a></div>
  <div class="newsItem"><strong>July 31, 2013</strong>: <a href="/docs/beta2.html">Minified Web beta 2 released!</a></div>
  <div class="newsItem"><strong>August 20, 2013</strong>: <a href="https://plus.google.com/100950045026999226880/posts/PvnVamzAzpp">Beta 3 Update</a></div>
+ <div class="newsItem"><strong>November 8, 2013</strong>: <a href="https://plus.google.com/b/100950045026999226880/+Minifiedjs/posts/cuCuDa26auJ">Beta 3 released!</a></div>
  
 <h2>Getting Started</h2>
 <iframe class="fiddle" width="100%" height="300" src="http://jsfiddle.net/tjansen/tqsCg/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe> 
@@ -89,9 +90,9 @@ own. Or go to <a href="https://docs.google.com/presentation/d/1N08me0gkOGWPtr0xz
   <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
 <tr><th>Minified</th><td>no</td><td>19.1kb</td><td><strong>8058 bytes</strong></td></tr>
-<tr><th>...with IE6-8 support</th><td>no</td><td>20.8kb</td><td><strong>8807 bytes</strong></td></tr>
+<tr><th>...with IE6-8 support</th><td>no</td><td>20.8kb</td><td>8807 bytes</td></tr>
 <tr><th>...Web Module only</th><td>yes</td><td>9.3kb</td><td><strong>4060 bytes</strong></td></tr>
-<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>11.1kb</td><td><strong>4866 bytes</strong></td></tr>
+<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>11.1kb</td><td>4866 bytes</td></tr>
 <tr><th>jQuery 1.10.2</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
 <tr><th>jQuery 2.0.3</th><td>no</td><td>82kb</td><td>29kb</td></tr>
 <tr><th>MooTools Core NoCompat 1.4.5</th><td>yes</td><td>88kb</td><td>29kb</td></tr>

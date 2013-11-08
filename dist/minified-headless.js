@@ -224,7 +224,7 @@ module.exports = (function() {
 		else
 			eachObj(obj, function(key, value) { list.push(value); });
 		return list;
-	}	
+	}
 
 	function mapObj(list, mapFunc) {
 		var result = {};

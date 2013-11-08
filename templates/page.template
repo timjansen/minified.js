@@ -6,7 +6,7 @@
 {{if !this.externalCss || externalCss.length == 0}}<link rel="stylesheet" type="text/css" href="/css/minimum.css"/>{{/if}}
 {{each link: this.externalCss}}<link rel="stylesheet" type="text/css" href="{{link}}"/>{{/each}}
 {{if this.inlineCss}}<style type="text/css">{{this.inlineCss}}</style>{{/if}}
-{{each link: this.asyncCss}}<script type="text/javascript" src="{{link}}" async="async"></script>{{/each}}
+{{each link: this.asyncJs}}<script type="text/javascript" src="{{link}}" async="async"></script>{{/each}}
 {{each link: this.externalJs}}<script type="text/javascript" src="{{link}}"></script>{{/each}}
 {{if this.inlineJs}}<script type="text/javascript">{{this.inlineJs}}</script>{{/if}}
 </head>
@@ -34,7 +34,7 @@
 <div id="foot">
 	<div class="container">
 		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="google.com/+Minifiedjs">Google+ page</a>.
+		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

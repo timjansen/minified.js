@@ -13,7 +13,7 @@
 <div class="availability">Web module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.on(names, eventHandler)</div>
-<div class="syntax">list.on(selector names, eventHandler)</div>
+<div class="syntax">list.on(selector, names, eventHandler)</div>
 <div class="syntax">list.on(names, customFunc, args)</div>
 <div class="syntax">list.on(selector, names, customFunc, args)</div>
 <div class="syntax">list.on(names, eventHandler, bubbleSelector)</div>

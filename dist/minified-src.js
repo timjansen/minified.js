@@ -3350,8 +3350,6 @@ define('minified', function() {
 	 * @syntax list.animate(properties, durationMs)
 	 * @syntax list.animate(properties, durationMs, linearity)
 	 * @syntax list.animate(properties, durationMs, interpolationFunc)
-	 * @syntax list.animate(properties, durationMs, linearity, state)
-	 * @syntax list.animate(properties, durationMs, interpolationFunc, state)
      * @module WEB
 	 * Animates the items of the list by modifying their properties, CSS styles and attributes. <var>animate()</var> can work with numbers, strings that contain exactly one
 	 * number, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
@@ -3769,7 +3767,7 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .on()
 	 * @syntax list.on(names, eventHandler)
-	 * @syntax list.on(selector names, eventHandler)
+	 * @syntax list.on(selector, names, eventHandler)
 	 * @syntax list.on(names, customFunc, args)
 	 * @syntax list.on(selector, names, customFunc, args)
 	 * @syntax list.on(names, eventHandler, bubbleSelector)
