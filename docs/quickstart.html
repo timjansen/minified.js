@@ -327,7 +327,7 @@ var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
 
 <a href="/api/dollar.html">$</a>('#header').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('h2', 'My Title'));                                  // creates &lt;h2>MyTitle&lt;/h2>
 <a href="/api/dollar.html">$</a>('#linkContainer').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('a', {'@href': 'http://acme.com'}, "ACME"));  // creates &lt;a href="http://acme.com">ACME&lt;/a>
-<a href="/api/dollar.html">$</a>('#header').<a href="/api/add.html">add</a>([<a href="/api/ee.html">EE</a>('br'), "Single line", <a href="/api/ee.html">EE</a>('br')]);                        // add &lt;br/>Single line&lt;br/>
+<a href="/api/dollar.html">$</a>('#header').<a href="/api/add.html">add</a>([<a href="/api/ee.html">EE</a>('br'), "Single line", <a href="/api/ee.html">EE</a>('br')]);                    // add &lt;br/>Single line&lt;br/>
 <a href="/api/dollar.html">$</a>('#list').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('ul', [  // &lt;ul>
             <a href="/api/ee.html">EE</a>('li', {$: 'first'}, "First item"), // &lt;li class="first">First Item&lt;/li>
             <a href="/api/ee.html">EE</a>('li', "Second item"),              // &lt;li>Second Item&lt;/li>
@@ -362,11 +362,11 @@ Please refer to the <a href="/api/template.html"><code>template()</code></a> API
 
 <p>Beside <a href="/api/fill.html"><code>fill()</code></a> and <a href="/api/add.html"><code>add()</code></a>, there are a few more functions for adding or removing nodes:
 <pre>
-<a href="/api/dollar.html">$</a>('#d').<a href="/api/addfront.html">addFront</a>('Read this first!');        // add as first child
-<a href="/api/dollar.html">$</a>('#e').<a href="/api/addafter.html">addAfter</a>([<a href="/api/ee.html">EE</a>('hr'), 'My Footer']);   // add directly after #e
-<a href="/api/dollar.html">$</a>('#f').<a href="/api/addbefore.html">addBefore</a>(<a href="/api/html.html">HTML</a>('&lt;h1>My Title&lt;/h1>'));     // add in front of #f
-<a href="/api/dollar.html">$</a>('#oldH2').<a href="/api/replace.html">replace</a>(<a href="/api/ee.html">EE</a>('h2', 'New Title'));  // replace #oldH2 with the new &lt;h2>
-<a href="/api/dollar.html">$</a>('#oldH3').<a href="/api/remove.html">remove</a>();                        // remove #oldH3 without substitution
+<a href="/api/dollar.html">$</a>('#d').<a href="/api/addfront.html">addFront</a>('Read this first!');         // add as first child
+<a href="/api/dollar.html">$</a>('#e').<a href="/api/addafter.html">addAfter</a>([<a href="/api/ee.html">EE</a>('hr'), 'My Footer']);    // add directly after #e
+<a href="/api/dollar.html">$</a>('#f').<a href="/api/addbefore.html">addBefore</a>(<a href="/api/html.html">HTML</a>('&lt;h1>My Title&lt;/h1>')); // add in front of #f
+<a href="/api/dollar.html">$</a>('#oldH2').<a href="/api/replace.html">replace</a>(<a href="/api/ee.html">EE</a>('h2', 'New Title'));   // replace #oldH2 with the new &lt;h2>
+<a href="/api/dollar.html">$</a>('#oldH3').<a href="/api/remove.html">remove</a>();                         // remove #oldH3 without substitution
 </pre>
 </p>
 

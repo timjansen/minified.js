@@ -167,7 +167,7 @@ You can also use the same syntax to add elements to the list:
 <pre>var l2 = _([list1, element1, element2]);</pre>
 or 
 <pre>var l2 = $([list1, element1, element2]);</pre>
-Again, <var>$()</var> will remove null elements from the resuls, but <var>_()</var> will not.
+Again, <var>$()</var> will remove null elements from the results, but <var>_()</var> will not.
 </p>
 <p>
 API: <a href="/api/dollar.html">$()</a>.<br>
@@ -178,7 +178,7 @@ API: <a href="/api/dollar.html">$()</a>.<br>
 <p>
 <pre>var specialParent = $(child).trav('parentNode', '.special');</pre>
 <span class="var">trav()</span> allows you to select all nodes visited when traversing the specified property. Here, the 
-property is 'parentNode' to traverse through all parent nodes. The second parameter is a selector that 
+property is 'parentNode', to traverse through all parent nodes. The second parameter is a selector that 
 describes the element you are looking for. Only elements that match it will be in the resulting list.
 </p>
 <p>
@@ -205,7 +205,7 @@ API: <a href="/api/find.html">find()</a>, <a href="/api/trav.html">trav()</a>.<b
 <h3><a name="select_sibling">Get an Element's Next Sibling</a></h3>
 <p>
 <pre>var siblings = myList.trav('nextSibling', 1);</pre>
-You can use <span class="var">trav()</span> to get the next subling for each element in the list and 
+You can use <span class="var">trav()</span> to get the next sibling for each element in the list and 
 include them in a new list.
 </p>
 <p>

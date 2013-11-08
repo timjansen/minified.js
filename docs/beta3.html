@@ -60,7 +60,7 @@ or write your own callback if you need to set 'this'.</li>
 from the returned promise. </li>
 <li>Support for the relative syntax ("+=10px") has been removed from <span class="var"><a href="/api/animate.html">animate()</a></span>. Instead you can use a callback
 to calculate the target value. </li>
-<li><span class="var"><a href="/api/ee.html">EE()</a></span> and span class="var"><a href="/api/clone.html">clone()</a> 
+<li><span class="var"><a href="/api/ee.html">EE()</a></span> and <span class="var"><a href="/api/clone.html">clone()</a></span> 
 do not create element factories anymore, but just the elements wrapped in a list. In most code that should not make any difference, since
 <a href="/api/add.html">add()</a> and its sibling functions will now automatically clone elements when added to lists longer 
 than one. But if you called the element factories yourself, you need to change your code. </li>
@@ -136,7 +136,7 @@ var r4 = template4({visits: 2});   //returns 'Hello Returning Customer.'
 var template5 = _.template('{{each n: names}}{{n.firstName}} {{n.lastName}}
 {{/each}}');
 var r5 = template5({names: [{firstName: 'Joe', lastName: 'Jones'}, 
-                                        {firstName: 'Marc', lastName: 'Meyer'}]});
+                            {firstName: 'Marc', lastName: 'Meyer'}]});
 </pre>
 
 <h2>New: HTML templates with ht()</h2>
