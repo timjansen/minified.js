@@ -7,8 +7,9 @@
 		#container .test { border: 1px solid black; position: absolute; width: 300px; height: 300px; } 
 		#overDiv  { left: 10px;  top: 10px; }
 		#memLeakDiv  { left: 320px; top: 10px; }
-		#u2Div { left: 10px;  top: 320px; }
-		#u3Div  { left: 320px; top: 320px; }
+		#changeDiv { left: 10px;  top: 320px; }
+		#cancelDiv  { left: 320px; top: 320px; }
+		#changeDiv div.spacer { padding: 0.5em; }
 		
 		#overDiv { background-color: #fff; }
 		#overInner1 { position: absolute; width: 200px; height: 200px; left: 50px; top: 50px; background-color: #f00;}
@@ -21,8 +22,10 @@
 	// Load the right source, depending on whether 'compiled' is in the URL query
 	
 	var q = window.location.search, undefined;
-	var srcFiles = ["../minified-web-src.js", "../minified-web.js", "../minified-web-src.noie.js", "../minified-web.noie.js"];
-	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie version on old ie
+	var srcFiles = ["dist/minified-web-src.js", "dist/minified-web.js", "dist/minified-src.js", "dist/minified.js", 
+	                "dist/minified-legacyie-web-src.js", "dist/minified-legacyie-web.js", 
+	                "dist/minified-legacyie.js"];
+	if (!!document.all && ![].map) srcFiles = srcFiles.slice(4); // remove non-ie versions on old ie
 	
 	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;
 	var file = srcFiles[srcNum] + '?rnd=' + (new Date().getTime());
@@ -30,14 +33,12 @@
 	</script>
 	
 	<script type="text/javascript">
-	var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
-	
-	$(function() {
+	window.onload = function() { // onload required for IE6
+		var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
+		
 		$('#libName').fill(srcFiles[srcNum]);
 		$$('#srcNum').value = (srcNum + 1) % srcFiles.length;
-	});
 
-	$(function() {
 		// Test 1 / onOver()
 		var counter0 = 0, overToggle0 = $('#overDiv').toggle({$backgroundColor:'#fff'}, {$backgroundColor:'#555'}, 500);
 		var counter1 = 0, overToggle1 = $('#overInner1').toggle({$backgroundColor:'#f00'}, {$backgroundColor:'#555'}, 500);
@@ -63,8 +64,28 @@
 				timeoutId = window.setInterval(createOne, 1);
 			}
 		});
-	});
-	
+		
+		// Test 3 / onChange()
+		$('#changeDiv input').onChange(function(value) {
+			var span = $(this).trav('nextSibling', 'span');
+			var oldCount = parseInt(span.text().replace(/\D.$/, ''));
+			span.fill((oldCount+1) + " (" + value + ")");
+		});
+		
+		// Test 4 / event cancellation
+			function cancelCounter() {
+				var span = $(this).trav('nextSibling', 'span');
+				var oldCount = parseInt(span.text().replace(/\D.$/, ''));
+				span.fill((oldCount+1) + "");
+			}		
+			$('#regularCheckbox').on('|click', cancelCounter);
+			$('#blockedCheckbox').on('click', cancelCounter);
+			$('#semiblockedCheckbox').on('?click', function() {
+				cancelCounter.call(this);
+				return $$('#regularCheckbox').checked;
+			});
+		
+	};	
 	</script>
 	
 	</head>
@@ -72,7 +93,7 @@
 	<div id="container">
 		<div id="overDiv" class="test"><span class="counter">0</span>
 			<div id="overInner1"><span class="counter">0</span><div id="overInner2"><span class="counter">0</span><div id="overInner3"></div></div></div>
-			<span class="desc">onOver() test of nexted &lt;divs>. Counters increase for each event.</span>
+			<span class="desc">onOver() test of nested &lt;divs>. Counters increase for each event.</span>
 		</div>
 		<div id="memLeakDiv" class="test">
 			<div style="margin: 10px;">
@@ -81,8 +102,21 @@
 				<span class="desc">Quickly creates elements, adds events to them and removes them. Monitor browser to find memory leaks.</span>
 			</div>
 		</div>
-		<div id="u2Div" class="test"></div>
-		<div id="u3Div" class="test"></div>
+		<div id="changeDiv" class="test">
+			<div class="spacer">
+				<div><input id="changingText" value="change me..."/> <span>0</span></div>
+				<div><input id="changingCheckbox" value="x" type="checkbox"/> <span>0</span> </div>
+				<span class="desc">onChange() test of input field and checkbox</span>
+			</div>
+		</div>
+		<div id="cancelDiv" class="test">
+			<div class="spacer">
+				<div>Check 1 (normal): <input id="regularCheckbox" value="x" type="checkbox"/> <span>0</span></div>
+				<div>Check 2 (blocked): <input id="blockedCheckbox" value="x" type="checkbox"/> <span>0</span> </div>
+				<div>Check 3 (blocked unless check1): <input id="semiblockedCheckbox" value="x" type="checkbox"/> <span>0</span> </div>
+				<span class="desc">Tests event cancellation</span>
+			</div>
+		</div>
 	</div>
 	<div id="rerun" >
 		<strong>Library: </strong><span id="libName">error</span>
@@ -91,7 +125,7 @@
 			<input type="submit" value="Switch library"/>
 		</form>
 		<br/>
-		<a href="autotest.html">Start AutoTest</a>
+		<a href="autorun.html">Start AutoTest</a>
 	</div>
 	</body>
 </html>

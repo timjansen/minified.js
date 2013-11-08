@@ -1,27 +1,260 @@
-<!DOCTYPE html><html xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:page="http://tjansen.de/minifiedPage" xmlns:i="http://tjansen.de/internal" xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="UTF-8"></meta><title>.fill() - Minified.js</title><link rel="stylesheet" type="text/css" href="../css/reference.css"></link></head><body><div id="head"><div class="container"><a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt='Minified'><![endif]--> <!--[if gt IE 8]><img src='/img/minified.svg' alt='Minified'><![endif]--> <!--[if !IE]>--><img src='/img/minified.svg' alt='Minified'/><!--<![endif]--></a><div id="topMenu"><a class="notSelected" href="/">Home</a><a class="notSelected" href="/download/">Download</a><a class="notSelected" href="/builder/">Build</a><a class="notSelected" href="/docs/">Documentation</a><a class="selected" href="/api/">API</a><a class="notSelected" href="/about/">About</a></div></div></div><div id="main"><div class="container"> <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p> <h2><a name="doc-fill">.fill()</a></h2> <div class="summary">Sets the content of the list's HTML elements, replacing old content.</div> <h4>Syntax Variants</h4> <div class="syntaxVariant"> <div class="syntax">list.fill()</div> <div class="syntax">list.fill(text)</div> <div class="syntax">list.fill(factoryFunction)</div> <div class="syntax">list.fill(list)</div> <div class="syntax">list.fill(node)</div> </div> <h4>Parameters</h4> <dl class="params"> <dt id="fill_text" class=""><a name="fill_text"><var>text</var></a></dt> <dd class="">a string to set as text node of the list elements</dd> <dt id="fill_factoryFunction" class=""><a name="fill_factoryFunction"><var>factoryFunction</var></a></dt> <dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes: <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd> <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd> <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element. Can be either a string for a text node, an HTML element or a list containing strings, lists, functions and/or DOM nodes. If a function is returned or in the list, it will be invoked recursively with the same arguments.</dd></dl> </dd> <dt id="fill_list" class=""><a name="fill_list"><var>list</var></a></dt> <dd class="">a list containing text, functions, nodes or more list. Please note that if you have DOM nodes in this list and attempt to add them to more than one element, the result is <var>undefined</var>. You should always use factories if your Minified list contains more than one item.</dd> <dt id="fill_node" class=""><a name="fill_node"><var>node</var></a></dt> <dd class="">a DOM node to set <strong>only in the first element</strong> of the list. </dd> <dt id="fill_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4"><a name="fill_RETURN"><var>(return value)</var></a></dt> <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">the current list</dd> </dl> <h4>Description</h4> <div class="description"><p>Sets the content of the list's HTML elements, replacing old content. If a string has been given, it will be added as text node. If you pass a function, it will be invoked for each list member to create a node. The function prototype is <code>function(parent, index)</code>. It can return all values allowed by <var>fill()</var>, including another function to be called. If you pass a list or a function returns a list, all its elements will be added using the rules above.</p><p>It is also possible to pass a DOM node, but it will be set <strong>only in the first element of the list</strong>, because DOM does not allow adding it more than once.</p><p>Call <var>fill()</var> without arguments to remove all children from a node.</p><p></p></div> <div class="examples"> <h4>Example</h4> <div class="example"><p>Using the following HTML: <pre>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>.fill() - Minified.js</title>
+
+<link rel="stylesheet" type="text/css" href="../css/reference.css">
+
+
+
+
+</head>
+<body>
+<div id="head">
+	<div class="container">
+		
+		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt='Minified'><![endif]-->
+		<!--[if gt IE 8]><img src='/img/minified.svg' alt='Minified'><![endif]-->
+		<!--[if !IE]>--><img src="/img/minified.svg" alt="Minified"><!--<![endif]--></a>
+
+		<div id="topMenu">
+			<a class="notSelected" href="/">Home</a>
+			<a class="notSelected" href="/download/">Download</a>
+			<a class="notSelected" href="/builder/">Build</a>
+			<a class="notSelected" href="/docs/">Documentation</a>
+			<a class="selected" href="/api/">API</a>
+			<a class="notSelected" href="/about/">About</a>
+		</div>
+	</div>
+</div>
+<div id="main">
+	<div class="container">
+<div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
+<h2><a name="doc-fill">.fill()</a></h2>
+<div class="summary">Sets the content of the list's HTML elements, replacing old content.</div>
+
+<div class="availability">Web module only.</div><h4>Syntax Variants</h4>
+<div class="syntaxVariant">
+<div class="syntax">list.fill()</div>
+<div class="syntax">list.fill(text)</div>
+<div class="syntax">list.fill(node)</div>
+<div class="syntax">list.fill(list)</div>
+<div class="syntax">list.fill(factoryFunction)</div>
+</div>
+
+<h4>Parameters</h4>
+<dl class="params">
+<dt id="fill_text" class=""><a name="fill_text"><var>text</var></a></dt>
+<dd class="">a string to set as text node of the list elements</dd>
+<dt id="fill_node" class=""><a name="fill_node"><var>node</var></a></dt>
+<dd class="">a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
+For all additional elements, the node will be cloned using <code><a href="clone.html" class="func">clone()</a></code>.</dd>
+<dt id="fill_list" class=""><a name="fill_list"><var>list</var></a></dt>
+<dd class="">a list containing text and/or nodes. May also contain nested lists with nodes or text..</dd>
+<dt id="fill_factoryFunction" class=""><a name="fill_factoryFunction"><var>factoryFunction</var></a></dt>
+<dd class="">a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
+<dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+<dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+<dt class="returnValue">(callback return value)</dt><dt><dd>The node(s) to be added to the list element.
+Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
+If a function is returned, it will be invoked recursively with the same arguments.</dd></dt></dl></dd>
+<dt id="fill_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4"><a name="fill_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4">the current list
+</dd>
+</dl>
+
+<h4>Description</h4>
+<div class="description"><p>Sets the content of the list's HTML elements, replacing old content. If a string has been given, it will be added as text node.
+DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.</p><p>When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
+and <a href="clone.html" class="func">clones</a> to all following list elements.</p><p><code><a href="ee.html" class="func">EE()</a></code>, <code><a href="html.html" class="func">HTML()</a></code> and <code><a href="clone.html" class="func">clone()</a></code> are compatible with <span class="var">fill()</span> and can help you create new HTML ndoes.</p><p>Call <span class="var">fill()</span> without arguments to remove all children from a node.</p><p></p></div>
+
+<div class="examples">
+<h4>Example</h4>
+<div class="example"><p>Using the following HTML:
+<pre>
 &lt;div id="status">Done&lt;/div>
-</pre> <var>fill()</var> with a simple string replaces the element's content with the text: <pre>
+</pre>
+<span class="var">fill()</span> with a simple string replaces the element's content with the new text:
+<pre>
 $('#status').fill('Please Wait..');
-</pre> Results in: <pre>
+</pre>
+Results in:
+<pre>
 &lt;div id="status">Please Wait..&lt;/div>
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Pass an Element Factory to replace the old content with that: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Pass an element to replace the old content with the element:
+<pre>
 $('#status').fill(EE('span', {'className': 'bold'}, 'Please Wait...'));
-</pre> With the previous example's HTML, this would create this: <pre>
+</pre>
+With the previous example's HTML, this would create this:
+<pre>
 &lt;div id="status">&lt;span class='bold'>Please Wait..&lt;/span>&lt;/div>
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>You can also pass a list of elements and texts: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>You can also pass a list of elements and texts:
+<pre>
 $('#status').fill(['Here', EE('br'), 'are', EE('br'), 'four', EE('br'), 'lines.]);
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>Or a complete structure built using EE: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Or a complete structure built using EE:
+<pre>
 $('#myListContainer').fill([
     EE('h2', 'My List'),
     EE('ol', [EE('li', 'First Item'), EE('li', 'Second Item'), EE('li', 'Third Item')])
 ]);
-</pre> </p></div> <h4>Example</h4> <div class="example"><p>You can write a factory function that re-creates the list for every instance: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>You can write a factory function that re-creates the list for every instance:
+<pre>
 $('.listContainers').fill(function(e, index) { return [
     EE('h2', 'List Number '+index),
     EE('ol', [EE('li', 'First Item'),
     EE('li', 'Second Item'),
     EE('li', 'Third Item')
 ])]});
-</pre> </p></div> <h4>Example</h4> <div class="example"><p><var>fill()</var> without arguments deletes the content of the list elements: <pre>
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p><span class="var">fill()</span> without arguments deletes the content of the list elements:
+<pre>
 $('.listContainers').fill();
-</pre> </p></div> </div> <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p> </div> <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html">$()</a> </li><li><a href="dollardollar.html">$$()</a> </li><li><a href="getcookie.html">$.getCookie()</a> </li><li><a href="loop.html">$.loop()</a> </li><li><a href="off.html">$.off()</a> </li><li><a href="parsejson.html">$.parseJSON()</a> </li><li><a href="ready.html">$.ready()</a> </li><li><a href="request.html">$.request()</a> </li><li><a href="setcookie.html">$.setCookie()</a> </li><li><a href="tojson.html">$.toJSON()</a> </li><li><a href="add.html">.add()</a> </li><li><a href="addafter.html">.addAfter()</a> </li><li><a href="addbefore.html">.addBefore()</a> </li><li><a href="addfront.html">.addFront()</a> </li><li><a href="animate.html">.animate()</a> </li><li><a href="clone.html">.clone()</a> </li><li><a href="collect.html">.collect()</a> </li><li><a href="each.html">.each()</a> </li><li><a href="fill.html">.fill()</a> </li><li><a href="filter.html">.filter()</a> </li><li><a href="find.html">.find()</a> </li><li><a href="get.html">.get()</a> </li><li><a href="is.html">.is()</a> </li><li><a href="length.html">.length</a> </li><li><a href="on.html">.on()</a> </li><li><a href="onover.html">.onOver()</a> </li><li><a href="only.html">.only()</a> </li><li><a href="remove.html">.remove()</a> </li><li><a href="replace.html">.replace()</a> </li><li><a href="select.html">.select()</a> </li><li><a href="set.html">.set()</a> </li><li><a href="sub.html">.sub()</a> </li><li><a href="text.html">.text()</a> </li><li><a href="toggle.html">.toggle()</a> </li><li><a href="trav.html">.trav()</a> </li><li><a href="trigger.html">.trigger()</a> </li><li><a href="values.html">.values()</a> </li><li><a href="ee.html">EE()</a> </li><li><a href="M.html">M</a> </li><li><a href="list.html">Minified Lists</a> </li><li><a href="promise.html">Promise</a> </li><li><a href="error.html">promise.error()</a> </li><li><a href="then.html">promise.then()</a> </li><li><a href="require.html">require()</a> </li><li><a href="/docs/howto.html">How to...</a></li></ul></div> </div></div><div id="foot"><div class="container"><p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the <a href="https://plus.google.com/100950045026999226880/posts">Google+ page</a>. <a href="/impressum.html">Legal Notice / Impressum</a>.</p></div></div></body></html>
+</pre>
+</p></div>
+</div>
+
+<h4>See also..</h4>
+<ul><li><code><a href="add.html" class="func">add()</a></code> works like <span class="var">fill()</span>, but does not delete children.</li>
+<li><code><a href="addfront.html" class="func">addFront()</a></code> adds nodes as first child, not as last.</li>
+<li><code><a href="addafter.html" class="func">addAfter()</a></code> adds nodes not as children but as siblings.</li>
+<li><code><a href="addbefore.html" class="func">addBefore()</a></code> also adds nodes not as children but as siblings.</li>
+<li><code><a href="replace.html" class="func">replace()</a></code> replaces existing nodes.</li>
+<li><code><a href="ht.html" class="func">ht()</a></code> is a alternative for replacing element content with a HTML snippet.</li>
+</ul>
+
+<p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
+</div>
+<div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
+</li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
+</li><li><a href="defer.html" class="func">$.defer()</a> 
+</li><li><a href="delay.html" class="func">$.delay()</a> 
+</li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
+</li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
+</li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
+</li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="promise.html" class="func">$.promise()</a> 
+</li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
+</li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
+</li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
+</li><li><a href="tojson.html" class="func">$.toJSON()</a> <span class="tocMod">Web</span>
+</li><li><a href="wait.html" class="func">$.wait()</a> 
+</li><li><a href="add.html" class="func">.add()</a> <span class="tocMod">Web</span>
+</li><li><a href="addafter.html" class="func">.addAfter()</a> <span class="tocMod">Web</span>
+</li><li><a href="addbefore.html" class="func">.addBefore()</a> <span class="tocMod">Web</span>
+</li><li><a href="addfront.html" class="func">.addFront()</a> <span class="tocMod">Web</span>
+</li><li><a href="animate.html" class="func">.animate()</a> <span class="tocMod">Web</span>
+</li><li><a href="array.html" class="func">.array()</a> <span class="tocMod">Util</span>
+</li><li><a href="call.html" class="func">.call()</a> <span class="tocMod">Util</span>
+</li><li><a href="clone.html" class="func">.clone()</a> <span class="tocMod">Web</span>
+</li><li><a href="collect.html" class="func">.collect()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="contains.html" class="func">.contains()</a> <span class="tocMod">Util</span>
+</li><li><a href="dial.html" class="func">.dial()</a> <span class="tocMod">Web</span>
+</li><li><a href="each.html" class="func">.each()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="endswith.html" class="func">.endsWith()</a> <span class="tocMod">Util</span>
+</li><li><a href="equals.html" class="func">.equals()</a> <span class="tocMod">Util</span>
+</li><li><a href="fill.html" class="func">.fill()</a> <span class="tocMod">Web</span>
+</li><li><a href="filter.html" class="func">.filter()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="ht.html" class="func">.ht()</a> 
+</li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
+</li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
+</li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
+</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="offset.html" class="func">.offset()</a> 
+</li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
+</li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
+</li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
+</li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
+</li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
+</li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
+</li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
+</li><li><a href="startswith.html" class="func">.startsWith()</a> <span class="tocMod">Util</span>
+</li><li><a href="sub.html" class="func">.sub()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="text.html" class="func">.text()</a> <span class="tocMod">Web</span>
+</li><li><a href="toobject.html" class="func">.toObject()</a> <span class="tocMod">Util</span>
+</li><li><a href="toggle.html" class="func">.toggle()</a> <span class="tocMod">Web</span>
+</li><li><a href="trav.html" class="func">.trav()</a> <span class="tocMod">Web</span>
+</li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
+</li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
+</li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
+</li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
+</li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
+</li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
+</li><li><a href="bind.html" class="func">_.bind()</a> <span class="tocMod">Util</span>
+</li><li><a href="copyobj.html" class="func">_.copyObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="dateadd.html" class="func">_.dateAdd()</a> <span class="tocMod">Util</span>
+</li><li><a href="dateclone.html" class="func">_.dateClone()</a> <span class="tocMod">Util</span>
+</li><li><a href="datediff.html" class="func">_.dateDiff()</a> <span class="tocMod">Util</span>
+</li><li><a href="datemidnight.html" class="func">_.dateMidnight()</a> <span class="tocMod">Util</span>
+</li><li><a href="eachobj.html" class="func">_.eachObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="escapehtml.html" class="func">_.escapeHtml()</a> <span class="tocMod">Util</span>
+</li><li><a href="escaperegexp.html" class="func">_.escapeRegExp()</a> <span class="tocMod">Util</span>
+</li><li><a href="extend.html" class="func">_.extend()</a> <span class="tocMod">Util</span>
+</li><li><a href="filterobj.html" class="func">_.filterObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="format.html" class="func">_.format()</a> <span class="tocMod">Util</span>
+</li><li><a href="formathtml.html" class="func">_.formatHtml()</a> <span class="tocMod">Util</span>
+</li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
+</li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
+</li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
+</li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>
+</li><li><a href="isobject.html" class="func">_.isObject()</a> <span class="tocMod">Util</span>
+</li><li><a href="isstring.html" class="func">_.isString()</a> <span class="tocMod">Util</span>
+</li><li><a href="isvalue.html" class="func">_.isValue()</a> <span class="tocMod">Util</span>
+</li><li><a href="keys.html" class="func">_.keys()</a> <span class="tocMod">Util</span>
+</li><li><a href="mapobj.html" class="func">_.mapObj()</a> <span class="tocMod">Util</span>
+</li><li><a href="pad.html" class="func">_.pad()</a> <span class="tocMod">Util</span>
+</li><li><a href="parsedate.html" class="func">_.parseDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="parsenumber.html" class="func">_.parseNumber()</a> <span class="tocMod">Util</span>
+</li><li><a href="partial.html" class="func">_.partial()</a> <span class="tocMod">Util</span>
+</li><li><a href="range.html" class="func">_.range()</a> <span class="tocMod"></span>
+</li><li><a href="template.html" class="func">_.template()</a> <span class="tocMod">Util</span>
+</li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
+</li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
+</li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="always.html" class="func">promise.always()</a> 
+</li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
+
+</div>
+</div>
+<div id="foot">
+	<div class="container">
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
+		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
+	</div>
+</div>
+
+
+</body>
+</html>

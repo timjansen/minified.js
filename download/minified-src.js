@@ -885,14 +885,17 @@ define('minified', function() {
 
 	// @condblock !ie8compatibility 
 	function onNonCompat(subSelector, eventSpec, handler, args, bubbleSelector) {
-		if (isFunction(eventSpec))
+		if (isFunction(subSelector)) 
+			return this['on'](null, null, subSelector, eventSpec, handler);
+		else if (isFunction(eventSpec)) 
 			return this['on'](null, subSelector, eventSpec, handler, args);
 		else if (isString(args)) 
 			return this['on'](subSelector, eventSpec, handler, null, args);
 		else
 			return this['each'](function(baseElement, index) {
 				flexiEach(subSelector ? dollarRaw(subSelector, baseElement) : baseElement, function(registeredOn) {
-					flexiEach(toString(eventSpec).split(/\s/), function(namePrefixed) {
+					flexiEach(toString(eventSpec).split(/\s/), function(evSpec) {
+						var namePrefixed = evSpec || (/form/i.test(registeredOn['tagName']) ? 'submit' : 'click');
 						var name = replace(namePrefixed, /[?|]/);
 						var prefix = replace(namePrefixed, /[^?|]/g);
 
@@ -2542,16 +2545,16 @@ define('minified', function() {
 						s = element.getAttribute('style');
 				}
 				// @condblock fadeslide
-				else if (spec == '$$fade' || spec == '$$slide') {
-					if  (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')
-						s = 0;
-					else if (spec == '$$fade') {
-						s = isNaN(s = 
-							  extractNumber(element['style']['opacity']) 
-							 ) ? 1 : s;
-					}
-					else   // '$$slide'
-						s = self['get']('$height');
+				else if (/^\$\$/.test(spec) && (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')) {
+					s = 0;
+				}
+				else if (spec == '$$fade') {
+					s = isNaN(s = 
+						  extractNumber(element['style']['opacity']) 
+						 ) ? 1 : s;
+				}
+				else if (spec == '$$slide') {
+					s = self['get']('$height');
 				}
 				// @condend fadeslide
 				// @condblock scrollxy
@@ -3763,6 +3766,7 @@ define('minified', function() {
 	 * @requires dollar each
 	 * @configurable default
 	 * @name .on()
+	 * @syntax list.on(eventHandler)
 	 * @syntax list.on(names, eventHandler)
 	 * @syntax list.on(selector names, eventHandler)
 	 * @syntax list.on(names, customFunc, args)
@@ -3811,6 +3815,11 @@ define('minified', function() {
 	 * $('#myButton').on('click', setStatus, ['running']);
 	 * </pre>
 	 *
+	 * As 'click' is the default event for buttons, you can also omit it here:
+	 * <pre>
+	 * $('#myButton').on(setStatus, ['running']);
+	 * </pre>
+	 *
 	 * @example Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behaviour: 
 	 * <pre>
 	 * $('#myInput').on('|keypress |keydown', function() {
@@ -3842,11 +3851,13 @@ define('minified', function() {
 	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
 	 *                match the selector. 
 	 *                Supports all valid parameters for <var>$()</var> except functions.            
-	 * @param names the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
+	 * @param names optional the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
 	 *             the name must not used. You can register the handler for more than one event by specifying several 
 	 *             space-separated event names. If the name is prefixed
 	 *             with '|' (pipe), the event will be passed through and the event's default actions will be executed by the browser. 
 	 *             If the name is prefixed with '?', the event will only be passed through if the handler returns <var>true</var>.
+	 *             If you omit the parameter, Minified will chose the default event type for each element. The default is 'submit' for
+	 *             forms and 'click' for everything else. 
 	 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>

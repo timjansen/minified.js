@@ -3,13 +3,17 @@
 	
 	<style type="text/css">
 		body {font-family: sans-serif;}
-		#container { position: relative; width: 630px; height: 630px;}
-		#animDiv, #fadeDiv, #slideDiv, #loopDiv { border: 1px solid black; position: absolute; width: 300px; height: 300px; } 
-		#animDiv  { left: 10px;  top: 10px; }
-		#fadeDiv  { left: 320px; top: 10px; }
-		#slideDiv { left: 10px;  top: 320px; }
-		#loopDiv  { left: 320px; top: 320px; }
-
+		#container { position: relative; width: 950px; height: 630px;}
+		#animDiv, #fadeDiv, #slideDiv, #loopDiv, #toggleDiv, #emptyDiv { 
+			border: 1px solid black; position: absolute; width: 300px; height: 300px; 
+		} 
+		#animDiv   { left: 10px;  top: 10px; }
+		#fadeDiv   { left: 320px; top: 10px; }
+		#slideDiv  { left: 10px;  top: 320px; }
+		#loopDiv   { left: 320px; top: 320px; }
+		#toggleDiv { left: 630px; top: 10px; }
+		#emptyDiv  { left: 630px; top: 320px; }
+		
 		.animD { position: absolute; width: 50px; height: 50px; top: 125px; left: 125px; background-color: #000; }
 		
 		#fadeDiv div, #slideDiv div { overflow: hidden; width: 290px; height: 290px; }
@@ -19,29 +23,31 @@
 		#loopC { background-color: #000;}
 		#loopD1, #loopD3 { background-color: red;}
 		#loopD2, #loopD4  { background-color: blue;}
+		
+		#toggleDiv div { position: absolute; width: 20px; height: 20px; background-color: black;}
 	</style> 
 	<script type="text/javascript">
 	// Load the right source, depending on whether 'compiled' is in the URL query
 	
 	var q = window.location.search, undefined;
-	var srcFiles = ["../minified-web-src.js", "../minified-web.js", "../minified-web-src.noie.js", "../minified-web.noie.js"];
-	if (!!document.all && ![].map) srcFiles = srcFiles.slice(0, 2); // remove non-ie version on old ie
+	var srcFiles = ["dist/minified-web-src.js", "dist/minified-web.js", "dist/minified-src.js", "dist/minified.js", 
+	                "dist/minified-legacyie-web-src.js", "dist/minified-legacyie-web.js", 
+	                "dist/minified-legacyie.js"];
+	if (!!document.all && ![].map) srcFiles = srcFiles.slice(4); // remove non-ie versions on old ie
 	
 	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;
 	var file = srcFiles[srcNum] + '?rnd=' + (new Date().getTime());
     document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
+ 
 	</script>
 	
 	<script type="text/javascript">
-	var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
-	
-	$(function() {
-		$('#libName').fill(srcFiles[srcNum]);
+	window.onload = function() {	// onload required for IE6
+			
+		var MINI = this.require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
+		$('#libName').fill(file);
 		$$('#srcNum').value = (srcNum + 1) % srcFiles.length;
-	});
-
-	$(function() {
-		
+	
 		function startAnim() {
 			$('.animD').each(function(div, index) {
 				function step(promise) {
@@ -65,14 +71,14 @@
 		}
 		startAnim();
 		window.setInterval(startAnim, 7000);
-
+	
 		var fadeToggle = $('#fadeDiv div').toggle({$$fade: 1}, {$$fade: 0}, 1500, 1);
 		window.setInterval(fadeToggle, 2000);
-
-
+	
+	
 		var slideToggle = $('#slideDiv div').toggle({$$slide: 1}, {$$slide: 0}, 900);
 		window.setInterval(slideToggle, 1500);
-
+	
 		var DURMS = 4000;
 		function startLoop() {
 			$.loop(function(ts, stop) {
@@ -90,8 +96,24 @@
 		startLoop();
 		window.setInterval(startLoop, DURMS+1000);
 		
-	});
-	
+		var yToggle = $('#toggleDiv div').toggle({$top: '10px'}, {$top: '270px'}, 5000, 0);
+		window.setTimeout(function randomTimeout() {
+			yToggle();
+			window.setTimeout(randomTimeout, Math.round(Math.random() * 3000) + 200);
+		}, 1000);
+		var xToggle = $('#toggleDiv div').toggle({$left: '10px'}, {$left: '270px'}, 5000, 1);
+		function backNForth() {
+			xToggle(true);
+			window.setTimeout(xToggle,  2500);
+			window.setTimeout(xToggle,  5500);
+			window.setTimeout(xToggle, 10500);
+			window.setTimeout(xToggle, 11500);
+			window.setTimeout(xToggle, 13000);
+		}
+		backNForth();
+		window.setInterval(backNForth, 20000);
+			
+	}	
 	</script>
 	
 	</head>
@@ -171,6 +193,10 @@ member itself.</pre></div></div>
 			<div id="loopD4" class='looper'></div>
 			<div id="loopC"></div>
 		</div>
+		<div id="toggleDiv"><div></div>
+		</div>
+		<div id="emptyDiv">
+		</div>
 	</div>
 	<div id="rerun" >
 		<strong>Library: </strong><span id="libName">error</span>
@@ -178,8 +204,9 @@ member itself.</pre></div></div>
 			<input id="srcNum" name="srcNum" type="hidden"/>
 			<input type="submit" value="Switch library"/>
 		</form>
-		<br/>
-		<a href="autotest.html">Start AutoTest</a>
+		<form action="eventtest.html" method="get">
+			<input type="submit" value="Event Test" />
+		</form>
 	</div>
 	</body>
 </html>
