@@ -2,7 +2,7 @@ var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = MINI._;
 
 var MAX_SIZE = 8191;
-var SRC='/download/minified-legacyie-src.js';
+var SRC='/builder/minified-generated-full-src.js';
 
 var GROUPS = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION',  'LIST', 'OBJECT', 'FUNC', 'FORMAT', 'TYPE', 'DATE', 'STRING', 'OPTIONS'];
 
