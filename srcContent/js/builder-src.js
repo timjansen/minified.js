@@ -1,6 +1,7 @@
 var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = MINI._;
 
+var VERSION = "Version 2014 beta3 b2";
 var MAX_SIZE = 8191;
 var SRC='/builder/minified-generated-full-src.js';
 
@@ -189,6 +190,8 @@ function setUpConfigurationUI(s) {
 }
 
 $(function() {
+	$('.version').fill(VERSION);
+	
 	var IEVersion = /MSIE\s([\d.]+)/i.exec(navigator.userAgent);
 	if (IEVersion && parseInt(IEVersion[1]) < 10) {
 		$('#builderDiv').fill('Sorry, the Builder tool requires at least Internet Explorer 10 (or, alternatively, Chrome or Firefox). '+

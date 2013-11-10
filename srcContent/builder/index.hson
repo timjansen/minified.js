@@ -2,6 +2,7 @@
 title: "Builder - Minified.js",
 section: build,
 inlineCss: `
+		.version { font-size: small; margin-top: -1em; }
   		.moduleDescriptor {font-size: large; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em;}
 		.sectionDescriptor {margin-left: 1.5em;}
 		.requirements {font-size: x-small; padding-left: 1.5em; margin-bottom: 0.5em;}
@@ -9,11 +10,13 @@ inlineCss: `
 		#resultDiv th {text-align: left; margin-right: 2em;}
 		#resultGzippedComment {font-size: small;}
 		#resultDiv th, #resultDiv td { vertical-align: top;}
+		
 `,
 //externalJs: ["/js/builder.js"],
 externalJs: ["/download/minified-src.js", "/js/parser-src.js", "/js/builder-src.js"],
 main: `<div>
   		<h1>Minified Builder</h1>
+  		<div class="version">Version 2014 beta 3 b2</div>
   		<div id="builderDiv">
   		<p>Use this builder to create your own custom build of Minified. You can pick the functions that you need below. Alternatively,
   		if you already have a custom build to start with, load your own configuration.</p>
