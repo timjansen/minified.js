@@ -2,7 +2,7 @@ var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = MINI._;
 
 var MAX_SIZE = 8191;
-var SRC='/download/minified-legacyie-src.js';
+var SRC='/builder/minified-generated-full-src.js';
 
 var GROUPS = ['INTERNAL', 'SELECTORS', 'ELEMENT', 'REQUEST', 'JSON', 'EVENTS', 'COOKIE', 'ANIMATION',  'LIST', 'OBJECT', 'FUNC', 'FORMAT', 'TYPE', 'DATE', 'STRING', 'OPTIONS'];
 
@@ -111,13 +111,13 @@ function setUpConfigurationUI(s) {
 		}
 	}
 	
-	$('#compile').on(compileClicked);
+	$('#compile').on('click', compileClicked);
 	
 	var configSrcToggle = $('#configSrcDiv').toggle({$$slide: 0}, {$$slide: 1});
 	$('#fromScratch').on('|click', configSrcToggle, [false]);
 	$('#loadConfig').on('|click', configSrcToggle, [true]);
 	
-	$('#recreate').on(recreateConfig);
+	$('#recreate').on('click', recreateConfig);
 	
 	$('#sectionCheckboxes').fill();
 	for (var i = 1; i < GROUPS.length; i++) {
