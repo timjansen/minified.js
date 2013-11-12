@@ -86,8 +86,7 @@ define('minified', function() {
 	 * @dependency
      */
     /** @type {!Array.<function()>} */
-    var DOMREADY_HANDLER = [];
-
+    var DOMREADY_HANDLER = /^[ic]/.test(_document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
     /*$
      * @id animation_vars
      * @dependency
@@ -483,6 +482,11 @@ define('minified', function() {
 	}
 	function callList(list, fThisOrArgs, args) {
 		return map(list, function(f) { if (isFunction(f)) return call(f, fThisOrArgs, args); else return undef;});
+	}
+	function fixFunc(f, args) {
+		return function() {
+			return call(f, _null, args);
+		};
 	}
 	function bind(f, fThis, beforeArgs, afterArgs) {
 		return function() {
@@ -885,17 +889,14 @@ define('minified', function() {
 
 	// @condblock !ie8compatibility 
 	function onNonCompat(subSelector, eventSpec, handler, args, bubbleSelector) {
-		if (isFunction(subSelector)) 
-			return this['on'](null, null, subSelector, eventSpec, handler);
-		else if (isFunction(eventSpec)) 
+		if (isFunction(eventSpec))
 			return this['on'](null, subSelector, eventSpec, handler, args);
 		else if (isString(args)) 
 			return this['on'](subSelector, eventSpec, handler, null, args);
 		else
 			return this['each'](function(baseElement, index) {
 				flexiEach(subSelector ? dollarRaw(subSelector, baseElement) : baseElement, function(registeredOn) {
-					flexiEach(toString(eventSpec).split(/\s/), function(evSpec) {
-						var namePrefixed = evSpec || (/form/i.test(registeredOn['tagName']) ? 'submit' : 'click');
+					flexiEach(toString(eventSpec).split(/\s/), function(namePrefixed) {
 						var name = replace(namePrefixed, /[?|]/);
 						var prefix = replace(namePrefixed, /[^?|]/g);
 
@@ -915,11 +916,11 @@ define('minified', function() {
 								event['preventDefault']();
 								event['stopPropagation']();
 							}
-							return stop;
+							return !stop;
 						};
 
 						var trigger = function(eventName, eventObj, element) {
-							return (name == eventName) && miniHandler(eventObj, element);
+							return (name == eventName) && !miniHandler(eventObj, element);
 						};
 
 						(registeredOn['M'] = registeredOn['M'] || []).push(trigger);
@@ -2545,16 +2546,16 @@ define('minified', function() {
 						s = element.getAttribute('style');
 				}
 				// @condblock fadeslide
-				else if (/^\$\$/.test(spec) && (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')) {
-					s = 0;
-				}
-				else if (spec == '$$fade') {
-					s = isNaN(s = 
-						  extractNumber(element['style']['opacity']) 
-						 ) ? 1 : s;
-				}
-				else if (spec == '$$slide') {
-					s = self['get']('$height');
+				else if (spec == '$$fade' || spec == '$$slide') {
+					if  (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')
+						s = 0;
+					else if (spec == '$$fade') {
+						s = isNaN(s = 
+							  extractNumber(element['style']['opacity']) 
+							 ) ? 1 : s;
+					}
+					else   // '$$slide'
+						s = self['get']('$height');
 				}
 				// @condend fadeslide
 				// @condblock scrollxy
@@ -2618,7 +2619,7 @@ define('minified', function() {
 	 *             'visible' and the display style to 'block'. '$$slide' only works with block elements.</td></tr>
 	 * <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
 	 *             '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document.
-	 *             The coordinates are specified in pixels.</td></tr>
+	 *             The coordinates are specified in pixels, but must not use a 'px' unit postfix.</td></tr>
 	 * </table>
 	 *  (use on <code>$(window)</code>)
 	 * @example Unchecking checkboxes:
@@ -3348,8 +3349,6 @@ define('minified', function() {
 	 * @syntax list.animate(properties, durationMs)
 	 * @syntax list.animate(properties, durationMs, linearity)
 	 * @syntax list.animate(properties, durationMs, interpolationFunc)
-	 * @syntax list.animate(properties, durationMs, linearity, state)
-	 * @syntax list.animate(properties, durationMs, interpolationFunc, state)
      * @module WEB
 	 * Animates the items of the list by modifying their properties, CSS styles and attributes. <var>animate()</var> can work with numbers, strings that contain exactly one
 	 * number, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
@@ -3665,7 +3664,7 @@ define('minified', function() {
 						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
 
 						if (durationMs) 
-							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity)).then(function(){promise=_null;});
+							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity))['then'](function(){promise=_null;});
 						else
 							self['set'](stateDesc) && undef;
 					}
@@ -3766,9 +3765,8 @@ define('minified', function() {
 	 * @requires dollar each
 	 * @configurable default
 	 * @name .on()
-	 * @syntax list.on(eventHandler)
 	 * @syntax list.on(names, eventHandler)
-	 * @syntax list.on(selector names, eventHandler)
+	 * @syntax list.on(selector, names, eventHandler)
 	 * @syntax list.on(names, customFunc, args)
 	 * @syntax list.on(selector, names, customFunc, args)
 	 * @syntax list.on(names, eventHandler, bubbleSelector)
@@ -3815,11 +3813,6 @@ define('minified', function() {
 	 * $('#myButton').on('click', setStatus, ['running']);
 	 * </pre>
 	 *
-	 * As 'click' is the default event for buttons, you can also omit it here:
-	 * <pre>
-	 * $('#myButton').on(setStatus, ['running']);
-	 * </pre>
-	 *
 	 * @example Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behaviour: 
 	 * <pre>
 	 * $('#myInput').on('|keypress |keydown', function() {
@@ -3851,13 +3844,11 @@ define('minified', function() {
 	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
 	 *                match the selector. 
 	 *                Supports all valid parameters for <var>$()</var> except functions.            
-	 * @param names optional the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
+	 * @param names the space-separated names of the events to register for, e.g. 'click'. Case-sensitive. The 'on' prefix in front of 
 	 *             the name must not used. You can register the handler for more than one event by specifying several 
 	 *             space-separated event names. If the name is prefixed
 	 *             with '|' (pipe), the event will be passed through and the event's default actions will be executed by the browser. 
 	 *             If the name is prefixed with '?', the event will only be passed through if the handler returns <var>true</var>.
-	 *             If you omit the parameter, Minified will chose the default event type for each element. The default is 'submit' for
-	 *             forms and 'click' for everything else. 
 	 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>
@@ -3978,10 +3969,12 @@ define('minified', function() {
 						}
 					});
 				}
-				if (/kbox|dio/i.test(el['type']))
+				if (/kbox|dio/i.test(el['type'])) {
 					register('|click', 'checked', index);
-				else 
+				}
+				else { 
 					register('|input |change |keyup', 'value', index);
+				}
 			});
 	},
 
@@ -5732,7 +5725,7 @@ define('minified', function() {
 	 *
 	 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
 	 *                   from the event loop.
-	 * @param args optional an array of arguments to pass to the promise handler
+	 * @param args optional an array or list of arguments to pass to the promise handler
 	 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
 	 *         <var>args</var> parameter as given to <var>wait()</var>.
 	 *         
@@ -5740,7 +5733,9 @@ define('minified', function() {
 	 */
 	'wait': function(durationMs, args) {
 		var p = promise();
-		delay(partial(p, args), durationMs);
+		delay(function() { 
+			call(p, null, [true, args]); 
+		}, durationMs);
 		return p;
 	}
 
@@ -5759,7 +5754,6 @@ define('minified', function() {
 	 * @id ready_init
 	 * @dependency
      */
-
     	_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
 	/*$
 	 @stop
