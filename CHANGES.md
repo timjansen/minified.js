@@ -1,6 +1,10 @@
 Minified Change Log
 ====================
 
+Beta 3.1 (2013-11-13)
+---------------------
+* Made $.ready() work when Minified is loaded after the DOM's initialization.
+
 
 Beta 3 (2013-11-07)
 --------------------

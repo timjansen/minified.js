@@ -28,7 +28,6 @@
 	</style> 
 	<script type="text/javascript">
 	// Load the right source, depending on whether 'compiled' is in the URL query
-	
 	var q = window.location.search, undefined;
 	var srcFiles = ["dist/minified-web-src.js", "dist/minified-web.js", "dist/minified-src.js", "dist/minified.js", 
 	                "dist/minified-legacyie-web-src.js", "dist/minified-legacyie-web.js", 
@@ -43,7 +42,6 @@
 	
 	<script type="text/javascript">
 	window.onload = function() {	// onload required for IE6
-			
 		var MINI = this.require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 		$('#libName').fill(file);
 		$$('#srcNum').value = (srcNum + 1) % srcFiles.length;

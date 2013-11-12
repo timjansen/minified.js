@@ -125,8 +125,7 @@ define('minified', function() {
 	 * @dependency
      */
     /** @type {!Array.<function()>} */
-    var DOMREADY_HANDLER = [];
-
+    var DOMREADY_HANDLER = /^[ic]/.test(_document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
     /*$
      * @id animation_vars
      * @dependency
@@ -162,14 +161,7 @@ define('minified', function() {
 	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8,
 	 * and the existence of cssText (which is used instead of the style attribute).
 	 */
-	/**
-	 * @const 
-	 * @type {boolean} 
-	 */
-	// @condblock ready_vars
-	 var IS_PRE_IE9 = !!_document.all && !DOMREADY_HANDLER.map;
-	// @condend
-	 // @cond !ready_vars var IS_PRE_IE9 = !!_document.all && ![].map;
+	 var IS_PRE_IE9 = !!_document['all'] && ![].map;
 	/*$
 	 * @id ie7compatibility
 	 * @group OPTIONS
@@ -3281,14 +3273,14 @@ define('minified', function() {
 	 * @dependency
      */
     // @condblock ie8compatibility
-	var oldOnLoad = _window.onload;
-	_window.onload = function() {
-		triggerDomReady();
-		if (oldOnLoad)
-			oldOnLoad();
-	};
-
-    if (_document.addEventListener)
+	if (IS_PRE_IE9) {
+		_document['attachEvent']("onreadystatechange", function() {
+			if (/^[ic]/.test(_document['readyState']))
+				triggerDomReady();
+		});
+		_window['attachEvent']("onload", triggerDomReady);
+	}
+	else
     // @condend
     	_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
 	/*$

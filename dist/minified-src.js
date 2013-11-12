@@ -86,8 +86,7 @@ define('minified', function() {
 	 * @dependency
      */
     /** @type {!Array.<function()>} */
-    var DOMREADY_HANDLER = [];
-
+    var DOMREADY_HANDLER = /^[ic]/.test(_document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
     /*$
      * @id animation_vars
      * @dependency
@@ -5755,7 +5754,6 @@ define('minified', function() {
 	 * @id ready_init
 	 * @dependency
      */
-
     	_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
 	/*$
 	 @stop
