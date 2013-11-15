@@ -945,7 +945,7 @@ define('minified', function() {
 				else
 					el = el['parentNode'];
 			if (match && 
-			   (stop = (((!handler.apply(selectorFilter ? el : registeredOn, args || [e, index])) || prefix=='') && prefix != '|')) && 
+			   (stop = (((!handler.apply($(selectorFilter ? el : registeredOn), args || [e, index])) || prefix=='') && prefix != '|')) && 
 			   !triggerOriginalTarget) {
 				if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
 					e['preventDefault']();
@@ -3990,7 +3990,7 @@ define('minified', function() {
  	 *             Then, a return value <var>false</var> will stop all further processing of the event and disable event bubbling.
  	 *             <var>true</var> will keep the event alive.</dd>
  	 *             </dl>
-	 *             'this' will be set to the target element that caused the event (the same as <var>event.target</var>).
+	 *             'this' is a Minified list that contains the target element that caused the event (the same as <var>event.target</var>).
 	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>.
 	 *                   'this' will be set to the target element that caused the event (the same as <var>event.target</var>).
 	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the
@@ -4035,7 +4035,7 @@ define('minified', function() {
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
  	 *             <dt>event</dt><dd>The original event object given to ##on().</dd>
  	 *             </dl>
-	 *             'this' is set to the target element that caused the event.
+	 *             'this' is a list containing the target element that caused the event.
 	 * @return the list
 	 */
 	'onOver': function(subSelect, toggle) {
@@ -4086,7 +4086,7 @@ define('minified', function() {
  	 *              For checkboxes/radio buttons it is the boolean returned by <var>checked</var>.</dd>
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
  	 *             </dl>
-	 *             'this' is set to the target element that caused the event.
+	 *             'this' is a list containing the target element that caused the event.
 	 * @return the list
 	 */
 	'onChange': function(subSelect, handler) {

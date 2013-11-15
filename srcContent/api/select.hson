@@ -50,6 +50,19 @@ var children = $('.myElements').select('*', true);
 <h4>See also..</h4>
 <ul><li><code><a href='only.html' class='func'>only()</a></code> executes a selector on the list elements, instead of their descendants.</li>
 </ul>
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "select";
+var disqus_url = "http://minifiedjs.com/api/select.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>

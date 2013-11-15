@@ -29,7 +29,7 @@ Supports all valid parameters for <span class="var">$()</span> except functions.
 <dt>index</dt><dd>The index of the target element in the <a href='list.html' class='func'>Minified list</a> .</dd>
 <dt>event</dt><dd>The original event object given to <code><a href='on.html' class='func'>on()</a></code>.</dd>
 </dl>
-'this' is set to the target element that caused the event.</dd>
+'this' is a list containing the target element that caused the event.</dd>
 <dt id="onover_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="onover_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the list</dd>
 </dl>
@@ -48,6 +48,19 @@ $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color
 </p></div>
 </div>
 
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "onover";
+var disqus_url = "http://minifiedjs.com/api/onover.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>

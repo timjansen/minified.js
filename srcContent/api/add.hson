@@ -105,6 +105,19 @@ $('.chapter').add(function(parent, index) { return EE('h2', 'Chapter number ' + 
 <li><code><a href='addbefore.html' class='func'>addBefore()</a></code> also adds nodes not as children but as siblings.</li>
 <li><code><a href='replace.html' class='func'>replace()</a></code> replaces existing nodes.</li>
 </ul>
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "add";
+var disqus_url = "http://minifiedjs.com/api/add.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>

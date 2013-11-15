@@ -37,7 +37,7 @@ describe('minified-web-event-test.js', function() {
 			$('div', p).on('click', handler = function(e, index) {
 				callNum++;
 				lastIndex = index;
-				if (this != expect)
+				if (this[0] != expect || this.length != 1)
 					error = 'Did not get called on expected element';
 			});
 
@@ -69,7 +69,7 @@ describe('minified-web-event-test.js', function() {
 			$(p).on('div', 'click', handler = function(e, index) {
 				callNum++;
 				lastIndex = index;
-				if (this != expect)
+				if (this[0] != expect || this.length != 1)
 					error = 'Did not get called on expected event';
 			});
 
@@ -97,9 +97,9 @@ describe('minified-web-event-test.js', function() {
 			p.add(s = EE('div', {$width: '30px', $height: '10px'}, c = EE('span')[0])[0]);
 			$('div', p).on('click', function(e, index) {
 				callNum++;
-				if (this == c)
+				if (this[0] == c)
 					error = 'wrong this: set to triggered element, not to registered!';
-				else if (this != s)
+				else if (this[0] != s)
 					error = 'wrong this: neither triggered no registered element!';
 			});
 			
@@ -116,14 +116,14 @@ describe('minified-web-event-test.js', function() {
 			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
 			$('div', p).on('click', function(a, b, c) {
 				callNum++;
-				if (this != s)
+				if (this[0] != s)
 					error = 'arg only: wrong this!';
 				if (a != 1 || b != 2 || c != 3)
 					error = 'arg only: arguments not passed';
 			}, [1, 2, 3]);
 			$('div', p).on('click', function(x) {
 				callNum++;
-				if (this != s)
+				if (this[0] != s)
 					error = 'this and arg: wrong this!';
 				if (x != "bar")
 					error = 'this and arg: arguments not passed';
@@ -146,7 +146,8 @@ describe('minified-web-event-test.js', function() {
 			$(s).on('|eek', function(e, index) { 
 				check(e.success, true, 'success set'); 
 				check(index, 0, ' index set');
-				check(this, c3, 'this set', true);
+				check(this[0], c3, 'this set', true);
+				check(this.length, 1);
 				proofEek1++; 
 			}, 'span.supiClass');
 			$(s).on('eek', function() { check(++proofPropagation, proofEek1, "Propagation failed."); }, 'span.supiClass');
@@ -163,11 +164,11 @@ describe('minified-web-event-test.js', function() {
 			check(proofEek1, 2, "eek triggered again");
 			check(proofPropagation, proofEek1, "Propagation missing.");
 
-			$(s).on('boo', function(e, index) { if (e.success && index==0 && this===c3) proofBoo++; }, 'span');
+			$(s).on('boo', function(e, index) { if (e.success && index==0 && this[0]===c3) proofBoo++; }, 'span');
 			$(c3).trigger('boo', {success:1});
 			check(proofBoo, 1, "boo triggered");
 
-			$(s).on('clonk', function(e, index) { if (e.success && index==0 && (this===c3 || this == c2)) proofClonk++; }, 'span');
+			$(s).on('clonk', function(e, index) { if (e.success && index==0 && (this[0]===c3 || this[0] == c2)) proofClonk++; }, 'span');
 			$(c3).trigger('clonk', {success:1});
 			check(proofClonk, 1, "clonk triggered");
 			$(c2).trigger('clonk', {success:1});
@@ -224,11 +225,11 @@ describe('minified-web-event-test.js', function() {
 			s.on('click', function(e, index) { 
 				if (index != 0)
 					error = 'index not 0';
-				else if (this === g[0])
+				else if (this[0] === g[0])
 					error = 'this set to triggered element, not registered element.';
-				else if (this === s[0])
+				else if (this[0] === s[0])
 					error = 'this set to parent element.';
-				else if (this !== c[0])
+				else if (this[0] !== c[0])
 					error = 'this wrong';
 				proof++; 
 			}, 'p');
@@ -262,11 +263,11 @@ describe('minified-web-event-test.js', function() {
 					error = 'arg not set';
 				else if (index != 0)
 					error = 'index not 0';
-				else if (this === g[0])
+				else if (this[0] === g[0])
 					error = 'this set to triggered element, not registered element.';
-				else if (this === s[0])
+				else if (this[0] === s[0])
 					error = 'this set to parent element.';
-				else if (this !== c[0])
+				else if (this[0] !== c[0])
 					error = 'this wrong';
 				proof++; 
 			}, 'p');
@@ -301,7 +302,7 @@ describe('minified-web-event-test.js', function() {
 			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})[0]);
 			$('div', p).on('click', handler = function(e, index) {
 				callNum++;
-				if (this != expect)
+				if (this[0] != expect)
 					error = 'Did not get called on expected event';
 			});
 			check(handler.M.length, 2);

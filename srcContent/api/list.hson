@@ -21,6 +21,19 @@ that take a list and create a modified copy which, for example, may contain addi
 <code><a href='underscore.html' class='func'>_()</a></code></a></code> function, but many functions in the Util module also return a Minified list.</p><p>The Util module provides a function <code><a href='undefinedarray.html' class='func'>_.array()</a></code> that converts a Minified list to a regular JavaScript array.
 </p></div>
 
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "list";
+var disqus_url = "http://minifiedjs.com/api/list.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>

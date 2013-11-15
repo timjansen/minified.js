@@ -381,13 +381,15 @@ anymore, unless you explicitly allow it. Similarly, a click handler on a link wo
 	console.log('Clicked x=' + xe.pageX, 'y=' + xe.pageY, 'button='+xe.right?'right':'left');
 });
 </pre>
-The first argument is the unmodified event object, as provided by the browser. The second argument contains the index of the element in the list for which the event handler has been called. In the previous example, it is always 0. But consider this:
+The first argument is the unmodified event object, as provided by the browser. The second argument contains the index of the 
+element in the list for which the event handler has been called. In the previous example, it is always 0. But consider this:
 <pre>
 <a href="/api/dollar.html">$</a>('ol.myList li').<a href="/api/on.html">on</a>('click', function(e, index) {
-	console.log('Clicked on list item no', index, 'with content:', this.innerHTML);
+	console.log('Clicked on list item no', index, ' with content:', this.text());
 });
 </pre>
-The index often makes it easy to identify which element has been clicked when you set an event handler for a whole list. <code>this</code> will still be set to the event source, as you may be used to from other frameworks.
+The index often makes it easy to identify which element has been clicked when you set an event handler for a whole list. 
+<code>this</code> refers to a Minified list that contains the event source as its only element.
 </p>
 
 <p>Often, all you want to do when an event has been fired is to call the right function with the corresponding arguments. Minified makes this 

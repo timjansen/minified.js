@@ -2,7 +2,7 @@ Minified Web
 =============
 
 Quick Links: <a href="http://minifiedjs.com/">minifiedjs.com</a> - <a href="http://minifiedjs.com/api/">API</a> - <a href="http://minifiedjs.com/docs/">Docs</a>
-Latest version: <a href="http://minifiedjs.com/docs/beta3.html">beta 3</a> (<a href="CHANGES.md">changelog</a>)
+Latest version: <a href="http://minifiedjs.com/docs/beta4.html">beta 4</a> (<a href="CHANGES.md">changelog</a>)
 
 Overview
 ----------

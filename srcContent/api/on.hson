@@ -41,7 +41,7 @@ If the name is prefixed with '?', the event will only be passed through if the h
 Then, a return value <span class="var">false</span> will stop all further processing of the event and disable event bubbling.
 <span class="var">true</span> will keep the event alive.</dd>
 </dl>
-'this' will be set to the target element that caused the event (the same as <span class="var">event.target</span>).</dd>
+'this' is a Minified list that contains the target element that caused the event (the same as <span class="var">event.target</span>).</dd>
 <dt id="on_customFunc" class=""><a name="on_customFunc"><var>customFunc</var></a></dt>
 <dd class="">a function to be called instead of a regular event handler with the arguments given in <span class="var">args</span>.
 'this' will be set to the target element that caused the event (the same as <span class="var">event.target</span>).</dd>
@@ -122,6 +122,19 @@ table rows that have been added <strong>after you registered for the events</str
 </p></div>
 </div>
 
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "on";
+var disqus_url = "http://minifiedjs.com/api/on.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>

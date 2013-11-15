@@ -82,6 +82,19 @@ var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return
 <h4>See also..</h4>
 <ul><li><code><a href='findlast.html' class='func'>findLast()</a></code> is the equivalent to <span class="var">find()</span> for the list's end.</li>
 </ul>
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "find";
+var disqus_url = "http://minifiedjs.com/api/find.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
