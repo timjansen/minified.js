@@ -1,0 +1,37 @@
+{
+title: "Minified.js Beta 4: Features and Changes",
+section: docs,
+externalCss: ["../css/doc.css"],
+main: `<div>
+  <h1>Minified.js Beta 4: Features and Changes</h1>
+
+<p>Beta 4 is a relatively small release. Its only feature is a change in <var>on()</var>'s <var>this</var> as shown below.</p>
+
+<h2 style="color: red">Backward-incompatible Changes</h2>
+<p>
+<ul>
+<li><span class="var"><a href="/api/on.html">on()</a></span> will set <var>this</var> to a Minified list containing the event source, and not the
+event source.</li>
+<li><span class="var"><a href="/api/request.html">$.request()</a></span> <var>headers</var>, <var>username</var> and <var>password</var> arguments
+have been moved into a new <var>settings</var> argument.</li>
+</ul>
+</p>
+
+<h2>Change: on() returns target wrapped in a list</h2>
+<p>Before beta 3, <code><a href="/api/on.html">on()</a></var> would call its handler with <var>this</var> set to the event source. Starting with beta 4,
+it passes a <a href="/api/list.html">Minified list</a> containing the event source as its only element.</p>
+
+<h2>Change: request() uses settings object, support for setting XHR properties</h2>
+<p><a href="/api/request.html">$.request()</a>'s <var>headers</var>, <var>username</var> and <var>password</var> arguments have been moved into an object as 4th argument. 
+  You can now also set XMLHttpRequest properties.</p>
+
+<h2>Site: Comments in API docs (Disqus)</h2>
+<p>Minified's API documentation supports comments now. It uses Disqus as its backend.<p>
+
+
+<h2>Download</h2>
+<p>You can download beta 4 on the <a href="/download">download page</a>.</p>
+
+  </div>`
+  
+}
