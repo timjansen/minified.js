@@ -167,6 +167,12 @@ define('minified', function() {
 
 	///#/snippet webVars
 	///#snippet utilVars
+	/*$
+	 * @id util 
+	 * @doc no
+	 * Marker if Util is in the distribution.
+	 */
+
 	var _null = null, _true = true, _false = false;
 
 	/** @const */
@@ -4251,8 +4257,7 @@ define('minified', function() {
 	* @name $.request()
 	* @syntax $.request(method, url)
 	* @syntax $.request(method, url, data)
-	* @syntax $.request(method, url, data, headers)
-	* @syntax $.request(method, url, data, headers, username, password)
+	* @syntax $.request(method, url, data, settings)
     * @module WEB
 	* Initiates a HTTP request to the given URL, using XMLHttpRequest. It returns a ##promiseClass#Promise## object that allows you to obtain the result.
 	* 
@@ -4291,6 +4296,9 @@ define('minified', function() {
 	*        })
 	*     .error(failureHandler);
 	* </pre>
+	* 
+	* @example Using HTTP authentication and a custom XMLHttpRequest property.
+	* <pre>var handler = $.request('get', 'http://service.example.com/userinfo', null, {withCredentials: true, user: 'me', pass: 'secret'});</pre>
 	*
 	* 
 	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data 
@@ -4301,10 +4309,13 @@ define('minified', function() {
 	*             parameters (for all HTTP methods), a string (for all HTTP methods) or a DOM document ('post' only). If the method is 
 	*             'post', it will be sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the 
 	*             same name, use an array of values in the map. Use null as value for a parameter without value.
-	* @param headers optional a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
-	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.
-	* @param username optional username to be used for HTTP authentication, together with the password parameter
-	* @param password optional password for HTTP authentication
+	* @param settings optional a map of additional parameters. Supports the following properties (all optional):
+	* <dl><dt>headers</dt><dd>a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
+	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.</dd>
+	* <dt>xhr</dt><dd>a map of properties to set in the XMLHttpRequest object before the request is sent, for example <code>{withCredentials: true}</code>.</dd>
+	* <dt>user</dt><dd>username to be used for HTTP authentication, together with the password parameter</dd>
+	* <dt>pass</dt><dd>username to be used for HTTP authentication, together with the password parameter</dd>
+	* </dl>
 	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
 	*         the success handler will be called as <code>function(text, xml)</code>:
 	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
@@ -4319,48 +4330,47 @@ define('minified', function() {
 	* @see ##$.toJSON() can create JSON messages.
 	* @see ##_.format() can be useful for creating REST-like URLs, if you use JavaScript's built-in <var>escape()</var> function.
 	*/
-	'request': function (method, url, data, headers, username, password) {
-		/** @const */ var ContentType = 'Content-Type';
-		var xhr, body = data, callbackCalled = 0, prom = promise();
+	'request': function (method, url, data, settings) {
+		settings = settings || {}; 
+		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data != _null && !isNode(data) && !isString(data);
 		try {
 			//@condblock ie6compatibility
 			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			//@condend
 			// @cond !ie6compatibility xhr = new XMLHttpRequest();
-			if (data != _null) {
-				headers = headers || {};
-				if (!isString(data) && !isNode(data)) { // if data is parameter map...
-					body = collector(eachObj, data, function processParam(paramName, paramValue) {
-						return collector(flexiEach, paramValue, function(v) {
-							return encodeURIComponent(paramName) + ((v != _null) ?  '=' + encodeURIComponent(v) : '');
-						});
-					}).join('&');
-				}
-
-				if (!/post/i.test(method)) {
-					url += '?' + body;
-					body = _null;
-				}
-				else if (!isNode(data) && !isString(data) && !headers[ContentType])
-					headers[ContentType] = 'application/x-www-form-urlencoded';
+			if (dataIsMap) { // if data is parameter map...
+				data = collector(eachObj, data, function processParam(paramName, paramValue) {
+					return collector(flexiEach, paramValue, function(v) {
+						return encodeURIComponent(paramName) + ((v != _null) ?  '=' + encodeURIComponent(v) : '');
+					});
+				}).join('&');
 			}
 
-			xhr['open'](method, url, _true, username, password);
-			eachObj(headers, function(hdrName, hdrValue) {
+			if (data != _null && !/post/i.test(method)) {
+				url += '?' + data;
+				data = _null;
+			}
+
+			xhr['open'](method, url, _true, settings['user'], settings['pass']);
+			if (dataIsMap && /post/i.test(method))
+				xhr['setRequestHeader']('Content-Type', 'application/x-www-form-urlencoded');
+			eachObj(settings['headers'], function(hdrName, hdrValue) {
 				xhr['setRequestHeader'](hdrName, hdrValue);
 			});
+			eachObj(settings['xhr'], function(name, value) {
+				xhr[name] = value;
+			});
 
-			xhr.onreadystatechange = function() {
+			xhr['onreadystatechange'] = function() {
 				if (xhr['readyState'] == 4 && !callbackCalled++) {
-					if (xhr['status'] == 200) {
+					if (xhr['status'] == 200)
 						prom(_true, [xhr['responseText'], xhr['responseXML']]);
-					}
 					else
 						prom(_false, [xhr['status'], xhr['statusText'], xhr['responseText']]);
 				}
 			};
 
-			xhr['send'](body);
+			xhr['send'](data);
 		}
 		catch (e) {
 			if (!callbackCalled) 

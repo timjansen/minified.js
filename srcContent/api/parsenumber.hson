@@ -67,7 +67,7 @@ _.parseNumber('0.9', '147.789');  // returns 147.789  (number of digits ignored)
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "parsenumber";
+var disqus_identifier = "api-parsenumber";
 var disqus_url = "http://minifiedjs.com/api/parsenumber.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

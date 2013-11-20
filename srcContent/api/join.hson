@@ -42,7 +42,7 @@ This method is identical to Array's built-in <span class="var">join()</span> met
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "join";
+var disqus_identifier = "api-join";
 var disqus_url = "http://minifiedjs.com/api/join.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

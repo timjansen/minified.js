@@ -38,7 +38,7 @@ Converts a number into a string by 'padding' it with leading zeros until it has 
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "pad";
+var disqus_identifier = "api-pad";
 var disqus_url = "http://minifiedjs.com/api/pad.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

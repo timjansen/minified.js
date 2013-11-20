@@ -90,7 +90,7 @@ var v9  = _.parseDate('[+0100]yyyy-MM-dd h:mm a', '2013-07-09 5:07 pm');  // dif
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "parsedate";
+var disqus_identifier = "api-parsedate";
 var disqus_url = "http://minifiedjs.com/api/parsedate.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

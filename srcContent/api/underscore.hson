@@ -68,7 +68,7 @@ var a4 = _(a, 4);       // contains _(1, 2, 3, 4)
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "underscore";
+var disqus_identifier = "api-underscore";
 var disqus_url = "http://minifiedjs.com/api/underscore.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

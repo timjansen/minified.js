@@ -45,7 +45,7 @@ $('#resultElement').ht('#myElement's position is left={x} top={y}', pos);
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "offset";
+var disqus_identifier = "api-offset";
 var disqus_url = "http://minifiedjs.com/api/offset.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

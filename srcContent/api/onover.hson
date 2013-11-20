@@ -52,7 +52,7 @@ $('#mouseSensitive').onOver($('#mouseSensitive').toggle({$color:'#000'}, {$color
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "onover";
+var disqus_identifier = "api-onover";
 var disqus_url = "http://minifiedjs.com/api/onover.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

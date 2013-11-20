@@ -50,7 +50,7 @@ var list = _.filterObj({a: 4, b: 22, c: 7, d: 2, e: 19}, function(key, value) {
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "filterobj";
+var disqus_identifier = "api-filterobj";
 var disqus_url = "http://minifiedjs.com/api/filterobj.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

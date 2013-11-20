@@ -56,7 +56,7 @@ var r = _.contains([1, 2, 3, 4, 5], 5); // returns true
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "contains";
+var disqus_identifier = "api-contains";
 var disqus_url = "http://minifiedjs.com/api/contains.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

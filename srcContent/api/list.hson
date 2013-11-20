@@ -25,7 +25,7 @@ that take a list and create a modified copy which, for example, may contain addi
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "list";
+var disqus_identifier = "api-list";
 var disqus_url = "http://minifiedjs.com/api/list.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

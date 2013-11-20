@@ -42,7 +42,7 @@ internally and there is not guarantee that it will be called exactly after the g
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "delay";
+var disqus_identifier = "api-delay";
 var disqus_url = "http://minifiedjs.com/api/delay.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

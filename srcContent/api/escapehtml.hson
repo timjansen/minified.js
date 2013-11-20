@@ -46,7 +46,7 @@
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "escapehtml";
+var disqus_identifier = "api-escapehtml";
 var disqus_url = "http://minifiedjs.com/api/escapehtml.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

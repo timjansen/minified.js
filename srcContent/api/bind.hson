@@ -62,7 +62,7 @@ var myList5 = mulMyList(); // returns _(5, 10, 15)</pre>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "bind";
+var disqus_identifier = "api-bind";
 var disqus_url = "http://minifiedjs.com/api/bind.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

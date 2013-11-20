@@ -68,7 +68,7 @@ var r = _.startsWith("Cookie", "okie"); // returns true
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "endswith";
+var disqus_identifier = "api-endswith";
 var disqus_url = "http://minifiedjs.com/api/endswith.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

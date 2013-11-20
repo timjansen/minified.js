@@ -34,7 +34,7 @@ is given, it returns the current day at midnight.</p><p></p></div>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "datemidnight";
+var disqus_identifier = "api-datemidnight";
 var disqus_url = "http://minifiedjs.com/api/datemidnight.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

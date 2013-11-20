@@ -53,7 +53,7 @@ var r = _.mapObj({a: 1, b: 5, c: 2}, function(key, value) {
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "mapobj";
+var disqus_identifier = "api-mapobj";
 var disqus_url = "http://minifiedjs.com/api/mapobj.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

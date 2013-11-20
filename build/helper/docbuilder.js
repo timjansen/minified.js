@@ -200,7 +200,7 @@ function createReferencePage(sec, toc) {
 	html += ' <div id="disqus_thread"></div>\n';
     html += '<script type="text/javascript">\n';
     html += 'var disqus_shortname = "minifiedjs";\n';
-    html += 'var disqus_identifier = "';
+    html += 'var disqus_identifier = "api-';
     html += sec.id;
     html += '";\n';
     html += 'var disqus_url = "';

@@ -105,7 +105,7 @@ dynamically, as this will fill the cache up quickly.</p><p></p></div>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "template";
+var disqus_identifier = "api-template";
 var disqus_url = "http://minifiedjs.com/api/template.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

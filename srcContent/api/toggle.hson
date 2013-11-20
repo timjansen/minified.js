@@ -108,7 +108,7 @@ var t = $('#myElement').toggle('myClass1 myClass2');
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "toggle";
+var disqus_identifier = "api-toggle";
 var disqus_url = "http://minifiedjs.com/api/toggle.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

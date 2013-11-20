@@ -53,7 +53,7 @@ $('#myField').onChange(function(newValue, index, ev) { $('#target').fill(newValu
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "onchange";
+var disqus_identifier = "api-onchange";
 var disqus_url = "http://minifiedjs.com/api/onchange.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

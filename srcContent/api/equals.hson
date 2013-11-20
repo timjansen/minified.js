@@ -59,7 +59,7 @@ differentiate between <span class="var">null</span> and <span class="var">undefi
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "equals";
+var disqus_identifier = "api-equals";
 var disqus_url = "http://minifiedjs.com/api/equals.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

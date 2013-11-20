@@ -36,7 +36,7 @@ of the same name. If you need to work with several libraries, you need a real AM
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "require";
+var disqus_identifier = "api-require";
 var disqus_url = "http://minifiedjs.com/api/require.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

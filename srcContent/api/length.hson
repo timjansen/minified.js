@@ -44,7 +44,7 @@ for (var i = 0; i &lt; list.length; i++)
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "length";
+var disqus_identifier = "api-length";
 var disqus_url = "http://minifiedjs.com/api/length.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

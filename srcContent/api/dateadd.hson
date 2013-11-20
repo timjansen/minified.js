@@ -46,7 +46,7 @@ var inThreeMonths = _.dateAdd(now, 'month', 3);</pre>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "dateadd";
+var disqus_identifier = "api-dateadd";
 var disqus_url = "http://minifiedjs.com/api/dateadd.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

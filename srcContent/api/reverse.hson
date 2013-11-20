@@ -48,7 +48,7 @@ var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "reverse";
+var disqus_identifier = "api-reverse";
 var disqus_url = "http://minifiedjs.com/api/reverse.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

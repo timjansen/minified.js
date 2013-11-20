@@ -52,7 +52,7 @@ If you only want to format a single value, use <code><a href='undefinedformatval
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "formathtml";
+var disqus_identifier = "api-formathtml";
 var disqus_url = "http://minifiedjs.com/api/formathtml.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

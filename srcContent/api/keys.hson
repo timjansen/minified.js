@@ -44,7 +44,7 @@ var keys = _.keys(obj);  // keys contains ['a', 'b'] now
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "keys";
+var disqus_identifier = "api-keys";
 var disqus_url = "http://minifiedjs.com/api/keys.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

@@ -73,7 +73,7 @@ var r3 = mul12345By2(3);               // returns _(2, 4, 6, 4, 5)
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "partial";
+var disqus_identifier = "api-partial";
 var disqus_url = "http://minifiedjs.com/api/partial.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

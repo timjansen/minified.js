@@ -122,7 +122,7 @@ var v10 = _.formatValue('[+0100]yyyy-MM-dd h:mm a', now);  // different timezone
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "formatvalue";
+var disqus_identifier = "api-formatvalue";
 var disqus_url = "http://minifiedjs.com/api/formatvalue.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

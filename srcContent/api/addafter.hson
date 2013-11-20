@@ -91,7 +91,7 @@ With the previous example's HTML, this would create this:
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "addafter";
+var disqus_identifier = "api-addafter";
 var disqus_url = "http://minifiedjs.com/api/addafter.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

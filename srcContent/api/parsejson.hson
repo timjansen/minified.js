@@ -47,7 +47,7 @@ var myObj = $.parseJSON(jsonString);
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "parsejson";
+var disqus_identifier = "api-parsejson";
 var disqus_url = "http://minifiedjs.com/api/parsejson.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

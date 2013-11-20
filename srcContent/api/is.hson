@@ -59,7 +59,7 @@ var areRows = $('.myRows').is('tr');
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "is";
+var disqus_identifier = "api-is";
 var disqus_url = "http://minifiedjs.com/api/is.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

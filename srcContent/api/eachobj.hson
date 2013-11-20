@@ -51,7 +51,7 @@ _.eachObj({a: 1, b: 5, c: 2}, function(key, value) {
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "eachobj";
+var disqus_identifier = "api-eachobj";
 var disqus_url = "http://minifiedjs.com/api/eachobj.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

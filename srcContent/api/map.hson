@@ -61,7 +61,7 @@ var inced = _.map([3, 7, 11, 5, 19, 3], function(number, index) {
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "map";
+var disqus_identifier = "api-map";
 var disqus_url = "http://minifiedjs.com/api/map.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

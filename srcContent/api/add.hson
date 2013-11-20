@@ -109,7 +109,7 @@ $('.chapter').add(function(parent, index) { return EE('h2', 'Chapter number ' + 
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "add";
+var disqus_identifier = "api-add";
 var disqus_url = "http://minifiedjs.com/api/add.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

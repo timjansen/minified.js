@@ -54,7 +54,7 @@ _.extend(target, {a: 1, b: 2}); // target is now {a: 1, b: 2, c: 3}</pre>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "extend";
+var disqus_identifier = "api-extend";
 var disqus_url = "http://minifiedjs.com/api/extend.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

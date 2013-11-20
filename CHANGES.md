@@ -1,6 +1,13 @@
 Minified Change Log
 ====================
 
+Ongoing (for Beta 4)
+---------------------
+* on() will set 'this' to a Minified list containing the event source, instead of the event source itself.
+* $.request()'s headers, username and password parameters have been moved into an object as 4th argument. 
+  You can now also set XMLHttpRequest properties.
+
+
 Beta 3.1 (2013-11-13)
 ---------------------
 * Made $.ready() work when Minified is loaded after the DOM's initialization.

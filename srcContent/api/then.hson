@@ -91,7 +91,7 @@ $.request('get', '/weather.do')
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "then";
+var disqus_identifier = "api-then";
 var disqus_url = "http://minifiedjs.com/api/then.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

@@ -59,6 +59,12 @@ module.exports = (function() {
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	///#snippet utilVars
+	/*$
+	 * @id util 
+	 * @doc no
+	 * Marker if Util is in the distribution.
+	 */
+
 	var _null = null, _true = true, _false = false;
 
 	/** @const */

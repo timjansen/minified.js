@@ -35,7 +35,7 @@ arguments.</p><p></p></div>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "unite";
+var disqus_identifier = "api-unite";
 var disqus_url = "http://minifiedjs.com/api/unite.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;

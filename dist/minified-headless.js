@@ -36,6 +36,12 @@ module.exports = (function() {
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	///#snippet utilVars
+	/*$
+	 * @id util 
+	 * @doc no
+	 * Marker if Util is in the distribution.
+	 */
+
 	var _null = null, _true = true, _false = false;
 
 	/** @const */
@@ -224,7 +230,7 @@ module.exports = (function() {
 		else
 			eachObj(obj, function(key, value) { list.push(value); });
 		return list;
-	}
+	}	
 
 	function mapObj(list, mapFunc) {
 		var result = {};
