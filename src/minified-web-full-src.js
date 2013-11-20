@@ -74,9 +74,8 @@
  * function ##require(), which can be used only to load 'minified'.
  */
 if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
-	var def = {};
-	this['define'] = function(name, f) {def[name] = f();};
-	this['require'] = function(name) { return def[name]; }; 
+	this['define'] = function def(name, f) {def[name] = f();};
+	this['require'] = function(name) { return this['define'][name]; }; 
 }
 
 define('minified', function() {
