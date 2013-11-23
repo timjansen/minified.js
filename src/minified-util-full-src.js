@@ -891,6 +891,8 @@ define('minified', function() {
      *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
      *                 The callback's return value will be ignored.
      * @return the list
+     * 
+     * @see ##per() works like <var>each()</var>, but wraps the list elements in a list.
      */
 	'each': listBind(each),
 	
@@ -1591,6 +1593,38 @@ define('minified', function() {
      */
 	'intersection': listBindArray(intersection), 
 
+	/*$ 
+	 * @id per
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .per() 
+	 * @syntax list.per(callback) 
+	 * @module UTIL
+	 * Invokes the handler function for each list element with a single-element list containing only this element. It is very similar to
+	 * ##each(), but instead of giving the element itself it wraps the element in a ##list#Minified list##. 
+	 *
+	 * @example Create a mouseover toggle for a list:
+	 * <pre>$('.toggler').per(function(el, i) {
+	 *     el.onOver(el.toggle('myeffect'));
+	 * });</pre>
+	 *
+     * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
+     *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
+     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+     *                 The callback's return value will be ignored.
+     * @return the list
+
+	 */
+	'per': function(handler) {
+		var a = [_null];
+		for (var i = 0; i < this.length; i++) {
+			a[0] = this[i];
+			handler(new M(a), i);
+		}
+		return this;
+	},
+	
 	/*$ 
 	 * @id join 
 	 * @group LIST 

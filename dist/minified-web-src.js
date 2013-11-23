@@ -74,9 +74,8 @@
  * function ##require(), which can be used only to load 'minified'.
  */
 if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
-	var def = {};
-	this['define'] = function(name, f) {def[name] = f();};
-	this['require'] = function(name) { return def[name]; }; 
+	this['define'] = function def(name, f) {def[name] = f();};
+	this['require'] = function(name) { return this['define'][name]; }; 
 }
 
 define('minified', function() {
@@ -1527,7 +1526,7 @@ define('minified', function() {
 				else if (c != _null) {   // must check null, as 0 is a valid parameter 
 					var n = isNode(c) ? c : _document.createTextNode(c);
 					if (lastAdded)
-						lastAdded.parentNode.insertBefore(n, lastAdded.nextSibling);
+						lastAdded['parentNode']['insertBefore'](n, lastAdded['nextSibling']);
 					else if (addFunction)
 						addFunction(n, e, e.parentNode); 
 					else
@@ -1541,7 +1540,7 @@ define('minified', function() {
 	/*$
 	 * @id fill
 	 * @group ELEMENT
-	 * @requires dollar add remove
+	 * @requires dollar add remove each
 	 * @configurable default
 	 * @name .fill()
 	 * @syntax list.fill()
@@ -1707,7 +1706,7 @@ define('minified', function() {
 	 * @see ##replace() replaces existing nodes.
 	 */
 	'addBefore': function (children) {
-		return this['add'](children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode); });
+		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode); });
 	},
 
 	/*$
@@ -1779,7 +1778,7 @@ define('minified', function() {
 	 * @see ##replace() replaces existing nodes.
 	 */
 	'addAfter': function (children) {
-		return this['add'](children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode.nextSibling); });
+		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode['nextSibling']); });
 	},
 
 	/*$
@@ -1944,7 +1943,7 @@ define('minified', function() {
 	 * @see ##addBefore() also adds nodes not as children but as siblings.
 	 */
 	'replace': function (children) {
-		return this['add'](children, function(newNode, refNode, parent) { parent.replaceChild(newNode, refNode); });
+		return this['add'](children, function(newNode, refNode, parent) { parent['replaceChild'](newNode, refNode); });
 	},
 
 	/*$
@@ -1985,7 +1984,7 @@ define('minified', function() {
 	 * @see ##add() can add a cloned element to the HTML document.
 	 */
 	'clone':  function() {
-		return new M(clone(this)); // TODO: with Util use list bind func
+		return new M(clone(this));
 	},
 
 	/*$
@@ -2556,7 +2555,7 @@ define('minified', function() {
 		if (!toggle)
 			return this['onOver'](null, subSelect);
 		else 
-			return self['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
+			return this['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
 				var overState = ev['type'] != 'mouseout';
 				// @condblock ie9compatibility 
 				var relatedTarget = ev['relatedTarget'] || ev['toElement'];
@@ -2845,7 +2844,7 @@ define('minified', function() {
     * 
     * @see ##$.parseJON() parses JSON structures.
     */
-    'toJSON': _window.JSON && JSON.stringify,
+    'toJSON': JSON.stringify,
 
 	/*$
 	* @id parsejson
@@ -2875,7 +2874,7 @@ define('minified', function() {
 	* @return the resulting JavaScript object. <var>Undefined</var> if not valid.
 	* @see ##$.toJSON() converts JavaScript objects to JSON.
 	*/
-    'parseJSON': _window.JSON && JSON.parse,
+    'parseJSON': JSON.parse,
 
 	/*$
     * @id ready

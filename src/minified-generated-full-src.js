@@ -1640,6 +1640,8 @@ define('minified', function() {
      *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
      *                 The callback's return value will be ignored.
      * @return the list
+     * 
+     * @see ##per() works like <var>each()</var>, but wraps the list elements in a list.
      */
 	'each': listBind(each),
 	
@@ -2340,6 +2342,38 @@ define('minified', function() {
      */
 	'intersection': listBindArray(intersection), 
 
+	/*$ 
+	 * @id per
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .per() 
+	 * @syntax list.per(callback) 
+	 * @module UTIL
+	 * Invokes the handler function for each list element with a single-element list containing only this element. It is very similar to
+	 * ##each(), but instead of giving the element itself it wraps the element in a ##list#Minified list##. 
+	 *
+	 * @example Create a mouseover toggle for a list:
+	 * <pre>$('.toggler').per(function(el, i) {
+	 *     el.onOver(el.toggle('myeffect'));
+	 * });</pre>
+	 *
+     * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
+     *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
+     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+     *                 The callback's return value will be ignored.
+     * @return the list
+
+	 */
+	'per': function(handler) {
+		var a = [_null];
+		for (var i = 0; i < this.length; i++) {
+			a[0] = this[i];
+			handler(new M(a), i);
+		}
+		return this;
+	},
+	
 	/*$ 
 	 * @id join 
 	 * @group LIST 
@@ -3094,7 +3128,7 @@ define('minified', function() {
 				else if (c != _null) {   // must check null, as 0 is a valid parameter 
 					var n = isNode(c) ? c : _document.createTextNode(c);
 					if (lastAdded)
-						lastAdded.parentNode.insertBefore(n, lastAdded.nextSibling);
+						lastAdded['parentNode']['insertBefore'](n, lastAdded['nextSibling']);
 					else if (addFunction)
 						addFunction(n, e, e.parentNode); 
 					else
@@ -3109,7 +3143,7 @@ define('minified', function() {
 	/*$
 	 * @id fill
 	 * @group ELEMENT
-	 * @requires dollar add remove
+	 * @requires dollar add remove each
 	 * @configurable default
 	 * @name .fill()
 	 * @syntax list.fill()
@@ -3275,7 +3309,7 @@ define('minified', function() {
 	 * @see ##replace() replaces existing nodes.
 	 */
 	'addBefore': function (children) {
-		return this['add'](children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode); });
+		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode); });
 	},
 	
 	/*$
@@ -3347,7 +3381,7 @@ define('minified', function() {
 	 * @see ##replace() replaces existing nodes.
 	 */
 	'addAfter': function (children) {
-		return this['add'](children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode.nextSibling); });
+		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode['nextSibling']); });
 	},
 	
 	/*$
@@ -3512,7 +3546,7 @@ define('minified', function() {
 	 * @see ##addBefore() also adds nodes not as children but as siblings.
 	 */
 	'replace': function (children) {
-		return this['add'](children, function(newNode, refNode, parent) { parent.replaceChild(newNode, refNode); });
+		return this['add'](children, function(newNode, refNode, parent) { parent['replaceChild'](newNode, refNode); });
 	},
 
 	/*$
@@ -3553,7 +3587,7 @@ define('minified', function() {
 	 * @see ##add() can add a cloned element to the HTML document.
 	 */
 	'clone':  function() {
-		return new M(clone(this)); // TODO: with Util use list bind func
+		return new M(clone(this));
 	},
 
 
@@ -4133,7 +4167,7 @@ define('minified', function() {
 		if (!toggle)
 			return this['onOver'](null, subSelect);
 		else 
-			return self['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
+			return this['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
 				var overState = ev['type'] != 'mouseout';
 				// @condblock ie9compatibility 
 				var relatedTarget = ev['relatedTarget'] || ev['toElement'];
@@ -4147,7 +4181,7 @@ define('minified', function() {
 				}
 			});
 	},
-	
+
 	/*$
 	 * @id onchange
 	 * @group EVENTS
@@ -4519,7 +4553,7 @@ define('minified', function() {
 		return toString(value);
 	},
     // @condend
-    // @cond !ie7compatibility 'toJSON': _window.JSON && JSON.stringify,
+    // @cond !ie7compatibility 'toJSON': JSON.stringify,
     
 	/*$
 	* @id parsejson
@@ -4561,7 +4595,7 @@ define('minified', function() {
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     },
     // @condend
-    // @cond !ie7compatibility 'parseJSON': _window.JSON && JSON.parse,
+    // @cond !ie7compatibility 'parseJSON': JSON.parse,
     
 	/*$
     * @id ready
