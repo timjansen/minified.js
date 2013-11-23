@@ -1076,16 +1076,16 @@ define('minified', function() {
 	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because context is used only
 	// by on(), and in on() only nodes in the right context will be checked
 	function getFilterFunc(selector, context) {
-		var dotPos;
 		var nodeSet = {};
+		var dotPos = nodeSet;
 		if (isFunction(selector))
 			return selector;
 		else if (isNumber(selector))
 			return function(v, index) { return index == selector; };
 		else if (!selector || selector == '*' ||
 				 (isString(selector) && (dotPos = /^([\w-]*)\.?([\w-]*)$/.exec(selector)))) {
-			var nodeNameFilter = wordRegExpTester(dotPos && dotPos[1], 'nodeName');
-			var classNameFilter = wordRegExpTester(dotPos && dotPos[2], 'className');
+			var nodeNameFilter = wordRegExpTester(dotPos[1], 'nodeName');
+			var classNameFilter = wordRegExpTester(dotPos[2], 'className');
 			return function(v) { 
 				return isNode(v) == 1 && nodeNameFilter(v) && classNameFilter(v);
 			};
