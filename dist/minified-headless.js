@@ -847,6 +847,8 @@ module.exports = (function() {
      * @return the list
      * 
      * @see ##per() works like <var>each()</var>, but wraps the list elements in a list.
+     * @see ##find() can be used instead of <var>each()</var> if you need to abort the loop.
+     * @see ##eachObj() iterates through the properties of an object.
      */
 	'each': listBind(each),
 

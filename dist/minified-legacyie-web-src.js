@@ -774,6 +774,7 @@ define('minified', function() {
      *                 The callback's return value will be ignored.
      * @return the list
      * 
+     * @see ##per() 
      * @see ##find() can be used instead of <var>each()</var> if you need to abort the loop.
      * @see ##eachObj() iterates through the properties of an object.
      */
@@ -2425,23 +2426,34 @@ define('minified', function() {
 	 */
 	'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
 		var self = this;
-		var promise;
+		var stop;
+		var dial = self['dial'](stateDesc1, stateDesc2, linearity);
 		var state = _false, regexg = /\b(?=\w)/g, stateDesc;
 
-		if (stateDesc2)
-			return self['set'](stateDesc1) && 
-			    function(newState) {
+		if (stateDesc2) {
+			self['set'](stateDesc1);
+			return function(newState) {
 					if (newState !== state) {
 						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
 
-						if (durationMs) 
-							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity))['then'](function(){promise=_null;});
+						if (durationMs) {
+							if (stop)
+								stop();
+							stop = $.loop(function(t) { 
+								dial(t / durationMs); 
+								if (t > durationMs) { 
+									stop();
+									stop = _null;
+								}
+							});
+						}
 						else
 							self['set'](stateDesc) && undef;
 					}
 				};
+		}
 		else
-			return self['toggle'](replace(stateDesc1, regexg, '-'), replace(stateDesc1, regexg, '+'));
+			return self['toggle']({$:replace(stateDesc1, regexg, '-')}, {$:replace(stateDesc1, regexg, '+')});
 	},
 
 	/*$
