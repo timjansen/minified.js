@@ -199,8 +199,11 @@ module.exports = (function() {
 	}
 	function each(list, cb) {
 		if (list)
+		// @condblock ie8compatibility
 			for (var i = 0; i < list.length; i++)
 				cb(list[i], i);
+		// @condend
+		// @cond !ie8compatibility templates['forEach'].call(list, cb); // 'templates' is just some random array to get an Array ref
 		return list;
 	}
 	function filterObj(obj, f) {
@@ -939,6 +942,8 @@ module.exports = (function() {
 	 * @param value a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
 	 *              be a function. 
 	 * @return the new, filtered ##list#list##
+	 * 
+	 * @see ##only() offers selector-based filtering.
 	 */
 	'filter': listBindArray(filter),
 

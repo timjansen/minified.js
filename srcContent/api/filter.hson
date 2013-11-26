@@ -32,7 +32,8 @@
 <dd class="">a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
 be a function.</dd>
 <dt id="filter_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="filter_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the new, filtered <a href='list.html' class='func'>list</a></dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the new, filtered <a href='list.html' class='func'>list</a>
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -74,6 +75,9 @@ var list = $('input').filter(function(item, index) {
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='only.html' class='func'>only()</a></code> offers selector-based filtering.</li>
+</ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -132,8 +136,10 @@ var disqus_url = "http://minifiedjs.com/api/filter.html";
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

@@ -60,6 +60,7 @@ var forms = $('#content *').only('form');
 
 <h4>See also..</h4>
 <ul><li><code><a href='select.html' class='func'>select()</a></code> executes a selector on the descendants of the list elements.</li>
+<li><code><a href='filter.html' class='func'>filter()</a></code> offers function-based filtering.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
@@ -119,8 +120,10 @@ var disqus_url = "http://minifiedjs.com/api/only.html";
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

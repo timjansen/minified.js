@@ -23,13 +23,12 @@
 match the selector.
 Supports all valid parameters for <span class="var">$()</span> except functions.</dd>
 <dt id="onover_toggle" class=""><a name="onover_toggle"><var>toggle</var></a></dt>
-<dd class="">the callback <code>function(isOver, index, event)</code> to invoke when the event has been triggered:
+<dd class="">the callback <code>function(isOver, event)</code> to invoke when the event has been triggered:
 <dl>
-<dt>isOver</dt><dd><span class="var">true</span> if mouse is entering element, <span class="var">false</span> when leaving.</dd>
-<dt>index</dt><dd>The index of the target element in the <a href='list.html' class='func'>Minified list</a> .</dd>
+<dt>isOver</dt><dd><span class="var">true</span> if mouse is entering any element, <span class="var">false</span> when leaving.</dd>
 <dt>event</dt><dd>The original event object given to <code><a href='on.html' class='func'>on()</a></code>.</dd>
 </dl>
-'this' is a list containing the target element that caused the event.</dd>
+'this' is a list containing the target element that caused the event as only item.</dd>
 <dt id="onover_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="onover_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the list</dd>
 </dl>
@@ -106,8 +105,10 @@ var disqus_url = "http://minifiedjs.com/api/onover.html";
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

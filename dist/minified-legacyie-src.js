@@ -121,7 +121,7 @@ define('minified', function() {
 	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8,
 	 * and the existence of cssText (which is used instead of the style attribute).
 	 */
-	 var IS_PRE_IE9 = !!_document['all'] && ![].map;
+	 var IS_PRE_IE9 = !!_document['all'] && !_document['addEventListener'];
 	/*$
 	 * @id ie7compatibility
 	 * @group OPTIONS
@@ -303,8 +303,11 @@ define('minified', function() {
 	}
 	function each(list, cb) {
 		if (list)
+		// @condblock ie8compatibility
 			for (var i = 0; i < list.length; i++)
 				cb(list[i], i);
+		// @condend
+		// @cond !ie8compatibility templates['forEach'].call(list, cb); // 'templates' is just some random array to get an Array ref
 		return list;
 	}
 	function filterObj(obj, f) {
@@ -1629,6 +1632,8 @@ define('minified', function() {
 	 * @param value a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
 	 *              be a function. 
 	 * @return the new, filtered ##list#list##
+	 * 
+	 * @see ##only() offers selector-based filtering.
 	 */
 	'filter': listBindArray(filter),
 
@@ -2606,6 +2611,7 @@ define('minified', function() {
  	 * @return a new list containing only elements matched by the selector/function/index.
  	 * 
  	 * @see ##select() executes a selector on the descendants of the list elements.
+ 	 * @see ##filter() offers function-based filtering.
  	 */
 	'only': function(selector) {
 		return this['filter'](getFilterFunc(selector));
@@ -3828,34 +3834,23 @@ define('minified', function() {
 	 */
 	'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
 		var self = this;
-		var stop;
-		var dial = self['dial'](stateDesc1, stateDesc2, linearity);
+		var promise;
 		var state = _false, regexg = /\b(?=\w)/g, stateDesc;
 
-		if (stateDesc2) {
-			self['set'](stateDesc1);
-			return function(newState) {
+		if (stateDesc2)
+			return self['set'](stateDesc1) && 
+			    function(newState) {
 					if (newState !== state) {
 						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
 
-						if (durationMs) {
-							if (stop)
-								stop();
-							stop = $.loop(function(t) { 
-								dial(t / durationMs); 
-								if (t > durationMs) { 
-									stop();
-									stop = _null;
-								}
-							});
-						}
+						if (durationMs) 
+							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity))['then'](function(){promise=_null;});
 						else
 							self['set'](stateDesc) && undef;
 					}
 				};
-		}
 		else
-			return self['toggle']({$:replace(stateDesc1, regexg, '-')}, {$:replace(stateDesc1, regexg, '+')});
+			return self['toggle'](replace(stateDesc1, regexg, '-'), replace(stateDesc1, regexg, '+'));
 	},
 
 	/*$
@@ -4081,13 +4076,12 @@ define('minified', function() {
 	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
 	 *                match the selector. 
 	 *                Supports all valid parameters for <var>$()</var> except functions.           
-	 * @param toggle the callback <code>function(isOver, index, event)</code> to invoke when the event has been triggered:
+	 * @param toggle the callback <code>function(isOver, event)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
- 	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
- 	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
+ 	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering any element, <var>false</var> when leaving.</dd>
  	 *             <dt>event</dt><dd>The original event object given to ##on().</dd>
  	 *             </dl>
-	 *             'this' is a list containing the target element that caused the event.
+	 *             'this' is a list containing the target element that caused the event as only item.
 	 * @return the list
 	 */
 	'onOver': function(subSelect, toggle) {
@@ -4104,10 +4098,43 @@ define('minified', function() {
 				if (curOverState[index] !== overState) {
 					if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['trav']('parentNode', self[index]).length)) {
 						curOverState[index] = overState;
-						toggle.call(this, overState, index, ev);
+						toggle.call(this, overState, ev);
 					}
 				}
 			});
+	},
+
+	/*$
+	 * @id onfocus
+	 * @group EVENTS
+	 * @requires on dollar 
+	 * @configurable default
+	 * @name .onFocus()
+	 * @syntax list.onFocus(handler)
+	 * @syntax list.onFocus(subSelect, handler)
+	 * @module WEB
+	 * Registers a function to be called when a list element either gets the focus or the focus is removed (blur).
+	 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
+	 * which allows you to use any ##toggle() function as handler.
+	 * 
+	 * @example Creates a toggle that changes the text color of the element on focus:
+	 * <pre>
+	 * $('#focusSensitive').onOver($('#focusSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 100));
+	 * </pre>
+	 * 
+	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
+	 *                match the selector. 
+	 *                Supports all valid parameters for <var>$()</var> except functions.           
+	 * @param toggle the callback <code>function(hasFocus)</code> to invoke when the event has been triggered:
+	 * 		  <dl>
+ 	 *             <dt>hasFocus</dt><dd><var>true</var> if an element gets the focus, <var>false</var> when an element looses it.</dd>
+ 	 *             </dl>
+	 *             'this' is a list containing the target element that caused the event as only item.
+	 * @return the list
+	 */
+	'onFocus': function(selector, handler) {
+		return this['on'](selector, '|focus', handler, [_true])
+			       ['on'](selector, '|blur', handler, [_false]);
 	},
 
 	/*$
@@ -4147,7 +4174,7 @@ define('minified', function() {
 			return this['onChange'](null, subSelect);
 		else 
 			return this['each'](function(el, index) {
-				function register(eventNames, property, index) {
+				function register(eventNames, property) {
 					oldValues[index] = el[property];
 					$(el)['on'](subSelect, eventNames, function() {
 						var newValue = el[property]; 
@@ -4158,13 +4185,13 @@ define('minified', function() {
 					});
 				}
 				if (/kbox|dio/i.test(el['type'])) {
-					register('|click', 'checked', index);
+					register('|click', 'checked');
 				}
 				else { 
 					// @condblock ie8compatibility
-					register(IS_PRE_IE9 ? '|propertychange' : '|input |change |keyup', 'value', index);
+					register(IS_PRE_IE9 ? '|propertychange' : '|input |change |keyup', 'value');
 					// @condend
-					// @cond !ie8compatibility register('|input |change |keyup', 'value', index);
+					// @cond !ie8compatibility register('|input', 'value', index);
 				}
 			});
 	},
