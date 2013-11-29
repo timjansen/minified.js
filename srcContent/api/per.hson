@@ -2,80 +2,50 @@
 /*
    Auto-generated using docbuilder.js. Do not edit manually. 
 */
-	title: `.each() - Minified.js`,
+	title: `.per() - Minified.js`,
 	section:"reference",
 	externalCss: ["../css/reference.css"],
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-each">.each()</a></h2>
-<div class="summary">Invokes the given function once for each item in the list.</div>
+<h2><a name="doc-per">.per()</a></h2>
+<div class="summary">Invokes the handler function for each list element with a single-element list containing only this element.</div>
 
-<div class="availability">Available in all modules.</div><h4>Syntax Variants</h4>
+<div class="availability">Util module only.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">list.each(callback)</div>
-<div class="syntax">_.each(list, callback)</div>
+<div class="syntax">list.per(callback)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="each_list" class=""><a name="each_list"><var>list</var></a></dt>
-<dd class="">a list to iterate. Can be an array, a <a href='list.html' class='func'>Minified list</a> or any other array-like structure with
-<span class="var">length</span> property.</dd>
-<dt id="each_callback" class=""><a name="each_callback"><var>callback</var></a></dt>
-<dd class="">The callback <code>function(item, index)</code> to invoke for each list element.
-<dl><dt>item</dt><dd>The current list element.</dd>
+<dt id="per_callback" class=""><a name="per_callback"><var>callback</var></a></dt>
+<dd class="">The callback <code>function(itemList, index)</code> to invoke for each list element.
+<dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
 The callback's return value will be ignored.</dd>
-<dt id="each_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="each_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the list
+<dt id="per_RETURN" class="returnValue inSyntax0"><a name="per_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0">the list
 </dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Invokes the given function once for each item in the list. The function will be called with the item as first parameter and
-the zero-based index as second. Unlike JavaScript's built-in <span class="var">forEach()</span> it will be invoked for each item in the list,
-even if it is <span class="var">undefined</span>.</p><p></p></div>
+<div class="description"><p>Invokes the handler function for each list element with a single-element list containing only this element. It is very similar to
+<code><a href='each.html' class='func'>each()</a></code>, but instead of giving the element itself it wraps the element in a <a href='list.html' class='func'>Minified list</a>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Creates the sum of all list entries.
-<pre>
-var sum = 0;
-_(17, 4, 22).each(function(item, index) {
-    sum += item;
-});
-</pre>
-</p></div>
-<h4>Example</h4>
-<div class="example"><p>The previous example with a native array:
-<pre>
-var sum = 0;
-_.each([17, 4, 22], function(item, index) {
-    sum += item;
-});
-</pre>
-</p></div>
-<h4>Example</h4>
-<div class="example"><p>This goes through all h2 elements of the class 'section' on a web page and changes their content:
-<pre>
-$('h2.section').each(function(item, index) {
-    item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
-});
-</pre>
+<div class="example"><p>Create a mouseover toggle for a list:
+<pre>$('.toggler').per(function(el, i) {
+    el.onOver(el.toggle('myeffect'));
+});</pre>
 </p></div>
 </div>
 
-<h4>See also..</h4>
-<ul><li><code><a href='per.html' class='func'>per()</a></code> works like <span class="var">each()</span>, but wraps the list elements in a list.</li>
-<li><code><a href='find.html' class='func'>find()</a></code> can be used instead of <span class="var">each()</span> if you need to abort the loop.</li>
-<li><code><a href='eachobj.html' class='func'>eachObj()</a></code> iterates through the properties of an object.</li>
-</ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-each";
-var disqus_url = "http://minifiedjs.com/api/each.html";
+var disqus_identifier = "api-per";
+var disqus_url = "http://minifiedjs.com/api/per.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";

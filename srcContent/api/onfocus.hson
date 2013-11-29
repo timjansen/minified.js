@@ -2,80 +2,56 @@
 /*
    Auto-generated using docbuilder.js. Do not edit manually. 
 */
-	title: `.each() - Minified.js`,
+	title: `.onFocus() - Minified.js`,
 	section:"reference",
 	externalCss: ["../css/reference.css"],
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-each">.each()</a></h2>
-<div class="summary">Invokes the given function once for each item in the list.</div>
+<h2><a name="doc-onfocus">.onFocus()</a></h2>
+<div class="summary">Registers a function to be called when a list element either gets the focus or the focus is removed (blur).</div>
 
-<div class="availability">Available in all modules.</div><h4>Syntax Variants</h4>
+<div class="availability">Web module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">list.each(callback)</div>
-<div class="syntax">_.each(list, callback)</div>
+<div class="syntax">list.onFocus(handler)</div>
+<div class="syntax">list.onFocus(subSelect, handler)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="each_list" class=""><a name="each_list"><var>list</var></a></dt>
-<dd class="">a list to iterate. Can be an array, a <a href='list.html' class='func'>Minified list</a> or any other array-like structure with
-<span class="var">length</span> property.</dd>
-<dt id="each_callback" class=""><a name="each_callback"><var>callback</var></a></dt>
-<dd class="">The callback <code>function(item, index)</code> to invoke for each list element.
-<dl><dt>item</dt><dd>The current list element.</dd>
-<dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
-The callback's return value will be ignored.</dd>
-<dt id="each_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="each_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the list
-</dd>
+<dt id="onfocus_selector" class=""><a name="onfocus_selector"><var>selector (optional)</var></a></dt>
+<dd class="">a selector string for <a href='dollar.html' class='func'>$()</a> to register the event only on those children of the list elements that
+match the selector.
+Supports all valid parameters for <span class="var">$()</span> except functions.</dd>
+<dt id="onfocus_toggle" class=""><a name="onfocus_toggle"><var>toggle</var></a></dt>
+<dd class="">the callback <code>function(hasFocus)</code> to invoke when the event has been triggered:
+<dl>
+<dt>hasFocus</dt><dd><span class="var">true</span> if an element gets the focus, <span class="var">false</span> when an element looses it.</dd>
+</dl>
+'this' is a list containing the target element that caused the event as only item.</dd>
+<dt id="onfocus_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="onfocus_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1">the list</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Invokes the given function once for each item in the list. The function will be called with the item as first parameter and
-the zero-based index as second. Unlike JavaScript's built-in <span class="var">forEach()</span> it will be invoked for each item in the list,
-even if it is <span class="var">undefined</span>.</p><p></p></div>
+<div class="description"><p>Registers a function to be called when a list element either gets the focus or the focus is removed (blur).
+The handler is called with a boolean parameter, <span class="var">true</span> for entering and <span class="var">false</span> for leaving,
+which allows you to use any <code><a href='toggle.html' class='func'>toggle()</a></code> function as handler.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Creates the sum of all list entries.
+<div class="example"><p>Creates a toggle that changes the text color of the element on focus:
 <pre>
-var sum = 0;
-_(17, 4, 22).each(function(item, index) {
-    sum += item;
-});
-</pre>
-</p></div>
-<h4>Example</h4>
-<div class="example"><p>The previous example with a native array:
-<pre>
-var sum = 0;
-_.each([17, 4, 22], function(item, index) {
-    sum += item;
-});
-</pre>
-</p></div>
-<h4>Example</h4>
-<div class="example"><p>This goes through all h2 elements of the class 'section' on a web page and changes their content:
-<pre>
-$('h2.section').each(function(item, index) {
-    item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
-});
+$('#focusSensitive').onOver($('#focusSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 100));
 </pre>
 </p></div>
 </div>
 
-<h4>See also..</h4>
-<ul><li><code><a href='per.html' class='func'>per()</a></code> works like <span class="var">each()</span>, but wraps the list elements in a list.</li>
-<li><code><a href='find.html' class='func'>find()</a></code> can be used instead of <span class="var">each()</span> if you need to abort the loop.</li>
-<li><code><a href='eachobj.html' class='func'>eachObj()</a></code> iterates through the properties of an object.</li>
-</ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-each";
-var disqus_url = "http://minifiedjs.com/api/each.html";
+var disqus_identifier = "api-onfocus";
+var disqus_url = "http://minifiedjs.com/api/onfocus.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";

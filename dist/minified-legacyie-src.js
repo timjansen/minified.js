@@ -970,9 +970,9 @@ define('minified', function() {
 			(obj[prop] = (obj[prop] || [])).push(value);
 		}
 		if (isFunction(eventSpec)) 
-			return this['on'](null, subSelector, eventSpec, handler, bubbleSelector);
+			return this['on'](_null, subSelector, eventSpec, handler, bubbleSelector);
 		else if (isString(args)) 
-			return this['on'](subSelector, eventSpec, handler, null, args);
+			return this['on'](subSelector, eventSpec, handler, _null, args);
 		else
 			return this['each'](function(baseElement, index) {
 				flexiEach(subSelector ? dollarRaw(subSelector, baseElement) : baseElement, function(el) {
@@ -1101,19 +1101,6 @@ define('minified', function() {
 		// @condend
 		// @cond !ready return new M(dollarRaw(selector, context));
 	}
-
-	/*$
-	 * @id debug
-	 * @group OPTIONS
-	 * (TBD) @configurable optional
-	 * @doc no
-	 * @name Debugging Support
-	 */
-	function error(msg) {
-		if (_window.console) console.log(msg);
-		throw Exception("Minified debug error: " + msg);
-	}
-    // @cond debug MINI['debug'] = true;
 
 	// implementation of $ that does not produce a Minified list, but just an array
     function dollarRaw(selector, context, childOnly) { 
@@ -1539,7 +1526,8 @@ define('minified', function() {
      * @syntax _.each(list, callback)
      * @module UTIL, WEB
      * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
-     * the zero-based index as second.
+     * the zero-based index as second. Unlike JavaScript's built-in <var>forEach()</var> it will be invoked for each item in the list, 
+     * even if it is <var>undefined</var>.
      *
      * @example Creates the sum of all list entries. 
      * <pre>
@@ -3901,7 +3889,7 @@ define('minified', function() {
 				// @condend
 				// @cond !ie9compatibility $(el['elements'])['values'](r);
 			else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
-				r[n] = r[n] == null ? v : collector(flexiEach, [r[n], v], nonOp);
+				r[n] = r[n] == _null ? v : collector(flexiEach, [r[n], v], nonOp);
 			}
 		});
 		return r;
@@ -4087,7 +4075,7 @@ define('minified', function() {
 	'onOver': function(subSelect, toggle) {
 		var self = this, curOverState = [];
 		if (!toggle)
-			return this['onOver'](null, subSelect);
+			return this['onOver'](_null, subSelect);
 		else 
 			return this['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
 				var overState = ev['type'] != 'mouseout';
@@ -4119,7 +4107,7 @@ define('minified', function() {
 	 * 
 	 * @example Creates a toggle that changes the text color of the element on focus:
 	 * <pre>
-	 * $('#focusSensitive').onOver($('#focusSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 100));
+	 * $('#focusSensitive').onFocus($('#focusSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 100));
 	 * </pre>
 	 * 
 	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
@@ -4170,9 +4158,7 @@ define('minified', function() {
 	 */
 	'onChange': function(subSelect, handler) {
 		var oldValues = [];
-		if (!handler)
-			return this['onChange'](null, subSelect);
-		else 
+		if (handler)
 			return this['each'](function(el, index) {
 				function register(eventNames, property) {
 					oldValues[index] = el[property];
@@ -4194,6 +4180,9 @@ define('minified', function() {
 					// @cond !ie8compatibility register('|input', 'value', index);
 				}
 			});
+		else
+			return this['onChange'](_null, subSelect); 
+
 	},
 
 	/*$

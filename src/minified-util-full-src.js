@@ -862,7 +862,8 @@ define('minified', function() {
      * @syntax _.each(list, callback)
      * @module UTIL, WEB
      * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
-     * the zero-based index as second.
+     * the zero-based index as second. Unlike JavaScript's built-in <var>forEach()</var> it will be invoked for each item in the list, 
+     * even if it is <var>undefined</var>.
      *
      * @example Creates the sum of all list entries. 
      * <pre>
