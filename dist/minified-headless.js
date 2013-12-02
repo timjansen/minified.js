@@ -359,7 +359,7 @@ module.exports = (function() {
 		else if (a == _null || b == _null)
 			return _false;
 		else if (isValue(a) || isValue(b))
-			return isDate(a) && isDate(b) && a.getTime()==b.getTime();
+			return isDate(a) && isDate(b) && +a==+b;
 		else if (isList(a)) {
 			if (a.length != b.length)
 				return _false;
@@ -607,7 +607,7 @@ module.exports = (function() {
 		return new Date();
 	}
 	function dateClone(date) {
-		return new Date(date.getTime());
+		return new Date(+date);
 	}
 	function capWord(w) { 
 		return w.charAt(0).toUpperCase() + w.substr(1); 
@@ -626,8 +626,8 @@ module.exports = (function() {
 		return new Date(od.getFullYear(), od.getMonth(), od.getDate());
 	}
 	function dateDiff(property, date1, date2) {
-		var d1t = date1.getTime();
-		var d2t = date2.getTime();
+		var d1t = +date1;
+		var d2t = +date2;
 		var dt = d2t - d1t;
 		if (dt < 0)
 			return -dateDiff(property, date2, date1);

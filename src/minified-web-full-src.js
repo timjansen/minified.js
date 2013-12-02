@@ -466,7 +466,7 @@ define('minified', function() {
 
 	
     function nowAsTime() {
-    	return new Date().getTime();
+    	return +new Date();
     }
 
 	function callArg(f) {f();}

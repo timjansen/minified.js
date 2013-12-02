@@ -349,7 +349,7 @@ define('minified', function() {
 	// @condend !ie8compatibility 
 
     function nowAsTime() {
-    	return new Date().getTime();
+    	return +new Date();
     }
 
 	function callArg(f) {f();}
