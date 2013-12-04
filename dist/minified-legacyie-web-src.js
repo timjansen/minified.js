@@ -1,5 +1,5 @@
 /*
- * Minified-web.js - Basics for Client-Side JavaScript
+ * Minified-web.js - Lightweight Client-Side JavaScript Libary
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -27,6 +27,7 @@
  * - @requires defines the ids that the current block depends on. They will always be available.
  * - @configurable the block can be selected in the GUI. If the value is 'default', it is a enabled by default. If it is 'optional', it is not.
  * - @dependency if set, the block is only used as a dependency and won't show up in builder or documentation
+ * - @required if set, the block is always enabled. This can be useful for conditions.
  * - @name a name for builder and reference docs
  * - @doc if 'no', the section will not be displayed in reference docs, only in builder
  * - @module the module(s), comma-separated. Can be WEB, UTIL or APP
@@ -92,6 +93,12 @@ define('minified', function() {
 	var undef;
 
 	///#snippet webVars
+	/*$
+	 * @id WEB
+	 * @doc no
+	 * @required
+	 * This id allows identifying whether the Web module is available.
+	 */
 
 	/**
 	 * @const
@@ -2834,7 +2841,8 @@ define('minified', function() {
  	/*$
  	 * @stop
  	 */
-		// @cond !trigger dummy:null
+		// @cond !trigger dummyTrigger:0
+		// @cond ALL ,
 		///#/snippet webListFuncs
 
 	}, function(n, v) {M.prototype[n]=v;});
@@ -3195,7 +3203,7 @@ define('minified', function() {
  	/*$
  	 * @stop
  	 */
-	// @cond !off dummy:null
+	// @cond !off dummyOff:null
 
 	}, function(n, v) {$[n]=v;});
 

@@ -60,9 +60,10 @@ module.exports = (function() {
 
 	///#snippet utilVars
 	/*$
-	 * @id util 
+	 * @id UTIL
 	 * @doc no
-	 * Marker if Util is in the distribution.
+	 * @required
+	 * This id allows identifying whether the Util module is available.
 	 */
 
 	var _null = null, _true = true, _false = false;
@@ -671,7 +672,7 @@ module.exports = (function() {
 
 		var d = dateAddInline(new Date(d1t), cProp, minimumResult);
 		for (var i = minimumResult; i < minimumResult*1.2+4; i++) { // try out 20% more than needed, just to be sure
-			if (dateAddInline(d, cProp, 1).getTime() > d2t)
+			if (+dateAddInline(d, cProp, 1) > d2t)
 				return i;
 		}
 		// should never ever be reached
@@ -1666,19 +1667,19 @@ module.exports = (function() {
 	 */
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
-	},
+	}
 	/*$
 	 * @stop 
 	 */
+	//@cond !sort dummySort:0
+	//@cond ALL ,
 	///#/snippet utilListFuncs
-	dummy:0
 	}, M.prototype);
 
  	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	///#snippet utilUnderscoreFuncs
-
 	copyObj({
+		///#snippet utilUnderscoreFuncs
 		 // @condblock filter
 		'filter': funcArrayBind(filter),
 		 // @condend
@@ -2817,10 +2818,11 @@ module.exports = (function() {
 		 * @stop
 		 */
 
-		// @cond !format '':0
-	}, _);
+		// @cond !format dummyFormatHtml:0
+		// @cond ALL ,
 
 	///#/snippet utilUnderscoreFuncs
+	}, _);
 
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

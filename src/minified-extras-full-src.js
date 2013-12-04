@@ -18,9 +18,7 @@
 // make any sense if used stand-alone.
 
 
-///#remove
 function dummy() {
-///#/remove
 
 	///#snippet extrasFunctions
 	function flexiEach(list, cb) {
@@ -326,9 +324,7 @@ function dummy() {
 
 	
 
-	///#remove
 	var dummy = {
-	///#/remove
 			
 	///#snippet extrasListFuncs
 		/*$
@@ -391,17 +387,15 @@ function dummy() {
 		/*$
 		 * @stop
 		 */
-		// @cond !ht dummy:0
+		// @cond !ht dummyHt:0
 	///#/snippet extrasListFuncs
 		
 		
-	///#remove
 	};
-	///#/remove
 
 	
-	///#snippet extrasUnderscoreFuncs
 	copyObj({
+	///#snippet extrasUnderscoreFuncs
 	// @condblock promise
 	'promise': promise,
 	// @condend promise
@@ -530,7 +524,6 @@ function dummy() {
 	 * @see ##$.delay() works like <var>$.defer()</var>, but delays the execution for the specified amount of time.
 	 */
 	'defer': defer,
-
 	
 	/*$
 	 * @id wait
@@ -581,17 +574,15 @@ function dummy() {
 	/*$
 	 * @stop
 	 */
-	// @cond !wait dummy:0
-
-	}, _);
+	// @cond !wait dummyWait:0
 
 	///#/snippet extrasUnderscoreFuncs
 
+	}, _);
+
 
 	
-	///#remove
-	return {dummy:0
-	///#/remove
+	return {
 		
 	///#snippet extrasExports
 
@@ -654,19 +645,15 @@ function dummy() {
 		 * @see ##ht() is a shortcut for <code>fill(HTML())</code>.
 		 * @see ##EE() is a different way of creating HTML nodes.
 		 */
-		,'HTML': HTML
+		'HTML': HTML,
 		/*$
 		 * @stop
 		 */
-		// @cond !html dummyHtml:0
+		// @cond !html 
 		
-	///#/snippet extrasExports
-
-		///#remove
+		///#/snippet extrasExports
+		dummyStop:0
 		};
-		///#/remove
 	
-///#remove
 }
-///#/remove
 	

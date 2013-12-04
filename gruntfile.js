@@ -162,7 +162,7 @@ module.exports = function(grunt) {
 					}					
 				},
 				files: {
-					'WebContent/js/builder.js': ['src/minified-generated-full-src.js', 'srcContent/js/parser-src.js', 'srcContent/js/builder-src.js'],
+					'WebContent/js/builder.js': ['dist/minified-src.js', 'srcContent/js/parser-src.js', 'srcContent/js/builder-src.js'],
 					'WebContent/js/homepage.js': ['srcContent/js/minified-homepage.js', 'srcContent/js/homepage-src.js']
 				}
 			}

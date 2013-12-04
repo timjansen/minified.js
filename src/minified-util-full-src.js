@@ -64,9 +64,10 @@ define('minified', function() {
 
 	///#snippet utilVars
 	/*$
-	 * @id util 
+	 * @id UTIL
 	 * @doc no
-	 * Marker if Util is in the distribution.
+	 * @required
+	 * This id allows identifying whether the Util module is available.
 	 */
 	
 	var _null = null, _true = true, _false = false;
@@ -477,7 +478,7 @@ define('minified', function() {
 				date = dateAdd(value, 'minutes', getTimezone(match, 2, value));
 				formatNoTZ = match[4];
 			}
-			
+
 			return replace(formatNoTZ, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
 				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
@@ -1681,20 +1682,21 @@ define('minified', function() {
 	 */
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
-	},
+	}
 	/*$
 	 * @stop 
 	 */
+	//@cond !sort dummySort:0
+	//@cond ALL ,
 	///#/snippet utilListFuncs
-	dummy:0
 	}, M.prototype);
      
 
  	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	///#snippet utilUnderscoreFuncs
 
 	copyObj({
+		///#snippet utilUnderscoreFuncs
 		 // @condblock filter
 		'filter': funcArrayBind(filter),
 		 // @condend
@@ -2843,10 +2845,11 @@ define('minified', function() {
 		 * @stop
 		 */
 		
-		// @cond !format '':0
-	}, _);
+		// @cond !format dummyFormatHtml:0
+		// @cond ALL ,
 
 	///#/snippet utilUnderscoreFuncs
+	}, _);
 
 	
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

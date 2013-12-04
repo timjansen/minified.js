@@ -41,7 +41,7 @@ which allows you to use any <code><a href='toggle.html' class='func'>toggle()</a
 <h4>Example</h4>
 <div class="example"><p>Creates a toggle that changes the text color of the element on focus:
 <pre>
-$('#focusSensitive').onOver($('#focusSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 100));
+$('#focusSensitive').onFocus($('#focusSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 100));
 </pre>
 </p></div>
 </div>

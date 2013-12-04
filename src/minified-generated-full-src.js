@@ -21,6 +21,13 @@
 // ==/ClosureCompiler==
 
 
+	/*$
+	 * @id ALL
+	 * @doc no
+	 * @required
+	 * This id allows identifying whether both Web and Util are available.
+	 */
+	
 
 ///#snippet commonAmdStart
 
@@ -65,7 +72,13 @@ define('minified', function() {
 	
 ///#/snippet commonAmdStart
 	///#snippet webVars
-	
+	/*$
+	 * @id WEB
+	 * @doc no
+	 * @required
+	 * This id allows identifying whether the Web module is available.
+	 */
+
 	/**
 	 * @const
 	 */
@@ -177,9 +190,10 @@ define('minified', function() {
 	///#/snippet webVars
 	///#snippet utilVars
 	/*$
-	 * @id util 
+	 * @id UTIL
 	 * @doc no
-	 * Marker if Util is in the distribution.
+	 * @required
+	 * This id allows identifying whether the Util module is available.
 	 */
 	
 	var _null = null, _true = true, _false = false;
@@ -585,7 +599,7 @@ define('minified', function() {
 				date = dateAdd(value, 'minutes', getTimezone(match, 2, value));
 				formatNoTZ = match[4];
 			}
-			
+
 			return replace(formatNoTZ, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
 				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
@@ -787,7 +801,7 @@ define('minified', function() {
 		
 		var d = dateAddInline(new Date(d1t), cProp, minimumResult);
 		for (var i = minimumResult; i < minimumResult*1.2+4; i++) { // try out 20% more than needed, just to be sure
-			if (dateAddInline(d, cProp, 1).getTime() > d2t)
+			if (+dateAddInline(d, cProp, 1) > d2t)
 				return i;
 		}
 		// should never ever be reached
@@ -1581,6 +1595,7 @@ define('minified', function() {
 	}
 
 	///#/snippet utilM
+	
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -2416,13 +2431,13 @@ define('minified', function() {
 	 */
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
-	},
+	}
 	/*$
 	 * @stop 
 	 */
+	//@cond !sort dummySort:0
+	//@cond ALL ,
 	///#/snippet utilListFuncs
-		
-		
 	///#snippet webListFuncs
 
 	/*$
@@ -4323,9 +4338,9 @@ define('minified', function() {
  	/*$
  	 * @stop
  	 */
-		// @cond !trigger dummy:null
+		// @cond !trigger dummyTrigger:0
+		// @cond ALL ,
 		///#/snippet webListFuncs
-		,
 	///#snippet extrasListFuncs
 		/*$
 		 * @id ht
@@ -4387,10 +4402,8 @@ define('minified', function() {
 		/*$
 		 * @stop
 		 */
-		// @cond !ht dummy:0
+		// @cond !ht dummyHt:0
 	///#/snippet extrasListFuncs
-
-		
 	}, M.prototype);
 	
 			
@@ -4759,16 +4772,17 @@ define('minified', function() {
  	/*$
  	 * @stop
  	 */
-	// @cond !off dummy:null
+	// @cond !off dummyOff:null
 	
 	}, function(n, v) {$[n]=v;});
 
 	///#/snippet webDollarFuncs
 	
-	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///#snippet utilUnderscoreFuncs
 
+	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	copyObj({
+		///#snippet utilUnderscoreFuncs
 		 // @condblock filter
 		'filter': funcArrayBind(filter),
 		 // @condend
@@ -5917,12 +5931,11 @@ define('minified', function() {
 		 * @stop
 		 */
 		
-		// @cond !format '':0
-	}, _);
+		// @cond !format dummyFormatHtml:0
+		// @cond ALL ,
 
 	///#/snippet utilUnderscoreFuncs
 	///#snippet extrasUnderscoreFuncs
-	copyObj({
 	// @condblock promise
 	'promise': promise,
 	// @condend promise
@@ -6051,7 +6064,6 @@ define('minified', function() {
 	 * @see ##$.delay() works like <var>$.defer()</var>, but delays the execution for the specified amount of time.
 	 */
 	'defer': defer,
-
 	
 	/*$
 	 * @id wait
@@ -6102,13 +6114,12 @@ define('minified', function() {
 	/*$
 	 * @stop
 	 */
-	// @cond !wait dummy:0
-
-	}, _);
+	// @cond !wait dummyWait:0
 
 	///#/snippet extrasUnderscoreFuncs
-
+	}, _);
 	
+
 	////INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///#snippet webInit
     /*$
@@ -6143,6 +6154,74 @@ define('minified', function() {
 
 
 	return {
+	///#snippet extrasExports
+
+		/*$
+		 * @id html
+		 * @group ELEMENT
+		 * @requires template
+		 * @configurable default
+		 * @name HTML()
+		 * @syntax HTML(templateString)
+		 * @syntax HTML(templateString, object)
+		 * @syntax HTML(templateFunction)
+		 * @syntax HTML(templateFunction, object)
+	     * @module WEB
+		 * Creates a ##list#list## of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
+		 * The template uses the ##template() syntax with ##escapeHtml() escaping for values.
+		 * 
+		 * Please note that the function <var>HTML</var> will not be automatically exported by Minified. You should always import it
+		 * using the recommended import statement:
+		 * <pre>
+		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, <strong>HTML = MINI.HTML</strong>;
+		 * </pre>
+		 * 
+		 * @example Creating a HTML element showing a number:
+		 * <pre>
+		 * &lt;div id="price">-&lt;/div>
+		 * </pre> 
+		 * Then the price can be set like this:
+		 * <pre>
+		 * var price = 14.9;
+		 * $('#price').fill(HTML('&lt;b>${{::0.99}}&lt;/b>', price));
+		 * </pre>
+		 * Results in:
+		 * <pre>
+		 * &lt;div id="price">&lt;b>$14.90&lt;/b>&lt;/div>
+		 * </pre> 
+		 *
+		 * @example Adding elements to an existing list:
+		 * <pre>
+		 * var names = [ {first: 'James', last: 'Sullivan'}, 
+		 *               {first: 'Michael', last: 'Wazowski'} ];
+		 * $('#list').add(HTML('{{each}}&lt;li>{{this.first}} {{this.last}}&lt;/li>{{/each}}', names);
+		 * </pre>
+		 * The code adds this to #list:
+		 * <pre>
+		 * &lt;li>James Sullivan&lt;li>&lt;li>Michael Wazowski&lt;/li>
+		 * </pre> 
+		 *
+		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
+		 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
+		 *                     Minified will cache only a limited number of templates. Exception: If the template string does not use
+		 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
+		 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
+		 *                     unless you use triple curly-braces.
+		 * @param templateFunction instead of a HTML template <var>HTML()</var> also accepts a template function, e.g. one
+		 *                         created by ##template(). It will be invoked with the object as only argument.
+		 * @param object optional the object to pass to the template
+		 * @return the list containing the new HTML nodes
+		 *  
+		 * @see ##ht() is a shortcut for <code>fill(HTML())</code>.
+		 * @see ##EE() is a different way of creating HTML nodes.
+		 */
+		'HTML': HTML,
+		/*$
+		 * @stop
+		 */
+		// @cond !html 
+		
+		///#/snippet extrasExports
 		///#snippet utilExports
 		/*$
 		 * @id underscore
@@ -6494,74 +6573,6 @@ define('minified', function() {
 		 * @stop 
 		 */
 		///#/snippet webExports
-	///#snippet extrasExports
-
-		/*$
-		 * @id html
-		 * @group ELEMENT
-		 * @requires template
-		 * @configurable default
-		 * @name HTML()
-		 * @syntax HTML(templateString)
-		 * @syntax HTML(templateString, object)
-		 * @syntax HTML(templateFunction)
-		 * @syntax HTML(templateFunction, object)
-	     * @module WEB
-		 * Creates a ##list#list## of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
-		 * The template uses the ##template() syntax with ##escapeHtml() escaping for values.
-		 * 
-		 * Please note that the function <var>HTML</var> will not be automatically exported by Minified. You should always import it
-		 * using the recommended import statement:
-		 * <pre>
-		 * var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE, <strong>HTML = MINI.HTML</strong>;
-		 * </pre>
-		 * 
-		 * @example Creating a HTML element showing a number:
-		 * <pre>
-		 * &lt;div id="price">-&lt;/div>
-		 * </pre> 
-		 * Then the price can be set like this:
-		 * <pre>
-		 * var price = 14.9;
-		 * $('#price').fill(HTML('&lt;b>${{::0.99}}&lt;/b>', price));
-		 * </pre>
-		 * Results in:
-		 * <pre>
-		 * &lt;div id="price">&lt;b>$14.90&lt;/b>&lt;/div>
-		 * </pre> 
-		 *
-		 * @example Adding elements to an existing list:
-		 * <pre>
-		 * var names = [ {first: 'James', last: 'Sullivan'}, 
-		 *               {first: 'Michael', last: 'Wazowski'} ];
-		 * $('#list').add(HTML('{{each}}&lt;li>{{this.first}} {{this.last}}&lt;/li>{{/each}}', names);
-		 * </pre>
-		 * The code adds this to #list:
-		 * <pre>
-		 * &lt;li>James Sullivan&lt;li>&lt;li>Michael Wazowski&lt;/li>
-		 * </pre> 
-		 *
-		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
-		 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
-		 *                     Minified will cache only a limited number of templates. Exception: If the template string does not use
-		 *                     any template functionality (no {{}}), it does not need to be compiled and won't be cached.
-		 *                     The template will use ##escapeHtml() as escape function, so all template substitutions will be HTML-escaped,
-		 *                     unless you use triple curly-braces.
-		 * @param templateFunction instead of a HTML template <var>HTML()</var> also accepts a template function, e.g. one
-		 *                         created by ##template(). It will be invoked with the object as only argument.
-		 * @param object optional the object to pass to the template
-		 * @return the list containing the new HTML nodes
-		 *  
-		 * @see ##ht() is a shortcut for <code>fill(HTML())</code>.
-		 * @see ##EE() is a different way of creating HTML nodes.
-		 */
-		,'HTML': HTML
-		/*$
-		 * @stop
-		 */
-		// @cond !html dummyHtml:0
-		
-	///#/snippet extrasExports
 	};
 
 ///#snippet commonAmdEnd
