@@ -5,21 +5,47 @@ externalCss: ["../css/doc.css"],
 main: `<div>
   <h1>Minified.js Beta 4: Features and Changes</h1>
 
-<p>Beta 4 is a relatively small release. Its only feature is a change in <var>on()</var>'s <var>this</var> as shown below.</p>
+<p>Beta 4 is a relatively small release. Notable changes include the new functions <var>per()</var> and <var>onFocus()</var>, a reorganization
+of <var>request()</var>'s advanced options as well as a new value for <var>this</var> in all event handlers.</p>
+<p>Main reason to release it so early and with so few features is that I wanted to release some backward-incompatible changes as soon as possible.
+After beta 4 I intend to keep frther backward-incompatible changes to a minimum, as Minified steers slowly towards its first stable release.</p>
 
 <h2 style="color: red">Backward-incompatible Changes</h2>
 <p>
 <ul>
-<li><span class="var"><a href="/api/on.html">on()</a></span> will set <var>this</var> to a Minified list containing the event source, and not the
-event source.</li>
+<li><span class="var"><a href="/api/on.html">on()</a></span>, <span class="var"><a href="/api/onover.html">onOver()</a></span>
+and <span class="var"><a href="/api/onchange.html">onChange()</a></span> will set <var>this</var> to a <a href="/api/list.html">Minified list</a> containing 
+the event target, and not the event target itself.</li>
 <li><span class="var"><a href="/api/request.html">$.request()</a></span> <var>headers</var>, <var>username</var> and <var>password</var> arguments
 have been moved into a new <var>settings</var> argument.</li>
 </ul>
 </p>
 
-<h2>Change: on() returns target wrapped in a list</h2>
+<h2>New: Iteration over sub-lists with per()</h2>
+<p><span class="var"><a href="/api/per.html">per()</a></span> is an iteration function like <span class="var"><a href="/api/each.html">each()</a></span>, but
+with one difference: it invokes the callback with the elements wrapped in a single-item Minified list. This can simplify your code in some cases.</p>
+<pre>
+$('.withHoverEffect').per(function(el) {
+    el.onOver(el.toggle('hoverEffect'));
+});
+</pre>
+
+
+<h2>New: onFocus() to toggle when element gets focus</h2>
+<p><span class="var"><a href="/api/per.html">per()</a></span> is an iteration function like <span class="var"><a href="/api/each.html">each()</a></span>, but
+with one difference: it invokes the callback with the elements wrapped in a single-item Minified list. This can simplify your code in some cases.</p>
+<pre>
+$('input').per(function(el) {
+    el.onFocus(el.toggle('isFocussed'));
+});
+</pre>
+
+
+<h2>Change: on(), onOver() and onChange() return target wrapped in a list</h2>
 <p>Before beta 3, <code><a href="/api/on.html">on()</a></var> would call its handler with <var>this</var> set to the event source. Starting with beta 4,
 it passes a <a href="/api/list.html">Minified list</a> containing the event source as its only element.</p>
+<p><span class="var"><a href="/api/onover.html">onOver()</a></span> and <span class="var"><a href="/api/onchange.html">onChange()</a></span> have also been modified
+accordingly.</p>
 
 <h2>Change: request() uses settings object, support for setting XHR properties</h2>
 <p><a href="/api/request.html">$.request()</a>'s <var>headers</var>, <var>username</var> and <var>password</var> arguments have been moved into an object as 4th argument. 

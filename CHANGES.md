@@ -8,7 +8,7 @@ Ongoing (for Beta 4)
 * on() will set 'this' to a Minified list containing the event source, instead of the event source itself.
 * $.request()'s headers, username and password parameters have been moved into an object as 4th argument. 
   You can now also set XMLHttpRequest properties.
-* onOver()'s callback does not support in the index argument anymore.
+* onOver()'s callback does not support the index argument anymore.
 
 
 Beta 3.1 (2013-11-13)
