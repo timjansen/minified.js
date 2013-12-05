@@ -228,6 +228,22 @@ function runTests(loadInContext) {
 		});
 	});
 	
+	describe('.per()', function() {
+		it('iterates lists', function() {
+			var _ = req();
+			_([_(1, 3, 5, 2), _(1), _(null), _(), _(3, true, false, null), _("23", "s", 2)]).each(function(as, asi) {
+				var c = 0;
+				as.per(function(value, index) {
+					assert.equal(value.length, 1);
+					assert.equal(index, c, "Index check asi="+asi);
+					c++;
+					assert.equal(value[0], as[index], "Value check index="+index);
+				});
+				assert.equal(c, as.length);
+			});
+		});
+	});
+	
 	describe('_.eachObj()', function() {
 		it('iterates objects', function() {
 			var _ = req();
