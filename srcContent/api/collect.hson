@@ -24,6 +24,7 @@
 <dt id="collect_collectFunc" class=""><a name="collect_collectFunc"><var>collectFunc</var></a></dt>
 <dd class="">The callback <code>function(item, index)</code> to invoke for each item:
 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>This list.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to
 the result list. Other objects will also be added. Nulls and <span class="var">undefined</span> will be ignored and not be added to
 the new result list. </dd></dl></dd>
@@ -151,6 +152,7 @@ var disqus_url = "http://minifiedjs.com/api/collect.html";
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

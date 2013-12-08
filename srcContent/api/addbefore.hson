@@ -155,6 +155,7 @@ var disqus_url = "http://minifiedjs.com/api/addbefore.html";
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

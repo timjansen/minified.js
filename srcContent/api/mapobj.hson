@@ -23,6 +23,7 @@
 <dd class="">The callback <code>function(key, value)</code> to invoke for each property.
 <dl><dt>key</dt><dd>The name of the current property.</dd>
 <dt>value</dt><dd>The value of the current property.</dd>
+<dt class="this">this</dt><dd>This object.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new object.</dd></dl></dd>
 <dt id="mapobj_RETURN" class="returnValue inSyntax0"><a name="mapobj_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0">the new object
@@ -111,6 +112,7 @@ var disqus_url = "http://minifiedjs.com/api/mapobj.html";
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

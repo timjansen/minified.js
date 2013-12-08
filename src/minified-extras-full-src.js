@@ -327,6 +327,50 @@ function dummy() {
 	var dummy = {
 			
 	///#snippet extrasListFuncs
+			
+		/*$ 
+		 * @id per
+		 * @group LIST 
+		 * @requires
+		 * @configurable default 
+		 * @name .per() 
+		 * @syntax list.per(callback) 
+		 * @syntax list.per(subSelector, callback) 
+		 * @module UTIL
+		 * Invokes the handler function for each list element with a single-element list containing only this element. It is very similar to
+		 * ##each(), but instead of giving the element itself it wraps the element in a ##list#Minified list##. Additionally, you can specify 
+		 * a sub-selector to iterate over the descendants matches by the selector instead of the list elements. 
+		 *
+		 * @example Create a mouseover toggle for a list:
+		 * <pre>$('.toggler').per(function(el, i) {
+		 *     el.onOver(el.toggle('myeffect'));
+		 * });</pre>
+		 * 
+		 * @example Create click handlers for elements in a list:
+		 * <pre>$('#list').add(HTML('{{each}}<li>{{this.name}} <a class="del" href="#">Delete</a></li>{{each}}', items)
+		 *                .per('.del', function(el, index) {
+		 *                   el.on('click', deleteItemByName, [items[index].name]);
+		 *                }));</pre>
+		 *
+		 * @param subSelector optional a selector as valid as first argument for #dollar#$(), to identify the descendants to iterate over.
+	     * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
+	     *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
+	     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	     *                 <dt class="this">this</dt><dd>This list.</dd></dl>
+	     *                 The callback's return value will be ignored.
+	     * @return the list. Even if you specified a sub-selector, it will always return the original list.
+		 */
+		'per': function(subSelector, handler) {
+			if (isFunction(subSelector))
+				for (var self = this, a = [_null], len = self.length, i = 0; i < len; i++) {
+					a[0] = self[i];
+					subSelector.call(self, new M(a), i);
+				}
+			else
+				$(subSelector, this)['per'](handler);
+			return this;
+		},
+			
 		/*$
 		 * @id ht
 		 * @group ELEMENT

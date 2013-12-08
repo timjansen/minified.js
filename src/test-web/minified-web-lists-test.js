@@ -107,6 +107,22 @@ describe('minified-web-list-test.js', function() {
 		});
 	});
 
+	describe('.per()', function() {
+		it('iterates lists', function() {
+			if (typeof _ == 'undefined' || !_().per)
+				return;
+			_([_(1, 3, 5, 2), _(1), _(null), _(), _(3, true, false, null), _("23", "s", 2)]).each(function(as, asi) {
+				var c = 0;
+				as.per(function(value, index) {
+					check(value.length, 1);
+					check(index, c, "Index check asi="+asi);
+					c++;
+					check(value[0], as[index], "Value check index="+index);
+				});
+				check(c, as.length);
+			});
+		});
+	});
 	
 	/*
 	describe('.fill()', function() {

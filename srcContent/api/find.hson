@@ -30,6 +30,7 @@
 <dt id="find_findFunc" class=""><a name="find_findFunc"><var>findFunc</var></a></dt>
 <dd class="">The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>This list.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <span class="var">null</span> or
 <span class="var">undefined</span>, <span class="var">find()</span> will return it directly. Otherwise it will continue. </dd></dl></dd>
 <dt id="find_element" class=""><a name="find_element"><var>element</var></a></dt>
@@ -144,6 +145,7 @@ var disqus_url = "http://minifiedjs.com/api/find.html";
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

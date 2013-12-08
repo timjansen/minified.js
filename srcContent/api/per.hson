@@ -10,26 +10,30 @@
 <h2><a name="doc-per">.per()</a></h2>
 <div class="summary">Invokes the handler function for each list element with a single-element list containing only this element.</div>
 
-<div class="availability">Util module only.</div><h4>Syntax</h4>
+<div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.per(callback)</div>
+<div class="syntax">list.per(subSelector, callback)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
+<dt id="per_subSelector" class=""><a name="per_subSelector"><var>subSelector (optional)</var></a></dt>
+<dd class="">a selector as valid as first argument for <code><a href='dollar.html' class='func'>$()</a></code>, to identify the descendants to iterate over.</dd>
 <dt id="per_callback" class=""><a name="per_callback"><var>callback</var></a></dt>
 <dd class="">The callback <code>function(itemList, index)</code> to invoke for each list element.
 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
-<dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+<dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>This list.</dd></dl>
 The callback's return value will be ignored.</dd>
-<dt id="per_RETURN" class="returnValue inSyntax0"><a name="per_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the list
-</dd>
+<dt id="per_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="per_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1">the list. Even if you specified a sub-selector, it will always return the original list.</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>Invokes the handler function for each list element with a single-element list containing only this element. It is very similar to
-<code><a href='each.html' class='func'>each()</a></code>, but instead of giving the element itself it wraps the element in a <a href='list.html' class='func'>Minified list</a>.</p><p></p></div>
+<code><a href='each.html' class='func'>each()</a></code>, but instead of giving the element itself it wraps the element in a <a href='list.html' class='func'>Minified list</a>. Additionally, you can specify
+a sub-selector to iterate over the descendants matches by the selector instead of the list elements.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -37,6 +41,13 @@ The callback's return value will be ignored.</dd>
 <pre>$('.toggler').per(function(el, i) {
     el.onOver(el.toggle('myeffect'));
 });</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Create click handlers for elements in a list:
+<pre>$('#list').add(HTML('{{each}}<li>{{this.name}} <a class="del" href="#">Delete</a></li>{{each}}', items)
+               .per('.del', function(el, index) {
+                  el.on('click', deleteItemByName, [items[index].name]);
+               }));</pre>
 </p></div>
 </div>
 
@@ -102,6 +113,7 @@ var disqus_url = "http://minifiedjs.com/api/per.html";
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

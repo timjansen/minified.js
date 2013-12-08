@@ -22,7 +22,8 @@
 <dt id="eachobj_callback" class=""><a name="eachobj_callback"><var>callback</var></a></dt>
 <dd class="">The callback <code>function(key, value)</code> to invoke for each property.
 <dl><dt>key</dt><dd>The name of the current property.</dd>
-<dt>value</dt><dd>The value of the current property.</dd></dl>
+<dt>value</dt><dd>The value of the current property.</dd>
+<dt class="this">this</dt><dd>This object.</dd></dl>
 The callback's return value will be ignored.</dd>
 <dt id="eachobj_RETURN" class="returnValue inSyntax0"><a name="eachobj_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0">the object
@@ -109,6 +110,7 @@ var disqus_url = "http://minifiedjs.com/api/eachobj.html";
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

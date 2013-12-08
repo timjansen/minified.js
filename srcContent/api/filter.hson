@@ -27,6 +27,7 @@
 <dd class="">The filter callback <code>function(item, index)</code> that decides which elements to include:
 <dl><dt>item</dt><dd>The current list element.</dd>
 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>This list.</dd>
 <dt class="returnValue">(callback return value)</dt><dd><span class="var">true</span> to include the item in the new list, <span class="var">false</span> to omit it.</dd></dl></dd>
 <dt id="filter_value" class=""><a name="filter_value"><var>value</var></a></dt>
 <dd class="">a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
@@ -140,6 +141,7 @@ var disqus_url = "http://minifiedjs.com/api/filter.html";
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

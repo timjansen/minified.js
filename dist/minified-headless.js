@@ -172,18 +172,19 @@ module.exports = (function() {
 	function eachObj(obj, cb) {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
-				cb(n, obj[n]);
+				cb.call(obj, n, obj[n]);
 		return obj;
 	}
 	function each(list, cb) {
 		if (list)
-		templates['forEach'].call(list, cb); // 'templates' is just some random array to get an Array ref
+			for (var i = 0; i < list.length; i++)
+				cb.call(list, list[i], i);
 		return list;
 	}
 	function filterObj(obj, f) {
 		var r = {};
 		eachObj(obj, function(key, value) {
-			if (f(key, value))
+			if (f.call(obj, key, value))
 				r[key] = value;
 		});
 		return r;
@@ -192,7 +193,7 @@ module.exports = (function() {
 		var r = []; 
 		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(value) { return filterFuncOrObject != value; };
 		each(list, function(value, index) {
-			if (f(value, index))
+			if (f.call(list, value, index))
 				r.push(value);
 		});
 		return r;
@@ -200,7 +201,7 @@ module.exports = (function() {
 	function collector(iterator, obj, collectFunc) {
 		var result = [];
 		iterator(obj, function (a, b) {
-			if (isList(a = collectFunc(a, b))) // extreme variable reusing: a is now the callback result
+			if (isList(a = collectFunc.call(obj, a, b))) // extreme variable reusing: a is now the callback result
 				each(a, function(rr) { result.push(rr); });
 			else if (a != _null)
 				result.push(a);
@@ -235,14 +236,14 @@ module.exports = (function() {
 	function mapObj(list, mapFunc) {
 		var result = {};
 		eachObj(list, function(key, value) {
-			result[key] = mapFunc(key, value);
+			result[key] = mapFunc.call(list, key, value);
 		});
 		return result;
 	}
 	function map(list, mapFunc) {
 		var result = [];
 		each(list, function(item, index) {
-			result.push(mapFunc(item, index));
+			result.push(mapFunc.call(list, item, index));
 		});
 		return result;
 	}
@@ -308,7 +309,7 @@ module.exports = (function() {
 		var e = getFindIndex(list, endIndex, list.length);
 		var r;
 		for (var i = getFindIndex(list, startIndex, 0); i < e; i++)
-			if ((r = f(list[i], i)) != _null)
+			if ((r = f.call(list, list[i], i)) != _null)
 				return r;
 	}
 	function findLast(list, findFunc, startIndex, endIndex) {
@@ -316,7 +317,7 @@ module.exports = (function() {
 		var e = getFindIndex(list, endIndex, -1);
 		var r;
 		for (var i = getFindIndex(list, startIndex, list.length-1); i > e; i--)
-			if ((r = f(list[i], i)) != _null)
+			if ((r = f.call(list, list[i], i)) != _null)
 				return r;
 	}
 
@@ -843,7 +844,8 @@ module.exports = (function() {
      *             <var>length</var> property.
      * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
      *                 <dl><dt>item</dt><dd>The current list element.</dd>
-     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *                 <dt class="this">this</dt><dd>This list.</dd></dl>
      *                 The callback's return value will be ignored.
      * @return the list
      * 
@@ -903,6 +905,7 @@ module.exports = (function() {
 	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
 	 *        <dl><dt>item</dt><dd>The current list element.</dd>
 	 *        <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>  
 	 * @param value a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
 	 *              be a function. 
@@ -931,7 +934,7 @@ module.exports = (function() {
      * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
      * If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li> 
      * </ul>
-      * 
+     * 
      * @example Goes through a list of numbers. Numbers over 10 will be removed. Numbers 5 and below stay. Numbers between 6 and 
      * 10 will be replaced by two numbers whose sum is the original value.
      * <pre> 
@@ -973,6 +976,7 @@ module.exports = (function() {
      *             <var>length</var> property.
      * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
 	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and not be added to 
 	 *        the new result list. </dd></dl>
@@ -1017,6 +1021,7 @@ module.exports = (function() {
      *             <var>length</var> property.
      * @param mapFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new list.</dd></dl>
      * @return the new ##list#list##
      * 
@@ -1233,6 +1238,7 @@ module.exports = (function() {
      *             <var>length</var> property.
      * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
      * @param element the element to search for
@@ -1293,6 +1299,7 @@ module.exports = (function() {
      *             <var>length</var> property.
      * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
      * @param element the element to search for
@@ -1551,38 +1558,6 @@ module.exports = (function() {
 	'intersection': listBindArray(intersection), 
 
 	/*$ 
-	 * @id per
-	 * @group LIST 
-	 * @requires
-	 * @configurable default 
-	 * @name .per() 
-	 * @syntax list.per(callback) 
-	 * @module UTIL
-	 * Invokes the handler function for each list element with a single-element list containing only this element. It is very similar to
-	 * ##each(), but instead of giving the element itself it wraps the element in a ##list#Minified list##. 
-	 *
-	 * @example Create a mouseover toggle for a list:
-	 * <pre>$('.toggler').per(function(el, i) {
-	 *     el.onOver(el.toggle('myeffect'));
-	 * });</pre>
-	 *
-     * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
-     *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
-     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
-     *                 The callback's return value will be ignored.
-     * @return the list
-
-	 */
-	'per': function(handler) {
-		var a = [_null];
-		for (var i = 0; i < this.length; i++) {
-			a[0] = this[i];
-			handler(new M(a), i);
-		}
-		return this;
-	},
-
-	/*$ 
 	 * @id join 
 	 * @group LIST 
 	 * @requires
@@ -1604,6 +1579,40 @@ module.exports = (function() {
 	 */
 	'join': function(separator) {
 		return map(this, nonOp).join(separator);
+	},
+
+	/*$ 
+	 * @id reduce 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .reduce() 
+	 * @syntax list.reduce(callback, memo) 
+	 * @module UTIL
+	 * Reduces the list into a single value with the help of a callback function. This callback will be called once for
+	 * each element, with the return value of the previous invocation as parameter. <var>reduce()</var> returns the
+	 * return value of the last invocation.
+	 *
+	 * @example Sum up some numbers:
+	 * <pre>var sum = _(1, 2, 3).reduce(0, function(memo, item, index) { return memo + item; });
+	 *
+     * @param callback The callback <code>function(memo, item, index)</code> to invoke for each list element. 
+     *                 <dl><dt>memo</dt><dd>On the first invocation, the <var>memo</var> argument given to <var>reduce()</var>. On
+     *                 all further invocation, this is the return value of the previous invocation.</dd>
+     *                 <dt>item</dt><dd>The current list element.</dd>
+     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *                 <dt class="this">this</dt><dd>This list.</dd>
+     *                 <dt class="returnValue">(callback return value)</dt><dd>Will be used as <var>memo</var> 
+     *                 argument of the next invocation. The last return value will be returned by <var>reduce()</var>.</dd></dl>
+     *                 
+	 * @param memo the initial value that will be passed as <var>memo</var> argument to the callback on its very first invocation.
+	 * @return the resulting value. If the list was empty, it returns the <var>memo</var> argument.
+	 */
+	'reduce': function(callback, memo) {
+		each(this, function(elem, index) {
+			memo = callback.call(this, memo, elem, index);
+		});
+		return memo;
 	},
 
 	/*$ 
@@ -1943,7 +1952,8 @@ module.exports = (function() {
 		 * @param obj the object to use
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
-		 *                 <dt>value</dt><dd>The value of the current property.</dd></dl>
+		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="this">this</dt><dd>This object.</dd></dl>
 		 *                 The callback's return value will be ignored.
 		 * @return the object
 		 * 
@@ -1974,6 +1984,7 @@ module.exports = (function() {
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="this">this</dt><dd>This object.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new object.</dd></dl>
 		 * @return the new object
 		 * 
@@ -2005,6 +2016,7 @@ module.exports = (function() {
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="this">this</dt><dd>This object.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the property in the new object, <var>false</var> to omit it.</dd></dl>
 		 * @return the new object
 		 * 

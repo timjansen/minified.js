@@ -202,12 +202,12 @@ define('minified', function() {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
 				cb(n, obj[n]);
-		// web version has no return
+		// web version has no return, no 'this', as this implementation is not exported
 	}
 	function filter(list, f) {
 		var r = []; 
 		flexiEach(list, function(value, index) {
-			if (f(value, index))
+			if (f.call(list, value, index))
 				r.push(value);
 		});
 		return r;
@@ -215,7 +215,7 @@ define('minified', function() {
 	function collector(iterator, obj, collectFunc) {
 		var result = [];
 		iterator(obj, function (a, b) {
-			flexiEach(collectFunc(a, b), function(v) { result.push(v);});
+			flexiEach(collectFunc.call(obj, a, b), function(v) { result.push(v);});
 		});
 		return result;
 	}
@@ -226,7 +226,7 @@ define('minified', function() {
 	function flexiEach(list, cb) {
 		if (isList(list))
 			for (var i = 0; i < list.length; i++)
-				cb(list[i], i);
+				cb.call(list, list[i], i);
 		else if (list != _null)
 			cb(list, 0);
 		return list;
@@ -387,8 +387,7 @@ define('minified', function() {
 
     function EE(elementName, attributes, children) {
 		var list = $(_document.createElement(elementName));
-		// TODO: attributes!=null only needed with UTIL. Web's isObject is simpler.
-		return (isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
+		return (isList(attributes) || (!isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 	}
 
 	function clone (listOrNode) {
@@ -685,7 +684,8 @@ define('minified', function() {
      * </pre>
      *
      * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
-     *                 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+     *                 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *                 <dt class="this">this</dt><dd>This object.</dd></dl>
      *                 The callback's return value will be ignored.
      * @return the list
      * 
@@ -720,6 +720,7 @@ define('minified', function() {
 	 * 
 	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
 	 *        <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="this">this</dt><dd>This object.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>
 	 * @return the new, filtered ##list#list##
 	 * 
@@ -774,6 +775,7 @@ define('minified', function() {
      * 
      * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This object.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
 	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and be not added to 
 	 *        the new result list. </dd></dl>
@@ -856,6 +858,7 @@ define('minified', function() {
      * 
      * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This object.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
      * @param element the element to search for
@@ -867,7 +870,7 @@ define('minified', function() {
 		var r;
 		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 		for (var i = startIndex || 0; i < this.length; i++)
-			if ((r = f(this[i], i)) != _null)
+			if ((r = f.call(this, this[i], i)) != _null)
 				return r;
 	},
 
@@ -2135,7 +2138,10 @@ define('minified', function() {
 			else
 				time = timePassedMs;
 
-			flexiEach(dials, function(dial) {dial(time/durationMs);}); // TODO: use callList in Util builds
+			// @condblock !UTIL
+			flexiEach(dials, function(dial) {dial(time/durationMs);}); 
+			// @condend
+			// @cond UTIL callList(dials, [time/durationMs]);
 		});
 		return prom;		
 	},
@@ -2500,11 +2506,11 @@ define('minified', function() {
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>
  	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element as only item (same as <var>event.target</var>).</dd>
  	 *             <dt class="returnValue">(callback return value)</dt><dd>The return value will only be used if the event name prefix was '?'.
  	 *             Then, a return value <var>false</var> will stop all further processing of the event and disable event bubbling.
  	 *             <var>true</var> will keep the event alive.</dd>
  	 *             </dl>
-	 *             'this' is a Minified list that contains the target element that caused the event (the same as <var>event.target</var>).
 	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>.
 	 *                   'this' will be set to the target element that caused the event (the same as <var>event.target</var>).
 	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the
@@ -2544,8 +2550,8 @@ define('minified', function() {
 	 * 		  <dl>
  	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering any element, <var>false</var> when leaving.</dd>
  	 *             <dt>event</dt><dd>The original event object given to ##on().</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
-	 *             'this' is a list containing the target element that caused the event as only item.
 	 * @return the list
 	 */
 	'onOver': function(subSelect, toggle) {
@@ -2592,8 +2598,8 @@ define('minified', function() {
 	 * @param toggle the callback <code>function(hasFocus)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>hasFocus</dt><dd><var>true</var> if an element gets the focus, <var>false</var> when an element looses it.</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
-	 *             'this' is a list containing the target element that caused the event as only item.
 	 * @return the list
 	 */
 	'onFocus': function(selector, handler) {
@@ -2628,8 +2634,8 @@ define('minified', function() {
  	 *             <dt>newValue</dt><dd>For text fields the new <var>value</var> string. 
  	 *              For checkboxes/radio buttons it is the boolean returned by <var>checked</var>.</dd>
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
-	 *             'this' is a list containing the target element that caused the event.
 	 * @return the list
 	 */
 	'onChange': function(subSelect, handler) {

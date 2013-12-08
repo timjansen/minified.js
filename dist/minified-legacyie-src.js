@@ -312,22 +312,19 @@ define('minified', function() {
 	function eachObj(obj, cb) {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
-				cb(n, obj[n]);
+				cb.call(obj, n, obj[n]);
 		return obj;
 	}
 	function each(list, cb) {
 		if (list)
-		// @condblock ie8compatibility
 			for (var i = 0; i < list.length; i++)
-				cb(list[i], i);
-		// @condend
-		// @cond !ie8compatibility templates['forEach'].call(list, cb); // 'templates' is just some random array to get an Array ref
+				cb.call(list, list[i], i);
 		return list;
 	}
 	function filterObj(obj, f) {
 		var r = {};
 		eachObj(obj, function(key, value) {
-			if (f(key, value))
+			if (f.call(obj, key, value))
 				r[key] = value;
 		});
 		return r;
@@ -336,7 +333,7 @@ define('minified', function() {
 		var r = []; 
 		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(value) { return filterFuncOrObject != value; };
 		each(list, function(value, index) {
-			if (f(value, index))
+			if (f.call(list, value, index))
 				r.push(value);
 		});
 		return r;
@@ -344,7 +341,7 @@ define('minified', function() {
 	function collector(iterator, obj, collectFunc) {
 		var result = [];
 		iterator(obj, function (a, b) {
-			if (isList(a = collectFunc(a, b))) // extreme variable reusing: a is now the callback result
+			if (isList(a = collectFunc.call(obj, a, b))) // extreme variable reusing: a is now the callback result
 				each(a, function(rr) { result.push(rr); });
 			else if (a != _null)
 				result.push(a);
@@ -379,14 +376,14 @@ define('minified', function() {
 	function mapObj(list, mapFunc) {
 		var result = {};
 		eachObj(list, function(key, value) {
-			result[key] = mapFunc(key, value);
+			result[key] = mapFunc.call(list, key, value);
 		});
 		return result;
 	}
 	function map(list, mapFunc) {
 		var result = [];
 		each(list, function(item, index) {
-			result.push(mapFunc(item, index));
+			result.push(mapFunc.call(list, item, index));
 		});
 		return result;
 	}
@@ -452,7 +449,7 @@ define('minified', function() {
 		var e = getFindIndex(list, endIndex, list.length);
 		var r;
 		for (var i = getFindIndex(list, startIndex, 0); i < e; i++)
-			if ((r = f(list[i], i)) != _null)
+			if ((r = f.call(list, list[i], i)) != _null)
 				return r;
 	}
 	function findLast(list, findFunc, startIndex, endIndex) {
@@ -460,7 +457,7 @@ define('minified', function() {
 		var e = getFindIndex(list, endIndex, -1);
 		var r;
 		for (var i = getFindIndex(list, startIndex, list.length-1); i > e; i--)
-			if ((r = f(list[i], i)) != _null)
+			if ((r = f.call(list, list[i], i)) != _null)
 				return r;
 	}
 
@@ -1065,8 +1062,11 @@ define('minified', function() {
 
     function EE(elementName, attributes, children) {
 		var list = $(_document.createElement(elementName));
-		// TODO: attributes!=null only needed with UTIL. Web's isObject is simpler.
+		// @condblock UTIL
+		// this attributes != null check is only requiref with Util's isObject() implementation. Web's isObject() is simpler.
 		return (isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
+		// @condend UTIL
+		// @cond !UTIL return (isList(attributes) || (!isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 	}
 
 	function clone (listOrNode) {
@@ -1570,7 +1570,8 @@ define('minified', function() {
      *             <var>length</var> property.
      * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
      *                 <dl><dt>item</dt><dd>The current list element.</dd>
-     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *                 <dt class="this">this</dt><dd>This list.</dd></dl>
      *                 The callback's return value will be ignored.
      * @return the list
      * 
@@ -1630,6 +1631,7 @@ define('minified', function() {
 	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
 	 *        <dl><dt>item</dt><dd>The current list element.</dd>
 	 *        <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>  
 	 * @param value a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
 	 *              be a function. 
@@ -1658,7 +1660,7 @@ define('minified', function() {
      * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
      * If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li> 
      * </ul>
-      * 
+     * 
      * @example Goes through a list of numbers. Numbers over 10 will be removed. Numbers 5 and below stay. Numbers between 6 and 
      * 10 will be replaced by two numbers whose sum is the original value.
      * <pre> 
@@ -1700,6 +1702,7 @@ define('minified', function() {
      *             <var>length</var> property.
      * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
 	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and not be added to 
 	 *        the new result list. </dd></dl>
@@ -1744,6 +1747,7 @@ define('minified', function() {
      *             <var>length</var> property.
      * @param mapFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new list.</dd></dl>
      * @return the new ##list#list##
      * 
@@ -1960,6 +1964,7 @@ define('minified', function() {
      *             <var>length</var> property.
      * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
      * @param element the element to search for
@@ -2020,6 +2025,7 @@ define('minified', function() {
      *             <var>length</var> property.
      * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
      * @param element the element to search for
@@ -2278,38 +2284,6 @@ define('minified', function() {
 	'intersection': listBindArray(intersection), 
 
 	/*$ 
-	 * @id per
-	 * @group LIST 
-	 * @requires
-	 * @configurable default 
-	 * @name .per() 
-	 * @syntax list.per(callback) 
-	 * @module UTIL
-	 * Invokes the handler function for each list element with a single-element list containing only this element. It is very similar to
-	 * ##each(), but instead of giving the element itself it wraps the element in a ##list#Minified list##. 
-	 *
-	 * @example Create a mouseover toggle for a list:
-	 * <pre>$('.toggler').per(function(el, i) {
-	 *     el.onOver(el.toggle('myeffect'));
-	 * });</pre>
-	 *
-     * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
-     *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
-     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
-     *                 The callback's return value will be ignored.
-     * @return the list
-
-	 */
-	'per': function(handler) {
-		var a = [_null];
-		for (var i = 0; i < this.length; i++) {
-			a[0] = this[i];
-			handler(new M(a), i);
-		}
-		return this;
-	},
-
-	/*$ 
 	 * @id join 
 	 * @group LIST 
 	 * @requires
@@ -2331,6 +2305,40 @@ define('minified', function() {
 	 */
 	'join': function(separator) {
 		return map(this, nonOp).join(separator);
+	},
+
+	/*$ 
+	 * @id reduce 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .reduce() 
+	 * @syntax list.reduce(callback, memo) 
+	 * @module UTIL
+	 * Reduces the list into a single value with the help of a callback function. This callback will be called once for
+	 * each element, with the return value of the previous invocation as parameter. <var>reduce()</var> returns the
+	 * return value of the last invocation.
+	 *
+	 * @example Sum up some numbers:
+	 * <pre>var sum = _(1, 2, 3).reduce(0, function(memo, item, index) { return memo + item; });
+	 *
+     * @param callback The callback <code>function(memo, item, index)</code> to invoke for each list element. 
+     *                 <dl><dt>memo</dt><dd>On the first invocation, the <var>memo</var> argument given to <var>reduce()</var>. On
+     *                 all further invocation, this is the return value of the previous invocation.</dd>
+     *                 <dt>item</dt><dd>The current list element.</dd>
+     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *                 <dt class="this">this</dt><dd>This list.</dd>
+     *                 <dt class="returnValue">(callback return value)</dt><dd>Will be used as <var>memo</var> 
+     *                 argument of the next invocation. The last return value will be returned by <var>reduce()</var>.</dd></dl>
+     *                 
+	 * @param memo the initial value that will be passed as <var>memo</var> argument to the callback on its very first invocation.
+	 * @return the resulting value. If the list was empty, it returns the <var>memo</var> argument.
+	 */
+	'reduce': function(callback, memo) {
+		each(this, function(elem, index) {
+			memo = callback.call(this, memo, elem, index);
+		});
+		return memo;
 	},
 
 	/*$ 
@@ -3671,7 +3679,7 @@ define('minified', function() {
 			else
 				time = timePassedMs;
 
-			flexiEach(dials, function(dial) {dial(time/durationMs);}); // TODO: use callList in Util builds
+			callList(dials, [time/durationMs]);
 		});
 		return prom;		
 	},
@@ -4036,11 +4044,11 @@ define('minified', function() {
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>
  	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element as only item (same as <var>event.target</var>).</dd>
  	 *             <dt class="returnValue">(callback return value)</dt><dd>The return value will only be used if the event name prefix was '?'.
  	 *             Then, a return value <var>false</var> will stop all further processing of the event and disable event bubbling.
  	 *             <var>true</var> will keep the event alive.</dd>
  	 *             </dl>
-	 *             'this' is a Minified list that contains the target element that caused the event (the same as <var>event.target</var>).
 	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>.
 	 *                   'this' will be set to the target element that caused the event (the same as <var>event.target</var>).
 	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the
@@ -4083,8 +4091,8 @@ define('minified', function() {
 	 * 		  <dl>
  	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering any element, <var>false</var> when leaving.</dd>
  	 *             <dt>event</dt><dd>The original event object given to ##on().</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
-	 *             'this' is a list containing the target element that caused the event as only item.
 	 * @return the list
 	 */
 	'onOver': function(subSelect, toggle) {
@@ -4131,8 +4139,8 @@ define('minified', function() {
 	 * @param toggle the callback <code>function(hasFocus)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>hasFocus</dt><dd><var>true</var> if an element gets the focus, <var>false</var> when an element looses it.</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
-	 *             'this' is a list containing the target element that caused the event as only item.
 	 * @return the list
 	 */
 	'onFocus': function(selector, handler) {
@@ -4167,8 +4175,8 @@ define('minified', function() {
  	 *             <dt>newValue</dt><dd>For text fields the new <var>value</var> string. 
  	 *              For checkboxes/radio buttons it is the boolean returned by <var>checked</var>.</dd>
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
-	 *             'this' is a list containing the target element that caused the event.
 	 * @return the list
 	 */
 	'onChange': function(subSelect, handler) {
@@ -4258,6 +4266,50 @@ define('minified', function() {
 		,
 		///#/snippet webListFuncs
 	///#snippet extrasListFuncs
+
+		/*$ 
+		 * @id per
+		 * @group LIST 
+		 * @requires
+		 * @configurable default 
+		 * @name .per() 
+		 * @syntax list.per(callback) 
+		 * @syntax list.per(subSelector, callback) 
+		 * @module UTIL
+		 * Invokes the handler function for each list element with a single-element list containing only this element. It is very similar to
+		 * ##each(), but instead of giving the element itself it wraps the element in a ##list#Minified list##. Additionally, you can specify 
+		 * a sub-selector to iterate over the descendants matches by the selector instead of the list elements. 
+		 *
+		 * @example Create a mouseover toggle for a list:
+		 * <pre>$('.toggler').per(function(el, i) {
+		 *     el.onOver(el.toggle('myeffect'));
+		 * });</pre>
+		 * 
+		 * @example Create click handlers for elements in a list:
+		 * <pre>$('#list').add(HTML('{{each}}<li>{{this.name}} <a class="del" href="#">Delete</a></li>{{each}}', items)
+		 *                .per('.del', function(el, index) {
+		 *                   el.on('click', deleteItemByName, [items[index].name]);
+		 *                }));</pre>
+		 *
+		 * @param subSelector optional a selector as valid as first argument for #dollar#$(), to identify the descendants to iterate over.
+	     * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
+	     *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
+	     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	     *                 <dt class="this">this</dt><dd>This list.</dd></dl>
+	     *                 The callback's return value will be ignored.
+	     * @return the list. Even if you specified a sub-selector, it will always return the original list.
+		 */
+		'per': function(subSelector, handler) {
+			if (isFunction(subSelector))
+				for (var self = this, a = [_null], len = self.length, i = 0; i < len; i++) {
+					a[0] = self[i];
+					subSelector.call(self, new M(a), i);
+				}
+			else
+				$(subSelector, this)['per'](handler);
+			return this;
+		},
+
 		/*$
 		 * @id ht
 		 * @group ELEMENT
@@ -4987,7 +5039,8 @@ define('minified', function() {
 		 * @param obj the object to use
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
-		 *                 <dt>value</dt><dd>The value of the current property.</dd></dl>
+		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="this">this</dt><dd>This object.</dd></dl>
 		 *                 The callback's return value will be ignored.
 		 * @return the object
 		 * 
@@ -5018,6 +5071,7 @@ define('minified', function() {
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="this">this</dt><dd>This object.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new object.</dd></dl>
 		 * @return the new object
 		 * 
@@ -5049,6 +5103,7 @@ define('minified', function() {
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="this">this</dt><dd>This object.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the property in the new object, <var>false</var> to omit it.</dd></dl>
 		 * @return the new object
 		 * 

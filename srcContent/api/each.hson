@@ -24,7 +24,8 @@
 <dt id="each_callback" class=""><a name="each_callback"><var>callback</var></a></dt>
 <dd class="">The callback <code>function(item, index)</code> to invoke for each list element.
 <dl><dt>item</dt><dd>The current list element.</dd>
-<dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+<dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>This list.</dd></dl>
 The callback's return value will be ignored.</dd>
 <dt id="each_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="each_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the list
@@ -132,6 +133,7 @@ var disqus_url = "http://minifiedjs.com/api/each.html";
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
 </li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
