@@ -260,6 +260,23 @@ describe('minified-web-element-test.js', function() {
 			sl.ht('abc');
 			check(sl[0].innerHTML, 'abc');
 		});
+		
+		it('supports template functions', function() {
+			if (!_)
+				return;
+			var sl = EE('span').ht(_.template('{{a}}+{{b}}={{a+b}}'), {a:1, b:3});
+			check(sl.length, 1);
+			check(sl[0].text(), '1+3=4');
+		});
+
+		it('supports template ids', function() {
+			if (!_)
+				return;
+			var sl = EE('span').ht('#minifiedTemplate', {a:122});
+			check(sl.length, 1);
+			check(sl[0].text(), '122');
+		});
+
 	});
 	
 	describe('HTML()', function() {
@@ -288,6 +305,22 @@ describe('minified-web-element-test.js', function() {
 			sl = HTML('abc');
 			check(sl[0].data, 'abc');
 			check(sl.length, 1);
+		});
+		
+		it('supports template functions', function() {
+			if (!_)
+				return;
+			var sl = HTML(_.template('{{a}}+{{b}}={{a+b}}'), {a:1, b:3});
+			check(sl.length, 1);
+			check(sl[0].data, '1+3=4');
+		});
+
+		it('supports template ids', function() {
+			if (!_)
+				return;
+			var sl = HTML('#minifiedTemplate', {a:122});
+			check(sl.length, 1);
+			check(sl[0].data, '122');
 		});
 	});
 

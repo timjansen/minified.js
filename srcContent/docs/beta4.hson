@@ -31,7 +31,7 @@ $('.withHoverEffect').per(function(el) {
 </pre>
 
 
-<h2>New: onFocus() to toggle when element gets focus</h2>
+<h2>New: onFocus() for toggling when an element gets focussed</h2>
 <p><span class="var"><a href="/api/per.html">per()</a></span> is an iteration function like <span class="var"><a href="/api/each.html">each()</a></span>, but
 with one difference: it invokes the callback with the elements wrapped in a single-item Minified list. This can simplify your code in some cases.</p>
 <pre>
@@ -47,9 +47,22 @@ it passes a <a href="/api/list.html">Minified list</a> containing the event sour
 <p><span class="var"><a href="/api/onover.html">onOver()</a></span> and <span class="var"><a href="/api/onchange.html">onChange()</a></span> have also been modified
 accordingly.</p>
 
+
 <h2>Change: request() uses settings object, support for setting XHR properties</h2>
 <p><a href="/api/request.html">$.request()</a>'s <var>headers</var>, <var>username</var> and <var>password</var> arguments have been moved into an object as 4th argument. 
   You can now also set XMLHttpRequest properties.</p>
+
+
+<h2>Change: HTML() and ht() support templates stored in script tags</h2>
+<p><a href="/api/html.html">HTML()</a> and <a href="/api/ht.html">ht()</a> can now automatically get the template from a HTML element such 
+as a &lt;script&gt; tag. They will automatically detect it if you pass an ID CSS selector instead of a template. This is mostly 
+useful when you have large scripts that can not be conveniently stored in a JavaScript string, or when you need to store the string
+on the HTML page for internationalization purposes.</p>
+<p>First create a &lt;script&gt; tag with a type not supported by the browser and put your template in there, like this:
+<pre>&lt;script id="myTimeTpl" type="minified-template"&gt;The time is {{HH:mm:ss}}.&lt;/script&gt;</pre>
+<p>Then you can specify the tag's id directly to access it:</p>
+<pre>$('#timeDisplay').ht('#myTimeTpl', new Date());</pre>
+
 
 <h2>Site: Comments in API docs (Disqus)</h2>
 <p>Minified's API documentation supports comments now. It uses Disqus as its backend.<p>

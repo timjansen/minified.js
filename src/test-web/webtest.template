@@ -11,6 +11,7 @@
 	</style> 
 	<link rel="stylesheet" href="mocha.css" />
 
+	<script id="minifiedTemplate" type="minified-template">{{'{'+'{a}'+'}'}}</script>
 	<script type="text/javascript" src="sparkplug.js"></script>
 	<script type="text/javascript">
 		var q = window.location.search, undefined;

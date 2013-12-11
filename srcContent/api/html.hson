@@ -16,6 +16,8 @@
 <div class="syntax">HTML(templateString, object)</div>
 <div class="syntax">HTML(templateFunction)</div>
 <div class="syntax">HTML(templateFunction, object)</div>
+<div class="syntax">HTML(idSelector)</div>
+<div class="syntax">HTML(idSelector, object)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -30,10 +32,15 @@ unless you use triple curly-braces.</dd>
 <dt id="html_templateFunction" class=""><a name="html_templateFunction"><var>templateFunction</var></a></dt>
 <dd class="">instead of a HTML template <span class="var">HTML()</span> also accepts a template function, e.g. one
 created by <code><a href='template.html' class='func'>template()</a></code>. It will be invoked with the object as only argument.</dd>
+<dt id="html_idSelector" class=""><a name="html_idSelector"><var>idSelector</var></a></dt>
+<dd class="">if you pass an ID CSS selector in the form "#myElement", Minified will recognize this and use the content
+of the specified element as template string. This allows you, for example, to put your template into
+a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
+contain any spaces is used as selector.</dd>
 <dt id="html_object" class=""><a name="html_object"><var>object (optional)</var></a></dt>
 <dd class="">the object to pass to the template</dd>
-<dt id="html_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="html_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the list containing the new HTML nodes
+<dt id="html_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="html_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">the list containing the new HTML nodes
 </dd>
 </dl>
 
@@ -72,6 +79,13 @@ The code adds this to #list:
 <pre>
 &lt;li>James Sullivan&lt;li>&lt;li>Michael Wazowski&lt;/li>
 </pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>You can store templates in &lt;script&gt; tags. First you need to create a &lt;script&gt; tag with a type not
+         supported by the browser and put your template in there, like this:
+<pre>&lt;script id="myTimeTpl" type="minified-template"&gt;The time is {{HH:mm:ss}}.&lt;/script&gt;</pre>
+Then you can specify the tag's id directly to access it:
+<pre>$('#timeDisplay').fill(HTML('#myTimeTpl', new Date()));</pre>
 </p></div>
 </div>
 

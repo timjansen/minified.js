@@ -32,17 +32,8 @@ function dummy() {
 	function defer(func, args) {
 		delay(function() {call(func, args);}); // TODO try partial()
 	}
+		
 	
-	function ht(htmlTemplate, object) {
-		return this.set('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : /{{/.test(htmlTemplate) ? formatHtml(htmlTemplate, object) : htmlTemplate);
-	}
-	
-	function HTML(htmlTemplate, object) {
-		var tpl = isFunction(htmlTemplate) ? htmlTemplate : /{{/.test(htmlTemplate) ? template(htmlTemplate, escapeHtml) : function() { return htmlTemplate; };
-		var tmp = _document.createElement('div');
-        tmp['innerHTML'] = tpl(object);
-        return  _(tmp.childNodes);
-	}
 	
 	/*$
 	 * @id promise
@@ -381,6 +372,8 @@ function dummy() {
 		 * @syntax list.ht(templateString, object)
 		 * @syntax list.ht(templateFunction)
 		 * @syntax list.ht(templateFunction, object)
+		 * @syntax list.ht(idSelector)
+		 * @syntax list.ht(idSelector, object)
 	     * @module WEB+UTIL
 		 * Replaces the content of the list elements with the HTML generated using the given template. The template uses
 		 * ##template() syntax and HTML-escaped its output using ##escapeHtml(). 
@@ -412,6 +405,12 @@ function dummy() {
 		 * &lt;h2>Guys&lt;/h2>
 		 * &lt;ul>&lt;li>James Sullivan&lt;li>&lt;li>Michael Wazowski&lt;/li>&lt;/ul>
 		 * </pre> 
+		 * 
+		 * @example You can store templates in &lt;script&gt; tags. First you need to create a &lt;script&gt; tag with a type not
+		 *          supported by the browser and put your template in there, like this:
+		 * <pre>&lt;script id="myTimeTpl" type="minified-template"&gt;The time is {{HH:mm:ss}}.&lt;/script&gt;</pre>
+		 * Then you can specify the tag's id directly to access it:
+		 * <pre>$('#timeDisplay').ht('#myTimeTpl', new Date());</pre>
 		 *
 		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
 		 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
@@ -421,13 +420,21 @@ function dummy() {
 		 *                     unless you use triple curly-braces.
 		 * @param templateFunction instead of a HTML template, <var>ht()</var> can also use a template function, e.g. one
 		 *                         created by ##template(). It will be invoked with the object as only argument.
+		 * @param idSelector if you pass an ID CSS selector in the form "#myElement", Minified will recognize this and use the content 
+		 *                   of the specified element as template string. This allows you, for example, to put your template into 
+		 *                   a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
+		 *                   contain any spaces is used as selector.
 		 * @param object optional the object to pass to the template. If object is not set, the template is called with <var>undefined</var>
 		 *                        as object.
 		 * @return the current list
 		 * 
 		 * @see ##HTML() creates only the nodes and can be used with ##add() and other methods to add the nodes to the DOM, giving you more flexibility than <var>ht()</var>.
 		 */
-		'ht':ht
+		'ht': function(htmlTemplate, object) {
+			return this['set']('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : 
+				                            /{{/.test(htmlTemplate) ? formatHtml(htmlTemplate, object) : 
+				                            /^#\S+$/.test(htmlTemplate) ? formatHtml($(htmlTemplate)['text'](), object) : htmlTemplate);
+		 }
 		/*$
 		 * @stop
 		 */
@@ -640,6 +647,8 @@ function dummy() {
 		 * @syntax HTML(templateString, object)
 		 * @syntax HTML(templateFunction)
 		 * @syntax HTML(templateFunction, object)
+		 * @syntax HTML(idSelector)
+		 * @syntax HTML(idSelector, object)
 	     * @module WEB
 		 * Creates a ##list#list## of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
 		 * The template uses the ##template() syntax with ##escapeHtml() escaping for values.
@@ -674,6 +683,12 @@ function dummy() {
 		 * <pre>
 		 * &lt;li>James Sullivan&lt;li>&lt;li>Michael Wazowski&lt;/li>
 		 * </pre> 
+		 * 
+		 * @example You can store templates in &lt;script&gt; tags. First you need to create a &lt;script&gt; tag with a type not
+		 *          supported by the browser and put your template in there, like this:
+		 * <pre>&lt;script id="myTimeTpl" type="minified-template"&gt;The time is {{HH:mm:ss}}.&lt;/script&gt;</pre>
+		 * Then you can specify the tag's id directly to access it:
+		 * <pre>$('#timeDisplay').fill(HTML('#myTimeTpl', new Date()));</pre>
 		 *
 		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
 		 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
@@ -683,17 +698,22 @@ function dummy() {
 		 *                     unless you use triple curly-braces.
 		 * @param templateFunction instead of a HTML template <var>HTML()</var> also accepts a template function, e.g. one
 		 *                         created by ##template(). It will be invoked with the object as only argument.
+		 * @param idSelector if you pass an ID CSS selector in the form "#myElement", Minified will recognize this and use the content 
+		 *                   of the specified element as template string. This allows you, for example, to put your template into 
+		 *                   a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
+		 *                   contain any spaces is used as selector.
 		 * @param object optional the object to pass to the template
 		 * @return the list containing the new HTML nodes
 		 *  
 		 * @see ##ht() is a shortcut for <code>fill(HTML())</code>.
 		 * @see ##EE() is a different way of creating HTML nodes.
 		 */
-		'HTML': HTML,
+		'HTML': function (htmlTemplate, object) {
+	        return  _(EE('div')['ht'](htmlTemplate, object)[0].childNodes);
+		},
 		/*$
 		 * @stop
 		 */
-		// @cond !html 
 		
 		///#/snippet extrasExports
 		dummyStop:0

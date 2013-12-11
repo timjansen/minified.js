@@ -10,6 +10,7 @@ Ongoing (for Beta 4)
 * $.request()'s headers, username and password parameters have been moved into an object as 4th argument. 
   You can now also set XMLHttpRequest properties.
 * onOver()'s callback does not support the index argument anymore.
+* HTML() and ht() can now retrieve their template from an element, such as a script tag.
 * all iterator function will now get the object they are iterating over in 'this'
 
 
