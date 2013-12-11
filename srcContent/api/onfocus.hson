@@ -26,8 +26,8 @@ Supports all valid parameters for <span class="var">$()</span> except functions.
 <dd class="">the callback <code>function(hasFocus)</code> to invoke when the event has been triggered:
 <dl>
 <dt>hasFocus</dt><dd><span class="var">true</span> if an element gets the focus, <span class="var">false</span> when an element looses it.</dd>
-</dl>
-'this' is a list containing the target element that caused the event as only item.</dd>
+<dt class="this">this</dt><dd>A <a href='list.html' class='func'>Minified list</a> containing the target element that caused the event as only item.</dd>
+</dl></dd>
 <dt id="onfocus_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="onfocus_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the list</dd>
 </dl>

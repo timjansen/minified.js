@@ -28,8 +28,8 @@ Supports all valid parameters for <span class="var">$()</span> except functions.
 <dt>newValue</dt><dd>For text fields the new <span class="var">value</span> string.
 For checkboxes/radio buttons it is the boolean returned by <span class="var">checked</span>.</dd>
 <dt>index</dt><dd>The index of the target element in the <a href='list.html' class='func'>Minified list</a> .</dd>
-</dl>
-'this' is a list containing the target element that caused the event.</dd>
+<dt class="this">this</dt><dd>A <a href='list.html' class='func'>Minified list</a> containing the target element that caused the event as only item.</dd>
+</dl></dd>
 <dt id="onchange_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="onchange_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the list</dd>
 </dl>

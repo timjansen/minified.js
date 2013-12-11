@@ -1063,7 +1063,7 @@ define('minified', function() {
     function EE(elementName, attributes, children) {
 		var list = $(_document.createElement(elementName));
 		// @condblock UTIL
-		// this attributes != null check is only requiref with Util's isObject() implementation. Web's isObject() is simpler.
+		// this attributes != null check is only required with Util's isObject() implementation. Web's isObject() is simpler.
 		return (isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 		// @condend UTIL
 		// @cond !UTIL return (isList(attributes) || (!isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
@@ -1938,7 +1938,7 @@ define('minified', function() {
      *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
      * </ol>
      * 
-     * <var>find()</var can also be used as an alternative to ##each() if you need to abort the loop.
+     * <var>find()</var> can also be used as an alternative to ##each() if you need to abort the loop.
      *
      * @example Finds the first negative number in the list:
      * <pre> 
@@ -4179,10 +4179,11 @@ define('minified', function() {
  	 *             </dl>
 	 * @return the list
 	 */
-	'onChange': function(subSelect, handler) {
+	'onChange': function onChange(subSelect, handler) {
 		var oldValues = [];
 		if (handler)
 			return this['each'](function(el, index) {
+				// @condblock ie8compatibility
 				function register(eventNames, property) {
 					oldValues[index] = el[property];
 					$(el)['on'](subSelect, eventNames, function() {
@@ -4193,6 +4194,8 @@ define('minified', function() {
 						}
 					});
 				}
+				// @condend
+				// @cond !ie8compatibility function register(eventNames, property) { $(el)['on'](subSelect, eventNames,  function() {handler.call(this, el[property], index);}); }
 				if (/kbox|dio/i.test(el['type'])) {
 					register('|click', 'checked');
 				}

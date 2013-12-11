@@ -752,7 +752,6 @@ module.exports = (function() {
 
 	/*$
 	 * @id length
-
 	 * @name .length
 	 * @syntax length
 	 * Contains the number of elements in the list.
@@ -1212,7 +1211,7 @@ module.exports = (function() {
      *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
      * </ol>
      * 
-     * <var>find()</var can also be used as an alternative to ##each() if you need to abort the loop.
+     * <var>find()</var> can also be used as an alternative to ##each() if you need to abort the loop.
      *
      * @example Finds the first negative number in the list:
      * <pre> 

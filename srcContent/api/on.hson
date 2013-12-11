@@ -37,11 +37,11 @@ If the name is prefixed with '?', the event will only be passed through if the h
 <dl>
 <dt>event</dt><dd>The original DOM event object.</dd>
 <dt>index</dt><dd>The index of the target object in the <a href='list.html' class='func'>Minified list</a> .</dd>
+<dt class="this">this</dt><dd>A <a href='list.html' class='func'>Minified list</a> containing the target element as only item (same as <span class="var">event.target</span>).</dd>
 <dt class="returnValue">(callback return value)</dt><dd>The return value will only be used if the event name prefix was '?'.
 Then, a return value <span class="var">false</span> will stop all further processing of the event and disable event bubbling.
 <span class="var">true</span> will keep the event alive.</dd>
-</dl>
-'this' is a Minified list that contains the target element that caused the event (the same as <span class="var">event.target</span>).</dd>
+</dl></dd>
 <dt id="on_customFunc" class=""><a name="on_customFunc"><var>customFunc</var></a></dt>
 <dd class="">a function to be called instead of a regular event handler with the arguments given in <span class="var">args</span>.
 'this' will be set to the target element that caused the event (the same as <span class="var">event.target</span>).</dd>

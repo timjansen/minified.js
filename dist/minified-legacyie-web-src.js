@@ -596,65 +596,8 @@ define('minified', function() {
     	/*$
     	 * @id then
     	 * @group REQUEST
-    	 * @name promise.then()
-    	 * @syntax promise.then()
-    	 * @syntax promise.then(onSuccess)
-    	 * @syntax promise.then(onSuccess, onError)
-    	 * 
     	 * @module WEB, UTIL
-    	 * Registers two callbacks that will be invoked when the ##promiseClass#Promise##'s asynchronous operation finished 
-    	 * successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after  
-    	 * <var>then()</var> returned, from the browser's event loop.
-    	 * Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
-    	 * You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to. 
-    	 *
-    	 * @example Simple handler for an HTTP request. Handles only success and ignores errors.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .then(function(txt) {
-    	 *        alert('Got response!');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @example Including an error handler.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .then(function(txt) {
-    	 *        alert('Got response!');
-    	 *     }, function(err) {
-    	 *        alert('Error!');
-    	 *     }));
-    	 * </pre>
-    	 *
-    	 * @example Chained handler.
-    	 * <pre>
-    	 * $.request('get', '/weather.do')
-    	 *     .then(function(txt) {
-    	 *        showWeather(txt);
-    	 *     }
-    	 *     .then(function() {
-    	 *        return $.request('get', '/traffic.do');
-    	 *     }
-    	 *     .then(function(txt) {
-    	 *        showTraffic(txt);
-    	 *     }
-    	 *     .then(function() {
-    	 *        alert('All result displayed');
-    	 *     }, function() {
-    	 *        alert('An error occurred');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @param onSuccess optional a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.  
-    	 *                           If the function returns a ##promiseClass#Promise##, that Promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the 
-    	 *                           returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
-    	 *                           Pass <var>null</var> or <var>undefined</var> if you do not need the success handler. 
-    	 * @param onError optional a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a ##promiseClass#Promise##, that promise will
-    	 *                           be evaluated to determine the state of the Promise returned by <var>then()</var>. If it returns anything else, the returned Promise will 
-    	 *                           have success status. If the function throws an error, the returned Promise will be in the error state.
-    	 *                           You can pass <var>null</var> or <var>undefined</var> if you do not need the error handler. 
-    	 * @return a new ##promiseClass#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
-    	 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
+    	 * See util module for documentation.
     	 */   
     	var then = set['then'] = function(onFulfilled, onRejected) {
     		var newPromise = promise();
@@ -685,24 +628,8 @@ define('minified', function() {
     	/*$
     	 * @id error
     	 * @group REQUEST
-    	 * @name promise.error()
-    	 * @syntax promise.error(callback)
     	 * @module WEB, UTIL
-    	 * Registers a callback that will be called when the operation failed.
-    	 * This is a convenience function that will invoke ##then() with the only the second argument set.  It shares all of its semantics.
-    	 *
-    	 * @example Simple handler for a HTTP request.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .error(function() {
-    	 *        alert('Got error!');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @param callback a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a ##promiseClass#Promise##, that Promise will
-    	 *                           be evaluated to determine the state of the returned Promise. If it returns regularly, the returned Promise will 
-    	 *                           have success status. If it throws an error, the returned Promise will be in error state.
-    	 * @return a new ##promiseClass#Promise## object. Its state is determined by the callback.
+    	 * See util module for documentation.
     	 */  
      	set['error'] = function(func) { return then(0, func); };
     	return set;
@@ -712,19 +639,9 @@ define('minified', function() {
 	 * @id length
 	 * @group SELECTORS
 	 * @requires dollar
-	 * @name .length
-	 * @syntax list.length
    	 * @module WEB, UTIL
 	 * 
-	 * Contains the number of elements in the list.
-	 * 
-	 * @example
-	 * <pre>
-	 * var list = $('input');
-	 * var myValues = {};
-	 * for (var i = 0; i &lt; list.length; i++)
-	 *    myValues[list[i].name] = list[i].value;
-	 * </pre>
+     * See util module for documentation.
 	 */
 	// empty, always defined below
 
@@ -746,32 +663,8 @@ define('minified', function() {
      * @group SELECTORS
      * @requires dollar
      * @configurable default
-     * @name .each()
-     * @syntax list.each(callback)
      * @module WEB, UTIL
-     * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
-     * the zero-based index as second. Unlike JavaScript's built-in forEach() it will be invoked for each item in the list, 
-     * even if it is <var>undefined</var>.
-     * 
-     * Please note that you can not abort an <var>each()</var> loop. If you need to abort your loop, you should use
-     * <var>find()</var>. 
-     *
-     * @example This goes through all &lt;h2> elements of the class 'section' and changes their content:
-     * <pre>
-     * $('h2.section').each(function(item, index) {
-     *     item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
-     * });
-     * </pre>
-     *
-     * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
-     *                 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-     *                 <dt class="this">this</dt><dd>This object.</dd></dl>
-     *                 The callback's return value will be ignored.
-     * @return the list
-     * 
-     * @see ##per() works like <var>each()</var>, but wraps the list elements in a list.
-     * @see ##find() can be used instead of <var>each()</var> if you need to abort the loop.
-     * @see ##eachObj() iterates through the properties of an object.
+     * See util module for documentation.
      */
 	'each': function (callback) {
 		return flexiEach(this, callback);
@@ -782,29 +675,8 @@ define('minified', function() {
 	 * @group SELECTORS
 	 * @requires dollar
 	 * @configurable default
-	 * @name .filter()
-	 * @syntax list.filter(filterFunc)
    	 * @module WEB, UTIL
-	 * Creates a new ##list#Minified list## by taking an existing list and omitting certain elements from it. You
-	 * can either specify a callback function to approve those items that will be in the new list.
-	 *  
-	 * If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
-	 * For values, a simple equality operation (<code>==</code>) will be used.
-	 *
-	 * @example Creates a list of all unchecked checkboxes.
-	 * <pre>
-	 * var list = $('input').filter(function(item) {
-	 *     return item.getAttribute('type') == 'checkbox' && item.checked;
-	 * });
-	 * </pre>
-	 * 
-	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
-	 *        <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	 *        <dt class="this">this</dt><dd>This object.</dd>
-	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>
-	 * @return the new, filtered ##list#list##
-	 * 
-	 * @see ##only() offers selector-based filtering.
+     * See util module for documentation.
 	 */
 	'filter': function(filterFunc) {
 	    return new M(filter(this, filterFunc));
@@ -815,51 +687,8 @@ define('minified', function() {
      * @group SELECTORS 
      * @requires dollar 
      * @configurable default 
-     * @name .collect() 
-     * @syntax list.collect(collectFunc) 
    	 * @module WEB, UTIL
-     * Creates a new ##list#Minified list## from the current list using the given callback function. 
-     * The callback is invoked once for each element of the current list. The callback results will be added to the result list. 
-     * The callback can return 
-     * <ul> 
-     * <li>an array or another list-like object. Its content will be appended to the resulting list.</li> 
-     * <li>a regular object which will be appended to the list</li> 
-     * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
-     * If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li> 
-     * </ul>
-     * 
-     * 
-     * @example Goes through input elements. If they are text inputs, their value will be added to the list: 
-     * <pre> 
-     * var texts = $('input').collect(function(input) { 
-     *     if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') 
-     *         return input.value; 
-     *     else 
-     *         return null; // ignore 
-     * }); 
-     * </pre> 
-     * 
-     * @example Creates a list of all children of the selected list. 
-     * <pre> 
-     * var childList = $('.mySections').collect(function(node) { 
-     *     return node.childNodes; // adds a while list of nodes 
-     * }); 
-     * </pre> 
-     * 
-     * @example Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case: 
-     * <pre> 
-     * var elements = $('input.myTexts').collect(function(item) { 
-     *     return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()]; 
-     * }); 
-     * </pre> 
-     * 
-     * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
-     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-     *        <dt class="this">this</dt><dd>This object.</dd>
-	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
-	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and be not added to 
-	 *        the new result list. </dd></dl>
-     * @return the new ##list#list##
+     * See util module for documentation.
      */ 
 	'collect': function(collectFunc) { 
     	 return new M(collector(flexiEach, this, collectFunc)); 
@@ -870,34 +699,8 @@ define('minified', function() {
       * @group SELECTORS 
       * @requires filter 
       * @configurable default 
-      * @name .sub() 
-      * @syntax list.sub(startIndex) 
-      * @syntax list.sub(startIndex, endIndex) 
       * @module WEB, UTIL
-      * Returns a new ##list#Minified list## containing only the elements in the specified range. If there are no elements in the range,
-      * an empty list is returned.
-      * Negative indices are supported and will be added to the list's length, thus allowing you to specify ranges at the list's end.
-      *
-      * @example Adds some text the 3rd to 5th list elements:
-      * <pre> 
-      * $('#myList li').sub(3, 6).add('Hello');
-      * </pre> 
-      *
-      * @example Clears all elements but the first:
-      * <pre> 
-      * $('#myList li').sub(1).fill();
-      * </pre> 
-      *
-      * @example Changes the class of the last list element:
-      * <pre> 
-      * $('#myList li').sub(-1).set('+lastItem');
-      * </pre> 
-      * 
-      * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and the position is relative
-      *                   to the list's end.
-      * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
-      *                   to the list's end. If omitted or null, all elements following the <var>startIndex</var> are included in the result.
-      * @return a new ##list#list## containing only the items in the index range. 
+      * See util module for documentation.
       */ 
 	'sub': function(startIndex, endIndex) {
 	    var s = (startIndex < 0 ? this['length']+startIndex : startIndex);
@@ -912,39 +715,8 @@ define('minified', function() {
      * @group SELECTORS 
      * @requires
      * @configurable default 
-     * @name .find() 
-     * @syntax list.find(findFunc) 
-     * @syntax list.find(element) 
-     * @syntax list.find(findFunc, startIndex) 
-     * @syntax list.find(element, startIndex) 
      * @module WEB, UTIL
-     * Finds a specific value in the list. There are two ways of calling <var>find()</var>:
-     * <ol>
-     * <li>With an element as argument. Then <var>find()</var> will search for the first occurrence of that element in the list
-     *     and return the index. If it is not found, <var>find()</var> returns <var>undefined</var>.</li>
-     * <li>With a callback function. <var>find()</var> will then call the given function for each list element until the function 
-     *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
-     * </ol>
-     *
-     * @example Determines the position of the element with the id '#wanted' among all li elements:
-     * <pre> 
-     * var elementIndex = $('li').find($$('#wanted'));
-     * </pre> 
-     * 
-     * @example Goes through all elements to find the first div that has the class 'myClass', and returns this element:
-     * <pre> 
-     * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
-     * </pre> 
-     * 
-     * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
-     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-     *        <dt class="this">this</dt><dd>This object.</dd>
-	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
-	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
-     * @param element the element to search for
-     * @param startIndex optional the 0-based index of the first element to search. Default is 0.
-     * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
-     *         it returns either the value returned by the callback or <var>undefined</var>.
+     * See util module for documentation.
      */ 
 	'find': function(findFunc, startIndex) {
 		var r;
@@ -2764,10 +2536,11 @@ define('minified', function() {
  	 *             </dl>
 	 * @return the list
 	 */
-	'onChange': function(subSelect, handler) {
+	'onChange': function onChange(subSelect, handler) {
 		var oldValues = [];
 		if (handler)
 			return this['each'](function(el, index) {
+				// @condblock ie8compatibility
 				function register(eventNames, property) {
 					oldValues[index] = el[property];
 					$(el)['on'](subSelect, eventNames, function() {
@@ -2778,6 +2551,8 @@ define('minified', function() {
 						}
 					});
 				}
+				// @condend
+				// @cond !ie8compatibility function register(eventNames, property) { $(el)['on'](subSelect, eventNames,  function() {handler.call(this, el[property], index);}); }
 				if (/kbox|dio/i.test(el['type'])) {
 					register('|click', 'checked');
 				}

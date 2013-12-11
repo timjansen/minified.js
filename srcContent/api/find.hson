@@ -51,7 +51,7 @@ it returns either the value returned by the callback or <span class="var">undefi
     <span class="var">find()</span> returns <span class="var">undefined</span>.</li>
 <li>With a callback function. <span class="var">find()</span> will then call the given function for each list element until the function
     returns a value that is not <span class="var">null</span> or <span class="var">undefined</span>. This value will be returned.</li>
-</ol></p><p><span class="var">find()</var can also be used as an alternative to <code><a href='each.html' class='func'>each()</a></code> if you need to abort the loop.</p><p></p></div>
+</ol></p><p><span class="var">find()</span> can also be used as an alternative to <code><a href='each.html' class='func'>each()</a></code> if you need to abort the loop.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
