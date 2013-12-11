@@ -266,7 +266,7 @@ describe('minified-web-element-test.js', function() {
 				return;
 			var sl = EE('span').ht(_.template('{{a}}+{{b}}={{a+b}}'), {a:1, b:3});
 			check(sl.length, 1);
-			check(sl[0].text(), '1+3=4');
+			check(sl.text(), '1+3=4');
 		});
 
 		it('supports template ids', function() {
@@ -274,7 +274,7 @@ describe('minified-web-element-test.js', function() {
 				return;
 			var sl = EE('span').ht('#minifiedTemplate', {a:122});
 			check(sl.length, 1);
-			check(sl[0].text(), '122');
+			check(sl.text(), '122');
 		});
 
 	});
