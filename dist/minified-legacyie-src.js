@@ -4146,8 +4146,11 @@ define('minified', function() {
 	 * @return the list
 	 */
 	'onFocus': function(selector, handler) {
-		return this['on'](selector, '|focus', handler, [_true])
-			       ['on'](selector, '|blur', handler, [_false]);
+		if (!handler)
+			return this['onFocus'](null, selector);
+		else
+			return this['on'](selector, '|focus', handler, [_true])
+				       ['on'](selector, '|blur', handler, [_false]);
 	},
 
 	/*$
@@ -4300,7 +4303,8 @@ define('minified', function() {
 	     * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
 	     *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
 	     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	     *                 <dt class="this">this</dt><dd>This list.</dd></dl>
+	     *                 <dt class="this">this</dt><dd>The list that is being iterated. If a sub-selector
+	     *                 is being used, it is the list that resulted from using the sub-selector.</dd></dl>
 	     *                 The callback's return value will be ignored.
 	     * @return the list. Even if you specified a sub-selector, it will always return the original list.
 		 */

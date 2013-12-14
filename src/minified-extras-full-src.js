@@ -347,7 +347,8 @@ function dummy() {
 	     * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
 	     *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
 	     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	     *                 <dt class="this">this</dt><dd>This list.</dd></dl>
+	     *                 <dt class="this">this</dt><dd>The list that is being iterated. If a sub-selector
+	     *                 is being used, it is the list that resulted from using the sub-selector.</dd></dl>
 	     *                 The callback's return value will be ignored.
 	     * @return the list. Even if you specified a sub-selector, it will always return the original list.
 		 */

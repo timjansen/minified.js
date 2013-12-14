@@ -370,18 +370,54 @@ describe('minified-web-event-test.js', function() {
 		});
 	});
 
-	/*
-	describe('.fill()', function() {
-		it('', function() {
-			
-		});
-		it('', function() {
-			
-		});
-		it('', function() {
-			
+	
+	describe('.onFocus()', function() {
+		it('just works', function() {
+			var inp, c = 0, expect;
+			$('#container2').add(inp = EE('input'));
+			inp.onFocus(function(arg) {
+				c++;
+				check(expect, arg, 'Error at c='+c);
+			});
+			expect = true;
+			inp.trigger('focus');
+			expect = false;
+			inp.trigger('blur');
+			expect = true;
+			inp.trigger('focus');
+			check(c, 3); 
 		});
 	});
-	*/
+
+	describe('.onOver()', function() {
+		it('just works', function() {
+			var inp, chld, c = 0, expect;
+			$('#container2').add(inp = EE('span', [chld = EE('span')]));
+			inp.onOver(function(arg) {
+				check(expect, arg, 'Error at c='+c);
+				c++;
+			});
+			expect = true;
+			inp.trigger('mouseover', {relatedTarget: inp[0], type: 'mouseover'});
+			chld.trigger('mouseover', {relatedTarget: inp[0], type: 'mouseover'});
+			inp.trigger('mouseover', {relatedTarget: chld[0], type: 'mouseover'});
+			check(c, 1);
+			expect = false;
+			inp.trigger('mouseout', {relatedTarget: $$('#container2'), type: 'mouseout'});
+			inp.trigger('mouseout', {relatedTarget: inp[0], type: 'mouseout'});
+			check(c, 2);
+			expect = true;
+			chld.trigger('mouseover', {relatedTarget: $$('#container'), type: 'mouseover'});
+			chld.trigger('mouseover', {relatedTarget: chld[0], type: 'mouseover'});
+			inp.trigger('mouseover', {relatedTarget: chld[0], type: 'mouseover'});
+			check(c, 3); 
+			chld.trigger('mouseout', {relatedTarget: inp[0], type: 'mouseout'});
+			check(c, 3); 
+			expect = false;
+			inp.trigger('mouseout', {relatedTarget: $$('#container2'), type: 'mouseout'});
+			check(c, 4); 
+		});
+	});
+	
 
 });

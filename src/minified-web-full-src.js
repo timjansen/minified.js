@@ -2595,8 +2595,11 @@ define('minified', function() {
 	 * @return the list
 	 */
 	'onFocus': function(selector, handler) {
-		return this['on'](selector, '|focus', handler, [_true])
-			       ['on'](selector, '|blur', handler, [_false]);
+		if (!handler)
+			return this['onFocus'](_null, selector);
+		else
+			return this['on'](selector, '|focus', handler, [_true])
+				       ['on'](selector, '|blur', handler, [_false]);
 	},
 
 	/*$

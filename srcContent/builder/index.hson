@@ -16,7 +16,7 @@ inlineCss: `
 externalJs: ["/download/minified-src.js", "/js/parser-src.js", "/js/builder-src.js"],
 main: `<div>
   		<h1>Minified Builder</h1>
-  		<div class="version">Version 2014 beta 3 b2</div>
+  		<div class="version">Version 2014 beta 4 b1</div>
   		<div id="builderDiv">
   		<p>Use this builder to create your own custom build of Minified. You can pick the functions that you need below. Alternatively,
   		if you already have a custom build to start with, load your own configuration.</p>
