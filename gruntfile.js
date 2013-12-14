@@ -211,6 +211,14 @@ module.exports = function(grunt) {
 					'WebContent/js/parser-src.js':  'srcContent/js/parser-src.js',
 					'WebContent/js/builder-src.js': 'srcContent/js/builder-src.js'
 				}
+			},
+			dist: {
+				files: [{
+		            expand: true,
+		            cwd: 'dist/',  
+		            src: ['*.js'],
+		            dest: 'WebContent/download/'
+		      }]
 			}
 		},
 		
@@ -326,7 +334,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('code', ['assemble', 'closurecompiler:dist', 'uglify', 'copy:testdist', 'testQuick', 'measuresize']);
 	grunt.registerTask('testQuick', ['mochaTest', 'mocha:quick']);
 	grunt.registerTask('test', ['mochaTest', 'mocha:all']);
-	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:imgs', 'copy:test', 'copy:buildersrc', 'cssmin', 'htmlmin', 'xmlmin']);
+	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:imgs', 'copy:test', 'copy:buildersrc', 'cssmin', 'htmlmin', 'xmlmin', 'copy:dist']);
 	grunt.registerTask('all', ['code', 'test', 'site']);
 	grunt.registerTask('server', ['all', 'connect']);
 	grunt.registerTask('default', ['code']);

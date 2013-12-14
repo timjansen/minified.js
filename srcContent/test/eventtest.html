@@ -65,12 +65,14 @@
 			}
 		});
 		
-		// Test 3 / onChange()
-		$('#changeDiv input').onChange(function(value) {
+		// Test 3 / onChange() + onFocus()
+		function changeHandler(value) {
 			var span = $(this).trav('nextSibling', 'span');
 			var oldCount = parseInt(span.text().replace(/\D.$/, ''));
 			span.fill((oldCount+1) + " (" + value + ")");
-		});
+		}
+		$('#focussingText').onFocus(changeHandler);
+		$('#changingText, #changingCheckbox').onChange(changeHandler);
 		
 		// Test 4 / event cancellation
 			function cancelCounter() {
@@ -104,9 +106,10 @@
 		</div>
 		<div id="changeDiv" class="test">
 			<div class="spacer">
+				<div><input id="focussingText" value="focus me..."/> <span>0</span></div>
 				<div><input id="changingText" value="change me..."/> <span>0</span></div>
 				<div><input id="changingCheckbox" value="x" type="checkbox"/> <span>0</span> </div>
-				<span class="desc">onChange() test of input field and checkbox</span>
+				<span class="desc">onChange()/onFocus() test of input field and checkbox</span>
 			</div>
 		</div>
 		<div id="cancelDiv" class="test">

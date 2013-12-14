@@ -4011,7 +4011,7 @@ define('minified', function() {
 	 */
 	'onFocus': function(selector, handler) {
 		if (!handler)
-			return this['onFocus'](null, selector);
+			return this['onFocus'](_null, selector);
 		else
 			return this['on'](selector, '|focus', handler, [_true])
 				       ['on'](selector, '|blur', handler, [_false]);
