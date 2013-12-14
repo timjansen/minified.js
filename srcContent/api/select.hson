@@ -36,7 +36,7 @@ to <code>$(selector, list, childrenOnly)</code>.</p><p></p></div>
 <h4>Example</h4>
 <div class="example"><p>Returns a list of all list elements:
 <pre>
-var parents = $('ol.myList').selector('li', true);
+var parents = $('ol.myList').select('li', true);
 </pre>
 </p></div>
 <h4>Example</h4>

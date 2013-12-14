@@ -2352,6 +2352,19 @@ define('minified', function() {
  	 * All visited nodes that match the given selector are added to the result list. If no selector is given,
  	 * only elements will be added.
  	 * 
+ 	 * DOM provides the following properties for traveral:
+ 	 * <table>
+ 	 * <tr><th>firstChild</th><td>Contains the first child.</td></tr>
+ 	 * <tr><th>firstElementChild</th><td>Contains the first element (not in IE &lt; 9).</td></tr>
+ 	 * <tr><th>lastChild</th><td>Contains the last child element.</td></tr>
+ 	 * <tr><th>lastElementChild</th><td>Contains the last child element (not in IE &lt; 9).</td></tr>
+ 	 * <tr><th>nextElementSibling</th><td>Contains the element that follows the current node (not in IE &lt; 9).</td></tr>
+ 	 * <tr><th>nextSibling</th><td>Contains the node that follows the current node.</td></tr>
+ 	 * <tr><th>parentNode</th><td>Contains the node's parent.</td></tr>
+ 	 * <tr><th>previousElementSibling</th><td>Contains the element that precedes the current node (not in IE &lt; 9).</td></tr>
+ 	 * <tr><th>previousSibling</th><td>Contains the node that precedes the current node.</td></tr>
+ 	 * </table>
+ 	 * 
  	 * @example Returns a list of all parent nodes, direct and indirect:
  	 * <pre>
  	 * var parents = $('.myElements').trav('parentNode'); 
@@ -2410,7 +2423,7 @@ define('minified', function() {
  	 * 
  	 * @example Returns a list of all list elements:
  	 * <pre>
- 	 * var parents = $('ol.myList').selector('li', true); 
+ 	 * var parents = $('ol.myList').select('li', true); 
  	 * </pre>
  	 * 
  	 * @example Returns a list of all child elements:

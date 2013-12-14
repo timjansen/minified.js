@@ -2,6 +2,7 @@
 title: "Minified.js Beta 4: Features and Changes",
 section: docs,
 externalCss: ["../css/doc.css"],
+commentId: "docs-beta4",
 main: `<div>
   <h1>Minified.js Beta 4: Features and Changes</h1>
 
