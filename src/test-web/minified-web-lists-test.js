@@ -122,6 +122,21 @@ describe('minified-web-list-test.js', function() {
 				check(c, as.length);
 			});
 		});
+		
+		it('supports subselectors', function() {
+			if (typeof _ == 'undefined' || !_().per)
+				return;
+			var topList = $('#a, #b, #c');
+			var expected = $('#a_b, #b_a, #b_b, #c_a');
+			var c = 0;
+			topList.per('.x', function(value, index) {
+				check(_.equals(this, expected)); 
+				check(value.length, 1);
+				check(index, c++);
+				check(value[0], expected[index]);
+			});
+			check(c, expected.length);
+		});
 	});
 	
 	/*
