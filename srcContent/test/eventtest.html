@@ -75,17 +75,17 @@
 		$('#changingText, #changingCheckbox').onChange(changeHandler);
 		
 		// Test 4 / event cancellation
-			function cancelCounter() {
-				var span = $(this).trav('nextSibling', 'span');
-				var oldCount = parseInt(span.text().replace(/\D.$/, ''));
-				span.fill((oldCount+1) + "");
-			}		
-			$('#regularCheckbox').on('|click', cancelCounter);
-			$('#blockedCheckbox').on('click', cancelCounter);
-			$('#semiblockedCheckbox').on('?click', function() {
-				cancelCounter.call(this);
-				return $$('#regularCheckbox').checked;
-			});
+		function cancelCounter() {
+			var span = $(this).trav('nextSibling', 'span');
+			var oldCount = parseInt(span.text().replace(/\D.$/, ''));
+			span.fill((oldCount+1) + "");
+		}		
+		$('#regularCheckbox').on('|click', cancelCounter);
+		$('#blockedCheckbox').on('click', cancelCounter);
+		$('#semiblockedCheckbox').on('?click', function() {
+			cancelCounter.call(this);
+			return $$('#regularCheckbox').checked;
+		});
 		
 	};	
 	</script>

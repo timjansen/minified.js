@@ -41,7 +41,7 @@ module.exports = function(grunt) {
 		        if (!--resultsToDo) {
 		        	grunt.log.writeln('GZip Results:');
 		        	_.keys(results).sort().each(function(file) {
-			        	grunt.log.writeln(_.format('  {{file}}: {{size}} bytes compressed ({{unsize}} bytes uncompressed)', 
+			        	grunt.log.writeln(_.format('  {{file}}: {{size}} bytes compressed ({{unsize}} bytes / {{+unsize/1024 :: #}} kB uncompressed)', 
 			        			{file:file, size: results[file].compressed, unsize: results[file].uncompressed}));
 		        	});
 		        	if (options.destFile)

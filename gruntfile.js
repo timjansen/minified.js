@@ -252,7 +252,9 @@ module.exports = function(grunt) {
 					'minified-util.js': 'dist/minified-util.js',
 					'minified.js': 'dist/minified.js',
 					'minified-legacyie-web.js': 'dist/minified-legacyie-web.js',
-					'minified-legacyie.js': 'dist/minified-legacyie.js'
+					'minified-legacyie.js': 'dist/minified-legacyie.js',
+					'minified-src.js': 'dist/minified-src.js',
+					'minified-legacyie-src.js': 'dist/minified-legacyie-src.js'
 				}
 			}
 		},

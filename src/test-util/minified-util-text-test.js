@@ -57,6 +57,7 @@ function runTests(loadInContext) {
 			assert.equal(_.formatValue("#.####", 1), "1");
 			assert.equal(_.formatValue("#.0000", -1), "-1.0000");
 			assert.equal(_.formatValue("0.#", -1), "-1");
+			assert.equal(_.formatValue("#.0", 287591/1024), "280.9");
 			
 			assert.equal(_.formatValue("#", 1.5), "2");
 			assert.equal(_.formatValue("#.0", 1.5), "1.5");
@@ -312,6 +313,7 @@ function runTests(loadInContext) {
 			var d3 = new Date(1362956403000); // Sun, 10 Mar 2013 23:00:03 GMT  NO DAYLIGHT SAVING
 			assert.equal(_.template("abc{{obj :: [+0000] yyyy-MM-dd HH:mm:ss zzzzz}}xyz")(d3), "abc2013-03-10 23:00:03 +0000xyz");
 			assert.equal(_.template("abc{{::[+0000] yyyy-MM-dd HH:mm:ss zzzzz}}xyz")(d3), "abc2013-03-10 23:00:03 +0000xyz");
+			assert.equal(_.template("{{s}} {{s :: #.0}} {{u :: #.0}}")({s: 287591, u: 287591/1024}), "287591 287591.0 280.9");
 		});
 		
 		it('() supports {{if expression}}', function() {
