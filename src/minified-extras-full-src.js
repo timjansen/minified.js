@@ -434,7 +434,7 @@ function dummy() {
 		'ht': function(htmlTemplate, object) {
 			return this['set']('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : 
 				                            /{{/.test(htmlTemplate) ? formatHtml(htmlTemplate, object) : 
-				                            /^#\S+$/.test(htmlTemplate) ? formatHtml($(htmlTemplate)['text'](), object) : htmlTemplate);
+				                            /^#\S+$/.test(htmlTemplate) ? formatHtml($$(htmlTemplate)['text'], object) : htmlTemplate);
 		 }
 		/*$
 		 * @stop

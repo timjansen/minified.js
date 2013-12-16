@@ -34,7 +34,7 @@
 	
 	<script type="text/javascript">
 	window.onload = function() { // onload required for IE6
-		var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
+		var MINI = window.require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 		
 		$('#libName').fill(srcFiles[srcNum]);
 		$$('#srcNum').value = (srcNum + 1) % srcFiles.length;

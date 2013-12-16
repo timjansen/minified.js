@@ -41,8 +41,8 @@
 	</script>
 	
 	<script type="text/javascript">
-	window.onload = function() {	// onload required for IE6
-		var MINI = this.require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
+	var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
+	$(function() {
 		$('#libName').fill(file);
 		$$('#srcNum').value = (srcNum + 1) % srcFiles.length;
 	
@@ -111,7 +111,7 @@
 		backNForth();
 		window.setInterval(backNForth, 20000);
 			
-	}	
+	});
 	</script>
 	
 	</head>
