@@ -129,7 +129,7 @@ function setUpConfigurationUI(s) {
 		])));
 
 		groupCheckBox.onChange(function(b) {
-			$('.secCheck', this.parentNode.parentNode)
+			$('.secCheck', this[0].parentNode.parentNode)
 			 .each(function(cb) {
 				 cb.checked = b;
 				 fulfillSectionDependencies(cb);
@@ -182,7 +182,7 @@ function setUpConfigurationUI(s) {
 			]));
 			
 			sectionCheckBox.onChange(function() {
-				fulfillSectionDependencies(this);
+				fulfillSectionDependencies(this[0]);
 				setGroupCheckboxes();
 			});
 		});
