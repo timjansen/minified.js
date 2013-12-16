@@ -111,7 +111,7 @@ var cells1 = <a href="/api/dollar.html">$</a>('td, th', document.getElementById(
 var cells2 = <a href="/api/dollar.html">$</a>('td, th', '.specialTable'); // all td and th element in .specialTable elements
 </pre></p>
 
-<p>You can limit the context to be used only for direct children by setting the third parameter to true:
+<p>To limit the context to use only direct children, instead of all descendants, set the third parameter to <var>true</var>:
 <pre>
 var listItems = <a href="/api/dollar.html">$</a>('li', 'ol', true); // all list items in ordered lists
 </pre>
@@ -125,7 +125,7 @@ Here a small example to give you an idea:
 var r = <a href="/api/dollar.html">$</a>('#myTable tr')                                                         // all rows in myTable
            .<a href="/api/filter.html">filter</a>(function(elem, index) { return index % 2 == 1; })             // filter: take only odd rows
            .<a href="/api/collect.html">collect</a>(function(elem) { return <a href="/api/dollar.html">$</a>('td', elem).<a href="/api/sub.html">sub</a>(-3); })            // use the last three cells per row
-           .<a href="/api/find.html">find</a>(function(elem) { if (<a href="/api/dollar.html">$</a>(elem).<a href="/api/is.html">is</a>('.hit')) return elem; });  // find first cell with class 'hit'
+           .<a href="/api/find.html">find</a>(function(elem) { if (<a href="/api/dollar.html">$</a>(elem).<a href="/api/is.html">is</a>('.hit')) return elem; });       // find first cell with class 'hit'
 </pre>
 </p>
 
@@ -146,8 +146,8 @@ list.<a href="/api/length.html">each</a>(function(element, index) {
 </pre>
 </p>
 
-<p>A special variant of the selector function <a href="/api/dollar.html"><code>$</code></a> is 
-<a href="/api/dollardollar.html"><code>$$</code></a>. It works like <a href="/api/dollar.html"><code>$</code></a>, 
+<p>A special variant of the selector function <a href="/api/dollar.html"><code>$()</code></a> is 
+<a href="/api/dollardollar.html"><code>$$()</code></a>. It works like <a href="/api/dollar.html"><code>$()</code></a>, 
 but returns only the first element of the list instead of the complete list. If the list is empty, it returns <span class="var">undefined</span>.
 <pre>
 var parent1 = <a href="/api/dollardollar.html">$$</a>('#myElement').parentNode;
@@ -156,7 +156,7 @@ var parent2 = <a href="/api/dollar.html">$</a>('#myElement')[0].parentNode;     
 </p>
 
 <h2>Creating Generic Minfied lists</h2>
-<p>Minified has two constructors for Minified list. The previous sections showed <a href="/api/dollar.html"><code>$()</code></a>, which is 
+<p>Minified has two constructors for Minified lists. The previous sections showed <a href="/api/dollar.html"><code>$()</code></a>, which is 
 designed to create lists of DOM nodes and is contained in the Web module. The Util module contains a second constructor, 
 <a href="/api/underscore.html"><code>_()</code></a>. It supports varargs, does not remove nulls and flattens only the first level of lists. Selectors 
 are not supported by <a href="/api/underscore.html"><code>_()</code></a>.
@@ -174,12 +174,11 @@ always get the same type of list and have access to all list methods that are av
 <h2>Universal get() and set()</h2>
 <p>Whereas other frameworks have a number of different functions to access properties, attributes and CSS styles, 
 Minified has only two: <a href="/api/get.html"><code>get()</code></a> and 
-<a href="/api/set.html"><code>set()</code></a>. You define what data you access by using the right name. Other 
-functions, <a href="/api/animate.html"><code>animate()</code></a> and <a href="/api/toggle.html"><code>toggle()</code></a>, are 
-built upon the universal <a href="/api/set.html"><code>set()</code></a> function.
+<a href="/api/set.html"><code>set()</code></a>. You define what data you access by prefixing the property syntax. Many other 
+features, from animation to element creation, are build upon the same property syntax.
 </p>
 
-<p>The easiest data to access is a regular JavaScript property. You only specify the property name to get or set it:
+<p>The easiest data to access is a regular JavaScript property. You only pass the plain property name to get or set it:
 <pre>
 var oldGreeting = $('.greeting').get('innerHTML'); // value of list's first element!
 alert(oldGreeting);
@@ -192,7 +191,7 @@ var oldValue = $('input').get('@value');
 $('input').set('@value', 'Hello');
 </pre></p>
 
-<p>To set or get a CSS style, prefix the name with a '$':
+<p>To set or get a CSS style, prefix the name with a '$' and specify it in <code>camelCase</code>:
 <pre>
 var oldColor = $('.greeting').get('$backgroundColor');
 $('.greeting').set('$backgroundColor', 'blue');
@@ -271,8 +270,7 @@ Please see the <a href="/api/animate.html"><code>animate()</code></a> documentat
 <a href="/api/fill.html"><code>fill()</code></a> replaces the element's children with the given nodes, and 
 <a href="/api/add.html"><code>add()</code></a> just adds them as children.</p>
 
-<p>In the simplest case, you can call <a href="/api/fill.html"><code>fill()</code></a> without arguments to all 
-children from the elements in the list:
+<p>If you call <a href="/api/fill.html"><code>fill()</code></a> without arguments, it removes all children from the list elements:
 <pre>
 <a href="/api/dollar.html">$</a>('.myClass').<a href="/api/fill.html">fill</a>();   // remove all children
 </pre>
@@ -282,7 +280,7 @@ children from the elements in the list:
 Call <a href="/api/fill.html"><code>fill()</code></a> or <a href="/api/add.html"><code>add()</code></a> with a string to create a 
 new text node and add it:
 <pre>
-<a href="/api/dollar.html">$</a>('.greetings').<a href="/api/fill.html">fill</a>("Hello");      // Replace children with text "Hello"
+<a href="/api/dollar.html">$</a>('.greetings').<a href="/api/fill.html">fill</a>("Hello");        // Replace children with text "Hello"
 <a href="/api/dollar.html">$</a>('.greetings').<a href="/api/add.html">add</a>("and Goodbye");  // add a second text node
 </pre>
 </p>
@@ -296,23 +294,23 @@ by <a href="/api/set.html"><code>set()</code></a>.
 
 <pre>
 var MINI = require('minified');
-var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
+var $=MINI.$, EE=MINI.EE, HTML=MINI.HTML;
 
 <a href="/api/dollar.html">$</a>('#header').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('h2', 'My Title'));                                  // creates &lt;h2>MyTitle&lt;/h2>
 <a href="/api/dollar.html">$</a>('#linkContainer').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('a', {'@href': 'http://acme.com'}, "ACME"));  // creates &lt;a href="http://acme.com">ACME&lt;/a>
 <a href="/api/dollar.html">$</a>('#header').<a href="/api/add.html">add</a>([<a href="/api/ee.html">EE</a>('br'), "Single line", <a href="/api/ee.html">EE</a>('br')]);                    // add &lt;br/>Single line&lt;br/>
-<a href="/api/dollar.html">$</a>('#list').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('ul', [  // &lt;ul>
+<a href="/api/dollar.html">$</a>('#list').<a href="/api/fill.html">fill</a>(<a href="/api/ee.html">EE</a>('ul', [                        // &lt;ul>
             <a href="/api/ee.html">EE</a>('li', {$: 'first'}, "First item"), // &lt;li class="first">First Item&lt;/li>
             <a href="/api/ee.html">EE</a>('li', "Second item"),              // &lt;li>Second Item&lt;/li>
             <a href="/api/ee.html">EE</a>('li', "Third item"),               // &lt;li>Third Item&lt;/li>
-])); // &lt;/ul>
+]));                                              // &lt;/ul>
 </pre>
 
 
 <a href="/api/html.html"><code>HTML()</code></a> does the same, but uses a HTML string to create the elements:
 <pre>
 var MINI = require('minified');
-var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
+var $=MINI.$, EE=MINI.EE, HTML=MINI.HTML;
 
 <a href="/api/dollar.html">$</a>('#header').<a href="/api/fill.html">fill</a>(<a href="/api/html.html">HTML</a>('&lt;h2>My Title&lt;/h2>'));
 <a href="/api/dollar.html">$</a>('#linkContainer').<a href="/api/fill.html">fill</a>(<a href="/api/html.html">HTML</a>('&lt;a href="http://acme.com">ACME&lt;/a>'));
@@ -326,8 +324,8 @@ var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
 HTML can not only handle HTML strings, but supports <a href="/api/template.html">Minified templates</a>:
 <pre>var nameList = ['Joe', 'James', 'Jim', 'Jumbo'];
 <a href="/api/dollar.html">$</a>('#list').<a href="/api/fill.html">fill</a>(<a href="/api/html.html">HTML</a>('&lt;ul>'+
-            '{{each names}}&lt;li>{{this}}&lt;/li>{{/each}}'+
-            '&lt;/ul>', {names: nameList}));
+                     '{{each names}}&lt;li>{{this}}&lt;/li>{{/each}}'+
+                     '&lt;/ul>', {names: nameList}));
 </pre>
 Please refer to the <a href="/api/template.html"><code>template()</code></a> API documentation for the full template syntax. 
 </p>
@@ -346,7 +344,7 @@ Please refer to the <a href="/api/template.html"><code>template()</code></a> API
 <h2>Events</h2>
 
 <p>
-Events in Minified may a bit different than what you maybe used to. In the simplest case though, it all looks very familiar:
+Events in Minified may a bit different than what you are used to. At first sight it looks very familiar:
 <pre>
 <a href="/api/dollar.html">$</a>('#submitButton').<a href="/api/on.html">on</a>('click', function() {
 	alert('Button pressed!');
@@ -392,7 +390,7 @@ The index often makes it easy to identify which element has been clicked when yo
 <code>this</code> refers to a Minified list that contains the event source as its only element.
 </p>
 
-<p>Often, all you want to do when an event has been fired is to call the right function with the corresponding arguments. Minified makes this 
+<p>Often all you want to do when an event has been fired is to call the right function with the corresponding arguments. Minified makes this 
 easy by allowing you to customize the arguments being passed to an event handler:
 <pre>
 function setZoomLevel(percentage) {
@@ -433,7 +431,7 @@ light(false);  // turn the light off (state 1)
 </pre>
 </p>
 
-<p>Now, if you want to toggle the background color by clicking on a button, you only need to add the toggle function as event handler:
+<p>So if you want to toggle the background color by clicking on a button, you only need to add the toggle function as event handler:
 <pre>
 <a href="/api/dollar.html">$</a>('#switch').on('click', light);
 </pre>
@@ -546,6 +544,9 @@ var r = 100;               // radius 100 px
 </pre>
 </p>
 
+<h2>End</h2>
+<p>I hope this tutorial was helpful for you to get started with Minified development. If you need more to read, I would suggest 
+the <a href="howto.html">How-To</a> or to look through the <a href="fiddles.html">JSFiddle Examples</a>.</p>
 
 
 <p>back to <a href="/docs">Minified documentation</a>.</p>
