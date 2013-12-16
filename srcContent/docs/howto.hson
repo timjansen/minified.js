@@ -1,6 +1,7 @@
 {
 title: 'How to... Common Minified Tasks',
 section: docs,
+commentId: 'docs-howto1',
 externalCss: ['../css/doc.css'],
 main: `<div>
   <h1>How to... Common Minified Tasks</h1>

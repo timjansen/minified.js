@@ -2,6 +2,7 @@
 title: 'Minified.js for JavaScript Developers',
 section: docs, 
 externalCss: ['../css/doc.css'],
+commentId: 'docs-tutorial1',
 main: `<div>
   <h1>Minified.js for JavaScript Developers</h1>
 
@@ -111,7 +112,7 @@ var cells1 = <a href="/api/dollar.html">$</a>('td, th', document.getElementById(
 var cells2 = <a href="/api/dollar.html">$</a>('td, th', '.specialTable'); // all td and th element in .specialTable elements
 </pre></p>
 
-<p>To limit the context to use only direct children, instead of all descendants, set the third parameter to <var>true</var>:
+<p>To limit the context and use only direct children, instead of all descendants, set the third parameter to <var>true</var>:
 <pre>
 var listItems = <a href="/api/dollar.html">$</a>('li', 'ol', true); // all list items in ordered lists
 </pre>
@@ -174,11 +175,11 @@ always get the same type of list and have access to all list methods that are av
 <h2>Universal get() and set()</h2>
 <p>Whereas other frameworks have a number of different functions to access properties, attributes and CSS styles, 
 Minified has only two: <a href="/api/get.html"><code>get()</code></a> and 
-<a href="/api/set.html"><code>set()</code></a>. You define what data you access by prefixing the property syntax. Many other 
-features, from animation to element creation, are build upon the same property syntax.
+<a href="/api/set.html"><code>set()</code></a>. You define what data you access by prefixing the property name. Many other 
+features, from animation to element creation, are built on the same property syntax.
 </p>
 
-<p>The easiest data to access is a regular JavaScript property. You only pass the plain property name to get or set it:
+<p>The easiest data to access is a regular JavaScript property. You pass the plain property name to get or set it:
 <pre>
 var oldGreeting = $('.greeting').get('innerHTML'); // value of list's first element!
 alert(oldGreeting);
@@ -380,7 +381,7 @@ anymore, unless you explicitly allow it. Similarly, a click handler on a link wo
 });
 </pre>
 The first argument is the unmodified event object, as provided by the browser. The second argument contains the index of the 
-element in the list for which the event handler has been called. In the previous example, it is always 0. But consider this:
+element in the list for which the event handler has been called. In the previous example, it was always 0. But consider this:
 <pre>
 <a href="/api/dollar.html">$</a>('ol.myList li').<a href="/api/on.html">on</a>('click', function(e, index) {
 	console.log('Clicked on list item no', index, ' with content:', this.text());
@@ -545,7 +546,7 @@ var r = 100;               // radius 100 px
 </p>
 
 <h2>End</h2>
-<p>I hope this tutorial was helpful for you to get started with Minified development. If you need more to read, I would suggest 
+<p>I hope this tutorial was helpful for you to get started with Minified development. If you want to read more, I would suggest 
 the <a href="howto.html">How-To</a> or to look through the <a href="fiddles.html">JSFiddle Examples</a>.</p>
 
 
