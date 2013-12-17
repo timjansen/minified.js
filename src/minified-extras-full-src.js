@@ -338,7 +338,7 @@ function dummy() {
 		 * });</pre>
 		 * 
 		 * @example Create click handlers for elements in a list:
-		 * <pre>$('#list').add(HTML('{{each}}<li>{{this.name}} <a class="del" href="#">Delete</a></li>{{each}}', items)
+		 * <pre>$('#list').add(HTML('{{each}}&lt;li>{{this.name}} &lt;a class="del" href="#">Delete&lt;/a>&lt;/li>{{each}}', items)
 		 *                .per('.del', function(el, index) {
 		 *                   el.on('click', deleteItemByName, [items[index].name]);
 		 *                }));</pre>

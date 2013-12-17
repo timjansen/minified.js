@@ -30,6 +30,12 @@ $('.withHoverEffect').per(function(el) {
     el.onOver(el.toggle('hoverEffect'));
 });
 </pre>
+<p><span class="var"><a href="/api/per.html">per()</a></span> also supports sub-selects. That can make it easier to create events when you
+use iteration in templates:</p>
+<pre>$('#list').add(HTML('{{each}}&lt;li>{{this.name}} &lt;a class="del" href="#">Delete&lt;/a>&lt;/li>{{each}}', items)
+           .per('.del', function(el, index) {
+               el.on('click', deleteItemByName, [items[index].name]);
+           }));</pre>
 
 
 <h2>New: onFocus() for toggling when an element gets focussed</h2>
@@ -50,7 +56,7 @@ var sum = _(1, 2, 3, 4, 5).reduce(function(memo, value, index) {
 </pre>
 
 <h2>Change: on(), onOver() and onChange() return target wrapped in a list</h2>
-<p>Before beta 3, <code><a href="/api/on.html">on()</a></var> would call its handler with <var>this</var> set to the event source. Starting with beta 4,
+<p>Before beta 3, <var><a href="/api/on.html">on()</a></var> would call its handler with <var>this</var> set to the event source. Starting with beta 4,
 it passes a <a href="/api/list.html">Minified list</a> containing the event source as its only element.</p>
 <p><span class="var"><a href="/api/onover.html">onOver()</a></span> and <span class="var"><a href="/api/onchange.html">onChange()</a></span> have also been modified
 accordingly.</p>
