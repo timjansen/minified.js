@@ -167,7 +167,7 @@ You can also use the same syntax to add elements to the list:
 <pre>var l2 = _([list1, element1, element2]);</pre>
 or 
 <pre>var l2 = $([list1, element1, element2]);</pre>
-Again, <var>$()</var> will remove null elements from the results, but <var>_()</var> will not.
+Again, <var>$()</var> will remove null elements from the result, but <var>_()</var> will not.
 </p>
 <p>
 API: <a href="/api/dollar.html">$()</a>.<br>
@@ -599,7 +599,7 @@ JSFiddle Example: <a href="http://jsfiddle.net/tjansen/Xu6R8/">Loop Animation</a
 </p>
 
 
-<h2><a name="event">Data and Events</a></h2>
+<h2><a name="event">Events</a></h2>
 <h3><a name="event_events">Register / Unregister Event Handlers</a></h3>
 <p>
 <pre>function buttonHandler(e) { 
@@ -689,7 +689,7 @@ API: <a href="/api/on.html">on()</a>, <a href="/api/trigger.html">trigger()</a>.
 
 
 
-<h2><a name="data">Data and Events</a></h2>
+<h2><a name="data">Forms and Data</a></h2>
 <h3><a name="data_post">Do HTTP Requests (AJAX / XHR)</a></h3>
 <p><pre>$.request('post', '/example/service', {param1: 'hello', param2: 5})
     .then(function success(result) {
@@ -843,8 +843,22 @@ API: <a href="/api/format.html">_.format()</a>, <a href="/api/formathtml.html">_
 ('Minified' in the subject to gets you past the spam filter).</p>
 </div>
 
+
+	
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+	var disqus_shortname = "minifiedjs";
+	var disqus_identifier = "docs-howto1";
+	(function() {
+	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+	})();
+	</script>
+	
+	</div>
+	
 </div>
-</div>
+
 <div id="foot">
 	<div class="container">
 		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 

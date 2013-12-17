@@ -48,15 +48,18 @@
 <dt id="each_callback" class=""><a name="each_callback"><var>callback</var></a></dt>
 <dd class="">The callback <code>function(item, index)</code> to invoke for each list element.
 <dl><dt>item</dt><dd>The current list element.</dd>
-<dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+<dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>This list.</dd></dl>
 The callback's return value will be ignored.</dd>
 <dt id="each_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="each_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the list</dd>
+<dd class="inSyntax0 inSyntax1">the list
+</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>Invokes the given function once for each item in the list. The function will be called with the item as first parameter and
-the zero-based index as second.</p><p></p></div>
+the zero-based index as second. Unlike JavaScript's built-in <span class="var">forEach()</span> it will be invoked for each item in the list,
+even if it is <span class="var">undefined</span>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -87,6 +90,24 @@ $('h2.section').each(function(item, index) {
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href="per.html" class="func">per()</a></code> works like <span class="var">each()</span>, but wraps the list elements in a list.</li>
+<li><code><a href="find.html" class="func">find()</a></code> can be used instead of <span class="var">each()</span> if you need to abort the loop.</li>
+<li><code><a href="eachobj.html" class="func">eachObj()</a></code> iterates through the properties of an object.</li>
+</ul>
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "api-each";
+var disqus_url = "http://minifiedjs.com/api/each.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -132,8 +153,11 @@ $('h2.section').each(function(item, index) {
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
@@ -196,8 +220,12 @@ $('h2.section').each(function(item, index) {
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
 
+
+	
+	</div>
+	
 </div>
-</div>
+
 <div id="foot">
 	<div class="container">
 		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 

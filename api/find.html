@@ -54,6 +54,7 @@
 <dt id="find_findFunc" class=""><a name="find_findFunc"><var>findFunc</var></a></dt>
 <dd class="">The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>This list.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <span class="var">null</span> or
 <span class="var">undefined</span>, <span class="var">find()</span> will return it directly. Otherwise it will continue. </dd></dl></dd>
 <dt id="find_element" class=""><a name="find_element"><var>element</var></a></dt>
@@ -74,7 +75,7 @@ it returns either the value returned by the callback or <span class="var">undefi
     <span class="var">find()</span> returns <span class="var">undefined</span>.</li>
 <li>With a callback function. <span class="var">find()</span> will then call the given function for each list element until the function
     returns a value that is not <span class="var">null</span> or <span class="var">undefined</span>. This value will be returned.</li>
-</ol></p><p><span class="var">find()<a href="each.html" class="func">each()</a> if you need to abort the loop.</span></p><p></p></div>
+</ol></p><p><span class="var">find()</span> can also be used as an alternative to <code><a href="each.html" class="func">each()</a></code> if you need to abort the loop.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -106,6 +107,19 @@ var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return
 <h4>See also..</h4>
 <ul><li><code><a href="findlast.html" class="func">findLast()</a></code> is the equivalent to <span class="var">find()</span> for the list's end.</li>
 </ul>
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "api-find";
+var disqus_url = "http://minifiedjs.com/api/find.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -151,8 +165,11 @@ var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
@@ -215,8 +232,12 @@ var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
 
+
+	
+	</div>
+	
 </div>
-</div>
+
 <div id="foot">
 	<div class="container">
 		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>promise.then() - Minified.js</title>
+<title>.per() - Minified.js</title>
 
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
 
@@ -31,83 +31,48 @@
 <div id="main">
 	<div class="container">
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-then">promise.then()</a></h2>
-<div class="summary">
-Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
-successfully (<span class="var">onSuccess</span>) or an error occurred (<span class="var">onError</span>).</div>
+<h2><a name="doc-per">.per()</a></h2>
+<div class="summary">Invokes the handler function for each list element with a single-element list containing only this element.</div>
 
-<div class="availability">Available in all modules.</div><h4>Syntax Variants</h4>
+<div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">promise.then()</div>
-<div class="syntax">promise.then(onSuccess)</div>
-<div class="syntax">promise.then(onSuccess, onError)</div>
+<div class="syntax">list.per(callback)</div>
+<div class="syntax">list.per(subSelector, callback)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="then_onSuccess" class=""><a name="then_onSuccess"><var>onSuccess (optional)</var></a></dt>
-<dd class="">a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.
-If the function returns a <a href="promise.html" class="func">Promise</a>, that Promise will be evaluated to determine the state of the promise returned by <span class="var">then()</span>. If it returns any other value, the
-returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
-Pass <span class="var">null</span> or <span class="var">undefined</span> if you do not need the success handler.</dd>
-<dt id="then_onError" class=""><a name="then_onError"><var>onError (optional)</var></a></dt>
-<dd class="">a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a <a href="promise.html" class="func">Promise</a>, that promise will
-be evaluated to determine the state of the Promise returned by <span class="var">then()</span>. If it returns anything else, the returned Promise will
-have success status. If the function throws an error, the returned Promise will be in the error state.
-You can pass <span class="var">null</span> or <span class="var">undefined</span> if you do not need the error handler.</dd>
-<dt id="then_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="then_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">a new <a href="promise.html" class="func">Promise</a> object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
-If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.</dd>
+<dt id="per_subSelector" class=""><a name="per_subSelector"><var>subSelector (optional)</var></a></dt>
+<dd class="">a selector as valid as first argument for <code><a href="dollar.html" class="func">$()</a></code>, to identify the descendants to iterate over.</dd>
+<dt id="per_callback" class=""><a name="per_callback"><var>callback</var></a></dt>
+<dd class="">The callback <code>function(itemList, index)</code> to invoke for each list element.
+<dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
+<dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>The list that is being iterated. If a sub-selector
+is being used, it is the list that resulted from using the sub-selector.</dd></dl>
+The callback's return value will be ignored.</dd>
+<dt id="per_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="per_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1">the list. Even if you specified a sub-selector, it will always return the original list.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>
-Registers two callbacks that will be invoked when the <a href="promise.html" class="func">Promise</a>'s asynchronous operation finished
-successfully (<span class="var">onSuccess</span>) or an error occurred (<span class="var">onError</span>). The callbacks will be called after
-<span class="var">then()</span> returned, from the browser's event loop.
-Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks.
-You can chain <span class="var">then()</span> invocations, as <span class="var">then()</span> returns another Promise object that you can attach to.</p><p></p></div>
+<div class="description"><p>Invokes the handler function for each list element with a single-element list containing only this element. It is very similar to
+<code><a href="each.html" class="func">each()</a></code>, but instead of giving the element itself it wraps the element in a <a href="list.html" class="func">Minified list</a>. Additionally, you can specify
+a sub-selector to iterate over the descendants matches by the selector instead of the list elements.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Simple handler for an HTTP request. Handles only success and ignores errors.
-<pre>
-$.request('get', '/weather.html')
-    .then(function(txt) {
-       alert('Got response!');
-    });
-</pre>
+<div class="example"><p>Create a mouseover toggle for a list:
+<pre>$('.toggler').per(function(el, i) {
+    el.onOver(el.toggle('myeffect'));
+});</pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>Including an error handler.
-<pre>
-$.request('get', '/weather.html')
-    .then(function(txt) {
-       alert('Got response!');
-    }, function(err) {
-       alert('Error!');
-    }));
-</pre>
-</p></div>
-<h4>Example</h4>
-<div class="example"><p>Chained handler.
-<pre>
-$.request('get', '/weather.do')
-    .then(function(txt) {
-       showWeather(txt);
-    }
-    .then(function() {
-       return $.request('get', '/traffic.do');
-    }
-    .then(function(txt) {
-       showTraffic(txt);
-    }
-    .then(function() {
-       alert('All result displayed');
-    }, function() {
-       alert('An error occurred');
-    });
-</pre>
+<div class="example"><p>Create click handlers for elements in a list:
+<pre>$('#list').add(HTML('{{each}}<li>{{this.name}} <a class="del" href="#">Delete</a></li>{{each}}', items)
+               .per('.del', function(el, index) {
+                  el.on('click', deleteItemByName, [items[index].name]);
+               }));</pre>
 </p></div>
 </div>
 
@@ -115,8 +80,8 @@ $.request('get', '/weather.do')
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-then";
-var disqus_url = "http://minifiedjs.com/api/then.html";
+var disqus_identifier = "api-per";
+var disqus_url = "http://minifiedjs.com/api/per.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";

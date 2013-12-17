@@ -38,8 +38,7 @@
 <div class="syntaxVariant">
 <div class="syntax">$.request(method, url)</div>
 <div class="syntax">$.request(method, url, data)</div>
-<div class="syntax">$.request(method, url, data, headers)</div>
-<div class="syntax">$.request(method, url, data, headers, username, password)</div>
+<div class="syntax">$.request(method, url, data, settings)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -55,15 +54,16 @@ fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can o
 parameters (for all HTTP methods), a string (for all HTTP methods) or a DOM document ('post' only). If the method is
 'post', it will be sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the
 same name, use an array of values in the map. Use null as value for a parameter without value.</dd>
-<dt id="request_headers" class=""><a name="request_headers"><var>headers (optional)</var></a></dt>
-<dd class="">a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
+<dt id="request_settings" class=""><a name="request_settings"><var>settings (optional)</var></a></dt>
+<dd class="">a map of additional parameters. Supports the following properties (all optional):
+<dl><dt>headers</dt><dd>a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
 header 'Content-Type', if you set it, because otherwise it may be overwritten.</dd>
-<dt id="request_username" class=""><a name="request_username"><var>username (optional)</var></a></dt>
-<dd class="">username to be used for HTTP authentication, together with the password parameter</dd>
-<dt id="request_password" class=""><a name="request_password"><var>password (optional)</var></a></dt>
-<dd class="">password for HTTP authentication</dd>
-<dt id="request_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="request_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">a <a href="promiseclass.html" class="func">Promise</a> containing the request's status. If the request has successfully completed with HTTP status 200,
+<dt>xhr</dt><dd>a map of properties to set in the XMLHttpRequest object before the request is sent, for example <code>{withCredentials: true}</code>.</dd>
+<dt>user</dt><dd>username to be used for HTTP authentication, together with the password parameter</dd>
+<dt>pass</dt><dd>username to be used for HTTP authentication, together with the password parameter</dd>
+</dl></dd>
+<dt id="request_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="request_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2">a <a href="promiseclass.html" class="func">Promise</a> containing the request's status. If the request has successfully completed with HTTP status 200,
 the success handler will be called as <code>function(text, xml)</code>:
 <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
 <dt>xml</dt><dd>If the response was a XML document, the DOM <span class="var">Document</span>. Otherwise null.</dd></dl>
@@ -115,6 +115,10 @@ $.request('post', 'http://service.example.com/directory', $.toJSON(myRequest))
        })
     .error(failureHandler);
 </pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Using HTTP authentication and a custom XMLHttpRequest property.
+<pre>var handler = $.request('get', 'http://service.example.com/userinfo', null, {withCredentials: true, user: 'me', pass: 'secret'});</pre>
 
 </p></div>
 </div>
@@ -125,6 +129,19 @@ $.request('post', 'http://service.example.com/directory', $.toJSON(myRequest))
 <li><code><a href="undefinedtojson.html" class="func">$.toJSON()</a></code> can create JSON messages.</li>
 <li><code><a href="undefinedformat.html" class="func">_.format()</a></code> can be useful for creating REST-like URLs, if you use JavaScript's built-in <span class="var">escape()</span> function.</li>
 </ul>
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "api-request";
+var disqus_url = "http://minifiedjs.com/api/request.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -170,8 +187,11 @@ $.request('post', 'http://service.example.com/directory', $.toJSON(myRequest))
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
@@ -234,8 +254,12 @@ $.request('post', 'http://service.example.com/directory', $.toJSON(myRequest))
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
 
+
+	
+	</div>
+	
 </div>
-</div>
+
 <div id="foot">
 	<div class="container">
 		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 

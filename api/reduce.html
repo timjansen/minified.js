@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>promise.then() - Minified.js</title>
+<title>.reduce() - Minified.js</title>
 
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
 
@@ -31,92 +31,50 @@
 <div id="main">
 	<div class="container">
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-then">promise.then()</a></h2>
-<div class="summary">
-Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
-successfully (<span class="var">onSuccess</span>) or an error occurred (<span class="var">onError</span>).</div>
+<h2><a name="doc-reduce">.reduce()</a></h2>
+<div class="summary">Reduces the list into a single value with the help of a callback function.</div>
 
-<div class="availability">Available in all modules.</div><h4>Syntax Variants</h4>
+<div class="availability">Util module only.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">promise.then()</div>
-<div class="syntax">promise.then(onSuccess)</div>
-<div class="syntax">promise.then(onSuccess, onError)</div>
+<div class="syntax">list.reduce(callback, memo)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="then_onSuccess" class=""><a name="then_onSuccess"><var>onSuccess (optional)</var></a></dt>
-<dd class="">a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.
-If the function returns a <a href="promise.html" class="func">Promise</a>, that Promise will be evaluated to determine the state of the promise returned by <span class="var">then()</span>. If it returns any other value, the
-returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
-Pass <span class="var">null</span> or <span class="var">undefined</span> if you do not need the success handler.</dd>
-<dt id="then_onError" class=""><a name="then_onError"><var>onError (optional)</var></a></dt>
-<dd class="">a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a <a href="promise.html" class="func">Promise</a>, that promise will
-be evaluated to determine the state of the Promise returned by <span class="var">then()</span>. If it returns anything else, the returned Promise will
-have success status. If the function throws an error, the returned Promise will be in the error state.
-You can pass <span class="var">null</span> or <span class="var">undefined</span> if you do not need the error handler.</dd>
-<dt id="then_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="then_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">a new <a href="promise.html" class="func">Promise</a> object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
-If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.</dd>
+<dt id="reduce_callback" class=""><a name="reduce_callback"><var>callback</var></a></dt>
+<dd class="">The callback <code>function(memo, item, index)</code> to invoke for each list element.
+<dl><dt>memo</dt><dd>On the first invocation, the <span class="var">memo</span> argument given to <span class="var">reduce()</span>. On
+all further invocation, this is the return value of the previous invocation.</dd>
+<dt>item</dt><dd>The current list element.</dd>
+<dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>This list.</dd>
+<dt class="returnValue">(callback return value)</dt><dd>Will be used as <span class="var">memo</span>
+argument of the next invocation. The last return value will be returned by <span class="var">reduce()</span>.</dd></dl>
+</dd>
+<dt id="reduce_memo" class=""><a name="reduce_memo"><var>memo</var></a></dt>
+<dd class="">the initial value that will be passed as <span class="var">memo</span> argument to the callback on its very first invocation.</dd>
+<dt id="reduce_RETURN" class="returnValue inSyntax0"><a name="reduce_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0">the resulting value. If the list was empty, it returns the <span class="var">memo</span> argument.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>
-Registers two callbacks that will be invoked when the <a href="promise.html" class="func">Promise</a>'s asynchronous operation finished
-successfully (<span class="var">onSuccess</span>) or an error occurred (<span class="var">onError</span>). The callbacks will be called after
-<span class="var">then()</span> returned, from the browser's event loop.
-Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks.
-You can chain <span class="var">then()</span> invocations, as <span class="var">then()</span> returns another Promise object that you can attach to.</p><p></p></div>
+<div class="description"><p>Reduces the list into a single value with the help of a callback function. This callback will be called once for
+each element, with the return value of the previous invocation as parameter. <span class="var">reduce()</span> returns the
+return value of the last invocation.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Simple handler for an HTTP request. Handles only success and ignores errors.
-<pre>
-$.request('get', '/weather.html')
-    .then(function(txt) {
-       alert('Got response!');
-    });
-</pre>
-</p></div>
-<h4>Example</h4>
-<div class="example"><p>Including an error handler.
-<pre>
-$.request('get', '/weather.html')
-    .then(function(txt) {
-       alert('Got response!');
-    }, function(err) {
-       alert('Error!');
-    }));
-</pre>
-</p></div>
-<h4>Example</h4>
-<div class="example"><p>Chained handler.
-<pre>
-$.request('get', '/weather.do')
-    .then(function(txt) {
-       showWeather(txt);
-    }
-    .then(function() {
-       return $.request('get', '/traffic.do');
-    }
-    .then(function(txt) {
-       showTraffic(txt);
-    }
-    .then(function() {
-       alert('All result displayed');
-    }, function() {
-       alert('An error occurred');
-    });
-</pre>
-</p></div>
+<div class="example"><p>Sum up some numbers:
+<pre>var sum = _(1, 2, 3).reduce(0, function(memo, item, index) { return memo + item; });
+</pre></p></div>
 </div>
 
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-then";
-var disqus_url = "http://minifiedjs.com/api/then.html";
+var disqus_identifier = "api-reduce";
+var disqus_url = "http://minifiedjs.com/api/reduce.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";

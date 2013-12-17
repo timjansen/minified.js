@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Minified.js Beta 4: Features and Changes</title>
+
+<link rel="stylesheet" type="text/css" href="../css/doc.css">
+
+
+
+
+</head>
+<body>
+<div id="head">
+	<div class="container">
+		
+		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt='Minified'><![endif]-->
+		<!--[if gt IE 8]><img src='/img/minified.svg' alt='Minified'><![endif]-->
+		<!--[if !IE]>--><img src="/img/minified.svg" alt="Minified"><!--<![endif]--></a>
+
+		<div id="topMenu">
+			<a class="notSelected" href="/">Home</a>
+			<a class="notSelected" href="/download/">Download</a>
+			<a class="notSelected" href="/builder/">Build</a>
+			<a class="selected" href="/docs/">Documentation</a>
+			<a class="notSelected" href="/api/">API</a>
+			<a class="notSelected" href="/about/">About</a>
+		</div>
+	</div>
+</div>
+<div id="main">
+	<div class="container"><div>
+  <h1>Minified.js Beta 4: Features and Changes</h1>
+
+<p>Beta 4 is a relatively small release. Notable changes include the new functions <var>per()</var> and <var>onFocus()</var>, a reorganization
+of <var>request()</var>'s advanced options as well as a new value for <var>this</var> in all event handlers.</p>
+<p>Main reason to release it so early and with so few features is that I wanted to release some backward-incompatible changes as soon as possible.
+After beta 4 I intend to keep further backward-incompatible changes to a minimum, as Minified steers slowly towards its first stable release.</p>
+
+<h2 style="color: red">Backward-incompatible Changes</h2>
+<p>
+<ul>
+<li><span class="var"><a href="/api/on.html">on()</a></span>, <span class="var"><a href="/api/onover.html">onOver()</a></span>
+and <span class="var"><a href="/api/onchange.html">onChange()</a></span> will set <var>this</var> to a <a href="/api/list.html">Minified list</a> containing 
+the event target, and not the event target itself.</li>
+<li><span class="var"><a href="/api/request.html">$.request()</a></span> <var>headers</var>, <var>username</var> and <var>password</var> arguments
+have been moved into a new <var>settings</var> argument.</li>
+</ul>
+</p>
+
+<h2>New: Iteration over sub-lists with per()</h2>
+<p><span class="var"><a href="/api/per.html">per()</a></span> is an iteration function like <span class="var"><a href="/api/each.html">each()</a></span>, but
+with one key difference: it invokes the callback with the elements wrapped in a single-item Minified list. This can simplify your code in some cases.</p>
+<pre>
+$('.withHoverEffect').per(function(el) {
+    el.onOver(el.toggle('hoverEffect'));
+});
+</pre>
+
+
+<h2>New: onFocus() for toggling when an element gets focussed</h2>
+<p><span class="var"><a href="/api/per.html">per()</a></span> is an iteration function like <span class="var"><a href="/api/each.html">each()</a></span>, but
+with one difference: it invokes the callback with the elements wrapped in a single-item Minified list. This can simplify your code in some cases.</p>
+<pre>
+$('input').per(function(el) {
+    el.onFocus(el.toggle('isFocussed'));
+});
+</pre>
+
+<h2>New: reduce() for Minified lists</h2>
+<p>Beta 4 (re-)adds a simple <span class="var"><a href="/api/reduce.html">reduce()</a></span> version to the Util module.</p>
+<pre>
+var sum = _(1, 2, 3, 4, 5).reduce(function(memo, value, index) {
+    return memo + value;
+}, 0);
+</pre>
+
+<h2>Change: on(), onOver() and onChange() return target wrapped in a list</h2>
+<p>Before beta 3, <code><a href="/api/on.html">on()</a> would call its handler with <var>this</var> set to the event source. Starting with beta 4,
+it passes a <a href="/api/list.html">Minified list</a> containing the event source as its only element.</code></p>
+<p><span class="var"><a href="/api/onover.html">onOver()</a></span> and <span class="var"><a href="/api/onchange.html">onChange()</a></span> have also been modified
+accordingly.</p>
+
+
+<h2>Change: request() uses settings object, support for setting XHR properties</h2>
+<p><a href="/api/request.html">$.request()</a>'s <var>headers</var>, <var>username</var> and <var>password</var> arguments have been moved into an object as 4th argument. 
+  You can now also set XMLHttpRequest properties.</p>
+
+
+<h2>Change: HTML() and ht() support templates stored in script tags</h2>
+<p><a href="/api/html.html">HTML()</a> and <a href="/api/ht.html">ht()</a> can now automatically get the template from a HTML element such 
+as a &lt;script&gt; tag. They will automatically detect it if you pass an ID CSS selector instead of a template. This is mostly 
+useful when you have large scripts that can not be conveniently stored in a JavaScript string, or when you need to store the string
+on the HTML page for internationalization purposes.</p>
+<p>First create a &lt;script&gt; tag with a type not supported by the browser and put your template in there, like this:
+<pre>&lt;script id="myTimeTpl" type="minified-template"&gt;The time is {{HH:mm:ss}}.&lt;/script&gt;</pre>
+</p><p>Then you can specify the tag's id directly to access it:</p>
+<pre>$('#timeDisplay').ht('#myTimeTpl', new Date());</pre>
+
+
+<h2>Site: Comments in API docs (Disqus)</h2>
+<p>Minified's API documentation supports comments now. It uses Disqus as its backend.</p><p>
+
+
+<h2>Download</h2>
+</p><p>You can download beta 4 on the <a href="/download">download page</a>.</p>
+
+  </div>
+	
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+	var disqus_shortname = "minifiedjs";
+	var disqus_identifier = "docs-beta4";
+	(function() {
+	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+	})();
+	</script>
+	
+	</div>
+	
+</div>
+
+<div id="foot">
+	<div class="container">
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
+		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
+	</div>
+</div>
+
+
+</body>
+</html>

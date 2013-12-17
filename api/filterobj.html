@@ -47,6 +47,7 @@
 <dd class="">The callback <code>function(key, value)</code> to invoke for each property.
 <dl><dt>key</dt><dd>The name of the current property.</dd>
 <dt>value</dt><dd>The value of the current property.</dd>
+<dt class="this">this</dt><dd>This object.</dd>
 <dt class="returnValue">(callback return value)</dt><dd><span class="var">true</span> to include the property in the new object, <span class="var">false</span> to omit it.</dd></dl></dd>
 <dt id="filterobj_RETURN" class="returnValue inSyntax0"><a name="filterobj_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0">the new object
@@ -70,6 +71,19 @@ var list = _.filterObj({a: 4, b: 22, c: 7, d: 2, e: 19}, function(key, value) {
 <h4>See also..</h4>
 <ul><li><code><a href="undefinedmapobj.html" class="func">_.mapObj()</a></code> can be used to modify the values og an object.</li>
 </ul>
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "api-filterobj";
+var disqus_url = "http://minifiedjs.com/api/filterobj.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -115,8 +129,11 @@ var list = _.filterObj({a: 4, b: 22, c: 7, d: 2, e: 19}, function(key, value) {
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
@@ -179,8 +196,12 @@ var list = _.filterObj({a: 4, b: 22, c: 7, d: 2, e: 19}, function(key, value) {
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
 
+
+	
+	</div>
+	
 </div>
-</div>
+
 <div id="foot">
 	<div class="container">
 		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
