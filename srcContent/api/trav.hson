@@ -41,7 +41,18 @@ have been visited when traversing another node. Duplicate nodes will be automati
 <div class="description"><p>Traverses each DOM node in the list using the given property; creates a new list that includes each visited node,
 optionally filtered by the given selector.</p><p><span class="var">trav()</span> traverses the DOM tree for each list element until it finds a <span class="var">null</span>.
 All visited nodes that match the given selector are added to the result list. If no selector is given,
-only elements will be added.</p><p></p></div>
+only elements will be added.</p><p>DOM provides the following properties for traveral:
+<table>
+<tr><th>firstChild</th><td>Contains the first child.</td></tr>
+<tr><th>firstElementChild</th><td>Contains the first element (not in IE &lt; 9).</td></tr>
+<tr><th>lastChild</th><td>Contains the last child element.</td></tr>
+<tr><th>lastElementChild</th><td>Contains the last child element (not in IE &lt; 9).</td></tr>
+<tr><th>nextElementSibling</th><td>Contains the element that follows the current node (not in IE &lt; 9).</td></tr>
+<tr><th>nextSibling</th><td>Contains the node that follows the current node.</td></tr>
+<tr><th>parentNode</th><td>Contains the node's parent.</td></tr>
+<tr><th>previousElementSibling</th><td>Contains the element that precedes the current node (not in IE &lt; 9).</td></tr>
+<tr><th>previousSibling</th><td>Contains the node that precedes the current node.</td></tr>
+</table></p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -70,6 +81,19 @@ var parents = $('.myElements').trav('parentNode', 'table.specialParent', 1);
 </p></div>
 </div>
 
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "api-trav";
+var disqus_url = "http://minifiedjs.com/api/trav.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -115,8 +139,11 @@ var parents = $('.myElements').trav('parentNode', 'table.specialParent', 1);
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

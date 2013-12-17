@@ -198,6 +198,7 @@ function runTests(loadInContext) {
 			for (var i = 0; i < as.length; i++) {
 				var c = 0;
 				_.each(as[i], function(value, index) {
+					assert.equal(this, as[i]);
 					assert.equal(index, c, "Index check i="+i);
 					c++;
 					assert.equal(value, as[i][index], "Value check i="+i+" index="+index);
@@ -211,6 +212,7 @@ function runTests(loadInContext) {
 			for (var i = 0; i < as.length; i++) {
 				var c = 0;
 				as[i].each(function(value, index) {
+					assert.equal(this, as[i]);
 					assert.equal(index, c, "Index check i="+i);
 					c++;
 					assert.equal(value, as[i][index], "Value check i="+i+" index="+index);
@@ -235,6 +237,7 @@ function runTests(loadInContext) {
 			for (var i = 0; i < as.length; i++) {
 				var c = 0;
 				_.eachObj(as[i], function(key, value) {
+					assert.equal(this, as[i]);
 					c++;
 					assert.equal(value, as[i][key]);
 				});
@@ -250,6 +253,27 @@ function runTests(loadInContext) {
 			assert.equal(c, 0);
 		});
 	});
+
+	describe('_.reduce()', function() {
+		it('iterates lists', function() {
+			var _ = req();
+			var memos = [45, 26, 74, 11, 8, 3, 6];
+			var as = [_(1, 3, 5, 2), _(1), _(), _(3, true, false, null), _("23", "s", 2)];
+			for (var i = 0; i < as.length; i++) {
+				var c = 0;
+				as[i].reduce(function(memo, value, index) {
+					assert.equal(this, as[i]);
+					assert.equal(index, c, "Index check i="+i);
+					c++;
+					assert.equal(memo, index == 0 ? 77 : memos[index-1], "Memo check i="+i)
+					assert.equal(value, as[i][index], "Value check i="+i+" index="+index);
+					return memos[index];
+				}, 77);
+				assert.equal(c, as[i].length);
+			}
+		});
+	});
+
 	
 	describe('_.filter()', function() {
 		it('filters lists', function() {

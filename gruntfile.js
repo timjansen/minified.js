@@ -162,7 +162,7 @@ module.exports = function(grunt) {
 					}					
 				},
 				files: {
-					'WebContent/js/builder.js': ['src/minified-generated-full-src.js', 'srcContent/js/parser-src.js', 'srcContent/js/builder-src.js'],
+					'WebContent/js/builder.js': ['dist/minified-src.js', 'srcContent/js/parser-src.js', 'srcContent/js/builder-src.js'],
 					'WebContent/js/homepage.js': ['srcContent/js/minified-homepage.js', 'srcContent/js/homepage-src.js']
 				}
 			}
@@ -211,6 +211,14 @@ module.exports = function(grunt) {
 					'WebContent/js/parser-src.js':  'srcContent/js/parser-src.js',
 					'WebContent/js/builder-src.js': 'srcContent/js/builder-src.js'
 				}
+			},
+			dist: {
+				files: [{
+		            expand: true,
+		            cwd: 'dist/',  
+		            src: ['*.js'],
+		            dest: 'WebContent/download/'
+		      }]
 			}
 		},
 		
@@ -244,7 +252,9 @@ module.exports = function(grunt) {
 					'minified-util.js': 'dist/minified-util.js',
 					'minified.js': 'dist/minified.js',
 					'minified-legacyie-web.js': 'dist/minified-legacyie-web.js',
-					'minified-legacyie.js': 'dist/minified-legacyie.js'
+					'minified-legacyie.js': 'dist/minified-legacyie.js',
+					'minified-src.js': 'dist/minified-src.js',
+					'minified-legacyie-src.js': 'dist/minified-legacyie-src.js'
 				}
 			}
 		},
@@ -326,7 +336,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('code', ['assemble', 'closurecompiler:dist', 'uglify', 'copy:testdist', 'testQuick', 'measuresize']);
 	grunt.registerTask('testQuick', ['mochaTest', 'mocha:quick']);
 	grunt.registerTask('test', ['mochaTest', 'mocha:all']);
-	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:imgs', 'copy:test', 'copy:buildersrc', 'cssmin', 'htmlmin', 'xmlmin']);
+	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:imgs', 'copy:test', 'copy:buildersrc', 'cssmin', 'htmlmin', 'xmlmin', 'copy:dist']);
 	grunt.registerTask('all', ['code', 'test', 'site']);
 	grunt.registerTask('server', ['all', 'connect']);
 	grunt.registerTask('default', ['code']);

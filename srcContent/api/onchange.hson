@@ -28,8 +28,8 @@ Supports all valid parameters for <span class="var">$()</span> except functions.
 <dt>newValue</dt><dd>For text fields the new <span class="var">value</span> string.
 For checkboxes/radio buttons it is the boolean returned by <span class="var">checked</span>.</dd>
 <dt>index</dt><dd>The index of the target element in the <a href='list.html' class='func'>Minified list</a> .</dd>
-</dl>
-'this' is set to the target element that caused the event.</dd>
+<dt class="this">this</dt><dd>A <a href='list.html' class='func'>Minified list</a> containing the target element that caused the event as only item.</dd>
+</dl></dd>
 <dt id="onchange_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="onchange_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the list</dd>
 </dl>
@@ -49,6 +49,19 @@ $('#myField').onChange(function(newValue, index, ev) { $('#target').fill(newValu
 </p></div>
 </div>
 
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "api-onchange";
+var disqus_url = "http://minifiedjs.com/api/onchange.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -94,8 +107,11 @@ $('#myField').onChange(function(newValue, index, ev) { $('#target').fill(newValu
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

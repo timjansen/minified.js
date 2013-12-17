@@ -1,5 +1,5 @@
 /*
- * Minified-web.js - Basics for Client-Side JavaScript
+ * Minified-web.js - Lightweight Client-Side JavaScript Libary
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -27,6 +27,7 @@
  * - @requires defines the ids that the current block depends on. They will always be available.
  * - @configurable the block can be selected in the GUI. If the value is 'default', it is a enabled by default. If it is 'optional', it is not.
  * - @dependency if set, the block is only used as a dependency and won't show up in builder or documentation
+ * - @required if set, the block is always enabled. This can be useful for conditions.
  * - @name a name for builder and reference docs
  * - @doc if 'no', the section will not be displayed in reference docs, only in builder
  * - @module the module(s), comma-separated. Can be WEB, UTIL or APP
@@ -74,11 +75,11 @@
  * function ##require(), which can be used only to load 'minified'.
  */
 if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
-	var def = {};
-	this['define'] = function(name, f) {def[name] = f();};
-	this['require'] = function(name) { return def[name]; }; 
+	(function(def){
+		this['define'] = function(name, f) { def[name] = f(); };
+		this['require'] = function(name) { return def[name]; };
+	})({});
 }
-
 
 define('minified', function() {
 /*$
@@ -88,14 +89,20 @@ define('minified', function() {
 	
 ///#/snippet commonAmdStart
 	
-	
+
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	var _null = null, _true = true, _false = false;
 	var undef;
 		
 	///#snippet webVars
-	
+	/*$
+	 * @id WEB
+	 * @doc no
+	 * @required
+	 * This id allows identifying whether the Web module is available.
+	 */
+
 	/**
 	 * @const
 	 */
@@ -161,7 +168,7 @@ define('minified', function() {
 	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8,
 	 * and the existence of cssText (which is used instead of the style attribute).
 	 */
-	 var IS_PRE_IE9 = !!_document['all'] && ![].map;
+	 var IS_PRE_IE9 = !!_document['all'] && !_document['addEventListener'];
 	/*$
 	 * @id ie7compatibility
 	 * @group OPTIONS
@@ -240,12 +247,12 @@ define('minified', function() {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
 				cb(n, obj[n]);
-		// web version has no return
+		// web version has no return, no 'this', as this implementation is not exported
 	}
 	function filter(list, f) {
 		var r = []; 
 		flexiEach(list, function(value, index) {
-			if (f(value, index))
+			if (f.call(list, value, index))
 				r.push(value);
 		});
 		return r;
@@ -253,7 +260,7 @@ define('minified', function() {
 	function collector(iterator, obj, collectFunc) {
 		var result = [];
 		iterator(obj, function (a, b) {
-			flexiEach(collectFunc(a, b), function(v) { result.push(v);});
+			flexiEach(collectFunc.call(obj, a, b), function(v) { result.push(v);});
 		});
 		return result;
 	}
@@ -264,7 +271,7 @@ define('minified', function() {
 	function flexiEach(list, cb) {
 		if (isList(list))
 			for (var i = 0; i < list.length; i++)
-				cb(list[i], i);
+				cb.call(list, list[i], i);
 		else if (list != _null)
 			cb(list, 0);
 		return list;
@@ -274,7 +281,7 @@ define('minified', function() {
         return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
     }
 
-	
+
 	///#snippet webFunctions
 
 	// note: only the web version has the f.item check
@@ -350,7 +357,7 @@ define('minified', function() {
 				else
 					el = el['parentNode'];
 			if (match && 
-			   (stop = (((!handler.apply(selectorFilter ? el : registeredOn, args || [e, index])) || prefix=='') && prefix != '|')) && 
+			   (stop = (((!handler.apply($(selectorFilter ? el : registeredOn), args || [e, index])) || prefix=='') && prefix != '|')) && 
 			   !triggerOriginalTarget) {
 				if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
 					e['preventDefault']();
@@ -367,9 +374,9 @@ define('minified', function() {
 			(obj[prop] = (obj[prop] || [])).push(value);
 		}
 		if (isFunction(eventSpec)) 
-			return this['on'](null, subSelector, eventSpec, handler, bubbleSelector);
+			return this['on'](_null, subSelector, eventSpec, handler, bubbleSelector);
 		else if (isString(args)) 
-			return this['on'](subSelector, eventSpec, handler, null, args);
+			return this['on'](subSelector, eventSpec, handler, _null, args);
 		else
 			return this['each'](function(baseElement, index) {
 				flexiEach(subSelector ? dollarRaw(subSelector, baseElement) : baseElement, function(el) {
@@ -398,9 +405,9 @@ define('minified', function() {
 	// @condblock !ie8compatibility 
 	function onNonCompat(subSelector, eventSpec, handler, args, bubbleSelector) {
 		if (isFunction(eventSpec))
-			return this['on'](null, subSelector, eventSpec, handler, args);
+			return this['on'](_null, subSelector, eventSpec, handler, args);
 		else if (isString(args)) 
-			return this['on'](subSelector, eventSpec, handler, null, args);
+			return this['on'](subSelector, eventSpec, handler, _null, args);
 		else
 			return this['each'](function(baseElement, index) {
 				flexiEach(subSelector ? dollarRaw(subSelector, baseElement) : baseElement, function(registeredOn) {
@@ -420,7 +427,7 @@ define('minified', function() {
 									else
 										el = el['parentNode'];
 							}
-							if (match && (stop = (((!handler.apply(el, args || [event, index])) || prefix=='') && prefix != '|')) && !triggerOriginalTarget) {
+							if (match && (stop = (((!handler.apply($(el), args || [event, index])) || prefix=='') && prefix != '|')) && !triggerOriginalTarget) {
 								event['preventDefault']();
 								event['stopPropagation']();
 							}
@@ -468,7 +475,7 @@ define('minified', function() {
 
 	
     function nowAsTime() {
-    	return new Date().getTime();
+    	return +new Date();
     }
 
 	function callArg(f) {f();}
@@ -499,8 +506,11 @@ define('minified', function() {
     
     function EE(elementName, attributes, children) {
 		var list = $(_document.createElement(elementName));
-		// TODO: attributes!=null only needed with UTIL. Web's isObject is simpler.
+		// @condblock UTIL
+		// this attributes != null check is only required with Util's isObject() implementation. Web's isObject() is simpler.
 		return (isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
+		// @condend UTIL
+		// @cond !UTIL return (isList(attributes) || (!isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 	}
 
 	function clone (listOrNode) {
@@ -551,20 +561,6 @@ define('minified', function() {
 		// @condend
 		// @cond !ready return new M(dollarRaw(selector, context));
 	}
-	
-	/*$
-	 * @id debug
-	 * @group OPTIONS
-	 * (TBD) @configurable optional
-	 * @doc no
-	 * @name Debugging Support
-	 */
-	function error(msg) {
-		if (_window.console) console.log(msg);
-		throw Exception("Minified debug error: " + msg);
-	}
-    // @cond debug MINI['debug'] = true;
-	
   
 	
 	// implementation of $ that does not produce a Minified list, but just an array
@@ -622,16 +618,16 @@ define('minified', function() {
 	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because context is used only
 	// by on(), and in on() only nodes in the right context will be checked
 	function getFilterFunc(selector, context) {
-		var dotPos;
 		var nodeSet = {};
+		var dotPos = nodeSet;
 		if (isFunction(selector))
 			return selector;
 		else if (isNumber(selector))
 			return function(v, index) { return index == selector; };
 		else if (!selector || selector == '*' ||
 				 (isString(selector) && (dotPos = /^([\w-]*)\.?([\w-]*)$/.exec(selector)))) {
-			var nodeNameFilter = wordRegExpTester(dotPos && dotPos[1], 'nodeName');
-			var classNameFilter = wordRegExpTester(dotPos && dotPos[2], 'className');
+			var nodeNameFilter = wordRegExpTester(dotPos[1], 'nodeName');
+			var classNameFilter = wordRegExpTester(dotPos[2], 'className');
 			return function(v) { 
 				return isNode(v) == 1 && nodeNameFilter(v) && classNameFilter(v);
 			};
@@ -671,65 +667,8 @@ define('minified', function() {
     	/*$
     	 * @id then
     	 * @group REQUEST
-    	 * @name promise.then()
-    	 * @syntax promise.then()
-    	 * @syntax promise.then(onSuccess)
-    	 * @syntax promise.then(onSuccess, onError)
-    	 * 
     	 * @module WEB, UTIL
-    	 * Registers two callbacks that will be invoked when the ##promiseClass#Promise##'s asynchronous operation finished 
-    	 * successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after  
-    	 * <var>then()</var> returned, from the browser's event loop.
-    	 * Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
-    	 * You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to. 
-    	 *
-    	 * @example Simple handler for an HTTP request. Handles only success and ignores errors.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .then(function(txt) {
-    	 *        alert('Got response!');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @example Including an error handler.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .then(function(txt) {
-    	 *        alert('Got response!');
-    	 *     }, function(err) {
-    	 *        alert('Error!');
-    	 *     }));
-    	 * </pre>
-    	 *
-    	 * @example Chained handler.
-    	 * <pre>
-    	 * $.request('get', '/weather.do')
-    	 *     .then(function(txt) {
-    	 *        showWeather(txt);
-    	 *     }
-    	 *     .then(function() {
-    	 *        return $.request('get', '/traffic.do');
-    	 *     }
-    	 *     .then(function(txt) {
-    	 *        showTraffic(txt);
-    	 *     }
-    	 *     .then(function() {
-    	 *        alert('All result displayed');
-    	 *     }, function() {
-    	 *        alert('An error occurred');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @param onSuccess optional a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.  
-    	 *                           If the function returns a ##promiseClass#Promise##, that Promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the 
-    	 *                           returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
-    	 *                           Pass <var>null</var> or <var>undefined</var> if you do not need the success handler. 
-    	 * @param onError optional a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a ##promiseClass#Promise##, that promise will
-    	 *                           be evaluated to determine the state of the Promise returned by <var>then()</var>. If it returns anything else, the returned Promise will 
-    	 *                           have success status. If the function throws an error, the returned Promise will be in the error state.
-    	 *                           You can pass <var>null</var> or <var>undefined</var> if you do not need the error handler. 
-    	 * @return a new ##promiseClass#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
-    	 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
+    	 * See util module for documentation.
     	 */   
     	var then = set['then'] = function(onFulfilled, onRejected) {
     		var newPromise = promise();
@@ -760,24 +699,8 @@ define('minified', function() {
     	/*$
     	 * @id error
     	 * @group REQUEST
-    	 * @name promise.error()
-    	 * @syntax promise.error(callback)
     	 * @module WEB, UTIL
-    	 * Registers a callback that will be called when the operation failed.
-    	 * This is a convenience function that will invoke ##then() with the only the second argument set.  It shares all of its semantics.
-    	 *
-    	 * @example Simple handler for a HTTP request.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .error(function() {
-    	 *        alert('Got error!');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @param callback a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a ##promiseClass#Promise##, that Promise will
-    	 *                           be evaluated to determine the state of the returned Promise. If it returns regularly, the returned Promise will 
-    	 *                           have success status. If it throws an error, the returned Promise will be in error state.
-    	 * @return a new ##promiseClass#Promise## object. Its state is determined by the callback.
+    	 * See util module for documentation.
     	 */  
      	set['error'] = function(func) { return then(0, func); };
     	return set;
@@ -788,19 +711,9 @@ define('minified', function() {
 	 * @id length
 	 * @group SELECTORS
 	 * @requires dollar
-	 * @name .length
-	 * @syntax list.length
    	 * @module WEB, UTIL
 	 * 
-	 * Contains the number of elements in the list.
-	 * 
-	 * @example
-	 * <pre>
-	 * var list = $('input');
-	 * var myValues = {};
-	 * for (var i = 0; i &lt; list.length; i++)
-	 *    myValues[list[i].name] = list[i].value;
-	 * </pre>
+     * See util module for documentation.
 	 */
 	// empty, always defined below
 		
@@ -816,35 +729,14 @@ define('minified', function() {
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	eachObj({
+	eachObj({ 
     /*$
      * @id each
      * @group SELECTORS
      * @requires dollar
      * @configurable default
-     * @name .each()
-     * @syntax list.each(callback)
      * @module WEB, UTIL
-     * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
-     * the zero-based index as second.
-     * 
-     * Please note that you can not abort an <var>each()</var> loop. If you need to abort your loop, you should use
-     * <var>find()</var>. 
-     *
-     * @example This goes through all &lt;h2> elements of the class 'section' and changes their content:
-     * <pre>
-     * $('h2.section').each(function(item, index) {
-     *     item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
-     * });
-     * </pre>
-     *
-     * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
-     *                 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
-     *                 The callback's return value will be ignored.
-     * @return the list
-     * 
-     * @see ##find() can be used instead of <var>each()</var> if you need to abort the loop.
-     * @see ##eachObj() iterates through the properties of an object.
+     * See util module for documentation.
      */
 	'each': function (callback) {
 		return flexiEach(this, callback);
@@ -855,26 +747,8 @@ define('minified', function() {
 	 * @group SELECTORS
 	 * @requires dollar
 	 * @configurable default
-	 * @name .filter()
-	 * @syntax list.filter(filterFunc)
    	 * @module WEB, UTIL
-	 * Creates a new ##list#Minified list## by taking an existing list and omitting certain elements from it. You
-	 * can either specify a callback function to approve those items that will be in the new list.
-	 *  
-	 * If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
-	 * For values, a simple equality operation (<code>==</code>) will be used.
-	 *
-	 * @example Creates a list of all unchecked checkboxes.
-	 * <pre>
-	 * var list = $('input').filter(function(item) {
-	 *     return item.getAttribute('type') == 'checkbox' && item.checked;
-	 * });
-	 * </pre>
-	 * 
-	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
-	 *        <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>
-	 * @return the new, filtered ##list#list##
+     * See util module for documentation.
 	 */
 	'filter': function(filterFunc) {
 	    return new M(filter(this, filterFunc));
@@ -885,50 +759,8 @@ define('minified', function() {
      * @group SELECTORS 
      * @requires dollar 
      * @configurable default 
-     * @name .collect() 
-     * @syntax list.collect(collectFunc) 
    	 * @module WEB, UTIL
-     * Creates a new ##list#Minified list## from the current list using the given callback function. 
-     * The callback is invoked once for each element of the current list. The callback results will be added to the result list. 
-     * The callback can return 
-     * <ul> 
-     * <li>an array or another list-like object. Its content will be appended to the resulting list.</li> 
-     * <li>a regular object which will be appended to the list</li> 
-     * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
-     * If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li> 
-     * </ul>
-     * 
-     * 
-     * @example Goes through input elements. If they are text inputs, their value will be added to the list: 
-     * <pre> 
-     * var texts = $('input').collect(function(input) { 
-     *     if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') 
-     *         return input.value; 
-     *     else 
-     *         return null; // ignore 
-     * }); 
-     * </pre> 
-     * 
-     * @example Creates a list of all children of the selected list. 
-     * <pre> 
-     * var childList = $('.mySections').collect(function(node) { 
-     *     return node.childNodes; // adds a while list of nodes 
-     * }); 
-     * </pre> 
-     * 
-     * @example Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case: 
-     * <pre> 
-     * var elements = $('input.myTexts').collect(function(item) { 
-     *     return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()]; 
-     * }); 
-     * </pre> 
-     * 
-     * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
-     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
-	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and be not added to 
-	 *        the new result list. </dd></dl>
-     * @return the new ##list#list##
+     * See util module for documentation.
      */ 
 	'collect': function(collectFunc) { 
     	 return new M(collector(flexiEach, this, collectFunc)); 
@@ -939,34 +771,8 @@ define('minified', function() {
       * @group SELECTORS 
       * @requires filter 
       * @configurable default 
-      * @name .sub() 
-      * @syntax list.sub(startIndex) 
-      * @syntax list.sub(startIndex, endIndex) 
       * @module WEB, UTIL
-      * Returns a new ##list#Minified list## containing only the elements in the specified range. If there are no elements in the range,
-      * an empty list is returned.
-      * Negative indices are supported and will be added to the list's length, thus allowing you to specify ranges at the list's end.
-      *
-      * @example Adds some text the 3rd to 5th list elements:
-      * <pre> 
-      * $('#myList li').sub(3, 6).add('Hello');
-      * </pre> 
-      *
-      * @example Clears all elements but the first:
-      * <pre> 
-      * $('#myList li').sub(1).fill();
-      * </pre> 
-      *
-      * @example Changes the class of the last list element:
-      * <pre> 
-      * $('#myList li').sub(-1).set('+lastItem');
-      * </pre> 
-      * 
-      * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and the position is relative
-      *                   to the list's end.
-      * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
-      *                   to the list's end. If omitted or null, all elements following the <var>startIndex</var> are included in the result.
-      * @return a new ##list#list## containing only the items in the index range. 
+      * See util module for documentation.
       */ 
 	'sub': function(startIndex, endIndex) {
 	    var s = (startIndex < 0 ? this['length']+startIndex : startIndex);
@@ -982,44 +788,14 @@ define('minified', function() {
      * @group SELECTORS 
      * @requires
      * @configurable default 
-     * @name .find() 
-     * @syntax list.find(findFunc) 
-     * @syntax list.find(element) 
-     * @syntax list.find(findFunc, startIndex) 
-     * @syntax list.find(element, startIndex) 
      * @module WEB, UTIL
-     * Finds a specific value in the list. There are two ways of calling <var>find()</var>:
-     * <ol>
-     * <li>With an element as argument. Then <var>find()</var> will search for the first occurrence of that element in the list
-     *     and return the index. If it is not found, <var>find()</var> returns <var>undefined</var>.</li>
-     * <li>With a callback function. <var>find()</var> will then call the given function for each list element until the function 
-     *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
-     * </ol>
-     *
-     * @example Determines the position of the element with the id '#wanted' among all li elements:
-     * <pre> 
-     * var elementIndex = $('li').find($$('#wanted'));
-     * </pre> 
-     * 
-     * @example Goes through all elements to find the first div that has the class 'myClass', and returns this element:
-     * <pre> 
-     * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
-     * </pre> 
-     * 
-     * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
-     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
-	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
-     * @param element the element to search for
-     * @param startIndex optional the 0-based index of the first element to search. Default is 0.
-     * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
-     *         it returns either the value returned by the callback or <var>undefined</var>.
+     * See util module for documentation.
      */ 
 	'find': function(findFunc, startIndex) {
 		var r;
 		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 		for (var i = startIndex || 0; i < this.length; i++)
-			if ((r = f(this[i], i)) != _null)
+			if ((r = f.call(this, this[i], i)) != _null)
 				return r;
 	},
 	
@@ -1114,6 +890,19 @@ define('minified', function() {
  	 * All visited nodes that match the given selector are added to the result list. If no selector is given,
  	 * only elements will be added.
  	 * 
+ 	 * DOM provides the following properties for traveral:
+ 	 * <table>
+ 	 * <tr><th>firstChild</th><td>Contains the first child.</td></tr>
+ 	 * <tr><th>firstElementChild</th><td>Contains the first element (not in IE &lt; 9).</td></tr>
+ 	 * <tr><th>lastChild</th><td>Contains the last child element.</td></tr>
+ 	 * <tr><th>lastElementChild</th><td>Contains the last child element (not in IE &lt; 9).</td></tr>
+ 	 * <tr><th>nextElementSibling</th><td>Contains the element that follows the current node (not in IE &lt; 9).</td></tr>
+ 	 * <tr><th>nextSibling</th><td>Contains the node that follows the current node.</td></tr>
+ 	 * <tr><th>parentNode</th><td>Contains the node's parent.</td></tr>
+ 	 * <tr><th>previousElementSibling</th><td>Contains the element that precedes the current node (not in IE &lt; 9).</td></tr>
+ 	 * <tr><th>previousSibling</th><td>Contains the node that precedes the current node.</td></tr>
+ 	 * </table>
+ 	 * 
  	 * @example Returns a list of all parent nodes, direct and indirect:
  	 * <pre>
  	 * var parents = $('.myElements').trav('parentNode'); 
@@ -1172,7 +961,7 @@ define('minified', function() {
  	 * 
  	 * @example Returns a list of all list elements:
  	 * <pre>
- 	 * var parents = $('ol.myList').selector('li', true); 
+ 	 * var parents = $('ol.myList').select('li', true); 
  	 * </pre>
  	 * 
  	 * @example Returns a list of all child elements:
@@ -1273,6 +1062,7 @@ define('minified', function() {
  	 * @return a new list containing only elements matched by the selector/function/index.
  	 * 
  	 * @see ##select() executes a selector on the descendants of the list elements.
+ 	 * @see ##filter() offers function-based filtering.
  	 */
 	'only': function(selector) {
 		return this['filter'](getFilterFunc(selector));
@@ -1722,7 +1512,7 @@ define('minified', function() {
 				else if (c != _null) {   // must check null, as 0 is a valid parameter 
 					var n = isNode(c) ? c : _document.createTextNode(c);
 					if (lastAdded)
-						lastAdded.parentNode.insertBefore(n, lastAdded.nextSibling);
+						lastAdded['parentNode']['insertBefore'](n, lastAdded['nextSibling']);
 					else if (addFunction)
 						addFunction(n, e, e.parentNode); 
 					else
@@ -1737,7 +1527,7 @@ define('minified', function() {
 	/*$
 	 * @id fill
 	 * @group ELEMENT
-	 * @requires dollar add remove
+	 * @requires dollar add remove each
 	 * @configurable default
 	 * @name .fill()
 	 * @syntax list.fill()
@@ -1903,7 +1693,7 @@ define('minified', function() {
 	 * @see ##replace() replaces existing nodes.
 	 */
 	'addBefore': function (children) {
-		return this['add'](children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode); });
+		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode); });
 	},
 	
 	/*$
@@ -1975,7 +1765,7 @@ define('minified', function() {
 	 * @see ##replace() replaces existing nodes.
 	 */
 	'addAfter': function (children) {
-		return this['add'](children, function(newNode, refNode, parent) { parent.insertBefore(newNode, refNode.nextSibling); });
+		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode['nextSibling']); });
 	},
 	
 	/*$
@@ -2140,7 +1930,7 @@ define('minified', function() {
 	 * @see ##addBefore() also adds nodes not as children but as siblings.
 	 */
 	'replace': function (children) {
-		return this['add'](children, function(newNode, refNode, parent) { parent.replaceChild(newNode, refNode); });
+		return this['add'](children, function(newNode, refNode, parent) { parent['replaceChild'](newNode, refNode); });
 	},
 
 	/*$
@@ -2181,7 +1971,7 @@ define('minified', function() {
 	 * @see ##add() can add a cloned element to the HTML document.
 	 */
 	'clone':  function() {
-		return new M(clone(this)); // TODO: with Util use list bind func
+		return new M(clone(this));
 	},
 
 
@@ -2334,7 +2124,10 @@ define('minified', function() {
 			else
 				time = timePassedMs;
 
-			flexiEach(dials, function(dial) {dial(time/durationMs);}); // TODO: use callList in Util builds
+			// @condblock !UTIL
+			flexiEach(dials, function(dial) {dial(time/durationMs);}); 
+			// @condend
+			// @cond UTIL callList(dials, [time/durationMs]);
 		});
 		return prom;		
 	},
@@ -2571,7 +2364,7 @@ define('minified', function() {
 				// @condend
 				// @cond !ie9compatibility $(el['elements'])['values'](r);
 			else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
-				r[n] = r[n] == null ? v : collector(flexiEach, [r[n], v], nonOp);
+				r[n] = r[n] == _null ? v : collector(flexiEach, [r[n], v], nonOp);
 			}
 		});
 		return r;
@@ -2703,11 +2496,11 @@ define('minified', function() {
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>
  	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element as only item (same as <var>event.target</var>).</dd>
  	 *             <dt class="returnValue">(callback return value)</dt><dd>The return value will only be used if the event name prefix was '?'.
  	 *             Then, a return value <var>false</var> will stop all further processing of the event and disable event bubbling.
  	 *             <var>true</var> will keep the event alive.</dd>
  	 *             </dl>
-	 *             'this' will be set to the target element that caused the event (the same as <var>event.target</var>).
 	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>.
 	 *                   'this' will be set to the target element that caused the event (the same as <var>event.target</var>).
 	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the
@@ -2747,21 +2540,20 @@ define('minified', function() {
 	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
 	 *                match the selector. 
 	 *                Supports all valid parameters for <var>$()</var> except functions.           
-	 * @param toggle the callback <code>function(isOver, index, event)</code> to invoke when the event has been triggered:
+	 * @param toggle the callback <code>function(isOver, event)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
- 	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering element, <var>false</var> when leaving.</dd>
- 	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
+ 	 *             <dt>isOver</dt><dd><var>true</var> if mouse is entering any element, <var>false</var> when leaving.</dd>
  	 *             <dt>event</dt><dd>The original event object given to ##on().</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
-	 *             'this' is set to the target element that caused the event.
 	 * @return the list
 	 */
 	'onOver': function(subSelect, toggle) {
 		var self = this, curOverState = [];
 		if (!toggle)
-			return this['onOver'](null, subSelect);
+			return this['onOver'](_null, subSelect);
 		else 
-			return self['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
+			return this['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
 				var overState = ev['type'] != 'mouseout';
 				// @condblock ie9compatibility 
 				var relatedTarget = ev['relatedTarget'] || ev['toElement'];
@@ -2770,12 +2562,48 @@ define('minified', function() {
 				if (curOverState[index] !== overState) {
 					if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['trav']('parentNode', self[index]).length)) {
 						curOverState[index] = overState;
-						toggle.call(this, overState, index, ev);
+						toggle.call(this, overState, ev);
 					}
 				}
 			});
 	},
 	
+	/*$
+	 * @id onfocus
+	 * @group EVENTS
+	 * @requires on dollar 
+	 * @configurable default
+	 * @name .onFocus()
+	 * @syntax list.onFocus(handler)
+	 * @syntax list.onFocus(subSelect, handler)
+	 * @module WEB
+	 * Registers a function to be called when a list element either gets the focus or the focus is removed (blur).
+	 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
+	 * which allows you to use any ##toggle() function as handler.
+	 * 
+	 * @example Creates a toggle that changes the text color of the element on focus:
+	 * <pre>
+	 * $('#focusSensitive').onFocus($('#focusSensitive').toggle({$color:'#000'}, {$color:'#f00'}, 100));
+	 * </pre>
+	 * 
+	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
+	 *                match the selector. 
+	 *                Supports all valid parameters for <var>$()</var> except functions.           
+	 * @param toggle the callback <code>function(hasFocus)</code> to invoke when the event has been triggered:
+	 * 		  <dl>
+ 	 *             <dt>hasFocus</dt><dd><var>true</var> if an element gets the focus, <var>false</var> when an element looses it.</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
+ 	 *             </dl>
+	 * @return the list
+	 */
+	'onFocus': function(selector, handler) {
+		if (!handler)
+			return this['onFocus'](_null, selector);
+		else
+			return this['on'](selector, '|focus', handler, [_true])
+				       ['on'](selector, '|blur', handler, [_false]);
+	},
+
 	/*$
 	 * @id onchange
 	 * @group EVENTS
@@ -2803,17 +2631,16 @@ define('minified', function() {
  	 *             <dt>newValue</dt><dd>For text fields the new <var>value</var> string. 
  	 *              For checkboxes/radio buttons it is the boolean returned by <var>checked</var>.</dd>
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
-	 *             'this' is set to the target element that caused the event.
 	 * @return the list
 	 */
-	'onChange': function(subSelect, handler) {
+	'onChange': function onChange(subSelect, handler) {
 		var oldValues = [];
-		if (!handler)
-			return this['onChange'](null, subSelect);
-		else 
+		if (handler)
 			return this['each'](function(el, index) {
-				function register(eventNames, property, index) {
+				// @condblock ie8compatibility
+				function register(eventNames, property) {
 					oldValues[index] = el[property];
 					$(el)['on'](subSelect, eventNames, function() {
 						var newValue = el[property]; 
@@ -2823,16 +2650,21 @@ define('minified', function() {
 						}
 					});
 				}
+				// @condend
+				// @cond !ie8compatibility function register(eventNames, property) { $(el)['on'](subSelect, eventNames,  function() {handler.call(this, el[property], index);}); }
 				if (/kbox|dio/i.test(el['type'])) {
-					register('|click', 'checked', index);
+					register('|click', 'checked');
 				}
 				else { 
 					// @condblock ie8compatibility
-					register(IS_PRE_IE9 ? '|propertychange' : '|input |change |keyup', 'value', index);
+					register(IS_PRE_IE9 ? '|propertychange' : '|input |change |keyup', 'value');
 					// @condend
-					// @cond !ie8compatibility register('|input |change |keyup', 'value', index);
+					// @cond !ie8compatibility register('|input', 'value', index);
 				}
 			});
+		else
+			return this['onChange'](_null, subSelect); 
+			
 	},
 	
 	/*$
@@ -2889,7 +2721,8 @@ define('minified', function() {
  	/*$
  	 * @stop
  	 */
-		// @cond !trigger dummy:null
+		// @cond !trigger dummyTrigger:0
+		// @cond ALL ,
 		///#/snippet webListFuncs
 		
 		
@@ -2908,8 +2741,7 @@ define('minified', function() {
 	* @name $.request()
 	* @syntax $.request(method, url)
 	* @syntax $.request(method, url, data)
-	* @syntax $.request(method, url, data, headers)
-	* @syntax $.request(method, url, data, headers, username, password)
+	* @syntax $.request(method, url, data, settings)
     * @module WEB
 	* Initiates a HTTP request to the given URL, using XMLHttpRequest. It returns a ##promiseClass#Promise## object that allows you to obtain the result.
 	* 
@@ -2948,6 +2780,9 @@ define('minified', function() {
 	*        })
 	*     .error(failureHandler);
 	* </pre>
+	* 
+	* @example Using HTTP authentication and a custom XMLHttpRequest property.
+	* <pre>var handler = $.request('get', 'http://service.example.com/userinfo', null, {withCredentials: true, user: 'me', pass: 'secret'});</pre>
 	*
 	* 
 	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data 
@@ -2958,10 +2793,13 @@ define('minified', function() {
 	*             parameters (for all HTTP methods), a string (for all HTTP methods) or a DOM document ('post' only). If the method is 
 	*             'post', it will be sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the 
 	*             same name, use an array of values in the map. Use null as value for a parameter without value.
-	* @param headers optional a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
-	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.
-	* @param username optional username to be used for HTTP authentication, together with the password parameter
-	* @param password optional password for HTTP authentication
+	* @param settings optional a map of additional parameters. Supports the following properties (all optional):
+	* <dl><dt>headers</dt><dd>a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
+	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.</dd>
+	* <dt>xhr</dt><dd>a map of properties to set in the XMLHttpRequest object before the request is sent, for example <code>{withCredentials: true}</code>.</dd>
+	* <dt>user</dt><dd>username to be used for HTTP authentication, together with the password parameter</dd>
+	* <dt>pass</dt><dd>username to be used for HTTP authentication, together with the password parameter</dd>
+	* </dl>
 	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
 	*         the success handler will be called as <code>function(text, xml)</code>:
 	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
@@ -2976,48 +2814,47 @@ define('minified', function() {
 	* @see ##$.toJSON() can create JSON messages.
 	* @see ##_.format() can be useful for creating REST-like URLs, if you use JavaScript's built-in <var>escape()</var> function.
 	*/
-	'request': function (method, url, data, headers, username, password) {
-		/** @const */ var ContentType = 'Content-Type';
-		var xhr, body = data, callbackCalled = 0, prom = promise();
+	'request': function (method, url, data, settings) {
+		settings = settings || {}; 
+		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data != _null && !isNode(data) && !isString(data);
 		try {
 			//@condblock ie6compatibility
 			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			//@condend
 			// @cond !ie6compatibility xhr = new XMLHttpRequest();
-			if (data != _null) {
-				headers = headers || {};
-				if (!isString(data) && !isNode(data)) { // if data is parameter map...
-					body = collector(eachObj, data, function processParam(paramName, paramValue) {
-						return collector(flexiEach, paramValue, function(v) {
-							return encodeURIComponent(paramName) + ((v != _null) ?  '=' + encodeURIComponent(v) : '');
-						});
-					}).join('&');
-				}
-				
-				if (!/post/i.test(method)) {
-					url += '?' + body;
-					body = _null;
-				}
-				else if (!isNode(data) && !isString(data) && !headers[ContentType])
-					headers[ContentType] = 'application/x-www-form-urlencoded';
+			if (dataIsMap) { // if data is parameter map...
+				data = collector(eachObj, data, function processParam(paramName, paramValue) {
+					return collector(flexiEach, paramValue, function(v) {
+						return encodeURIComponent(paramName) + ((v != _null) ?  '=' + encodeURIComponent(v) : '');
+					});
+				}).join('&');
 			}
 			
-			xhr['open'](method, url, _true, username, password);
-			eachObj(headers, function(hdrName, hdrValue) {
+			if (data != _null && !/post/i.test(method)) {
+				url += '?' + data;
+				data = _null;
+			}
+
+			xhr['open'](method, url, _true, settings['user'], settings['pass']);
+			if (dataIsMap && /post/i.test(method))
+				xhr['setRequestHeader']('Content-Type', 'application/x-www-form-urlencoded');
+			eachObj(settings['headers'], function(hdrName, hdrValue) {
 				xhr['setRequestHeader'](hdrName, hdrValue);
 			});
-
-			xhr.onreadystatechange = function() {
+			eachObj(settings['xhr'], function(name, value) {
+				xhr[name] = value;
+			});
+			
+			xhr['onreadystatechange'] = function() {
 				if (xhr['readyState'] == 4 && !callbackCalled++) {
-					if (xhr['status'] == 200) {
+					if (xhr['status'] == 200)
 						prom(_true, [xhr['responseText'], xhr['responseXML']]);
-					}
 					else
 						prom(_false, [xhr['status'], xhr['statusText'], xhr['responseText']]);
 				}
 			};
 			
-			xhr['send'](body);
+			xhr['send'](data);
 		}
 		catch (e) {
 			if (!callbackCalled) 
@@ -3080,7 +2917,7 @@ define('minified', function() {
 		return toString(value);
 	},
     // @condend
-    // @cond !ie7compatibility 'toJSON': _window.JSON && JSON.stringify,
+    // @cond !ie7compatibility 'toJSON': JSON.stringify,
     
 	/*$
 	* @id parsejson
@@ -3122,7 +2959,7 @@ define('minified', function() {
         // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
     },
     // @condend
-    // @cond !ie7compatibility 'parseJSON': _window.JSON && JSON.parse,
+    // @cond !ie7compatibility 'parseJSON': JSON.parse,
     
 	/*$
     * @id ready
@@ -3258,7 +3095,7 @@ define('minified', function() {
  	/*$
  	 * @stop
  	 */
-	// @cond !off dummy:null
+	// @cond !off dummyOff:null
 	
 	}, function(n, v) {$[n]=v;});
 

@@ -196,7 +196,24 @@ function createReferencePage(sec, toc) {
 	// Gen
 	var html = '<div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>\n';
 	html += sec.htmldoc;
-	html += '\n<p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>\n';
+	html += '<h4>Comments</h4>\n';
+	html += ' <div id="disqus_thread"></div>\n';
+    html += '<script type="text/javascript">\n';
+    html += 'var disqus_shortname = "minifiedjs";\n';
+    html += 'var disqus_identifier = "api-';
+    html += sec.id;
+    html += '";\n';
+    html += 'var disqus_url = "';
+    html += 'http://minifiedjs.com/api/' + sec.id + '.html';
+    html += '";\n';
+    html += '(function() {\n';
+    html += ' var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;\n';
+    html += ' dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";\n';
+    html += '(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);\n';
+    html += '})();\n';
+    html += '</script>\n';
+    html += '<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>\n';
+    html += '\n<p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>\n';
 	html += '</div>\n';
 	html += toc;
 	html += '\n';

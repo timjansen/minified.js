@@ -1,8 +1,8 @@
-Minified Web
-=============
+Minified 
+=========
 
 Quick Links: <a href="http://minifiedjs.com/">minifiedjs.com</a> - <a href="http://minifiedjs.com/api/">API</a> - <a href="http://minifiedjs.com/docs/">Docs</a>
-Latest version: <a href="http://minifiedjs.com/docs/beta3.html">beta 3</a> (<a href="CHANGES.md">changelog</a>)
+Latest version: <a href="http://minifiedjs.com/docs/beta4.html">beta 4</a> (<a href="CHANGES.md">changelog</a>)
 
 Overview
 ----------
@@ -13,13 +13,13 @@ functions (collections, date&amp;number formatting, date arithmtic, templates) w
 
 Size Comparison
 -----------------
-For beta 3:
+For beta 4:
 <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><th>Minified</th><td>no</td><td>19.1kb</td><td><strong>8075bytes</strong></td></tr>
-<tr><th>...with IE6-8 support</th><td>no</td><td>20.8kb</td><td>8828 bytes</td></tr>
-<tr><th>...Web Module only</th><td>yes</td><td>9.3kb</td><td><strong>4075 bytes</strong></td></tr>
-<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>11.1kb</td><td>4881 bytes</td></tr>
+<tr><th>Minified</th><td>no</td><td>19kb</td><td><strong>8170 bytes</strong></td></tr>
+<tr><th>...with IE6-8 support</th><td>no</td><td>21kb</td><td>8959 bytes</td></tr>
+<tr><th>...Web Module only</th><td>yes</td><td>9kb</td><td><strong>4083 bytes</strong></td></tr>
+<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>11kb</td><td>4930 bytes</td></tr>
 <tr><th>jQuery 1.10.2</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
 <tr><th>jQuery 2.0.3</th><td>no</td><td>82kb</td><td>29kb</td></tr>
 <tr><th>MooTools Core NoCompat 1.4.5</th><td>yes</td><td>88kb</td><td>29kb</td></tr>

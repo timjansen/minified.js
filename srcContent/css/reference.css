@@ -44,6 +44,10 @@ dl dl dt { margin-top: 0.25em; }
 	font-style: italic;
 }
 
+.this {
+	font-style: italic;
+}
+
 .returnValue {
 	margin-top: 1em;
 }

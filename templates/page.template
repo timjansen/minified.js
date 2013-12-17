@@ -29,8 +29,22 @@
 	</div>
 </div>
 <div id="main">
-	<div class="container">{{{main}}}</div>
+	<div class="container">{{{main}}}
+	{{if this.commentId}}
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+	var disqus_shortname = "minifiedjs";
+	var disqus_identifier = "{{this.commentId}}";
+	(function() {
+	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+	})();
+	</script>
+	{{/if}}
+	</div>
+	
 </div>
+
 <div id="foot">
 	<div class="container">
 		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 

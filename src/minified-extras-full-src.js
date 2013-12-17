@@ -18,9 +18,7 @@
 // make any sense if used stand-alone.
 
 
-///#remove
 function dummy() {
-///#/remove
 
 	///#snippet extrasFunctions
 	function flexiEach(list, cb) {
@@ -34,17 +32,8 @@ function dummy() {
 	function defer(func, args) {
 		delay(function() {call(func, args);}); // TODO try partial()
 	}
+		
 	
-	function ht(htmlTemplate, object) {
-		return this.set('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : /{{/.test(htmlTemplate) ? formatHtml(htmlTemplate, object) : htmlTemplate);
-	}
-	
-	function HTML(htmlTemplate, object) {
-		var tpl = isFunction(htmlTemplate) ? htmlTemplate : /{{/.test(htmlTemplate) ? template(htmlTemplate, escapeHtml) : function() { return htmlTemplate; };
-		var tmp = _document.createElement('div');
-        tmp['innerHTML'] = tpl(object);
-        return  _(tmp.childNodes);
-	}
 	
 	/*$
 	 * @id promise
@@ -326,11 +315,54 @@ function dummy() {
 
 	
 
-	///#remove
 	var dummy = {
-	///#/remove
 			
 	///#snippet extrasListFuncs
+			
+		/*$ 
+		 * @id per
+		 * @group LIST 
+		 * @requires
+		 * @configurable default 
+		 * @name .per() 
+		 * @syntax list.per(callback) 
+		 * @syntax list.per(subSelector, callback) 
+		 * @module UTIL
+		 * Invokes the handler function for each list element with a single-element list containing only this element. It is very similar to
+		 * ##each(), but instead of giving the element itself it wraps the element in a ##list#Minified list##. Additionally, you can specify 
+		 * a sub-selector to iterate over the descendants matches by the selector instead of the list elements. 
+		 *
+		 * @example Create a mouseover toggle for a list:
+		 * <pre>$('.toggler').per(function(el, i) {
+		 *     el.onOver(el.toggle('myeffect'));
+		 * });</pre>
+		 * 
+		 * @example Create click handlers for elements in a list:
+		 * <pre>$('#list').add(HTML('{{each}}<li>{{this.name}} <a class="del" href="#">Delete</a></li>{{each}}', items)
+		 *                .per('.del', function(el, index) {
+		 *                   el.on('click', deleteItemByName, [items[index].name]);
+		 *                }));</pre>
+		 *
+		 * @param subSelector optional a selector as valid as first argument for #dollar#$(), to identify the descendants to iterate over.
+	     * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
+	     *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
+	     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	     *                 <dt class="this">this</dt><dd>The list that is being iterated. If a sub-selector
+	     *                 is being used, it is the list that resulted from using the sub-selector.</dd></dl>
+	     *                 The callback's return value will be ignored.
+	     * @return the list. Even if you specified a sub-selector, it will always return the original list.
+		 */
+		'per': function(subSelector, handler) {
+			if (isFunction(subSelector))
+				for (var self = this, a = [_null], len = self.length, i = 0; i < len; i++) {
+					a[0] = self[i];
+					subSelector.call(self, new M(a), i);
+				}
+			else
+				$(subSelector, this)['per'](handler);
+			return this;
+		},
+			
 		/*$
 		 * @id ht
 		 * @group ELEMENT
@@ -341,6 +373,8 @@ function dummy() {
 		 * @syntax list.ht(templateString, object)
 		 * @syntax list.ht(templateFunction)
 		 * @syntax list.ht(templateFunction, object)
+		 * @syntax list.ht(idSelector)
+		 * @syntax list.ht(idSelector, object)
 	     * @module WEB+UTIL
 		 * Replaces the content of the list elements with the HTML generated using the given template. The template uses
 		 * ##template() syntax and HTML-escaped its output using ##escapeHtml(). 
@@ -372,6 +406,12 @@ function dummy() {
 		 * &lt;h2>Guys&lt;/h2>
 		 * &lt;ul>&lt;li>James Sullivan&lt;li>&lt;li>Michael Wazowski&lt;/li>&lt;/ul>
 		 * </pre> 
+		 * 
+		 * @example You can store templates in &lt;script&gt; tags. First you need to create a &lt;script&gt; tag with a type not
+		 *          supported by the browser and put your template in there, like this:
+		 * <pre>&lt;script id="myTimeTpl" type="minified-template"&gt;The time is {{HH:mm:ss}}.&lt;/script&gt;</pre>
+		 * Then you can specify the tag's id directly to access it:
+		 * <pre>$('#timeDisplay').ht('#myTimeTpl', new Date());</pre>
 		 *
 		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
 		 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
@@ -381,27 +421,33 @@ function dummy() {
 		 *                     unless you use triple curly-braces.
 		 * @param templateFunction instead of a HTML template, <var>ht()</var> can also use a template function, e.g. one
 		 *                         created by ##template(). It will be invoked with the object as only argument.
+		 * @param idSelector if you pass an ID CSS selector in the form "#myElement", Minified will recognize this and use the content 
+		 *                   of the specified element as template string. This allows you, for example, to put your template into 
+		 *                   a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
+		 *                   contain any spaces is used as selector.
 		 * @param object optional the object to pass to the template. If object is not set, the template is called with <var>undefined</var>
 		 *                        as object.
 		 * @return the current list
 		 * 
 		 * @see ##HTML() creates only the nodes and can be used with ##add() and other methods to add the nodes to the DOM, giving you more flexibility than <var>ht()</var>.
 		 */
-		'ht':ht
+		'ht': function(htmlTemplate, object) {
+			return this['set']('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : 
+				                            /{{/.test(htmlTemplate) ? formatHtml(htmlTemplate, object) : 
+				                            /^#\S+$/.test(htmlTemplate) ? formatHtml($$(htmlTemplate)['text'], object) : htmlTemplate);
+		 }
 		/*$
 		 * @stop
 		 */
-		// @cond !ht dummy:0
+		// @cond !ht dummyHt:0
 	///#/snippet extrasListFuncs
 		
 		
-	///#remove
 	};
-	///#/remove
 
 	
-	///#snippet extrasUnderscoreFuncs
 	copyObj({
+	///#snippet extrasUnderscoreFuncs
 	// @condblock promise
 	'promise': promise,
 	// @condend promise
@@ -530,7 +576,6 @@ function dummy() {
 	 * @see ##$.delay() works like <var>$.defer()</var>, but delays the execution for the specified amount of time.
 	 */
 	'defer': defer,
-
 	
 	/*$
 	 * @id wait
@@ -581,17 +626,15 @@ function dummy() {
 	/*$
 	 * @stop
 	 */
-	// @cond !wait dummy:0
-
-	}, _);
+	// @cond !wait dummyWait:0
 
 	///#/snippet extrasUnderscoreFuncs
 
+	}, _);
+
 
 	
-	///#remove
-	return {dummy:0
-	///#/remove
+	return {
 		
 	///#snippet extrasExports
 
@@ -605,6 +648,8 @@ function dummy() {
 		 * @syntax HTML(templateString, object)
 		 * @syntax HTML(templateFunction)
 		 * @syntax HTML(templateFunction, object)
+		 * @syntax HTML(idSelector)
+		 * @syntax HTML(idSelector, object)
 	     * @module WEB
 		 * Creates a ##list#list## of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
 		 * The template uses the ##template() syntax with ##escapeHtml() escaping for values.
@@ -639,6 +684,12 @@ function dummy() {
 		 * <pre>
 		 * &lt;li>James Sullivan&lt;li>&lt;li>Michael Wazowski&lt;/li>
 		 * </pre> 
+		 * 
+		 * @example You can store templates in &lt;script&gt; tags. First you need to create a &lt;script&gt; tag with a type not
+		 *          supported by the browser and put your template in there, like this:
+		 * <pre>&lt;script id="myTimeTpl" type="minified-template"&gt;The time is {{HH:mm:ss}}.&lt;/script&gt;</pre>
+		 * Then you can specify the tag's id directly to access it:
+		 * <pre>$('#timeDisplay').fill(HTML('#myTimeTpl', new Date()));</pre>
 		 *
 		 * @param templateString the template using ##template() syntax. Please note, because this is a template, you should
 		 *                     avoid creating the template itself dynamically, as compiling templates is expensive and
@@ -648,25 +699,26 @@ function dummy() {
 		 *                     unless you use triple curly-braces.
 		 * @param templateFunction instead of a HTML template <var>HTML()</var> also accepts a template function, e.g. one
 		 *                         created by ##template(). It will be invoked with the object as only argument.
+		 * @param idSelector if you pass an ID CSS selector in the form "#myElement", Minified will recognize this and use the content 
+		 *                   of the specified element as template string. This allows you, for example, to put your template into 
+		 *                   a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
+		 *                   contain any spaces is used as selector.
 		 * @param object optional the object to pass to the template
 		 * @return the list containing the new HTML nodes
 		 *  
 		 * @see ##ht() is a shortcut for <code>fill(HTML())</code>.
 		 * @see ##EE() is a different way of creating HTML nodes.
 		 */
-		,'HTML': HTML
+		'HTML': function (htmlTemplate, object) {
+	        return  _(EE('div')['ht'](htmlTemplate, object)[0].childNodes);
+		},
 		/*$
 		 * @stop
 		 */
-		// @cond !html dummyHtml:0
 		
-	///#/snippet extrasExports
-
-		///#remove
+		///#/snippet extrasExports
+		dummyStop:0
 		};
-		///#/remove
 	
-///#remove
 }
-///#/remove
 	

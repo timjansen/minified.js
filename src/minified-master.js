@@ -19,6 +19,13 @@
 function dummy() {
 ///#/remove
 
+	/*$
+	 * @id ALL
+	 * @doc no
+	 * @required
+	 * This id allows identifying whether both Web and Util are available.
+	 */
+	
 
 ///#include minified-web-full-src.js  commonAmdStart
 ///#include minified-web-full-src.js  webVars
@@ -31,45 +38,36 @@ function dummy() {
 	
 ///#include minified-util-full-src.js utilM
 	
+	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 	copyObj({
 		///#include minified-util-full-src.js utilListFuncs
-		
-		///#remove
-		dummy2:0
-		///#/remove
-		
 		///#include minified-web-full-src.js webListFuncs
-		,
 		///#include minified-extras-full-src.js extrasListFuncs
-
-		///#remove
-		dummy3:0
-		///#/remove
-		
 	}, M.prototype);
 	
 			
 	//// DOLLAR FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///#include minified-web-full-src.js webDollarFuncs
 	
-	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///#include minified-util-full-src.js utilUnderscoreFuncs
-	///#include minified-extras-full-src.js extrasUnderscoreFuncs
 
+	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	copyObj({
+		///#include minified-util-full-src.js utilUnderscoreFuncs
+		///#include minified-extras-full-src.js extrasUnderscoreFuncs
+	}, _);
+	
+
 	////INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///#include minified-web-full-src.js webInit
 
 
 	return {
-		///#remove
-		dummy:0 
-		///#/remove
+		///#include minified-extras-full-src.js extrasExports
 		///#include minified-util-full-src.js utilExports
 		///#include minified-web-full-src.js webExports
-		///#include minified-extras-full-src.js extrasExports
 	};
 
 ///#include minified-web-full-src.js  commonAmdEnd

@@ -2,45 +2,46 @@
 /*
    Auto-generated using docbuilder.js. Do not edit manually. 
 */
-	title: `.reverse() - Minified.js`,
+	title: `.reduce() - Minified.js`,
 	section:"reference",
 	externalCss: ["../css/reference.css"],
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-reverse">.reverse()</a></h2>
-<div class="summary">Returns a new Minified list with the input list's elements in reverse order.</div>
+<h2><a name="doc-reduce">.reduce()</a></h2>
+<div class="summary">Reduces the list into a single value with the help of a callback function.</div>
 
-<div class="availability">Util module only.</div><h4>Syntax Variants</h4>
+<div class="availability">Util module only.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">list.reverse()</div>
-<div class="syntax">_.reverse(list)</div>
+<div class="syntax">list.reduce(callback, memo)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="reverse_list" class=""><a name="reverse_list"><var>list</var></a></dt>
-<dd class="">A list to use as input. Can be an array, a <a href='list.html' class='func'>Minified list</a> or any other array-like structure with
-<span class="var">length</span> property.</dd>
-<dt id="reverse_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="reverse_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">a new <a href='list.html' class='func'>list</a> containing only the items in the index range.</dd>
+<dt id="reduce_callback" class=""><a name="reduce_callback"><var>callback</var></a></dt>
+<dd class="">The callback <code>function(memo, item, index)</code> to invoke for each list element.
+<dl><dt>memo</dt><dd>On the first invocation, the <span class="var">memo</span> argument given to <span class="var">reduce()</span>. On
+all further invocation, this is the return value of the previous invocation.</dd>
+<dt>item</dt><dd>The current list element.</dd>
+<dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>This list.</dd>
+<dt class="returnValue">(callback return value)</dt><dd>Will be used as <span class="var">memo</span>
+argument of the next invocation. The last return value will be returned by <span class="var">reduce()</span>.</dd></dl>
+</dd>
+<dt id="reduce_memo" class=""><a name="reduce_memo"><var>memo</var></a></dt>
+<dd class="">the initial value that will be passed as <span class="var">memo</span> argument to the callback on its very first invocation.</dd>
+<dt id="reduce_RETURN" class="returnValue inSyntax0"><a name="reduce_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0">the resulting value. If the list was empty, it returns the <span class="var">memo</span> argument.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Returns a new <a href='list.html' class='func'>Minified list</a> with the input list's elements in reverse order. The first element is swapped
-with the last, the second with the second to last and so on.</p><p></p></div>
+<div class="description"><p>Reduces the list into a single value with the help of a callback function. This callback will be called once for
+each element, with the return value of the previous invocation as parameter. <span class="var">reduce()</span> returns the
+return value of the last invocation.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Changes the order of a list:
-<pre>
-var rev = _('a', 'b', 'c').reverse(); // returns _('c', 'b', 'a')
-</pre>
-</p></div>
-<h4>Example</h4>
-<div class="example"><p>The same with an array:
-<pre>
-var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
-</pre>
+<div class="example"><p>Sum up some numbers:
+<pre>var sum = _(1, 2, 3).reduce(0, function(memo, item, index) { return memo + item; });
 </p></div>
 </div>
 
@@ -48,8 +49,8 @@ var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-reverse";
-var disqus_url = "http://minifiedjs.com/api/reverse.html";
+var disqus_identifier = "api-reduce";
+var disqus_url = "http://minifiedjs.com/api/reduce.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";

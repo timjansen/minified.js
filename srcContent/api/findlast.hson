@@ -30,6 +30,7 @@
 <dt id="findlast_findFunc" class=""><a name="findlast_findFunc"><var>findFunc</var></a></dt>
 <dd class="">The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>This list.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <span class="var">null</span> or
 <span class="var">undefined</span>, <span class="var">find()</span> will return it directly. Otherwise it will continue. </dd></dl></dd>
 <dt id="findlast_element" class=""><a name="findlast_element"><var>element</var></a></dt>
@@ -82,6 +83,19 @@ var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return
 <h4>See also..</h4>
 <ul><li><code><a href='find.html' class='func'>find()</a></code> is the equivalent to find values at the end of a list.</li>
 </ul>
+<h4>Comments</h4>
+ <div id="disqus_thread"></div>
+<script type="text/javascript">
+var disqus_shortname = "minifiedjs";
+var disqus_identifier = "api-findlast";
+var disqus_url = "http://minifiedjs.com/api/findlast.html";
+(function() {
+ var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+ dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+(document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <p class="docFoot"><a href="index.html" class="backOverview">back to Overview</a></p>
 </div>
@@ -127,8 +141,11 @@ var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

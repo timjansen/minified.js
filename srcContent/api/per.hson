@@ -2,45 +2,53 @@
 /*
    Auto-generated using docbuilder.js. Do not edit manually. 
 */
-	title: `.reverse() - Minified.js`,
+	title: `.per() - Minified.js`,
 	section:"reference",
 	externalCss: ["../css/reference.css"],
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-reverse">.reverse()</a></h2>
-<div class="summary">Returns a new Minified list with the input list's elements in reverse order.</div>
+<h2><a name="doc-per">.per()</a></h2>
+<div class="summary">Invokes the handler function for each list element with a single-element list containing only this element.</div>
 
 <div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">list.reverse()</div>
-<div class="syntax">_.reverse(list)</div>
+<div class="syntax">list.per(callback)</div>
+<div class="syntax">list.per(subSelector, callback)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="reverse_list" class=""><a name="reverse_list"><var>list</var></a></dt>
-<dd class="">A list to use as input. Can be an array, a <a href='list.html' class='func'>Minified list</a> or any other array-like structure with
-<span class="var">length</span> property.</dd>
-<dt id="reverse_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="reverse_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">a new <a href='list.html' class='func'>list</a> containing only the items in the index range.</dd>
+<dt id="per_subSelector" class=""><a name="per_subSelector"><var>subSelector (optional)</var></a></dt>
+<dd class="">a selector as valid as first argument for <code><a href='dollar.html' class='func'>$()</a></code>, to identify the descendants to iterate over.</dd>
+<dt id="per_callback" class=""><a name="per_callback"><var>callback</var></a></dt>
+<dd class="">The callback <code>function(itemList, index)</code> to invoke for each list element.
+<dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
+<dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+<dt class="this">this</dt><dd>The list that is being iterated. If a sub-selector
+is being used, it is the list that resulted from using the sub-selector.</dd></dl>
+The callback's return value will be ignored.</dd>
+<dt id="per_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="per_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1">the list. Even if you specified a sub-selector, it will always return the original list.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Returns a new <a href='list.html' class='func'>Minified list</a> with the input list's elements in reverse order. The first element is swapped
-with the last, the second with the second to last and so on.</p><p></p></div>
+<div class="description"><p>Invokes the handler function for each list element with a single-element list containing only this element. It is very similar to
+<code><a href='each.html' class='func'>each()</a></code>, but instead of giving the element itself it wraps the element in a <a href='list.html' class='func'>Minified list</a>. Additionally, you can specify
+a sub-selector to iterate over the descendants matches by the selector instead of the list elements.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Changes the order of a list:
-<pre>
-var rev = _('a', 'b', 'c').reverse(); // returns _('c', 'b', 'a')
-</pre>
+<div class="example"><p>Create a mouseover toggle for a list:
+<pre>$('.toggler').per(function(el, i) {
+    el.onOver(el.toggle('myeffect'));
+});</pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>The same with an array:
-<pre>
-var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
-</pre>
+<div class="example"><p>Create click handlers for elements in a list:
+<pre>$('#list').add(HTML('{{each}}<li>{{this.name}} <a class="del" href="#">Delete</a></li>{{each}}', items)
+               .per('.del', function(el, index) {
+                  el.on('click', deleteItemByName, [items[index].name]);
+               }));</pre>
 </p></div>
 </div>
 
@@ -48,8 +56,8 @@ var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-reverse";
-var disqus_url = "http://minifiedjs.com/api/reverse.html";
+var disqus_identifier = "api-per";
+var disqus_url = "http://minifiedjs.com/api/per.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";

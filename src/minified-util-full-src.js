@@ -63,6 +63,13 @@ define('minified', function() {
 	//// GLOBAL VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	///#snippet utilVars
+	/*$
+	 * @id UTIL
+	 * @doc no
+	 * @required
+	 * This id allows identifying whether the Util module is available.
+	 */
+	
 	var _null = null, _true = true, _false = false;
 
 	/** @const */
@@ -194,19 +201,19 @@ define('minified', function() {
 	function eachObj(obj, cb) {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
-				cb(n, obj[n]);
+				cb.call(obj, n, obj[n]);
 		return obj;
 	}
 	function each(list, cb) {
 		if (list)
 			for (var i = 0; i < list.length; i++)
-				cb(list[i], i);
+				cb.call(list, list[i], i);
 		return list;
 	}
 	function filterObj(obj, f) {
 		var r = {};
 		eachObj(obj, function(key, value) {
-			if (f(key, value))
+			if (f.call(obj, key, value))
 				r[key] = value;
 		});
 		return r;
@@ -215,7 +222,7 @@ define('minified', function() {
 		var r = []; 
 		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(value) { return filterFuncOrObject != value; };
 		each(list, function(value, index) {
-			if (f(value, index))
+			if (f.call(list, value, index))
 				r.push(value);
 		});
 		return r;
@@ -223,7 +230,7 @@ define('minified', function() {
 	function collector(iterator, obj, collectFunc) {
 		var result = [];
 		iterator(obj, function (a, b) {
-			if (isList(a = collectFunc(a, b))) // extreme variable reusing: a is now the callback result
+			if (isList(a = collectFunc.call(obj, a, b))) // extreme variable reusing: a is now the callback result
 				each(a, function(rr) { result.push(rr); });
 			else if (a != _null)
 				result.push(a);
@@ -258,14 +265,14 @@ define('minified', function() {
 	function mapObj(list, mapFunc) {
 		var result = {};
 		eachObj(list, function(key, value) {
-			result[key] = mapFunc(key, value);
+			result[key] = mapFunc.call(list, key, value);
 		});
 		return result;
 	}
 	function map(list, mapFunc) {
 		var result = [];
 		each(list, function(item, index) {
-			result.push(mapFunc(item, index));
+			result.push(mapFunc.call(list, item, index));
 		});
 		return result;
 	}
@@ -331,7 +338,7 @@ define('minified', function() {
 		var e = getFindIndex(list, endIndex, list.length);
 		var r;
 		for (var i = getFindIndex(list, startIndex, 0); i < e; i++)
-			if ((r = f(list[i], i)) != _null)
+			if ((r = f.call(list, list[i], i)) != _null)
 				return r;
 	}
 	function findLast(list, findFunc, startIndex, endIndex) {
@@ -339,7 +346,7 @@ define('minified', function() {
 		var e = getFindIndex(list, endIndex, -1);
 		var r;
 		for (var i = getFindIndex(list, startIndex, list.length-1); i > e; i--)
-			if ((r = f(list[i], i)) != _null)
+			if ((r = f.call(list, list[i], i)) != _null)
 				return r;
 	}
 	
@@ -383,7 +390,7 @@ define('minified', function() {
 		else if (a == _null || b == _null)
 			return _false;
 		else if (isValue(a) || isValue(b))
-			return isDate(a) && isDate(b) && a.getTime()==b.getTime();
+			return isDate(a) && isDate(b) && +a==+b;
 		else if (isList(a)) {
 			if (a.length != b.length)
 				return _false;
@@ -468,7 +475,7 @@ define('minified', function() {
 				date = dateAdd(value, 'minutes', getTimezone(match, 2, value));
 				formatNoTZ = match[4];
 			}
-			
+
 			return replace(formatNoTZ, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
 				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
@@ -633,7 +640,7 @@ define('minified', function() {
 		return new Date();
 	}
 	function dateClone(date) {
-		return new Date(date.getTime());
+		return new Date(+date);
 	}
 	function capWord(w) { 
 		return w.charAt(0).toUpperCase() + w.substr(1); 
@@ -652,8 +659,8 @@ define('minified', function() {
 		return new Date(od.getFullYear(), od.getMonth(), od.getDate());
 	}
 	function dateDiff(property, date1, date2) {
-		var d1t = date1.getTime();
-		var d2t = date2.getTime();
+		var d1t = +date1;
+		var d2t = +date2;
 		var dt = d2t - d1t;
 		if (dt < 0)
 			return -dateDiff(property, date2, date1);
@@ -670,7 +677,7 @@ define('minified', function() {
 		
 		var d = dateAddInline(new Date(d1t), cProp, minimumResult);
 		for (var i = minimumResult; i < minimumResult*1.2+4; i++) { // try out 20% more than needed, just to be sure
-			if (dateAddInline(d, cProp, 1).getTime() > d2t)
+			if (+dateAddInline(d, cProp, 1) > d2t)
 				return i;
 		}
 		// should never ever be reached
@@ -789,7 +796,6 @@ define('minified', function() {
 	
 	/*$
 	 * @id length
-
 	 * @name .length
 	 * @syntax length
 	 * Contains the number of elements in the list.
@@ -853,7 +859,8 @@ define('minified', function() {
      * @syntax _.each(list, callback)
      * @module UTIL, WEB
      * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
-     * the zero-based index as second.
+     * the zero-based index as second. Unlike JavaScript's built-in <var>forEach()</var> it will be invoked for each item in the list, 
+     * even if it is <var>undefined</var>.
      *
      * @example Creates the sum of all list entries. 
      * <pre>
@@ -882,9 +889,14 @@ define('minified', function() {
      *             <var>length</var> property.
      * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
      *                 <dl><dt>item</dt><dd>The current list element.</dd>
-     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd></dl>
+     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *                 <dt class="this">this</dt><dd>This list.</dd></dl>
      *                 The callback's return value will be ignored.
      * @return the list
+     * 
+     * @see ##per() works like <var>each()</var>, but wraps the list elements in a list.
+     * @see ##find() can be used instead of <var>each()</var> if you need to abort the loop.
+     * @see ##eachObj() iterates through the properties of an object.
      */
 	'each': listBind(each),
 	
@@ -938,13 +950,16 @@ define('minified', function() {
 	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
 	 *        <dl><dt>item</dt><dd>The current list element.</dd>
 	 *        <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>  
 	 * @param value a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
 	 *              be a function. 
 	 * @return the new, filtered ##list#list##
+	 * 
+	 * @see ##only() offers selector-based filtering.
 	 */
 	'filter': listBindArray(filter),
-	
+
 	/*$ 
      * @id collect 
      * @group LIST 
@@ -964,7 +979,7 @@ define('minified', function() {
      * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
      * If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li> 
      * </ul>
-      * 
+     * 
      * @example Goes through a list of numbers. Numbers over 10 will be removed. Numbers 5 and below stay. Numbers between 6 and 
      * 10 will be replaced by two numbers whose sum is the original value.
      * <pre> 
@@ -1006,6 +1021,7 @@ define('minified', function() {
      *             <var>length</var> property.
      * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
 	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and not be added to 
 	 *        the new result list. </dd></dl>
@@ -1050,6 +1066,7 @@ define('minified', function() {
      *             <var>length</var> property.
      * @param mapFunc The callback <code>function(item, index)</code> to invoke for each item:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new list.</dd></dl>
      * @return the new ##list#list##
      * 
@@ -1241,7 +1258,7 @@ define('minified', function() {
      *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
      * </ol>
      * 
-     * <var>find()</var can also be used as an alternative to ##each() if you need to abort the loop.
+     * <var>find()</var> can also be used as an alternative to ##each() if you need to abort the loop.
      *
      * @example Finds the first negative number in the list:
      * <pre> 
@@ -1267,6 +1284,7 @@ define('minified', function() {
      *             <var>length</var> property.
      * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
      * @param element the element to search for
@@ -1328,6 +1346,7 @@ define('minified', function() {
      *             <var>length</var> property.
      * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
      * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
      * @param element the element to search for
@@ -1585,6 +1604,7 @@ define('minified', function() {
      */
 	'intersection': listBindArray(intersection), 
 
+
 	/*$ 
 	 * @id join 
 	 * @group LIST 
@@ -1610,6 +1630,40 @@ define('minified', function() {
 	},
 
 	/*$ 
+	 * @id reduce 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .reduce() 
+	 * @syntax list.reduce(callback, memo) 
+	 * @module UTIL
+	 * Reduces the list into a single value with the help of a callback function. This callback will be called once for
+	 * each element, with the return value of the previous invocation as parameter. <var>reduce()</var> returns the
+	 * return value of the last invocation.
+	 *
+	 * @example Sum up some numbers:
+	 * <pre>var sum = _(1, 2, 3).reduce(0, function(memo, item, index) { return memo + item; });
+	 *
+     * @param callback The callback <code>function(memo, item, index)</code> to invoke for each list element. 
+     *                 <dl><dt>memo</dt><dd>On the first invocation, the <var>memo</var> argument given to <var>reduce()</var>. On
+     *                 all further invocation, this is the return value of the previous invocation.</dd>
+     *                 <dt>item</dt><dd>The current list element.</dd>
+     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+     *                 <dt class="this">this</dt><dd>This list.</dd>
+     *                 <dt class="returnValue">(callback return value)</dt><dd>Will be used as <var>memo</var> 
+     *                 argument of the next invocation. The last return value will be returned by <var>reduce()</var>.</dd></dl>
+     *                 
+	 * @param memo the initial value that will be passed as <var>memo</var> argument to the callback on its very first invocation.
+	 * @return the resulting value. If the list was empty, it returns the <var>memo</var> argument.
+	 */
+	'reduce': function(callback, memo) {
+		each(this, function(elem, index) {
+			memo = callback.call(this, memo, elem, index);
+		});
+		return memo;
+	},
+	
+	/*$ 
 	 * @id sort 
 	 * @group LIST 
 	 * @requires
@@ -1633,20 +1687,21 @@ define('minified', function() {
 	 */
 	'sort': function(func) {
 		return new M(map(this, nonOp).sort(func));
-	},
+	}
 	/*$
 	 * @stop 
 	 */
+	//@cond !sort dummySort:0
+	//@cond ALL ,
 	///#/snippet utilListFuncs
-	dummy:0
 	}, M.prototype);
      
 
  	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	///#snippet utilUnderscoreFuncs
 
 	copyObj({
+		///#snippet utilUnderscoreFuncs
 		 // @condblock filter
 		'filter': funcArrayBind(filter),
 		 // @condend
@@ -1951,7 +2006,8 @@ define('minified', function() {
 		 * @param obj the object to use
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
-		 *                 <dt>value</dt><dd>The value of the current property.</dd></dl>
+		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="this">this</dt><dd>This object.</dd></dl>
 		 *                 The callback's return value will be ignored.
 		 * @return the object
 		 * 
@@ -1982,6 +2038,7 @@ define('minified', function() {
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="this">this</dt><dd>This object.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new object.</dd></dl>
 		 * @return the new object
 		 * 
@@ -2015,6 +2072,7 @@ define('minified', function() {
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
+		 *                 <dt class="this">this</dt><dd>This object.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the property in the new object, <var>false</var> to omit it.</dd></dl>
 		 * @return the new object
 		 * 
@@ -2795,10 +2853,11 @@ define('minified', function() {
 		 * @stop
 		 */
 		
-		// @cond !format '':0
-	}, _);
+		// @cond !format dummyFormatHtml:0
+		// @cond ALL ,
 
 	///#/snippet utilUnderscoreFuncs
+	}, _);
 
 	
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

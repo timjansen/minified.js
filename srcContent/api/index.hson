@@ -140,12 +140,21 @@ Creates a function allows you to set all list members to one of two states or an
 <h3><a href="onchange.html">.onChange()</a></h3>
 <div class="summary">Registers a handler to be called whenever content of the list's input fields changes.</div>
 
+<h3><a href="onfocus.html">.onFocus()</a></h3>
+<div class="summary">Registers a function to be called when a list element either gets the focus or the focus is removed (blur).</div>
+
 <h3><a href="onover.html">.onOver()</a></h3>
 <div class="summary">Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.</div>
 
 <h3><a href="only.html">.only()</a></h3>
 <div class="summary">Returns a new list that contains only those elements that match the given selector, match the callback function
 or have the given index.</div>
+
+<h3><a href="per.html">.per()</a></h3>
+<div class="summary">Invokes the handler function for each list element with a single-element list containing only this element.</div>
+
+<h3><a href="reduce.html">.reduce()</a></h3>
+<div class="summary">Reduces the list into a single value with the help of a callback function.</div>
 
 <h3><a href="remove.html">.remove()</a></h3>
 <div class="summary">Removes all elements in the list from the DOM tree.</div>
@@ -390,8 +399,11 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
+</li><li><a href="per.html" class="func">.per()</a> <span class="tocMod">Util</span>
+</li><li><a href="reduce.html" class="func">.reduce()</a> <span class="tocMod">Util</span>
 </li><li><a href="remove.html" class="func">.remove()</a> <span class="tocMod">Web</span>
 </li><li><a href="replace.html" class="func">.replace()</a> <span class="tocMod">Web</span>
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>

@@ -4,10 +4,11 @@
 //
 // Used by builder-src.js, docbuilder.js and rebuilder.js.
 //
+// Please find a more detailed description of the syntax in minified-web-full-src.js.
 //
 
 var isCommonJs = typeof module != 'undefined' && !!module.exports;
-var _ = isCommonJs ? require('minified-headless') : (require('minifiedUtil') || require('minified'))._;
+var _ = isCommonJs ? require('minified-headless') : require('minified')._;
 
 
 // parses the source, returns an array of objects describing sections that can be enabled/disabled
@@ -101,7 +102,7 @@ function completeRequirements(sections, sectionMap) {
 	});
 	if (addedReqs > 0)
 		completeRequirements(sections, sectionMap); // repeat until all requirements complete
-	else // completed: now start reverse search
+	else // completed: now start reverse search to fill the requiredBy property
 		_.each(sections, function(s) {
 			_.eachObj(s.requires, function(t) { 
 				sectionMap[t].requiredBy[s.id] = 1;
@@ -109,16 +110,16 @@ function completeRequirements(sections, sectionMap) {
 		});
 }
 
-// creates a map (id->1) of all enabled sections plus their dependencies
+// creates a map (id->1) of all enabled sections plus their dependencies plus required sections
 function calculateDependencies(sectionMap, enabledSections) {
 	var r = {};
-	_.eachObj(enabledSections, function(s) {
-		if (enabledSections[s]) {
-			r[s] = 1;
-			_.eachObj(sectionMap[s].requires, function(req) {
+	_(_.keys(enabledSections), _.keys(sectionMap).filter(function(e) {return sectionMap[e].required;})).each(function(secId) {
+		if (enabledSections[secId] || sectionMap[secId].required) {
+			r[secId] = 1;
+			_.eachObj(sectionMap[secId].requires, function(req) {
 				r[req] = 1;
 			});
-		}
+		} 
 	});
 	return r;
 }
@@ -219,7 +220,7 @@ function serializeEnabledSections(sections, enabledSections) {
 		listedIds = enabledSectionList;
 	}
 	
-	var txt = "// " + CONFIG_START + " use this comment to re-create configuration in the Builder\n" + head;
+	var txt = "// " + CONFIG_START + " use this comment to re-create a configuration in the Builder\n" + head;
 	var charsToBreak = 50;
 	_(listedIds).sort().each(function(id) {
 		if (charsToBreak < id.length) {
