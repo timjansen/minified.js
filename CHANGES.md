@@ -1,8 +1,8 @@
 Minified Change Log
 ====================
 
-Ongoing (for Beta 4)
----------------------
+Beta 4 (2014-12-17)
+-------------------
 * added onFocus()
 * added per()
 * added reduce()
@@ -11,7 +11,7 @@ Ongoing (for Beta 4)
   You can now also set XMLHttpRequest properties.
 * onOver()'s callback does not support the index argument anymore.
 * HTML() and ht() can now retrieve their template from an element, such as a script tag.
-* all iterator function will now get the object they are iterating over in 'this'
+* all iterator function will now get the object they are iterating in 'this'
 
 
 Beta 3.1 (2013-11-13)
