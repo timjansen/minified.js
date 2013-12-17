@@ -62,10 +62,9 @@ accordingly.</p>
 
 
 <h2>Change: HTML() and ht() support templates stored in script tags</h2>
-<p><a href="/api/html.html">HTML()</a> and <a href="/api/ht.html">ht()</a> can now automatically get the template from a HTML element such 
-as a &lt;script&gt; tag. They will automatically detect it if you pass an ID CSS selector instead of a template. This is mostly 
-useful when you have large scripts that can not be conveniently stored in a JavaScript string, or when you need to store the string
-on the HTML page for internationalization purposes.</p>
+<p><a href="/api/html.html">HTML()</a> and <a href="/api/ht.html">ht()</a> can now automatically get the template from a HTML 
+&lt;script&gt; tag. This is mostly useful when you have large scripts that can not be conveniently stored in a JavaScript string, 
+or when you need to store the string on the HTML page for internationalization purposes.</p>
 <p>First create a &lt;script&gt; tag with a type not supported by the browser and put your template in there, like this:
 <pre>&lt;script id="myTimeTpl" type="minified-template"&gt;The time is {{HH:mm:ss}}.&lt;/script&gt;</pre>
 <p>Then you can specify the tag's id directly to access it:</p>

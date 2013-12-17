@@ -4217,8 +4217,8 @@ define('minified', function() {
 		 *                     unless you use triple curly-braces.
 		 * @param templateFunction instead of a HTML template, <var>ht()</var> can also use a template function, e.g. one
 		 *                         created by ##template(). It will be invoked with the object as only argument.
-		 * @param idSelector if you pass an ID CSS selector in the form "#myElement", Minified will recognize this and use the content 
-		 *                   of the specified element as template string. This allows you, for example, to put your template into 
+		 * @param idSelector if you pass an ID CSS selector in the form "#myScript", Minified will recognize this and use the content 
+		 *                   of the specified &lt;script> element as template. This allows you to put your template into 
 		 *                   a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
 		 *                   contain any spaces is used as selector.
 		 * @param object optional the object to pass to the template. If object is not set, the template is called with <var>undefined</var>
@@ -5980,8 +5980,8 @@ define('minified', function() {
 		 *                     unless you use triple curly-braces.
 		 * @param templateFunction instead of a HTML template <var>HTML()</var> also accepts a template function, e.g. one
 		 *                         created by ##template(). It will be invoked with the object as only argument.
-		 * @param idSelector if you pass an ID CSS selector in the form "#myElement", Minified will recognize this and use the content 
-		 *                   of the specified element as template string. This allows you, for example, to put your template into 
+		 * @param idSelector if you pass an ID CSS selector in the form "#myScript", Minified will recognize this and use the content 
+		 *                   of the specified &lt;script> element as template. This allows you to put your template into 
 		 *                   a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
 		 *                   contain any spaces is used as selector.
 		 * @param object optional the object to pass to the template
