@@ -9,7 +9,7 @@ main: `<div>
 <p>Beta 4 is a relatively small release. Notable changes include the new functions <var>per()</var> and <var>onFocus()</var>, a reorganization
 of <var>request()</var>'s advanced options as well as a new value for <var>this</var> in all event handlers.</p>
 <p>Main reason to release it so early and with so few features is that I wanted to release some backward-incompatible changes as soon as possible.
-After beta 4 I intend to keep frther backward-incompatible changes to a minimum, as Minified steers slowly towards its first stable release.</p>
+After beta 4 I intend to keep further backward-incompatible changes to a minimum, as Minified steers slowly towards its first stable release.</p>
 
 <h2 style="color: red">Backward-incompatible Changes</h2>
 <p>
@@ -24,7 +24,7 @@ have been moved into a new <var>settings</var> argument.</li>
 
 <h2>New: Iteration over sub-lists with per()</h2>
 <p><span class="var"><a href="/api/per.html">per()</a></span> is an iteration function like <span class="var"><a href="/api/each.html">each()</a></span>, but
-with one difference: it invokes the callback with the elements wrapped in a single-item Minified list. This can simplify your code in some cases.</p>
+with one key difference: it invokes the callback with the elements wrapped in a single-item Minified list. This can simplify your code in some cases.</p>
 <pre>
 $('.withHoverEffect').per(function(el) {
     el.onOver(el.toggle('hoverEffect'));
@@ -41,6 +41,13 @@ $('input').per(function(el) {
 });
 </pre>
 
+<h2>New: reduce() for Minified lists</h2>
+<p>Beta 4 (re-)adds a simple <span class="var"><a href="/api/reduce.html">reduce()</a></span> version to the Util module.</p>
+<pre>
+var sum = _(1, 2, 3, 4, 5).reduce(function(memo, value, index) {
+    return memo + value;
+}, 0);
+</pre>
 
 <h2>Change: on(), onOver() and onChange() return target wrapped in a list</h2>
 <p>Before beta 3, <code><a href="/api/on.html">on()</a></var> would call its handler with <var>this</var> set to the event source. Starting with beta 4,
