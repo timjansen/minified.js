@@ -3449,14 +3449,8 @@ define('minified', function() {
 		///#/snippet webExports
 		
 	};
-	// @cond !amdsupport _window['require'] = function(n) { if (n == 'minified') return MINI; };
-
 ///#snippet commonAmdEnd
-// @condblock amdsupport
 });
-// @condend amdsupport
-
-// @cond !amdsupport })();
 ///#/snippet commonAmdEnd
         
         
