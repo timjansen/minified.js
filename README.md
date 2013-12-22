@@ -64,7 +64,6 @@ What you can expect from Minified Web
 * General purpose functions to effectively write HTML-based web applications
 * A very small footprint. The complete distribution will always be smaller than 8kB, and the Web module under 4kb.
 * A clean and simple, easy to use API.
-* A stable API that won't change.
 
 
 Building
