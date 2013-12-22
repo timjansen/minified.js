@@ -3038,11 +3038,7 @@ define('minified', function() {
 
 	///#/snippet webInit
 
-    // @condblock amdsupport
 	return {
-	// @condend amdsupport
-
-	// @cond !amdsupport var MINI = {
 
 	///#snippet webExports
 
@@ -3349,14 +3345,9 @@ define('minified', function() {
 		///#/snippet webExports
 
 	};
-	// @cond !amdsupport _window['require'] = function(n) { if (n == 'minified') return MINI; };
 
 ///#snippet commonAmdEnd
-// @condblock amdsupport
 });
-// @condend amdsupport
-
-// @cond !amdsupport })();
 ///#/snippet commonAmdEnd
 
 ///#snippet  webDocs

@@ -1,7 +1,7 @@
 var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = MINI._;
 
-var VERSION = "Version 2014 beta 4 b2";
+var VERSION = "Version 2014 beta4 b3";
 var MAX_SIZE = 8191;
 var SRC='/builder/minified-generated-full-src.js';
 
