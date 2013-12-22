@@ -21,7 +21,7 @@ module.exports = function(grunt) {
 		minitemplate: {
 			staticPages: {
 				options: {
-					template: 'templates/page.template'
+					template: 'srcContent/page.template'
 				},
 				files: [{
 			            expand: true,     

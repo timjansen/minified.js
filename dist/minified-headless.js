@@ -1,6 +1,6 @@
 /*
  * Minified-util.js - Collections, formatting and other helpers.
- * Version: 2014.0.0-beta4.0
+ * Version: 2014.0.0-beta5.0
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
