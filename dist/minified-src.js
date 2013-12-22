@@ -46,13 +46,13 @@
 
 /*$
  * @id amdsupport
- * @name AMD support
+ * @name AMD stubs
  * @configurable default
  * @group OPTIONS
  * @doc no
  * @module WEB, UTIL
- * If enabled, Minified will work correctly with AMD frameworks. If not, it will just provide a global 
- * function ##require(), which can be used only to load 'minified'.
+ * If enabled, Minified will create stubs so you can use it without an AMD framework.
+ * It requires AMD's <code>define()</code> function.
  */
 if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
 	(function(def){
@@ -60,12 +60,11 @@ if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal v
 		this['require'] = function(name) { return def[name]; };
 	})({});
 }
-
-define('minified', function() {
 /*$
  * @stop
  */
-// @cond !amdsupport (function() {
+
+define('minified', function() {
 
 ///#/snippet commonAmdStart
 	///#snippet webVars
