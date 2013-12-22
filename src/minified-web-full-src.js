@@ -3137,11 +3137,8 @@ define('minified', function() {
 	///#/snippet webInit
 
     
-    // @condblock amdsupport
 	return {
-	// @condend amdsupport
 	
-	// @cond !amdsupport var MINI = {
 	
 	///#snippet webExports
 
