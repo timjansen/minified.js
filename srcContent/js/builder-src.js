@@ -61,7 +61,7 @@ function setUpConfigurationUI(s) {
 		}
 		else  {
 			$('#resultDiv').animate({$$slide: 1});
-			$$('#resultSrc').value = header + src;
+			$$('#resultSrc').value = header + src.replace(/@@@VERSION@@@/, VERSION);
 			$('#resultPlain').fill((src.length/1024).toFixed(2) + 'kb');
 			$('#gzipRow, #downloadRow').set({$display: 'none'});
 		}
