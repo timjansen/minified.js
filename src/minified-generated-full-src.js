@@ -6677,11 +6677,7 @@ define('minified', function() {
 	};
 
 ///#snippet commonAmdEnd
-// @condblock amdsupport
 });
-// @condend amdsupport
-
-// @cond !amdsupport })();
 ///#/snippet commonAmdEnd
 ///#snippet  webDocs
 
