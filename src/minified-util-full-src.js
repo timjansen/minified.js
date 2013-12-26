@@ -1,5 +1,6 @@
 /*
  * Minified-util.js - Collections, formatting and other helpers.
+ * Version: @@@VERSION@@@
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -1642,7 +1643,7 @@ define('minified', function() {
 	 * return value of the last invocation.
 	 *
 	 * @example Sum up some numbers:
-	 * <pre>var sum = _(1, 2, 3).reduce(0, function(memo, item, index) { return memo + item; });
+	 * <pre>var sum = _(1, 2, 3).reduce(function(memo, item, index) { return memo + item; }, 0);
 	 *
      * @param callback The callback <code>function(memo, item, index)</code> to invoke for each list element. 
      *                 <dl><dt>memo</dt><dd>On the first invocation, the <var>memo</var> argument given to <var>reduce()</var>. On

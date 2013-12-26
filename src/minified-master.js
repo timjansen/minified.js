@@ -1,5 +1,6 @@
 /*
- * Minified.js - Combines Minified Web, Minified Util and the extra package
+ * Minified.js - Lightweight Client-Side JavaScript Libary (full package)
+ * Version: @@@VERSION@@@
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -49,7 +50,10 @@ function dummy() {
 	
 			
 	//// DOLLAR FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///#include minified-web-full-src.js webDollarFuncs
+	copyObj({
+		///#include minified-web-full-src.js webDollarFuncs
+		///#include minified-util-full-src.js utilDollarFuncs
+	}, $);
 	
 
 	//// UNDERSCORE FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,6 @@
 /*
- * Minified-web.js - Lightweight Client-Side JavaScript Libary
+ * Minified-web.js - Lightweight Client-Side JavaScript Libary (web module only)
+ * Version: 2014.0.0-beta4.2
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -2649,6 +2650,7 @@ define('minified', function() {
 
 	///#snippet webDollarFuncs
 	eachObj({
+	///#snippet webDollarFuncs
 	/*$
 	* @id request
 	* @group REQUEST
@@ -3002,10 +3004,9 @@ define('minified', function() {
  	 * @stop
  	 */
 	// @cond !off dummyOff:null
-
-	}, function(n, v) {$[n]=v;});
-
+	// @cond ALL ,
 	///#/snippet webDollarFuncs
+	}, function(n, v) {$[n]=v;});
 
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

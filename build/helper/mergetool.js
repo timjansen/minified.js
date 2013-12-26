@@ -35,7 +35,7 @@ function merge(src, readFile) {
 			inRemove = true;
 			return null;
 		}
-		else if (match = /^\s*\/\/+\s*#include\s+([\w._-]+)\s+(\w+)\b/.exec(line))
+		else if (match = /^\s*\/\/+\s*#include\s+([\w._\/-]+)\s+(\w+)\b/.exec(line))
 			return findSnippet(match[1], match[2], fileCache, readFile);
 		else
 			return line;

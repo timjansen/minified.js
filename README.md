@@ -2,7 +2,7 @@ Minified
 =========
 
 Quick Links: <a href="http://minifiedjs.com/">minifiedjs.com</a> - <a href="http://minifiedjs.com/api/">API</a> - <a href="http://minifiedjs.com/docs/">Docs</a>
-Latest version: <a href="http://minifiedjs.com/docs/beta4.html">beta 4</a> (<a href="CHANGES.md">changelog</a>)
+Latest version: <a href="http://minifiedjs.com/docs/beta4.html">beta 4.2</a> (<a href="CHANGES.md">changelog</a>)
 
 Overview
 ----------
@@ -64,7 +64,6 @@ What you can expect from Minified Web
 * General purpose functions to effectively write HTML-based web applications
 * A very small footprint. The complete distribution will always be smaller than 8kB, and the Web module under 4kb.
 * A clean and simple, easy to use API.
-* A stable API that won't change.
 
 
 Building

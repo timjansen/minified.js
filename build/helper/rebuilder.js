@@ -2,6 +2,7 @@
 
 var _ = require('minified-headless');
 var parser = require('../../srcContent/js/parser-src.js');
+var bower = require('../../bower.json');
 
 //Returns a new source code, given the original and the configuration in serialized form.
 module.exports = function(src, configSrc, extraSections) {
@@ -10,5 +11,6 @@ module.exports = function(src, configSrc, extraSections) {
 	if (extraSections)
 		for (var i = 0; i < extraSections.length; i++)
 			enabledSections[extraSections[i]] = 1;
-	return parser.compile(sectionData.sections, sectionData.sectionMap, enabledSections);
+	return parser.compile(sectionData.sections, sectionData.sectionMap, enabledSections)
+	             .replace(/@@@VERSION@@@/, bower.version);
 };
