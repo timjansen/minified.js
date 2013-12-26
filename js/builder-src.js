@@ -1,7 +1,7 @@
 var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = MINI._;
 
-var VERSION = "Version 2014 beta4 b3";
+var VERSION = "Version 2014 beta 4 b2";
 var MAX_SIZE = 8191;
 var SRC='/builder/minified-generated-full-src.js';
 
@@ -61,7 +61,7 @@ function setUpConfigurationUI(s) {
 		}
 		else  {
 			$('#resultDiv').animate({$$slide: 1});
-			$$('#resultSrc').value = header + src;
+			$$('#resultSrc').value = header + src.replace(/@@@VERSION@@@/, VERSION);
 			$('#resultPlain').fill((src.length/1024).toFixed(2) + 'kb');
 			$('#gzipRow, #downloadRow').set({$display: 'none'});
 		}
