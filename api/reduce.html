@@ -65,7 +65,7 @@ return value of the last invocation.</p><p></p></div>
 <div class="examples">
 <h4>Example</h4>
 <div class="example"><p>Sum up some numbers:
-<pre>var sum = _(1, 2, 3).reduce(0, function(memo, item, index) { return memo + item; });
+<pre>var sum = _(1, 2, 3).reduce(function(memo, item, index) { return memo + item; }, 0);
 </pre></p></div>
 </div>
 
