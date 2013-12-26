@@ -449,7 +449,7 @@ function dummy() {
 	copyObj({
 		///#snippet extrasUnderscoreFuncs
 		// @condblock promise
-		'promise': promise,
+		'promise': promise
 		// @condend promise
 		
 		/*$

@@ -1,5 +1,5 @@
 /*
- * Minified.js - Lightweight Client-Side JavaScript Libary (full package)
+ * Minified.js - Lightweight Client-Side JavaScript Library (full package)
  * Version: @@@VERSION@@@
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
@@ -52,7 +52,7 @@ function dummy() {
 	//// DOLLAR FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	copyObj({
 		///#include minified-web-full-src.js webDollarFuncs
-		///#include minified-util-full-src.js utilDollarFuncs
+		///#include minified-extras-full-src.js extrasDollarFuncs
 	}, $);
 	
 

@@ -30,7 +30,7 @@ module.exports = function(grunt) {
 			srcDir : null,
 			prolog : DEFAULT_PROLOG
 		});
-		
+
 		this.files.forEach(function(f) {
 			var srcPath = f.src[0];
 			var destPath = f.dest;
@@ -69,7 +69,13 @@ module.exports = function(grunt) {
 				return;
 			}
 			
-			grunt.file.write(destPath, options.prolog + mergetool.merge(src, function(name) { return grunt.file.read(srcDir + name); } ));
+			try {
+				var merged = mergetool.merge(src, function(name) { return grunt.file.read(srcDir + name); } );
+				grunt.file.write(destPath, options.prolog + merged);
+			}
+			catch(e) {
+				grunt.log.error("Got error while merging: " + e);
+			}
 		});
 	});
 };
