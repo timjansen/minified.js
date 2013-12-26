@@ -2732,8 +2732,8 @@ define('minified', function() {
 
  	//// DOLLAR FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	///#snippet webDollarFuncs
 	eachObj({
+	///#snippet webDollarFuncs
 	/*$
 	* @id request
 	* @group REQUEST
@@ -3097,10 +3097,10 @@ define('minified', function() {
  	 * @stop
  	 */
 	// @cond !off dummyOff:null
-	
+	// @cond ALL ,
+	///#/snippet webDollarFuncs
 	}, function(n, v) {$[n]=v;});
 
-	///#/snippet webDollarFuncs
 			
 				
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3446,6 +3446,7 @@ define('minified', function() {
 		///#/snippet webExports
 		
 	};
+
 ///#snippet commonAmdEnd
 });
 ///#/snippet commonAmdEnd
