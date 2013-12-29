@@ -439,7 +439,7 @@ define('minified', function() {
 		};
 	}
 	function partial(f, beforeArgs, afterArgs) {
-		return bind(f, _null, beforeArgs, afterArgs);
+		return bind(f, this, beforeArgs, afterArgs);
 	}
 	function insertString(origString, index, len, newString) {
 		return origString.substr(0, index) + newString + origString.substr(index+len);
@@ -1947,7 +1947,8 @@ define('minified', function() {
 		 * Creates a new function that calls the given function with some arguments pre-filled. You can specify one or more arguments to 
 		 * be put in front of the arguments list as well as arguments that will be appended to the argument list.
 		 *
-		 * See also ##_.bind(), if you want to set 'this' as well.
+		 * See also ##_.bind(), if you want to set 'this' as well. <var>partial()</var> calls the wrapped function with the 'this' the 
+		 * wrapper has been called with.
 		 * 
 		 * @example Create functions that divide:
 		 * <pre>function div(a, b) { return a / b; }

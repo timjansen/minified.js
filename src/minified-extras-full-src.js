@@ -362,7 +362,7 @@ function dummy() {
 				$(subSelector, this)['per'](handler);
 			return this;
 		},
-			
+				
 		/*$
 		 * @id ht
 		 * @group ELEMENT

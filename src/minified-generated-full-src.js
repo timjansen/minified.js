@@ -562,7 +562,7 @@ define('minified', function() {
 		};
 	}
 	function partial(f, beforeArgs, afterArgs) {
-		return bind(f, _null, beforeArgs, afterArgs);
+		return bind(f, this, beforeArgs, afterArgs);
 	}
 	function insertString(origString, index, len, newString) {
 		return origString.substr(0, index) + newString + origString.substr(index+len);
@@ -2530,7 +2530,9 @@ define('minified', function() {
  	 * 
  	 * <var>trav()</var> traverses the DOM tree for each list element until it finds a <var>null</var>.  
  	 * All visited nodes that match the given selector are added to the result list. If no selector is given,
- 	 * only elements will be added.
+ 	 * only elements will be added. Duplicates will be automatically be removed from the resulting list.
+ 	 * 
+ 	 * Instead of the selector, you can also specify a function that evaluates whether an element matches.
  	 * 
  	 * DOM provides the following properties for traveral:
  	 * <table>
@@ -2540,7 +2542,7 @@ define('minified', function() {
  	 * <tr><th>lastElementChild</th><td>Contains the last child element (not in IE &lt; 9).</td></tr>
  	 * <tr><th>nextElementSibling</th><td>Contains the element that follows the current node (not in IE &lt; 9).</td></tr>
  	 * <tr><th>nextSibling</th><td>Contains the node that follows the current node.</td></tr>
- 	 * <tr><th>parentNode</th><td>Contains the node's parent.</td></tr>
+ 	 * <tr><th>parentNode</th><td>Contains the node's parent (see also ##up() ).</td></tr>
  	 * <tr><th>previousElementSibling</th><td>Contains the element that precedes the current node (not in IE &lt; 9).</td></tr>
  	 * <tr><th>previousSibling</th><td>Contains the node that precedes the current node.</td></tr>
  	 * </table>
@@ -2570,10 +2572,12 @@ define('minified', function() {
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements
  	 *        (but no other nodes such as text nodes).
-     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that are approved.
+     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
  	 * @param maxDepth optional the maximum number of steps to traverse. Defaults to unlimited.
  	 * @return the new list containing all visited nodes. Nodes of the original list are not included, unless they
  	 *         have been visited when traversing another node. Duplicate nodes will be automatically removed.
+ 	 *         
+ 	 * @see ##up() finds exactly one parent element that matches a selector.
  	 */
 	'trav': function(property, selector, maxDepth) {
 		var isNum = isNumber(selector);
@@ -2587,6 +2591,57 @@ define('minified', function() {
 						r.push(c);
 				return r;
 			}));
+	},
+	
+	/*$
+ 	 * @id up
+ 	 * @group SELECTORS
+ 	 * @requires trav
+ 	 * @configurable default
+ 	 * @name .up()
+ 	 * @syntax list.up()
+ 	 * @syntax list.up(selector)
+ 	 * @syntax list.up(selector, maxDepth)
+ 	 * @syntax list.up(filterFunc)
+ 	 * @syntax list.up(filterFunc, maxDepth)
+     * @module WEB
+ 	 * Finds the closest parent matching the given selector or filter function for each list element, and returns the results as a list.
+ 	 * 
+ 	 * <var>up(selector)</var> is just a shortcut for <code>trav(parentNode, selector, 1)</code>. 
+ 	 * <var>up()</var> uses ##trav() to traverse the DOM tree using <var>parentNode</var> for each list element, until it either finds a 
+ 	 * matching element or the tree's root has been reached. All matches will added to the result list, at most one for each item in the
+ 	 * original list. The result list is filtered to include only unique elements.
+	 * 
+ 	 * Instead of the selector, you can also specify a function that evaluates whether an element matches.
+ 	 * 
+ 	 * @example Returns the immediate parent of a node:
+ 	 * <pre>
+ 	 * var parent = $('#child').up(); 
+ 	 * </pre>
+ 	 *
+ 	 * @example Returns all table elements that the list elements are directly contained in.
+ 	 * <pre>
+ 	 * var tables = $('td.selected').up('table'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @example Returns a list of all direct parent nodes that have a class that starts with 'special':
+ 	 * <pre>
+ 	 * var specialParents = $('.myElements').up(function(node) {
+ 	 *     return /(^|\s)special/.test(node.className);
+ 	 * }); 
+ 	 * </pre>
+ 	 *
+  	 * @parm property the name of the property to traverse.
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
+ 	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
+     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+ 	 * @return the new list that contains matching parent elements. Duplicate nodes will be automatically removed.
+ 	 *         
+ 	 * @see ##trav() allows you to match more than one element. You can also select other relatives such as siblings or children.
+ 	 */
+	'up': function(selector) {
+		return this['trav']('parentNode', selector, 1);
 	},
 	
  	/*$
@@ -4411,7 +4466,7 @@ define('minified', function() {
 				$(subSelector, this)['per'](handler);
 			return this;
 		},
-			
+				
 		/*$
 		 * @id ht
 		 * @group ELEMENT
@@ -5290,7 +5345,8 @@ define('minified', function() {
 		 * Creates a new function that calls the given function with some arguments pre-filled. You can specify one or more arguments to 
 		 * be put in front of the arguments list as well as arguments that will be appended to the argument list.
 		 *
-		 * See also ##_.bind(), if you want to set 'this' as well.
+		 * See also ##_.bind(), if you want to set 'this' as well. <var>partial()</var> calls the wrapped function with the 'this' the 
+		 * wrapper has been called with.
 		 * 
 		 * @example Create functions that divide:
 		 * <pre>function div(a, b) { return a / b; }

@@ -433,7 +433,7 @@ module.exports = (function() {
 		};
 	}
 	function partial(f, beforeArgs, afterArgs) {
-		return bind(f, _null, beforeArgs, afterArgs);
+		return bind(f, this, beforeArgs, afterArgs);
 	}
 	function insertString(origString, index, len, newString) {
 		return origString.substr(0, index) + newString + origString.substr(index+len);
@@ -1627,7 +1627,7 @@ module.exports = (function() {
 	 * return value of the last invocation.
 	 *
 	 * @example Sum up some numbers:
-	 * <pre>var sum = _(1, 2, 3).reduce(0, function(memo, item, index) { return memo + item; });
+	 * <pre>var sum = _(1, 2, 3).reduce(function(memo, item, index) { return memo + item; }, 0);
 	 *
      * @param callback The callback <code>function(memo, item, index)</code> to invoke for each list element. 
      *                 <dl><dt>memo</dt><dd>On the first invocation, the <var>memo</var> argument given to <var>reduce()</var>. On
@@ -1925,7 +1925,8 @@ module.exports = (function() {
 		 * Creates a new function that calls the given function with some arguments pre-filled. You can specify one or more arguments to 
 		 * be put in front of the arguments list as well as arguments that will be appended to the argument list.
 		 *
-		 * See also ##_.bind(), if you want to set 'this' as well.
+		 * See also ##_.bind(), if you want to set 'this' as well. <var>partial()</var> calls the wrapped function with the 'this' the 
+		 * wrapper has been called with.
 		 * 
 		 * @example Create functions that divide:
 		 * <pre>function div(a, b) { return a / b; }

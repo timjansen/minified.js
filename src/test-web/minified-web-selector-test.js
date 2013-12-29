@@ -267,6 +267,9 @@ describe('minified-web-selector-test.js', function() {
 
    			m = $('#b_a, #b_b').trav('parentNode', '#container div');
    			containsAll(m, [document.getElementById("b")], true, 'multi-hit selector');
+
+   			m = $('#a_a').trav('parentNode', '#container');
+   			containsAll(m, [document.getElementById("container")], true, 'parent by id');
    			
    			m = $('#a').trav('nextSibling', function(v) { return v.nodeType == 1 && v !== document.getElementById("b"); });
    			containsAll(m, [document.getElementById("c")], true, 'tagname selector');
@@ -289,6 +292,9 @@ describe('minified-web-selector-test.js', function() {
 
    			m = $('#b_a, #b_b').trav('parentNode', '*', 2);
    			containsAll(m, [document.getElementById("b"), document.getElementById("container")], true, 'double step');
+   			
+   			m = $('#a_a').trav('parentNode', '#container', 1);
+   			containsAll(m, [document.getElementById("container")], true, 'parent by id + count');
 
    			m = $('#a_a, #b_a, #b_b, #c_b').trav('parentNode', '*', 2);
    			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c"), document.getElementById("container")], true, 'double steps list input');
@@ -305,6 +311,37 @@ describe('minified-web-selector-test.js', function() {
 
    			m = $('#a_a, #b_a, #b_b, #c_b').trav('parentNode', 2);
    			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c"), document.getElementById("container")], true, 'double steps list input');
+		});
+	});
+	
+	describe('.up()', function() {
+		it('just works', function() {
+   			m = $('#b_b').up();
+   			containsAll(m, [document.getElementById("b")]);
+
+   			var m = $("#a_a, #b_b, #a_a").up();
+   			containsAll(m, [document.getElementById("a"), document.getElementById("b")], true, 'dupe list input with single step');
+
+   			m = $('#a_a, #b_a, #b_b, #c_b').up();
+   			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c")], true, 'list input, partial merge');
+
+  			m = $('#a_a').up('#container');
+   			containsAll(m, [document.getElementById("container")], true, 'single parent by id');
+   			
+   			m = $('#a_a, #b_a').up('#container');
+   			containsAll(m, [document.getElementById("container")], true, 'common parent by id');
+   			
+   			m = $('#a_a, #b_a').up('#idontexist');
+   			containsAll(m, [], true, 'parent does not exist / id');
+
+   			m = $('#b_a').up('.idontexist');
+   			containsAll(m, [], true, 'parent does not exist / class');
+
+   			m = $('#a_a, #b_a').up('body');
+   			containsAll(m, [$$('body')], true, 'parent by tag name');
+
+   			m = $('#a_a, #b_a').up(function(n) { return n.id == 'container'; });
+   			containsAll(m, [$$('#container')], true, 'parent by function');
 		});
 	});
 

@@ -1,8 +1,13 @@
 Minified Change Log
 ====================
 
+Beta 5 (in progress...)
+-----------------------
+* added up()
+
+
 Beta 4.2 (2014-12-26)
--------------------
+---------------------
 * fixed issue with delay(), wait(), setCookie() and getCookie(). They were in the wrong namespace, _ instead of $.
 * added version numbers in all source files.
 
