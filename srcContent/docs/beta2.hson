@@ -78,7 +78,7 @@ mouse is over the element and <span class="var">false</span> when it left the el
 <p>The new method <span class="var"><a href="/api/trigger.html">trigger()</a></span> can call any event previously registered
 with  <span class="var"><a href="/api/on.html">on()</a></span>. You can call regular event handlers such as 'click', but also
 create your own event handler names and call them. <span class="var">trigger()</span> emulates event bubbling, but will not send a DOM
-event to the browser and thus does not emulate the event default behaviour.
+event to the browser and thus does not emulate the event default behavior.
 </p>
 
 <h5>Example: Calling a click handler</h5>

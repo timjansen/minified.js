@@ -645,7 +645,7 @@ $('#myElement').trigger('click', {msg: 'Just triggered it')});</pre>
 You can use <span class="var">trigger()</span> to invoke any event handler previously registered using <span class="var">on()</span>. The 
 handler(s) will receive <span class="var">trigger()</span>'s second parameter as event object. <br/>
 <span class="var">trigger()</span> emulates event bubbling, but will not send a DOM 
-event to the browser and thus does not emulate the event default behaviour. 
+event to the browser and thus does not emulate the event default behavior. 
 </p><p>
 API: <a href="/api/on.html">on()</a>, <a href="/api/trigger.html">trigger()</a>.<br/>
 </p>

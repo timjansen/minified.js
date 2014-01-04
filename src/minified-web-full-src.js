@@ -2418,9 +2418,9 @@ define('minified', function() {
 	 * @module WEB
 	 * Registers the function as event handler for all items in the list.
 	 * 
-	 * By default, Minified cancels event propagation and disables element's default behaviour for all elements that have an event handler. 
+	 * By default, Minified cancels event propagation and disables element's default behavior for all elements that have an event handler. 
 	 * You can override this, either by prefixing the event name with a '|', or by prefixing them with '?' and returning a <var>true</var>  
-	 * in the handler. Both will reinstate the original JavaScript behaviour. 
+	 * in the handler. Both will reinstate the original JavaScript behavior. 
 	 * 
 	 * Handlers are called with the original event object as first argument, the index of the source element in the 
 	 * list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked). 
@@ -2457,7 +2457,7 @@ define('minified', function() {
 	 * $('#myButton').on('click', setStatus, ['running']);
 	 * </pre>
 	 *
-	 * @example Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behaviour: 
+	 * @example Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behavior: 
 	 * <pre>
 	 * $('#myInput').on('|keypress |keydown', function() {
 	 *    // do something
@@ -2680,7 +2680,7 @@ define('minified', function() {
 	 * 
 	 * Triggers event handlers registered with ##on().
 	 * Any event that has been previously registered using ##on() can be invoked with <var>trigger()</var>. Please note that 
-	 * it will not simulate the default behaviour on the elements, such as a form submit when you click on a submit button. Event bubbling
+	 * it will not simulate the default behavior on the elements, such as a form submit when you click on a submit button. Event bubbling
 	 * is supported, thus unless there's an event handler that cancels the event, the event will be triggered on all parent elements.
 	 * 
 	 * 

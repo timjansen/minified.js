@@ -1232,9 +1232,9 @@
 		 * @syntax $(selector).on(names, handler, fThis, args)
 		 * Registers the function as event handler for all items in the list.
 		 * 
-		 * By default, Minified cancels event propagation and the element's default behaviour for all elements that have an event handler. 
+		 * By default, Minified cancels event propagation and the element's default behavior for all elements that have an event handler. 
 		 * You can override this by prefixing the event name with a '|' or by returning a 'true' value in the handler, which will reinstate 
-		 * the original JavaScript behaviour.
+		 * the original JavaScript behavior.
 		 * 
 		 * Handlers are usually called with the original event object as first argument, the index of the source element in the 
 		 * list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked). 
@@ -1262,7 +1262,7 @@
 		 * $('#myButton').on('click', myObject.setStatus, myObject, ['running']);
 		 * </pre>
 		 *
-		 * @example Adds two handlers on an input field and keeps the original behaviour: 
+		 * @example Adds two handlers on an input field and keeps the original behavior: 
 		 * <pre>
 		 * $('#myInput').on('|keypress |keydown', function() {
 		 *    // do something

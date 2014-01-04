@@ -58,9 +58,9 @@ the selector is optimized for the simple patterns '.classname', 'tagname' and 't
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Registers the function as event handler for all items in the list.</p><p>By default, Minified cancels event propagation and disables element's default behaviour for all elements that have an event handler.
+<div class="description"><p>Registers the function as event handler for all items in the list.</p><p>By default, Minified cancels event propagation and disables element's default behavior for all elements that have an event handler.
 You can override this, either by prefixing the event name with a '|', or by prefixing them with '?' and returning a <span class="var">true</span>
-in the handler. Both will reinstate the original JavaScript behaviour.</p><p>Handlers are called with the original event object as first argument, the index of the source element in the
+in the handler. Both will reinstate the original JavaScript behavior.</p><p>Handlers are called with the original event object as first argument, the index of the source element in the
 list as second argument and 'this' set to the source element of the event (e.g. the button that has been clicked).</p><p>Instead of the event objects, you can also pass an array of arguments that will be passed instead of event object and index.</p><p>Optionally you can specify two a selector strings to qualify only certain events. The first one is a selector
 that allows you to select only specific children of the list elements. This is mostly useful for adding events to DOM trees
 generated using <code><a href='html.html' class='func'>HTML()</a></code> or <code><a href='ee.html' class='func'>EE()</a></code>.</p><p>The second type of selector is the bubble selector that allows you to receive only events that bubbled up from
@@ -89,7 +89,7 @@ $('#myButton').on('click', setStatus, ['running']);
 </pre>
 </p></div>
 <h4>Example</h4>
-<div class="example"><p>Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behaviour:
+<div class="example"><p>Adds two handlers on an input field. The event names are prefixed with '|' and thus keep their original behavior:
 <pre>
 $('#myInput').on('|keypress |keydown', function() {
    // do something

@@ -351,7 +351,7 @@ Events in Minified may a bit different than what you are used to. At first sight
 	alert('Button pressed!');
 });
 </pre>
-What you don't see here is that Minified will always <b>disable the default behaviour and prevent bubbling by default</b>, by 
+What you don't see here is that Minified will always <b>disable the default behavior and prevent bubbling by default</b>, by 
 calling the browser's <code>preventDefault()</code> and <code>stopPropagation()</code> functions or their respective Internet 
 Explorer equivalents. This means that if you add an event handler to a form submit button, the button will not submit the form 
 anymore, unless you explicitly allow it. Similarly, a click handler on a link would prevent the link from changing the page.
@@ -366,7 +366,7 @@ anymore, unless you explicitly allow it. Similarly, a click handler on a link wo
 </pre>
 </p>
 
-<p>Or you can keep the default behaviour by prefixing the name with a '?' (question mark) and let the handler return <code>true</code>:
+<p>Or you can keep the default behavior by prefixing the name with a '?' (question mark) and let the handler return <code>true</code>:
 <pre>
 <a href="/api/dollar.html">$</a>('#submitButton').<a href="/api/on.html">on</a>('?click', function() {
 	return confirm('Button pressed, really submit?');

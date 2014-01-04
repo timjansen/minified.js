@@ -33,7 +33,7 @@ they expect.</dd>
 <div class="description"><p>
 Triggers event handlers registered with <code><a href='on.html' class='func'>on()</a></code>.
 Any event that has been previously registered using <code><a href='on.html' class='func'>on()</a></code> can be invoked with <span class="var">trigger()</span>. Please note that
-it will not simulate the default behaviour on the elements, such as a form submit when you click on a submit button. Event bubbling
+it will not simulate the default behavior on the elements, such as a form submit when you click on a submit button. Event bubbling
 is supported, thus unless there's an event handler that cancels the event, the event will be triggered on all parent elements.</p><p>
 </p></div>
 
