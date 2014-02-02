@@ -45,8 +45,8 @@ function dummy() {
 	 * @module WEB+UTIL
 	 * 
 	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, 
-	 * fresh new promise is returned. The returned promise is a function that can be called directly to change the 
-	 * promises state.
+	 * a fresh new promise is returned. The returned promise is a function that can be called directly to change the 
+	 * promise's state.
 	 * 
 	 * If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards 
 	 * fulfillment and rejection with the original values.
@@ -70,9 +70,13 @@ function dummy() {
 	 * 
 	 * @param otherPromise one or more promises to assimilate
 	 * @return the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
-     * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected</dd>
+     * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected. If you pass <var>null</var> or
+     * <var>undefined</var>, the promise's state does not change. The latter may be useful to obtain the promises current state.</dd>
      * <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
-     * <var>state</var>).</dd></dl>
+     * <var>state</var>).</dd>
+     * <dt class="returnValue">(return value)</dt><dd><var>true</var> if the promise has been fulfilled, <var>false</var> if its state is rejected,
+     * <var>undefined</var> if it is still pending. If you only want to obtain the promise's state, call the function without arguments.</dd></dl> 
+     * </dl>
      * The function can be called several times, but only the first invocation modifies the Promise. All subsequent calls will
      * be ignored.
 	 */
@@ -86,20 +90,21 @@ function dummy() {
 		var values = []; // array containing the result arrays of all assimilated promises, or the result of the single promise
 	    
 		var set = function(newState, newValues) {
-			if (state == null) {
+			if (state == _null && newState != _null) {
 				set['state'] = state = newState;
 				values = isList(newValues) ? newValues : [newValues];
 				defer(function() {
 					each(deferred, function(f) {f();});
 				});
 			}
+			return state;
 		};
 
 		// use promise varargs
 		each(assimilatedPromises, function assimilate(promise, index) {
 			try {
 				promise['then'](function resolvePromise(v) {
-					if (v && isFunction(v['then'])) {
+					if ((isObject(v) || isFunction(v)) && isFunction(v['then'])) {
 						assimilate(v['then'], index);
 					}
 					else {
@@ -195,29 +200,40 @@ function dummy() {
     	 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
     	 */   
 	    var then = set['then'] = function (onFulfilled, onRejected) {
-			var newPromise = promise();
+			var promise2 = promise();
 			var callCallbacks = function() {
 	    		try {
 	    			var f = (state ? onFulfilled : onRejected);
 	    			if (isFunction(f)) {
-		   				var r = call(f, values);
-		   				if (r && isFunction(r['then']))
-		   					r['then'](function(value){newPromise(true,[value]);}, function(value){newPromise(false,[value]);});
-		   				else
-		   					newPromise(true, [r]);
+		   				function resolve(x) {
+		   					try {
+			   					var then;
+				   				if ((isObject(x) || isFunction(x)) && isFunction(then = x['then'])) {
+										if (x === promise2)
+											throw new TypeError();
+										then['call'](x, resolve, function(value){promise2(false,[value]);});
+				   				}
+				   				else
+				   					promise2(true, [x]);
+		   					}
+		   					catch(e) {
+		   						promise2(false, [e]);
+		   					}
+		   				}
+		   				resolve(call(f, undef, values));
 		   			}
 		   			else
-		   				newPromise(state, values);
+		   				promise2(state, values);
 				}
 				catch (e) {
-					newPromise(false, [e]);
+					promise2(false, [e]);
 				}
 			};
 			if (state != null)
 				defer(callCallbacks);
 			else
 				deferred.push(callCallbacks);    		
-			return newPromise;
+			return promise2;
 		};
 
     	/*$

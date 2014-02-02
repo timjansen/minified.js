@@ -4,7 +4,7 @@ Minified Change Log
 Beta 5 (in progress...)
 -----------------------
 * added up()
-
+* you can query a promise's state now by invoking it as a function without arguments (see promise(), full package only)
 
 Beta 4.2 (2014-12-26)
 ---------------------
