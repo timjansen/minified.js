@@ -1,0 +1,27 @@
+<html>
+	<head>
+		<title>$.ready() Test</title>
+		<script src="http://minifiedjs.com/download/minified-legacyie-web.js"></script>
+		<script>
+			$.ready(function() {
+				$('#headTest').fill('success');
+			});
+			setTimeout(function() {
+				$.ready(function() {
+					$('#ms10Test').fill('success');
+				});
+			}, 10);
+			setTimeout(function() {
+				$.ready(function() {
+					$('#ms1000Test').fill('success');
+				});
+			}, 1000);
+		</script>
+	</head>
+	<body>
+		<h1>$.ready() Test</h1>
+		<div>Works in head: <span id="headTest">no</span></div>
+		<div>Works in timeout / 10ms: <span id="ms10Test">pending</span></div>
+		<div>Works in timeout / 1000ms: <span id="ms1000Test">pending</span></div>
+	</body>
+</html>
