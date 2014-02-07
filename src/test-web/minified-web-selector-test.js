@@ -413,6 +413,26 @@ describe('minified-web-selector-test.js', function() {
 		});
 	});
 	
+	describe('.not()', function() {
+		it('just works', function() {
+   			containsAll($('#a').only().not(), [], 'default');
+   			containsAll($([document.getElementById('a'), 'd']).not('*'), ['d'], '*');
+
+   			var fd0 = $([EE('span', {$: 'a x'}), EE('span', {$: 'b x'})]);
+   			containsAll(fd0.not('.a'), [fd0[1]], 'class 1');
+   			containsAll(fd0.not('.b'), [fd0[0]], 'class 2');
+   			containsAll(fd0.not('.c'), [fd0[0], fd0[1]], 'class all');
+   			containsAll(fd0.not('.x'), [], 'class empty');
+   			
+   			var fd1 = $([EE('span', {$: 'a b c-c d'}), EE('span', {$: 'c-c b a'}), EE('span', {$: 'b c-c a'})]);
+   			check(fd1.not('.d-d').length, 3, 'dash-test');
+   			check(fd1.not('.d').length, 2, '!dash-test');
+  			check(fd1.not('span.c-c').length, 0, 'class.dash-test');
+  			check(fd1.not('div.d').length, 3, 'class.dash-test 2');
+  			check(fd1.not('span.d').length, 2, '!class.dash-test');
+		});
+	});
+	
 	
 	/*
 	describe('.fill()', function() {

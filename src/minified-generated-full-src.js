@@ -1269,6 +1269,11 @@ define('minified', function() {
 			};
 		}	
 	}
+	
+	function getInverseFilterFunc(selector) {
+		var f = getFilterFunc(selector);
+		return function(v) {return f(v) ? _null : _true;};
+	}
 	///#/snippet webFunctions
 	
 	///#snippet extrasFunctions
@@ -2732,14 +2737,13 @@ define('minified', function() {
  	 * @see ##only() removes elements from a list that do not match a selector.
  	 */
 	'is': function(selector) {
-		var f = getFilterFunc(selector);
-		return !this['find'](function(v) {return f(v) ? _null : _true;});
+		return !this['find'](getInverseFilterFunc(selector));
 	},
 	
  	/*$
  	 * @id only
  	 * @group SELECTORS
- 	 * @requires filter each
+ 	 * @requires filter
  	 * @configurable default
  	 * @name .only()
  	 * @syntax list.only()
@@ -2753,7 +2757,7 @@ define('minified', function() {
  	 * 
  	 * When you use selectors, please note that this method is optimized for the four simple 
  	 * selector forms '*', '.classname', 'tagname' and 'tagname.classname'. If you use any other kind of 
- 	 * selector, please be aware that selectors that match many elements can be slow.
+ 	 * selector, be aware that selectors that match many elements can be slow.
  	 * 
  	 * @example Returns only those list elements have the classes 'listItem' and 'myClass':
  	 * <pre>
@@ -2774,6 +2778,7 @@ define('minified', function() {
  	 *        with this index in the list, the returned list is empty.
  	 * @return a new list containing only elements matched by the selector/function/index.
  	 * 
+ 	 * @see ##not() creates a list of all elements not matching the selector.
  	 * @see ##select() executes a selector on the descendants of the list elements.
  	 * @see ##filter() offers function-based filtering.
  	 */
@@ -2781,6 +2786,50 @@ define('minified', function() {
 		return this['filter'](getFilterFunc(selector));
 	},
 	
+	
+ 	/*$
+ 	 * @id not
+ 	 * @group SELECTORS
+ 	 * @requires filter
+ 	 * @configurable default
+ 	 * @name .not()
+ 	 * @syntax list.not()
+ 	 * @syntax list.not(selector)
+ 	 * @syntax list.not(filterFunc)
+ 	 * @syntax list.not(index)
+     * @module Web
+ 	 * Returns a new list that contains only those elements that do not match the given selector, callback function
+ 	 * or have the given index. If no parameter has been given, the method removes all HTML elements 
+ 	 * and keeps the rest (same as '*').
+ 	 * 
+ 	 * When you use selectors, please note that this method is optimized for the four simple 
+ 	 * selector forms '*', '.classname', 'tagname' and 'tagname.classname'. If you use any other kind of 
+ 	 * selector, be aware that selectors that match many elements can be slow.
+ 	 * 
+ 	 * @example Returns only those list elements have the classes 'listItem' but not 'myClass':
+ 	 * <pre>
+ 	 * var myLis = $('li.listItem').not('.myClass'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @example Returns a list of all elements except forms:
+ 	 * <pre>
+ 	 * var forms = $('#content *').not('form'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @param selector any selector valid for #dollar#$(), including CSS selectors and lists. 
+ 	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        depends on the number of matches for the selector in the document. Default is '*', which removes all elements
+ 	 *        (but keeps other nodes such as text nodes).
+ 	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that should be removed.
+ 	 * @param index the index of the element to remove. All elements with other index will be kept. If there is no element
+ 	 *        with this index in the list, the returned list is identical to the original list.
+ 	 * @return a new list containing only elements not matched by the selector/function/index.
+ 	 * 
+ 	 * @see ##only() is the opposite of <var>not()</var> - it keeps all elements that match the selector.
+ 	 */
+	'not': function(selector) {
+		return this['filter'](getInverseFilterFunc(selector));
+	},
 
 	
   	/*$
