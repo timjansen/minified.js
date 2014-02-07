@@ -2733,7 +2733,7 @@ define('minified', function() {
  	 */
 	'is': function(selector) {
 		var f = getFilterFunc(selector);
-		return !this['find'](function(v) {if (!f(v)) return _true;});
+		return !this['find'](function(v) {return f(v) ? _null : _true;});
 	},
 	
  	/*$
