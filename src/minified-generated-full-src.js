@@ -564,9 +564,6 @@ define('minified', function() {
 	function partial(f, beforeArgs, afterArgs) {
 		return bind(f, this, beforeArgs, afterArgs);
 	}
-	function insertString(origString, index, len, newString) {
-		return origString.substr(0, index) + newString + origString.substr(index+len);
-	}
 	function pad(digits, number) {
 		var signed = number < 0 ? '-' : '';
 		var preDecimal = replace((signed?-number:number).toFixed(0), /\..*/);
@@ -581,6 +578,32 @@ define('minified', function() {
 	}
 	
 
+	function reverseString(s) {
+		var s2 = '';
+		for (var i = s.length - 1; i >= 0; i--)
+			s2 += s.charAt(i);
+		return s2;
+	}
+	
+	function processNumCharTemplate(tpl, input, fwd) {
+		var inputPos = 0;
+		var inHash;
+		var rInput = fwd ? input : reverseString(input);
+		var s = (fwd ? tpl : reverseString(tpl)).replace(/./g, function(tplChar) {
+			if (tplChar == '0') {
+				inHash = _false;
+				return rInput[inputPos++] || '0';
+			}
+			else if (tplChar == '#') {
+				inHash = _true;
+				return rInput[inputPos++] || '';
+			}
+			else
+				return rInput[inputPos] == null && inHash ? '' : tplChar;
+		});
+		return fwd ? s : reverseString(s);
+	}
+	
 	
 	// formats number with format string (e.g. "#.000", "#,#", "00000", "000.00", "000.000.000,00", "000,000,000.##")
 	// choice syntax: <cmp><value>:<format>|<cmp><value>:<format>|... 
@@ -621,7 +644,7 @@ define('minified', function() {
 		}
 		else 
 			return find(format.split(/\s*\|\s*/), function(fmtPart) {
-				var match, matchGrp, numFmtOrResult, groupSep, groupingSize;
+				var match, numFmtOrResult;
 				if (match = /^([<>]?)(=?)([^:]*?)\s*:\s*(.*)$/.exec(fmtPart)) {
 					var cmpVal1 = value, cmpVal2 = parseFloat(match[3]);
 					if (isNaN(cmpVal2) || !isNumber(cmpVal1)) {
@@ -641,33 +664,19 @@ define('minified', function() {
 				else
 					numFmtOrResult = fmtPart;
 
-				if (isNumber(value) && (match = /[0#]([0#.,]*[0#])?/.exec(numFmtOrResult))) {
-					var numFmt = match[0];
-					if (matchGrp = /\.([0#]*)[.,]|,([0#]*)[.,]/.exec(numFmt)) {
-						groupSep = matchGrp[0].charAt(0);
-						groupingSize = matchGrp[1] != null ? matchGrp[1].length : matchGrp[2].length;
-						numFmt = replace(numFmt, groupSep == '.' ? /\./g : /,/g);
-					}
-					var m2 = /([0#]+)(([.,])([0#]+))?/.exec(numFmt);
-					var postDecimalMinLen = replace(m2[2], /#/g).length;
-					var signed = value < 0 ? '-' : '';
-					var m = /(\d+)(\.(\d+))?/.exec((signed?-value:value).toFixed(m2[2]?m2[4].length:0));
-					var preDecimal = pad(replace(m2[1], /#/g).length, parseInt(m[1]));
-					var postDecimal = (m2[3]||'.') + m[3];
-					if (matchGrp) {
-						function group(s) {
-							var len = s.length;
-							if (len > groupingSize)
-								return group(s.substr(0, len-groupingSize)) + groupSep + s.substr(len-groupingSize);
-							else
-								return s;					
-						}
-						preDecimal = group(preDecimal);
-					}
-					return insertString(numFmtOrResult, match.index, toString(match[0]).length, 
-							signed + preDecimal + 
-							(m[2] ? (postDecimal.length>postDecimalMinLen?replace(postDecimal.substr(0, postDecimalMinLen)+replace(postDecimal.substr(postDecimalMinLen), /0+$/), /[.,]$/):postDecimal) : ''));
-				}
+				if (isNumber(value))
+					return numFmtOrResult.replace(/[0#](.*[0#])?/, function(numFmt) {
+						var decimalFmt = /^([^.]+)(\.)([^.]+)$/.exec(numFmt) || /^([^,]+)(,)([^,]+)$/.exec(numFmt);
+						var signed = value < 0 ? '-' : '';
+						var numData = /(\d+)(\.(\d+))?/.exec((signed?-value:value).toFixed(decimalFmt ? decimalFmt[3].length:0));
+						var preDecimalFmt = decimalFmt ? decimalFmt[1] : numFmt;
+						var postDecimal = decimalFmt ? processNumCharTemplate(decimalFmt[3], replace(numData[3], /0+$/), _true) : '';
+						
+						return 	(signed ? '-' : '') + 
+								(preDecimalFmt == '#' ? numData[1] : processNumCharTemplate(preDecimalFmt, numData[1])) +
+								(postDecimal.length ? decimalFmt[2] : '') +
+								postDecimal;
+					});
 				else
 					return numFmtOrResult;
 			});
@@ -831,7 +840,7 @@ define('minified', function() {
 		
 		// @cond !ie8compatibility return str.split(regexp);
 	}
-	
+ 
 	function template(template, escapeFunction) {
 		if (templateCache[template])
 			return templateCache[template];
@@ -5834,36 +5843,42 @@ define('minified', function() {
 		 *
 		 * <b>Number Formatting</b><br/> 
 		 * Number formatting allows you to specify the number of digits before and optionally after the decimal separator, the decimal separator itself
-		 * as well as how to group digits. The following characters are used in the format:
+		 * as well as how to group and decorate the digits. The following characters are used in the format:
 		 * 
 		 * <table><tr><th>Character</th><th>Description</th></tr>
 		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
 		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
-		 * <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
-		 * <tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+		 * <tr><td>.</td><td>Decimal separator (if it occurs exactly once in the string)</td></tr>
+		 * <tr><td>,</td><td>Decimal separator (if it occurs exactly once in the string)</td></tr>
 		 * </table>
 		 * 
-		 * If you only define a group separator, but not a decimal separator, the group separator must appear
-		 * at least twice in the format. Otherwise it will be considered a decimal separator. Please note that when you
-		 * have several group separators, Minified counts only the number of digit between its first and second
-		 * appearance to determine how to group the digits. If you have only one group separator and a decimal separator, 
-		 * the number of digits between them is used to format the number. 
+		 * All other characters will stay unmodified in the format string. For negative numbers, a sign (-) is placed in front of the
+		 * first digit.
 		 * 
+		 * If you use a single '#' in front of the decimal separator, or '#' as only placeholder, it will be extended to contain
+		 * all pre-decimal digits of the number. Otherwise pre-decimal digits will be cut off if you do not provide enough placeholders.
+		 * 
+		 * If you only define a group separator, but not a decimal separator, and you use a comma (,) or period (.) as separator, 
+		 * the group separator must appear at least twice in the format. Otherwise it will be considered a decimal separator. 
+		 *
 		 * <b>Examples</b> 
-		 * <pre>var v1  = _.formatValue('#', 15); // '15'
-		 * var v2  = _.formatValue('####', 15);   // '15' (same as '#')
-		 * var v3  = _.formatValue('0000', 15);   // '0015'
+		 * <pre>var v1  = _.formatValue('#', 15);           // '15'
+		 * var v2  = _.formatValue('####', 15);        // '15' (limits to 4 digits)
+		 * var v2  = _.formatValue('####', 12345);     // '2345' (!)
+		 * var v3  = _.formatValue('0', 15);           // '5' (!)
+		 * var v3  = _.formatValue('0000', 15);        // '0015'
 		 * var v4  = _.formatValue('#.###', 15.14274); // '15.143'
 		 * var v5  = _.formatValue('#.000', 15.14274); // '15.143'
 		 * var v6  = _.formatValue('#.###', 15.1);     // '15.1'
 		 * var v7  = _.formatValue('#.000', 15.1);     // '15.100'
 		 * var v8  = _.formatValue('000,000', 15.1);   // '015,100'
-		 * var v9  = _.formatValue('#.###', 15);     // '15'
-		 * var v10 = _.formatValue('#.000', 15);    // '15.000'
-		 * var v11 = _.formatValue('#,###', 15.1);  // '15,1' (comma as decimal separator)
+		 * var v9  = _.formatValue('#.###', 15);       // '15'
+		 * var v10 = _.formatValue('#.000', 15);       // '15.000'
+		 * var v11 = _.formatValue('#,###', 15.1);     // '15,1' (comma as decimal separator)
+		 * var v10 = _.formatValue('Total= $#.00 (VAT included)', 71);  // 'Total= $71.00 (VAT included)' (decoration)
 		 * var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
-		 * var v13 = _.formatValue('000,000.###', 92548.42); // '92,548.42'
-		 * var v14 = _.formatValue('000.000,###', 92548.42); // '92.548,42' (comma as separator)
+		 * var v14 = _.formatValue('###.###.###,###', 92548.42); // '92.548,42' (comma as decimal separator)
+		 * var v14 = _.formatValue('### ### ###.###', 92548.42); // '92 548,42' (space as decimal separator)
 		 * var v15 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 7.356); // '7.36' (choice format)
 		 * var v16 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 25.04); // '25.0' 
 		 * var v17 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 71.51); // '72' 
