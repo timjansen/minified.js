@@ -38,10 +38,10 @@ function dummy() {
 	/*$
 	 * @id promise
 	 * @group REQUEST
-	 * @name $.promise()
+	 * @name _.promise()
 	 * @configurable default
-	 * @syntax $.promise()
-	 * @syntax $.promise(otherPromise...)
+	 * @syntax _.promise()
+	 * @syntax _.promise(otherPromise...)
 	 * @module WEB+UTIL
 	 * 
 	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, 
@@ -62,7 +62,7 @@ function dummy() {
 	 * </li></ul>
 	 * 
 	 * @example A simple promise that is fulfilled after 1 second:
-	 * <pre>var p = promise();
+	 * <pre>var p = _.promise();
 	 * setTimeout(function() { 
 	 *     p(true, []); 
 	 * }, 1000);
