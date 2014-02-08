@@ -517,9 +517,6 @@ define('minified', function() {
 	function partial(f, beforeArgs, afterArgs) {
 		return bind(f, this, beforeArgs, afterArgs);
 	}
-	function insertString(origString, index, len, newString) {
-		return origString.substr(0, index) + newString + origString.substr(index+len);
-	}
 	function pad(digits, number) {
 		var signed = number < 0 ? '-' : '';
 		var preDecimal = replace((signed?-number:number).toFixed(0), /\..*/);
@@ -531,6 +528,32 @@ define('minified', function() {
 		if (idx == _null || !match)
 			return 0;
 		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
+	}
+
+	function reverseString(s) {
+		var s2 = '';
+		for (var i = s.length - 1; i >= 0; i--)
+			s2 += s.charAt(i);
+		return s2;
+	}
+
+	function processNumCharTemplate(tpl, input, fwd) {
+		var inputPos = 0;
+		var inHash;
+		var rInput = fwd ? input : reverseString(input);
+		var s = (fwd ? tpl : reverseString(tpl)).replace(/./g, function(tplChar) {
+			if (tplChar == '0') {
+				inHash = _false;
+				return rInput[inputPos++] || '0';
+			}
+			else if (tplChar == '#') {
+				inHash = _true;
+				return rInput[inputPos++] || '';
+			}
+			else
+				return rInput[inputPos] == null && inHash ? '' : tplChar;
+		});
+		return fwd ? s : reverseString(s);
 	}
 
 	// formats number with format string (e.g. "#.000", "#,#", "00000", "000.00", "000.000.000,00", "000,000,000.##")
@@ -572,7 +595,7 @@ define('minified', function() {
 		}
 		else 
 			return find(format.split(/\s*\|\s*/), function(fmtPart) {
-				var match, matchGrp, numFmtOrResult, groupSep, groupingSize;
+				var match, numFmtOrResult;
 				if (match = /^([<>]?)(=?)([^:]*?)\s*:\s*(.*)$/.exec(fmtPart)) {
 					var cmpVal1 = value, cmpVal2 = parseFloat(match[3]);
 					if (isNaN(cmpVal2) || !isNumber(cmpVal1)) {
@@ -592,33 +615,19 @@ define('minified', function() {
 				else
 					numFmtOrResult = fmtPart;
 
-				if (isNumber(value) && (match = /[0#]([0#.,]*[0#])?/.exec(numFmtOrResult))) {
-					var numFmt = match[0];
-					if (matchGrp = /\.([0#]*)[.,]|,([0#]*)[.,]/.exec(numFmt)) {
-						groupSep = matchGrp[0].charAt(0);
-						groupingSize = matchGrp[1] != null ? matchGrp[1].length : matchGrp[2].length;
-						numFmt = replace(numFmt, groupSep == '.' ? /\./g : /,/g);
-					}
-					var m2 = /([0#]+)(([.,])([0#]+))?/.exec(numFmt);
-					var postDecimalMinLen = replace(m2[2], /#/g).length;
-					var signed = value < 0 ? '-' : '';
-					var m = /(\d+)(\.(\d+))?/.exec((signed?-value:value).toFixed(m2[2]?m2[4].length:0));
-					var preDecimal = pad(replace(m2[1], /#/g).length, parseInt(m[1]));
-					var postDecimal = (m2[3]||'.') + m[3];
-					if (matchGrp) {
-						function group(s) {
-							var len = s.length;
-							if (len > groupingSize)
-								return group(s.substr(0, len-groupingSize)) + groupSep + s.substr(len-groupingSize);
-							else
-								return s;					
-						}
-						preDecimal = group(preDecimal);
-					}
-					return insertString(numFmtOrResult, match.index, toString(match[0]).length, 
-							signed + preDecimal + 
-							(m[2] ? (postDecimal.length>postDecimalMinLen?replace(postDecimal.substr(0, postDecimalMinLen)+replace(postDecimal.substr(postDecimalMinLen), /0+$/), /[.,]$/):postDecimal) : ''));
-				}
+				if (isNumber(value))
+					return numFmtOrResult.replace(/[0#](.*[0#])?/, function(numFmt) {
+						var decimalFmt = /^([^.]+)(\.)([^.]+)$/.exec(numFmt) || /^([^,]+)(,)([^,]+)$/.exec(numFmt);
+						var signed = value < 0 ? '-' : '';
+						var numData = /(\d+)(\.(\d+))?/.exec((signed?-value:value).toFixed(decimalFmt ? decimalFmt[3].length:0));
+						var preDecimalFmt = decimalFmt ? decimalFmt[1] : numFmt;
+						var postDecimal = decimalFmt ? processNumCharTemplate(decimalFmt[3], replace(numData[3], /0+$/), _true) : '';
+
+						return 	(signed ? '-' : '') + 
+								(preDecimalFmt == '#' ? numData[1] : processNumCharTemplate(preDecimalFmt, numData[1])) +
+								(postDecimal.length ? decimalFmt[2] : '') +
+								postDecimal;
+					});
 				else
 					return numFmtOrResult;
 			});
@@ -1109,6 +1118,11 @@ define('minified', function() {
 			};
 		}	
 	}
+
+	function getInverseFilterFunc(selector) {
+		var f = getFilterFunc(selector);
+		return function(v) {return f(v) ? _null : _true;};
+	}
 	///#/snippet webFunctions
 
 	///#snippet extrasFunctions
@@ -1127,15 +1141,15 @@ define('minified', function() {
 	/*$
 	 * @id promise
 	 * @group REQUEST
-	 * @name $.promise()
+	 * @name _.promise()
 	 * @configurable default
-	 * @syntax $.promise()
-	 * @syntax $.promise(otherPromise...)
+	 * @syntax _.promise()
+	 * @syntax _.promise(otherPromise...)
 	 * @module WEB+UTIL
 	 * 
 	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, 
-	 * fresh new promise is returned. The returned promise is a function that can be called directly to change the 
-	 * promises state.
+	 * a fresh new promise is returned. The returned promise is a function that can be called directly to change the 
+	 * promise's state.
 	 * 
 	 * If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards 
 	 * fulfillment and rejection with the original values.
@@ -1159,9 +1173,13 @@ define('minified', function() {
 	 * 
 	 * @param otherPromise one or more promises to assimilate
 	 * @return the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
-     * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected</dd>
+     * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected. If you pass <var>null</var> or
+     * <var>undefined</var>, the promise's state does not change. The latter may be useful to obtain the promises current state.</dd>
      * <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
-     * <var>state</var>).</dd></dl>
+     * <var>state</var>).</dd>
+     * <dt class="returnValue">(return value)</dt><dd><var>true</var> if the promise has been fulfilled, <var>false</var> if its state is rejected,
+     * <var>undefined</var> if it is still pending. If you only want to obtain the promise's state, call the function without arguments.</dd></dl> 
+     * </dl>
      * The function can be called several times, but only the first invocation modifies the Promise. All subsequent calls will
      * be ignored.
 	 */
@@ -1175,20 +1193,21 @@ define('minified', function() {
 		var values = []; // array containing the result arrays of all assimilated promises, or the result of the single promise
 
 		var set = function(newState, newValues) {
-			if (state == null) {
+			if (state == _null && newState != _null) {
 				set['state'] = state = newState;
 				values = isList(newValues) ? newValues : [newValues];
 				defer(function() {
 					each(deferred, function(f) {f();});
 				});
 			}
+			return state;
 		};
 
 		// use promise varargs
 		each(assimilatedPromises, function assimilate(promise, index) {
 			try {
 				promise['then'](function resolvePromise(v) {
-					if (v && isFunction(v['then'])) {
+					if ((isObject(v) || isFunction(v)) && isFunction(v['then'])) {
 						assimilate(v['then'], index);
 					}
 					else {
@@ -1283,29 +1302,40 @@ define('minified', function() {
     	 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
     	 */   
 	    var then = set['then'] = function (onFulfilled, onRejected) {
-			var newPromise = promise();
+			var promise2 = promise();
 			var callCallbacks = function() {
 	    		try {
 	    			var f = (state ? onFulfilled : onRejected);
 	    			if (isFunction(f)) {
-		   				var r = call(f, values);
-		   				if (r && isFunction(r['then']))
-		   					r['then'](function(value){newPromise(true,[value]);}, function(value){newPromise(false,[value]);});
-		   				else
-		   					newPromise(true, [r]);
+		   				function resolve(x) {
+		   					try {
+			   					var then;
+				   				if ((isObject(x) || isFunction(x)) && isFunction(then = x['then'])) {
+										if (x === promise2)
+											throw new TypeError();
+										then['call'](x, resolve, function(value){promise2(false,[value]);});
+				   				}
+				   				else
+				   					promise2(true, [x]);
+		   					}
+		   					catch(e) {
+		   						promise2(false, [e]);
+		   					}
+		   				}
+		   				resolve(call(f, undef, values));
 		   			}
 		   			else
-		   				newPromise(state, values);
+		   				promise2(state, values);
 				}
 				catch (e) {
-					newPromise(false, [e]);
+					promise2(false, [e]);
 				}
 			};
 			if (state != null)
 				defer(callCallbacks);
 			else
 				deferred.push(callCallbacks);    		
-			return newPromise;
+			return promise2;
 		};
 
     	/*$
@@ -2538,14 +2568,13 @@ define('minified', function() {
  	 * @see ##only() removes elements from a list that do not match a selector.
  	 */
 	'is': function(selector) {
-		var f = getFilterFunc(selector);
-		return !this['find'](function(v) {if (!f(v)) return _true;});
+		return !this['find'](getInverseFilterFunc(selector));
 	},
 
  	/*$
  	 * @id only
  	 * @group SELECTORS
- 	 * @requires filter each
+ 	 * @requires filter
  	 * @configurable default
  	 * @name .only()
  	 * @syntax list.only()
@@ -2559,7 +2588,7 @@ define('minified', function() {
  	 * 
  	 * When you use selectors, please note that this method is optimized for the four simple 
  	 * selector forms '*', '.classname', 'tagname' and 'tagname.classname'. If you use any other kind of 
- 	 * selector, please be aware that selectors that match many elements can be slow.
+ 	 * selector, be aware that selectors that match many elements can be slow.
  	 * 
  	 * @example Returns only those list elements have the classes 'listItem' and 'myClass':
  	 * <pre>
@@ -2580,11 +2609,56 @@ define('minified', function() {
  	 *        with this index in the list, the returned list is empty.
  	 * @return a new list containing only elements matched by the selector/function/index.
  	 * 
+ 	 * @see ##not() creates a list of all elements not matching the selector.
  	 * @see ##select() executes a selector on the descendants of the list elements.
  	 * @see ##filter() offers function-based filtering.
  	 */
 	'only': function(selector) {
 		return this['filter'](getFilterFunc(selector));
+	},
+
+ 	/*$
+ 	 * @id not
+ 	 * @group SELECTORS
+ 	 * @requires filter
+ 	 * @configurable default
+ 	 * @name .not()
+ 	 * @syntax list.not()
+ 	 * @syntax list.not(selector)
+ 	 * @syntax list.not(filterFunc)
+ 	 * @syntax list.not(index)
+     * @module Web
+ 	 * Returns a new list that contains only those elements that do not match the given selector, callback function
+ 	 * or have the given index. If no parameter has been given, the method removes all HTML elements 
+ 	 * and keeps the rest (same as '*').
+ 	 * 
+ 	 * When you use selectors, please note that this method is optimized for the four simple 
+ 	 * selector forms '*', '.classname', 'tagname' and 'tagname.classname'. If you use any other kind of 
+ 	 * selector, be aware that selectors that match many elements can be slow.
+ 	 * 
+ 	 * @example Returns only those list elements have the classes 'listItem' but not 'myClass':
+ 	 * <pre>
+ 	 * var myLis = $('li.listItem').not('.myClass'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @example Returns a list of all elements except forms:
+ 	 * <pre>
+ 	 * var forms = $('#content *').not('form'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @param selector any selector valid for #dollar#$(), including CSS selectors and lists. 
+ 	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        depends on the number of matches for the selector in the document. Default is '*', which removes all elements
+ 	 *        (but keeps other nodes such as text nodes).
+ 	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that should be removed.
+ 	 * @param index the index of the element to remove. All elements with other index will be kept. If there is no element
+ 	 *        with this index in the list, the returned list is identical to the original list.
+ 	 * @return a new list containing only elements not matched by the selector/function/index.
+ 	 * 
+ 	 * @see ##only() is the opposite of <var>not()</var> - it keeps all elements that match the selector.
+ 	 */
+	'not': function(selector) {
+		return this['filter'](getInverseFilterFunc(selector));
 	},
 
   	/*$
@@ -5466,36 +5540,42 @@ define('minified', function() {
 		 *
 		 * <b>Number Formatting</b><br/> 
 		 * Number formatting allows you to specify the number of digits before and optionally after the decimal separator, the decimal separator itself
-		 * as well as how to group digits. The following characters are used in the format:
+		 * as well as how to group and decorate the digits. The following characters are used in the format:
 		 * 
 		 * <table><tr><th>Character</th><th>Description</th></tr>
 		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
 		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
-		 * <tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
-		 * <tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
+		 * <tr><td>.</td><td>Decimal separator (if it occurs exactly once in the string)</td></tr>
+		 * <tr><td>,</td><td>Decimal separator (if it occurs exactly once in the string)</td></tr>
 		 * </table>
 		 * 
-		 * If you only define a group separator, but not a decimal separator, the group separator must appear
-		 * at least twice in the format. Otherwise it will be considered a decimal separator. Please note that when you
-		 * have several group separators, Minified counts only the number of digit between its first and second
-		 * appearance to determine how to group the digits. If you have only one group separator and a decimal separator, 
-		 * the number of digits between them is used to format the number. 
+		 * All other characters will stay unmodified in the format string. For negative numbers, a sign (-) is placed in front of the
+		 * first digit.
 		 * 
+		 * If you use a single '#' in front of the decimal separator, or '#' as only placeholder, it will be extended to contain
+		 * all pre-decimal digits of the number. Otherwise pre-decimal digits will be cut off if you do not provide enough placeholders.
+		 * 
+		 * If you only define a group separator, but not a decimal separator, and you use a comma (,) or period (.) as separator, 
+		 * the group separator must appear at least twice in the format. Otherwise it will be considered a decimal separator. 
+		 *
 		 * <b>Examples</b> 
-		 * <pre>var v1  = _.formatValue('#', 15); // '15'
-		 * var v2  = _.formatValue('####', 15);   // '15' (same as '#')
-		 * var v3  = _.formatValue('0000', 15);   // '0015'
+		 * <pre>var v1  = _.formatValue('#', 15);           // '15'
+		 * var v2  = _.formatValue('####', 15);        // '15' (limits to 4 digits)
+		 * var v2  = _.formatValue('####', 12345);     // '2345' (!)
+		 * var v3  = _.formatValue('0', 15);           // '5' (!)
+		 * var v3  = _.formatValue('0000', 15);        // '0015'
 		 * var v4  = _.formatValue('#.###', 15.14274); // '15.143'
 		 * var v5  = _.formatValue('#.000', 15.14274); // '15.143'
 		 * var v6  = _.formatValue('#.###', 15.1);     // '15.1'
 		 * var v7  = _.formatValue('#.000', 15.1);     // '15.100'
 		 * var v8  = _.formatValue('000,000', 15.1);   // '015,100'
-		 * var v9  = _.formatValue('#.###', 15);     // '15'
-		 * var v10 = _.formatValue('#.000', 15);    // '15.000'
-		 * var v11 = _.formatValue('#,###', 15.1);  // '15,1' (comma as decimal separator)
+		 * var v9  = _.formatValue('#.###', 15);       // '15'
+		 * var v10 = _.formatValue('#.000', 15);       // '15.000'
+		 * var v11 = _.formatValue('#,###', 15.1);     // '15,1' (comma as decimal separator)
+		 * var v10 = _.formatValue('Total= $#.00 (VAT included)', 71);  // 'Total= $71.00 (VAT included)' (decoration)
 		 * var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
-		 * var v13 = _.formatValue('000,000.###', 92548.42); // '92,548.42'
-		 * var v14 = _.formatValue('000.000,###', 92548.42); // '92.548,42' (comma as separator)
+		 * var v14 = _.formatValue('###.###.###,###', 92548.42); // '92.548,42' (comma as decimal separator)
+		 * var v14 = _.formatValue('### ### ###.###', 92548.42); // '92 548,42' (space as decimal separator)
 		 * var v15 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 7.356); // '7.36' (choice format)
 		 * var v16 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 25.04); // '25.0' 
 		 * var v17 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 71.51); // '72' 

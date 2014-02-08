@@ -41,7 +41,7 @@ with this index in the list, the returned list is empty.</dd>
 or have the given index. If no parameter has been given, the method keeps all HTML elements
 and removes everything else (same as '*').</p><p>When you use selectors, please note that this method is optimized for the four simple
 selector forms '*', '.classname', 'tagname' and 'tagname.classname'. If you use any other kind of
-selector, please be aware that selectors that match many elements can be slow.</p><p></p></div>
+selector, be aware that selectors that match many elements can be slow.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -59,7 +59,8 @@ var forms = $('#content *').only('form');
 </div>
 
 <h4>See also..</h4>
-<ul><li><code><a href='select.html' class='func'>select()</a></code> executes a selector on the descendants of the list elements.</li>
+<ul><li><code><a href='not.html' class='func'>not()</a></code> creates a list of all elements not matching the selector.</li>
+<li><code><a href='select.html' class='func'>select()</a></code> executes a selector on the descendants of the list elements.</li>
 <li><code><a href='filter.html' class='func'>filter()</a></code> offers function-based filtering.</li>
 </ul>
 <h4>Comments</h4>
@@ -117,6 +118,7 @@ var disqus_url = "http://minifiedjs.com/api/only.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod"></span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
@@ -140,6 +142,7 @@ var disqus_url = "http://minifiedjs.com/api/only.html";
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="up.html" class="func">.up()</a> <span class="tocMod">Web</span>
 </li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>

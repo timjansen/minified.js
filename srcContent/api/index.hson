@@ -131,6 +131,10 @@ Creates a function allows you to set all list members to one of two states or an
 <h3><a href="map.html">.map()</a></h3>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
 
+<h3><a href="not.html">.not()</a></h3>
+<div class="summary">Returns a new list that contains only those elements that do not match the given selector, callback function
+or have the given index.</div>
+
 <h3><a href="offset.html">.offset()</a></h3>
 <div class="summary">Returns the pixel page coordinates of the list's first element.</div>
 
@@ -205,6 +209,9 @@ Triggers event handlers registered with on.</div>
 <h3><a href="unite.html">.unite()</a></h3>
 <div class="summary">Takes a list of functions as input to create a new function that calls all input functions with the same
 arguments.</div>
+
+<h3><a href="up.html">.up()</a></h3>
+<div class="summary">Finds the closest parent matching the given selector or filter function for each list element, and returns the results as a list.</div>
 
 <h3><a href="values.html">.values()</a></h3>
 <div class="summary">Creates a name/value map from the given form.</div>
@@ -396,6 +403,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod"></span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
@@ -419,6 +427,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="up.html" class="func">.up()</a> <span class="tocMod">Web</span>
 </li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>

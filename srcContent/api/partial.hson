@@ -35,7 +35,8 @@ there won't be any arguments appended. If you need to append a <span class="var"
 
 <h4>Description</h4>
 <div class="description"><p>Creates a new function that calls the given function with some arguments pre-filled. You can specify one or more arguments to
-be put in front of the arguments list as well as arguments that will be appended to the argument list.</p><p>See also <code><a href='undefinedbind.html' class='func'>_.bind()</a></code>, if you want to set 'this' as well.</p><p></p></div>
+be put in front of the arguments list as well as arguments that will be appended to the argument list.</p><p>See also <code><a href='undefinedbind.html' class='func'>_.bind()</a></code>, if you want to set 'this' as well. <span class="var">partial()</span> calls the wrapped function with the 'this' the
+wrapper has been called with.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -124,6 +125,7 @@ var disqus_url = "http://minifiedjs.com/api/partial.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod"></span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
@@ -147,6 +149,7 @@ var disqus_url = "http://minifiedjs.com/api/partial.html";
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="up.html" class="func">.up()</a> <span class="tocMod">Web</span>
 </li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
