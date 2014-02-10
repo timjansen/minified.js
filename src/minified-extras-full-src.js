@@ -104,8 +104,9 @@ function dummy() {
 		each(assimilatedPromises, function assimilate(promise, index) {
 			try {
 				promise['then'](function resolvePromise(v) {
-					if ((isObject(v) || isFunction(v)) && isFunction(v['then'])) {
-						assimilate(v['then'], index);
+					var then;
+					if ((isObject(v) || isFunction(v)) && isFunction(then = v['then'])) {
+						assimilate(then, index);
 					}
 					else {
 						values[index] = map(arguments, nonOp);
@@ -207,17 +208,18 @@ function dummy() {
 	    			if (isFunction(f)) {
 		   				function resolve(x) {
 		   					try {
-			   					var then;
+			   					var then, cbCalled = 0;
 				   				if ((isObject(x) || isFunction(x)) && isFunction(then = x['then'])) {
 										if (x === promise2)
 											throw new TypeError();
-										then['call'](x, resolve, function(value){promise2(false,[value]);});
+										then['call'](x, function(x) { if (!cbCalled++) resolve(x); } , function(value){ if (!cbCalled++) promise2(false,[value]);});
 				   				}
 				   				else
 				   					promise2(true, [x]);
 		   					}
 		   					catch(e) {
-		   						promise2(false, [e]);
+		   						if (!cbCalled++) 
+		   							promise2(false, [e]);
 		   					}
 		   				}
 		   				resolve(call(f, undef, values));

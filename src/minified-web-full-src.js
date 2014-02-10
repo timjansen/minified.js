@@ -306,7 +306,7 @@ define('minified', function() {
 	}
 	
 	function delay(f, delayMs) {
-		_window.setTimeout(f, delayMs||0);
+		setTimeout(f, delayMs||0);
 	}
 	function extractNumber(v) {
 		return parseFloat(replace(v, /^[^\d-]+/));

@@ -2,19 +2,19 @@
 /*
    Auto-generated using docbuilder.js. Do not edit manually. 
 */
-	title: `$.promise() - Minified.js`,
+	title: `_.promise() - Minified.js`,
 	section:"reference",
 	externalCss: ["../css/reference.css"],
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-promise">$.promise()</a></h2>
+<h2><a name="doc-promise">_.promise()</a></h2>
 <div class="summary">
 Creates a new Promise, optionally assimilating other promises.</div>
 
 <div class="availability">Complete distribution only, not available in stand-alone modules.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">$.promise()</div>
-<div class="syntax">$.promise(otherPromise...)</div>
+<div class="syntax">_.promise()</div>
+<div class="syntax">_.promise(otherPromise...)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -52,7 +52,7 @@ fulfillment and rejection with the original values.</p><p>If more than one promi
 <div class="examples">
 <h4>Example</h4>
 <div class="example"><p>A simple promise that is fulfilled after 1 second:
-<pre>var p = promise();
+<pre>var p = _.promise();
 setTimeout(function() {
     p(true, []);
 }, 1000);
@@ -85,7 +85,6 @@ var disqus_url = "http://minifiedjs.com/api/promise.html";
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
-</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -175,6 +174,7 @@ var disqus_url = "http://minifiedjs.com/api/promise.html";
 </li><li><a href="parsedate.html" class="func">_.parseDate()</a> <span class="tocMod">Util</span>
 </li><li><a href="parsenumber.html" class="func">_.parseNumber()</a> <span class="tocMod">Util</span>
 </li><li><a href="partial.html" class="func">_.partial()</a> <span class="tocMod">Util</span>
+</li><li><a href="promise.html" class="func">_.promise()</a> 
 </li><li><a href="range.html" class="func">_.range()</a> <span class="tocMod"></span>
 </li><li><a href="template.html" class="func">_.template()</a> <span class="tocMod">Util</span>
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>

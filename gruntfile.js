@@ -264,7 +264,15 @@ module.exports = function(grunt) {
 				options: {
 					bail: true,
 				},
-				src: [ 'src/test-util/*test.js' ]
+				src: [ 'src/test-util/*test.js']
+			}, 
+			extra: {
+				options: {
+					bail: true,
+					timeout: 200, 
+					slow: Infinity
+				},
+				src: ['src/test-extra/*test.js']
 			}
  	    },
  	    
@@ -334,7 +342,7 @@ module.exports = function(grunt) {
 	
 	grunt.registerTask('assemble', ['mergesrc', 'rebuildsrc', 'copy:sources', 'copy:test', 'copy:testCases', 'minitemplate:webTests']);
 	grunt.registerTask('code', ['assemble', 'closurecompiler:dist', 'uglify', 'copy:testdist', 'testQuick', 'measuresize']);
-	grunt.registerTask('testQuick', ['mochaTest', 'mocha:quick']);
+	grunt.registerTask('testQuick', ['mochaTest:util', 'mocha:quick']);
 	grunt.registerTask('test', ['mochaTest', 'mocha:all']);
 	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:imgs', 'copy:test', 'copy:buildersrc', 'cssmin', 'htmlmin', 'xmlmin', 'copy:dist']);
 	grunt.registerTask('all', ['code', 'test', 'site']);

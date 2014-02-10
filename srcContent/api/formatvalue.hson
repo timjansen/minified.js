@@ -42,30 +42,32 @@ _.formatValue('1:one item|2:two items|&gt;3:many items', value);
 _.formatValue('ERR:error|WARN:warning|INFO:info|debug', value);
 </pre></p><p><b>Number Formatting</b><br/>
 Number formatting allows you to specify the number of digits before and optionally after the decimal separator, the decimal separator itself
-as well as how to group digits. The following characters are used in the format:</p><p><table><tr><th>Character</th><th>Description</th></tr>
+as well as how to group and decorate the digits. The following characters are used in the format:</p><p><table><tr><th>Character</th><th>Description</th></tr>
 <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
 <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
-<tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
-<tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
-</table></p><p>If you only define a group separator, but not a decimal separator, the group separator must appear
-at least twice in the format. Otherwise it will be considered a decimal separator. Please note that when you
-have several group separators, Minified counts only the number of digit between its first and second
-appearance to determine how to group the digits. If you have only one group separator and a decimal separator,
-the number of digits between them is used to format the number.</p><p><b>Examples</b>
-<pre>var v1  = _.formatValue('#', 15); // '15'
-var v2  = _.formatValue('####', 15);   // '15' (same as '#')
-var v3  = _.formatValue('0000', 15);   // '0015'
+<tr><td>.</td><td>Decimal separator (if it occurs exactly once in the string)</td></tr>
+<tr><td>,</td><td>Decimal separator (if it occurs exactly once in the string)</td></tr>
+</table></p><p>All other characters will stay unmodified in the format string. For negative numbers, a sign (-) is placed in front of the
+first digit.</p><p>If you use a single '#' in front of the decimal separator, or '#' as only placeholder, it will be extended to contain
+all pre-decimal digits of the number. Otherwise pre-decimal digits will be cut off if you do not provide enough placeholders.</p><p>If you only define a group separator, but not a decimal separator, and you use a comma (,) or period (.) as separator,
+the group separator must appear at least twice in the format. Otherwise it will be considered a decimal separator.</p><p><b>Examples</b>
+<pre>var v1  = _.formatValue('#', 15);           // '15'
+var v2  = _.formatValue('####', 15);        // '15' (limits to 4 digits)
+var v2  = _.formatValue('####', 12345);     // '2345' (!)
+var v3  = _.formatValue('0', 15);           // '5' (!)
+var v3  = _.formatValue('0000', 15);        // '0015'
 var v4  = _.formatValue('#.###', 15.14274); // '15.143'
 var v5  = _.formatValue('#.000', 15.14274); // '15.143'
 var v6  = _.formatValue('#.###', 15.1);     // '15.1'
 var v7  = _.formatValue('#.000', 15.1);     // '15.100'
 var v8  = _.formatValue('000,000', 15.1);   // '015,100'
-var v9  = _.formatValue('#.###', 15);     // '15'
-var v10 = _.formatValue('#.000', 15);    // '15.000'
-var v11 = _.formatValue('#,###', 15.1);  // '15,1' (comma as decimal separator)
+var v9  = _.formatValue('#.###', 15);       // '15'
+var v10 = _.formatValue('#.000', 15);       // '15.000'
+var v11 = _.formatValue('#,###', 15.1);     // '15,1' (comma as decimal separator)
+var v10 = _.formatValue('Total= $#.00 (VAT included)', 71);  // 'Total= $71.00 (VAT included)' (decoration)
 var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
-var v13 = _.formatValue('000,000.###', 92548.42); // '92,548.42'
-var v14 = _.formatValue('000.000,###', 92548.42); // '92.548,42' (comma as separator)
+var v14 = _.formatValue('###.###.###,###', 92548.42); // '92.548,42' (comma as decimal separator)
+var v14 = _.formatValue('### ### ###.###', 92548.42); // '92 548,42' (space as decimal separator)
 var v15 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 7.356); // '7.36' (choice format)
 var v16 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 25.04); // '25.0'
 var v17 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 71.51); // '72'
@@ -143,7 +145,6 @@ var disqus_url = "http://minifiedjs.com/api/formatvalue.html";
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
-</li><li><a href="promise.html" class="func">$.promise()</a> 
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
 </li><li><a href="setcookie.html" class="func">$.setCookie()</a> 
@@ -233,6 +234,7 @@ var disqus_url = "http://minifiedjs.com/api/formatvalue.html";
 </li><li><a href="parsedate.html" class="func">_.parseDate()</a> <span class="tocMod">Util</span>
 </li><li><a href="parsenumber.html" class="func">_.parseNumber()</a> <span class="tocMod">Util</span>
 </li><li><a href="partial.html" class="func">_.partial()</a> <span class="tocMod">Util</span>
+</li><li><a href="promise.html" class="func">_.promise()</a> 
 </li><li><a href="range.html" class="func">_.range()</a> <span class="tocMod"></span>
 </li><li><a href="template.html" class="func">_.template()</a> <span class="tocMod">Util</span>
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
