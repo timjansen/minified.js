@@ -91,7 +91,7 @@ function dummy() {
 	    
 		var set = function(newState, newValues) {
 			if (state == _null && newState != _null) {
-				set['state'] = state = newState;
+				state = newState;
 				values = isList(newValues) ? newValues : [newValues];
 				defer(function() {
 					each(deferred, function(f) {f();});
