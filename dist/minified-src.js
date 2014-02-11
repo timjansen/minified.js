@@ -2342,7 +2342,8 @@ define('minified', function() {
      * @module WEB
  	 * Returns the concatenated text content of all nodes in the list. 
  	 * This is done by going recursively through all elements and their children. The values of text and CDATA nodes
- 	 * will be appended to the resulting string.
+ 	 * will be appended to the resulting string. Without legacy support, Minified will obtain the data using
+ 	 * the <var>textContent</var> property of all nodes.
  	 * 
  	 * Please note that, unlike jQuery's <var>text()</var>, Minified's will not set text content. Use ##fill() to set text.
  	 * 
@@ -2354,17 +2355,8 @@ define('minified', function() {
  	 * @return the concatenated text content of the nodes
  	 */
  	'text': function () {
-		function extractString(e) {
-			var nodeType = isNode(e);
-			if (nodeType == 1)
-				return collector(flexiEach, e['childNodes'], extractString);
-			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
-				return e['data'];
-			else 
-				return _null;
-		}
-		return collector(flexiEach, this, extractString)['join']('');
-	},
+		return collector(flexiEach, this, function(e) {return e['textContent'];})['join']('');
+ 	},
 
  	/*$
  	 * @id trav
