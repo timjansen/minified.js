@@ -24,7 +24,7 @@ function dummy() {
 	function flexiEach(list, cb) {
 		if (isList(list))
 			each(list, cb);
-		else if (list != null)
+		else if (list != _null)
 			cb(list, 0);
 		return list;
 	}
@@ -111,16 +111,16 @@ function dummy() {
 					else {
 						values[index] = map(arguments, nonOp);
 						if (++numCompleted == assimilatedNum)
-							set(true, assimilatedNum < 2 ? values[index] : values);
+							set(_true, assimilatedNum < 2 ? values[index] : values);
 					}
 				}, 
 				function rejectPromise(e) {
 					values[index] = map(arguments, nonOp);
-					set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
+					set(_false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
 				});
 			}
 			catch (e) {
-				set(false, [e, values, index]);
+				set(_false, [e, values, index]);
 			}
 		});
 
@@ -212,14 +212,14 @@ function dummy() {
 				   				if ((isObject(x) || isFunction(x)) && isFunction(then = x['then'])) {
 										if (x === promise2)
 											throw new TypeError();
-										then['call'](x, function(x) { if (!cbCalled++) resolve(x); } , function(value){ if (!cbCalled++) promise2(false,[value]);});
+										then['call'](x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2(_false,[value]);});
 				   				}
 				   				else
-				   					promise2(true, [x]);
+				   					promise2(_true, [x]);
 		   					}
 		   					catch(e) {
 		   						if (!cbCalled++) 
-		   							promise2(false, [e]);
+		   							promise2(_false, [e]);
 		   					}
 		   				}
 		   				resolve(call(f, undef, values));
@@ -228,10 +228,10 @@ function dummy() {
 		   				promise2(state, values);
 				}
 				catch (e) {
-					promise2(false, [e]);
+					promise2(_false, [e]);
 				}
 			};
-			if (state != null)
+			if (state != _null)
 				defer(callCallbacks);
 			else
 				deferred.push(callCallbacks);    		
@@ -648,7 +648,7 @@ function dummy() {
 		'wait': function(durationMs, args) {
 			var p = promise();
 			delay(function() { 
-				call(p, null, [true, args]); 
+				call(p, _null, [_true, args]); 
 			}, durationMs);
 			return p;
 		}

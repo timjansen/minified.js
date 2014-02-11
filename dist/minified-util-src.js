@@ -469,7 +469,7 @@ module.exports = (function() {
 				return rInput[inputPos++] || '';
 			}
 			else
-				return rInput[inputPos] == null && inHash ? '' : tplChar;
+				return rInput[inputPos] == _null && inHash ? '' : tplChar;
 		});
 		return fwd ? s : reverseString(s);
 	}
