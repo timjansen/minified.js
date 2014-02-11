@@ -2386,7 +2386,8 @@ define('minified', function() {
 		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
 		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
 		 * <tr><td>.</td><td>Decimal separator (if it occurs exactly once in the string)</td></tr>
-		 * <tr><td>,</td><td>Decimal separator (if it occurs exactly once in the string)</td></tr>
+		 * <tr><td>:</td><td>Required for choice formats. You can not use this in a number format.</td></tr>
+		 * <tr><td>|</td><td>Required for choice formats. You can not use this in a number format.</td></tr>
 		 * </table>
 		 * 
 		 * All other characters will stay unmodified in the format string. For negative numbers, a sign (-) is placed in front of the

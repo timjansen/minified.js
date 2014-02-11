@@ -5745,7 +5745,8 @@ define('minified', function() {
 		 * <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
 		 * <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
 		 * <tr><td>.</td><td>Decimal separator (if it occurs exactly once in the string)</td></tr>
-		 * <tr><td>,</td><td>Decimal separator (if it occurs exactly once in the string)</td></tr>
+		 * <tr><td>:</td><td>Required for choice formats. You can not use this in a number format.</td></tr>
+		 * <tr><td>|</td><td>Required for choice formats. You can not use this in a number format.</td></tr>
 		 * </table>
 		 * 
 		 * All other characters will stay unmodified in the format string. For negative numbers, a sign (-) is placed in front of the
@@ -6737,8 +6738,9 @@ define('minified', function() {
  * <i>Promises</i> are objects that represent the future result of an asynchronous operation. When you start such an operation, using #request#$.request(),
  * ##animate(), or ##wait(), you will get a Promise object that allows you to get the result as soon as the operation is finished.
  * 
- * Minified ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
- * be able to interoperate with most other Promises implementations.
+ * Minified's full distribution ships with a <a href="http://promises-aplus.github.io/promises-spec/">Promises/A+</a>-compliant implementation of Promises that should
+ * be able to interoperate with most other Promises implementations. Minified's Web module in stand-alone distribution comes with a limited implementation.
+ * See below for details.
  * 
  * What may be somewhat surprising about this Promises specification is that the only standard-compliant way to access the result is to 
  * register callbacks. They will be invoked as soon as the operation is finished. 
@@ -6828,6 +6830,19 @@ define('minified', function() {
  * timeout(1000).then(function(ms) { window.alert(ms+ ' milliseconds have passed.'); });
  * </pre>
  * 
+ * <h3>Limited Promises Implementation in Web module</h3>
+ * If you use only the Web module, instead of the full implementation, the promises implementation is not fully Promises/A+ compliant. 
+ * One major difference is that it does not allow you create promises yourself. The only way to get a promise in the Web module 
+ * is from functions like ##animate() and ##request(). The other difference is that the interoperability with other promises frameworks 
+ * is limited, even though it should be good enough most of the time.
+ *
+ * There are two things you may run into when you use Web's simplified implementation with a complete implementation:
+ * <ol><li>The simplified implementation does not support recursive thenables. So when you register callbacks with ##then(), 
+ * you can return a promise or a thenable, but only if that promise is not also returning a promise.</li>
+ * <li>Many corner cases required by the Promises/A+ specification are not handled. When interoperating using 
+ * reasonable implementations, you may never run into this, but Promises/A+ has detailed rules for things like ##then() 
+ * methods implemented as dynamic getter and returning a new value on each invocation or throwing exceptions. If you need 
+ * a water-proof implementation, you need to use the complete implementation in Minified's full package.</li></ol>
  */
 /*$
  * @stop
