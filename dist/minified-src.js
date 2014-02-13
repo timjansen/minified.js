@@ -1054,41 +1054,45 @@ define('minified', function() {
 	}
 
 	// implementation of $ that does not produce a Minified list, but just an array
-    function dollarRaw(selector, context, childOnly) { 
-		function filterElements(list) { // converts into array, makes sure context is respected
-			var retList = collector(flexiEach, list, function flatten(a) { // flatten list, keep non-lists, remove nulls
-				return isList(a) ? collector(flexiEach, a, flatten) : a; 
-			});
-			if (parent)
-				return filter(retList, function(node) {
-					var a = node;
-					while (a = a['parentNode'])
-						if (a == parent || childOnly)
-							return a == parent;
-					// fall through to return undef
-				});
-			else
-				return retList;
-		}
-
-		var parent, steps, dotPos, subSelectors;
-		var elements, regexpFilter, useGEbC, className, elementName;
-
-		if (context && (context = dollarRaw(context)).length != 1) // if not exactly one node, iterate through all and concat
-			return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
-		parent = context && context[0]; // note that context may have changed in the previous two lines!! you can't move this line
-
-		if (!isString(selector))
-		    return filterElements(selector); 
 
 
 
 
 
 
-		elements = (parent || _document).querySelectorAll(selector);
-		return childOnly ? filterElements(elements) : elements;
+
+
+
+	// @condblock !ie7compatibility
+	function dollarRaw(selector, context, childOnly) { 
+		function flatten(a) { // flatten list, keep non-lists, remove nulls
+	          return isList(a) ? collector(flexiEach, a, flatten) : a;
+	     }
+	     function filterElements(list) { // converts into array, makes sure context is respected
+	          return filter(collector(flexiEach, list, flatten), function(node) {
+	               var a = node;
+	               while (a = a['parentNode'])
+	                    if (a == context[0] || childOnly)
+	                         return a == context[0];
+	               // fall through to return undef
+	          });
+	     }
+
+	     if (context) {
+	          if ((context = dollarRaw(context)).length != 1)
+	               return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
+	          else if (isString(selector))
+	               return childOnly ? filterElements(context[0].querySelectorAll(selector)) : context[0].querySelectorAll(selector);
+	          else
+	               return filterElements(selector);
+
+	     }
+	     else if (isString(selector))
+	          return _document.querySelectorAll(selector);
+	     else
+	          return collector(flexiEach, selector, flatten);
 	};
+	// @condend !ie7compatibility
 
 	// If context is set, live updates will be possible. 
 	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because context is used only

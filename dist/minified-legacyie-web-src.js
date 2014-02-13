@@ -498,7 +498,8 @@ define('minified', function() {
 	}
 
 	// implementation of $ that does not produce a Minified list, but just an array
-    function dollarRaw(selector, context, childOnly) { 
+	// @condblock ie7compatibility
+	function dollarRaw(selector, context, childOnly) { 
 		function filterElements(list) { // converts into array, makes sure context is respected
 			var retList = collector(flexiEach, list, function flatten(a) { // flatten list, keep non-lists, remove nulls
 				return isList(a) ? collector(flexiEach, a, flatten) : a; 
@@ -525,7 +526,6 @@ define('minified', function() {
 		if (!isString(selector))
 		    return filterElements(selector); 
 
-		// @condblock ie7compatibility
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
 			return collectUniqNodes(subSelectors, function(ssi) { return dollarRaw(ssi, parent, childOnly);});
 
@@ -541,11 +541,12 @@ define('minified', function() {
 
 		if (regexpFilter = useGEbC ? elementName : className)
 			elements =  filter(elements, wordRegExpTester(regexpFilter, useGEbC ? 'nodeName' : 'className'));
-		// @condend
-
-		// @cond !ie7compatibility elements = (parent || _document).querySelectorAll(selector);
 		return childOnly ? filterElements(elements) : elements;
 	};
+	// @condend ie7compatibility
+
+
+
 
 	// If context is set, live updates will be possible. 
 	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because context is used only
