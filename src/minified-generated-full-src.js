@@ -1005,7 +1005,7 @@ define('minified', function() {
 		};
 	}
 	
-	function onCompat(subSelector, eventSpec, handler, args, bubbleSelector) {
+	function on(subSelector, eventSpec, handler, args, bubbleSelector) {
 		function push(obj, prop, value) {
 			(obj[prop] = (obj[prop] || [])).push(value);
 		}
@@ -1039,7 +1039,7 @@ define('minified', function() {
 	}
 	// @condend ie8compatibility 
 	// @condblock !ie8compatibility 
-	function onNonCompat(subSelector, eventSpec, handler, args, bubbleSelector) {
+	function on(subSelector, eventSpec, handler, args, bubbleSelector) {
 		if (isFunction(eventSpec))
 			return this['on'](_null, subSelector, eventSpec, handler, args);
 		else if (isString(args)) 
@@ -1087,7 +1087,7 @@ define('minified', function() {
 	// @condend !ie8compatibility 
 	
 	// @condblock ie8compatibility 
-	function offCompat(handler) {
+	function off(handler) {
 	   	flexiEach(handler['M'], function(h) {
 			if (IS_PRE_IE9) {
 				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
@@ -1103,7 +1103,7 @@ define('minified', function() {
 	// @condend ie8compatibility 
 
 	// @condblock !ie8compatibility 
-	function offNonCompat(handler) {
+	function off(handler) {
 	   	flexiEach(handler['M'], callArg);
 		handler['M'] = _null;
 	}
@@ -1633,11 +1633,11 @@ define('minified', function() {
      */
     /** @constructor */
 	function M(list, assimilateSublists) {
-		var self = this, idx = 0;
-		for (var i = 0; i < list.length; i++) {
+		var self = this, len = list.length, len2, idx = 0;
+		for (var i = 0; i < len; i++) {
 			var item = list[i];
 			if (assimilateSublists && isList(item))
-				for (var j = 0; j < item.length; j++)
+				for (var j = 0, len2 = item.length; j < len2; j++)
 					self[idx++] = item[j];
 			else 
 				self[idx++] = item;
@@ -4320,12 +4320,7 @@ define('minified', function() {
 	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 */
-	'on': 
-		// @condblock ie8compatibility
-			onCompat
-		// @condend ie8compatibility 
-		// @cond !ie8compatibility onNonCompat
-	,
+	'on': on,
 	
 	
 	/*$
@@ -5012,15 +5007,7 @@ define('minified', function() {
 	 *                
 	 * @see ##on() registers an event handler.
      */
-	'off': 
-		// @condblock ie8compatibility
-		offCompat
-		// @condend ie8compatibility 
-		// @cond !ie8compatibility offNonCompat
-		
-	
-		
-
+	'off': off
     
  	/*$
  	 * @stop
