@@ -170,6 +170,9 @@ module.exports = (function() {
 	function trim(s) {
 		return replace(s, /^\s+|\s+$/g);
 	}
+	function isEmpty(s, ignoreWhitespace) {
+		return s == _null || !s.length || (ignoreWhitespace && /^\s*$/.test(s));
+	}
 	function eachObj(obj, cb) {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
@@ -220,7 +223,7 @@ module.exports = (function() {
 		eachObj(obj, function(key) { c++; });
 		return c;
 	}
-	function keys(obj) {
+	function keys(obj) { // use Object.keys? in IE>=9
 		var list = [];
 		eachObj(obj, function(key) { list.push(key); });
 		return list;
@@ -2568,6 +2571,37 @@ module.exports = (function() {
 		 * @return the trimmed string
 		 */
 		'trim': trim,
+
+		/*$
+		 * @id isempty
+		 * @group STRING
+		 * @requires 
+		 * @configurable default
+		 * @name _.isEmpty()
+		 * @syntax _.isEmpty(s)
+		 * @syntax _.isEmpty(list)
+		 * @syntax _.isEmpty(s, ignoreWhitespace)
+		 * @module UTIL
+		 * Returns true if the given string or list is <var>null</var>, <var>undefined</var> or empty (zero length).
+		 * If the second argument is <var>true</var>, the function will ignore whitespace in the string.
+		 * 
+		 * @example Checking empty
+		 * <pre>_.isEmpty('abc');  // returns false
+		 * _.isEmpty('');   // returns true
+		 * _.isEmpty(null); // returns true
+		 * _.isEmpty(' '); // returns false
+		 * _.isEmpty(' ', true); // returns true
+		 * 
+		 * _.isEmpty([1, 2]); // returns false
+		 * _.isEmpty([]);     // returns true
+		 * </pre>
+		 *
+		 * @param s the string to check. May be <var>null</var> or <var>undefined</var>.
+		 * @param list the list to check. May be <var>null</var> or <var>undefined</var>.
+		 * @param ignoreWhitespace if true and a string was given, <var>isEmpty</var> will also return true if the string contains only whitespace.
+		 * @return true if empty, false otherwise
+		 */
+		'isEmpty': isEmpty,
 
 		/*$
 		 * @id escaperegexp

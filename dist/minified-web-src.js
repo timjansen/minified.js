@@ -1071,9 +1071,9 @@ define('minified', function() {
 
 		if (element) {
 			if (isString(spec)) {
-				var name = replace(replace(spec, /^%/, 'data-'), /^[$@]+/);
+				var name = replace(replace(replace(spec, /^\$float$/, 'cssFloat'), /^%/, 'data-'), /^[$@]+/);
 				var s;
-				if (spec == '$')
+				if (spec == '$') 
 					s = element.className;
 				else if (spec == '$$') {
 						s = element.getAttribute('style');
@@ -1276,7 +1276,7 @@ define('minified', function() {
     		 else
     			// @condend fadeslide
     			 flexiEach(self, function(obj, c) {
-    				 var nameClean = replace(replace(name, /^%/,'data-'), /^[@$]+/);
+    				 var nameClean = replace(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'data-'), /^[@$]+/);
     				 var className = obj['className'] || '';
     				 var newObj = /^\$/.test(name) ? obj.style : obj;
     				 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;

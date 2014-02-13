@@ -23,7 +23,6 @@ function runTests(loadInContext) {
 			assert(re.test(test));
 			assert.equal(("1"+test+"c").replace(test, ""), "1c");
 		});
-
 	});
 
 	describe('pad()', function() {
@@ -39,6 +38,38 @@ function runTests(loadInContext) {
 			assert.equal(_.pad(5,-1), "-00001");
 		});
 	});
+
+	describe('trim()', function() {
+		it('just works', function() {
+			assert.equal(_.trim(''), "");
+			assert.equal(_.trim('a'), "a");
+			assert.equal(_.trim(' a'), "a");
+			assert.equal(_.trim('a s '), "a s");
+			assert.equal(_.trim(' a s '), "a s");
+		});
+	});
+
+	describe('isEmpty()', function() {
+		it('supports strings', function() {
+			assert(!_.isEmpty('a'));
+			assert(_.isEmpty(null));
+			assert(_.isEmpty(''));
+			assert(!_.isEmpty(' '));
+			assert(!_.isEmpty(' \t \t   \t'));
+		});
+		it('supports strings with whitespace', function() {
+			assert(!_.isEmpty('ff', true));
+			assert(_.isEmpty(null, true));
+			assert(_.isEmpty('', true));
+			assert(_.isEmpty(' ', true));
+			assert(_.isEmpty(' \t \t   \t', true));
+		});
+		it('supports lists', function() {
+			assert(!_.isEmpty(['a']));
+			assert(_.isEmpty([]));
+		});
+	});
+
 	
 	describe('formatValue()', function() {
 		it('formats numbers', function() {

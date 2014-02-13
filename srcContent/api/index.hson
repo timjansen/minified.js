@@ -285,6 +285,9 @@ Formats a single value as a string, using the given format template.</div>
 <h3><a href="isdate.html">_.isDate()</a></h3>
 <div class="summary">Checks whether the given object is a <span class="var">Date</span>.</div>
 
+<h3><a href="isempty.html">_.isEmpty()</a></h3>
+<div class="summary">Returns true if the given string or list is <span class="var">null</span>, <span class="var">undefined</span> or empty (zero length).</div>
+
 <h3><a href="isfunction.html">_.isFunction()</a></h3>
 <div class="summary">Checks whether the given object is a function.</div>
 
@@ -450,6 +453,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
 </li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
 </li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isempty.html" class="func">_.isEmpty()</a> <span class="tocMod">Util</span>
 </li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
 </li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
 </li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>

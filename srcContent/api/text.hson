@@ -24,7 +24,8 @@
 <h4>Description</h4>
 <div class="description"><p>Returns the concatenated text content of all nodes in the list.
 This is done by going recursively through all elements and their children. The values of text and CDATA nodes
-will be appended to the resulting string.</p><p>Please note that, unlike jQuery's <span class="var">text()</span>, Minified's will not set text content. Use <code><a href='fill.html' class='func'>fill()</a></code> to set text.</p><p></p></div>
+will be appended to the resulting string. Without legacy support, Minified will obtain the data using
+the <span class="var">textContent</span> property of all nodes.</p><p>Please note that, unlike jQuery's <span class="var">text()</span>, Minified's will not set text content. Use <code><a href='fill.html' class='func'>fill()</a></code> to set text.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -137,6 +138,7 @@ var disqus_url = "http://minifiedjs.com/api/text.html";
 </li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
 </li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
 </li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isempty.html" class="func">_.isEmpty()</a> <span class="tocMod">Util</span>
 </li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
 </li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
 </li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>
