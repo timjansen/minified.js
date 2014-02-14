@@ -11,7 +11,7 @@
 <div class="summary">Returns a new list that contains only those elements that do not match the given selector, callback function
 or have the given index.</div>
 
-<h4>Syntax Variants</h4>
+<div class="availability">Web module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.not()</div>
 <div class="syntax">list.not(selector)</div>
@@ -115,7 +115,7 @@ var disqus_url = "http://minifiedjs.com/api/not.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod"></span>
+</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>

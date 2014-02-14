@@ -522,7 +522,7 @@ define('minified', function() {
 	}
 	function pad(digits, number) {
 		var signed = number < 0 ? '-' : '';
-		var preDecimal = replace((signed?-number:number).toFixed(0), /\..*/);
+		var preDecimal = (signed?-number:number).toFixed(0);
 		while (preDecimal.length < digits)
 			preDecimal = '0' + preDecimal;
 		return signed + preDecimal;
@@ -921,7 +921,7 @@ define('minified', function() {
 
 
 	// @condblock !ie8compatibility 
-	function onNonCompat(subSelector, eventSpec, handler, args, bubbleSelector) {
+	function on(subSelector, eventSpec, handler, args, bubbleSelector) {
 		if (isFunction(eventSpec))
 			return this['on'](_null, subSelector, eventSpec, handler, args);
 		else if (isString(args)) 
@@ -970,7 +970,7 @@ define('minified', function() {
 
 
 	// @condblock !ie8compatibility 
-	function offNonCompat(handler) {
+	function off(handler) {
 	   	flexiEach(handler['M'], callArg);
 		handler['M'] = _null;
 	}
@@ -1015,31 +1015,22 @@ define('minified', function() {
 		// @cond !UTIL return (isList(attributes) || (!isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 	}
 
-	function clone (listOrNode) {
-		return collector(flexiEach, listOrNode, function(e) {
-			var nodeType;
-			if (isString(e))
-				return e;
-			else if (isList(e)) 
-				return clone(e);
-			else if ((nodeType = isNode(e)) == 1) {
-				var attrs = {
-				};
-				flexiEach(e['attributes'], function(a) {
-					var attrName = a['name'];
-					if (attrName != 'id'
-						) {
-						attrs['@'+attrName] = a['value'];
-					}
-				});
-				return EE(e['tagName'], attrs, clone(e['childNodes']));
-			}
-			else if (nodeType < 5)        // 2 is impossible (attribute), so only 3 (text) and 4 (cdata)..
-				return e['data'];
-			else
-				return _null;
-		});
-	}
+    function clone (listOrNode) {
+        return collector(flexiEach, listOrNode, function(e) {
+        	var c;
+             if (isString(e))
+            	 return e;
+             else if (isList(e))
+            	 return clone(e);
+             else if (isNode(e)) {
+            	 c = e['cloneNode'](_true);
+            	 c['id'] = ''; // or use c.removeAttribute('id')?
+            	 return c;
+             }
+             else
+            	 return _null;
+        });
+   }
 
     /*$
      * @stop
@@ -1445,11 +1436,11 @@ define('minified', function() {
      */
     /** @constructor */
 	function M(list, assimilateSublists) {
-		var self = this, idx = 0;
-		for (var i = 0; i < list.length; i++) {
+		var self = this, len = list.length, len2, idx = 0;
+		for (var i = 0; i < len; i++) {
 			var item = list[i];
 			if (assimilateSublists && isList(item))
-				for (var j = 0; j < item.length; j++)
+				for (var j = 0, len2 = item.length; j < len2; j++)
 					self[idx++] = item[j];
 			else 
 				self[idx++] = item;
@@ -2321,7 +2312,7 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .remove()
 	 * @syntax list.remove()
-     * @module WEB
+ 	 * @module WEB
 	 * Removes all elements in the list from the DOM tree.
 	 * 
 	 * On Minified builds with IE compatibility, <var>remove()</var> will also remove all event handlers in the
@@ -2346,7 +2337,7 @@ define('minified', function() {
  	 * @configurable default
  	 * @name .text()
  	 * @syntax list.text()
-     * @module WEB
+ 	 * @module WEB
  	 * Returns the concatenated text content of all nodes in the list. 
  	 * This is done by going recursively through all elements and their children. The values of text and CDATA nodes
  	 * will be appended to the resulting string. Without legacy support, Minified will obtain the data using
@@ -2377,7 +2368,7 @@ define('minified', function() {
  	 * @syntax list.trav(property, maxDepth)
  	 * @syntax list.trav(property, filterFunc)
  	 * @syntax list.trav(property, filterFunc, maxDepth)
-     * @module WEB
+ 	 * @module WEB
  	 * Traverses each DOM node in the list using the given property; creates a new list that includes each visited node,
  	 * optionally filtered by the given selector.
  	 * 
@@ -2457,7 +2448,7 @@ define('minified', function() {
  	 * @syntax list.up(selector, maxDepth)
  	 * @syntax list.up(filterFunc)
  	 * @syntax list.up(filterFunc, maxDepth)
-     * @module WEB
+ 	 * @module WEB
  	 * Finds the closest parent matching the given selector or filter function for each list element, and returns the results as a list.
  	 * 
  	 * <var>up(selector)</var> is just a shortcut for <code>trav(parentNode, selector, 1)</code>. 
@@ -2505,7 +2496,7 @@ define('minified', function() {
  	 * @name .select()
  	 * @syntax list.select(selector)
  	 * @syntax list.select(selector, childrenOnly)
-     * @module WEB
+ 	 * @module WEB
  	 * Executes a selector with the list as context. <code>list.select(selector, childrenOnly)</code> is equivalent 
  	 * to <code>$(selector, list, childrenOnly)</code>. 
  	 * 
@@ -2539,7 +2530,7 @@ define('minified', function() {
  	 * @syntax list.is()
  	 * @syntax list.is(selector)
  	 * @syntax list.is(filterFunc)
-     * @module WEB
+ 	 * @module WEB
  	 * Checks whether all elements in the list match the given selector. Returns <var>true</var> if they all do, or <var>false</var>
  	 * if at least one does not.
  	 * 
@@ -2628,7 +2619,7 @@ define('minified', function() {
  	 * @syntax list.not(selector)
  	 * @syntax list.not(filterFunc)
  	 * @syntax list.not(index)
-     * @module Web
+ 	 * @module WEB
  	 * Returns a new list that contains only those elements that do not match the given selector, callback function
  	 * or have the given index. If no parameter has been given, the method removes all HTML elements 
  	 * and keeps the rest (same as '*').
@@ -2674,7 +2665,7 @@ define('minified', function() {
  	 * @syntax list.get(list, toNumber)
  	 * @syntax list.get(map)
  	 * @syntax list.get(map, toNumber)
-     * @module WEB
+ 	 * @module WEB
  	 * Retrieves properties, attributes and styles from the list's first element. The syntax to request those values is mostly identical with ##set(). You can either
  	 * get a single value if you specify only one name, or get an object map when you specify several names using an array or an object map.
  	 * 
@@ -2780,7 +2771,7 @@ define('minified', function() {
 	 * @syntax list.set(name, value)
 	 * @syntax list.set(properties)
 	 * @syntax list.set(cssClasses)
-     * @module WEB
+ 	 * @module WEB
 	 * 
 	 * Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes. You can either supply a 
 	 * single name and value to set only one property, or you can provide an object that contains name/value pairs to describe more than one property.
@@ -2985,7 +2976,7 @@ define('minified', function() {
 	 * @syntax list.add(node)
 	 * @syntax list.add(list)
 	 * @syntax list.add(factoryFunction)
-     * @module WEB
+ 	 * @module WEB
 	 * Adds the given node(s) as children to the list's HTML elements. If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
      *
@@ -3092,7 +3083,7 @@ define('minified', function() {
 	 * @syntax list.fill(node)
 	 * @syntax list.fill(list)
 	 * @syntax list.fill(factoryFunction)
-     * @module WEB
+ 	 * @module WEB
 	 * Sets the content of the list's HTML elements, replacing old content. If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
 	 *
@@ -3186,7 +3177,7 @@ define('minified', function() {
 	 * @syntax list.addBefore(node)
 	 * @syntax list.addBefore(list)
 	 * @syntax list.addBefore(factoryFunction)
-     * @module WEB
+ 	 * @module WEB
 	 * Inserts the given text or element(s) as siblings in front of each HTML element in the list. 
 	 * If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
@@ -3263,7 +3254,7 @@ define('minified', function() {
 	 * @syntax list.addAfter(node)
 	 * @syntax list.addAfter(list)
 	 * @syntax list.addAfter(factoryFunction)
-     * @module WEB
+ 	 * @module WEB
 	 * Inserts the given text or element(s) as siblings after each HTML element in the list. 
 	 * If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
@@ -3335,7 +3326,7 @@ define('minified', function() {
 	 * @syntax list.addFront(node)
 	 * @syntax list.addFront(list)
 	 * @syntax list.addFront(factoryFunction)
-     * @module WEB
+ 	 * @module WEB
 	 * Adds the given node(s) as children to the list's HTML elements. Unlike ##add(), the new nodes will be the first children and not the last.
 	 * If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
@@ -3419,7 +3410,7 @@ define('minified', function() {
 	 * @syntax list.replace(node)
 	 * @syntax list.replace(list)
 	 * @syntax list.replace(factoryFunction)
-     * @module WEB
+ 	 * @module WEB
 	 * Replaces the list items with the the given node(s) in the DOM tree. 
 	 * If a string has been given, it will be set as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
@@ -3497,16 +3488,16 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .clone()
 	 * @syntax list.clone()
-     * @module WEB
-     * Clones all HTML elements and text nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
-     * and everything else will be removed.
+ 	 * @module WEB
+     * Clones all HTML nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
+     * and everything else will be removed. Nested lists will be automatically flattened. Objects other than nodes, strings or lists
+     * will be removed.
 	 *
-	 * <var>clone()</var> is very limited in what it will clone. Only elements, their attributes, text nodes,  CDATA nodes and strings will 
-	 * be copied. Nested lists will be automatically flattened.
-	 * Modifications of the elements, such as event handlers, will not be cloned.
-	 *
-	 * Please note that id attributes will be automatically skipped by the <var>clone()</var>. This allows you to address the element to 
-	 * clone by id without having to worry about duplicate ids in the result.
+	 * <var>clone()</var> uses the browser's <var>cloneNode()</var> function to clone HTML internally, but will remove the ids from
+	 * all top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
+	 * The ids of child elements will removed. 
+	 * 
+	 * Please note that event handlers will not be cloned.
 	 * 
 	 * @example Using the following HTML:
 	 * <pre>
@@ -3523,7 +3514,7 @@ define('minified', function() {
 	 * $('#comments').add(myClone);
 	 * </pre> 
 	 *
-	 * @return the list of containing copies of all supported items in the original list.
+	 * @return the list containing copies of all supported items in the original list.
 	 * 
 	 * @see ##add() can add a cloned element to the HTML document.
 	 */
@@ -3541,7 +3532,7 @@ define('minified', function() {
 	 * @syntax list.animate(properties, durationMs)
 	 * @syntax list.animate(properties, durationMs, linearity)
 	 * @syntax list.animate(properties, durationMs, interpolationFunc)
-     * @module WEB
+ 	 * @module WEB
 	 * Animates the items of the list by modifying their properties, CSS styles and attributes. <var>animate()</var> can work with numbers, strings that contain exactly one
 	 * number, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.
 	 *
@@ -4060,9 +4051,7 @@ define('minified', function() {
 	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 */
-	'on': 
-		onNonCompat
-	,
+	'on': on,
 
 	/*$
 	 * @id onover
@@ -4381,7 +4370,7 @@ define('minified', function() {
 	* @syntax $.request(method, url)
 	* @syntax $.request(method, url, data)
 	* @syntax $.request(method, url, data, settings)
-    * @module WEB
+	* @module WEB
 	* Initiates a HTTP request to the given URL, using XMLHttpRequest. It returns a ##promiseClass#Promise## object that allows you to obtain the result.
 	* 
 	* @example Invokes a REST web service and parses the resulting document using JSON:
@@ -4512,7 +4501,7 @@ define('minified', function() {
     * @configurable default
     * @name $.toJSON()
     * @syntax $.toJSON(value)
-    * @module WEB
+	* @module WEB
     * Converts the given value into a JSON string. The value may be a map-like object, an array or list, a string, number, boolean or null.
    	* If you build Minified without Internet Explorer compatibility, this is just an alias for <var>JSON.stringify</var>.
 	*
@@ -4547,7 +4536,7 @@ define('minified', function() {
 	* @configurable default
 	* @name $.parseJSON()
 	* @syntax $.parseJSON(text)
-    * @module WEB
+	* @module WEB
 	* Parses a string containing JSON and returns the de-serialized object.
 	* 
 	* In Minified builds without Internet Explorer 7 compatibility, the browser's built-in function 
@@ -4577,7 +4566,7 @@ define('minified', function() {
     * @configurable default
     * @name $.ready()
     * @syntax $.ready(handler)
-    * @module WEB
+	* @module WEB
     * Registers a handler to be called as soon as the HTML has been fully loaded in the browser. Does not necessarily wait for images and other elements, 
     * only the main HTML document needs to be complete. On older browsers it is the same as <var>window.onload</var>. 
     * 
@@ -4604,7 +4593,7 @@ define('minified', function() {
 	* @configurable default
 	* @name $.loop()
 	* @syntax $.loop(paintCallback)
-    * @module WEB
+	* @module WEB
 	* Runs an animation loop. The given callback method will be invoked repeatedly to create a new animation frame.
 	* In modern browsers, <var>requestAnimationFrame</var> will be used to invoke the callback every time the browser is ready for a new 
 	* animation frame. 
@@ -4664,7 +4653,7 @@ define('minified', function() {
 	 * @configurable default
 	 * @name $.off()
 	 * @syntax $.off(handler)
-     * @module WEB
+ 	 * @module WEB
 	 * Removes the given event handler. The call will be ignored if the given handler has not been registered using ##on(). 
 	 * If the handler has been registered for more than one element or event, it will be removed from all instances.
 	 * 
@@ -4687,8 +4676,7 @@ define('minified', function() {
 	 *                
 	 * @see ##on() registers an event handler.
      */
-	'off': 
-		offNonCompat
+	'off': off
 
  	/*$
  	 * @stop
@@ -6239,7 +6227,7 @@ define('minified', function() {
 		 * @syntax $(object, context)
 		 * @syntax $(object, context, childOnly)
 		 * @syntax $(domreadyFunction)
-         * @module WEB
+     	 * @module WEB
 		 * Creates a new ##list#Minified list##, or register a DOMReady-handler. 
 		 * The most common usage is with a CSS-like selector. <var>$()</var> will then create a list containing all elements of the current HTML
 		 * document that fulfill the filter conditions. Alternatively you can also specify a list of objects or a single object. 
@@ -6377,7 +6365,7 @@ define('minified', function() {
 		 * @name $$()
 		 * @syntax $$(selector)
 		 * @shortcut $$() - It is recommended that you assign MINI.$$ to a variable $$.
-         * @module WEB
+     	 * @module WEB
 		 * Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found. 
 		 * <var>$$</var> allows you to easily access an element directly. It is the equivalent to writing <code>$(selector)[0]</code>.
 		 *
@@ -6411,7 +6399,7 @@ define('minified', function() {
 		 * @syntax EE(elementName, children)
 		 * @syntax EE(elementName, properties, children)
 		 * @shortcut EE() - It is recommended that you assign MINI.EE to a variable EE.
-         * @module WEB
+     	 * @module WEB
 		 * Creates a new HTML Element, wrapped in a  ##list#Minified list##, optionally with attributes and children.
 		 * Typically it will be used to insert elements into the DOM tree using ##add() or a similar function. 
 		 *
@@ -6508,7 +6496,7 @@ define('minified', function() {
 		 * @id M
 		 * @name M
 		 * @syntax MINI.M
-         * @module WEB, UTIL
+     	 * @module WEB, UTIL
 		 * 
 		 * Exposes the internal class used by all  ##list#Minified lists##. This is mainly intended to allow you adding your
 		 * own functions.

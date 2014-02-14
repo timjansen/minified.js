@@ -446,7 +446,7 @@ define('minified', function() {
 	}
 	function pad(digits, number) {
 		var signed = number < 0 ? '-' : '';
-		var preDecimal = replace((signed?-number:number).toFixed(0), /\..*/);
+		var preDecimal = (signed?-number:number).toFixed(0);
 		while (preDecimal.length < digits)
 			preDecimal = '0' + preDecimal;
 		return signed + preDecimal;

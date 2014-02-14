@@ -227,6 +227,7 @@ describe('minified-web-element-test.js', function() {
 		it('removes id from clone', function() {
 			var sl = $('#cloneId').clone();
 			check(sl.length, 1);
+			check(sl[0].id == '');
 			$('#container2').fill(sl);
 			check(/cloneId/i.test($$('#container2').innerHTML), false, 'Clone() id removal');
 			check(/nonono/.test($$('#container2').innerHTML), true, 'Clone() id / content');

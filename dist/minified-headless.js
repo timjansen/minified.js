@@ -417,7 +417,7 @@ module.exports = (function() {
 	}
 	function pad(digits, number) {
 		var signed = number < 0 ? '-' : '';
-		var preDecimal = replace((signed?-number:number).toFixed(0), /\..*/);
+		var preDecimal = (signed?-number:number).toFixed(0);
 		while (preDecimal.length < digits)
 			preDecimal = '0' + preDecimal;
 		return signed + preDecimal;
@@ -786,11 +786,11 @@ module.exports = (function() {
      */
     /** @constructor */
 	function M(list, assimilateSublists) {
-		var self = this, idx = 0;
-		for (var i = 0; i < list.length; i++) {
+		var self = this, len = list.length, len2, idx = 0;
+		for (var i = 0; i < len; i++) {
 			var item = list[i];
 			if (assimilateSublists && isList(item))
-				for (var j = 0; j < item.length; j++)
+				for (var j = 0, len2 = item.length; j < len2; j++)
 					self[idx++] = item[j];
 			else 
 				self[idx++] = item;

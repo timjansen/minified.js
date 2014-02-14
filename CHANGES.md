@@ -6,6 +6,7 @@ Beta 5 (in progress)
 * added up()
 * added not()
 * added isEmpty()
+* clone() will now use the browser's cloneNode(). It will only remove the element from the top-level element, but not from any children.
 * formatNumber() supports any character as group separator
 * formatNumber() will limit the number of digits in front of the decimal separator, unless you use a single '#'
 * updated Minified's promise implementation to the latest Promises/A+ spec (full package only)
