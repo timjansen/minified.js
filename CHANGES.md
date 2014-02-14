@@ -12,6 +12,7 @@ Beta 5 (in progress)
 * updated Minified's promise implementation to the latest Promises/A+ spec (full package only)
 * a promise's state can now be obtained by invoking it as a function without arguments (see promise(), full package only)
 * set() and get() will automatically convert $float to $cssFloat
+* $$fade and $$slide will set $display to '' instead of 'block' to show an element.
 
 Beta 4.2 (2014-12-26)
 ---------------------

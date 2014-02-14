@@ -1066,7 +1066,7 @@ define('minified', function() {
 
 		if (element) {
 			if (isString(spec)) {
-				var name = replace(replace(replace(spec, /^\$float$/, 'cssFloat'), /^%/, 'data-'), /^[$@]+/);
+				var name = replace(replace(spec, /^%/, 'data-'), /^[$@]+/);
 				var s;
 				if (spec == '$') 
 					s = element.className;
@@ -1089,7 +1089,7 @@ define('minified', function() {
 				// @condblock scrollxy
 				// @condend scrollxy
 				else if (/^\$[^$]/.test(spec)) {
-						s = _window.getComputedStyle(element, _null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
+						s = _window['getComputedStyle'](element, _null)['getPropertyValue'](replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 				}
 				else if (/^[@%]/.test(spec))
 					s = element.getAttribute(name);

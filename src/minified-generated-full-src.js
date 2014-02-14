@@ -979,6 +979,7 @@ define('minified', function() {
 		return h;
 	}
 	
+	
 	// @condblock ie8compatibility 
 	// event handler creation for on(). Outside of on() to prevent unneccessary circular refs
 	function createEventHandler(handler, registeredOn, args, index, prefix, selectorFilter) {
@@ -2928,7 +2929,7 @@ define('minified', function() {
 
 		if (element) {
 			if (isString(spec)) {
-				var name = replace(replace(replace(spec, /^\$float$/, 'cssFloat'), /^%/, 'data-'), /^[$@]+/);
+				var name = replace(replace(spec, /^%/, 'data-'), /^[$@]+/);
 				var s;
 				if (spec == '$') 
 					s = element.className;
@@ -2966,11 +2967,11 @@ define('minified', function() {
 				// @condend scrollxy
 				else if (/^\$[^$]/.test(spec)) {
 					// @condblock ie8compatibility 
-					if (!_window.getComputedStyle)
-						s = (element.currentStyle||element['style'])[name];
+					if (!_window['getComputedStyle'])
+						s = (element['currentStyle']||element['style'])[replace(name, /^float$/, 'cssFloat')];
 					else 
 					// @condend
-						s = _window.getComputedStyle(element, _null).getPropertyValue(replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
+						s = _window['getComputedStyle'](element, _null)['getPropertyValue'](replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
 				}
 				else if (/^[@%]/.test(spec))
 					s = element.getAttribute(name);
