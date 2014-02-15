@@ -92,7 +92,7 @@ define('minified', function() {
 	 */
 	var MINIFIED_MAGIC_NODEID = 'Mid';
 
-	var nodeId = 1;
+	var nodeId = 1;  // used as node id to identify nodes
 
 	// @condblock ie8compatibility
 	var registeredEvents = {}; // nodeId -> [handler objects]
@@ -2649,7 +2649,7 @@ define('minified', function() {
      * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
  	 * @return the new list that contains matching siblings elements. Duplicate nodes will be automatically removed.
  	 *         
- 	 * @see ##trav() allows you to match more than one element. You can also select other relatives such as siblings or children.
+ 	 * @see ##trav() allows you to select other relatives such as preceding siblings or children.
  	 */
 	'next': function(selector, maxSiblings) {
 		return this['trav']('nextSibling', selector, maxSiblings||1);

@@ -121,7 +121,7 @@ define('minified', function() {
 	var MINIFIED_MAGIC_NODEID = 'Mid';
 
 	
-	var nodeId = 1;
+	var nodeId = 1;  // used as node id to identify nodes
 
 	// @condblock ie8compatibility
 	var registeredEvents = {}; // nodeId -> [handler objects]
@@ -146,7 +146,7 @@ define('minified', function() {
 		delay(callback, 33); // 30 fps as fallback
 	};
 
-	
+		
 
 	/*$
 	 * @id ie9compatibility
@@ -343,7 +343,6 @@ define('minified', function() {
 		elementList['set'](oldStyles);
 		return h;
 	}
-	
 	
 	// @condblock ie8compatibility 
 	// event handler creation for on(). Outside of on() to prevent unneccessary circular refs
@@ -1604,8 +1603,8 @@ define('minified', function() {
     		 eachObj(name, function(n,v) { self['set'](n, v); });
     	 return self;
      },
- 	
-	
+
+     
 	/*$
 	 * @id add
 	 * @group ELEMENT
@@ -3308,7 +3307,9 @@ define('minified', function() {
     	flexiEach(registeredEvents, detachHandlerList);
     };
     // @condend
-    
+
+
+   
 	///#/snippet webInit
 
     
