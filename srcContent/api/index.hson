@@ -76,7 +76,7 @@ Creates a new  Promise that will be fulfilled as soon as the specified number of
 <div class="summary">Calls all functions in the list.</div>
 
 <h3><a href="clone.html">.clone()</a></h3>
-<div class="summary">Clones all HTML elements and text nodes in the given list by creating a deep copy of them.</div>
+<div class="summary">Clones all HTML nodes in the given list by creating a deep copy of them.</div>
 
 <h3><a href="collect.html">.collect()</a></h3>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
@@ -126,6 +126,9 @@ Creates a function allows you to set all list members to one of two states or an
 
 <h3><a href="map.html">.map()</a></h3>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
+
+<h3><a href="next.html">.next()</a></h3>
+<div class="summary">Finds the next sibling elements matching the given selector or filter function for each list element, and returns the results as a list.</div>
 
 <h3><a href="not.html">.not()</a></h3>
 <div class="summary">Returns a new list that contains only those elements that do not match the given selector, callback function
@@ -405,6 +408,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>

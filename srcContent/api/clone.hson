@@ -8,7 +8,7 @@
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-clone">.clone()</a></h2>
-<div class="summary">Clones all HTML elements and text nodes in the given list by creating a deep copy of them.</div>
+<div class="summary">Clones all HTML nodes in the given list by creating a deep copy of them.</div>
 
 <div class="availability">Web module only.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
@@ -18,16 +18,16 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="clone_RETURN" class="returnValue inSyntax0"><a name="clone_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the list of containing copies of all supported items in the original list.
+<dd class="inSyntax0">the list containing copies of all supported items in the original list.
 </dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Clones all HTML elements and text nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
-and everything else will be removed.</p><p><span class="var">clone()</span> is very limited in what it will clone. Only elements, their attributes, text nodes,  CDATA nodes and strings will
-be copied. Nested lists will be automatically flattened.
-Modifications of the elements, such as event handlers, will not be cloned.</p><p>Please note that id attributes will be automatically skipped by the <span class="var">clone()</span>. This allows you to address the element to
-clone by id without having to worry about duplicate ids in the result.</p><p></p></div>
+<div class="description"><p>Clones all HTML nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
+and everything else will be removed. Nested lists will be automatically flattened. Objects other than nodes, strings or lists
+will be removed.</p><p><span class="var">clone()</span> uses the browser's <span class="var">cloneNode()</span> function to clone HTML internally, but will remove the ids from
+all top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
+The ids of child elements will removed.</p><p>Please note that event handlers will not be cloned.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -105,6 +105,7 @@ var disqus_url = "http://minifiedjs.com/api/clone.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>

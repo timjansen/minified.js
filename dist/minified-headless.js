@@ -442,16 +442,16 @@ module.exports = (function() {
 		var s = (fwd ? tpl : reverseString(tpl)).replace(/./g, function(tplChar) {
 			if (tplChar == '0') {
 				inHash = _false;
-				return rInput[inputPos++] || '0';
+				return rInput.charAt(inputPos++) || '0';
 			}
 			else if (tplChar == '#') {
 				inHash = _true;
-				return rInput[inputPos++] || '';
+				return rInput.charAt(inputPos++) || '';
 			}
 			else
-				return rInput[inputPos] == _null && inHash ? '' : tplChar;
+				return rInput.charAt(inputPos) == '' && inHash ? '' : tplChar;
 		});
-		return fwd ? s : reverseString(s);
+		return fwd ? s : (input.substr(0, input.length - inputPos) + reverseString(s));
 	}
 
 	// formats number with format string (e.g. "#.000", "#,#", "00000", "000.00", "000.000.000,00", "000,000,000.##")
@@ -2338,8 +2338,8 @@ module.exports = (function() {
 		 * All other characters will stay unmodified in the format string. For negative numbers, a sign (-) is placed in front of the
 		 * first digit.
 		 * 
-		 * If you use a single '#' in front of the decimal separator, or '#' as only placeholder, it will be extended to contain
-		 * all pre-decimal digits of the number. Otherwise pre-decimal digits will be cut off if you do not provide enough placeholders.
+		 * If you don't provide sufficient pre-decimal placeholders for the number, the remaining digits will be put in front of the
+		 * rest of the number, so the rendered number is always complete. However, there will be no grouping if there are no placeholders.
 		 * 
 		 * If you only define a group separator, but not a decimal separator, and you use a comma (,) or period (.) as separator, 
 		 * the group separator must appear at least twice in the format. Otherwise it will be considered a decimal separator. 

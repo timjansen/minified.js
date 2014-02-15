@@ -49,8 +49,8 @@ as well as how to group and decorate the digits. The following characters are us
 <tr><td>:</td><td>Required for choice formats. You can not use this in a number format.</td></tr>
 <tr><td>|</td><td>Required for choice formats. You can not use this in a number format.</td></tr>
 </table></p><p>All other characters will stay unmodified in the format string. For negative numbers, a sign (-) is placed in front of the
-first digit.</p><p>If you use a single '#' in front of the decimal separator, or '#' as only placeholder, it will be extended to contain
-all pre-decimal digits of the number. Otherwise pre-decimal digits will be cut off if you do not provide enough placeholders.</p><p>If you only define a group separator, but not a decimal separator, and you use a comma (,) or period (.) as separator,
+first digit.</p><p>If you don't provide sufficient pre-decimal placeholders for the number, the remaining digits will be put in front of the
+rest of the number, so the rendered number is always complete. However, there will be no grouping if there are no placeholders.</p><p>If you only define a group separator, but not a decimal separator, and you use a comma (,) or period (.) as separator,
 the group separator must appear at least twice in the format. Otherwise it will be considered a decimal separator.</p><p><b>Examples</b>
 <pre>var v1  = _.formatValue('#', 15);           // '15'
 var v2  = _.formatValue('####', 15);        // '15' (limits to 4 digits)
@@ -175,6 +175,7 @@ var disqus_url = "http://minifiedjs.com/api/formatvalue.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>

@@ -90,15 +90,20 @@ function runTests(loadInContext) {
 			assert.equal(_.formatValue("0.#", -1), "-1");
 			
 			assert.equal(_.formatValue("#.0", 287591/1024), "280.9");
-			assert.equal(_.formatValue("##.0", 287591/1024), "80.9");
+			assert.equal(_.formatValue("##.0", 287591/1024), "280.9");
 			assert.equal(_.formatValue("###.0", 287591/1024), "280.9");
 			assert.equal(_.formatValue("####.0", 287591/1024), "280.9");
 
-			assert.equal(_.formatValue("0.0", 287591/1024), "0.9");
-			assert.equal(_.formatValue("00.0", 287591/1024), "80.9");
+			assert.equal(_.formatValue("0.0", 287591/1024), "280.9");
+			assert.equal(_.formatValue("00.0", 287591/1024), "280.9");
 			assert.equal(_.formatValue("000.0", 287591/1024), "280.9");
 			assert.equal(_.formatValue("0000.0", 287591/1024), "0280.9");
 
+			assert.equal(_.formatValue("##.0", -287591/1024), "-280.9");
+			assert.equal(_.formatValue("00.0", -287591/1024), "-280.9");
+			assert.equal(_.formatValue("####.0", -287591/1024), "-280.9");
+			assert.equal(_.formatValue("0000.0", -287591/1024), "-0280.9");
+			
 			assert.equal(_.formatValue("#0", 2), "2");
 			assert.equal(_.formatValue("##00", 4), "04");
 			assert.equal(_.formatValue("##00", 40), "40");
@@ -126,7 +131,7 @@ function runTests(loadInContext) {
 			assert.equal(_.formatValue("#,0", 1.667), "1,7");
 			
 			assert.equal(_.formatValue("00.0000", 1.667), "01.6670");
-			assert.equal(_.formatValue("0.#", 10.667), "0.7");
+			assert.equal(_.formatValue("0.#", 10.667), "10.7");
 			assert.equal(_.formatValue("000000000,00", 1.667), "000000001,67");
 			assert.equal(_.formatValue("000000000.##", 777.667), "000000777.67");
 			
@@ -165,6 +170,10 @@ function runTests(loadInContext) {
 			assert.equal(_.formatValue("ABC#####DEF", 1), "ABC1DEF");
 			assert.equal(_.formatValue("?ABC#####DEF", 1), "ABC1DEF");
 			assert.equal(_.formatValue("$#.00", 1), "$1.00");
+			assert.equal(_.formatValue("$#.00", -1), "$-1.00");
+			assert.equal(_.formatValue("$0.00", -1), "$-1.00");
+			assert.equal(_.formatValue("$#.00", -10), "$-10.00");
+			assert.equal(_.formatValue("$0.00", -10), "$-10.00");
 			assert.equal(_.formatValue("bla=0.000 bla", 1.5), "bla=1.500 bla");
 			assert.equal(_.formatValue("#.## EUR", 1.667), "1.67 EUR");
 			assert.equal(_.formatValue("c 0,000,000,000.00 e", 9999999999), "c 9,999,999,999.00 e");
