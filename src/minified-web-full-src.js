@@ -980,13 +980,11 @@ define('minified', function() {
  	 * @name .up()
  	 * @syntax list.up()
  	 * @syntax list.up(selector)
- 	 * @syntax list.up(selector, maxDepth)
  	 * @syntax list.up(filterFunc)
- 	 * @syntax list.up(filterFunc, maxDepth)
  	 * @module WEB
  	 * Finds the closest parent matching the given selector or filter function for each list element, and returns the results as a list.
  	 * 
- 	 * <var>up(selector)</var> is just a shortcut for <code>trav(parentNode, selector, 1)</code>. 
+ 	 * <var>up(selector)</var> is just a shortcut for <code>trav('parentNode', selector, 1)</code>. 
  	 * <var>up()</var> uses ##trav() to traverse the DOM tree using <var>parentNode</var> for each list element, until it either finds a 
  	 * matching element or the tree's root has been reached. All matches will added to the result list, at most one for each item in the
  	 * original list. The result list is filtered to include only unique elements.
@@ -1022,6 +1020,77 @@ define('minified', function() {
 	'up': function(selector) {
 		return this['trav']('parentNode', selector, 1);
 	},
+
+
+	/*$
+ 	 * @id next
+ 	 * @group SELECTORS
+ 	 * @requires trav
+ 	 * @configurable default
+ 	 * @name .next()
+ 	 * @syntax list.next()
+ 	 * @syntax list.next(selector)
+ 	 * @syntax list.next(maxDepth)
+ 	 * @syntax list.next(selector, maxDepth)
+ 	 * @syntax list.next(filterFunc)
+ 	 * @syntax list.next(filterFunc, maxDepth)
+ 	 * @module WEB
+ 	 * Finds the next sibling elements matching the given selector or filter function for each list element, and returns the results as a list.
+ 	 * By default, only one match is returned per list element, but you can increase the number of results using the second argument. 
+ 	 * You can get an infinite number of results per list element by passing -1.
+ 	 * 
+ 	 * <var>next(selector, maxDepth)</var> is just a shortcut for <code>trav('nextSibling', selector, maxDepth||1)</code>. 
+ 	 * <var>next()</var> uses ##trav() to traverse the DOM tree using <var>nextSibling</var> for each list element, until it either finds a 
+ 	 * matching element the specified amount of matches or there are no more elements. All matches will added to the result list. 
+ 	 * The result list is filtered to include only unique elements.
+	 * 
+ 	 * Instead of the selector, you can also specify a function that evaluates whether an element matches.
+ 	 * 
+ 	 * @example Returns the immediate sibling element of a node:
+ 	 * <pre>
+ 	 * var parent = $('#child').next(); 
+ 	 * </pre>
+ 	 *
+ 	 * @example Returns the next &lt;hr> element following the node:
+ 	 * <pre>
+ 	 * var parent = $('#child').next('hr'); 
+ 	 * </pre>
+ 	 *
+ 	 * @example Returns all &lt;hr> elements following the node:
+ 	 * <pre>
+ 	 * var parent = $('#child').next('hr', -1); 
+ 	 * </pre>
+ 	 *
+ 	 * @example Returns the next 2 sibling elements of a node:
+ 	 * <pre>
+ 	 * var parent = $('#child').next(2); 
+ 	 * </pre>
+ 	 *
+ 	 * @example Returns all following siblings of a node:
+ 	 * <pre>
+ 	 * var parent = $('#child').next(-1); 
+ 	 * </pre>
+ 	 *
+ 	 * @example Returns a list of all direct sibling elements that have a class that starts with 'special':
+ 	 * <pre>
+ 	 * var specialSiblings = $('.myElements').next(function(node) {
+ 	 *     return /(^|\s)special/.test(node.className);
+ 	 * }); 
+ 	 * </pre>
+ 	 *
+  	 * @parm property the name of the property to traverse.
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
+ 	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
+     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+ 	 * @return the new list that contains matching siblings elements. Duplicate nodes will be automatically removed.
+ 	 *         
+ 	 * @see ##trav() allows you to select other relatives such as preceding siblings or children.
+ 	 */
+	'next': function(selector, maxSiblings) {
+		return this['trav']('nextSibling', selector, maxSiblings||1);
+	},
+
 	
  	/*$
  	 * @id select

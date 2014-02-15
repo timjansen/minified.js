@@ -4,6 +4,7 @@ Minified Change Log
 Beta 5 (in progress)
 --------------------
 * added up()
+* added next()
 * added not()
 * added isEmpty()
 * clone() will now use the browser's cloneNode(). It will only remove the element from the top-level element, but not from any children.
