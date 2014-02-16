@@ -345,6 +345,20 @@ describe('minified-web-selector-test.js', function() {
 		});
 	});
 
+	describe('.next()', function() {
+		it('just works', function() {
+			var l = EE('div', [EE('div', 'divvy'), EE('p'), EE('ul', [EE('li', 'test')]), EE('p', 'para')]).select('*', true);
+			var l0 = l.only(0);
+			containsAll(l0.next(), l.only(1), true, 'simple next');
+			containsAll(l0.next(2), l.sub(1, 3), true, 'double next');
+ 			containsAll(l0.next(-1), l.sub(1), true, 'infinite next');
+			containsAll(l0.next('p', -1), $([l.only(1), l.only(3)]), true, 'selector');
+			containsAll(l0.next('p'), l.only(1), true, 'limited selector, default limit');
+			containsAll(l0.next('p', 1), l.only(1), true, 'limited selector');
+			containsAll(l0.next('*', -1), l.sub(1), true, 'infinite selector');
+		});
+	});
+	
 	describe('.is()', function() {
 		it('just works', function() {
    			check($('#a').is(), true, 'default');

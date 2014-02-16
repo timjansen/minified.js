@@ -89,6 +89,31 @@ describe('minified-web-element-test.js', function() {
 			sl.add(null);
 			check(sl[0].childNodes.length, 4);
 		});
+				
+		it('clones elements', function() {
+			var sl = $([EE('span'), EE('span'), EE('span')]);
+			sl.add(EE('b', 'bold'));
+			sl.each(function(el) {
+				check(el.innerHTML, '<b>bold</b>');
+			});
+		});
+		
+		it('clones texts', function() {
+			var sl = $([EE('span'), EE('span'), EE('span')]);
+			sl.add('text');
+			sl.each(function(el) {
+				check(el.innerHTML, 'text');
+			});
+		});
+
+		it('clones lists', function() {
+			var sl = $([EE('span'), EE('span'), EE('span')]);
+			sl.add([EE('b', 'bold'), 'text']);
+			sl.each(function(el) {
+				check(el.innerHTML, '<b>bold</b>text');
+			});
+		});
+
 		
 		it('supports element factories', function() {
 			var sl = EE('span');
@@ -196,6 +221,15 @@ describe('minified-web-element-test.js', function() {
 			$(sl[0].childNodes[2]).addAfter('test');
 			check(sl[0].childNodes.length, 4);
 			check(sl[0].childNodes[3].data, 'test');
+			
+			$(sl[0].childNodes[0]).addAfter(EE('b', 'bold'));
+			check(sl[0].childNodes.length, 5);
+			check(sl[0].childNodes[1].innerHTML, 'bold');
+
+			$([sl[0].childNodes[0], sl[0].childNodes[4]]).addAfter(EE('i', 'it'));
+			check(sl[0].childNodes.length, 7);
+			check(sl[0].childNodes[1].innerHTML, 'it');
+			check(sl[0].childNodes[6].innerHTML, 'it');
 		});
 	});
 

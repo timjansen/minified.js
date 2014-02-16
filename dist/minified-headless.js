@@ -2346,9 +2346,7 @@ module.exports = (function() {
 		 *
 		 * <b>Examples</b> 
 		 * <pre>var v1  = _.formatValue('#', 15);           // '15'
-		 * var v2  = _.formatValue('####', 15);        // '15' (limits to 4 digits)
-		 * var v2  = _.formatValue('####', 12345);     // '2345' (!)
-		 * var v3  = _.formatValue('0', 15);           // '5' (!)
+		 * var v2  = _.formatValue('####', 15);        // '15'
 		 * var v3  = _.formatValue('0000', 15);        // '0015'
 		 * var v4  = _.formatValue('#.###', 15.14274); // '15.143'
 		 * var v5  = _.formatValue('#.000', 15.14274); // '15.143'
