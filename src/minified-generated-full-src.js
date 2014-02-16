@@ -1158,7 +1158,7 @@ define('minified', function() {
             	 return clone(e);
              else if (isNode(e)) {
             	 c = e['cloneNode'](_true);
-            	 c.id = null; // c['removeAttribute']('id'); ??
+            	 c['removeAttribute']('id');
             	 return c;
              }
              else

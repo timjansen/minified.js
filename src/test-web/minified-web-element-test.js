@@ -94,7 +94,7 @@ describe('minified-web-element-test.js', function() {
 			var sl = $([EE('span'), EE('span'), EE('span')]);
 			sl.add(EE('b', 'bold'));
 			sl.each(function(el) {
-				check(el.innerHTML, '<b>bold</b>');
+				check(el.innerHTML.toLowerCase(), '<b>bold</b>');
 			});
 		});
 		
@@ -110,7 +110,7 @@ describe('minified-web-element-test.js', function() {
 			var sl = $([EE('span'), EE('span'), EE('span')]);
 			sl.add([EE('b', 'bold'), 'text']);
 			sl.each(function(el) {
-				check(el.innerHTML, '<b>bold</b>text');
+				check(el.innerHTML.toLowerCase(), '<b>bold</b>text');
 			});
 		});
 
