@@ -143,6 +143,15 @@ function compile(sections, sectionMap, enabledSections) {
 	var enabledSectionsWithDeps = calculateDependencies(sectionMap, enabledSections);
 	var condBlock = [];
 	var lastLineEmpty = true; // =true: don't allow empty lines at the beginning
+	
+	function isCondBlockClear() { 
+		for (var i = 0; i < condBlock.length; i++) 
+			if (!condBlock[i])
+				return false;
+		return true;
+	}
+	
+	
 	_.filter(sections, function(s) {
 		return enabledSectionsWithDeps[s.id] || !(s.configurable || s.dependency); 
 	}).each(function(s){
@@ -154,21 +163,16 @@ function compile(sections, sectionMap, enabledSections) {
 			}
 			else {
 				var m = line.match(/^(\s*)\/\/\s*@(cond|condblock)\s+(\!?)(\w*)\s*(.*)$/);
-				if (m && m[2] == 'cond' && (!!enabledSectionsWithDeps[m[4]] != (m[3] == '!')))
+				if (m && m[2] == 'cond' && (!!enabledSectionsWithDeps[m[4]] != (m[3] == '!')) && isCondBlockClear())
 					src += m[1] + m[5] + '\n';
 				else { 
-					var condEnds = false, incLine = true;
+					var condEnds = false;
 					if (m && m[2] == 'condblock')
 						condBlock.push((!!enabledSectionsWithDeps[m[4]]) != (m[3] == '!'));
 					else if (/^\s*\/\/\s*@condend\b/.test(line))
 						condEnds = true;
-					for (var i = 0; i < condBlock.length; i++) 
-						if (!condBlock[i]) {
-							incLine = false;
-							break;
-						}
 
-					if (incLine)
+					if (isCondBlockClear())
 						src += line + '\n';
 					
 					if (condEnds)
