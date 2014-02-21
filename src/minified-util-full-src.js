@@ -431,11 +431,6 @@ define('minified', function() {
 	function callList(list, fThisOrArgs, args) {
 		return map(list, function(f) { if (isFunction(f)) return call(f, fThisOrArgs, args); else return undef;});
 	}
-	function fixFunc(f, args) {
-		return function() {
-			return call(f, _null, args);
-		};
-	}
 	function bind(f, fThis, beforeArgs, afterArgs) {
 		return function() {
 			return call(f, fThis, collect([beforeArgs, arguments, afterArgs], nonOp));
