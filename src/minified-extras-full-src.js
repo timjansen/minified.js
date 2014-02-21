@@ -125,19 +125,6 @@ function dummy() {
 		});
 
     	/*$
-    	 * @id state
-    	 * @group REQUEST
-    	 * @name promise.state
-    	 * @syntax promise.state
-    	 * 
-    	 * @module WEB, UTIL
-    	 * Contains the current state of the promise. The property is only set when the Promise finished. 
-    	 * It is set to <var>true</var> when the promise completed successfully, and to 
-    	 * <var>false</var> when the promise failed.
-    	 */   
-
-		
-    	/*$
     	 * @id then
     	 * @group REQUEST
     	 * @name promise.then()
