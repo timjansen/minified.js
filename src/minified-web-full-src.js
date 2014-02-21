@@ -1082,6 +1082,7 @@ define('minified', function() {
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
      * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+ 	 * @param maxSiblings optional the maximum number of siblings to include per list element. Defaults to 1.
  	 * @return the new list that contains matching siblings elements. Duplicate nodes will be automatically removed.
  	 *         
  	 * @see ##trav() allows you to select other relatives such as preceding siblings or children.
