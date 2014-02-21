@@ -150,8 +150,7 @@ function compile(sections, sectionMap, enabledSections) {
 				return false;
 		return true;
 	}
-	
-	
+		
 	_.filter(sections, function(s) {
 		return enabledSectionsWithDeps[s.id] || !(s.configurable || s.dependency); 
 	}).each(function(s){
