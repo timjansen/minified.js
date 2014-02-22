@@ -11,7 +11,7 @@ Beta 5 (in progress)
 * formatNumber() supports any character as group separator
 * formatNumber() will limit the number of digits in front of the decimal separator, unless you use a single '#'
 * updated Minified's promise implementation to the latest Promises/A+ spec (full package only)
-* a promise's state can now be obtained by invoking it as a function without arguments (see promise(), full package only)
+* a promise's state can now be obtained by invoking it as a function without arguments (see promise(), full package only). promise.state has been removed.
 * set() and get() will automatically convert $float to $cssFloat
 * $$fade and $$slide will set $display to '' instead of 'block' to show an element.
 

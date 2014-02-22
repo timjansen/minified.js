@@ -982,6 +982,7 @@ define('minified', function() {
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
      * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+ 	 * @param maxSiblings optional the maximum number of siblings to include per list element. Defaults to 1.
  	 * @return the new list that contains matching siblings elements. Duplicate nodes will be automatically removed.
  	 *         
  	 * @see ##trav() allows you to select other relatives such as preceding siblings or children.
@@ -1171,6 +1172,30 @@ define('minified', function() {
  	 * Retrieves properties, attributes and styles from the list's first element. The syntax to request those values is mostly identical with ##set(). You can either
  	 * get a single value if you specify only one name, or get an object map when you specify several names using an array or an object map.
  	 * 
+	 * The <var>name</var> parameter defines what kind of data you are reading. The following name schemes are supported:
+	 * <table>
+	 * <tr><th>Name Schema</th><th>Example</th><th>Sets what?</th><th>Description</th></tr>
+	 * <tr><td>name</td><td>innerHTML</td><td>Property</td><td>A name without prefix of '$' or '@' gets a property of the object.</td></tr>
+	 * <tr><td>@name</td><td>@href</td><td>Attribute</td><td>Gets the HTML attribute using getAttribute().</td></tr>
+	 * <tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Gets a data attribute using getAttribute(). Data attributes are
+	 *         attributes whose names start with 'data-'. '%myattr' and '@data-myattr' are equivalent.</td></tr>
+	 * <tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Gets a style using the element's <var>style</var> object. 
+	 *             The syntax for the CSS styles is camel-case (e.g. "$backgroundColor", not "$background-color"). Shorthand properties like "border" or "margin" are 
+	 *             not supported. You must use the full name, e.g. "$marginTop". Minified will try to determine the effective style
+ 	 *             and thus will return the value set in style sheets if not overwritten using a regular style.</td></tr>
+	 * <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <var>$</var> returns the CSS classes of the element and is identical with "className".</td></tr>
+	 * <tr><td>$$</td><td>$$</td><td>Style</td><td>Reads the element's style attribute in a browser-independent way. On legacy IEs it uses
+	 *             <var>style.cssText</var>, and on everything else just the "style" attribute.</td></tr>
+	 * <tr><td>$$fade</td><td>$$fade</td><td>Fade Effect</td><td>The name '$$fade' returns the opacity of the element as a value between 0 and 1.
+	 * 			   '$$fade' will also automatically evaluate the element's 'visibility' and 'display' styles to find out whether the element is actually visible.</td></tr>
+	 * <tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>'$$slide' returns the height of the element in pixels with a 'px' suffix and is mostly
+	 *        equivalent to '$height'. It does, however, also evaluate the element's 'visibility' and 'display' styles to find out whether the element is 
+	 *        actually visible. If not, it returns 0.</td></tr>
+	 * <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
+	 *             '$$scrollY' can be used on <code>$(window)</code> to retrieve the scroll coordinates of the document.
+	 *             The coordinates are specified in pixels without a 'px' unit postfix.</td></tr>
+	 * </table>
+ 	 * 
  	 * @example Retrieves the id, title attribute and the background color of the element '#myElement':
  	 * <pre>
  	 * var id = $('#myElement).get('id'); 
@@ -1195,16 +1220,8 @@ define('minified', function() {
  	 * </pre>
  	 * Please note that the values of $top and $left in the <var>get()</var> invocation do not matter and will be ignored!
  	 *
- 	 * @param name the name of the property, attribute or style. To retrieve a JavaScript property, just use its name without prefix. To get an attribute value,
- 	 *             prefix the name with a '@' for regular attributes or '%' to add a 'data-' prefix. 
- 	 *             A '$' prefix will retrieve a CSS style. The syntax for the CSS styles is camel-case (e.g. "$backgroundColor", not "$background-color"). 
- 	 *             Shorthand properties like "border" or "margin" are not supported. You must use the full name, e.g. "$marginTop". Minified will try to determine the effective style
- 	 *             and thus will return the value set in style sheets if not overwritten using a regular style.
- 	 * 	  	    Using just '$' as name will retrieve the 'className' property of the object, a space-separated list of all CSS classes.
- 	 *          The special name '$$' will set the element's style attribute in a browser independent way.
- 	 *          '$$fade' returns a value between 0 and 1 that specifies the element's
- 	 *          opacity. '$$slide' returns the height of the element in pixels, with a 'px' suffix. Both '$$fade' and '$$slide' will also check the CSS styles 'visibility' and 'display'
- 	 *          to determine whether the object is visible at all. If not, they will return 0.
+	 * @param name the name of a single property or attribute to modify. Unprefixed names set properties, a '$' prefix sets CSS styles and
+	 *        '@' sets attributes. Please see the table above for special properties and other options.
  	 * @param list in order to retrieve more than one value, you can specify several names in an array or list. <var>get()</var> will then return an object map
  	 *        containing the values.
  	 * @param map if you specify an object that is neither list nor string, <var>get()</var> will use it as a map of property names. Each property name will be requested. 
@@ -1253,7 +1270,7 @@ define('minified', function() {
 				// @condend fadeslide
 				// @condblock scrollxy
 				// @condblock ie8compatibility 
-				else if (spec == '$$scrollX') // for non-IE, $scrollX/Y fall right thought to element[name]...
+				else if (spec == '$$scrollX') // for non-IE, $$scrollX/Y fall right thought to element[name]...
 					s = _window['pageXOffset'] != _null ? _window['pageXOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollLeft'];
 				else if (spec == '$$scrollY')
 					s = _window['pageXOffset'] != _null ? _window['pageYOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollTop'];
@@ -1308,7 +1325,8 @@ define('minified', function() {
 	 *             you should not set the attributes '@class' and '@style'. Instead use '$' and '$$' as shown below.</td></tr>
 	 * <tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Sets a data attribute using setAttribute(). Data attributes are
 	 *         attributes whose names start with 'data-'. '%myattr' and '@data-myattr' are equivalent.</td></tr>
-	 * <tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <var>style</var> object.</td></tr>
+	 * <tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <var>style</var> object.
+	 *         The syntax for the CSS styles is camel-case (e.g. "$backgroundColor", not "$background-color"). </td></tr>
 	 * <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <var>$</var> modifies the element's CSS classes using the object's <var>className</var> property. The value is a 
 	 *             space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
 	 *             The name '$' can also be omitted if <var>set</var> is called with class names as only argument.</td></tr>
@@ -1325,7 +1343,7 @@ define('minified', function() {
 	 *             '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document.
 	 *             The coordinates are specified in pixels, but must not use a 'px' unit postfix.</td></tr>
 	 * </table>
-	 *  (use on <code>$(window)</code>)
+	 *
 	 * @example Unchecking checkboxes:
 	 * <pre>
 	 * $('input.checkbox').set('checked', false);
@@ -1397,14 +1415,8 @@ define('minified', function() {
 	 * });
 	 * </pre>
 	 * 
-	 * @param name the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
-	 *             '%' also is used to set attributes, but automatically adds 'data-' to the name. 
-	 *             A dollar ('$') prefix is a shortcut for CSS styles. The special name dollar ('$') modifies CSS classes.
-	 *             The special name '$$' allows you to set the <var>style</var> attribute in a browser independent way.
-	 *             The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1. 
-	 *             The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use only on <code>$(window)</code>!). 
-	 *             
-	 * 
+	 * @param name the name of a single property or attribute to modify. Unprefixed names set properties, a '$' prefix sets CSS styles and
+	 *        '@' sets attributes. Please see the table above for special properties and other options.
 	 * @param value the value to set. If value is <var>null</var> and name specified an attribute, the attribute will be removed.
 	 * If dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
 	 * with a '-' prefix the class will be removed. Without prefix, the class will be toggled.
