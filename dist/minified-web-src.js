@@ -814,7 +814,7 @@ define('minified', function() {
  	 * @example Returns a list of all direct parent nodes that have a class that starts with 'special':
  	 * <pre>
  	 * var specialParents = $('.myElements').up(function(node) {
- 	 *     return /(^|\s)special/.test(node.className);
+ 	 *     return /(^|\\s)special/.test(node.className);
  	 * }); 
  	 * </pre>
  	 *
@@ -831,6 +831,9 @@ define('minified', function() {
 		return this['trav']('parentNode', selector, 1);
 	},
 
+/*
+
+ */
 	/*$
  	 * @id next
  	 * @group SELECTORS
@@ -883,7 +886,7 @@ define('minified', function() {
  	 * @example Returns a list of all direct sibling elements that have a class that starts with 'special':
  	 * <pre>
  	 * var specialSiblings = $('.myElements').next(function(node) {
- 	 *     return /(^|\s)special/.test(node.className);
+ 	 *     return /(^|\\s)special/.test(node.className);
  	 * }); 
  	 * </pre>
  	 *

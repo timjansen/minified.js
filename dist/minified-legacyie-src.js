@@ -292,10 +292,6 @@ define('minified', function() {
 		var type = typeof n;
 		return type == 'object' ? !!(n && n['getDay']) : (type == 'string' || type == 'number' || isBool(n));
 	}
-	function toList(l) {
-		return isList(l) ? l : (l != _null ? [l] : []);
-	}
-
 	function nonOp(v) {
 		return v;
 	}
@@ -2552,7 +2548,7 @@ define('minified', function() {
  	 * @example Returns a list of all direct parent nodes that have a class that starts with 'special':
  	 * <pre>
  	 * var specialParents = $('.myElements').up(function(node) {
- 	 *     return /(^|\s)special/.test(node.className);
+ 	 *     return /(^|\\s)special/.test(node.className);
  	 * }); 
  	 * </pre>
  	 *
@@ -2569,6 +2565,9 @@ define('minified', function() {
 		return this['trav']('parentNode', selector, 1);
 	},
 
+/*
+
+ */
 	/*$
  	 * @id next
  	 * @group SELECTORS
@@ -2621,7 +2620,7 @@ define('minified', function() {
  	 * @example Returns a list of all direct sibling elements that have a class that starts with 'special':
  	 * <pre>
  	 * var specialSiblings = $('.myElements').next(function(node) {
- 	 *     return /(^|\s)special/.test(node.className);
+ 	 *     return /(^|\\s)special/.test(node.className);
  	 * }); 
  	 * </pre>
  	 *

@@ -169,7 +169,6 @@ var disqus_url = "http://minifiedjs.com/api/toobject.html";
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

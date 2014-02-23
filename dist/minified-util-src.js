@@ -174,10 +174,6 @@ module.exports = (function() {
 		var type = typeof n;
 		return type == 'object' ? !!(n && n['getDay']) : (type == 'string' || type == 'number' || isBool(n));
 	}
-	function toList(l) {
-		return isList(l) ? l : (l != _null ? [l] : []);
-	}
-
 	function nonOp(v) {
 		return v;
 	}

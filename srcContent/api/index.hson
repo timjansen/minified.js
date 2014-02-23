@@ -356,10 +356,6 @@ until <span class="var">end</span> (exclusive).</div>
 <h3><a href="error.html">promise.error()</a></h3>
 <div class="summary">Registers a callback that will be called when the operation failed.</div>
 
-<h3><a href="state.html">promise.state</a></h3>
-<div class="summary">
-Contains the current state of the promise.</div>
-
 <h3><a href="then.html">promise.then()</a></h3>
 <div class="summary">
 Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
@@ -478,7 +474,6 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

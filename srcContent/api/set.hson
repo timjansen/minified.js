@@ -21,12 +21,8 @@ Modifies the list's elements by setting their properties, attributes, CSS styles
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="set_name" class=""><a name="set_name"><var>name</var></a></dt>
-<dd class="">the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
-'%' also is used to set attributes, but automatically adds 'data-' to the name.
-A dollar ('$') prefix is a shortcut for CSS styles. The special name dollar ('$') modifies CSS classes.
-The special name '$$' allows you to set the <span class="var">style</span> attribute in a browser independent way.
-The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1.
-The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use only on <code>$(window)</code>!).</dd>
+<dd class="">the name of a single property or attribute to modify. Unprefixed names set properties, a '$' prefix sets CSS styles and
+'@' sets attributes. Please see the table above for special properties and other options.</dd>
 <dt id="set_value" class=""><a name="set_value"><var>value</var></a></dt>
 <dd class="">the value to set. If value is <span class="var">null</span> and name specified an attribute, the attribute will be removed.
 If dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
@@ -61,7 +57,8 @@ be set.</p><p>The <span class="var">name</span> parameter defines what kind of d
             you should not set the attributes '@class' and '@style'. Instead use '$' and '$$' as shown below.</td></tr>
 <tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Sets a data attribute using setAttribute(). Data attributes are
         attributes whose names start with 'data-'. '%myattr' and '@data-myattr' are equivalent.</td></tr>
-<tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <span class="var">style</span> object.</td></tr>
+<tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <span class="var">style</span> object.
+        The syntax for the CSS styles is camel-case (e.g. "$backgroundColor", not "$background-color"). </td></tr>
 <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <span class="var">$</span> modifies the element's CSS classes using the object's <span class="var">className</span> property. The value is a
             space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
             The name '$' can also be omitted if <span class="var">set</span> is called with class names as only argument.</td></tr>
@@ -77,9 +74,7 @@ be set.</p><p>The <span class="var">name</span> parameter defines what kind of d
 <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
             '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document.
             The coordinates are specified in pixels, but must not use a 'px' unit postfix.</td></tr>
-</table>
- (use on <code>$(window)</code>)
-</p></div>
+</table></p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -292,7 +287,6 @@ var disqus_url = "http://minifiedjs.com/api/set.html";
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

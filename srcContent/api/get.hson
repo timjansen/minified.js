@@ -23,16 +23,8 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="get_name" class=""><a name="get_name"><var>name</var></a></dt>
-<dd class="">the name of the property, attribute or style. To retrieve a JavaScript property, just use its name without prefix. To get an attribute value,
-prefix the name with a '@' for regular attributes or '%' to add a 'data-' prefix.
-A '$' prefix will retrieve a CSS style. The syntax for the CSS styles is camel-case (e.g. "$backgroundColor", not "$background-color").
-Shorthand properties like "border" or "margin" are not supported. You must use the full name, e.g. "$marginTop". Minified will try to determine the effective style
-and thus will return the value set in style sheets if not overwritten using a regular style.
-Using just '$' as name will retrieve the 'className' property of the object, a space-separated list of all CSS classes.
-The special name '$$' will set the element's style attribute in a browser independent way.
-'$$fade' returns a value between 0 and 1 that specifies the element's
-opacity. '$$slide' returns the height of the element in pixels, with a 'px' suffix. Both '$$fade' and '$$slide' will also check the CSS styles 'visibility' and 'display'
-to determine whether the object is visible at all. If not, they will return 0.</dd>
+<dd class="">the name of a single property or attribute to modify. Unprefixed names set properties, a '$' prefix sets CSS styles and
+'@' sets attributes. Please see the table above for special properties and other options.</dd>
 <dt id="get_list" class=""><a name="get_list"><var>list</var></a></dt>
 <dd class="">in order to retrieve more than one value, you can specify several names in an array or list. <span class="var">get()</span> will then return an object map
 containing the values.</dd>
@@ -52,7 +44,29 @@ It returns <span class="var">undefined</span> if the list is empty.</dd>
 
 <h4>Description</h4>
 <div class="description"><p>Retrieves properties, attributes and styles from the list's first element. The syntax to request those values is mostly identical with <code><a href='set.html' class='func'>set()</a></code>. You can either
-get a single value if you specify only one name, or get an object map when you specify several names using an array or an object map.</p><p></p></div>
+get a single value if you specify only one name, or get an object map when you specify several names using an array or an object map.</p><p>The <span class="var">name</span> parameter defines what kind of data you are reading. The following name schemes are supported:
+<table>
+<tr><th>Name Schema</th><th>Example</th><th>Sets what?</th><th>Description</th></tr>
+<tr><td>name</td><td>innerHTML</td><td>Property</td><td>A name without prefix of '$' or '@' gets a property of the object.</td></tr>
+<tr><td>@name</td><td>@href</td><td>Attribute</td><td>Gets the HTML attribute using getAttribute().</td></tr>
+<tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Gets a data attribute using getAttribute(). Data attributes are
+        attributes whose names start with 'data-'. '%myattr' and '@data-myattr' are equivalent.</td></tr>
+<tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Gets a style using the element's <span class="var">style</span> object.
+            The syntax for the CSS styles is camel-case (e.g. "$backgroundColor", not "$background-color"). Shorthand properties like "border" or "margin" are
+            not supported. You must use the full name, e.g. "$marginTop". Minified will try to determine the effective style
+            and thus will return the value set in style sheets if not overwritten using a regular style.</td></tr>
+<tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <span class="var">$</span> returns the CSS classes of the element and is identical with "className".</td></tr>
+<tr><td>$$</td><td>$$</td><td>Style</td><td>Reads the element's style attribute in a browser-independent way. On legacy IEs it uses
+            <span class="var">style.cssText</span>, and on everything else just the "style" attribute.</td></tr>
+<tr><td>$$fade</td><td>$$fade</td><td>Fade Effect</td><td>The name '$$fade' returns the opacity of the element as a value between 0 and 1.
+			   '$$fade' will also automatically evaluate the element's 'visibility' and 'display' styles to find out whether the element is actually visible.</td></tr>
+<tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>'$$slide' returns the height of the element in pixels with a 'px' suffix and is mostly
+       equivalent to '$height'. It does, however, also evaluate the element's 'visibility' and 'display' styles to find out whether the element is
+       actually visible. If not, it returns 0.</td></tr>
+<tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
+            '$$scrollY' can be used on <code>$(window)</code> to retrieve the scroll coordinates of the document.
+            The coordinates are specified in pixels without a 'px' unit postfix.</td></tr>
+</table></p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -211,7 +225,6 @@ var disqus_url = "http://minifiedjs.com/api/get.html";
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

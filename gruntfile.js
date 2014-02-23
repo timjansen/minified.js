@@ -255,6 +255,9 @@ module.exports = function(grunt) {
 					'minified-legacyie.js': 'dist/minified-legacyie.js',
 					'minified-src.js': 'dist/minified-src.js',
 					'minified-legacyie-src.js': 'dist/minified-legacyie-src.js'
+				},
+				options: { 
+					destFile: 'tmp/sizes.json'
 				}
 			}
 		},

@@ -29,7 +29,7 @@
 	</div>
 </div>
 <div id="main">
-	<div class="container">{{{main}}}
+	<div class="container">{{{__formatter(main)}}}
 	{{if this.commentId}}
 	<div id="disqus_thread"></div>
 	<script type="text/javascript">

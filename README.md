@@ -2,31 +2,14 @@ Minified
 =========
 
 Quick Links: <a href="http://minifiedjs.com/">minifiedjs.com</a> - <a href="http://minifiedjs.com/api/">API</a> - <a href="http://minifiedjs.com/docs/">Docs</a>
-Latest version: <a href="http://minifiedjs.com/docs/beta4.html">beta 4.2</a> (<a href="CHANGES.md">changelog</a>)
+Latest version: <a href="http://minifiedjs.com/docs/beta5.html">beta 5</a> (<a href="CHANGES.md">changelog</a>)
 
 Overview
 ----------
 Minified.js is a client-side JavaScript library with low footprint (&lt;8kB) and a large feature set. 
 It offers jQuery-like features (DOM manipulation, animation, events, HTTP requests) and utility 
-functions (collections, date&amp;number formatting, date arithmtic, templates) with a simple, coherent API.
+functions (collections, date&amp;number formatting, date arithmetic, templates) with a simple, coherent API.
   	
-
-Size Comparison
------------------
-For beta 4:
-<table>
-<tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><th>Minified</th><td>no</td><td>19kb</td><td><strong>8167 bytes</strong></td></tr>
-<tr><th>...with IE6-8 support</th><td>no</td><td>21kb</td><td>8954 bytes</td></tr>
-<tr><th>...Web Module only</th><td>yes</td><td>9kb</td><td><strong>4083 bytes</strong></td></tr>
-<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>11kb</td><td>4930 bytes</td></tr>
-<tr><th>jQuery 1.10.2</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
-<tr><th>jQuery 2.0.3</th><td>no</td><td>82kb</td><td>29kb</td></tr>
-<tr><th>MooTools Core NoCompat 1.4.5</th><td>yes</td><td>88kb</td><td>29kb</td></tr>
-<tr><th>Zepto.js 1.0</th><td>no</td><td>27kb</td><td>9.7kb</td></tr>
-</table>
-
-
 
 Feature Comparison
 --------------------
@@ -39,8 +22,8 @@ The goal of Minified is to provide all the basics that you may need on an HTML p
 <tr><th>Element Creation</th><td>yes</td><td>yes</td> <td>yes<div class="cmpExpl">HTML-strings only</div></td> <td>yes</td> <td>yes<div class="cmpExpl">HTML-strings only</div></td></tr>
 <tr><th>Element Cloning</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>DOM Manipulation</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><th>Animation (numeric)</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes<div class="cmpExpl">CSS transitions only</div></td></tr>
-<tr><th>Animation (color)</th><td>yes</td><td>yes</td> <td>no</td> <td>yes</td> <td>yes<div class="cmpExpl">CSS transitions only</div></td></tr>
+<tr><th>Animation (numeric)</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>no<div class="cmpExpl">extra module, CSS only</div></td></tr>
+<tr><th>Animation (color)</th><td>yes</td><td>yes</td> <td>no</td> <td>yes</td> <td>no<div class="cmpExpl">extra module, CSS only</div></td></tr>
 <tr><th>Events</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>DOMReady</th><td>yes</td><td>yes</td><td>yes</td><td>yes</td> <td>yes</td></tr>
 <tr><th>Ajax/XHR</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
