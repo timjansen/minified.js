@@ -24,7 +24,7 @@
 <span class="var">length</span> property.</dd>
 <dt id="startswith_otherList" class=""><a name="startswith_otherList"><var>otherList</var></a></dt>
 <dd class="">A list to find at the beginning of the other string. Can be an array, a <a href='list.html' class='func'>Minified list</a> or any other
-array-like structure with <span class="var">length</span> property.</dd>
+array-like structure with <span class="var">length</span> property.  If it is not a list, it will be converted into a single-element list.</dd>
 <dt id="startswith_baseString" class=""><a name="startswith_baseString"><var>baseString</var></a></dt>
 <dd class="">a string to check</dd>
 <dt id="startswith_otherString" class=""><a name="startswith_otherString"><var>otherString</var></a></dt>
@@ -36,7 +36,8 @@ array-like structure with <span class="var">length</span> property.</dd>
 
 <h4>Description</h4>
 <div class="description"><p>Checks whether the list or string starts with the other string or list.</p><p>If you compare lists, each item of the other list is compared with the item at the same position of the
-base list using <code><a href='undefinedequals.html' class='func'>_.equals()</a></code>. Arrays can be used interchangably with lists.</p><p>If you compare strings, each character of the other string is compared with the character at the same position of the
+base list using <code><a href='undefinedequals.html' class='func'>_.equals()</a></code>. Arrays can be used interchangably with lists. If the first argument is a list and the second is
+not, it will be converted to a list.</p><p>If you compare strings, each character of the other string is compared with the character at the same position of the
 base string.</p><p>
 </p></div>
 

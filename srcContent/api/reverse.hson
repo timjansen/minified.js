@@ -8,12 +8,13 @@
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-reverse">.reverse()</a></h2>
-<div class="summary">Returns a new Minified list with the input list's elements in reverse order.</div>
+<div class="summary">Returns a new Minified list or string with the input's elements/characters in reverse order.</div>
 
 <div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.reverse()</div>
 <div class="syntax">_.reverse(list)</div>
+<div class="syntax">_.reverse(string)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -21,12 +22,14 @@
 <dt id="reverse_list" class=""><a name="reverse_list"><var>list</var></a></dt>
 <dd class="">A list to use as input. Can be an array, a <a href='list.html' class='func'>Minified list</a> or any other array-like structure with
 <span class="var">length</span> property.</dd>
-<dt id="reverse_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="reverse_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">a new <a href='list.html' class='func'>list</a> containing only the items in the index range.</dd>
+<dt id="reverse_string" class=""><a name="reverse_string"><var>string</var></a></dt>
+<dd class="">A string to use as input</dd>
+<dt id="reverse_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="reverse_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2">a new <a href='list.html' class='func'>list</a> or string with the input in reverse order.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Returns a new <a href='list.html' class='func'>Minified list</a> with the input list's elements in reverse order. The first element is swapped
+<div class="description"><p>Returns a new <a href='list.html' class='func'>Minified list</a> or string with the input's elements/characters in reverse order. The first element is swapped
 with the last, the second with the second to last and so on.</p><p></p></div>
 
 <div class="examples">
@@ -40,6 +43,12 @@ var rev = _('a', 'b', 'c').reverse(); // returns _('c', 'b', 'a')
 <div class="example"><p>The same with an array:
 <pre>
 var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Or a string:
+<pre>
+var rev = _.reverse("abc"); // returns _("cba")
 </pre>
 </p></div>
 </div>

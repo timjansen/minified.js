@@ -166,7 +166,7 @@ or have the given index.</div>
 <div class="summary">Replaces the list items with the the given node(s) in the DOM tree.</div>
 
 <h3><a href="reverse.html">.reverse()</a></h3>
-<div class="summary">Returns a new Minified list with the input list's elements in reverse order.</div>
+<div class="summary">Returns a new Minified list or string with the input's elements/characters in reverse order.</div>
 
 <h3><a href="select.html">.select()</a></h3>
 <div class="summary">Executes a selector with the list as context.</div>
