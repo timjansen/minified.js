@@ -95,17 +95,17 @@ define('minified', function() {
 	var nodeId = 1;  // used as node id to identify nodes
 
 
-    /*$
+	/*$
 	 * @id ready_vars
 	 * @dependency
-     */
-    /** @type {!Array.<function()>} */
-    var DOMREADY_HANDLER = /^[ic]/.test(_document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
-    /*$
-     * @id animation_vars
-     * @dependency
-     */
-     /** @type {!Array.<{c:!function(), t:!number, s:!function()}>} */
+	 */
+	/** @type {!Array.<function()>} */
+	var DOMREADY_HANDLER = /^[ic]/.test(_document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
+	/*$
+	 * @id animation_vars
+	 * @dependency
+	 */
+	 /** @type {!Array.<{c:!function(), t:!number, s:!function()}>} */
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currently active
 
 	/** @type {!function()} */
@@ -157,10 +157,10 @@ define('minified', function() {
 	/** @const */
 	var undef;
 
-    /*$
+	/*$
 	 * @id date_constants
 	 * @dependency
-     */
+	 */
 	function val3(v) {return v.substr(0,3);}
 	var MONTH_LONG_NAMES = split('January,February,March,April,May,June,July,August,September,October,November,December', /,/g);
 	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, val3); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -211,9 +211,9 @@ define('minified', function() {
 			'a': [3, MERIDIAN_NAMES]
 		};
 
-    /*$
+	/*$
 	 * @stop
-     */
+	 */
 
 	var MAX_CACHED_TEMPLATES = 99;
 	var templateCache={}; // template -> function
@@ -379,8 +379,8 @@ define('minified', function() {
 	function sub(list, startIndex, endIndex) {
 		if (!list)
 			return [];
-	    var s = getFindIndex(list, startIndex, 0);
-	    var e = getFindIndex(list, endIndex, list.length);
+		var s = getFindIndex(list, startIndex, 0);
+		var e = getFindIndex(list, endIndex, list.length);
  		return filter(list, function(o, index) { 
  			return index >= s && index < e; 
  		});
@@ -765,9 +765,9 @@ define('minified', function() {
 		// should never ever be reached
 	}
 
-    function ucode(a) {
-        return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-    }
+	function ucode(a) {
+		return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+	}
 
 	function escapeJavaScriptString(s) {
 		return replace(s, /[\x00-\x1f'"\u2028\u2029]/g, ucode);
@@ -971,37 +971,37 @@ define('minified', function() {
 	}
 	// @condend !ie8compatibility 
 
-    function nowAsTime() {
-    	return +new Date();
-    }
+	function nowAsTime() {
+		return +new Date();
+	}
 
 	function callArg(f) {f();}
 
 	// for remove & window.unload
-    function detachHandlerList(dummy, handlerList) {
-    	flexiEach(handlerList, function(h) {
-    		h['e'].detachEvent('on'+h['n'], h['h']);
-    	});
-    }
+	function detachHandlerList(dummy, handlerList) {
+		flexiEach(handlerList, function(h) {
+			h['e'].detachEvent('on'+h['n'], h['h']);
+		});
+	}
 
-    // for ready()
-    function triggerDomReady() {
+	// for ready()
+	function triggerDomReady() {
 		flexiEach(DOMREADY_HANDLER, callArg);
 		DOMREADY_HANDLER = _null;
-    }
+	}
 
-    function ready(handler) {
-    	if (DOMREADY_HANDLER)
+	function ready(handler) {
+		if (DOMREADY_HANDLER)
 			DOMREADY_HANDLER.push(handler);
 		else
 			delay(handler);
-    }
+	}
 
-    function $$(selector) {
+	function $$(selector) {
 		return dollarRaw(selector)[0];
 	}
 
-    function EE(elementName, attributes, children) {
+	function EE(elementName, attributes, children) {
 		var list = $(_document.createElement(elementName));
 		// @condblock UTIL
 		// this attributes != null check is only required with Util's isObject() implementation. Web's isObject() is simpler.
@@ -1010,26 +1010,26 @@ define('minified', function() {
 		// @cond !UTIL return (isList(attributes) || (!isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 	}
 
-    function clone (listOrNode) {
-        return collector(flexiEach, listOrNode, function(e) {
-        	var c;
-             if (isString(e))
-            	 return e;
-             else if (isList(e))
-            	 return clone(e);
-             else if (isNode(e)) {
-            	 c = e['cloneNode'](_true);
-            	 c['removeAttribute']('id');
-            	 return c;
-             }
-             else
-            	 return _null;
-        });
+	function clone (listOrNode) {
+		return collector(flexiEach, listOrNode, function(e) {
+			var c;
+		     if (isString(e))
+		    	 return e;
+		     else if (isList(e))
+		    	 return clone(e);
+		     else if (isNode(e)) {
+		    	 c = e['cloneNode'](_true);
+		    	 c['removeAttribute']('id');
+		    	 return c;
+		     }
+		     else
+		    	 return _null;
+		});
    }
 
-    /*$
-     * @stop
-     */
+	/*$
+	 * @stop
+	 */
 
 	function $(selector, context, childOnly) { 
 		// @condblock ready
@@ -1052,31 +1052,31 @@ define('minified', function() {
 	// @condblock !ie7compatibility
 	function dollarRaw(selector, context, childOnly) { 
 		function flatten(a) { // flatten list, keep non-lists, remove nulls
-	          return isList(a) ? collector(flexiEach, a, flatten) : a;
-	     }
-	     function filterElements(list) { // converts into array, makes sure context is respected
-	          return filter(collector(flexiEach, list, flatten), function(node) {
-	               var a = node;
-	               while (a = a['parentNode'])
-	                    if (a == context[0] || childOnly)
-	                         return a == context[0];
-	               // fall through to return undef
-	          });
-	     }
+		      return isList(a) ? collector(flexiEach, a, flatten) : a;
+		 }
+		 function filterElements(list) { // converts into array, makes sure context is respected
+		      return filter(collector(flexiEach, list, flatten), function(node) {
+		           var a = node;
+		           while (a = a['parentNode'])
+		                if (a == context[0] || childOnly)
+		                     return a == context[0];
+		           // fall through to return undef
+		      });
+		 }
 
-	     if (context) {
-	          if ((context = dollarRaw(context)).length != 1)
-	               return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
-	          else if (isString(selector))
-	               return childOnly ? filterElements(context[0].querySelectorAll(selector)) : context[0].querySelectorAll(selector);
-	          else
-	               return filterElements(selector);
+		 if (context) {
+		      if ((context = dollarRaw(context)).length != 1)
+		           return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
+		      else if (isString(selector))
+		           return childOnly ? filterElements(context[0].querySelectorAll(selector)) : context[0].querySelectorAll(selector);
+		      else
+		           return filterElements(selector);
 
-	     }
-	     else if (isString(selector))
-	          return _document.querySelectorAll(selector);
-	     else
-	          return collector(flexiEach, selector, flatten);
+		 }
+		 else if (isString(selector))
+		      return _document.querySelectorAll(selector);
+		 else
+		      return collector(flexiEach, selector, flatten);
 	};
 	// @condend !ie7compatibility
 
@@ -1166,15 +1166,15 @@ define('minified', function() {
 	 * 
 	 * @param otherPromise one or more promises to assimilate
 	 * @return the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
-     * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected. If you pass <var>null</var> or
-     * <var>undefined</var>, the promise's state does not change. The latter may be useful to obtain the promises current state.</dd>
-     * <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
-     * <var>state</var>).</dd>
-     * <dt class="returnValue">(return value)</dt><dd><var>true</var> if the promise has been fulfilled, <var>false</var> if its state is rejected,
-     * <var>undefined</var> if it is still pending. If you only want to obtain the promise's state, call the function without arguments.</dd></dl> 
-     * </dl>
-     * The function can be called several times, but only the first invocation modifies the Promise. All subsequent calls will
-     * be ignored.
+	 * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected. If you pass <var>null</var> or
+	 * <var>undefined</var>, the promise's state does not change. The latter may be useful to obtain the promises current state.</dd>
+	 * <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
+	 * <var>state</var>).</dd>
+	 * <dt class="returnValue">(return value)</dt><dd><var>true</var> if the promise has been fulfilled, <var>false</var> if its state is rejected,
+	 * <var>undefined</var> if it is still pending. If you only want to obtain the promise's state, call the function without arguments.</dd></dl> 
+	 * </dl>
+	 * The function can be called several times, but only the first invocation modifies the Promise. All subsequent calls will
+	 * be ignored.
 	 */
 	function promise() {
 		var state; // undefined/null = pending, true = fulfilled, false = rejected
@@ -1220,75 +1220,75 @@ define('minified', function() {
 			}
 		});
 
-    	/*$
-    	 * @id then
-    	 * @group REQUEST
-    	 * @name promise.then()
-    	 * @syntax promise.then()
-    	 * @syntax promise.then(onSuccess)
-    	 * @syntax promise.then(onSuccess, onError)
-    	 * 
-    	 * @module WEB, UTIL
-    	 * Registers two callbacks that will be invoked when the ##promise#Promise##'s asynchronous operation finished 
-    	 * successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after  
-    	 * <var>then()</var> returned, from the browser's event loop.
-    	 * Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
-    	 * You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to. 
-    	 *
-    	 * @example Simple handler for an HTTP request. Handles only success and ignores errors.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .then(function(txt) {
-    	 *        alert('Got response!');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @example Including an error handler.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .then(function(txt) {
-    	 *        alert('Got response!');
-    	 *     }, function(err) {
-    	 *        alert('Error!');
-    	 *     }));
-    	 * </pre>
-    	 *
-    	 * @example Chained handler.
-    	 * <pre>
-    	 * $.request('get', '/weather.do')
-    	 *     .then(function(txt) {
-    	 *        showWeather(txt);
-    	 *     }
-    	 *     .then(function() {
-    	 *        return $.request('get', '/traffic.do');
-    	 *     }
-    	 *     .then(function(txt) {
-    	 *        showTraffic(txt);
-    	 *     }
-    	 *     .then(function() {
-    	 *        alert('All result displayed');
-    	 *     }, function() {
-    	 *        alert('An error occurred');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @param onSuccess optional a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.  
-    	 *                           If the function returns a ##promise#Promise##, that Promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the 
-    	 *                           returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
-    	 *                           Pass <var>null</var> or <var>undefined</var> if you do not need the success handler. 
-    	 * @param onError optional a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a ##promise#Promise##, that promise will
-    	 *                           be evaluated to determine the state of the Promise returned by <var>then()</var>. If it returns anything else, the returned Promise will 
-    	 *                           have success status. If the function throws an error, the returned Promise will be in the error state.
-    	 *                           You can pass <var>null</var> or <var>undefined</var> if you do not need the error handler. 
-    	 * @return a new ##promise#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
-    	 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
-    	 */   
-	    var then = set['then'] = function (onFulfilled, onRejected) {
+		/*$
+		 * @id then
+		 * @group REQUEST
+		 * @name promise.then()
+		 * @syntax promise.then()
+		 * @syntax promise.then(onSuccess)
+		 * @syntax promise.then(onSuccess, onError)
+		 * 
+		 * @module WEB, UTIL
+		 * Registers two callbacks that will be invoked when the ##promise#Promise##'s asynchronous operation finished 
+		 * successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after  
+		 * <var>then()</var> returned, from the browser's event loop.
+		 * Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
+		 * You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to. 
+		 *
+		 * @example Simple handler for an HTTP request. Handles only success and ignores errors.
+		 * <pre>
+		 * $.request('get', '/weather.html')
+		 *     .then(function(txt) {
+		 *        alert('Got response!');
+		 *     });
+		 * </pre>
+		 *
+		 * @example Including an error handler.
+		 * <pre>
+		 * $.request('get', '/weather.html')
+		 *     .then(function(txt) {
+		 *        alert('Got response!');
+		 *     }, function(err) {
+		 *        alert('Error!');
+		 *     }));
+		 * </pre>
+		 *
+		 * @example Chained handler.
+		 * <pre>
+		 * $.request('get', '/weather.do')
+		 *     .then(function(txt) {
+		 *        showWeather(txt);
+		 *     }
+		 *     .then(function() {
+		 *        return $.request('get', '/traffic.do');
+		 *     }
+		 *     .then(function(txt) {
+		 *        showTraffic(txt);
+		 *     }
+		 *     .then(function() {
+		 *        alert('All result displayed');
+		 *     }, function() {
+		 *        alert('An error occurred');
+		 *     });
+		 * </pre>
+		 *
+		 * @param onSuccess optional a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.  
+		 *                           If the function returns a ##promise#Promise##, that Promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the 
+		 *                           returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
+		 *                           Pass <var>null</var> or <var>undefined</var> if you do not need the success handler. 
+		 * @param onError optional a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a ##promise#Promise##, that promise will
+		 *                           be evaluated to determine the state of the Promise returned by <var>then()</var>. If it returns anything else, the returned Promise will 
+		 *                           have success status. If the function throws an error, the returned Promise will be in the error state.
+		 *                           You can pass <var>null</var> or <var>undefined</var> if you do not need the error handler. 
+		 * @return a new ##promise#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
+		 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
+		 */   
+		var then = set['then'] = function (onFulfilled, onRejected) {
 			var promise2 = promise();
 			var callCallbacks = function() {
-	    		try {
-	    			var f = (state ? onFulfilled : onRejected);
-	    			if (isFunction(f)) {
+				try {
+					var f = (state ? onFulfilled : onRejected);
+					if (isFunction(f)) {
 		   				function resolve(x) {
 		   					try {
 			   					var then, cbCalled = 0;
@@ -1321,55 +1321,55 @@ define('minified', function() {
 			return promise2;
 		};
 
-    	/*$
-    	 * @id always
-    	 * @group REQUEST
-    	 * @name promise.always()
-    	 * @syntax promise.always(callback)
-    	 * @configurable default
-    	 * @module WEB+UTIL
-    	 * Registers a callback that will always be called when the ##promise#Promise##'s operation ended, no matter whether the operation succeeded or not.
-    	 * This is a convenience function that will call ##then() with the same function for both arguments. It shares all of its semantics.
-    	 *
-    	 * @example Simple handler for a HTTP request.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .always(function() {
-    	 *        alert('Got response or error!');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @param callback a function to be called when the operation has been finished, no matter what its result was. The exact arguments depend on the operation and may
-    	 *                 vary depending on whether it succeeded or not. If the function returns a ##promise#Promise##, that Promise will
-    	 *                 be evaluated to determine the state of the returned Promise. If provided and it returns regularly, the returned promise will 
-    	 *                 have success status. If it throws an error, the returned Promise will be in the error state.
-    	 * @return a new ##promise#Promise## object. Its state is determined by the callback.
-    	 */
+		/*$
+		 * @id always
+		 * @group REQUEST
+		 * @name promise.always()
+		 * @syntax promise.always(callback)
+		 * @configurable default
+		 * @module WEB+UTIL
+		 * Registers a callback that will always be called when the ##promise#Promise##'s operation ended, no matter whether the operation succeeded or not.
+		 * This is a convenience function that will call ##then() with the same function for both arguments. It shares all of its semantics.
+		 *
+		 * @example Simple handler for a HTTP request.
+		 * <pre>
+		 * $.request('get', '/weather.html')
+		 *     .always(function() {
+		 *        alert('Got response or error!');
+		 *     });
+		 * </pre>
+		 *
+		 * @param callback a function to be called when the operation has been finished, no matter what its result was. The exact arguments depend on the operation and may
+		 *                 vary depending on whether it succeeded or not. If the function returns a ##promise#Promise##, that Promise will
+		 *                 be evaluated to determine the state of the returned Promise. If provided and it returns regularly, the returned promise will 
+		 *                 have success status. If it throws an error, the returned Promise will be in the error state.
+		 * @return a new ##promise#Promise## object. Its state is determined by the callback.
+		 */
 	   	set['always'] = function(func) { return then(func, func); };
 
-    	/*$
-    	 * @id error
-    	 * @group REQUEST
-    	 * @name promise.error()
-    	 * @syntax promise.error(callback)
-    	 * @configurable default
-    	 * @module WEB, UTIL
-    	 * Registers a callback that will be called when the operation failed.
-    	 * This is a convenience function that will invoke ##then() with only the second argument set.  It shares all of its semantics.
-    	 *
-    	 * @example Simple handler for a HTTP request.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .error(function() {
-    	 *        alert('Got error!');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @param callback a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a ##promise#Promise##, that Promise will
-    	 *                           be evaluated to determine the state of the returned Promise. If it returns regularly, the returned Promise will 
-    	 *                           have success status. If it throws an error, the returned Promise will be in error state.
-    	 * @return a new ##promise#Promise## object. Its state is determined by the callback.
-    	 */  
+		/*$
+		 * @id error
+		 * @group REQUEST
+		 * @name promise.error()
+		 * @syntax promise.error(callback)
+		 * @configurable default
+		 * @module WEB, UTIL
+		 * Registers a callback that will be called when the operation failed.
+		 * This is a convenience function that will invoke ##then() with only the second argument set.  It shares all of its semantics.
+		 *
+		 * @example Simple handler for a HTTP request.
+		 * <pre>
+		 * $.request('get', '/weather.html')
+		 *     .error(function() {
+		 *        alert('Got error!');
+		 *     });
+		 * </pre>
+		 *
+		 * @param callback a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a ##promise#Promise##, that Promise will
+		 *                           be evaluated to determine the state of the returned Promise. If it returns regularly, the returned Promise will 
+		 *                           have success status. If it throws an error, the returned Promise will be in error state.
+		 * @return a new ##promise#Promise## object. Its state is determined by the callback.
+		 */  
 	   	set['error'] = function(func) { return then(0, func); };
 	   	/*$
 	   	 * @stop
@@ -1415,9 +1415,9 @@ define('minified', function() {
 	///#snippet utilM
 
 	/*$
-     * @id listctor
-     */
-    /** @constructor */
+	 * @id listctor
+	 */
+	/** @constructor */
 	function M(list, assimilateSublists) {
 		var self = this, len = list.length, len2, idx = 0;
 		for (var i = 0; i < len; i++) {
@@ -1443,56 +1443,56 @@ define('minified', function() {
 
 	copyObj({
 		///#snippet utilListFuncs
-    /*$
-     * @id each
-     * @group LIST
-     * @requires
-     * @configurable default
-     * @name .each()
-     * @altname _.each()
-     * @syntax list.each(callback)
-     * @syntax _.each(list, callback)
-     * @module UTIL, WEB
-     * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
-     * the zero-based index as second. Unlike JavaScript's built-in <var>forEach()</var> it will be invoked for each item in the list, 
-     * even if it is <var>undefined</var>.
-     *
-     * @example Creates the sum of all list entries. 
-     * <pre>
-     * var sum = 0;
-     * _(17, 4, 22).each(function(item, index) {
-     *     sum += item;
-     * });
-     * </pre>
-     *
-     * @example The previous example with a native array:
-     * <pre>
-     * var sum = 0;
-     * _.each([17, 4, 22], function(item, index) {
-     *     sum += item;
-     * });
-     * </pre>
-     * 
-     * @example This goes through all h2 elements of the class 'section' on a web page and changes their content:
-     * <pre>
-     * $('h2.section').each(function(item, index) {
-     *     item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
-     * });
-     * </pre>
-     * 
-     * @param list a list to iterate. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
-     *                 <dl><dt>item</dt><dd>The current list element.</dd>
-     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-     *                 <dt class="this">this</dt><dd>This list.</dd></dl>
-     *                 The callback's return value will be ignored.
-     * @return the list
-     * 
-     * @see ##per() works like <var>each()</var>, but wraps the list elements in a list.
-     * @see ##find() can be used instead of <var>each()</var> if you need to abort the loop.
-     * @see ##eachObj() iterates through the properties of an object.
-     */
+	/*$
+	 * @id each
+	 * @group LIST
+	 * @requires
+	 * @configurable default
+	 * @name .each()
+	 * @altname _.each()
+	 * @syntax list.each(callback)
+	 * @syntax _.each(list, callback)
+	 * @module UTIL, WEB
+	 * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
+	 * the zero-based index as second. Unlike JavaScript's built-in <var>forEach()</var> it will be invoked for each item in the list, 
+	 * even if it is <var>undefined</var>.
+	 *
+	 * @example Creates the sum of all list entries. 
+	 * <pre>
+	 * var sum = 0;
+	 * _(17, 4, 22).each(function(item, index) {
+	 *     sum += item;
+	 * });
+	 * </pre>
+	 *
+	 * @example The previous example with a native array:
+	 * <pre>
+	 * var sum = 0;
+	 * _.each([17, 4, 22], function(item, index) {
+	 *     sum += item;
+	 * });
+	 * </pre>
+	 * 
+	 * @example This goes through all h2 elements of the class 'section' on a web page and changes their content:
+	 * <pre>
+	 * $('h2.section').each(function(item, index) {
+	 *     item.innerHTML = 'Section ' + index + ': ' + item.innerHTML;
+	 * });
+	 * </pre>
+	 * 
+	 * @param list a list to iterate. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
+	 *                 <dl><dt>item</dt><dd>The current list element.</dd>
+	 *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *                 <dt class="this">this</dt><dd>This list.</dd></dl>
+	 *                 The callback's return value will be ignored.
+	 * @return the list
+	 * 
+	 * @see ##per() works like <var>each()</var>, but wraps the list elements in a list.
+	 * @see ##find() can be used instead of <var>each()</var> if you need to abort the loop.
+	 * @see ##eachObj() iterates through the properties of an object.
+	 */
 	'each': listBind(each),
 
 	/*$
@@ -1501,11 +1501,11 @@ define('minified', function() {
 	 * @requires 
 	 * @configurable default
 	 * @name .filter()
-     * @altname _.filter()
+	 * @altname _.filter()
 	 * @syntax list.filter(filterFunc)
 	 * @syntax list.filter(value)
-     * @syntax _.filter(list, filterFunc)
-     * @syntax _.filter(list, value)
+	 * @syntax _.filter(list, filterFunc)
+	 * @syntax _.filter(list, value)
    	 * @module WEB, UTIL
 	 * Creates a new ##list#Minified list## by taking an existing list and omitting certain elements from it. You
 	 * can either specify a callback function to approve those items that will be in the new list, or 
@@ -1513,12 +1513,12 @@ define('minified', function() {
 	 *  
 	 * If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
 	 * For values, a simple equality operation (<code>==</code>) will be used.
-     *
-     * @example Removing all instances of the number 10 from a list:
+	 *
+	 * @example Removing all instances of the number 10 from a list:
 	 * <pre>
 	 * var list = _([4, 10, 22, 7, 2, 19, 10]).filter(10);
 	 * </pre>
-     *
+	 *
 	 * @example Removing all numbers over 10 from a list:
 	 * <pre>
 	 * var list = _([4, 22, 7, 2, 19]).filter(function(item, index) {
@@ -1540,8 +1540,8 @@ define('minified', function() {
 	 * });
 	 * </pre>
 	 * 
-     * @param list a list to filter. A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
+	 * @param list a list to filter. A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
 	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
 	 *        <dl><dt>item</dt><dd>The current list element.</dd>
 	 *        <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
@@ -1556,117 +1556,117 @@ define('minified', function() {
 	'filter': listBindArray(filter),
 
 	/*$ 
-     * @id collect 
-     * @group LIST 
-     * @requires 
-     * @configurable default 
-     * @name .collect()
-     * @altname _.collect
-     * @syntax list.collect(collectFunc) 
-     * @syntax _.collect(list, collectFunc)
+	 * @id collect 
+	 * @group LIST 
+	 * @requires 
+	 * @configurable default 
+	 * @name .collect()
+	 * @altname _.collect
+	 * @syntax list.collect(collectFunc) 
+	 * @syntax _.collect(list, collectFunc)
    	 * @module WEB, UTIL
-     * Creates a new ##list#Minified list## from the current list using the given callback function. 
-     * The callback is invoked once for each element of the current list. The callback results will be added to the result list. 
-     * The callback can return 
-     * <ul> 
-     * <li>an array or another list-like object. Its content will be appended to the resulting list.</li> 
-     * <li>a regular object which will be appended to the list</li> 
-     * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
-     * If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li> 
-     * </ul>
-     * 
-     * @example Goes through a list of numbers. Numbers over 10 will be removed. Numbers 5 and below stay. Numbers between 6 and 
-     * 10 will be replaced by two numbers whose sum is the original value.
-     * <pre> 
-     * var texts = _(3, 7, 11, 5, 19, 3).collect(function(number, index) { 
-     *     if (number > 10)
-     *         return null;           // remove numbers >10
-     *     else if (number > 5)
-     *         return [5, number-5];  // replace with two entries
-     *     else
-     *         return number;         // keep lower numbers
-     * }); 
-     * </pre> 
-     *  
-     * @example Goes through input elements on a web page. If they are text inputs, their value will be added to the list: 
-     * <pre> 
-     * var texts = $('input').collect(function(input) { 
-     *     if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') 
-     *         return input.value; 
-     *     else 
-     *         return null; // ignore 
-     * }); 
-     * </pre> 
-     * 
-     * @example Creates a list of all children of the selected list. 
-     * <pre> 
-     * var childList = $('.mySections').collect(function(node) { 
-     *     return node.childNodes; // adds a while list of nodes 
-     * }); 
-     * </pre> 
-     * 
-     * @example Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case: 
-     * <pre> 
-     * var elements = $('input.myTexts').collect(function(item) { 
-     *     return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()]; 
-     * }); 
-     * </pre> 
-     * 
-     * @param list a list to transform. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
-     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-     *        <dt class="this">this</dt><dd>This list.</dd>
+	 * Creates a new ##list#Minified list## from the current list using the given callback function. 
+	 * The callback is invoked once for each element of the current list. The callback results will be added to the result list. 
+	 * The callback can return 
+	 * <ul> 
+	 * <li>an array or another list-like object. Its content will be appended to the resulting list.</li> 
+	 * <li>a regular object which will be appended to the list</li> 
+	 * <li><var>null</var> (or <var>undefined</var>), which means that no object will be added to the list. 
+	 * If you need to add <var>null</var> or <var>undefined</var> to the result list, put it into a single-element array.</li> 
+	 * </ul>
+	 * 
+	 * @example Goes through a list of numbers. Numbers over 10 will be removed. Numbers 5 and below stay. Numbers between 6 and 
+	 * 10 will be replaced by two numbers whose sum is the original value.
+	 * <pre> 
+	 * var texts = _(3, 7, 11, 5, 19, 3).collect(function(number, index) { 
+	 *     if (number > 10)
+	 *         return null;           // remove numbers >10
+	 *     else if (number > 5)
+	 *         return [5, number-5];  // replace with two entries
+	 *     else
+	 *         return number;         // keep lower numbers
+	 * }); 
+	 * </pre> 
+	 *  
+	 * @example Goes through input elements on a web page. If they are text inputs, their value will be added to the list: 
+	 * <pre> 
+	 * var texts = $('input').collect(function(input) { 
+	 *     if (input.getAttribute('type') != null || input.getAttribute('type') == 'text') 
+	 *         return input.value; 
+	 *     else 
+	 *         return null; // ignore 
+	 * }); 
+	 * </pre> 
+	 * 
+	 * @example Creates a list of all children of the selected list. 
+	 * <pre> 
+	 * var childList = $('.mySections').collect(function(node) { 
+	 *     return node.childNodes; // adds a while list of nodes 
+	 * }); 
+	 * </pre> 
+	 * 
+	 * @example Goes through selected input elements. For each hit, the innerHTML is added twice, once in lower case and once in upper case: 
+	 * <pre> 
+	 * var elements = $('input.myTexts').collect(function(item) { 
+	 *     return [item.innerHTML.toLowerCase(), item.innerHTML.toUpperCase()]; 
+	 * }); 
+	 * </pre> 
+	 * 
+	 * @param list a list to transform. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
+	 * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
 	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and not be added to 
 	 *        the new result list. </dd></dl>
-     * @return the new ##list#list##
-     * 
-     * @see ##map() is a simpler version of <var>collect()</var> that can be useful if there is a 1:1 mapping between
-     *      input and output list.
-     */ 
+	 * @return the new ##list#list##
+	 * 
+	 * @see ##map() is a simpler version of <var>collect()</var> that can be useful if there is a 1:1 mapping between
+	 *      input and output list.
+	 */ 
 	'collect': listBindArray(collect),
 
 	/*$ 
-     * @id map 
-     * @group LIST 
-     * @requires
-     * @configurable default 
-     * @name .map()
-     * @altname _.map()
-     * @syntax list.map(mapFunc) 
-     * @syntax _.map(list, mapFunc)
+	 * @id map 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .map()
+	 * @altname _.map()
+	 * @syntax list.map(mapFunc) 
+	 * @syntax _.map(list, mapFunc)
    	 * @module WEB, UTIL
-     * Creates a new ##list#Minified list## from the current list using the given callback function. 
-     * The callback is invoked once for each element of the current list. The callback results will be added to the result list.
-     *  
+	 * Creates a new ##list#Minified list## from the current list using the given callback function. 
+	 * The callback is invoked once for each element of the current list. The callback results will be added to the result list.
+	 *  
 	 * <var>map()</var> is a simpler version of ##collect(). Unlike <var>collect()</var>, it always creates lists of the same size as the input list, but 
 	 * it is easier to use if the resulting list should contain nulls or nested list.
-     * 
-     * @example Goes through a list of numbers and creates a new list with each value increased by 1:
-     * <pre> 
-     * var inced = _(3, 7, 11, 5, 19, 3).map(function(number, index) { 
-     *     return number + 1;
-     * }); 
-     * </pre> 
-     * 
+	 * 
+	 * @example Goes through a list of numbers and creates a new list with each value increased by 1:
+	 * <pre> 
+	 * var inced = _(3, 7, 11, 5, 19, 3).map(function(number, index) { 
+	 *     return number + 1;
+	 * }); 
+	 * </pre> 
+	 * 
 	 * @example The previous example with a native array is input. Note that the result is always a ##list#Minified list##:
-     * <pre> 
-     * var inced = _.map([3, 7, 11, 5, 19, 3], function(number, index) { 
-     *     return number + 1;
-     * }); 
-     * </pre> 
-     * 
-     * @param list a list to transform. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param mapFunc The callback <code>function(item, index)</code> to invoke for each item:
-     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-     *        <dt class="this">this</dt><dd>This list.</dd>
+	 * <pre> 
+	 * var inced = _.map([3, 7, 11, 5, 19, 3], function(number, index) { 
+	 *     return number + 1;
+	 * }); 
+	 * </pre> 
+	 * 
+	 * @param list a list to transform. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param mapFunc The callback <code>function(item, index)</code> to invoke for each item:
+	 * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new list.</dd></dl>
-     * @return the new ##list#list##
-     * 
-     * @see ##collect() is a more powerful version of <var>map()</var>.
-     */ 
+	 * @return the new ##list#list##
+	 * 
+	 * @see ##collect() is a more powerful version of <var>map()</var>.
+	 */ 
 	'map': listBindArray(map),
 
 	/*$ 
@@ -1675,7 +1675,7 @@ define('minified', function() {
 	 * @requires
 	 * @configurable default 
 	 * @name .toObject()
-     * @altname _.toObject()
+	 * @altname _.toObject()
 	 * @syntax list.toObject(value)
 	 * @syntax _.toObject(keyList, value)
 	 * @module UTIL
@@ -1694,8 +1694,8 @@ define('minified', function() {
 	 * 
 	 * @param keyList A list or array to use for the keys of the new object.
 	 * @param value the value to use
-     * @return the new object
-     */ 
+	 * @return the new object
+	 */ 
 	'toObject': listBind(toObject),
 
 	/*$ 
@@ -1704,7 +1704,7 @@ define('minified', function() {
 	 * @requires
 	 * @configurable default 
 	 * @name .equals()
-     * @altname _.equals()
+	 * @altname _.equals()
 	 * @syntax list.equals(otherObject)
 	 * @syntax _.equals(thisObject, otherObject)
 	 * @module UTIL
@@ -1742,227 +1742,227 @@ define('minified', function() {
 	 * @param thisObject The first reference to evaluate.
 	 * @param otherObject The second reference to evaluate.
 	 * @return true if both references are equal. False otherwise.
-     */ 
+	 */ 
 	'equals': listBind(equals),
 
-    /*$ 
-     * @id sub
-     * @group LIST 
-     * @requires  
-     * @configurable default 
-     * @name .sub()
-     * @altname _.sub()
-     * @syntax list.sub(startIndex) 
-     * @syntax list.sub(startIndex, endIndex) 
-     * @syntax _.sub(list, startIndex) 
-     * @syntax _.sub(list, startIndex, endIndex) 
-     * @module WEB, UTIL
-     * Returns a new ##list#Minified list## containing only the elements in the specified range. If there are no elements in the range,
-     * an empty list is returned.
-     * Negative indices are supported and will be added to the list's length, thus allowing you to specify ranges at the list's end.
-     *
-     * If you only want to have a single element from the list, you can only use ##only().
-     *
-     * @example Takes only the second and third element:
-     * <pre> 
-     * var secndAndThird = _(5, 6, 7, 8, 9).sub(2, 4);
-     * </pre> 
-     *
-     * @example The same using an array:
-     * <pre> 
-     * var secndAndThird = _.sub([5, 6, 7, 8, 9], 2, 4);
-     * </pre> 
-     *
-     * @example Adds some text the 3rd to 5th list elements:
-     * <pre> 
-     * $('#myList li').sub(3, 6).add('Hello');
-     * </pre> 
-     *
-     * @example Clears all elements but the first:
-     * <pre> 
-     * $('#myList li').sub(1).fill();
-     * </pre> 
-     *
-     * @example Changes the class of the last list element:
-     * <pre> 
-     * $('#myList li').sub(-1).set('+lastItem');
-     * </pre> 
-     * 
-     * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and the position is relative
-     *                   to the list's end.
-     * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
-     *                   to the list's end. If omitted or null, all elements following the <var>startIndex</var> are included in the result.
-     * @return a new ##list#list## containing only the items in the index range. 
-     */ 
+	/*$ 
+	 * @id sub
+	 * @group LIST 
+	 * @requires  
+	 * @configurable default 
+	 * @name .sub()
+	 * @altname _.sub()
+	 * @syntax list.sub(startIndex) 
+	 * @syntax list.sub(startIndex, endIndex) 
+	 * @syntax _.sub(list, startIndex) 
+	 * @syntax _.sub(list, startIndex, endIndex) 
+	 * @module WEB, UTIL
+	 * Returns a new ##list#Minified list## containing only the elements in the specified range. If there are no elements in the range,
+	 * an empty list is returned.
+	 * Negative indices are supported and will be added to the list's length, thus allowing you to specify ranges at the list's end.
+	 *
+	 * If you only want to have a single element from the list, you can only use ##only().
+	 *
+	 * @example Takes only the second and third element:
+	 * <pre> 
+	 * var secndAndThird = _(5, 6, 7, 8, 9).sub(2, 4);
+	 * </pre> 
+	 *
+	 * @example The same using an array:
+	 * <pre> 
+	 * var secndAndThird = _.sub([5, 6, 7, 8, 9], 2, 4);
+	 * </pre> 
+	 *
+	 * @example Adds some text the 3rd to 5th list elements:
+	 * <pre> 
+	 * $('#myList li').sub(3, 6).add('Hello');
+	 * </pre> 
+	 *
+	 * @example Clears all elements but the first:
+	 * <pre> 
+	 * $('#myList li').sub(1).fill();
+	 * </pre> 
+	 *
+	 * @example Changes the class of the last list element:
+	 * <pre> 
+	 * $('#myList li').sub(-1).set('+lastItem');
+	 * </pre> 
+	 * 
+	 * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param startIndex the 0-based position of the sub-list start. If negative, the list's length is added and the position is relative
+	 *                   to the list's end.
+	 * @param endIndex optional the 0-based position of the sub-list end. If negative, the list's length is added and the position is relative
+	 *                   to the list's end. If omitted or null, all elements following the <var>startIndex</var> are included in the result.
+	 * @return a new ##list#list## containing only the items in the index range. 
+	 */ 
 	'sub': listBindArray(sub),
 
-    /*$ 
-     * @id reverse
-     * @group LIST 
-     * @requires  
-     * @configurable default 
-     * @name .reverse()
-     * @altname _.reverse()
-     * @syntax list.reverse() 
-     * @syntax _.reverse(list) 
-     * @module UTIL
-     * Returns a new ##list#Minified list## with the input list's elements in reverse order. The first element is swapped 
-     * with the last, the second with the second to last and so on.
-     *
-     * @example Changes the order of a list:
-     * <pre> 
-     * var rev = _('a', 'b', 'c').reverse(); // returns _('c', 'b', 'a')
-     * </pre> 
-     * 
-     * @example The same with an array:
-     * <pre> 
-     * var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
-     * </pre> 
-     * 
-     * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @return a new ##list#list## containing only the items in the index range. 
-     */ 
+	/*$ 
+	 * @id reverse
+	 * @group LIST 
+	 * @requires  
+	 * @configurable default 
+	 * @name .reverse()
+	 * @altname _.reverse()
+	 * @syntax list.reverse() 
+	 * @syntax _.reverse(list) 
+	 * @module UTIL
+	 * Returns a new ##list#Minified list## with the input list's elements in reverse order. The first element is swapped 
+	 * with the last, the second with the second to last and so on.
+	 *
+	 * @example Changes the order of a list:
+	 * <pre> 
+	 * var rev = _('a', 'b', 'c').reverse(); // returns _('c', 'b', 'a')
+	 * </pre> 
+	 * 
+	 * @example The same with an array:
+	 * <pre> 
+	 * var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
+	 * </pre> 
+	 * 
+	 * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @return a new ##list#list## containing only the items in the index range. 
+	 */ 
 	'reverse': listBindArray(reverse),
 
 	/*$ 
-     * @id find 
-     * @group LIST 
-     * @requires
-     * @configurable default 
-     * @name .find()
-     * @altname _.find()
-     * @syntax list.find(findFunc) 
-     * @syntax list.find(element) 
-     * @syntax list.find(findFunc, startIndex) 
-     * @syntax list.find(element, startIndex) 
-     * @syntax _.find(list, findFunc) 
-     * @syntax _.find(list, element) 
-     * @syntax _.find(list, findFunc, startIndex) 
-     * @syntax _.find(list, element, startIndex) 
-     * @module WEB, UTIL
-     * Finds a specific value in the list. There are two ways of calling <var>find()</var>:
-     * <ol>
-     * <li>With a value as argument. Then <var>find()</var> will search for the first occurrence of an identical value in the list,
-     *     using the '===' operator for comparisons, and return the index. If it is not found,
-     *     <var>find()</var> returns <var>undefined</var>.</li>
-     * <li>With a callback function. <var>find()</var> will then call the given function for each list element until the function 
-     *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
-     * </ol>
-     * 
-     * <var>find()</var> can also be used as an alternative to ##each() if you need to abort the loop.
-     *
-     * @example Finds the first negative number in the list:
-     * <pre> 
-     * var i = _(1, 2, -4, 5, 2, -1).find(function(value, index) { if (value &lt; 0) return index; }); // returns 2
-     * </pre> 
-
-     * @example Finds the index of the first 5 in the array:
-     * <pre> 
-     * var i = _.find([3, 6, 7, 6, 5, 4, 5], 5); // returns 4 (index of first 5)
-     * </pre> 
+	 * @id find 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .find()
+	 * @altname _.find()
+	 * @syntax list.find(findFunc) 
+	 * @syntax list.find(element) 
+	 * @syntax list.find(findFunc, startIndex) 
+	 * @syntax list.find(element, startIndex) 
+	 * @syntax _.find(list, findFunc) 
+	 * @syntax _.find(list, element) 
+	 * @syntax _.find(list, findFunc, startIndex) 
+	 * @syntax _.find(list, element, startIndex) 
+	 * @module WEB, UTIL
+	 * Finds a specific value in the list. There are two ways of calling <var>find()</var>:
+	 * <ol>
+	 * <li>With a value as argument. Then <var>find()</var> will search for the first occurrence of an identical value in the list,
+	 *     using the '===' operator for comparisons, and return the index. If it is not found,
+	 *     <var>find()</var> returns <var>undefined</var>.</li>
+	 * <li>With a callback function. <var>find()</var> will then call the given function for each list element until the function 
+	 *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
+	 * </ol>
+	 * 
+	 * <var>find()</var> can also be used as an alternative to ##each() if you need to abort the loop.
 	 *
-     * @example Determines the position of the element with the id '#wanted' among all li elements:
-     * <pre> 
-     * var elementIndex = $('li').find($$('#wanted'));
-     * </pre> 
-     * 
-     * @example Goes through the elements to find the first div that has the class 'myClass', and returns this element:
-     * <pre> 
-     * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
-     * </pre> 
-     * 
-     * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
-     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-     *        <dt class="this">this</dt><dd>This list.</dd>
+	 * @example Finds the first negative number in the list:
+	 * <pre> 
+	 * var i = _(1, 2, -4, 5, 2, -1).find(function(value, index) { if (value &lt; 0) return index; }); // returns 2
+	 * </pre> 
+
+	 * @example Finds the index of the first 5 in the array:
+	 * <pre> 
+	 * var i = _.find([3, 6, 7, 6, 5, 4, 5], 5); // returns 4 (index of first 5)
+	 * </pre> 
+	 *
+	 * @example Determines the position of the element with the id '#wanted' among all li elements:
+	 * <pre> 
+	 * var elementIndex = $('li').find($$('#wanted'));
+	 * </pre> 
+	 * 
+	 * @example Goes through the elements to find the first div that has the class 'myClass', and returns this element:
+	 * <pre> 
+	 * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
+	 * </pre> 
+	 * 
+	 * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
+	 * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
-     * @param element the element to search for
-     * @param startIndex optional the 0-based index of the first element to search.
-     * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
-     *         it returns either the value returned by the callback or <var>undefined</var>.
-     *         
-     * @see ##findLast() is the equivalent to <var>find()</var> for the list's end.
-     */ 
+	 * @param element the element to search for
+	 * @param startIndex optional the 0-based index of the first element to search.
+	 * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
+	 *         it returns either the value returned by the callback or <var>undefined</var>.
+	 *         
+	 * @see ##findLast() is the equivalent to <var>find()</var> for the list's end.
+	 */ 
  	'find': listBind(find),
 
-    /*$ 
-     * @id findlast
-     * @group LIST 
-     * @requires
-     * @configurable default 
-     * @name .findLast()
-     * @altname _.findLast()
-     * @syntax list.findLast(findFunc) 
-     * @syntax list.findLast(element) 
-     * @syntax list.findLast(findFunc, startIndex) 
-     * @syntax list.findLast(element, startIndex) 
-     * @syntax _.findLast(list, findFunc) 
-     * @syntax _.findLast(list, element) 
-     * @syntax _.findLast(list, findFunc, startIndex) 
-     * @syntax _.findLast(list, element, startIndex) 
-     * @module WEB, UTIL
-     * Finds the last occurrence of value in the list. There are two ways of calling <var>findLast()</var>:
-     * <ol>
-     * <li>With a value as argument. Then <var>findLast()</var> will search for the first occurrence of an identical value in the list,
-     *     using the '===' operator for comparisons, and return the index. If it is not found,
-     *     <var>findLast()</var> returns <var>undefined</var>.</li>
-     * <li>With a callback function. <var>findLast()</var> will then call the given function for each list element until the function 
-     *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
-     * </ol>
-     *
-     * @example Finds the first negative number in the list:
-     * <pre> 
-     * var i = _(1, 2, -4, 5, 2, -1, 2).findLast(function(value, index) { if (value &lt; 0) return index; }); // returns 5
-     * </pre> 
+	/*$ 
+	 * @id findlast
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .findLast()
+	 * @altname _.findLast()
+	 * @syntax list.findLast(findFunc) 
+	 * @syntax list.findLast(element) 
+	 * @syntax list.findLast(findFunc, startIndex) 
+	 * @syntax list.findLast(element, startIndex) 
+	 * @syntax _.findLast(list, findFunc) 
+	 * @syntax _.findLast(list, element) 
+	 * @syntax _.findLast(list, findFunc, startIndex) 
+	 * @syntax _.findLast(list, element, startIndex) 
+	 * @module WEB, UTIL
+	 * Finds the last occurrence of value in the list. There are two ways of calling <var>findLast()</var>:
+	 * <ol>
+	 * <li>With a value as argument. Then <var>findLast()</var> will search for the first occurrence of an identical value in the list,
+	 *     using the '===' operator for comparisons, and return the index. If it is not found,
+	 *     <var>findLast()</var> returns <var>undefined</var>.</li>
+	 * <li>With a callback function. <var>findLast()</var> will then call the given function for each list element until the function 
+	 *     returns a value that is not <var>null</var> or <var>undefined</var>. This value will be returned.</li>
+	 * </ol>
 	 *
-     * @example Finds the index of the last 5 in the array:
-     * <pre> 
-     * var i = _.findLast([3, 6, 7, 6, 5, 4, 5], 5); // returns 6
-     * </pre> 
+	 * @example Finds the first negative number in the list:
+	 * <pre> 
+	 * var i = _(1, 2, -4, 5, 2, -1, 2).findLast(function(value, index) { if (value &lt; 0) return index; }); // returns 5
+	 * </pre> 
 	 *
-     * @example Determines the last position of the element with the id '#wanted' among all &lt;li> elements:
-     * <pre> 
-     * var elementIndex = $('li').findLast($$('#wanted'));
-     * </pre> 
-     * 
-     * @example Goes through the elements to find the last &lt;div> that has the class 'myClass', and returns this element:
-     * <pre> 
-     * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
-     * </pre> 
-     * 
-     * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
-     * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-     *        <dt class="this">this</dt><dd>This list.</dd>
+	 * @example Finds the index of the last 5 in the array:
+	 * <pre> 
+	 * var i = _.findLast([3, 6, 7, 6, 5, 4, 5], 5); // returns 6
+	 * </pre> 
+	 *
+	 * @example Determines the last position of the element with the id '#wanted' among all &lt;li> elements:
+	 * <pre> 
+	 * var elementIndex = $('li').findLast($$('#wanted'));
+	 * </pre> 
+	 * 
+	 * @example Goes through the elements to find the last &lt;div> that has the class 'myClass', and returns this element:
+	 * <pre> 
+	 * var myClassElement = $('div').find(function(e) { if ($(e).is('.myClass')) return e; });
+	 * </pre> 
+	 * 
+	 * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param findFunc The callback <code>function(item, index)</code> that will be invoked for every list item until it returns a non-null value:
+	 * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns something other than <var>null</var> or
 	 *        <var>undefined</var>, <var>find()</var> will return it directly. Otherwise it will continue. </dd></dl>
-     * @param element the element to search for
-     * @param startIndex optional the 0-based index of the first element to search.
-     * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
-     *         it returns either the value returned by the callback or <var>undefined</var>.
-     *         
-     * @see ##find() is the equivalent to find values at the end of a list.
-     */ 
+	 * @param element the element to search for
+	 * @param startIndex optional the 0-based index of the first element to search.
+	 * @return if called with an element, either the element's index in the list or <var>undefined</var> if not found. If called with a callback function,
+	 *         it returns either the value returned by the callback or <var>undefined</var>.
+	 *         
+	 * @see ##find() is the equivalent to find values at the end of a list.
+	 */ 
  	'findLast': listBind(findLast),
 
-    /*$ 
-     * @id startswith 
-     * @group LIST 
-     * @requires
-     * @configurable default 
-     * @name .startsWith()
-     * @altname _.startsWith()
-     * @syntax list.startsWith(otherList) 
-     * @syntax _.startsWith(list, otherList) 
-     * @syntax _.startsWith(baseString, otherString) 
-     * @module UTIL
-     * Checks whether the list or string starts with the other string or list.
+	/*$ 
+	 * @id startswith 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .startsWith()
+	 * @altname _.startsWith()
+	 * @syntax list.startsWith(otherList) 
+	 * @syntax _.startsWith(list, otherList) 
+	 * @syntax _.startsWith(baseString, otherString) 
+	 * @module UTIL
+	 * Checks whether the list or string starts with the other string or list.
 	 *
 	 * If you compare lists, each item of the other list is compared with the item at the same position of the
 	 * base list using ##_.equals(). Arrays can be used interchangably with lists.
@@ -1970,46 +1970,46 @@ define('minified', function() {
 	 * If you compare strings, each character of the other string is compared with the character at the same position of the
 	 * base string.
 	 * 
-     *
-     * @example Checks whether a list starts with [1, 2]:
-     * <pre> 
-     * var r = _(1, 2, 3, 4, 5).startsWith([1, 2]);   // returns true
-     * </pre> 
-
-     * @example The same using an array as base list:
-     * <pre> 
-     * var r = _.startsWith([1, 2, 3, 4, 5], [1, 2]); // returns true
-     * </pre> 
-
-     * @example Checks a string:
-     * <pre> 
-     * var r = _.startsWith("Cookie", "C"); // returns true
-     * </pre> 
 	 *
-     * @param list A list to check. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param otherList A list to find at the beginning of the other string. Can be an array, a ##list#Minified list## or any other 
-     *             array-like structure with <var>length</var> property.
-     * @param baseString a string to check
-     * @param otherString the string to find at the beginning of the other string
-     * @return true if the base list or string starts with the other list/string. False otherwise.
-     * 
-     * @see ##endsWith() is the equivalent for the list's or string's end.
-     */ 
+	 * @example Checks whether a list starts with [1, 2]:
+	 * <pre> 
+	 * var r = _(1, 2, 3, 4, 5).startsWith([1, 2]);   // returns true
+	 * </pre> 
+
+	 * @example The same using an array as base list:
+	 * <pre> 
+	 * var r = _.startsWith([1, 2, 3, 4, 5], [1, 2]); // returns true
+	 * </pre> 
+
+	 * @example Checks a string:
+	 * <pre> 
+	 * var r = _.startsWith("Cookie", "C"); // returns true
+	 * </pre> 
+	 *
+	 * @param list A list to check. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param otherList A list to find at the beginning of the other string. Can be an array, a ##list#Minified list## or any other 
+	 *             array-like structure with <var>length</var> property.
+	 * @param baseString a string to check
+	 * @param otherString the string to find at the beginning of the other string
+	 * @return true if the base list or string starts with the other list/string. False otherwise.
+	 * 
+	 * @see ##endsWith() is the equivalent for the list's or string's end.
+	 */ 
  	'startsWith': listBind(startsWith),
 
-    /*$ 
-     * @id endswith 
-     * @group LIST 
-     * @requires
-     * @configurable default 
-     * @name .endsWith()
-     * @altname _.endsWith()
-     * @syntax list.endsWith(otherList) 
-     * @syntax _.endsWith(list, otherList) 
-     * @syntax _.endsWith(baseString, otherString) 
-     * @module UTIL
-     * Checks whether the list or string ends with the other string or list.
+	/*$ 
+	 * @id endswith 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .endsWith()
+	 * @altname _.endsWith()
+	 * @syntax list.endsWith(otherList) 
+	 * @syntax _.endsWith(list, otherList) 
+	 * @syntax _.endsWith(baseString, otherString) 
+	 * @module UTIL
+	 * Checks whether the list or string ends with the other string or list.
 	 *
 	 * If you compare lists, each item of the other list is compared with the item at the same position relative to the end of the
 	 * base list using ##_.equals(). Arrays can be used interchangably with lists.
@@ -2017,184 +2017,184 @@ define('minified', function() {
 	 * If you compare strings, each character of the other string is compared with the character at the same position relative to the end 
 	 * of the base string.
 	 * 
-     *
-     * @example Checks whether a list ends with [4, 5]:
-     * <pre> 
-     * var r = _(1, 2, 3, 4, 5).startsWith([4, 5]);   // returns true
-     * </pre> 
-
-     * @example The same using an array as base list:
-     * <pre> 
-     * var r = _.startsWith([1, 2, 3, 4, 5], [4, 5]); // returns true
-     * </pre> 
-
-     * @example Checks a string:
-     * <pre> 
-     * var r = _.startsWith("Cookie", "okie"); // returns true
-     * </pre> 
 	 *
-     * @param list A list to check. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param otherList A list to find at the end of the other string. Can be an array, a ##list#Minified list## or any other 
-     *             array-like structure with <var>length</var> property.
-     * @param baseString a string to check
-     * @param otherString the string to find at the end of the other string
-     * @return true if the base list or string ends with the other list/string. False otherwise.
-     * 
-     * @see ##startsWith() is the equalent for the beginning of a list or string.
-     */ 
+	 * @example Checks whether a list ends with [4, 5]:
+	 * <pre> 
+	 * var r = _(1, 2, 3, 4, 5).startsWith([4, 5]);   // returns true
+	 * </pre> 
+
+	 * @example The same using an array as base list:
+	 * <pre> 
+	 * var r = _.startsWith([1, 2, 3, 4, 5], [4, 5]); // returns true
+	 * </pre> 
+
+	 * @example Checks a string:
+	 * <pre> 
+	 * var r = _.startsWith("Cookie", "okie"); // returns true
+	 * </pre> 
+	 *
+	 * @param list A list to check. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param otherList A list to find at the end of the other string. Can be an array, a ##list#Minified list## or any other 
+	 *             array-like structure with <var>length</var> property.
+	 * @param baseString a string to check
+	 * @param otherString the string to find at the end of the other string
+	 * @return true if the base list or string ends with the other list/string. False otherwise.
+	 * 
+	 * @see ##startsWith() is the equalent for the beginning of a list or string.
+	 */ 
  	'endsWith': listBind(endsWith),
 
-    /*$ 
-     * @id contains 
-     * @group LIST 
-     * @requires
-     * @configurable default 
-     * @name .contains()
-     * @altname _.contains()
-     * @syntax list.contains(item) 
-     * @syntax _.contains(list, item) 
-     * @module UTIL
-     * Checks whether the list contains the given item.
+	/*$ 
+	 * @id contains 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .contains()
+	 * @altname _.contains()
+	 * @syntax list.contains(item) 
+	 * @syntax _.contains(list, item) 
+	 * @module UTIL
+	 * Checks whether the list contains the given item.
 	 *
 	 * Each item of the other list is compared with the item using ##_.equals(). The function
 	 * returns <var>true</var> as soon as one list item equals the requested item.
 	 * 
-     *
-     * @example Checks whether a list contains a 5:
-     * <pre> 
-     * var r = _(1, 2, 3, 4, 5).contains(5);   // returns true
-     * </pre> 
-     *
-     * @example The same using an array:
-     * <pre> 
-     * var r = _.contains([1, 2, 3, 4, 5], 5); // returns true
-     * </pre> 
-     *
-     * @param list A list to check. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param item The item to search.
-     * @return true if the list contains the item. False otherwise.
-     * 
-     * @see ##find() finds the position of a list element's fist occurrence.
-     * @see ##findLast() finds the last position of a list element.
-     */ 
+	 *
+	 * @example Checks whether a list contains a 5:
+	 * <pre> 
+	 * var r = _(1, 2, 3, 4, 5).contains(5);   // returns true
+	 * </pre> 
+	 *
+	 * @example The same using an array:
+	 * <pre> 
+	 * var r = _.contains([1, 2, 3, 4, 5], 5); // returns true
+	 * </pre> 
+	 *
+	 * @param list A list to check. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param item The item to search.
+	 * @return true if the list contains the item. False otherwise.
+	 * 
+	 * @see ##find() finds the position of a list element's fist occurrence.
+	 * @see ##findLast() finds the last position of a list element.
+	 */ 
  	'contains': listBind(contains),
 
-    /*$ 
-     * @id call 
-     * @group LIST 
-     * @requires
-     * @configurable default 
-     * @name .call()
-     * @altname _.call()
-     * @syntax list.call() 
-     * @syntax list.call(args) 
-     * @syntax list.call(fThis) 
-     * @syntax list.call(fThis, args) 
-     * @syntax _.call(list) 
-     * @syntax _.call(list, args) 
-     * @syntax _.call(list, fThis) 
-     * @syntax _.call(list, fThis, args) 
-     * @module UTIL
-     * Calls all functions in the list.
+	/*$ 
+	 * @id call 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .call()
+	 * @altname _.call()
+	 * @syntax list.call() 
+	 * @syntax list.call(args) 
+	 * @syntax list.call(fThis) 
+	 * @syntax list.call(fThis, args) 
+	 * @syntax _.call(list) 
+	 * @syntax _.call(list, args) 
+	 * @syntax _.call(list, fThis) 
+	 * @syntax _.call(list, fThis, args) 
+	 * @module UTIL
+	 * Calls all functions in the list.
 	 *
 	 * <var>call</var> goes through all list items and, if they are functions, calls them with the specified arguments. 
 	 * Elements that are not functions will be ignored. The return values of the functions will be written into a list
 	 * of the same size and order as original list. If a input list item is not a function, the corresponding value in the result 
 	 * list will be <var>undefined</var>.
-     *
-     * @param list A list containing the functions to call. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param args optional A list or array of arguments to pass to the functions.
-     * @param fThis optional If set, a value to pass as <var>this</var>. Please note that if you use a list as <var>fThis</var>,
-     *              you must set <var>args</var> also to an (possibly empty) array.
-     * @return A list containing the return values of the called functions, or <var>undefined</var> for list items that were not 
-     *         functions.
-     */ 
+	 *
+	 * @param list A list containing the functions to call. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param args optional A list or array of arguments to pass to the functions.
+	 * @param fThis optional If set, a value to pass as <var>this</var>. Please note that if you use a list as <var>fThis</var>,
+	 *              you must set <var>args</var> also to an (possibly empty) array.
+	 * @return A list containing the return values of the called functions, or <var>undefined</var> for list items that were not 
+	 *         functions.
+	 */ 
 	'call': listBindArray(callList),
 
-    /*$ 
-     * @id array 
-     * @group LIST 
-     * @requires
-     * @configurable default 
-     * @name .array()
-     * @altname _.array()
-     * @syntax list.array() 
-     * @syntax _.array(list) 
-     * @module UTIL
-     * Converts a ##list#Minified list## or other array-like structure into a native JavaScript array.
+	/*$ 
+	 * @id array 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .array()
+	 * @altname _.array()
+	 * @syntax list.array() 
+	 * @syntax _.array(list) 
+	 * @module UTIL
+	 * Converts a ##list#Minified list## or other array-like structure into a native JavaScript array.
 	 *
-     * @param list The list to convert. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @return A native array containing a shallow copy of the input array's values.
-     */
+	 * @param list The list to convert. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @return A native array containing a shallow copy of the input array's values.
+	 */
 	'array': listBind(array),
 
-    /*$ 
-     * @id unite 
-     * @group LIST 
-     * @requires
-     * @configurable default 
-     * @name .unite()
-     * @altname _.unite()
-     * @syntax list.unite() 
-     * @syntax _.unite(list) 
-     * @module UTIL
-     * Takes a list of functions as input to create a new function that calls all input functions with the same
-     * arguments. 
+	/*$ 
+	 * @id unite 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .unite()
+	 * @altname _.unite()
+	 * @syntax list.unite() 
+	 * @syntax _.unite(list) 
+	 * @module UTIL
+	 * Takes a list of functions as input to create a new function that calls all input functions with the same
+	 * arguments. 
 	 *
-     * @param list The list of functions. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @return A function that will invoke all underlying functions with the arguments is has been called with. The function
-     *         returns a ##list#Minified list## of result values, using the same mechanics as ##_.call().
-     */
+	 * @param list The list of functions. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @return A function that will invoke all underlying functions with the arguments is has been called with. The function
+	 *         returns a ##list#Minified list## of result values, using the same mechanics as ##_.call().
+	 */
 	'unite': listBind(unite), 
 
-    /*$ 
-     * @id uniq 
-     * @group LIST 
-     * @requires
-     * @configurable default 
-     * @name .uniq()
-     * @altname _.uniq()
-     * @syntax list.uniq() 
-     * @syntax _.uniq(list) 
-     * @module UTIL
-     * Takes a list of values and removes all duplicates. If a value occurs more than once in the input list, only the first occurrence
-     * will be kept and all following occurrences will be filtered out.
-     * 
-     * Uses object properties to keep track which values already occurred. This means that it only works with simple values that can
-     * be converted to strings.  
+	/*$ 
+	 * @id uniq 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .uniq()
+	 * @altname _.uniq()
+	 * @syntax list.uniq() 
+	 * @syntax _.uniq(list) 
+	 * @module UTIL
+	 * Takes a list of values and removes all duplicates. If a value occurs more than once in the input list, only the first occurrence
+	 * will be kept and all following occurrences will be filtered out.
+	 * 
+	 * Uses object properties to keep track which values already occurred. This means that it only works with simple values that can
+	 * be converted to strings.  
 	 *
-     * @param list The list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @return A ##list#Minified list## without duplicates.
-     */
+	 * @param list The list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @return A ##list#Minified list## without duplicates.
+	 */
 	'uniq': listBindArray(uniq),
 
-    /*$ 
-     * @id intersection 
-     * @group LIST 
-     * @requires
-     * @configurable default 
-     * @name .intersection()
-     * @altname _.intersection() 
-     * @syntax list.intersection(otherList) 
-     * @syntax _.intersection(list, otherList) 
-     * @module UTIL
-     * Takes two input lists to create a new list containing only those values that exist in both input lists.
-     * 
-     * Uses object properties to keep track which values exist. This means that it only works with simple values that can
-     * be converted to strings.  
+	/*$ 
+	 * @id intersection 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .intersection()
+	 * @altname _.intersection() 
+	 * @syntax list.intersection(otherList) 
+	 * @syntax _.intersection(list, otherList) 
+	 * @module UTIL
+	 * Takes two input lists to create a new list containing only those values that exist in both input lists.
+	 * 
+	 * Uses object properties to keep track which values exist. This means that it only works with simple values that can
+	 * be converted to strings.  
 	 *
-     * @param list The list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @param otherList The other list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
-     *             <var>length</var> property.
-     * @return A ##list#Minified list## containing only the duplicate values.
-     */
+	 * @param list The list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param otherList The other list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @return A ##list#Minified list## containing only the duplicate values.
+	 */
 	'intersection': listBindArray(intersection), 
 
 	/*$ 
@@ -2236,15 +2236,15 @@ define('minified', function() {
 	 * @example Sum up some numbers:
 	 * <pre>var sum = _(1, 2, 3).reduce(function(memo, item, index) { return memo + item; }, 0);
 	 *
-     * @param callback The callback <code>function(memo, item, index)</code> to invoke for each list element. 
-     *                 <dl><dt>memo</dt><dd>On the first invocation, the <var>memo</var> argument given to <var>reduce()</var>. On
-     *                 all further invocation, this is the return value of the previous invocation.</dd>
-     *                 <dt>item</dt><dd>The current list element.</dd>
-     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-     *                 <dt class="this">this</dt><dd>This list.</dd>
-     *                 <dt class="returnValue">(callback return value)</dt><dd>Will be used as <var>memo</var> 
-     *                 argument of the next invocation. The last return value will be returned by <var>reduce()</var>.</dd></dl>
-     *                 
+	 * @param callback The callback <code>function(memo, item, index)</code> to invoke for each list element. 
+	 *                 <dl><dt>memo</dt><dd>On the first invocation, the <var>memo</var> argument given to <var>reduce()</var>. On
+	 *                 all further invocation, this is the return value of the previous invocation.</dd>
+	 *                 <dt>item</dt><dd>The current list element.</dd>
+	 *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+	 *                 <dt class="this">this</dt><dd>This list.</dd>
+	 *                 <dt class="returnValue">(callback return value)</dt><dd>Will be used as <var>memo</var> 
+	 *                 argument of the next invocation. The last return value will be returned by <var>reduce()</var>.</dd></dl>
+	 *                 
 	 * @param memo the initial value that will be passed as <var>memo</var> argument to the callback on its very first invocation.
 	 * @return the resulting value. If the list was empty, it returns the <var>memo</var> argument.
 	 */
@@ -2306,12 +2306,12 @@ define('minified', function() {
 	 * $('#myContainer').remove(); 
 	 * </pre>
 	 */
-     'remove': function() {
-    	flexiEach(this, function(obj) {
+	 'remove': function() {
+		flexiEach(this, function(obj) {
 
-    		obj['parentNode'].removeChild(obj);
-    	});
-     },
+			obj['parentNode'].removeChild(obj);
+		});
+	 },
 
  	/*$
  	 * @id text
@@ -2399,7 +2399,7 @@ define('minified', function() {
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements
  	 *        (but no other nodes such as text nodes).
-     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
  	 * @param maxDepth optional the maximum number of steps to traverse. Defaults to unlimited.
  	 * @return the new list containing all visited nodes. Nodes of the original list are not included, unless they
  	 *         have been visited when traversing another node. Duplicate nodes will be automatically removed.
@@ -2460,7 +2460,7 @@ define('minified', function() {
  	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
-     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
  	 * @return the new list that contains matching parent elements. Duplicate nodes will be automatically removed.
  	 *         
  	 * @see ##trav() allows you to match more than one element. You can also select other relatives such as siblings or children.
@@ -2529,7 +2529,7 @@ define('minified', function() {
  	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
-     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
  	 * @param maxSiblings optional the maximum number of siblings to include per list element. Defaults to 1.
  	 * @return the new list that contains matching siblings elements. Duplicate nodes will be automatically removed.
  	 *         
@@ -2624,7 +2624,7 @@ define('minified', function() {
  	 * @syntax list.only(selector)
  	 * @syntax list.only(filterFunc)
  	 * @syntax list.only(index)
-     * @module COMMENT only(index) is always available. All others variants are only in the Web module.
+	 * @module COMMENT only(index) is always available. All others variants are only in the Web module.
  	 * Returns a new list that contains only those elements that match the given selector, match the callback function
  	 * or have the given index. If no parameter has been given, the method keeps all HTML elements 
  	 * and removes everything else (same as '*').
@@ -2783,8 +2783,8 @@ define('minified', function() {
  	 *         It returns <var>undefined</var> if the list is empty.
  	 * @see ##set() sets values using the same property syntax.
  	 */
-    'get': function(spec, toNumber) {
-    	var self = this, element = self[0];
+	'get': function(spec, toNumber) {
+		var self = this, element = self[0];
 
 		if (element) {
 			if (isString(spec)) {
@@ -2963,47 +2963,47 @@ define('minified', function() {
 	 *                   Instead of a string, you can also specify a <code>function(oldValue, index, obj)</code> to modify the existing classes. 
 	 * @return the list
 	 */
-     'set': function (name, value) {
-    	 function setAttr(obj, n, v) {
-    		 if (v != _null)  
-    			 obj.setAttribute(n, v);
+	 'set': function (name, value) {
+		 function setAttr(obj, n, v) {
+			 if (v != _null)  
+				 obj.setAttribute(n, v);
 			 else
 				 obj.removeAttribute(n);
-    	 }
-    	 var self = this, v;
+		 }
+		 var self = this, v;
  		 // @cond debug if (name == null) error("First argument must be set!");
-    	 if (value !== undef) {
-    		 // @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
+		 if (value !== undef) {
+			 // @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
 
-    		 // @condblock fadeslide
-    		 if (name == '$$fade' || name == '$$slide') {
-    			 self.set({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block'})
-    			     .set((name == '$$fade')  ? (
-    			    	  {'$opacity': v})
-    			        :
-    			        {'$height': /px/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
-    			         '$overflow': 'hidden'}
+			 // @condblock fadeslide
+			 if (name == '$$fade' || name == '$$slide') {
+				 self.set({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block'})
+				     .set((name == '$$fade')  ? (
+				    	  {'$opacity': v})
+				        :
+				        {'$height': /px/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
+				         '$overflow': 'hidden'}
  					);
-    		 }
-    		 else
-    			// @condend fadeslide
-    			 flexiEach(self, function(obj, c) {
-    				 var nameClean = replace(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'data-'), /^[@$]+/);
-    				 var className = obj['className'] || '';
-    				 var newObj = /^\$/.test(name) ? obj.style : obj;
-    				 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
-    				 if (name == '$') {
-    					 if (newValue != _null) {
-    						 flexiEach(newValue.split(/\s+/), function(clzz) {
-    							 var cName = replace(clzz, /^[+-]/);
-    							 var oldClassName = className;
-    							 className = replace(className, RegExp('(^|\\s)' + cName + '(?=$|\\s)', 'i'));
-    							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
-    								 className += ' ' + cName;
-    						 });
-    						 obj['className'] = replace(className, /^\s+|\s+(?=\s|$)/g);
-    					 }
-    				 }
+			 }
+			 else
+				// @condend fadeslide
+				 flexiEach(self, function(obj, c) {
+					 var nameClean = replace(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'data-'), /^[@$]+/);
+					 var className = obj['className'] || '';
+					 var newObj = /^\$/.test(name) ? obj.style : obj;
+					 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
+					 if (name == '$') {
+						 if (newValue != _null) {
+							 flexiEach(newValue.split(/\s+/), function(clzz) {
+								 var cName = replace(clzz, /^[+-]/);
+								 var oldClassName = className;
+								 className = replace(className, RegExp('(^|\\s)' + cName + '(?=$|\\s)', 'i'));
+								 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
+									 className += ' ' + cName;
+							 });
+							 obj['className'] = replace(className, /^\s+|\s+(?=\s|$)/g);
+						 }
+					 }
    				 	 else if (name == '$$') {
 							setAttr(obj, 'style', newValue);
 					 }
@@ -3014,19 +3014,19 @@ define('minified', function() {
    				 	 else if (name == '$$scrollY') {
 			 			 obj['scroll'](obj['scrollX'], newValue);
    				 	 }
-    				 // @condend
-    				 else if (!/^[@%]/.test(name))
-    					 newObj[nameClean] = newValue;
-    				 else
-    					 setAttr(newObj, nameClean, newValue);
-    			 });
-    	 }
-    	 else if (isString(name) || isFunction(name))
-    		 self['set']('$', name);
-    	 else
-    		 eachObj(name, function(n,v) { self['set'](n, v); });
-    	 return self;
-     },
+					 // @condend
+					 else if (!/^[@%]/.test(name))
+						 newObj[nameClean] = newValue;
+					 else
+						 setAttr(newObj, nameClean, newValue);
+				 });
+		 }
+		 else if (isString(name) || isFunction(name))
+			 self['set']('$', name);
+		 else
+			 eachObj(name, function(n,v) { self['set'](n, v); });
+		 return self;
+	 },
 
 	/*$
 	 * @id add
@@ -3041,7 +3041,7 @@ define('minified', function() {
  	 * @module WEB
 	 * Adds the given node(s) as children to the list's HTML elements. If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
-     *
+	 *
 	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
 	 * and ##clone#clones## to all following list elements.
 	 * 
@@ -3551,9 +3551,9 @@ define('minified', function() {
 	 * @name .clone()
 	 * @syntax list.clone()
  	 * @module WEB
-     * Clones all HTML nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
-     * and everything else will be removed. Nested lists will be automatically flattened. Objects other than nodes, strings or lists
-     * will be removed.
+	 * Clones all HTML nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
+	 * and everything else will be removed. Nested lists will be automatically flattened. Objects other than nodes, strings or lists
+	 * will be removed.
 	 *
 	 * <var>clone()</var> uses the browser's <var>cloneNode()</var> function to clone HTML internally, but will remove the ids from
 	 * all top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
@@ -3834,9 +3834,9 @@ define('minified', function() {
 	 * Creates a function that switches between the two given states for the list. The states use the ##set() property syntax. You can also
 	 * just pass a string of CSS classes, as you do with <var>set()</var>.
 	 *
-     * If no duration is given, the returned function changes the state immediately using ##set(). If a duration has been passed, the returned function
-     * uses ##animate() to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the 
-     * animation and returns to the other state.
+	 * If no duration is given, the returned function changes the state immediately using ##set(). If a duration has been passed, the returned function
+	 * uses ##animate() to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the 
+	 * animation and returns to the other state.
 	 *
 	 *
 	 * @example Creates a toggle function that changes the background color of the page.
@@ -4321,13 +4321,13 @@ define('minified', function() {
 		 *                }));</pre>
 		 *
 		 * @param subSelector optional a selector as valid as first argument for #dollar#$(), to identify the descendants to iterate over.
-	     * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
-	     *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
-	     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	     *                 <dt class="this">this</dt><dd>The list that is being iterated. If a sub-selector
-	     *                 is being used, it is the list that resulted from using the sub-selector.</dd></dl>
-	     *                 The callback's return value will be ignored.
-	     * @return the list. Even if you specified a sub-selector, it will always return the original list.
+		 * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
+		 *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
+		 *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+		 *                 <dt class="this">this</dt><dd>The list that is being iterated. If a sub-selector
+		 *                 is being used, it is the list that resulted from using the sub-selector.</dd></dl>
+		 *                 The callback's return value will be ignored.
+		 * @return the list. Even if you specified a sub-selector, it will always return the original list.
 		 */
 		'per': function(subSelector, handler) {
 			if (isFunction(subSelector))
@@ -4352,7 +4352,7 @@ define('minified', function() {
 		 * @syntax list.ht(templateFunction, object)
 		 * @syntax list.ht(idSelector)
 		 * @syntax list.ht(idSelector, object)
-	     * @module WEB+UTIL
+		 * @module WEB+UTIL
 		 * Replaces the content of the list elements with the HTML generated using the given template. The template uses
 		 * ##template() syntax and HTML-escaped its output using ##escapeHtml(). 
 		 * 
@@ -4557,39 +4557,39 @@ define('minified', function() {
 	 */
 
 	/*$
-    * @id tojson
-    * @group JSON
-    * @requires  
-    * @configurable default
-    * @name $.toJSON()
-    * @syntax $.toJSON(value)
+	* @id tojson
+	* @group JSON
+	* @requires  
+	* @configurable default
+	* @name $.toJSON()
+	* @syntax $.toJSON(value)
 	* @module WEB
-    * Converts the given value into a JSON string. The value may be a map-like object, an array or list, a string, number, boolean or null.
+	* Converts the given value into a JSON string. The value may be a map-like object, an array or list, a string, number, boolean or null.
    	* If you build Minified without Internet Explorer compatibility, this is just an alias for <var>JSON.stringify</var>.
 	*
-    * The following types are supported by the built-in implementation:
-    * <ul>
-    *   <li>Objects (direct properties will be serialized)</li>
-    *   <li>Arrays/Lists (with <var>length</var> property)</li>
-    *   <li>Strings</li>
-    *   <li>Numbers</li>
-    *   <li>Boolean</li>
-    *   <li>null</li>
-    * </ul>
-    * Any other types in your JSON tree, especially Dates, should be converted into Strings before being passed to <var>toJSON</var>.
-    *
-    * @example Converts an object into a JSON object:
-    * <pre>
-    * var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
-    * var jsonString = $.toJSON(myObj);
-    * </pre>
-    * 
-    * @param value the value (map-like object, array/list, string, number, boolean or null)
-    * @return the JSON string
-    * 
-    * @see ##$.parseJON() parses JSON structures.
-    */
-    'toJSON': JSON.stringify,
+	* The following types are supported by the built-in implementation:
+	* <ul>
+	*   <li>Objects (direct properties will be serialized)</li>
+	*   <li>Arrays/Lists (with <var>length</var> property)</li>
+	*   <li>Strings</li>
+	*   <li>Numbers</li>
+	*   <li>Boolean</li>
+	*   <li>null</li>
+	* </ul>
+	* Any other types in your JSON tree, especially Dates, should be converted into Strings before being passed to <var>toJSON</var>.
+	*
+	* @example Converts an object into a JSON object:
+	* <pre>
+	* var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
+	* var jsonString = $.toJSON(myObj);
+	* </pre>
+	* 
+	* @param value the value (map-like object, array/list, string, number, boolean or null)
+	* @return the JSON string
+	* 
+	* @see ##$.parseJON() parses JSON structures.
+	*/
+	'toJSON': JSON.stringify,
 
 	/*$
 	* @id parsejson
@@ -4619,34 +4619,34 @@ define('minified', function() {
 	* @return the resulting JavaScript object. <var>Undefined</var> if not valid.
 	* @see ##$.toJSON() converts JavaScript objects to JSON.
 	*/
-    'parseJSON': JSON.parse,
+	'parseJSON': JSON.parse,
 
 	/*$
-    * @id ready
-    * @group EVENTS
-    * @requires ready_vars ready_init
-    * @configurable default
-    * @name $.ready()
-    * @syntax $.ready(handler)
+	* @id ready
+	* @group EVENTS
+	* @requires ready_vars ready_init
+	* @configurable default
+	* @name $.ready()
+	* @syntax $.ready(handler)
 	* @module WEB
-    * Registers a handler to be called as soon as the HTML has been fully loaded in the browser. Does not necessarily wait for images and other elements, 
-    * only the main HTML document needs to be complete. On older browsers it is the same as <var>window.onload</var>. 
-    * 
-    * If you call <var>ready()</var> after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.
-    *
-    * A shortcut for <var>ready()</var> is to call ##dollar#$()## with the handler function. It does the same with fewer characters.
-    *
-    * @example Registers a handler that sets some text in an element:
-    * <pre>
-    * $.ready(function() {
-    *   $('#someElement').fill('ready() called');
-    * });
-    * </pre>
-    *
-    * @param handler the <code>function()</code> to be called when the HTML is ready.
-    * @see ##dollar#$()## calls <var>ready()</var> when invoked with a function, offering a more convenient syntax.
-    */
-    'ready': ready,
+	* Registers a handler to be called as soon as the HTML has been fully loaded in the browser. Does not necessarily wait for images and other elements, 
+	* only the main HTML document needs to be complete. On older browsers it is the same as <var>window.onload</var>. 
+	* 
+	* If you call <var>ready()</var> after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.
+	*
+	* A shortcut for <var>ready()</var> is to call ##dollar#$()## with the handler function. It does the same with fewer characters.
+	*
+	* @example Registers a handler that sets some text in an element:
+	* <pre>
+	* $.ready(function() {
+	*   $('#someElement').fill('ready() called');
+	* });
+	* </pre>
+	*
+	* @param handler the <code>function()</code> to be called when the HTML is ready.
+	* @see ##dollar#$()## calls <var>ready()</var> when invoked with a function, offering a more convenient syntax.
+	*/
+	'ready': ready,
 
 	/*$
 	* @id loop
@@ -4694,21 +4694,21 @@ define('minified', function() {
 	* @see ##animate() for simple, property-based animations.
 	*/
 	'loop': function(paintCallback) { 
-        var entry = {c: paintCallback, t: nowAsTime()};
-        entry.s = function() {
-        	removeFromArray(ANIMATION_HANDLERS, entry);
-        };
+		var entry = {c: paintCallback, t: nowAsTime()};
+		entry.s = function() {
+			removeFromArray(ANIMATION_HANDLERS, entry);
+		};
 
-        if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
+		if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
 			(function raFunc() {
 				if (flexiEach(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, nowAsTime() - a.t), a.s);}).length) // check len after run, in case the callback invoked stop func
 					REQUEST_ANIMATION_FRAME(raFunc); 
 			})(); 
-        } 
-        return entry.s; 
-    },
+		} 
+		return entry.s; 
+	},
 
-    /*$
+	/*$
 	 * @id off
 	 * @group EVENTS
 	 * @requires on
@@ -4737,7 +4737,7 @@ define('minified', function() {
 	 *                If the handler is not registered as event handler, the function does nothing.
 	 *                
 	 * @see ##on() registers an event handler.
-     */
+	 */
 	'off': off
 
  	/*$
@@ -4748,84 +4748,84 @@ define('minified', function() {
 	///#/snippet webDollarFuncs
 		///#snippet extrasDollarFuncs
 		/*$
-	     * @id setcookie
-	     * @group COOKIE
-	     * @configurable default
-	     * @name $.setCookie()
-	     * @syntax $.setCookie(name, value)
-	     * @syntax $.setCookie(name, value, dateOrDays)
-	     * @module WEB+UTIL
-	     * Creates, updates or deletes a cookie. If there is an an existing cookie
-	     * of the same name, will be overwritten with the new value and settings.
-	     * 
-	     * To delete a cookie, overwrite it with an expiration date in the past. The easiest way to do this is to 
-	     * use <code>-1</code> as third argument.
-	     *
-	     * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
-	     * <pre>
-	     * var visits = $.getCookie('numberOfVisits');
-	     * $.setCookie('numberOfVisits', 
-	     *                      visits ? (parseInt(visits) + 1) : 1,   // if cookie not set, start with 1
-	     *                      365);                                  // store for 365 days
-	     * </pre>
-	     * 
-	     * @example Deletes the cookie 'numberOfVisits':
-	     * <pre>
-	     * $.setCookie('numberOfVisits', '', -1);
-	     * </pre>
-	     * 
-	     * @param name the name of the cookie. This should ideally be an alphanumeric name, as it will not be escaped by Minified and this
-	     *             guarantees compatibility with all systems.
-	     *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax. 
-	     * @param value the value of the cookie. All characters can be used. Non-Alphanumeric other than "*@-_+./" will be escaped using the 
-	     *              JavaScript <var>escape()</var> function, unless you set the optional <var>dontEscape</var> parameter.
-	     * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
-	     *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
-	     *                   browser has been closed. If the number negative or the date in the past, the cookie will be deleted.
-	     * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
-	     *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
-	     *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
-	     * @see ##$.getCookie() reads a cookie.
+		 * @id setcookie
+		 * @group COOKIE
+		 * @configurable default
+		 * @name $.setCookie()
+		 * @syntax $.setCookie(name, value)
+		 * @syntax $.setCookie(name, value, dateOrDays)
+		 * @module WEB+UTIL
+		 * Creates, updates or deletes a cookie. If there is an an existing cookie
+		 * of the same name, will be overwritten with the new value and settings.
+		 * 
+		 * To delete a cookie, overwrite it with an expiration date in the past. The easiest way to do this is to 
+		 * use <code>-1</code> as third argument.
+		 *
+		 * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
+		 * <pre>
+		 * var visits = $.getCookie('numberOfVisits');
+		 * $.setCookie('numberOfVisits', 
+		 *                      visits ? (parseInt(visits) + 1) : 1,   // if cookie not set, start with 1
+		 *                      365);                                  // store for 365 days
+		 * </pre>
+		 * 
+		 * @example Deletes the cookie 'numberOfVisits':
+		 * <pre>
+		 * $.setCookie('numberOfVisits', '', -1);
+		 * </pre>
+		 * 
+		 * @param name the name of the cookie. This should ideally be an alphanumeric name, as it will not be escaped by Minified and this
+		 *             guarantees compatibility with all systems.
+		 *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax. 
+		 * @param value the value of the cookie. All characters can be used. Non-Alphanumeric other than "*@-_+./" will be escaped using the 
+		 *              JavaScript <var>escape()</var> function, unless you set the optional <var>dontEscape</var> parameter.
+		 * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
+		 *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
+		 *                   browser has been closed. If the number negative or the date in the past, the cookie will be deleted.
+		 * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
+		 *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
+		 *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
+		 * @see ##$.getCookie() reads a cookie.
 
-	     */
-	    'setCookie': function(name, value, dateOrDays, dontEscape) {
-	    	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
-	    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(nowAsTime() + dateOrDays * 8.64E7)).toUTCString()) : '');
-	    },
+		 */
+		'setCookie': function(name, value, dateOrDays, dontEscape) {
+			_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
+			    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(nowAsTime() + dateOrDays * 8.64E7)).toUTCString()) : '');
+		},
 
-	    /*$
-	     * @id getcookie
-	     * @group COOKIE
-	     * @requires
-	     * @configurable default
-	     * @name $.getCookie()
-	     * @syntax $.getCookie(name)
-	     * @syntax $.getCookie(name, dontUnescape)
-	     * @module WEB+UTIL
-	     * Returns the cookie with the given name. 
-	     *
-	     * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
-	     * <pre>
-	     * var visits = $.getCookie('numberOfVisits');
-	     * if (!visits)    // check whether cookie set. Null if not
-	     *     $('#myCounter').set('innerHML', 'Your first visit.');
-	     * else
-	     *     $('#myCounter').set('innerHTML', 'Visit No ' + visits);
-	     * </pre>
-	     *  
-	     * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
-	     *             You may want to escape the name using <var>encodeURIComponent()</var> if it contains any other characters.
-	     * @param dontUnescape optional if set and true, the value will be returned unescaped. Use this parameter only if the value has been encoded
-	     *                     in a special way and not with the standard JavaScript <var>encode()</var> method.
-	     * @return the value of the cookie, or <var>null</var> if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
-	     *         using JavaScript's <code>unescape()</code> function.
-	     *
-	     * @see ##$.setCookie() sets a cookie.
-	     */
-	    'getCookie': function(name, dontUnescape) {
-	    	var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
-	    	return dontUnescape ? match : match && unescape(match);
-	    },
+		/*$
+		 * @id getcookie
+		 * @group COOKIE
+		 * @requires
+		 * @configurable default
+		 * @name $.getCookie()
+		 * @syntax $.getCookie(name)
+		 * @syntax $.getCookie(name, dontUnescape)
+		 * @module WEB+UTIL
+		 * Returns the cookie with the given name. 
+		 *
+		 * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
+		 * <pre>
+		 * var visits = $.getCookie('numberOfVisits');
+		 * if (!visits)    // check whether cookie set. Null if not
+		 *     $('#myCounter').set('innerHML', 'Your first visit.');
+		 * else
+		 *     $('#myCounter').set('innerHTML', 'Visit No ' + visits);
+		 * </pre>
+		 *  
+		 * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
+		 *             You may want to escape the name using <var>encodeURIComponent()</var> if it contains any other characters.
+		 * @param dontUnescape optional if set and true, the value will be returned unescaped. Use this parameter only if the value has been encoded
+		 *                     in a special way and not with the standard JavaScript <var>encode()</var> method.
+		 * @return the value of the cookie, or <var>null</var> if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
+		 *         using JavaScript's <code>unescape()</code> function.
+		 *
+		 * @see ##$.setCookie() sets a cookie.
+		 */
+		'getCookie': function(name, dontUnescape) {
+			var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
+			return dontUnescape ? match : match && unescape(match);
+		},
 
 		/*$
 		 * @id delay
@@ -4985,39 +4985,39 @@ define('minified', function() {
 		'intersection': funcArrayBind(intersection),
 		 // @condend
 
-	    /*$ 
-	     * @id keys 
-	     * @group OBJECT 
-	     * @requires
-	     * @configurable default 
-	     * @name _.keys() 
-	     * @syntax _.keys(obj) 
-	     * @module UTIL
-	     * Creates a ##list#Minified list## containing all property names of the specified object. Only direct properies are
-	     * included, not inherited ones. The order of the keys in the list is undefined and runtime-specific.
+		/*$ 
+		 * @id keys 
+		 * @group OBJECT 
+		 * @requires
+		 * @configurable default 
+		 * @name _.keys() 
+		 * @syntax _.keys(obj) 
+		 * @module UTIL
+		 * Creates a ##list#Minified list## containing all property names of the specified object. Only direct properies are
+		 * included, not inherited ones. The order of the keys in the list is undefined and runtime-specific.
 		 *
 		 * @example Using <var>keys()</var>:
 		 * <pre>var obj = {a: 2, b: 52};
 		 * var keys = _.keys(obj);  // keys contains ['a', 'b'] now
 		 * </pre>
 		 *
-	     * @param object The object to gather keys from.
-	     * @return A Minified list containing the property names.
-	     * 
-	     * @see ##_.values() returns the values of an object as a list.
-	     */
+		 * @param object The object to gather keys from.
+		 * @return A Minified list containing the property names.
+		 * 
+		 * @see ##_.values() returns the values of an object as a list.
+		 */
 		'keys': funcArrayBind(keys),
 
-	    /*$ 
-	     * @id objvalues 
-	     * @group OBJECT 
-	     * @requires
-	     * @configurable default 
-	     * @name _.values() 
-	     * @syntax _.values(obj) 
-	     * @module UTIL
-	     * Creates a ##list#Minified list## containing all property values of the specified object. Only direct properies are
-	     * included, not inherited ones. The order of the values in the list is undefined and runtime-specific.
+		/*$ 
+		 * @id objvalues 
+		 * @group OBJECT 
+		 * @requires
+		 * @configurable default 
+		 * @name _.values() 
+		 * @syntax _.values(obj) 
+		 * @module UTIL
+		 * Creates a ##list#Minified list## containing all property values of the specified object. Only direct properies are
+		 * included, not inherited ones. The order of the values in the list is undefined and runtime-specific.
 		 *
 		 * @example Using <var>values()</var>:
 		 * <pre>var obj = {a: 2, b: 52};
@@ -5025,10 +5025,10 @@ define('minified', function() {
 		 * </pre>
 		 * 
 		 * @param object The object to gather values from.
-	     * @return A Minified list containing the property names.
-	     * 
-	     * @see ##_.keys() retrieves the property names of an object as a list.
-	     */
+		 * @return A Minified list containing the property names.
+		 * 
+		 * @see ##_.keys() retrieves the property names of an object as a list.
+		 */
 		'values': funcArrayBind(values),
 
 		/*$
@@ -5916,193 +5916,193 @@ define('minified', function() {
 		'escapeHtml': escapeHtml,
 
 		/*$ 
-	     * @id format 
-	     * @group FORMAT
-	     * @requires template
-	     * @configurable default 
-	     * @name _.format() 
-	     * @syntax _.format()
-	     * @syntax _.format(template, object)
+		 * @id format 
+		 * @group FORMAT
+		 * @requires template
+		 * @configurable default 
+		 * @name _.format() 
+		 * @syntax _.format()
+		 * @syntax _.format(template, object)
 	   	 * @module UTIL
-	     * Formats an object using a ##template#template##. The template syntax is shared with ##_.template(). The only difference is that
-	     * <var>format()</var> frees you from the extra step of creating the template. In any case, whether you use 
-	     * <var>format()</var> or ##_.template(), the template will be cached. Be careful when you create templates dynamically, as 
-	     * every template is cached and consumes memory.<br/>
-	     * If you only want to format a single value, use ##_.formatValue().
-	     * 
-	     * @example Format a list of dates:
-	     * <pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
-	     * 
-	     * @param template The ##template#template## as a string. The template, once created, will be cached. 
-	     * @param object the object to format 
-	     * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
-	     *        to escape all output:
-	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
-	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
-	     *        If no escapeFunction has been given, the output will not be escaped.
-	     *        ##_.escapeHtml() can be used as an escape function for HTML, and ##_.escapeRegExp() for regular expressions. 
-	     *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
-	     *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
-	     * @return the string created by the template
-	     * 
-	     * @see ##_.template() creates a template function, using the same syntax. 
-	     * @see ##_.formatHtml() is a variant of <var>format()</var> with HTML-escpaping built it.
-	     * @see ##_.formatValue() formats a single number or date.
-	     * @see ##_.escapeRegExp() can be used by <var>format()</var> to escape regular expressions. 
-	     */ 
+		 * Formats an object using a ##template#template##. The template syntax is shared with ##_.template(). The only difference is that
+		 * <var>format()</var> frees you from the extra step of creating the template. In any case, whether you use 
+		 * <var>format()</var> or ##_.template(), the template will be cached. Be careful when you create templates dynamically, as 
+		 * every template is cached and consumes memory.<br/>
+		 * If you only want to format a single value, use ##_.formatValue().
+		 * 
+		 * @example Format a list of dates:
+		 * <pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+		 * 
+		 * @param template The ##template#template## as a string. The template, once created, will be cached. 
+		 * @param object the object to format 
+		 * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
+		 *        to escape all output:
+		 * <dl><dt>inputString</dt><dd>The string to escape.</dd>
+		 *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
+		 *        If no escapeFunction has been given, the output will not be escaped.
+		 *        ##_.escapeHtml() can be used as an escape function for HTML, and ##_.escapeRegExp() for regular expressions. 
+		 *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
+		 *        See ##_.htmlFormat() for a version of <var>format()</var> that already includes HTML escaping.
+		 * @return the string created by the template
+		 * 
+		 * @see ##_.template() creates a template function, using the same syntax. 
+		 * @see ##_.formatHtml() is a variant of <var>format()</var> with HTML-escpaping built it.
+		 * @see ##_.formatValue() formats a single number or date.
+		 * @see ##_.escapeRegExp() can be used by <var>format()</var> to escape regular expressions. 
+		 */ 
 		'format': function(tpl, object, escapeFunction) {
 			return template(tpl, escapeFunction)(object);
 		},
 
 		/*$ 
-	     * @id template 
-	     * @group FORMAT
-	     * @requires date_constants
-	     * @configurable default 
-	     * @name _.template() 
-	     * @syntax _.template(template)
-	     * @syntax _.template(template, escapeFunction)
+		 * @id template 
+		 * @group FORMAT
+		 * @requires date_constants
+		 * @configurable default 
+		 * @name _.template() 
+		 * @syntax _.template(template)
+		 * @syntax _.template(template, escapeFunction)
 	   	 * @module UTIL
-	     * Parses a Handlebars-like template to create a reusable template function.
-	     * 
-	     * The syntax of the template uses a syntax that superficially looks like 
-	     * <a href="http://handlebarsjs.com/">Handlebars</a>. Unlike Handlebars, it is based on raw JavaScript expressions and thus gives you
-	     * complete freedom, but also offers you shortcuts for formatting, iteration and conditionals. 
-	     * 
-	     * Every template can receive exactly one object as input. If you need more than one value as input, put all required values
-	     * into an object.
-	     * 
-	     * Use double curly braces to embed a JavaScript expression and insert its result:
-	     * <pre>{{a}} plus {{b}} is {{a+b}}</pre>
-	     * 
-	     * To use such a template, create it with <var>template()</var> and then execute the resulting function:
-	     * <pre>var myTemplate = _.template('{{a}} plus {{b}} is {{a+b}}');
-	     * var result = myTemplate({a: 5, b: 7});</pre>
-	     * If you pass an object as input, its properties will be mapped using JavaScript's <code>with</code>
-	     * statement and are available as variables throughout the template.
-	     * 
-	     * If you have only a simple value to render, you can pass it directly and access it through the pre-defined
-	     * variable <var>obj</var>:
-	     * <pre>var myTemplate = _.template('The result is {{obj}}.');
-	     * var result = myTemplate(17);</pre>	     
-	     * Alternatively, you could also access the input as <var>this</var>, but be aware that JavaScript wraps simples types
-	     * such as Number and Boolean. <var>this</var> is the default, so you can omit it to get the same result:
-	     * <pre>var myTemplate = _.template('The result is {{ }}.');
-	     * var result = myTemplate(17);</pre>
-	     * 
-	     * Minified templates can use ##_.formatValue() formats directly. Just separate them from the expression by
-	     * a double-colon:
-	     * <pre>The price is {{obj::#.00}}.</pre>	     
-	     * 
-	     * Conditions can be expressed using <code>if</code> and <code>else</code>:
-	     * <pre>Hello {{if visits==0}}New{{else if visits&lt;10}}Returning{{else}}Regular{{/if}} Customer.</pre>
-	     * You can use any JavaScript expression as condition.
-	     * 
-	     * Use <code>each</code> to iterate through a list:
-	     * <pre>var myTemplate = _.template(
-	     * 	   '{{each names}}{{this.firstName}} {{this.lastName}}{{/each}}');
-	     * var result = myTemplate({names: [{firstName: 'Joe', lastName: 'Jones'}, 
-	     *                                  {firstName: 'Marc', lastName: 'Meyer'}]});</pre>
-	     * <code>each</code> will iterate through the members of the given object. It 
-	     * calls its body for each item and put a reference to the item into <var>this</var>.
-	     * Optionally, you can specify up to two variables to store the value in and
-	     * the zero-based index of the current item:
-	     * <pre>var myTemplate = _.template(
-	     * 	   '{{each value, index: names}}{{index}}. {{value.firstName}} {{value.lastName}}{{/each}}');
+		 * Parses a Handlebars-like template to create a reusable template function.
+		 * 
+		 * The syntax of the template uses a syntax that superficially looks like 
+		 * <a href="http://handlebarsjs.com/">Handlebars</a>. Unlike Handlebars, it is based on raw JavaScript expressions and thus gives you
+		 * complete freedom, but also offers you shortcuts for formatting, iteration and conditionals. 
+		 * 
+		 * Every template can receive exactly one object as input. If you need more than one value as input, put all required values
+		 * into an object.
+		 * 
+		 * Use double curly braces to embed a JavaScript expression and insert its result:
+		 * <pre>{{a}} plus {{b}} is {{a+b}}</pre>
+		 * 
+		 * To use such a template, create it with <var>template()</var> and then execute the resulting function:
+		 * <pre>var myTemplate = _.template('{{a}} plus {{b}} is {{a+b}}');
+		 * var result = myTemplate({a: 5, b: 7});</pre>
+		 * If you pass an object as input, its properties will be mapped using JavaScript's <code>with</code>
+		 * statement and are available as variables throughout the template.
+		 * 
+		 * If you have only a simple value to render, you can pass it directly and access it through the pre-defined
+		 * variable <var>obj</var>:
+		 * <pre>var myTemplate = _.template('The result is {{obj}}.');
+		 * var result = myTemplate(17);</pre>	     
+		 * Alternatively, you could also access the input as <var>this</var>, but be aware that JavaScript wraps simples types
+		 * such as Number and Boolean. <var>this</var> is the default, so you can omit it to get the same result:
+		 * <pre>var myTemplate = _.template('The result is {{ }}.');
+		 * var result = myTemplate(17);</pre>
+		 * 
+		 * Minified templates can use ##_.formatValue() formats directly. Just separate them from the expression by
+		 * a double-colon:
+		 * <pre>The price is {{obj::#.00}}.</pre>	     
+		 * 
+		 * Conditions can be expressed using <code>if</code> and <code>else</code>:
+		 * <pre>Hello {{if visits==0}}New{{else if visits&lt;10}}Returning{{else}}Regular{{/if}} Customer.</pre>
+		 * You can use any JavaScript expression as condition.
+		 * 
+		 * Use <code>each</code> to iterate through a list:
+		 * <pre>var myTemplate = _.template(
+		 * 	   '{{each names}}{{this.firstName}} {{this.lastName}}{{/each}}');
+		 * var result = myTemplate({names: [{firstName: 'Joe', lastName: 'Jones'}, 
+		 *                                  {firstName: 'Marc', lastName: 'Meyer'}]});</pre>
+		 * <code>each</code> will iterate through the members of the given object. It 
+		 * calls its body for each item and put a reference to the item into <var>this</var>.
+		 * Optionally, you can specify up to two variables to store the value in and
+		 * the zero-based index of the current item:
+		 * <pre>var myTemplate = _.template(
+		 * 	   '{{each value, index: names}}{{index}}. {{value.firstName}} {{value.lastName}}{{/each}}');
 		 * </pre>
-	     *
-	     * If you do not pass an expression to <code>each</code>, it will take the list from <var>this</var>:
-	     * <pre>var myTemplate = _.template('{{each value:}}{{value}};{{/each}}');
-	     * var result = myTemplate([1, 2, 3]);</pre>
-	     *  
-	     * Beside lists, you can also iterate through the properties of an object. The property name will be stored
-	     * in the first given parameter and the value in <var>this</var> and the second parameter:
-	     * <pre>var myTemplate = _.template('{{each key, value: nicknames}}{{key}}: {{value}}{{/each}}');
-	     * var result = myTemplate({nicknames: {Matt: 'Matthew', John: 'Jonathan'} });</pre>
-	     * 
-	     * Shorter version of the previous example that uses <var>this</var> for the value:
-	     * <pre>var myTemplate = _.template('{{each key: nicknames}}{{key}}: {{this}}{{/each}}');</pre>
-	     * 
-	     * If you do not need the key, you can omit the variable specification:
-	     * <pre>var myTemplate = _.template('{{each nicknames}}{{this}}{{/each}}');</pre>
+		 *
+		 * If you do not pass an expression to <code>each</code>, it will take the list from <var>this</var>:
+		 * <pre>var myTemplate = _.template('{{each value:}}{{value}};{{/each}}');
+		 * var result = myTemplate([1, 2, 3]);</pre>
+		 *  
+		 * Beside lists, you can also iterate through the properties of an object. The property name will be stored
+		 * in the first given parameter and the value in <var>this</var> and the second parameter:
+		 * <pre>var myTemplate = _.template('{{each key, value: nicknames}}{{key}}: {{value}}{{/each}}');
+		 * var result = myTemplate({nicknames: {Matt: 'Matthew', John: 'Jonathan'} });</pre>
+		 * 
+		 * Shorter version of the previous example that uses <var>this</var> for the value:
+		 * <pre>var myTemplate = _.template('{{each key: nicknames}}{{key}}: {{this}}{{/each}}');</pre>
+		 * 
+		 * If you do not need the key, you can omit the variable specification:
+		 * <pre>var myTemplate = _.template('{{each nicknames}}{{this}}{{/each}}');</pre>
 		 *
 		 * You can define your own variables, using the regular JavaScript syntax, with 'var':
-	     * <pre>var myTemplate = _.template('{{var s=very.long.name, sum=a+b;}}{{s.desc}}, {{sum}}');</pre>
+		 * <pre>var myTemplate = _.template('{{var s=very.long.name, sum=a+b;}}{{s.desc}}, {{sum}}');</pre>
 		 *
-	     * In some situations, it may be inevitable to embed raw JavaScript in the template. 
-	     * To embed JavaScript code, prefix the code with a '#':
-	     * <pre>var myTemplate = _.template(
-	     *     '{{each}}{{#var sum = 0; for (var i = 0; i &lt; 3; i++) sum += this.numbers[i]; }}{{sum}}{{/each}}');
-	     * var result = myTemplate([['Foreword', 'Intro'], ['Something', 'Something else']]);</pre>
-	     * 
-	     * 
-	     * By default, all output will be escaped. You can prevent this by using triple-curly-braces:
-	     * <pre>Here's the original: {{{rawText}}}</pre>.
-	     * 
-	     * The template's JavaScript code is executed in a sandbox without access to global variables. Minified defines the
-	     * following variables for you:
-	     * <table>
-	     * <tr><th>Name</th><th>Desciption</th></tr>
-	     * <tr><td>this</td><td>The template object outside of <code>each</code>. Inside <code>each</code>s, the current value.</td></tr>
-	     * <tr><td>obj</td><td>The parameter given to the template function.</td></tr>
-	     * <tr><td>_</td><td>A reference to Minified Util.</td></tr>
-	     * <tr><td>esc</td><td>The escape function given when the template has been defined. If no function has been given,
-	     *                     a default function that returns the input unmodified.</td></tr>
-	     * <tr><td>print</td><td>A <code>function(text,...)</code> that appends one or more strings to the template result.</td></tr>
-	     * <tr><td>each</td><td>A <code>function(listOrObject, eachCallback)</code> that can iterate over lists or object properties.
-	     * The <var>eachCallback</var> is a <code>function(key, value)</code> for objects or <code>function(value, index)</code>
-	     * for arrays that will be invoked for each item.
-	     * </table> 
-	     * 
-	     * Every template you create is already cached, so it not an expensive operation to call ##_.template() a second
-	     * time with the same template. However, because of caching, you should be careful when creating templates
-	     * dynamically, as this will fill the cache up quickly.
-	     * 
-	     * @param template The template as a string using the syntax described below. 
-	     * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
-	     *        to escape all output:
-	     * <dl><dt>inputString</dt><dd>The string to escape.</dd>
-	     *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
-	     *        If no escapeFunction has been given, the output will not be escaped.
-	     *        ##_.escapeHtml() can be used as an escape function for HTML, and ##_.escapeRegExp() for regular expressions. 
-	     *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
-	     * @return the value returned by the last invocation of <var>func</var>
-	     * 
-	     * @see ##_.format() shares <var>template()</var>'s syntax but returns the result directly.
-	     * @see ##_.formatHtml() is a variant of <var>format()</var> with HTML escaping.
-	     * @see ##_.escapeHtml() can be used by <var>template()</var> to escape HTML. 
-	     * @see ##_.escapeRegExp() can be used by <var>template()</var> to escape regular expressions. 
-	     */ 
+		 * In some situations, it may be inevitable to embed raw JavaScript in the template. 
+		 * To embed JavaScript code, prefix the code with a '#':
+		 * <pre>var myTemplate = _.template(
+		 *     '{{each}}{{#var sum = 0; for (var i = 0; i &lt; 3; i++) sum += this.numbers[i]; }}{{sum}}{{/each}}');
+		 * var result = myTemplate([['Foreword', 'Intro'], ['Something', 'Something else']]);</pre>
+		 * 
+		 * 
+		 * By default, all output will be escaped. You can prevent this by using triple-curly-braces:
+		 * <pre>Here's the original: {{{rawText}}}</pre>.
+		 * 
+		 * The template's JavaScript code is executed in a sandbox without access to global variables. Minified defines the
+		 * following variables for you:
+		 * <table>
+		 * <tr><th>Name</th><th>Desciption</th></tr>
+		 * <tr><td>this</td><td>The template object outside of <code>each</code>. Inside <code>each</code>s, the current value.</td></tr>
+		 * <tr><td>obj</td><td>The parameter given to the template function.</td></tr>
+		 * <tr><td>_</td><td>A reference to Minified Util.</td></tr>
+		 * <tr><td>esc</td><td>The escape function given when the template has been defined. If no function has been given,
+		 *                     a default function that returns the input unmodified.</td></tr>
+		 * <tr><td>print</td><td>A <code>function(text,...)</code> that appends one or more strings to the template result.</td></tr>
+		 * <tr><td>each</td><td>A <code>function(listOrObject, eachCallback)</code> that can iterate over lists or object properties.
+		 * The <var>eachCallback</var> is a <code>function(key, value)</code> for objects or <code>function(value, index)</code>
+		 * for arrays that will be invoked for each item.
+		 * </table> 
+		 * 
+		 * Every template you create is already cached, so it not an expensive operation to call ##_.template() a second
+		 * time with the same template. However, because of caching, you should be careful when creating templates
+		 * dynamically, as this will fill the cache up quickly.
+		 * 
+		 * @param template The template as a string using the syntax described below. 
+		 * @param escapeFunction optional The callback <code>function(inputString)</code> that will be used
+		 *        to escape all output:
+		 * <dl><dt>inputString</dt><dd>The string to escape.</dd>
+		 *     <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
+		 *        If no escapeFunction has been given, the output will not be escaped.
+		 *        ##_.escapeHtml() can be used as an escape function for HTML, and ##_.escapeRegExp() for regular expressions. 
+		 *        JavaScript's built-in <var>escape()</var> function can escape URL components. 
+		 * @return the value returned by the last invocation of <var>func</var>
+		 * 
+		 * @see ##_.format() shares <var>template()</var>'s syntax but returns the result directly.
+		 * @see ##_.formatHtml() is a variant of <var>format()</var> with HTML escaping.
+		 * @see ##_.escapeHtml() can be used by <var>template()</var> to escape HTML. 
+		 * @see ##_.escapeRegExp() can be used by <var>template()</var> to escape regular expressions. 
+		 */ 
 		'template': template,
 
 		/*$ 
-	     * @id formathtml 
-	     * @group FORMAT
-	     * @requires template
-	     * @configurable default 
-	     * @name _.formatHtml() 
-	     * @syntax _.formatHtml()
-	     * @syntax _.formatHtml(template, object)
+		 * @id formathtml 
+		 * @group FORMAT
+		 * @requires template
+		 * @configurable default 
+		 * @name _.formatHtml() 
+		 * @syntax _.formatHtml()
+		 * @syntax _.formatHtml(template, object)
 	   	 * @module UTIL
-	     * Formats an object using a ##template#template## with HTML escaping for the output. 
-	     * The template syntax is shared with ##_.template(). Output in double curly braces is automatically escaped using ##_.escapeHtml(). 
-	     * <var>formatHtml()</var> just creates a new template with HTML escaping and invokes it immediately.
-	     * The template will be cached. Be careful when you create templates dynamically, as 
-	     * every template is cached and consumes memory.<br/>
-	     * If you only want to format a single value, use ##_.formatValue().
-	     * 
-	     * @example Format a list of dates:
-	     * <pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
-	     * 
-	     * @param template The #template as a string. The template, once created, will be cached.
-	     * @param object the object to format 
-	     * @return the string created by the template
+		 * Formats an object using a ##template#template## with HTML escaping for the output. 
+		 * The template syntax is shared with ##_.template(). Output in double curly braces is automatically escaped using ##_.escapeHtml(). 
+		 * <var>formatHtml()</var> just creates a new template with HTML escaping and invokes it immediately.
+		 * The template will be cached. Be careful when you create templates dynamically, as 
+		 * every template is cached and consumes memory.<br/>
+		 * If you only want to format a single value, use ##_.formatValue().
+		 * 
+		 * @example Format a list of dates:
+		 * <pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+		 * 
+		 * @param template The #template as a string. The template, once created, will be cached.
+		 * @param object the object to format 
+		 * @return the string created by the template
 		 *
 		 * @see ##ht() works uses <var>formatHtml</var> to set element's innerHTML. 
 		 * @see ##HTML() create HTML nodes using <var>formatHtml</var>. 
-	     * @see ##_.template() creates a template function, using the same syntax. 
-	     * @see ##_.format() allows you to specify alternative escape mechanisms.
-	     */ 
+		 * @see ##_.template() creates a template function, using the same syntax. 
+		 * @see ##_.format() allows you to specify alternative escape mechanisms.
+		 */ 
 		 'formatHtml': formatHtml
 		/*$
 		 * @stop
@@ -6127,11 +6127,11 @@ define('minified', function() {
 
 	////INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///#snippet webInit
-    /*$
+	/*$
 	 * @id ready_init
 	 * @dependency
-     */
-    	_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
+	 */
+		_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
 	/*$
 	 @stop
 	 */
@@ -6154,7 +6154,7 @@ define('minified', function() {
 		 * @syntax HTML(templateFunction, object)
 		 * @syntax HTML(idSelector)
 		 * @syntax HTML(idSelector, object)
-	     * @module WEB
+		 * @module WEB
 		 * Creates a ##list#list## of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
 		 * The template uses the ##template() syntax with ##escapeHtml() escaping for values.
 		 * 
@@ -6214,7 +6214,7 @@ define('minified', function() {
 		 * @see ##EE() is a different way of creating HTML nodes.
 		 */
 		'HTML': function (htmlTemplate, object) {
-	        return  _(EE('div')['ht'](htmlTemplate, object)[0].childNodes);
+		    return  _(EE('div')['ht'](htmlTemplate, object)[0].childNodes);
 		},
 		/*$
 		 * @stop
@@ -6287,7 +6287,7 @@ define('minified', function() {
 		 * @syntax $(object, context)
 		 * @syntax $(object, context, childOnly)
 		 * @syntax $(domreadyFunction)
-     	 * @module WEB
+	 	 * @module WEB
 		 * Creates a new ##list#Minified list##, or register a DOMReady-handler. 
 		 * The most common usage is with a CSS-like selector. <var>$()</var> will then create a list containing all elements of the current HTML
 		 * document that fulfill the filter conditions. Alternatively you can also specify a list of objects or a single object. 
@@ -6417,7 +6417,7 @@ define('minified', function() {
 		 */
 		'$': $,
 
-	    /*$
+		/*$
 		 * @id dollardollar
 		 * @group SELECTORS
 		 * @requires 
@@ -6425,7 +6425,7 @@ define('minified', function() {
 		 * @name $$()
 		 * @syntax $$(selector)
 		 * @shortcut $$() - It is recommended that you assign MINI.$$ to a variable $$.
-     	 * @module WEB
+	 	 * @module WEB
 		 * Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found. 
 		 * <var>$$</var> allows you to easily access an element directly. It is the equivalent to writing <code>$(selector)[0]</code>.
 		 *
@@ -6446,7 +6446,7 @@ define('minified', function() {
 		 * 
 		 * @see ##dollar#$()## creates a list using the selector, instead of returning only the first result.
 		 */
-	    '$$': $$,
+		'$$': $$,
 
 		/*$
 		 * @id ee
@@ -6459,7 +6459,7 @@ define('minified', function() {
 		 * @syntax EE(elementName, children)
 		 * @syntax EE(elementName, properties, children)
 		 * @shortcut EE() - It is recommended that you assign MINI.EE to a variable EE.
-     	 * @module WEB
+	 	 * @module WEB
 		 * Creates a new HTML Element, wrapped in a  ##list#Minified list##, optionally with attributes and children.
 		 * Typically it will be used to insert elements into the DOM tree using ##add() or a similar function. 
 		 *
@@ -6552,11 +6552,11 @@ define('minified', function() {
 		 */
 		'EE': EE,
 
-	    /*$
+		/*$
 		 * @id M
 		 * @name M
 		 * @syntax MINI.M
-     	 * @module WEB, UTIL
+	 	 * @module WEB, UTIL
 		 * 
 		 * Exposes the internal class used by all  ##list#Minified lists##. This is mainly intended to allow you adding your
 		 * own functions.

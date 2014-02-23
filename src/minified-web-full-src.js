@@ -128,17 +128,17 @@ define('minified', function() {
 	// @condend
 
 	
-    /*$
+	/*$
 	 * @id ready_vars
 	 * @dependency
-     */
-    /** @type {!Array.<function()>} */
-    var DOMREADY_HANDLER = /^[ic]/.test(_document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
-    /*$
-     * @id animation_vars
-     * @dependency
-     */
-     /** @type {!Array.<{c:!function(), t:!number, s:!function()}>} */
+	 */
+	/** @type {!Array.<function()>} */
+	var DOMREADY_HANDLER = /^[ic]/.test(_document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
+	/*$
+	 * @id animation_vars
+	 * @dependency
+	 */
+	 /** @type {!Array.<{c:!function(), t:!number, s:!function()}>} */
 	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currently active
 	
 	/** @type {!function()} */
@@ -278,9 +278,9 @@ define('minified', function() {
 		return list;
 	}
 
-    function ucode(a) {
-        return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-    }
+	function ucode(a) {
+		return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+	}
 
 
 	///#snippet webFunctions
@@ -475,37 +475,37 @@ define('minified', function() {
 	// @condend !ie8compatibility 
 
 	
-    function nowAsTime() {
-    	return +new Date();
-    }
+	function nowAsTime() {
+		return +new Date();
+	}
 
 	function callArg(f) {f();}
 
 	// for remove & window.unload
-    function detachHandlerList(dummy, handlerList) {
-    	flexiEach(handlerList, function(h) {
-    		h['e'].detachEvent('on'+h['n'], h['h']);
-    	});
-    }
+	function detachHandlerList(dummy, handlerList) {
+		flexiEach(handlerList, function(h) {
+			h['e'].detachEvent('on'+h['n'], h['h']);
+		});
+	}
 	
-    // for ready()
-    function triggerDomReady() {
+	// for ready()
+	function triggerDomReady() {
 		flexiEach(DOMREADY_HANDLER, callArg);
 		DOMREADY_HANDLER = _null;
-    }
-    
-    function ready(handler) {
-    	if (DOMREADY_HANDLER)
+	}
+	
+	function ready(handler) {
+		if (DOMREADY_HANDLER)
 			DOMREADY_HANDLER.push(handler);
 		else
 			delay(handler);
-    }
+	}
 
-    function $$(selector) {
+	function $$(selector) {
 		return dollarRaw(selector)[0];
 	}
-    
-    function EE(elementName, attributes, children) {
+	
+	function EE(elementName, attributes, children) {
 		var list = $(_document.createElement(elementName));
 		// @condblock UTIL
 		// this attributes != null check is only required with Util's isObject() implementation. Web's isObject() is simpler.
@@ -514,28 +514,28 @@ define('minified', function() {
 		// @cond !UTIL return (isList(attributes) || (!isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 	}
 
-    function clone (listOrNode) {
-        return collector(flexiEach, listOrNode, function(e) {
-        	var c;
-             if (isString(e))
-            	 return e;
-             else if (isList(e))
-            	 return clone(e);
-             else if (isNode(e)) {
-            	 c = e['cloneNode'](_true);
-            	 c['removeAttribute']('id');
-            	 return c;
-             }
-             else
-            	 return _null;
-        });
+	function clone (listOrNode) {
+		return collector(flexiEach, listOrNode, function(e) {
+			var c;
+		     if (isString(e))
+		    	 return e;
+		     else if (isList(e))
+		    	 return clone(e);
+		     else if (isNode(e)) {
+		    	 c = e['cloneNode'](_true);
+		    	 c['removeAttribute']('id');
+		    	 return c;
+		     }
+		     else
+		    	 return _null;
+		});
    }
    
 
-    /*$
-     * @stop
-     */
-    
+	/*$
+	 * @stop
+	 */
+	
 	function $(selector, context, childOnly) { 
 		// @condblock ready
 		// isList(selector) is no joke, older Webkit versions return a function for childNodes...
@@ -596,31 +596,31 @@ define('minified', function() {
 	// @condblock !ie7compatibility
 	function dollarRaw(selector, context, childOnly) { 
 		function flatten(a) { // flatten list, keep non-lists, remove nulls
-	          return isList(a) ? collector(flexiEach, a, flatten) : a;
-	     }
-	     function filterElements(list) { // converts into array, makes sure context is respected
-	          return filter(collector(flexiEach, list, flatten), function(node) {
-	               var a = node;
-	               while (a = a['parentNode'])
-	                    if (a == context[0] || childOnly)
-	                         return a == context[0];
-	               // fall through to return undef
-	          });
-	     }
+		      return isList(a) ? collector(flexiEach, a, flatten) : a;
+		 }
+		 function filterElements(list) { // converts into array, makes sure context is respected
+		      return filter(collector(flexiEach, list, flatten), function(node) {
+		           var a = node;
+		           while (a = a['parentNode'])
+		                if (a == context[0] || childOnly)
+		                     return a == context[0];
+		           // fall through to return undef
+		      });
+		 }
 
-	     if (context) {
-	          if ((context = dollarRaw(context)).length != 1)
-	               return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
-	          else if (isString(selector))
-	               return childOnly ? filterElements(context[0].querySelectorAll(selector)) : context[0].querySelectorAll(selector);
-	          else
-	               return filterElements(selector);
-	              
-	     }
-	     else if (isString(selector))
-	          return _document.querySelectorAll(selector);
-	     else
-	          return collector(flexiEach, selector, flatten);
+		 if (context) {
+		      if ((context = dollarRaw(context)).length != 1)
+		           return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
+		      else if (isString(selector))
+		           return childOnly ? filterElements(context[0].querySelectorAll(selector)) : context[0].querySelectorAll(selector);
+		      else
+		           return filterElements(selector);
+		          
+		 }
+		 else if (isString(selector))
+		      return _document.querySelectorAll(selector);
+		 else
+		      return collector(flexiEach, selector, flatten);
 	};
 	// @condend !ie7compatibility
 
@@ -666,32 +666,32 @@ define('minified', function() {
 	
 	
 	// Special private promise impl only for web module. A public one  is in minified-dbl, but only available if util is availble.
-    function promise() {
-    	var state;           // undefined/null = pending, true = fulfilled, false = rejected
-    	var values = [];     // an array of values as arguments for the then() handlers
+	function promise() {
+		var state;           // undefined/null = pending, true = fulfilled, false = rejected
+		var values = [];     // an array of values as arguments for the then() handlers
  		var deferred = [];   // functions to call when set() is invoked
  	 	
-    	var set = function (newState, newValues) {
-    		if (state == _null) {
-	    		state = newState;
-	    		values = newValues;
+		var set = function (newState, newValues) {
+			if (state == _null) {
+				state = newState;
+				values = newValues;
    				delay(function() {
    					flexiEach(deferred, callArg);
    				});
-    		}
-    	};
-    	/*$
-    	 * @id then
-    	 * @group REQUEST
-    	 * @module WEB, UTIL
-    	 * See extras module for documentation.
-    	 */   
-    	var then = set['then'] = function(onFulfilled, onRejected) {
-    		var promise2 = promise();
+			}
+		};
+		/*$
+		 * @id then
+		 * @group REQUEST
+		 * @module WEB, UTIL
+		 * See extras module for documentation.
+		 */   
+		var then = set['then'] = function(onFulfilled, onRejected) {
+			var promise2 = promise();
 			var callCallbacks = function() {
-	    		try {
-	    			var f = (state ? onFulfilled : onRejected);
-	    			if (isFunction(f)) {
+				try {
+					var f = (state ? onFulfilled : onRejected);
+					if (isFunction(f)) {
 		   				var r = f.apply(undef, values);
 		   				if (r && isFunction(r['then']))
 		   					r['then'](function(value){promise2(_true,[value]);}, function(value){promise2(_false,[value]);});
@@ -709,18 +709,18 @@ define('minified', function() {
 				delay(callCallbacks);
 			else
 				deferred.push(callCallbacks);    		
-    		return promise2;
-    	};
+			return promise2;
+		};
 
-    	/*$
-    	 * @id error
-    	 * @group REQUEST
-    	 * @module WEB, UTIL
-    	 * See util module for documentation.
-    	 */  
-     	set['error'] = function(func) { return then(0, func); };
-    	return set;
-    }
+		/*$
+		 * @id error
+		 * @group REQUEST
+		 * @module WEB, UTIL
+		 * See util module for documentation.
+		 */  
+	 	set['error'] = function(func) { return then(0, func); };
+		return set;
+	}
 	
 	
  	/*$
@@ -729,14 +729,14 @@ define('minified', function() {
 	 * @requires dollar
    	 * @module WEB, UTIL
 	 * 
-     * See util module for documentation.
+	 * See util module for documentation.
 	 */
 	// empty, always defined below
 		
 	/*$
 	 * @id listctor
 	 */	
-    /** @constructor */
+	/** @constructor */
 	function M(array) {
 		var len = this['length'] = array.length;
 		for (var i = 0; i < len; i++)
@@ -746,14 +746,14 @@ define('minified', function() {
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	eachObj({ 
-    /*$
-     * @id each
-     * @group SELECTORS
-     * @requires dollar
-     * @configurable default
+	/*$
+	 * @id each
+	 * @group SELECTORS
+	 * @requires dollar
+	 * @configurable default
  	 * @module WEB, UTIL
-     * See util module for documentation.
-     */
+	 * See util module for documentation.
+	 */
 	'each': function (callback) {
 		return flexiEach(this, callback);
 	},
@@ -764,49 +764,49 @@ define('minified', function() {
 	 * @requires dollar
 	 * @configurable default
    	 * @module WEB, UTIL
-     * See util module for documentation.
+	 * See util module for documentation.
 	 */
 	'filter': function(filterFunc) {
-	    return new M(filter(this, filterFunc));
+		return new M(filter(this, filterFunc));
 	},
 	
 	/*$ 
-     * @id collect 
-     * @group SELECTORS 
-     * @requires dollar 
-     * @configurable default 
+	 * @id collect 
+	 * @group SELECTORS 
+	 * @requires dollar 
+	 * @configurable default 
    	 * @module WEB, UTIL
-     * See util module for documentation.
-     */ 
+	 * See util module for documentation.
+	 */ 
 	'collect': function(collectFunc) { 
-    	 return new M(collector(flexiEach, this, collectFunc)); 
-     },
+		 return new M(collector(flexiEach, this, collectFunc)); 
+	 },
 	
-     /*$ 
-      * @id sub
-      * @group SELECTORS 
-      * @requires filter 
-      * @configurable default 
+	 /*$ 
+	  * @id sub
+	  * @group SELECTORS 
+	  * @requires filter 
+	  * @configurable default 
   	 * @module WEB, UTIL
-      * See util module for documentation.
-      */ 
+	  * See util module for documentation.
+	  */ 
 	'sub': function(startIndex, endIndex) {
-	    var s = (startIndex < 0 ? this['length']+startIndex : startIndex);
-	    var e = endIndex >= 0 ? endIndex : this['length'] + (endIndex || 0);
+		var s = (startIndex < 0 ? this['length']+startIndex : startIndex);
+		var e = endIndex >= 0 ? endIndex : this['length'] + (endIndex || 0);
  		return this['filter'](function(o, index) { 
  			return index >= s && index < e; 
  		});
  	},
  	
-     
-    /*$ 
-     * @id find 
-     * @group SELECTORS 
-     * @requires
-     * @configurable default 
+	 
+	/*$ 
+	 * @id find 
+	 * @group SELECTORS 
+	 * @requires
+	 * @configurable default 
  	 * @module WEB, UTIL
-     * See util module for documentation.
-     */ 
+	 * See util module for documentation.
+	 */ 
 	'find': function(findFunc, startIndex) {
 		var r;
 		var f = isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
@@ -835,22 +835,22 @@ define('minified', function() {
 	 * $('#myContainer').remove(); 
 	 * </pre>
 	 */
-     'remove': function() {
-    	flexiEach(this, function(obj) {
-    		// @condblock ie8compatibility
-    		if (IS_PRE_IE9 && isNode(obj) == 1) {
-	    		flexiEach(dollarRaw('*', obj), function(node) {
-	    			detachHandlerList(0, registeredEvents[node[MINIFIED_MAGIC_NODEID]]);
-	    			delete registeredEvents[node[MINIFIED_MAGIC_NODEID]];
-	    		});
-	    		detachHandlerList(0, registeredEvents[obj[MINIFIED_MAGIC_NODEID]]);
-	    		delete registeredEvents[obj[MINIFIED_MAGIC_NODEID]];
-    		}
-    		// @condend
+	 'remove': function() {
+		flexiEach(this, function(obj) {
+			// @condblock ie8compatibility
+			if (IS_PRE_IE9 && isNode(obj) == 1) {
+				flexiEach(dollarRaw('*', obj), function(node) {
+					detachHandlerList(0, registeredEvents[node[MINIFIED_MAGIC_NODEID]]);
+					delete registeredEvents[node[MINIFIED_MAGIC_NODEID]];
+				});
+				detachHandlerList(0, registeredEvents[obj[MINIFIED_MAGIC_NODEID]]);
+				delete registeredEvents[obj[MINIFIED_MAGIC_NODEID]];
+			}
+			// @condend
 
-    		obj['parentNode'].removeChild(obj);
-    	});
-     },
+			obj['parentNode'].removeChild(obj);
+		});
+	 },
 
  	/*$
  	 * @id text
@@ -876,7 +876,7 @@ define('minified', function() {
  	 */
  	'text': function () {
  		// @condblock ie8compatibility
-    	function extractString(e) {
+		function extractString(e) {
 			var nodeType = isNode(e);
 			if (nodeType == 1)
 				return collector(flexiEach, e['childNodes'], extractString);
@@ -950,7 +950,7 @@ define('minified', function() {
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements
  	 *        (but no other nodes such as text nodes).
-     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
  	 * @param maxDepth optional the maximum number of steps to traverse. Defaults to unlimited.
  	 * @return the new list containing all visited nodes. Nodes of the original list are not included, unless they
  	 *         have been visited when traversing another node. Duplicate nodes will be automatically removed.
@@ -1011,7 +1011,7 @@ define('minified', function() {
  	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
-     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
  	 * @return the new list that contains matching parent elements. Duplicate nodes will be automatically removed.
  	 *         
  	 * @see ##trav() allows you to match more than one element. You can also select other relatives such as siblings or children.
@@ -1081,7 +1081,7 @@ define('minified', function() {
  	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
-     * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
  	 * @param maxSiblings optional the maximum number of siblings to include per list element. Defaults to 1.
  	 * @return the new list that contains matching siblings elements. Duplicate nodes will be automatically removed.
  	 *         
@@ -1177,7 +1177,7 @@ define('minified', function() {
  	 * @syntax list.only(selector)
  	 * @syntax list.only(filterFunc)
  	 * @syntax list.only(index)
-     * @module COMMENT only(index) is always available. All others variants are only in the Web module.
+	 * @module COMMENT only(index) is always available. All others variants are only in the Web module.
  	 * Returns a new list that contains only those elements that match the given selector, match the callback function
  	 * or have the given index. If no parameter has been given, the method keeps all HTML elements 
  	 * and removes everything else (same as '*').
@@ -1338,8 +1338,8 @@ define('minified', function() {
  	 *         It returns <var>undefined</var> if the list is empty.
  	 * @see ##set() sets values using the same property syntax.
  	 */
-    'get': function(spec, toNumber) {
-    	var self = this, element = self[0];
+	'get': function(spec, toNumber) {
+		var self = this, element = self[0];
 
 		if (element) {
 			if (isString(spec)) {
@@ -1537,50 +1537,50 @@ define('minified', function() {
 	 *                   Instead of a string, you can also specify a <code>function(oldValue, index, obj)</code> to modify the existing classes. 
 	 * @return the list
 	 */
-     'set': function (name, value) {
-    	 function setAttr(obj, n, v) {
-    		 if (v != _null)  
-    			 obj.setAttribute(n, v);
+	 'set': function (name, value) {
+		 function setAttr(obj, n, v) {
+			 if (v != _null)  
+				 obj.setAttribute(n, v);
 			 else
 				 obj.removeAttribute(n);
-    	 }
-    	 var self = this, v;
+		 }
+		 var self = this, v;
  		 // @cond debug if (name == null) error("First argument must be set!");
-    	 if (value !== undef) {
-    		 // @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
+		 if (value !== undef) {
+			 // @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
  			
-    		 // @condblock fadeslide
-    		 if (name == '$$fade' || name == '$$slide') {
-    			 self.set({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block'})
-    			     .set((name == '$$fade')  ? (
-    			 // @condblock ie8compatibility 
-    			    	  IS_PRE_IE9 ? (v < 1 ? {'$filter': 'alpha(opacity = '+(100*v)+')', '$zoom': 1} : {'$filter': ''}) :
-    			 // @condend ie8compatibility
-    			    	  {'$opacity': v})
-    			        :
-    			        {'$height': /px/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
-    			         '$overflow': 'hidden'}
+			 // @condblock fadeslide
+			 if (name == '$$fade' || name == '$$slide') {
+				 self.set({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block'})
+				     .set((name == '$$fade')  ? (
+				 // @condblock ie8compatibility 
+				    	  IS_PRE_IE9 ? (v < 1 ? {'$filter': 'alpha(opacity = '+(100*v)+')', '$zoom': 1} : {'$filter': ''}) :
+				 // @condend ie8compatibility
+				    	  {'$opacity': v})
+				        :
+				        {'$height': /px/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
+				         '$overflow': 'hidden'}
  					);
-    		 }
-    		 else
-    			// @condend fadeslide
-    			 flexiEach(self, function(obj, c) {
-    				 var nameClean = replace(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'data-'), /^[@$]+/);
-    				 var className = obj['className'] || '';
-    				 var newObj = /^\$/.test(name) ? obj.style : obj;
-    				 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
-    				 if (name == '$') {
-    					 if (newValue != _null) {
-    						 flexiEach(newValue.split(/\s+/), function(clzz) {
-    							 var cName = replace(clzz, /^[+-]/);
-    							 var oldClassName = className;
-    							 className = replace(className, RegExp('(^|\\s)' + cName + '(?=$|\\s)', 'i'));
-    							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
-    								 className += ' ' + cName;
-    						 });
-    						 obj['className'] = replace(className, /^\s+|\s+(?=\s|$)/g);
-    					 }
-    				 }
+			 }
+			 else
+				// @condend fadeslide
+				 flexiEach(self, function(obj, c) {
+					 var nameClean = replace(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'data-'), /^[@$]+/);
+					 var className = obj['className'] || '';
+					 var newObj = /^\$/.test(name) ? obj.style : obj;
+					 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
+					 if (name == '$') {
+						 if (newValue != _null) {
+							 flexiEach(newValue.split(/\s+/), function(clzz) {
+								 var cName = replace(clzz, /^[+-]/);
+								 var oldClassName = className;
+								 className = replace(className, RegExp('(^|\\s)' + cName + '(?=$|\\s)', 'i'));
+								 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
+									 className += ' ' + cName;
+							 });
+							 obj['className'] = replace(className, /^\s+|\s+(?=\s|$)/g);
+						 }
+					 }
    				 	 else if (name == '$$') {
 						// @condblock ie8compatibility 
 						if (IS_PRE_IE9)
@@ -1602,21 +1602,21 @@ define('minified', function() {
 			 			 obj['scroll']($(obj)['get']('$$scrollX'), newValue);
 			 			// @condend
    				 	 }
-    				 // @condend
-    				 else if (!/^[@%]/.test(name))
-    					 newObj[nameClean] = newValue;
-    				 else
-    					 setAttr(newObj, nameClean, newValue);
-    			 });
-    	 }
-    	 else if (isString(name) || isFunction(name))
-    		 self['set']('$', name);
-    	 else
-    		 eachObj(name, function(n,v) { self['set'](n, v); });
-    	 return self;
-     },
+					 // @condend
+					 else if (!/^[@%]/.test(name))
+						 newObj[nameClean] = newValue;
+					 else
+						 setAttr(newObj, nameClean, newValue);
+				 });
+		 }
+		 else if (isString(name) || isFunction(name))
+			 self['set']('$', name);
+		 else
+			 eachObj(name, function(n,v) { self['set'](n, v); });
+		 return self;
+	 },
 
-     
+	 
 	/*$
 	 * @id add
 	 * @group ELEMENT
@@ -1630,7 +1630,7 @@ define('minified', function() {
  	 * @module WEB
 	 * Adds the given node(s) as children to the list's HTML elements. If a string has been given, it will be added as text node.
 	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
-     *
+	 *
 	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
 	 * and ##clone#clones## to all following list elements.
 	 * 
@@ -2141,9 +2141,9 @@ define('minified', function() {
 	 * @name .clone()
 	 * @syntax list.clone()
  	 * @module WEB
-     * Clones all HTML nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
-     * and everything else will be removed. Nested lists will be automatically flattened. Objects other than nodes, strings or lists
-     * will be removed.
+	 * Clones all HTML nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
+	 * and everything else will be removed. Nested lists will be automatically flattened. Objects other than nodes, strings or lists
+	 * will be removed.
 	 *
 	 * <var>clone()</var> uses the browser's <var>cloneNode()</var> function to clone HTML internally, but will remove the ids from
 	 * all top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
@@ -2430,9 +2430,9 @@ define('minified', function() {
 	 * Creates a function that switches between the two given states for the list. The states use the ##set() property syntax. You can also
 	 * just pass a string of CSS classes, as you do with <var>set()</var>.
 	 *
-     * If no duration is given, the returned function changes the state immediately using ##set(). If a duration has been passed, the returned function
-     * uses ##animate() to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the 
-     * animation and returns to the other state.
+	 * If no duration is given, the returned function changes the state immediately using ##set(). If a duration has been passed, the returned function
+	 * uses ##animate() to smoothly transition the state. If the returned function is invoked while an animation is running, it interrupts the 
+	 * animation and returns to the other state.
 	 *
 	 *
 	 * @example Creates a toggle function that changes the background color of the page.
@@ -2922,7 +2922,7 @@ define('minified', function() {
 		
 		
 	}, function(n, v) {M.prototype[n]=v;});
-     
+	 
 
  	//// DOLLAR FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3064,43 +3064,43 @@ define('minified', function() {
 	 * originally based on public domain implementation http://www.JSON.org/json2.js / http://www.JSON.org/js.html.
 	 * Extremely simplified code, made variables local, removed all side-effects (especially new properties for String, Date and Number).
 	 */
-    
+	
 
 	/*$
-    * @id tojson
-    * @group JSON
-    * @requires  
-    * @configurable default
-    * @name $.toJSON()
-    * @syntax $.toJSON(value)
+	* @id tojson
+	* @group JSON
+	* @requires  
+	* @configurable default
+	* @name $.toJSON()
+	* @syntax $.toJSON(value)
 	* @module WEB
-    * Converts the given value into a JSON string. The value may be a map-like object, an array or list, a string, number, boolean or null.
+	* Converts the given value into a JSON string. The value may be a map-like object, an array or list, a string, number, boolean or null.
    	* If you build Minified without Internet Explorer compatibility, this is just an alias for <var>JSON.stringify</var>.
 	*
-    * The following types are supported by the built-in implementation:
-    * <ul>
-    *   <li>Objects (direct properties will be serialized)</li>
-    *   <li>Arrays/Lists (with <var>length</var> property)</li>
-    *   <li>Strings</li>
-    *   <li>Numbers</li>
-    *   <li>Boolean</li>
-    *   <li>null</li>
-    * </ul>
-    * Any other types in your JSON tree, especially Dates, should be converted into Strings before being passed to <var>toJSON</var>.
-    *
-    * @example Converts an object into a JSON object:
-    * <pre>
-    * var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
-    * var jsonString = $.toJSON(myObj);
-    * </pre>
-    * 
-    * @param value the value (map-like object, array/list, string, number, boolean or null)
-    * @return the JSON string
-    * 
-    * @see ##$.parseJON() parses JSON structures.
-    */
-    // @condblock ie7compatibility
-    'toJSON': function toJSON(value) {
+	* The following types are supported by the built-in implementation:
+	* <ul>
+	*   <li>Objects (direct properties will be serialized)</li>
+	*   <li>Arrays/Lists (with <var>length</var> property)</li>
+	*   <li>Strings</li>
+	*   <li>Numbers</li>
+	*   <li>Boolean</li>
+	*   <li>null</li>
+	* </ul>
+	* Any other types in your JSON tree, especially Dates, should be converted into Strings before being passed to <var>toJSON</var>.
+	*
+	* @example Converts an object into a JSON object:
+	* <pre>
+	* var myObj = {name: 'Fruits', roles: ['apple', 'banana', 'orange']};
+	* var jsonString = $.toJSON(myObj);
+	* </pre>
+	* 
+	* @param value the value (map-like object, array/list, string, number, boolean or null)
+	* @return the JSON string
+	* 
+	* @see ##$.parseJON() parses JSON structures.
+	*/
+	// @condblock ie7compatibility
+	'toJSON': function toJSON(value) {
 		if (value == _null)
 			return ""+value;                  //result: "null"; toString(value) is not possible, because it returns an empty string for null
 		if (isString(value = value.valueOf()))
@@ -3111,9 +3111,9 @@ define('minified', function() {
 			return '{' + collector(eachObj, value, function(k, n) { return toJSON(k) + ':' + toJSON(n); }).join() + '}';
 		return toString(value);
 	},
-    // @condend
-    // @cond !ie7compatibility 'toJSON': JSON.stringify,
-    
+	// @condend
+	// @cond !ie7compatibility 'toJSON': JSON.stringify,
+	
 	/*$
 	* @id parsejson
 	* @group JSON
@@ -3142,46 +3142,46 @@ define('minified', function() {
 	* @return the resulting JavaScript object. <var>Undefined</var> if not valid.
 	* @see ##$.toJSON() converts JavaScript objects to JSON.
 	*/
-    // @condblock ie7compatibility
-    'parseJSON': _window.JSON ? _window.JSON.parse : function (text) {
-    	var t = replace(text, /[\x00\xad\u0600-\uffff]/g, ucode); // encode unsafe characters
-        if (/^[[\],:{}\s]*$/                  // test that, after getting rid of literals, only allowed characters can be found
+	// @condblock ie7compatibility
+	'parseJSON': _window.JSON ? _window.JSON.parse : function (text) {
+		var t = replace(text, /[\x00\xad\u0600-\uffff]/g, ucode); // encode unsafe characters
+		if (/^[[\],:{}\s]*$/                  // test that, after getting rid of literals, only allowed characters can be found
 				.test(replace(replace(t , /\\["\\\/bfnrtu]/g),             // remove all escapes
 						/"[^"\\\n\r]*"|true|false|null|[\d.eE+-]+/g))      // remove all literals
 				)
-        	return eval('(' + t + ')');
-        // fall through if not valid
-        // @cond debug error('Can not parse JSON string. Aborting for security reasons.');
-    },
-    // @condend
-    // @cond !ie7compatibility 'parseJSON': JSON.parse,
-    
+			return eval('(' + t + ')');
+		// fall through if not valid
+		// @cond debug error('Can not parse JSON string. Aborting for security reasons.');
+	},
+	// @condend
+	// @cond !ie7compatibility 'parseJSON': JSON.parse,
+	
 	/*$
-    * @id ready
-    * @group EVENTS
-    * @requires ready_vars ready_init
-    * @configurable default
-    * @name $.ready()
-    * @syntax $.ready(handler)
+	* @id ready
+	* @group EVENTS
+	* @requires ready_vars ready_init
+	* @configurable default
+	* @name $.ready()
+	* @syntax $.ready(handler)
 	* @module WEB
-    * Registers a handler to be called as soon as the HTML has been fully loaded in the browser. Does not necessarily wait for images and other elements, 
-    * only the main HTML document needs to be complete. On older browsers it is the same as <var>window.onload</var>. 
-    * 
-    * If you call <var>ready()</var> after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.
-    *
-    * A shortcut for <var>ready()</var> is to call ##dollar#$()## with the handler function. It does the same with fewer characters.
-    *
-    * @example Registers a handler that sets some text in an element:
-    * <pre>
-    * $.ready(function() {
-    *   $('#someElement').fill('ready() called');
-    * });
-    * </pre>
-    *
-    * @param handler the <code>function()</code> to be called when the HTML is ready.
-    * @see ##dollar#$()## calls <var>ready()</var> when invoked with a function, offering a more convenient syntax.
-    */
-    'ready': ready,
+	* Registers a handler to be called as soon as the HTML has been fully loaded in the browser. Does not necessarily wait for images and other elements, 
+	* only the main HTML document needs to be complete. On older browsers it is the same as <var>window.onload</var>. 
+	* 
+	* If you call <var>ready()</var> after the page is completed, the handler is scheduled for invocation in the event loop as soon as possible.
+	*
+	* A shortcut for <var>ready()</var> is to call ##dollar#$()## with the handler function. It does the same with fewer characters.
+	*
+	* @example Registers a handler that sets some text in an element:
+	* <pre>
+	* $.ready(function() {
+	*   $('#someElement').fill('ready() called');
+	* });
+	* </pre>
+	*
+	* @param handler the <code>function()</code> to be called when the HTML is ready.
+	* @see ##dollar#$()## calls <var>ready()</var> when invoked with a function, offering a more convenient syntax.
+	*/
+	'ready': ready,
 
    
 
@@ -3232,22 +3232,22 @@ define('minified', function() {
 	* @see ##animate() for simple, property-based animations.
 	*/
 	'loop': function(paintCallback) { 
-        var entry = {c: paintCallback, t: nowAsTime()};
-        entry.s = function() {
-        	removeFromArray(ANIMATION_HANDLERS, entry);
-        };
-        
-        if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
+		var entry = {c: paintCallback, t: nowAsTime()};
+		entry.s = function() {
+			removeFromArray(ANIMATION_HANDLERS, entry);
+		};
+		
+		if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
 			(function raFunc() {
 				if (flexiEach(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, nowAsTime() - a.t), a.s);}).length) // check len after run, in case the callback invoked stop func
 					REQUEST_ANIMATION_FRAME(raFunc); 
 			})(); 
-        } 
-        return entry.s; 
-    },
-    
-    
-    /*$
+		} 
+		return entry.s; 
+	},
+	
+	
+	/*$
 	 * @id off
 	 * @group EVENTS
 	 * @requires on
@@ -3276,9 +3276,9 @@ define('minified', function() {
 	 *                If the handler is not registered as event handler, the function does nothing.
 	 *                
 	 * @see ##on() registers an event handler.
-     */
+	 */
 	'off': off
-    
+	
  	/*$
  	 * @stop
  	 */
@@ -3290,13 +3290,13 @@ define('minified', function() {
 			
 				
 	//// GLOBAL INITIALIZATION ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+	
 	///#snippet webInit
-    /*$
+	/*$
 	 * @id ready_init
 	 * @dependency
-     */
-    // @condblock ie8compatibility
+	 */
+	// @condblock ie8compatibility
 	if (IS_PRE_IE9) {
 		_document['attachEvent']("onreadystatechange", function() {
 			if (/^[ic]/.test(_document['readyState']))
@@ -3305,26 +3305,26 @@ define('minified', function() {
 		_window['attachEvent']("onload", triggerDomReady);
 	}
 	else
-    // @condend
-    	_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
+	// @condend
+		_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
 	/*$
 	 @stop
 	 */
 
-    
-    
-    // @condblock ie8compatibility
-    // for old IEs, unregister all event handlers to avoid mem leaks
-    _window.unload = function() {
-    	flexiEach(registeredEvents, detachHandlerList);
-    };
-    // @condend
+	
+	
+	// @condblock ie8compatibility
+	// for old IEs, unregister all event handlers to avoid mem leaks
+	_window.unload = function() {
+		flexiEach(registeredEvents, detachHandlerList);
+	};
+	// @condend
 
 
    
 	///#/snippet webInit
 
-    
+	
 	return {
 	
 	
@@ -3347,7 +3347,7 @@ define('minified', function() {
 		 * @syntax $(object, context)
 		 * @syntax $(object, context, childOnly)
 		 * @syntax $(domreadyFunction)
-     	 * @module WEB
+	 	 * @module WEB
 		 * Creates a new ##list#Minified list##, or register a DOMReady-handler. 
 		 * The most common usage is with a CSS-like selector. <var>$()</var> will then create a list containing all elements of the current HTML
 		 * document that fulfill the filter conditions. Alternatively you can also specify a list of objects or a single object. 
@@ -3477,7 +3477,7 @@ define('minified', function() {
 		 */
 		'$': $,
 			
-	    /*$
+		/*$
 		 * @id dollardollar
 		 * @group SELECTORS
 		 * @requires 
@@ -3485,7 +3485,7 @@ define('minified', function() {
 		 * @name $$()
 		 * @syntax $$(selector)
 		 * @shortcut $$() - It is recommended that you assign MINI.$$ to a variable $$.
-     	 * @module WEB
+	 	 * @module WEB
 		 * Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found. 
 		 * <var>$$</var> allows you to easily access an element directly. It is the equivalent to writing <code>$(selector)[0]</code>.
 		 *
@@ -3506,7 +3506,7 @@ define('minified', function() {
 		 * 
 		 * @see ##dollar#$()## creates a list using the selector, instead of returning only the first result.
 		 */
-	    '$$': $$,
+		'$$': $$,
 	
 			
 		/*$
@@ -3520,7 +3520,7 @@ define('minified', function() {
 		 * @syntax EE(elementName, children)
 		 * @syntax EE(elementName, properties, children)
 		 * @shortcut EE() - It is recommended that you assign MINI.EE to a variable EE.
-     	 * @module WEB
+	 	 * @module WEB
 		 * Creates a new HTML Element, wrapped in a  ##list#Minified list##, optionally with attributes and children.
 		 * Typically it will be used to insert elements into the DOM tree using ##add() or a similar function. 
 		 *
@@ -3613,11 +3613,11 @@ define('minified', function() {
 		 */
 		'EE': EE,
 		
-	    /*$
+		/*$
 		 * @id M
 		 * @name M
 		 * @syntax MINI.M
-     	 * @module WEB, UTIL
+	 	 * @module WEB, UTIL
 		 * 
 		 * Exposes the internal class used by all  ##list#Minified lists##. This is mainly intended to allow you adding your
 		 * own functions.
@@ -3637,11 +3637,11 @@ define('minified', function() {
 ///#snippet commonAmdEnd
 });
 ///#/snippet commonAmdEnd
-        
-        
+		
+		
 ///#snippet  webDocs
 
-        
+		
 /*$
  * @id list
  * @name Minified Lists
@@ -3658,7 +3658,7 @@ define('minified', function() {
  * 
  * The Util module provides a function ##_.array() that converts a Minified list to a regular JavaScript array.
  */
-        
+		
 /*$
  * @id promiseClass
  * @name Promise
@@ -3776,18 +3776,16 @@ define('minified', function() {
 /*$
  * @stop
  */
-        
+		
 
 ///#/snippet  webDocs
 
 ///#remove
-     // This is used only to provide a promise block if web is used stand-alone.
-     /*$
-      * @id promise
-      */
-        
+	 // This is used only to provide a promise block if web is used stand-alone.
+	 /*$
+	  * @id promise
+	  */
+		
 ///#/remove
-        
-        
-        
-        
+		
+
