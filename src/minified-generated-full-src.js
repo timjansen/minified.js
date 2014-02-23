@@ -416,8 +416,11 @@ define('minified', function() {
 			return end != _null && base.substr(base.length - end.length) == end;
 	}
 	function reverse(list) {
-		var i = list.length;
-		return map(list, function() { return list[--i]; });
+		var len = list.length;
+		if (isList(list))
+			return new M(map(list, function() { return list[--len]; }));
+		else
+			return replace(list, /[\s\S]/g, function() { return list.charAt(--len); });
 	}
 	function sub(list, startIndex, endIndex) {
 		if (!list)
@@ -571,19 +574,12 @@ define('minified', function() {
 		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
 	}
 	
-
-	function reverseString(s) {
-		var s2 = '';
-		for (var i = s.length - 1; i >= 0; i--)
-			s2 += s.charAt(i);
-		return s2;
-	}
 	
 	function processNumCharTemplate(tpl, input, fwd) {
 		var inputPos = 0;
 		var inHash;
-		var rInput = fwd ? input : reverseString(input);
-		var s = (fwd ? tpl : reverseString(tpl)).replace(/./g, function(tplChar) {
+		var rInput = fwd ? input : reverse(input);
+		var s = (fwd ? tpl : reverse(tpl)).replace(/./g, function(tplChar) {
 			if (tplChar == '0') {
 				inHash = _false;
 				return rInput.charAt(inputPos++) || '0';
@@ -595,7 +591,7 @@ define('minified', function() {
 			else
 				return rInput.charAt(inputPos) == '' && inHash ? '' : tplChar;
 		});
-		return fwd ? s : (input.substr(0, input.length - inputPos) + reverseString(s));
+		return fwd ? s : (input.substr(0, input.length - inputPos) + reverse(s));
 	}
 	
 	
@@ -1983,8 +1979,9 @@ define('minified', function() {
 	 * @altname _.reverse()
 	 * @syntax list.reverse() 
 	 * @syntax _.reverse(list) 
+	 * @syntax _.reverse(string) 
 	 * @module UTIL
-	 * Returns a new ##list#Minified list## with the input list's elements in reverse order. The first element is swapped 
+	 * Returns a new ##list#Minified list## or string with the input's elements/characters in reverse order. The first element is swapped 
 	 * with the last, the second with the second to last and so on.
 	 *
 	 * @example Changes the order of a list:
@@ -1997,11 +1994,17 @@ define('minified', function() {
 	 * var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
 	 * </pre> 
 	 * 
+	 * @example Or a string:
+	 * <pre> 
+	 * var rev = _.reverse("abc"); // returns _("cba")
+	 * </pre> 
+	 * 
 	 * @param list A list to use as input. Can be an array, a ##list#Minified list## or any other array-like structure with 
 	 *             <var>length</var> property.
-	 * @return a new ##list#list## containing only the items in the index range. 
+	 * @param string A string to use as input
+	 * @return a new ##list#list## or string with the input in reverse order. 
 	 */ 
-	'reverse': listBindArray(reverse),
+	'reverse': listBind(reverse),
  	
 	/*$ 
 	 * @id find 
@@ -2142,7 +2145,8 @@ define('minified', function() {
 	 * Checks whether the list or string starts with the other string or list.
 	 *
 	 * If you compare lists, each item of the other list is compared with the item at the same position of the
-	 * base list using ##_.equals(). Arrays can be used interchangably with lists.
+	 * base list using ##_.equals(). Arrays can be used interchangably with lists. If the first argument is a list and the second is
+	 * not, it will be converted to a list.
 	 * 
 	 * If you compare strings, each character of the other string is compared with the character at the same position of the
 	 * base string.
@@ -2166,7 +2170,7 @@ define('minified', function() {
 	 * @param list A list to check. Can be an array, a ##list#Minified list## or any other array-like structure with 
 	 *             <var>length</var> property.
 	 * @param otherList A list to find at the beginning of the other string. Can be an array, a ##list#Minified list## or any other 
-	 *             array-like structure with <var>length</var> property.
+	 *             array-like structure with <var>length</var> property.  If it is not a list, it will be converted into a single-element list.
 	 * @param baseString a string to check
 	 * @param otherString the string to find at the beginning of the other string
 	 * @return true if the base list or string starts with the other list/string. False otherwise.
@@ -2189,7 +2193,8 @@ define('minified', function() {
 	 * Checks whether the list or string ends with the other string or list.
 	 *
 	 * If you compare lists, each item of the other list is compared with the item at the same position relative to the end of the
-	 * base list using ##_.equals(). Arrays can be used interchangably with lists.
+	 * base list using ##_.equals(). Arrays can be used interchangably with lists. If the first argument is a list and the second is
+	 * not, it will be converted to a list.
 	 * 
 	 * If you compare strings, each character of the other string is compared with the character at the same position relative to the end 
 	 * of the base string.
@@ -2213,7 +2218,7 @@ define('minified', function() {
 	 * @param list A list to check. Can be an array, a ##list#Minified list## or any other array-like structure with 
 	 *             <var>length</var> property.
 	 * @param otherList A list to find at the end of the other string. Can be an array, a ##list#Minified list## or any other 
-	 *             array-like structure with <var>length</var> property.
+	 *             array-like structure with <var>length</var> property. If it is not a list, it will be converted into a single-element list.
 	 * @param baseString a string to check
 	 * @param otherString the string to find at the end of the other string
 	 * @return true if the base list or string ends with the other list/string. False otherwise.
@@ -5258,7 +5263,7 @@ define('minified', function() {
 		'sub': funcArrayBind(sub),
 		 // @condend
 		 // @condblock reverse
-		'reverse': funcArrayBind(reverse),
+		'reverse': reverse,
 		 // @condend
 		 // @condblock each
 		'each': each,

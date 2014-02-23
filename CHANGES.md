@@ -14,6 +14,7 @@ Beta 5 (in progress)
 * a promise's state can now be obtained by invoking it as a function without arguments (see promise(), full package only). promise.state has been removed.
 * set() and get() will automatically convert $float to $cssFloat
 * $$fade and $$slide will set $display to '' instead of 'block' to show an element.
+* reverse() can be used to reverse strings
 
 Beta 4.2 (2014-12-26)
 ---------------------
