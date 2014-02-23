@@ -1441,9 +1441,10 @@ define('minified', function() {
 	 *             the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to 
 	 *             'visible' and the display style to 'block'. '$$fade' only works with block elements.</td></tr>
 	 * <tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>The name '$$slide' allows a vertical slide-out or slide-in effect. The value must be a number
-	 *              between 0 and 1. '$$slide' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0,
-	 *             the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to 
-	 *             'visible' and the display style to 'block'. '$$slide' only works with block elements.</td></tr>
+	 *              between 0 and 1 and will be used to set the element's '$height'. '$$slide' will also automatically control the element's 'visibility' 
+	 *              and 'display' styles. If the value is 0, the element's visibility will automatically be set to 'hidden'. If the value is larger, 
+	 *              the visibility will be set to 'visible' and the display style to 'block'. '$$slide' only works with block elements and will not set the
+	 *              element's margin or padding. If you need a margin or padding, you should wrap the elements in a simple &lt;div>.</td></tr>
 	 * <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
 	 *             '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document.
 	 *             The coordinates are specified in pixels, but must not use a 'px' unit postfix.</td></tr>
