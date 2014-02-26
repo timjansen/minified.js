@@ -4124,7 +4124,7 @@ define('minified', function() {
 	/*$
 	 * @id onover
 	 * @group EVENTS
-	 * @requires on dollar 
+	 * @requires on dollar up
 	 * @configurable default
 	 * @name .onOver()
 	 * @syntax list.onOver(handler)
@@ -4163,7 +4163,7 @@ define('minified', function() {
 				// @condend
 				// @cond !ie9compatibility var relatedTarget = ev['relatedTarget'];
 				if (curOverState[index] !== overState) {
-					if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['trav']('parentNode', self[index]).length)) {
+					if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['up'](self[index]).length)) {
 						curOverState[index] = overState;
 						toggle.call(this, overState, ev);
 					}
