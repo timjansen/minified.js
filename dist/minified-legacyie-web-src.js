@@ -1,4 +1,4 @@
-/*
+ /*
  * Minified-web.js - Lightweight Client-Side JavaScript Libary (web module only)
  * Version: 2014.0.0-beta5.0
  * 
@@ -2586,7 +2586,7 @@ define('minified', function() {
 	 *             space-separated event names. If the name is prefixed
 	 *             with '|' (pipe), the event will be passed through and the event's default actions will be executed by the browser. 
 	 *             If the name is prefixed with '?', the event will only be passed through if the handler returns <var>true</var>.
-	 * @param eventHandler the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
+	 * @param eventHandler the callback <code>function(event, index)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
  	 *             <dt>event</dt><dd>The original DOM event object.</dd>
  	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
@@ -2604,6 +2604,7 @@ define('minified', function() {
 	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
 	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
+	 * @see ##off() allows you to unregister an event handler.
 	 */
 	'on': on,
 
@@ -2635,6 +2636,7 @@ define('minified', function() {
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
 	 * @return the list
+	 * @see ##on() provides low-level event registration.
 	 */
 	'onOver': function(subSelect, toggle) {
 		var self = this, curOverState = [];
@@ -2683,6 +2685,7 @@ define('minified', function() {
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
 	 * @return the list
+	 * @see ##on() provides low-level event registration.
 	 */
 	'onFocus': function(selector, handler) {
 		if (!handler)
@@ -2722,6 +2725,7 @@ define('minified', function() {
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
 	 * @return the list
+	 * @see ##on() provides low-level event registration.
 	 */
 	'onChange': function onChange(subSelect, handler) {
 		var oldValues = [];
@@ -2781,6 +2785,7 @@ define('minified', function() {
 	 *                 Anything you pass here will be directly given to event handlers as event object, so you need to know what 
 	 *                 they expect.
 	 * @return the list
+	 * @see ##on() registers events that can be triggered.
 	 */
 	'trigger': function (eventName, eventObj) {
 		return this['each'](function(element, index) {

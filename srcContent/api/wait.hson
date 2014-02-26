@@ -46,7 +46,7 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
    .then(function() {
           div.animate({$left: '200px', $top: '200px'}, 800, 0);
    }).then(function() {
-   	     return _.wait(50);
+   	     return $.wait(50);
    }).then(function() {
           div.animate({$left: '100px', $top: '100px'}, 400);
    });
