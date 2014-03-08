@@ -32,7 +32,7 @@
 	 */
 if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
 	var def = {};
-	this['define'] = function(name, f) {def[name] = f();};
+	this['define'] = function(name, f) {def[name] = def[name] || f();};
 	this['require'] = function(name) { return def[name]; }; 
 }
 
@@ -323,7 +323,7 @@ define('minified', function() {
 		return to;
 	}
 	function extend(target) {
-		for (var i = 0; i < arguments.length; i++)
+		for (var i = 1; i < arguments.length; i++)
 			eachObj(arguments[i], function(name, value) {
 				if (value != undef)
 					target[name] = value;
@@ -493,7 +493,7 @@ define('minified', function() {
 			return replace(formatNoTZ, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
 				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
-					var d = date['get' + val[0]].call(date);
+					var d = date['get' + val[0]]();
 					
 					var optionArray = params && params.split(',');
 					if (isList(val[1])) 
@@ -646,7 +646,7 @@ define('minified', function() {
 		return w.charAt(0).toUpperCase() + w.substr(1); 
 	}
 	function dateAddInline(d, cProp, value) {
-		d['set'+cProp].call(d, d['get'+cProp].call(d) + value);
+		d['set'+cProp](d['get'+cProp]() + value);
 		return d;
 	}
 	function dateAdd(date, property, value) {

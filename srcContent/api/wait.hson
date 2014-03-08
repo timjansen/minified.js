@@ -46,7 +46,7 @@ div.animate({$left: '200px', $top: '0px'}, 600, 0)
    .then(function() {
           div.animate({$left: '200px', $top: '200px'}, 800, 0);
    }).then(function() {
-   	     return $.wait(50);
+   	     return _.wait(50);
    }).then(function() {
           div.animate({$left: '100px', $top: '100px'}, 400);
    });
@@ -181,6 +181,7 @@ var disqus_url = "http://minifiedjs.com/api/wait.html";
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>

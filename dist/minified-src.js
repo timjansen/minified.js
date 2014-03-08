@@ -34,15 +34,52 @@
  * @group OPTIONS
  * @module WEB, UTIL
  * Returns a reference to a module. If you do not use an AMD loader to load Minified, just call <var>require()</var> with the
- * argument 'minified' to get a reference to Minified.
+ * argument 'minified' to get a reference to Minified. You can also access all modules defined using ##define().
+ * 
  * If you do use an AMD loader, Minified will not define this function and you can use the AMD loader to obtain the
  * reference to Minified.
- * Minified's version of <var>require</var> is very simple and will only support Minified, but <strong>no other libraries</strong>. You can not
- * use it to load other modules, and it will be incompatible with all non-AMD libraries that also define a function
- * of the same name. If you need to work with several libraries, you need a real AMD loader.
+ * Minified's version of <var>require</var> is very simple and will only support Minified and other libraries designed
+ * for Minfied, but <strong>no real AMD libraries</strong>. If you need to work with libraries requiring AMD, you need a real AMD loader.
+ * 
+ * @param name the name of the module to request. Minified is available as 'minified'.
+ * @return the reference to the module. Use the name 'minified' to get Minified. You can also access any modules defined using
+ * ##define(). If the name is unknown, it returns <var>undefined</var>.
+ * 
+ * @see ##define() allows you to define modules that can be obtained using <var>require()</var>.
+ */
+
+/*$
+ * @id define
+ * @name define()
+ * @syntax define(name, factoryFunction)
+ * @group OPTIONS
+ * @module WEB, UTIL
+ * Defines a module that can be returned by ##require(), in case you don't have a AMD loader. If you have a AMD loader before you include Minified,
+ * <var>define()</var> will not be set and you can use the AMD loader's (more powerful) variant.
+
+ * Minified's versions of <var>require()</var> and <var>define()</var> are very simple and can not resolve things like circular references.
+ * Also, they are not AMD-compatible and only useful for simple modules. If you need to work with real AMD libraries that are not written
+ * for Minified, you need a real AMD loader.
+ * 
+ * @example Creates a simple module and uses it:
+ * <pre>
+ * define('makeGreen', function() {
+ *     var MINI = require('minified'), $ = MINI.$; // obtain own ref to Minified
+ *     return function(list) {
+ *         $(list).set({$color: '#0f0', $backgroundColor: '#050'});
+ *     });
+ * });
+ * 
+ * var makeGreen = require('makeGreen');
+ * makeGreen('.notGreenEnough');
+ * </pre>
  * 
  * @param name the name of the module to request. In Minified's implementation, only 'minified' is supported.
- * @return the reference to Minified if 'minified' had been used as name. <var>undefined</var> otherwise.
+ * @param factoryFunction will be called the first the the name is defined to obtain the module reference. It must return the value that 
+ *                        is returned by ##require(). The function will only be called once, without any arguments, 
+ *                        and the result will be cached forever.
+ *                        
+ * @see ##require() can be used to obtain references defined with ##define().                       
  */
 
 /*$
@@ -57,7 +94,7 @@
  */
 if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
 	(function(def){
-		this['define'] = function(name, f) { def[name] = f(); };
+		this['define'] = function(name, f) { def[name] = def[name] || f(); };
 		this['require'] = function(name) { return def[name]; };
 	})({});
 }
@@ -399,7 +436,7 @@ define('minified', function() {
 		return to;
 	}
 	function extend(target) {
-		for (var i = 0; i < arguments.length; i++)
+		for (var i = 1; i < arguments.length; i++)
 			eachObj(arguments[i], function(name, value) {
 				if (value != undef)
 					target[name] = value;
@@ -567,7 +604,7 @@ define('minified', function() {
 			return replace(formatNoTZ, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
 				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
-					var d = date['get' + val[0]].call(date);
+					var d = date['get' + val[0]]();
 
 					var optionArray = params && params.split(',');
 					if (isList(val[1])) 
@@ -720,7 +757,7 @@ define('minified', function() {
 		return w.charAt(0).toUpperCase() + w.substr(1); 
 	}
 	function dateAddInline(d, cProp, value) {
-		d['set'+cProp].call(d, d['get'+cProp].call(d) + value);
+		d['set'+cProp](d['get'+cProp]() + value);
 		return d;
 	}
 	function dateAdd(date, property, value) {
@@ -4674,7 +4711,7 @@ define('minified', function() {
 	* In older browsers the callback function will be invoked approximately every 33 milliseconds.
 	* 
 	* An animation loop runs indefinitely. To stop it, you have two options:
-	* <ul><li><var>$.loop()</var> returns a <var>stop()</var> function. If you invoke it, the animation loops ends.</li>
+	* <ul><li>Invoke the <var>stop()</var> function that <var>$.loop()</var> that will return.</li>
 	* <li>The animation callback receives the same <var>stop()</var> function as second argument, so the callback can end the animation itself.</li>
 	* </ul>
 	*
@@ -4695,7 +4732,7 @@ define('minified', function() {
 	*
 	* @param paintCallback a callback <code>function(timestamp, stopFunc)</code> that will be invoked repeatedly to prepare a frame. Parameters given to callback:
 	* <dl>
-	*            <dt>timestamp</dt><dd>The number of miliseconds since animation's start.</dd>
+	*            <dt>timestamp</dt><dd>The number of miliseconds since the animation's start.</dd>
 	*            <dt>stop</dt><dd>Call this <code>function()</code> to stop the currently running animation.</dd>
 	* </dl>
 	* The callback's return value will be ignored.

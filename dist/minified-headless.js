@@ -294,7 +294,7 @@ module.exports = (function() {
 		return to;
 	}
 	function extend(target) {
-		for (var i = 0; i < arguments.length; i++)
+		for (var i = 1; i < arguments.length; i++)
 			eachObj(arguments[i], function(name, value) {
 				if (value != undef)
 					target[name] = value;
@@ -462,7 +462,7 @@ module.exports = (function() {
 			return replace(formatNoTZ, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
 				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
-					var d = date['get' + val[0]].call(date);
+					var d = date['get' + val[0]]();
 
 					var optionArray = params && params.split(',');
 					if (isList(val[1])) 
@@ -615,7 +615,7 @@ module.exports = (function() {
 		return w.charAt(0).toUpperCase() + w.substr(1); 
 	}
 	function dateAddInline(d, cProp, value) {
-		d['set'+cProp].call(d, d['get'+cProp].call(d) + value);
+		d['set'+cProp](d['get'+cProp]() + value);
 		return d;
 	}
 	function dateAdd(date, property, value) {

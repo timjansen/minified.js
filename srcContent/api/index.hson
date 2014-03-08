@@ -350,6 +350,9 @@ until <span class="var">end</span> (exclusive).</div>
 <h3><a href="objvalues.html">_.values()</a></h3>
 <div class="summary">Creates a Minified list containing all property values of the specified object.</div>
 
+<h3><a href="define.html">define()</a></h3>
+<div class="summary">Defines a module that can be returned by require, in case you don't have a AMD loader.</div>
+
 <h3><a href="always.html">promise.always()</a></h3>
 <div class="summary">Registers a callback that will always be called when the Promise's operation ended, no matter whether the operation succeeded or not.</div>
 
@@ -472,6 +475,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
