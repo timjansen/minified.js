@@ -295,7 +295,6 @@ module.exports = function(grunt) {
  	  			},
  	  			src: [ 'WebContent/test/test-minified*.html' ]
  	  		  }
-
  	    },
  	    
 		clean: {

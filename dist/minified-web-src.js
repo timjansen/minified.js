@@ -76,7 +76,7 @@
  * @module WEB, UTIL
  * Defines a module that can be returned by ##require(), in case you don't have a AMD loader. If you have a AMD loader before you include Minified,
  * <var>define()</var> will not be set and you can use the AMD loader's (more powerful) variant.
-
+ *
  * Minified's versions of <var>require()</var> and <var>define()</var> are very simple and can not resolve things like circular references.
  * Also, they are not AMD-compatible and only useful for simple modules. If you need to work with real AMD libraries that are not written
  * for Minified, you need a real AMD loader.

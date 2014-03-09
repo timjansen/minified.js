@@ -650,7 +650,7 @@ define('minified', function() {
 		return d;
 	}
 	function dateAdd(date, property, value) {
-		if (arguments.length < 3)
+		if (value == _null)
 			return dateAdd(now(), date, property);
 		return dateAddInline(dateClone(date), capWord(property), value);
 	}
