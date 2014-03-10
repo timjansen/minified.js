@@ -29,12 +29,6 @@ function dummy() {
 		return list;
 	}
 	
-	function defer(func, args) {
-		delay(function() {call(func, args);}); // TODO try partial()
-	}
-		
-	
-	
 	/*$
 	 * @id promise
 	 * @group REQUEST
@@ -93,7 +87,7 @@ function dummy() {
 			if (state == _null && newState != _null) {
 				state = newState;
 				values = isList(newValues) ? newValues : [newValues];
-				defer(function() {
+				delay(function() {
 					each(deferred, function(f) {f();});
 				});
 			}
@@ -105,9 +99,8 @@ function dummy() {
 			try {
 				promise['then'](function resolvePromise(v) {
 					var then;
-					if ((isObject(v) || isFunction(v)) && isFunction(then = v['then'])) {
+					if ((isObject(v) || isFunction(v)) && isFunction(then = v['then']))
 						assimilate(then, index);
-					}
 					else {
 						values[index] = map(arguments, nonOp);
 						if (++numCompleted == assimilatedNum)
@@ -124,6 +117,50 @@ function dummy() {
 			}
 		});
 
+		/*$
+		 * @id stop
+		 * @group REQUEST
+		 * @name promise.stop()
+		 * @syntax promise.stop()
+		 * @module WEB+UTIL
+		 * Stops an ongoing operation, if supported. Currently the only feature using this is in Minified  is ##animate(). You can stop
+		 * any animation by calling the promise's <var>stop()</var> method. What's unique about this feature is that it Minified's promise 
+		 * implementation propagates the stop signal to assimilated promises and that it will also work with promises returned by ##then(). 
+		 *
+		 * @example Animation chain that can be stopped.
+		 * <pre>
+		 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+		 * var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
+		 *    .then(function() {
+		 *           return _.promise(div.animate({$left: '200px', $top: '200px'}, 800, 0), 
+		 *           				  div.animate({$backgroundColor: '#f00'}, 200));
+		 *    }).then(function() {
+		 *           return div.animate({$left: '100px', $top: '100px'}, 400);
+		 *    });
+		 *    
+		 *  $('#stopButton').on('click', prom.stop);
+		 * });
+		 * </pre>
+		 *
+		 * @param onSuccess optional a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.  
+		 *                           If the function returns a ##promise#Promise##, that Promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the 
+		 *                           returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
+		 *                           Pass <var>null</var> or <var>undefined</var> if you do not need the success handler. 
+		 * @param onError optional a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a ##promise#Promise##, that promise will
+		 *                           be evaluated to determine the state of the Promise returned by <var>then()</var>. If it returns anything else, the returned Promise will 
+		 *                           have success status. If the function throws an error, the returned Promise will be in the error state.
+		 *                           You can pass <var>null</var> or <var>undefined</var> if you do not need the error handler. 
+		 * @return a new ##promise#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
+		 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
+		 */   
+
+		set['stop'] = function() {
+			each(assimilatedPromises, function(promise) {
+				if (promise['stop'])
+					promise['stop']();
+			});
+		};
+		
 		/*$
 		 * @id then
 		 * @group REQUEST
@@ -200,6 +237,7 @@ function dummy() {
 										if (x === promise2)
 											throw new TypeError();
 										then['call'](x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2(_false,[value]);});
+										promise2['stop'] = function() { if (x['stop']) x['stop'](); };
 				   				}
 				   				else
 				   					promise2(_true, [x]);
@@ -218,10 +256,11 @@ function dummy() {
 					promise2(_false, [e]);
 				}
 			};
+			promise2['stop'] = function() { if (set['stop']) set['stop'](); };
 			if (state != _null)
-				defer(callCallbacks);
+				delay(callCallbacks);
 			else
-				deferred.push(callCallbacks);    		
+				deferred.push(callCallbacks);
 			return promise2;
 		};
 
@@ -550,51 +589,6 @@ function dummy() {
 		},
 		
 		/*$
-		 * @id delay
-		 * @group EVENTS
-		 * @configurable default
-		 * @requires
-		 * @name $.delay()
-		 * @syntax $.delay(durationMs, func)
-		 * @syntax $.delay(durationMs, func, args)
-		 * @module WEB+UTIL
-		 * 
-		 * Executes the function after the specified delay, optionally passing arguments to it. Please note that it only uses <var>setTimeout</var>
-		 * internally and there is not guarantee that it will be called exactly after the given amount of milliseconds.
-		 *
-		 * @param durationMs the number of milliseconds to wait. If null or 0, the promise will be fulfilled as soon as the browser can run it
-		 *                   from the event loop.
-		 * @param func the function to call
-		 * @param args optional an array or list of arguments to pass to the function
-		 * 
-		 * @see ##$.defer() works like <var>$.delay</var> invoked with a delay of 0.
-		 * @see ##$.wait() creates a ##promise#Promise## that will be fulfilled after the given duration.
-		 */
-		'delay': function(durationMs, func, args) {
-			delay(partial(func, args), durationMs);
-		},
-
-		/*$
-		 * @id defer
-		 * @group EVENTS
-		 * @configurable default
-		 * @requires
-		 * @name $.defer()
-		 * @syntax $.defer(func)
-		 * @syntax $.defer(func, args)
-		 * @module WEB+UTIL
-		 *	
-		 * Executes the function in the browser event loop, as soon as the browser can. Typically that means that
-		 * the function is called after less than 10 milliseconds.
-		 *
-		 * @param func the function to call
-		 * @param args optional an array or list of arguments to pass to the function
-		 * 
-		 * @see ##$.delay() works like <var>$.defer()</var>, but delays the execution for the specified amount of time.
-		 */
-		'defer': defer,
-		
-		/*$
 		 * @id wait
 		 * @group EVENTS
 		 * @configurable default
@@ -607,6 +601,8 @@ function dummy() {
 		 *
 		 * Creates a new  ##promise#Promise## that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
 		 * because it allows you to chain delays into your animation chain.
+		 * 
+		 * The operation can be interrupted by calling the promise's ##stop() function.
 		 *
 		 * @example Chained animation using Promise callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
 		 *          and finally moves to 100/100.
@@ -627,16 +623,16 @@ function dummy() {
 		 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
 		 *                   from the event loop.
 		 * @param args optional an array or list of arguments to pass to the promise handler
-		 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
-		 *         <var>args</var> parameter as given to <var>wait()</var>.
-		 *         
-		 * @see ##$.delay() calls a simple callback function after a specified waiting period.
+		 * @return a ##promise#Promise## object that will be fulfilled when the time is over, or fail when the promise's ##stop() has been called. 
+		 *         The promise argument of a fulfilled promise is the <var>args</var> parameter as given to <var>wait()</var>. The returned promise supports ##stop()
+		 *         to interrupt the promise.
 		 */
 		'wait': function(durationMs, args) {
 			var p = promise();
-			delay(function() { 
+			var id = delay(function() { 
 				call(p, _null, [_true, args]); 
 			}, durationMs);
+			p['stop'] = function() { p(false); clearTimeout(id); };
 			return p;
 		}
 		
@@ -658,7 +654,7 @@ function dummy() {
 		/*$
 		 * @id html
 		 * @group ELEMENT
-		 * @requires template
+		 * @requires template ht
 		 * @configurable default
 		 * @name HTML()
 		 * @syntax HTML(templateString)

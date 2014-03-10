@@ -81,7 +81,8 @@ module.exports = (function() {
 	var MONTH_SHORT_NAMES = map(MONTH_LONG_NAMES, val3); // ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 	var WEEK_LONG_NAMES = split('Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday', /,/g);
 	var WEEK_SHORT_NAMES = map(WEEK_LONG_NAMES, val3); 
-	var MERIDIAN_NAMES = ['am', 'pm'];
+	var MERIDIAN_NAMES = split('am,pm', /,/g);
+	var MERIDIAN_NAMES_FULL = split('am,am,am,am,am,am,am,am,am,am,am,am,pm,pm,pm,pm,pm,pm,pm,pm,pm,pm,pm,pm', /,/g);
 
 	var FORMAT_DATE_MAP = {
 			'y': ['FullYear', nonOp],
@@ -97,7 +98,7 @@ module.exports = (function() {
 			'K': ['Hours', function(d) { return d % 12; }],
 			's': ['Seconds', nonOp],
 			'S': ['Milliseconds', nonOp],
-			'a': ['Hours', function(d, values) { return (values||MERIDIAN_NAMES)[d<12?0:1]; }],
+			'a': ['Hours', MERIDIAN_NAMES_FULL],
 			'w': ['Day', WEEK_SHORT_NAMES],
 			'W': ['Day', WEEK_LONG_NAMES],
 			'z': ['TimezoneOffset', function(d, dummy, timezone) {
@@ -382,6 +383,7 @@ module.exports = (function() {
 	function equals(x, y) {
 		var a = isFunction(x) ? x() : x;
 		var b = isFunction(y) ? y() : y;
+		var aKeys;
 		if (a == b)
 			return _true;
 		else if (a == _null || b == _null)
@@ -389,24 +391,18 @@ module.exports = (function() {
 		else if (isValue(a) || isValue(b))
 			return isDate(a) && isDate(b) && +a==+b;
 		else if (isList(a)) {
-			if (a.length != b.length)
-				return _false;
-			else
-				return !find(a, function(val, index) {
+			return (a.length == b.length) &&
+				!find(a, function(val, index) {
 					if (!equals(val, b[index]))
 						return _true;
 				});
 		}
 		else {
-			if (isList(b))
-				return _false;
-			var aKeys = keys(a);
-			if (aKeys.length != keyCount(b))
-				return _false;
-			else
-				return !find(aKeys, function(key) {
-					if (!equals(a[key],b[key]))
-						return _true;
+			return !isList(b) &&
+				((aKeys = keys(a)).length == keyCount(b)) && 
+				!find(aKeys, function(key) {
+						if (!equals(a[key],b[key]))
+							return _true;
 				});
 		}
 	}
@@ -439,7 +435,8 @@ module.exports = (function() {
 			preDecimal = '0' + preDecimal;
 		return signed + preDecimal;
 	}
-	function getTimezone(match, idx, refDate) {
+
+	function getTimezone(match, idx, refDate) { // internal helper, see below
 		if (idx == _null || !match)
 			return 0;
 		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
@@ -459,7 +456,7 @@ module.exports = (function() {
 				return rInput.charAt(inputPos++) || '';
 			}
 			else
-				return rInput.charAt(inputPos) == '' && inHash ? '' : tplChar;
+				return inHash && !rInput.charAt(inputPos) ? '' : tplChar;
 		});
 		return fwd ? s : (input.substr(0, input.length - inputPos) + reverse(s));
 	}
@@ -475,6 +472,7 @@ module.exports = (function() {
 			var timezone, match;
 			var formatNoTZ = format;
 			var date = value;
+			var val;
 
 			if (match = /^\[(([+-]\d\d)(\d\d))\]\s*(.*)/.exec(format)) {
 				timezone = match[1];
@@ -487,7 +485,7 @@ module.exports = (function() {
 				if (val) {
 					var d = date['get' + val[0]]();
 
-					var optionArray = params && params.split(',');
+					var optionArray = (params && params.split(','));
 					if (isList(val[1])) 
 						d = (optionArray || val[1])[d];
 					else
@@ -549,7 +547,7 @@ module.exports = (function() {
 		var match;
 
 		if (/^\?/.test(format)) {
-			if (trim(date) == '')
+			if (!trim(date))
 				return _null;
 			format = format.substr(1);
 		}
@@ -594,7 +592,7 @@ module.exports = (function() {
 				var mapEntry  = PARSE_DATE_MAP[placeholderChar];
 				var ctorIndex = mapEntry[0];
 				var valList = indexEntry[1] || mapEntry[1];
-				var listValue = find(valList, function(v, index) { return startsWith(matchVal.toLowerCase(), v.toLowerCase()) ? index : _null; });
+				var listValue = find(valList, function(v, index) { if (startsWith(matchVal.toLowerCase(), v.toLowerCase())) return index; });
 				if (listValue == _null)
 					return undef;
 				if (placeholderChar == 'a')
@@ -620,7 +618,7 @@ module.exports = (function() {
 		if (arguments.length == 1)
 			return parseNumber(_null, format);
 		if (/^\?/.test(format)) {
-			if (trim(value) == '')
+			if (!trim(value))
 				return _null;
 			format = format.substr(1);
 		}
@@ -662,9 +660,8 @@ module.exports = (function() {
 		if (ft)
 			return dt / ft;
 
-		var DAY = 8.64e7;
 		var cProp = capWord(property);
-		var calApproxValues = {'fullYear': DAY*365, 'month': DAY*365/12, 'date': DAY}; // minimum values, a little bit below avg values
+		var calApproxValues = {'fullYear': 8.64e7*365, 'month': 8.64e7*365/12, 'date': 8.64e7}; // minimum values, a little bit below avg values
 		var minimumResult = Math.floor((dt / calApproxValues[property])-2); // -2 to remove the imperfections caused by the values above
 
 		var d = dateAddInline(new Date(d1t), cProp, minimumResult);
@@ -708,7 +705,7 @@ module.exports = (function() {
 					var match, c1 = trim(chunk), c2 = replace(c1, /^{/), escapeSnippet  = (c1==c2) ? 'esc(' : '';
 					if (index%2) { // odd means JS code
 						if (match = /^each\b(\s+([\w_]+(\s*,\s*[\w_]+)?)\s*:)?(.*)/.exec(c2))
-							return 'each('+(trim(match[4])==''?'this':match[4])+', function('+match[2]+'){';
+							return 'each('+(trim(match[4])?match[4]:'this')+', function('+match[2]+'){';
 						else if (match = /^if\b(.*)/.exec(c2))
 							return 'if('+match[1]+'){';
 						else if (match = /^else\b\s*(if\b(.*))?/.exec(c2))
@@ -720,11 +717,11 @@ module.exports = (function() {
 						else if (match = /^#(.*)/.exec(c2))
 							return match[1];
 						else if (match = /(.*)::\s*(.*)/.exec(c2))
-							return 'print('+escapeSnippet+'_.formatValue("'+escapeJavaScriptString(match[2])+'",'+(trim(match[1])==''?'this':match[1])+(escapeSnippet&&')')+'));\n';
+							return 'print('+escapeSnippet+'_.formatValue("'+escapeJavaScriptString(match[2])+'",'+(trim(match[1])?match[1]:'this')+(escapeSnippet&&')')+'));\n';
 						else
-							return 'print('+escapeSnippet+(trim(c2)=='' ? 'this' : c2)+(escapeSnippet&&')')+');\n';
+							return 'print('+escapeSnippet+(trim(c2)?c2:'this')+(escapeSnippet&&')')+');\n';
 					}
-					else if (chunk != ''){
+					else if (chunk){
 						return 'print("'+escapeJavaScriptString(chunk)+'");\n';
 					}
 				}).join('')+'}';
@@ -736,7 +733,7 @@ module.exports = (function() {
 						each(obj, function(value, index) { func.call(value, value, index); });
 					else
 						eachObj(obj, function(key, value) { func.call(value, key, value); });
-				}, escapeFunction || nonOp, function() {call(result.push, result, arguments);}, _);
+				}, escapeFunction || nonOp, function() {call(result['push'], result, arguments);}, _);
 				return result.join('');
 			};
 			if (templates.push(t) > MAX_CACHED_TEMPLATES)

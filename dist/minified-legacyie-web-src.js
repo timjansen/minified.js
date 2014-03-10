@@ -334,7 +334,7 @@ define('minified', function() {
 	}
 
 	function delay(f, delayMs) {
-		setTimeout(f, delayMs||0);
+		return setTimeout(f, delayMs||0);
 	}
 	function extractNumber(v) {
 		return parseFloat(replace(v, /^[^\d-]+/));
@@ -2153,7 +2153,9 @@ define('minified', function() {
 	 *
 	 * Instead of the end value, you can also specify a <code>function(oldValue, index, obj)</code> to calculate the actual end value. 
 	 *
-	 * To allow more complex animation, <var>animate()</var> returns a ##promiseClass#Promise## that is fulfilled when the animation has finished. 
+	 * To allow more complex animation, <var>animate()</var> returns a ##promiseClass#Promise## that is fulfilled when the animation has finished. You can also stop
+	 * a running animation by calling the promise's ##stop() function. If you only use the Web module, <var>stop()</var> is only available in the promise returned by
+	 * <var>animate()</var>. If you have the full package, the stop function will be propagated and can be called at any point of a promise chain.
 	 *
 	 * @example Move an element:
 	 * <pre>
@@ -2182,18 +2184,32 @@ define('minified', function() {
 	 * $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
 	 * </pre>
 	 *
-	 * @example Chained animation using ##promiseClass#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200
-	 *          and finally moves to 100/100.
+	 *
+	 * @example Stopping a simple animation. This requires only the Web module.
 	 * <pre>
 	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
-	 * div.animate({$left: '200px', $top: '0px'}, 600, 0)
+	 * var p = div.animate({$left: '800px', $top: '0px'}, 5000, 0);
+	 * $('#stopButton').on('click', p.stop);
+	 * });
+	 * </pre>
+	 *
+	 * @example Chained animation using ##promiseClass#Promise## callbacks. The element is first moved to the position 200/0, then to 200/200
+	 *          and finally moves to 100/100.
+	 *          A stop button allows you to interrupt the animation.<br/>
+	 *          Please note that while chaining animations requires only the Web module,  
+	 *          stopping a chained animation requires the full distribution with both Web and Util module. Only the complete Promises implementation 
+	 *          supports this.
+	 * <pre>
+	 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+	 * var p = div.animate({$left: '200px', $top: '0px'}, 600, 0)
 	 *    .then(function() {
 	 *           return div.animate({$left: '200px', $top: '200px'}, 800, 0);
 	 *    }).then(function() {
 	 *           return div.animate({$left: '100px', $top: '100px'}, 400);
 	 *    });
+	 *    
+	 *  $('#stopButton').on('click', p.stop); // stopping requires Web+Util modules!
 	 * });
-	 * </pre>
 	 * </pre>
 	 *
 	 *
