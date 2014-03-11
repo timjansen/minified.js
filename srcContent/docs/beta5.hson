@@ -12,6 +12,7 @@ has also vastly improved implementations for Promises and number formatting.</p>
 <h2 style="color: red">Backward-incompatible Changes</h2>
 <p>
 <ul>
+<li><span class="var">defer()</span> and <span class="var">delay()</span> have been removed. Use the standard setTimeout() instead.</li>
 <li><span class="var"><a href="/api/formatValue.html">formatValue()</a></span>'s handling of number group separators has been changed. It will now support all
 possible separators, but will not automatically add group separators anymore.</li>
 <li><span class="var"><a href="/api/clone.html">clone()</a></span> will only remove ids of top-level elements, but not those of children.</li>

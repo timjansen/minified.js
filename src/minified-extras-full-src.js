@@ -123,7 +123,7 @@ function dummy() {
 		 * @name promise.stop()
 		 * @syntax promise.stop()
 		 * @module WEB+UTIL
-		 * Stops an ongoing operation, if supported. Currently the only feature using this is in Minified  is ##animate(). You can stop
+		 * Contains a function to stop an ongoing operation, if supported. Currently the only feature using this is in Minified  is ##animate(). You can stop
 		 * any animation by calling the promise's <var>stop()</var> method. What's unique about this feature is that it Minified's promise 
 		 * implementation propagates the stop signal to assimilated promises and that it will also work with promises returned by ##then(). 
 		 *
@@ -630,7 +630,7 @@ function dummy() {
 		'wait': function(durationMs, args) {
 			var p = promise();
 			var id = delay(function() { 
-				call(p, _null, [_true, args]); 
+				p(_true, args); 
 			}, durationMs);
 			p['stop'] = function() { p(false); clearTimeout(id); };
 			return p;

@@ -1423,7 +1423,7 @@ define('minified', function() {
 		 * @name promise.stop()
 		 * @syntax promise.stop()
 		 * @module WEB+UTIL
-		 * Stops an ongoing operation, if supported. Currently the only feature using this is in Minified  is ##animate(). You can stop
+		 * Contains a function to stop an ongoing operation, if supported. Currently the only feature using this is in Minified  is ##animate(). You can stop
 		 * any animation by calling the promise's <var>stop()</var> method. What's unique about this feature is that it Minified's promise 
 		 * implementation propagates the stop signal to assimilated promises and that it will also work with promises returned by ##then(). 
 		 *
@@ -4036,7 +4036,7 @@ define('minified', function() {
 	 *         <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl> 
 	 *         The rejection handler is called as <code>function()</code> without arguments. 
 	 *         The returned promise also has property 'stop', which is a function. Invoke the function without arguments to
-	 *         interrupt a running  animation. It returns how long it ran in milliseconds.
+	 *         interrupt a running  animation. 
 	 *         
 	 * @see ##toggle() can be used to define animations between two states.
 	 * @see ##$.loop() allows you to write more complex animations.
@@ -4047,7 +4047,7 @@ define('minified', function() {
 		var loopStop;
 		var prom = promise();
 		var time = 0;
-		prom['stop'] = function() { prom(_false); loopStop(); return time; };
+		prom['stop'] = function() { prom(_false); loopStop(); };
 		durationMs = durationMs || 500;
 		
 		// find start values
@@ -5281,7 +5281,7 @@ define('minified', function() {
 		'wait': function(durationMs, args) {
 			var p = promise();
 			var id = delay(function() { 
-				call(p, _null, [_true, args]); 
+				p(_true, args); 
 			}, durationMs);
 			p['stop'] = function() { p(false); clearTimeout(id); };
 			return p;

@@ -43,7 +43,7 @@ _.extend(target, {a: 1, b: 2}); // target is now {a: 1, b: 2, c: 3}</pre>
 </p></div>
 <h4>Example</h4>
 <div class="example"><p>Using several source values:
-<pre>var extend = _.copyObj({a: 1, b: 2}, {a:3, c: 3}, {d: 5}); // target is now {a: 1, b: 2, c: 3, d: 5}</pre>
+<pre>var extend = _.extend({a: 1, b: 2}, {a:3, c: 3}, {d: 5}); // target is now {a: 1, b: 2, c: 3, d: 5}</pre>
 </p></div>
 </div>
 

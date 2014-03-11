@@ -2,61 +2,66 @@
 /*
    Auto-generated using docbuilder.js. Do not edit manually. 
 */
-	title: `.clone() - Minified.js`,
+	title: `promise.stop() - Minified.js`,
 	section:"reference",
 	externalCss: ["../css/reference.css"],
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-clone">.clone()</a></h2>
-<div class="summary">Clones all HTML nodes in the given list by creating a deep copy of them.</div>
+<h2><a name="doc-stop">promise.stop()</a></h2>
+<div class="summary">Stops an ongoing operation, if supported.</div>
 
-<div class="availability">Web module only.</div><h4>Syntax</h4>
+<div class="availability">Complete distribution only, not available in stand-alone modules.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">list.clone()</div>
+<div class="syntax">promise.stop()</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="clone_RETURN" class="returnValue inSyntax0"><a name="clone_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the list containing copies of all supported items in the original list.
-</dd>
+<dt id="stop_onSuccess" class=""><a name="stop_onSuccess"><var>onSuccess (optional)</var></a></dt>
+<dd class="">a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.
+If the function returns a <a href='promise.html' class='func'>Promise</a>, that Promise will be evaluated to determine the state of the promise returned by <span class="var">then()</span>. If it returns any other value, the
+returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
+Pass <span class="var">null</span> or <span class="var">undefined</span> if you do not need the success handler.</dd>
+<dt id="stop_onError" class=""><a name="stop_onError"><var>onError (optional)</var></a></dt>
+<dd class="">a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a <a href='promise.html' class='func'>Promise</a>, that promise will
+be evaluated to determine the state of the Promise returned by <span class="var">then()</span>. If it returns anything else, the returned Promise will
+have success status. If the function throws an error, the returned Promise will be in the error state.
+You can pass <span class="var">null</span> or <span class="var">undefined</span> if you do not need the error handler.</dd>
+<dt id="stop_RETURN" class="returnValue inSyntax0"><a name="stop_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0">a new <a href='promise.html' class='func'>Promise</a> object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
+If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Clones all HTML nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
-and everything else will be removed. Nested lists will be automatically flattened. Objects other than nodes, strings or lists
-will be removed.</p><p><span class="var">clone()</span> uses the browser's <span class="var">cloneNode()</span> function to clone HTML internally, but will remove the ids from
-all top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
-The ids of child elements will removed.</p><p>Please note that event handlers will not be cloned.</p><p></p></div>
+<div class="description"><p>Stops an ongoing operation, if supported. Currently the only feature using this is in Minified  is <code><a href='animate.html' class='func'>animate()</a></code>. You can stop
+any animation by calling the promise's <span class="var">stop()</span> method. What's unique about this feature is that it Minified's promise
+implementation propagates the stop signal to assimilated promises and that it will also work with promises returned by <code><a href='then.html' class='func'>then()</a></code>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Using the following HTML:
+<div class="example"><p>Animation chain that can be stopped.
 <pre>
-&lt;div id="comments">
-   &lt;div id="comment1">My comment.&lt;/div>
-&lt;/div>
-</pre>
-Creating a clone:
-<pre>
-var myClone = $('#comment1').clone();
-</pre>
-Adding it below the original:
-<pre>
-$('#comments').add(myClone);
+var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
+   .then(function() {
+          return _.promise(div.animate({$left: '200px', $top: '200px'}, 800, 0),
+          				  div.animate({$backgroundColor: '#f00'}, 200));
+   }).then(function() {
+          return div.animate({$left: '100px', $top: '100px'}, 400);
+   });
+
+ $('#stopButton').on('click', prom.stop);
+});
 </pre>
 </p></div>
 </div>
 
-<h4>See also..</h4>
-<ul><li><code><a href='add.html' class='func'>add()</a></code> can add a cloned element to the HTML document.</li>
-</ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-clone";
-var disqus_url = "http://minifiedjs.com/api/clone.html";
+var disqus_identifier = "api-stop";
+var disqus_url = "http://minifiedjs.com/api/stop.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";

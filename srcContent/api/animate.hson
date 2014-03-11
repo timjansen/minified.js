@@ -71,7 +71,9 @@ for the value to write. This can cause problems if you mix units in CSS. For exa
 will do an animation from '10px' to '20px'. It is not able to convert units.</p><p><span class="var">animate()</span> does not only support strings with units, but any string containing exactly one number. This allows you, among other things, to work with
 IE-specific CSS properties.
 For example, you can transition from a start value 'alpha(opacity = 0)' to 'alpha(opacity = 100)'.</p><p>When you animate colors, <span class="var">animate()</span> is able to convert between the three notations rgb(r,g,b), #rrggbb or #rgb. You can use them interchangeably, but you can not
-use color names such as 'red'.</p><p>Instead of the end value, you can also specify a <code>function(oldValue, index, obj)</code> to calculate the actual end value.</p><p>To allow more complex animation, <span class="var">animate()</span> returns a <a href='promiseclass.html' class='func'>Promise</a> that is fulfilled when the animation has finished.</p><p></p></div>
+use color names such as 'red'.</p><p>Instead of the end value, you can also specify a <code>function(oldValue, index, obj)</code> to calculate the actual end value.</p><p>To allow more complex animation, <span class="var">animate()</span> returns a <a href='promiseclass.html' class='func'>Promise</a> that is fulfilled when the animation has finished. You can also stop
+a running animation by calling the promise's <code><a href='stop.html' class='func'>stop()</a></code> function. If you only use the Web module, <span class="var">stop()</span> is only available in the promise returned by
+<span class="var">animate()</span>. If you have the full package, the stop function will be propagated and can be called at any point of a promise chain.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -105,20 +107,35 @@ $('#myFadingDiv').animate({$$fade: 0}, 1000);
 <pre>
 $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
 </pre>
+
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Stopping a simple animation. This requires only the Web module.
+<pre>
+var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+var p = div.animate({$left: '800px', $top: '0px'}, 5000, 0);
+$('#stopButton').on('click', p.stop);
+});
+</pre>
 </p></div>
 <h4>Example</h4>
 <div class="example"><p>Chained animation using <a href='promiseclass.html' class='func'>Promise</a> callbacks. The element is first moved to the position 200/0, then to 200/200
          and finally moves to 100/100.
+         A stop button allows you to interrupt the animation.<br/>
+         Please note that while chaining animations requires only the Web module,
+         stopping a chained animation requires the full distribution with both Web and Util module. Only the complete Promises implementation
+         supports this.
 <pre>
 var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
-div.animate({$left: '200px', $top: '0px'}, 600, 0)
+var p = div.animate({$left: '200px', $top: '0px'}, 600, 0)
    .then(function() {
           return div.animate({$left: '200px', $top: '200px'}, 800, 0);
    }).then(function() {
           return div.animate({$left: '100px', $top: '100px'}, 400);
    });
+
+ $('#stopButton').on('click', p.stop); // stopping requires Web+Util modules!
 });
-</pre>
 </pre>
 
 </p></div>
@@ -147,8 +164,6 @@ var disqus_url = "http://minifiedjs.com/api/animate.html";
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
 </li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
-</li><li><a href="defer.html" class="func">$.defer()</a> 
-</li><li><a href="delay.html" class="func">$.delay()</a> 
 </li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
@@ -253,6 +268,7 @@ var disqus_url = "http://minifiedjs.com/api/animate.html";
 </li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="stop.html" class="func">promise.stop()</a> 
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

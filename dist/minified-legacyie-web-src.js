@@ -2240,7 +2240,7 @@ define('minified', function() {
 	 *         <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl> 
 	 *         The rejection handler is called as <code>function()</code> without arguments. 
 	 *         The returned promise also has property 'stop', which is a function. Invoke the function without arguments to
-	 *         interrupt a running  animation. It returns how long it ran in milliseconds.
+	 *         interrupt a running  animation. 
 	 *         
 	 * @see ##toggle() can be used to define animations between two states.
 	 * @see ##$.loop() allows you to write more complex animations.
@@ -2251,7 +2251,7 @@ define('minified', function() {
 		var loopStop;
 		var prom = promise();
 		var time = 0;
-		prom['stop'] = function() { prom(_false); loopStop(); return time; };
+		prom['stop'] = function() { prom(_false); loopStop(); };
 		durationMs = durationMs || 500;
 
 		// find start values

@@ -18,14 +18,6 @@ Contains the number of elements in the Minified list.</div>
 <h3><a href="dollardollar.html">$$()</a></h3>
 <div class="summary">Returns a DOM object containing the first match of the given selector, or <span class="var">undefined</span> if no match was found.</div>
 
-<h3><a href="defer.html">$.defer()</a></h3>
-<div class="summary">
-Executes the function in the browser event loop, as soon as the browser can.</div>
-
-<h3><a href="delay.html">$.delay()</a></h3>
-<div class="summary">
-Executes the function after the specified delay, optionally passing arguments to it.</div>
-
 <h3><a href="getcookie.html">$.getCookie()</a></h3>
 <div class="summary">Returns the cookie with the given name.</div>
 
@@ -359,6 +351,9 @@ until <span class="var">end</span> (exclusive).</div>
 <h3><a href="error.html">promise.error()</a></h3>
 <div class="summary">Registers a callback that will be called when the operation failed.</div>
 
+<h3><a href="stop.html">promise.stop()</a></h3>
+<div class="summary">Stops an ongoing operation, if supported.</div>
+
 <h3><a href="then.html">promise.then()</a></h3>
 <div class="summary">
 Registers two callbacks that will be invoked when the Promise's asynchronous operation finished
@@ -372,8 +367,6 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
 </li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
-</li><li><a href="defer.html" class="func">$.defer()</a> 
-</li><li><a href="delay.html" class="func">$.delay()</a> 
 </li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
@@ -478,6 +471,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="stop.html" class="func">promise.stop()</a> 
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
