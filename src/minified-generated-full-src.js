@@ -1423,9 +1423,9 @@ define('minified', function() {
 		 * @name promise.stop()
 		 * @syntax promise.stop()
 		 * @module WEB+UTIL
-		 * Contains a function to stop an ongoing operation, if supported. Currently the only feature using this is in Minified  is ##animate(). You can stop
-		 * any animation by calling the promise's <var>stop()</var> method. What's unique about this feature is that it Minified's promise 
-		 * implementation propagates the stop signal to assimilated promises and that it will also work with promises returned by ##then(). 
+		 * Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by ##animate() and ##wait(). 
+		 * stop() invocation will be propagated over promises returned by ##then() and promises assimilated by ##promise(). You only need to invoke stop
+		 * with the last promise, and all dependent promises will automatically stop as well. 
 		 *
 		 * @example Animation chain that can be stopped.
 		 * <pre>
@@ -1439,22 +1439,12 @@ define('minified', function() {
 		 *    });
 		 *    
 		 *  $('#stopButton').on('click', prom.stop);
-		 * });
 		 * </pre>
-		 *
-		 * @param onSuccess optional a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.  
-		 *                           If the function returns a ##promise#Promise##, that Promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the 
-		 *                           returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
-		 *                           Pass <var>null</var> or <var>undefined</var> if you do not need the success handler. 
-		 * @param onError optional a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a ##promise#Promise##, that promise will
-		 *                           be evaluated to determine the state of the Promise returned by <var>then()</var>. If it returns anything else, the returned Promise will 
-		 *                           have success status. If the function throws an error, the returned Promise will be in the error state.
-		 *                           You can pass <var>null</var> or <var>undefined</var> if you do not need the error handler. 
-		 * @return a new ##promise#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
-		 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
 		 */   
-
 		set['stop'] = function() {
+			if (set['stop0'])
+				set['stop0']();
+				    
 			each(assimilatedPromises, function(promise) {
 				if (promise['stop'])
 					promise['stop']();
@@ -1537,7 +1527,7 @@ define('minified', function() {
 										if (x === promise2)
 											throw new TypeError();
 										then['call'](x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2(_false,[value]);});
-										promise2['stop'] = function() { if (x['stop']) x['stop'](); };
+										promise2['stop0'] = x['stop'];
 				   				}
 				   				else
 				   					promise2(_true, [x]);
@@ -1556,7 +1546,7 @@ define('minified', function() {
 					promise2(_false, [e]);
 				}
 			};
-			promise2['stop'] = function() { if (set['stop']) set['stop'](); };
+			promise2['stop0'] = set['stop'];
 			if (state != _null)
 				delay(callCallbacks);
 			else
@@ -4042,12 +4032,15 @@ define('minified', function() {
 	 * @see ##$.loop() allows you to write more complex animations.
 	 */	
 	'animate': function (properties, durationMs, linearity) {
+		var prom = promise();
 		var self = this;
 		var dials = []; // contains a dial for each item
 		var loopStop;
-		var prom = promise();
 		var time = 0;
+		// @condblock !promise
 		prom['stop'] = function() { prom(_false); loopStop(); };
+		// @condend
+		// @cond promise prom['stop0'] = function() { prom(_false); loopStop(); };
 		durationMs = durationMs || 500;
 		
 		// find start values
@@ -5283,7 +5276,7 @@ define('minified', function() {
 			var id = delay(function() { 
 				p(_true, args); 
 			}, durationMs);
-			p['stop'] = function() { p(false); clearTimeout(id); };
+			p['stop0'] = function() { p(_false); clearTimeout(id); };
 			return p;
 		}
 		

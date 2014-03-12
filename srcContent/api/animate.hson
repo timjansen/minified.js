@@ -52,7 +52,7 @@ The fulfillment handler will be called as <code>function(list)</code>:
 <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl>
 The rejection handler is called as <code>function()</code> without arguments.
 The returned promise also has property 'stop', which is a function. Invoke the function without arguments to
-interrupt a running  animation. It returns how long it ran in milliseconds.
+interrupt a running  animation.
 </dd>
 </dl>
 

@@ -43,6 +43,23 @@ var ts = $('table').not('.simple');
 <p><span class="var"><a href="/api/isempty.html">isEmpty()</a></span> is a simple helper function that can check whether a list or string is either null or empty.
 When checking strings it can optionally ignore whitespace.</p>
 
+<h2>New: stop() to cancel chained animations</h2>
+<p><span class="var"><a href="/api/stop.html">stop()</a></span> now allows you to cancel even chained animations, if you are using the full distribution. All
+promises returned by Minified have a <var>stop()</var> function.</p>
+<pre>
+var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
+              .then(function() {
+			        return _.promise(div.animate({$left: '200px', $top: '200px'}, 800, 0), 
+           				             div.animate({$backgroundColor: '#f00'}, 200));
+		      }).then(function() {
+		 			return div.animate({$left: '100px', $top: '100px'}, 400);
+			  });
+
+$('#stopButton').on('click', prom.stop);
+</pre>
+
+
 <h2>New: define() to define Minified modules</h2>
 <p><span class="var"><a href="/api/define.html">define()</a></span> has been around for a long time, but only in beta 5 it becomes a part of the public API. 
 <var>define()</var> is a simplified AMD implementation sufficient to provide Minified-only modules. It is AMD-backward compatible, meaning that any

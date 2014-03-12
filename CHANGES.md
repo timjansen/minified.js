@@ -8,7 +8,7 @@ Beta 5 (in progress)
 * added not()
 * added isEmpty()
 * added define() (or, rather, document it)
-* added stop() as general feature of promises
+* added stop() for all promises, to propagate animation cancellation
 * removed delay() and defer(), as they just duplicated setTimeout()
 * clone() will now use the browser's cloneNode(). It will only remove the element from the top-level element, but not from any children.
 * formatValue() supports any character as group separator

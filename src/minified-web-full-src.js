@@ -2352,12 +2352,15 @@ define('minified', function() {
 	 * @see ##$.loop() allows you to write more complex animations.
 	 */	
 	'animate': function (properties, durationMs, linearity) {
+		var prom = promise();
 		var self = this;
 		var dials = []; // contains a dial for each item
 		var loopStop;
-		var prom = promise();
 		var time = 0;
+		// @condblock !promise
 		prom['stop'] = function() { prom(_false); loopStop(); };
+		// @condend
+		// @cond promise prom['stop0'] = function() { prom(_false); loopStop(); };
 		durationMs = durationMs || 500;
 		
 		// find start values
