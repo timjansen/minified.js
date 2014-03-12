@@ -7,7 +7,7 @@ Beta 5 (in progress)
 * added next()
 * added not()
 * added isEmpty()
-* added define() (or, rather, document it)
+* added define() (or, rather, documented it)
 * added stop() for all promises, to propagate animation cancellation
 * removed delay() and defer(), as they just duplicated setTimeout()
 * clone() will now use the browser's cloneNode(). It will only remove the element from the top-level element, but not from any children.
