@@ -142,8 +142,7 @@ function dummy() {
 		 * </pre>
 		 */   
 		set['stop'] = function() {
-			if (set['stop0'])
-				set['stop0']();
+			call(set['stop0']);
 				    
 			each(assimilatedPromises, function(promise) {
 				if (promise['stop'])

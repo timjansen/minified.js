@@ -392,10 +392,11 @@ module.exports = (function() {
 		};
 	}
 	function call(f, fThisOrArgs, args) {
-		return f.apply(args && fThisOrArgs, map(args || fThisOrArgs, nonOp));
+		if (isFunction(f))
+			return f.apply(args && fThisOrArgs, map(args || fThisOrArgs, nonOp));
 	}
 	function callList(list, fThisOrArgs, args) {
-		return map(list, function(f) { if (isFunction(f)) return call(f, fThisOrArgs, args); else return undef;});
+		return map(list, function(f) { return call(f, fThisOrArgs, args);});
 	}
 	function bind(f, fThis, beforeArgs, afterArgs) {
 		return function() {

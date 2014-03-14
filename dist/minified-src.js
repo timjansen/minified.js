@@ -534,10 +534,11 @@ define('minified', function() {
 		};
 	}
 	function call(f, fThisOrArgs, args) {
-		return f.apply(args && fThisOrArgs, map(args || fThisOrArgs, nonOp));
+		if (isFunction(f))
+			return f.apply(args && fThisOrArgs, map(args || fThisOrArgs, nonOp));
 	}
 	function callList(list, fThisOrArgs, args) {
-		return map(list, function(f) { if (isFunction(f)) return call(f, fThisOrArgs, args); else return undef;});
+		return map(list, function(f) { return call(f, fThisOrArgs, args);});
 	}
 	function bind(f, fThis, beforeArgs, afterArgs) {
 		return function() {
@@ -1262,12 +1263,11 @@ define('minified', function() {
 		 *           return div.animate({$left: '100px', $top: '100px'}, 400);
 		 *    });
 		 *    
-		 *  $('#stopButton').on('click', prom.stop);
+		 * $('#stopButton').on('click', prom.stop);
 		 * </pre>
 		 */   
 		set['stop'] = function() {
-			if (set['stop0'])
-				set['stop0']();
+			call(set['stop0']);
 
 			each(assimilatedPromises, function(promise) {
 				if (promise['stop'])
