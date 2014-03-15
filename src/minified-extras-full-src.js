@@ -387,10 +387,8 @@ function dummy() {
 		 */
 		'per': function(subSelector, handler) {
 			if (isFunction(subSelector))
-				for (var self = this, a = [_null], len = self.length, i = 0; i < len; i++) {
-					a[0] = self[i];
-					subSelector.call(self, new M(a), i);
-				}
+				for (var len = this.length, i = 0; i < len; i++)
+					subSelector.call(this, new M(_null, this[i]), i);
 			else
 				$(subSelector, this)['per'](handler);
 			return this;

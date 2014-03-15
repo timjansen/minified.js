@@ -771,15 +771,18 @@ module.exports = (function() {
 	 */
 	/** @constructor */
 	function M(list, assimilateSublists) {
-		var self = this, len = list.length, len2, idx = 0;
-		for (var i = 0; i < len; i++) {
-			var item = list[i];
-			if (assimilateSublists && isList(item))
-				for (var j = 0, len2 = item.length; j < len2; j++)
-					self[idx++] = item[j];
-			else 
-				self[idx++] = item;
-		};
+		var self = this, idx = 0;
+		if (list)
+			for (var i = 0, len = list.length; i < len; i++) {
+				var item = list[i];
+				if (assimilateSublists && isList(item))
+					for (var j = 0, len2 = item.length; j < len2; j++)
+						self[idx++] = item[j];
+				else 
+					self[idx++] = item;
+			}
+		else
+			self[idx++] = assimilateSublists;
 
 		self['length'] = idx;
 		self['_'] = _true;

@@ -1554,15 +1554,18 @@ define('minified', function() {
 	 */
 	/** @constructor */
 	function M(list, assimilateSublists) {
-		var self = this, len = list.length, len2, idx = 0;
-		for (var i = 0; i < len; i++) {
-			var item = list[i];
-			if (assimilateSublists && isList(item))
-				for (var j = 0, len2 = item.length; j < len2; j++)
-					self[idx++] = item[j];
-			else 
-				self[idx++] = item;
-		};
+		var self = this, idx = 0;
+		if (list)
+			for (var i = 0, len = list.length; i < len; i++) {
+				var item = list[i];
+				if (assimilateSublists && isList(item))
+					for (var j = 0, len2 = item.length; j < len2; j++)
+						self[idx++] = item[j];
+				else 
+					self[idx++] = item;
+			}
+		else
+			self[idx++] = assimilateSublists;
 
 		self['length'] = idx;
 		self['_'] = _true;
@@ -4581,10 +4584,8 @@ define('minified', function() {
 		 */
 		'per': function(subSelector, handler) {
 			if (isFunction(subSelector))
-				for (var self = this, a = [_null], len = self.length, i = 0; i < len; i++) {
-					a[0] = self[i];
-					subSelector.call(self, new M(a), i);
-				}
+				for (var len = this.length, i = 0; i < len; i++)
+					subSelector.call(this, new M(_null, this[i]), i);
 			else
 				$(subSelector, this)['per'](handler);
 			return this;
