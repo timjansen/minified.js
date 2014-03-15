@@ -33,8 +33,7 @@ var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
           return div.animate({$left: '100px', $top: '100px'}, 400);
    });
 
- $('#stopButton').on('click', prom.stop);
-});
+$('#stopButton').on('click', prom.stop);
 </pre></p></div>
 </div>
 

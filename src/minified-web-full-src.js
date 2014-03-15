@@ -255,7 +255,9 @@ define('minified', function() {
 	
 	//// GLOBAL FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/** @param s {?} */
+	 // THE FOLLOWING FUNCTION ARE FOR WEB-MODULE. In full package they will be provided by Util. 
+	 
+	 /** @param s {?} */
 	function toString(s) { // wrapper for Closure optimization
 		return s!=_null ? ''+s : '';
 	}
@@ -288,7 +290,7 @@ define('minified', function() {
 				cb(n, obj[n]);
 		// web version has no return, no 'this', as this implementation is not exported
 	}
-	function filter(list, f) {
+	function filter(list, f) { // web version, no filter by idenitity
 		var r = []; 
 		flexiEach(list, function(value, index) {
 			if (f.call(list, value, index))
@@ -477,11 +479,19 @@ define('minified', function() {
 							return (name == eventName) && !miniHandler(eventObj, element);
 						};
 						
+						// @condblock !UTIL
 						(registeredOn['M'] = registeredOn['M'] || []).push(trigger);
 						(handler['M'] = handler['M'] || []).push(function () {
 							registeredOn.removeEventListener(name, miniHandler, _false);
 							removeFromArray(registeredOn['M'], trigger);
 						});
+						// @condend !UTIL
+						
+						// @cond UTIL registeredOn['M'] = $([registeredOn['M'], trigger]);
+						// @cond UTIL handler['M'] = $([handler['M'], function () {
+						// @cond UTIL	registeredOn.removeEventListener(name, miniHandler, _false);
+						// @cond UTIL	registeredOn['M'] = registeredOn['M'].filter(trigger);
+						// @cond UTIL }]);
 						registeredOn.addEventListener(name, miniHandler, _false);
 					});
 				});

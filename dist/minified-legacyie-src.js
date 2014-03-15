@@ -1049,6 +1049,7 @@ define('minified', function() {
 
 
 
+
 	// @condblock ie8compatibility 
 	function off(handler) {
 	   	flexiEach(handler['M'], function(h) {
@@ -1646,8 +1647,8 @@ define('minified', function() {
 	 * @syntax _.filter(list, value)
    	 * @module WEB, UTIL
 	 * Creates a new ##list#Minified list## by taking an existing list and omitting certain elements from it. You
-	 * can either specify a callback function to approve those items that will be in the new list, or 
-	 * you can pass a value to remove from the new list.
+	 * can either specify a callback function to approve those items that will be in the new list (all modules), or 
+	 * you can pass a value to remove from the new list (Util module only).
 	 *  
 	 * If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
 	 * For values, a simple equality operation (<code>==</code>) will be used.
@@ -1686,7 +1687,7 @@ define('minified', function() {
 	 *        <dt class="this">this</dt><dd>This list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>  
 	 * @param value a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
-	 *              be a function. 
+	 *              be a function. Requires Util module.
 	 * @return the new, filtered ##list#list##
 	 * 
 	 * @see ##only() offers selector-based filtering.
