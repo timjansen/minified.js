@@ -284,7 +284,7 @@ define('minified', function() {
 	function nonOp(v) {
 		return v;
 	}
-	function call(f) {
+	function call(f) { // simplified impl without args and any checks. For web only!
 		f();
 	}
 	function eachObj(obj, cb) {
@@ -395,10 +395,8 @@ define('minified', function() {
 			var stop;
 			var e = event || _window.event;
 			var match = !selectorFilter, el = triggerOriginalTarget || e['target'];
-			while (el && el != registeredOn && !match)
-				if (selectorFilter(el))
-					match = _true;
-				else
+			if (selectorFilter)
+				while (el && el != registeredOn && !(match = selectorFilter(el)))
 					el = el['parentNode'];
 			if (match && 
 			   (stop = (((!handler.apply($(selectorFilter ? el : registeredOn), args || [e, index])) || prefix=='') && prefix != '|')) && 
@@ -465,11 +463,8 @@ define('minified', function() {
 							var el = bubbleSelector ? (triggerOriginalTarget || event['target']) : registeredOn;
 							if (bubbleSelector) {
 								var selectorFilter = getFilterFunc(bubbleSelector, registeredOn);
-								while (el && el != registeredOn && !match)
-									if (selectorFilter(el))
-										match = _true;
-									else
-										el = el['parentNode'];
+								while (el && el != registeredOn && !(match = selectorFilter(el)))
+									el = el['parentNode'];
 							}
 							if (match && (stop = (((!handler.apply($(el), args || [event, index])) || prefix=='') && prefix != '|')) && !triggerOriginalTarget) {
 								event['preventDefault']();

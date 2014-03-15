@@ -994,10 +994,8 @@ define('minified', function() {
 			var stop;
 			var e = event || _window.event;
 			var match = !selectorFilter, el = triggerOriginalTarget || e['target'];
-			while (el && el != registeredOn && !match)
-				if (selectorFilter(el))
-					match = _true;
-				else
+			if (selectorFilter)
+				while (el && el != registeredOn && !(match = selectorFilter(el)))
 					el = el['parentNode'];
 			if (match && 
 			   (stop = (((!handler.apply($(selectorFilter ? el : registeredOn), args || [e, index])) || prefix=='') && prefix != '|')) && 

@@ -31,7 +31,7 @@
 <dt class="returnValue">(callback return value)</dt><dd><span class="var">true</span> to include the item in the new list, <span class="var">false</span> to omit it.</dd></dl></dd>
 <dt id="filter_value" class=""><a name="filter_value"><var>value</var></a></dt>
 <dd class="">a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
-be a function.</dd>
+be a function. Requires Util module.</dd>
 <dt id="filter_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="filter_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the new, filtered <a href='list.html' class='func'>list</a>
 </dd>
@@ -39,8 +39,8 @@ be a function.</dd>
 
 <h4>Description</h4>
 <div class="description"><p>Creates a new <a href='list.html' class='func'>Minified list</a> by taking an existing list and omitting certain elements from it. You
-can either specify a callback function to approve those items that will be in the new list, or
-you can pass a value to remove from the new list.</p><p>If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
+can either specify a callback function to approve those items that will be in the new list (all modules), or
+you can pass a value to remove from the new list (Util module only).</p><p>If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
 For values, a simple equality operation (<code>==</code>) will be used.</p><p></p></div>
 
 <div class="examples">
