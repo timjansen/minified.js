@@ -934,8 +934,7 @@ define('minified', function() {
 	function getNaturalHeight(elementList) {
 		var q = {'$position': 'absolute', '$visibility': 'hidden', '$display': 'block', '$height': _null};
 		var oldStyles = elementList['get'](q);
-		elementList['set'](q);
-		var h = elementList['get']('$height', _true);
+		var h = elementList['set'](q)['get']('$height', _true);
 		elementList['set'](oldStyles);
 		return h;
 	}
@@ -1022,15 +1021,6 @@ define('minified', function() {
 
 	function $$(selector) {
 		return dollarRaw(selector)[0];
-	}
-
-	function EE(elementName, attributes, children) {
-		var list = $(_document.createElement(elementName));
-		// @condblock UTIL
-		// this attributes != null check is only required with Util's isObject() implementation. Web's isObject() is simpler.
-		return (isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
-		// @condend UTIL
-		// @cond !UTIL return (isList(attributes) || (!isObject(attributes)) ) ? list['add'](attributes) : list['set'](attributes)['add'](children);
 	}
 
 	function clone (listOrNode) {
@@ -3615,7 +3605,7 @@ define('minified', function() {
 	/*$
 	 * @id clone
 	 * @group ELEMENT
-	 * @requires dollar ee
+	 * @requires each
 	 * @configurable default
 	 * @name .clone()
 	 * @syntax list.clone()
@@ -6595,7 +6585,14 @@ define('minified', function() {
 		 *                         The syntax is exactly like ##add().
 		 * @return the HTML Element wrapped in a Minified list
 		 */
-		'EE': EE,
+		'EE': function (elementName, attributes, children) {
+			var e = $(_document.createElement(elementName));
+			// @condblock UTIL
+			// this attributes != null check is only required with Util's isObject() implementation. Web's isObject() is simpler.
+			return (isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? e['add'](attributes) : e['set'](attributes)['add'](children);
+			// @condend UTIL
+			// @cond !UTIL return (isList(attributes) || (!isObject(attributes)) ) ? e['add'](attributes) : e['set'](attributes)['add'](children);
+		},
 
 		/*$
 		 * @id M
