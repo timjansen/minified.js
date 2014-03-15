@@ -1071,8 +1071,6 @@ define('minified', function() {
 		return +new Date();
 	}
 
-	function callArg(f) {f();}
-
 	// for remove & window.unload
 	function detachHandlerList(dummy, handlerList) {
 		flexiEach(handlerList, function(h) {
@@ -1082,7 +1080,7 @@ define('minified', function() {
 
 	// for ready()
 	function triggerDomReady() {
-		flexiEach(DOMREADY_HANDLER, callArg);
+		flexiEach(DOMREADY_HANDLER, call);
 		DOMREADY_HANDLER = _null;
 	}
 

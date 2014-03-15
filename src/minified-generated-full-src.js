@@ -1135,7 +1135,7 @@ define('minified', function() {
 
 	// @condblock !ie8compatibility 
 	function off(handler) {
-	   	flexiEach(handler['M'], callArg);
+	   	flexiEach(handler['M'], call);
 		handler['M'] = _null;
 	}
 	// @condend !ie8compatibility 
@@ -1144,8 +1144,6 @@ define('minified', function() {
 	function nowAsTime() {
 		return +new Date();
 	}
-
-	function callArg(f) {f();}
 
 	// for remove & window.unload
 	function detachHandlerList(dummy, handlerList) {
@@ -1156,7 +1154,7 @@ define('minified', function() {
 	
 	// for ready()
 	function triggerDomReady() {
-		flexiEach(DOMREADY_HANDLER, callArg);
+		flexiEach(DOMREADY_HANDLER, call);
 		DOMREADY_HANDLER = _null;
 	}
 	

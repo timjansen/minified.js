@@ -284,6 +284,9 @@ define('minified', function() {
 	function nonOp(v) {
 		return v;
 	}
+	function call(f) {
+		f();
+	}
 	function eachObj(obj, cb) {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
@@ -517,7 +520,7 @@ define('minified', function() {
 
 	// @condblock !ie8compatibility 
 	function off(handler) {
-	   	flexiEach(handler['M'], callArg);
+	   	flexiEach(handler['M'], call);
 		handler['M'] = _null;
 	}
 	// @condend !ie8compatibility 
@@ -526,8 +529,6 @@ define('minified', function() {
 	function nowAsTime() {
 		return +new Date();
 	}
-
-	function callArg(f) {f();}
 
 	// for remove & window.unload
 	function detachHandlerList(dummy, handlerList) {
@@ -538,7 +539,7 @@ define('minified', function() {
 	
 	// for ready()
 	function triggerDomReady() {
-		flexiEach(DOMREADY_HANDLER, callArg);
+		flexiEach(DOMREADY_HANDLER, call);
 		DOMREADY_HANDLER = _null;
 	}
 	
@@ -724,7 +725,7 @@ define('minified', function() {
 				state = newState;
 				values = newValues;
    				delay(function() {
-   					flexiEach(deferred, callArg);
+   					flexiEach(deferred, call);
    				});
 			}
 		};
