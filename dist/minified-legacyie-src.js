@@ -1408,7 +1408,7 @@ define('minified', function() {
 				try {
 					var f = (state ? onFulfilled : onRejected);
 					if (isFunction(f)) {
-		   				function resolve(x) {
+		   				(function resolve(x) {
 		   					try {
 			   					var then, cbCalled = 0;
 				   				if ((isObject(x) || isFunction(x)) && isFunction(then = x['then'])) {
@@ -1424,8 +1424,7 @@ define('minified', function() {
 		   						if (!cbCalled++) 
 		   							promise2(_false, [e]);
 		   					}
-		   				}
-		   				resolve(call(f, undef, values));
+		   				})(call(f, undef, values));
 		   			}
 		   			else
 		   				promise2(state, values);
