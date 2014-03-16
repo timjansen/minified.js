@@ -8,6 +8,7 @@ Beta 5 (in progress)
 * added not()
 * added isEmpty()
 * added onClick()
+* added show() and hide()
 * added define() (or, rather, documented it)
 * added stop() for all promises, to propagate animation cancellation
 * removed delay() and defer(), as they just duplicated setTimeout()

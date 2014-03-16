@@ -2,50 +2,52 @@
 /*
    Auto-generated using docbuilder.js. Do not edit manually. 
 */
-	title: `_.keys() - Minified.js`,
+	title: `.show() - Minified.js`,
 	section:"reference",
 	externalCss: ["../css/reference.css"],
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-keys">_.keys()</a></h2>
-<div class="summary">Creates a Minified list containing all property names of the specified object.</div>
+<h2><a name="doc-show">.show()</a></h2>
+<div class="summary">Make the invisible element of the list visible.</div>
 
-<div class="availability">Util module only.</div><h4>Syntax</h4>
+<div class="availability">Web module only.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">_.keys(obj)</div>
+<div class="syntax">list.show()</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="keys_object" class=""><a name="keys_object"><var>object</var></a></dt>
-<dd class="">The object to gather keys from.</dd>
-<dt id="keys_RETURN" class="returnValue inSyntax0"><a name="keys_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">A Minified list containing the property names.
+<dt id="show_RETURN" class="returnValue inSyntax0"><a name="show_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0">the current list
 </dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Creates a <a href='list.html' class='func'>Minified list</a> containing all property names of the specified object. Only direct properies are
-included, not inherited ones. The order of the keys in the list is undefined and runtime-specific.</p><p></p></div>
+<div class="description"><p>Make the invisible element of the list visible. It does so by making sure that the '$display' style is not 'none'.</p><p>First it will clear the element's direct '$display' style to remove any 'none' value that may be there. This helps
+if the element was hidden using the style attribute, or if it has been hidden using <code><a href='hide.html' class='func'>hide()</a></code>. If the
+'$display' value is still null, it assumes that it has been hidden using a stylesheet and sets '$display' to 'none'.</p><p>Please note that because of the way <span class="var">show()</span> works, it will not work correctly if you have hidden a non-block
+element like a table row using a stylesheet. In that case you can not use <span class="var">show()</span> but should set '$display' manually using <code><a href='set.html' class='func'>set()</a></code>.</p><p>Other properties that may hide elements, like '$visibility' or '$opacity', are not modifed by <span class="var">show()</span>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Using <span class="var">keys()</span>:
-<pre>var obj = {a: 2, b: 52};
-var keys = _.keys(obj);  // keys contains ['a', 'b'] now
+<div class="example"><p>Showing elements:
+<pre>
+$('hidden').show();
 </pre>
 </p></div>
 </div>
 
 <h4>See also..</h4>
-<ul><li><code><a href='undefinedvalues.html' class='func'>_.values()</a></code> returns the values of an object as a list.</li>
+<ul><li><code><a href='hide.html' class='func'>hide()</a></code> hides elements.</li>
+<li><code><a href='set.html' class='func'>set()</a></code> is still required for some non-block elements.</li>
+<li><code><a href='animate.html' class='func'>animate()</a></code> can be used with a '$$fade' or '$$slide' if you want to animate the element.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-keys";
-var disqus_url = "http://minifiedjs.com/api/keys.html";
+var disqus_identifier = "api-show";
+var disqus_url = "http://minifiedjs.com/api/show.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";

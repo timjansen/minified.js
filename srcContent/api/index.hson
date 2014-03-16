@@ -104,6 +104,9 @@ Creates a function allows you to set all list members to one of two states or an
 <h3><a href="get.html">.get()</a></h3>
 <div class="summary">Retrieves properties, attributes and styles from the list's first element.</div>
 
+<h3><a href="hide.html">.hide()</a></h3>
+<div class="summary">Hides the elements of the list.</div>
+
 <h3><a href="ht.html">.ht()</a></h3>
 <div class="summary">Replaces the content of the list elements with the HTML generated using the given template.</div>
 
@@ -169,6 +172,9 @@ or have the given index.</div>
 <h3><a href="set.html">.set()</a></h3>
 <div class="summary">
 Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes.</div>
+
+<h3><a href="show.html">.show()</a></h3>
+<div class="summary">Make the invisible element of the list visible.</div>
 
 <h3><a href="sort.html">.sort()</a></h3>
 <div class="summary">Sorts the list elements and returns a new, sorted list.</div>
@@ -398,6 +404,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="hide.html" class="func">.hide()</a> <span class="tocMod">Web</span>
 </li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
@@ -419,6 +426,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="show.html" class="func">.show()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
 </li><li><a href="startswith.html" class="func">.startsWith()</a> <span class="tocMod">Util</span>
 </li><li><a href="sub.html" class="func">.sub()</a> <span class="tocMod">Web, Util</span>

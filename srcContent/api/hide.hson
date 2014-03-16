@@ -2,50 +2,48 @@
 /*
    Auto-generated using docbuilder.js. Do not edit manually. 
 */
-	title: `_.keys() - Minified.js`,
+	title: `.hide() - Minified.js`,
 	section:"reference",
 	externalCss: ["../css/reference.css"],
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-keys">_.keys()</a></h2>
-<div class="summary">Creates a Minified list containing all property names of the specified object.</div>
+<h2><a name="doc-hide">.hide()</a></h2>
+<div class="summary">Hides the elements of the list.</div>
 
-<div class="availability">Util module only.</div><h4>Syntax</h4>
+<div class="availability">Web module only.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">_.keys(obj)</div>
+<div class="syntax">list.hide()</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="keys_object" class=""><a name="keys_object"><var>object</var></a></dt>
-<dd class="">The object to gather keys from.</dd>
-<dt id="keys_RETURN" class="returnValue inSyntax0"><a name="keys_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">A Minified list containing the property names.
+<dt id="hide_RETURN" class="returnValue inSyntax0"><a name="hide_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0">the current list
 </dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Creates a <a href='list.html' class='func'>Minified list</a> containing all property names of the specified object. Only direct properies are
-included, not inherited ones. The order of the keys in the list is undefined and runtime-specific.</p><p></p></div>
+<div class="description"><p>Hides the elements of the list. It does so by writing 'none' into the '$display' style.</p><p>Other properties that may hide elements, like '$visibility' or '$opacity', are not modifed by <span class="var">show()</span>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Using <span class="var">keys()</span>:
-<pre>var obj = {a: 2, b: 52};
-var keys = _.keys(obj);  // keys contains ['a', 'b'] now
+<div class="example"><p>Showing elements:
+<pre>
+$('hidden').show();
 </pre>
 </p></div>
 </div>
 
 <h4>See also..</h4>
-<ul><li><code><a href='undefinedvalues.html' class='func'>_.values()</a></code> returns the values of an object as a list.</li>
+<ul><li><code><a href='show.html' class='func'>show()</a></code> makes elements visible.</li>
+<li><code><a href='animate.html' class='func'>animate()</a></code> can be used with a '$$fade' or '$$slide' if you want to animate the element.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-keys";
-var disqus_url = "http://minifiedjs.com/api/keys.html";
+var disqus_identifier = "api-hide";
+var disqus_url = "http://minifiedjs.com/api/hide.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";

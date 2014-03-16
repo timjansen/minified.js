@@ -2846,7 +2846,7 @@ define('minified', function() {
 
 		if (element) {
 			if (isString(spec)) {
-				var name = replace(replace(spec, /^%/, 'data-'), /^[$@]+/);
+				var match = /^([$@]*)(.*)/.exec(replace(replace(spec, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
 				var s;
 				if (spec == '$') 
 					s = element.className;
@@ -2868,13 +2868,13 @@ define('minified', function() {
 				// @condend fadeslide
 				// @condblock scrollxy
 				// @condend scrollxy
-				else if (/^\$[^$]/.test(spec)) {
-						s = _window['getComputedStyle'](element, _null)['getPropertyValue'](replace(name, /[A-Z]/g, function (match) {  return '-' + match.toLowerCase(); }));
+				else if (match[1] == '$') {
+						s = _window['getComputedStyle'](element, _null)['getPropertyValue'](replace(match[2], /[A-Z]/g, function (match2) {  return '-' + match2.toLowerCase(); }));
 				}
-				else if (/^[@%]/.test(spec))
-					s = element.getAttribute(name);
+				else if (match[1] == '@')
+					s = element.getAttribute(match[2]);
 				else
-					s = element[name];
+					s = element[match[2]];
 				return toNumber ? extractNumber(s) : s;
 			}
 			else {
@@ -3023,48 +3023,36 @@ define('minified', function() {
 	 * @return the list
 	 */
 	 'set': function (name, value) {
-		 function setAttr(obj, n, v) {
-			 if (v != _null)  
-				 obj.setAttribute(n, v);
-			 else
-				 obj.removeAttribute(n);
-		 }
 		 var self = this, v;
- 		 // @cond debug if (name == null) error("First argument must be set!");
 		 if (value !== undef) {
-			 // @cond debug if (!/string/i.test(typeof name)) error('If second argument is given, the first one must be a string specifying the property name");
+			 var match = /^([$@]*)(.*)/.exec(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
 
 			 // @condblock fadeslide
-			 if (name == '$$fade' || name == '$$slide') {
-				 self.set({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block'})
-				     .set((name == '$$fade')  ? (
-				    	  {'$opacity': v})
-				        :
-				        {'$height': /px/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
-				         '$overflow': 'hidden'}
- 					);
+			 if (name == '$$fade') {
+				 this['set']({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block', '$opacity': v});
+			 }
+			 else if (name == '$$slide') {
+				 this['set']({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', 
+						      '$display': 'block',
+						      '$height': /px/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
+				              '$overflow': 'hidden'});
 			 }
 			 else
 				// @condend fadeslide
-				 flexiEach(self, function(obj, c) {
-					 var nameClean = replace(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'data-'), /^[@$]+/);
-					 var className = obj['className'] || '';
-					 var newObj = /^\$/.test(name) ? obj.style : obj;
+				 flexiEach(self, function(obj, c) { //XX
 					 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
 					 if (name == '$') {
-						 if (newValue != _null) {
-							 flexiEach(newValue.split(/\s+/), function(clzz) {
-								 var cName = replace(clzz, /^[+-]/);
-								 var oldClassName = className;
-								 className = replace(className, RegExp('(^|\\s)' + cName + '(?=$|\\s)', 'i'));
-								 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
-									 className += ' ' + cName;
-							 });
+						 flexiEach(newValue && newValue.split(/\s+/), function(clzz) {
+							 var cName = replace(clzz, /^[+-]/);
+							 var oldClassName = obj['className'] || '';
+							 var className = replace(oldClassName, RegExp('(^|\\s)' + cName + '(?=$|\\s)'));
+							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
+								 className += ' ' + cName;
 							 obj['className'] = replace(className, /^\s+|\s+(?=\s|$)/g);
-						 }
+						 });
 					 }
    				 	 else if (name == '$$') {
-							setAttr(obj, 'style', newValue);
+							obj.setAttribute(style, newValue);
 					 }
    					// @condblock scrollxy
    				 	 else if (name == '$$scrollX') {
@@ -3074,17 +3062,86 @@ define('minified', function() {
 			 			 obj['scroll'](obj['scrollX'], newValue);
    				 	 }
 					 // @condend
-					 else if (!/^[@%]/.test(name))
-						 newObj[nameClean] = newValue;
+					 else if (match[1] == '@') {
+						 if (newValue != _null)  
+							 obj.setAttribute(match[2], newValue);
+						 else
+							 obj.removeAttribute(match[2]);
+					 }
+					 else if (match[1] == '$')
+						 obj['style'][match[2]] = newValue;
 					 else
-						 setAttr(newObj, nameClean, newValue);
+						 obj[match[2]] = newValue;
 				 });
 		 }
 		 else if (isString(name) || isFunction(name))
-			 self['set']('$', name);
+			 this['set']('$', name);
 		 else
 			 eachObj(name, function(n,v) { self['set'](n, v); });
 		 return self;
+	 },
+
+	/*$
+	 * @id show
+	 * @group ELEMENT
+	 * @requires set
+	 * @configurable default
+	 * @name .show()
+	 * @syntax list.show()
+ 	 * @module WEB
+	 * Make the invisible element of the list visible. It does so by making sure that the '$display' style is not 'none'. 
+	 * 
+	 * First it will clear the element's direct '$display' style to remove any 'none' value that may be there. This helps
+	 * if the element was hidden using the style attribute, or if it has been hidden using ##hide(). If the
+	 * '$display' value is still null, it assumes that it has been hidden using a stylesheet and sets '$display' to 'none'.
+	 * 
+	 * Please note that because of the way <var>show()</var> works, it will not work correctly if you have hidden a non-block
+	 * element like a table row using a stylesheet. In that case you can not use <var>show()</var> but should set '$display' manually using ##set().
+	 *  
+	 * Other properties that may hide elements, like '$visibility' or '$opacity', are not modifed by <var>show()</var>.
+	 *  
+	 * @example Showing elements:
+	 * <pre>
+	 * $('hidden').show();
+	 * </pre> 
+	 * 
+	 * @return the current list
+	 * 
+	 * @see ##hide() hides elements.
+	 * @see ##set() is still required for some non-block elements.
+	 * @see ##animate() can be used with a '$$fade' or '$$slide' if you want to animate the element.
+	 */
+	 'show': function() {
+		 return this['set']('$display', '')
+		 			['set']('$display', function(oldVal) {
+		 				return oldVal == 'none' ? 'block' : oldVal;
+		 			});
+	 },
+
+	/*$
+	 * @id hide
+	 * @group ELEMENT
+	 * @requires set
+	 * @configurable default
+	 * @name .hide()
+	 * @syntax list.hide()
+ 	 * @module WEB
+	 * Hides the elements of the list. It does so by writing 'none' into the '$display' style. 
+	 * 
+	 * Other properties that may hide elements, like '$visibility' or '$opacity', are not modifed by <var>show()</var>.
+	 *  
+	 * @example Showing elements:
+	 * <pre>
+	 * $('hidden').show();
+	 * </pre> 
+	 * 
+	 * @return the current list
+	 * 
+	 * @see ##show() makes elements visible.
+	 * @see ##animate() can be used with a '$$fade' or '$$slide' if you want to animate the element.
+		 */
+	 'hide': function() {
+		 return this['set']('$display', 'none');
 	 },
 
 	/*$
@@ -3116,7 +3173,7 @@ define('minified', function() {
 	 * </pre>
 	 * This results in:
 	 * <pre>
-	 * &lt;div id="comments">Here is some text.&lt;br/>&lt;Some additional text./div>
+	 * &lt;div id="comments">Here is some text.&lt;br/>Some additional text.&lt;/div>
 	 * </pre> 
 	 *
 	 * @example Using the following HTML: 
