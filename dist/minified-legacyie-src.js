@@ -1046,7 +1046,6 @@ define('minified', function() {
 
 
 
-
 	// @condblock ie8compatibility 
 	function off(handler) {
 	   	flexiEach(handler['M'], function(h) {
@@ -3240,7 +3239,7 @@ define('minified', function() {
 	 *  
 	 * @example Showing elements:
 	 * <pre>
-	 * $('hidden').show();
+	 * $('.hidden').show();
 	 * </pre> 
 	 * 
 	 * @return the current list
@@ -3253,7 +3252,7 @@ define('minified', function() {
 		 return this['set']('$display', '')
 		 			['set']('$display', function(oldVal) {
 		 				return oldVal == 'none' ? 'block' : oldVal;
-		 			});
+		 			}); 
 	 },
 
 	/*$
@@ -3268,16 +3267,16 @@ define('minified', function() {
 	 * 
 	 * Other properties that may hide elements, like '$visibility' or '$opacity', are not modifed by <var>show()</var>.
 	 *  
-	 * @example Showing elements:
+	 * @example Hiding elements:
 	 * <pre>
-	 * $('hidden').show();
+	 * $('.visible').hide();
 	 * </pre> 
 	 * 
 	 * @return the current list
 	 * 
 	 * @see ##show() makes elements visible.
 	 * @see ##animate() can be used with a '$$fade' or '$$slide' if you want to animate the element.
-		 */
+	 */
 	 'hide': function() {
 		 return this['set']('$display', 'none');
 	 },
@@ -3976,34 +3975,29 @@ define('minified', function() {
 	'animate': function (properties, durationMs, linearity) {
 		var prom = promise();
 		var self = this;
-		var dials = []; // contains a dial for each item
 		var loopStop;
-		var time = 0;
-		prom['stop0'] = function() { prom(_false); loopStop(); };
-		durationMs = durationMs || 500;
-
-		// find start values
-		flexiEach(self, function(li, index) {
+		var dials = collector(flexiEach, self, function(li, index) {
 			var elList = $(li), dialStartProps, dialEndProps = {};
 			eachObj(dialStartProps = elList.get(properties), function(name, start) {
 				var dest = properties[name];
 				dialEndProps[name] = isFunction(dest) ? dest(start, index, li) : 
 					name == '$$slide' ? properties[name]*getNaturalHeight(elList) + 'px' : dest;
 			});
-			dials.push(elList['dial'](dialStartProps, dialEndProps, linearity));
+			return elList['dial'](dialStartProps, dialEndProps, linearity);
 		});
+
+		prom['stop0'] = function() { prom(_false); loopStop(); };
+		durationMs = durationMs || 500;
 
 		// start animation
 		loopStop = $.loop(function(timePassedMs) {
 			if (timePassedMs >= durationMs || timePassedMs < 0) {
-				time = durationMs;
+				timePassedMs = durationMs;
 				loopStop();
 				prom(_true, [self]);
 			}
-			else
-				time = timePassedMs;
 
-			callList(dials, [time/durationMs]);
+			callList(dials, [timePassedMs/durationMs]);
 		});
 		return prom;		
 	},
@@ -4235,7 +4229,7 @@ define('minified', function() {
 					$(el['elements'][i])['values'](r); 
 				// @condend
 				// @cond !ie9compatibility $(el['elements'])['values'](r);
-			else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // short for checkbox, radio
+			else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // kbox|dio => short for checkbox, radio
 				r[n] = r[n] == _null ? v : collector(flexiEach, [r[n], v], nonOp);
 			}
 		});

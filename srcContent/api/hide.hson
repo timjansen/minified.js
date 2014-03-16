@@ -27,9 +27,9 @@
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Showing elements:
+<div class="example"><p>Hiding elements:
 <pre>
-$('hidden').show();
+$('.visible').hide();
 </pre>
 </p></div>
 </div>

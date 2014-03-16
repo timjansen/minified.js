@@ -32,7 +32,7 @@ element like a table row using a stylesheet. In that case you can not use <span 
 <h4>Example</h4>
 <div class="example"><p>Showing elements:
 <pre>
-$('hidden').show();
+$('.hidden').show();
 </pre>
 </p></div>
 </div>
