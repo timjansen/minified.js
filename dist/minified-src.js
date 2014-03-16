@@ -1023,7 +1023,7 @@ define('minified', function() {
 		return dollarRaw(selector)[0];
 	}
 
-	function clone (listOrNode) {
+	function clone(listOrNode) {
 		return collector(flexiEach, listOrNode, function(e) {
 			var c;
 		     if (isString(e))
@@ -4179,15 +4179,19 @@ define('minified', function() {
  	 *             <var>true</var> will keep the event alive.</dd>
  	 *             </dl>
 	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>.
-	 *                   'this' will be set to the target element that caused the event (the same as <var>event.target</var>).
-	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the
-	 *             <var>customFunc</var> is called without arguments.
+	 *                   'this' will be a ##list#Minified list## containing the target element as only item (same element as <var>event.target</var>).
+	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the function is
+	 *             called as event handler with the event object as argument.
 	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
 	 *                element that matches this selector.
 	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
 	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 * @see ##off() allows you to unregister an event handler.
+	 * @see ##onClick() as a shortcut for 'click' events.
+	 * @see ##onOver() to simplify mouseover/mouseout events.
+	 * @see ##onFocus() as convenient way to register for focus events.
+	 * @see ##onChange() to get notified when an input's content changes.
 	 */
 	'on': on,
 
@@ -4198,7 +4202,7 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .onOver()
 	 * @syntax list.onOver(handler)
-	 * @syntax list.onOver(subSelect, handler)
+	 * @syntax list.onOver(selector, handler)
 	 * @module WEB
 	 * Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.
 	 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
@@ -4248,7 +4252,7 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .onFocus()
 	 * @syntax list.onFocus(handler)
-	 * @syntax list.onFocus(subSelect, handler)
+	 * @syntax list.onFocus(selector, handler)
 	 * @module WEB
 	 * Registers a function to be called when a list element either gets the focus or the focus is removed (blur).
 	 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
@@ -4285,7 +4289,7 @@ define('minified', function() {
 	 * @configurable default
 	 * @name .onChange()
 	 * @syntax list.onChange(handler)
-	 * @syntax list.onChange(subSelect, handler)
+	 * @syntax list.onChange(selector, handler)
 	 * @module WEB
 	 * Registers a handler to be called whenever content of the list's input fields changes. The handler is
 	 * called in realtime and does not wait for the focus to change. Text fields as well
@@ -4325,6 +4329,59 @@ define('minified', function() {
 		else
 			return this['onChange'](_null, subSelect); 
 
+	},
+
+	/*$
+	 * @id onclick
+	 * @group EVENTS
+	 * @requires on 
+	 * @configurable default
+	 * @name .onClick()
+	 * @syntax list.onClick(handler)
+	 * @syntax list.onClick(customFunc, args)
+	 * @syntax list.onClick(selector, handler)
+	 * @syntax list.onClick(selector, customFunc, args)
+	 * @module WEB
+	 * Registers a function to be called for 'click' events. This is only a convenience method and identical to calling
+	 * ##on() with 'click' as event type.
+	 * You can specify a sub-selector to register only for specific children of the list elements, and you can
+	 * specify arguments to pass to the handler instead of the default event object.
+	 * 
+	 * @example Says hello if you click:
+	 * <pre>
+	 * $('#sayHello').onClick(function() { window.alert('Hello!'); });
+	 * </pre>
+	 * 
+	 * @example Using arguments:
+	 * <pre>
+	 * function saySomething(what) { window.alert(what); }
+	 * 
+	 * $('#sayHello').onClick(saySomething, ['Hello!']);
+	 * $('#sayBye').onClick(saySomething, ['Goodbye!']);
+	 * </pre>
+	 * 
+ 	 * @example Creates an event handler that toggles the color of the text on click:
+	 * <pre>
+	 * $('#changeColor').onClick($('#colorChanger').toggle({$color:'#000'}, {$color:'#f00'}, 100));
+	 * </pre>
+	 * @param selector optional a selector string for ##dollar#$()## to register the event only on those children of the list elements that
+	 *                match the selector. 
+	 *                Supports all valid parameters for <var>$()</var> except functions.            
+	 * @param eventHandler the callback <code>function(event, index)</code> to invoke when the event has been triggered:
+	 * 		  <dl>
+ 	 *             <dt>event</dt><dd>The original DOM event object.</dd>
+ 	 *             <dt>index</dt><dd>The index of the target object in the ##list#Minified list## .</dd>
+ 	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element as only item (same element as <var>event.target</var>).</dd>
+ 	 *        </dl>
+	 * @param customFunc a function to be called instead of a regular event handler with the arguments given in <var>args</var>.
+	 *                   'this' will be a ##list#Minified list## containing the target element as only item (same element as <var>event.target</var>).
+	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the function is
+	 *             called as event handler with the event object as argument.
+	 * @return the list	 
+	 * @see ##on() provides low-level event registration.
+	 */
+	'onClick': function(subSelect, handler, args) {
+	     return isFunction(subSelect) ? this['on']('click', subSelect, handler) : this['on'](subSelect, 'click', handler, args);
 	},
 
 	/*$

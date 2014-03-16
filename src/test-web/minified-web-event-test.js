@@ -420,4 +420,98 @@ describe('minified-web-event-test.js', function() {
 	});
 	
 
+	describe('.onClick()', function() {
+		it('works without selectors', function() {
+			var p = $('#container2').fill();
+			var handler;
+			var callNum = 0, lastIndex = 0;
+			var expect = null, error = null;
+			var s, s2;
+			
+			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
+			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})[0]);
+			$('div', p).onClick(handler = function(e, index) {
+				callNum++;
+				lastIndex = index;
+				if (this[0] != expect || this.length != 1)
+					error = 'Did not get called on expected element';
+			});
+
+			check(handler.M != null);
+			check(handler.M.length, 2, 'Got handler');
+			
+			expect = s;
+			triggerEvent(s, createClick());
+			check(callNum, 1, "callNum");
+			check(lastIndex, 0, "index");
+			check(error, null);
+
+			expect = s2;
+			triggerEvent(s2, createClick());
+			check(callNum, 2, "callNum");
+			check(lastIndex, 1, "index");
+			check(error, null);
+		});
+				
+		it('works with sub-selectors', function() {
+			var p = $('#container2').fill();
+			var handler;
+			var callNum = 0, lastIndex = 0;
+			var expect = null, error = null;
+			var s, s2;
+			
+			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
+			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})[0]);
+			$(p).onClick('div', handler = function(e, index) {
+				callNum++;
+				lastIndex = index;
+				if (this[0] != expect || this.length != 1)
+					error = 'Did not get called on expected event';
+			});
+
+			check(handler.M != null);
+			check(handler.M.length, 2, 'Got handler');
+			
+			expect = s;
+			triggerEvent(s, createClick());
+			check(callNum, 1, "callNum");
+			check(lastIndex, 0, "index");
+			check(error, null);
+
+			expect = s2;
+			triggerEvent(s2, createClick());
+			check(callNum, 2, "callNum");
+			check(lastIndex, 0, "index");
+			check(error, null);
+		});
+
+		it('passes arguments and this correctly', function() {
+			var p = $('#container2');
+			var callNum = 0;
+			var error = null;
+			var s;
+			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
+			$('div', p).onClick(function(a, b, c) {
+				callNum++;
+				if (this[0] != s)
+					error = 'arg only: wrong this!';
+				if (a != 1 || b != 2 || c != 3)
+					error = 'arg only: arguments not passed';
+			}, [1, 2, 3]);
+			$('div', p).onClick(function(x) {
+				callNum++;
+				if (this[0] != s)
+					error = 'this and arg: wrong this!';
+				if (x != "bar")
+					error = 'this and arg: arguments not passed';
+			}, ["bar"]);
+			
+			triggerEvent(s, createClick());
+			check(error, null);
+			check(callNum, 2, "callNum");
+		});
+		
+	});
+
+
 });

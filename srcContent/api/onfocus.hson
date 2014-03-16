@@ -13,7 +13,7 @@
 <div class="availability">Web module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.onFocus(handler)</div>
-<div class="syntax">list.onFocus(subSelect, handler)</div>
+<div class="syntax">list.onFocus(selector, handler)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -106,6 +106,7 @@ var disqus_url = "http://minifiedjs.com/api/onfocus.html";
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onclick.html" class="func">.onClick()</a> <span class="tocMod">Web</span>
 </li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>

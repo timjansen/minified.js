@@ -6,7 +6,8 @@ commentId: "docs-beta4",
 main: `<div>
   <h1>Minified.js Beta 5: Features and Changes</h1>
 
-<p>The most surprising thing about beta 5 was that it was possible to get even more features into Minified's self-imposed 4kB/8Kb limit. Beside those new features, it
+<p>The most surprising thing about beta 5 was that it was possible to get even more features into Minified's self-imposed 4kB/8Kb limit. Also I am getting closer
+to what's possible, there still seems to be room for some extras. Beside those new features, it
 has also vastly improved implementations for Promises and number formatting.</p>
 
 <h2 style="color: red">Backward-incompatible Changes</h2>
@@ -38,6 +39,10 @@ var divAfterHr = $('hr').next('div', -1);
 // selects all &lt;table> elements that do not have the class 'simple'
 var ts = $('table').not('.simple');
 </pre>
+
+<h2>New: isClick() as convenient alternative to .on('click', ...)</h2>
+<p><span class="var"><a href="/api/onclick.html">onClick()</a></span> is a very thin helper function that does essentially the same as 
+<code>.on('click', ...)</code>. </p>
 
 <h2>New: isEmpty() checks for empty lists or strings</h2>
 <p><span class="var"><a href="/api/isempty.html">isEmpty()</a></span> is a simple helper function that can check whether a list or string is either null or empty.

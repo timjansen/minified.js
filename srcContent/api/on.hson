@@ -44,10 +44,10 @@ Then, a return value <span class="var">false</span> will stop all further proces
 </dl></dd>
 <dt id="on_customFunc" class=""><a name="on_customFunc"><var>customFunc</var></a></dt>
 <dd class="">a function to be called instead of a regular event handler with the arguments given in <span class="var">args</span>.
-'this' will be set to the target element that caused the event (the same as <span class="var">event.target</span>).</dd>
+'this' will be a <a href='list.html' class='func'>Minified list</a> containing the target element as only item (same element as <span class="var">event.target</span>).</dd>
 <dt id="on_args" class=""><a name="on_args"><var>args (optional)</var></a></dt>
-<dd class="">an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the
-<span class="var">customFunc</span> is called without arguments.</dd>
+<dd class="">an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the function is
+called as event handler with the event object as argument.</dd>
 <dt id="on_bubbleSelector" class=""><a name="on_bubbleSelector"><var>bubbleSelector (optional)</var></a></dt>
 <dd class="">a selector string for <a href='dollar.html' class='func'>$()</a> to receive only events that bubbled up from an
 element that matches this selector.
@@ -124,6 +124,10 @@ table rows that have been added <strong>after you registered for the events</str
 
 <h4>See also..</h4>
 <ul><li><code><a href='off.html' class='func'>off()</a></code> allows you to unregister an event handler.</li>
+<li><code><a href='onclick.html' class='func'>onClick()</a></code> as a shortcut for 'click' events.</li>
+<li><code><a href='onover.html' class='func'>onOver()</a></code> to simplify mouseover/mouseout events.</li>
+<li><code><a href='onfocus.html' class='func'>onFocus()</a></code> as convenient way to register for focus events.</li>
+<li><code><a href='onchange.html' class='func'>onChange()</a></code> to get notified when an input's content changes.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
@@ -182,6 +186,7 @@ var disqus_url = "http://minifiedjs.com/api/on.html";
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onclick.html" class="func">.onClick()</a> <span class="tocMod">Web</span>
 </li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>

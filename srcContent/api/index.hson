@@ -135,6 +135,9 @@ or have the given index.</div>
 <h3><a href="onchange.html">.onChange()</a></h3>
 <div class="summary">Registers a handler to be called whenever content of the list's input fields changes.</div>
 
+<h3><a href="onclick.html">.onClick()</a></h3>
+<div class="summary">Registers a function to be called for 'click' events.</div>
+
 <h3><a href="onfocus.html">.onFocus()</a></h3>
 <div class="summary">Registers a function to be called when a list element either gets the focus or the focus is removed (blur).</div>
 
@@ -405,6 +408,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onclick.html" class="func">.onClick()</a> <span class="tocMod">Web</span>
 </li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
