@@ -8,6 +8,7 @@
 		#container, #container2, #cloneTest { display: none; }
 		
 		.x { margin-top: 2px; }	/* required for testing computed css in minified-web-getset-test.js */
+		.hidden { display: none; } /* required for testing show() */
 	</style> 
 	<link rel="stylesheet" href="mocha.css" />
 

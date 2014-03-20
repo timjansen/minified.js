@@ -196,6 +196,30 @@ describe('minified-web-getset-test.js', function() {
 
 
 
+	describe('.hide()', function() {
+		it('hides', function() {
+			$('#container2').add(EE('hr'));
+			$('#container2 hr').hide();
+			check($('#container2 hr').get('$display'), 'none');
+		});
+	});
+
+	describe('.show()', function() {
+		it('removes display==none from style', function() {
+			$('#container2').add(EE('span', {$display: 'none'}, 'testtest'));
+			$('#container2 span').show();
+			check($('#container2 span').get('$display'), 'inline');
+		});
+
+		it('overwrites stylesheets with block', function() {
+			$('#container2').add(EE('i', {$: 'hidden'}, 'xxxxx'));
+			$('#container2 i').show();
+			check($('#container2 i').get('$display'), 'block');
+		});
+	});
+
+
+
 /*
 describe('.fill()', function() {
 	it('', function() {
