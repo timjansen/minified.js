@@ -3182,7 +3182,7 @@ define('minified', function() {
 							obj['style']['cssText'] = newValue;
 						else
 						// @condend
-							obj.setAttribute(style, newValue);
+							obj.setAttribute('style', newValue);
 					 }
    					// @condblock scrollxy
    				 	 else if (name == '$$scrollX') {

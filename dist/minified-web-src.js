@@ -1390,7 +1390,7 @@ define('minified', function() {
 						 });
 					 }
    				 	 else if (name == '$$') {
-							obj.setAttribute(style, newValue);
+							obj.setAttribute('style', newValue);
 					 }
    					// @condblock scrollxy
    				 	 else if (name == '$$scrollX') {

@@ -63,6 +63,14 @@ describe('minified-web-element-test.js', function() {
 			check(t4.data, 'user');
 			check(t4.parentNode, s5, true);
 		});
+		
+		it('styles up items', function() {
+			var a = EE('div', {$$: 'display: none;', $: 'xxx', $width: '20px'});
+			$('#container2').add(a); // realize so we can check styles 
+			check(a.get('$width', true), 20);
+			check(a.get('$display'), 'none');
+			check(a.is('.xxx'));
+		});
 
 	});
 	

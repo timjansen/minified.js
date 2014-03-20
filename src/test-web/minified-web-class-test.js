@@ -93,8 +93,13 @@ describe('minified-web-class-test.js', function() {
 			check(s2.className, 'a b c a-b b-c a-b-c');
 		});
 		
+		it('sets style', function() {
+			var e = EE('div', {$$: 'width: 55px;'});
+			check(/width.*55.*px/.test(e.get('$$')));
+		});
+		
 		it('just works', function() {
-			var s1 = EE('div', {'className': 'a b c x-y'})[0];
+			var s1 = EE('div', {'$': 'a b c x-y'})[0];
 			var s2 = EE('div')[0];
 			var m = $([s1, s2]);
 			m.set('$', 'a b c x-y');
