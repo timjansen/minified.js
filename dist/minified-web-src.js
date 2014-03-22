@@ -155,7 +155,7 @@ define('minified', function() {
 	 */
 	var MINIFIED_MAGIC_NODEID = 'Mid';
 
-	var nodeId = 1;  // used as node id to identify nodes
+	var idSequence = 1;  // used as node id to identify nodes, and as general id for other maps
 
 
 	/*$
@@ -169,7 +169,8 @@ define('minified', function() {
 	 * @dependency
 	 */
 	 /** @type {!Array.<{c:!function(), t:!number, s:!function()}>} */
-	var ANIMATION_HANDLERS = []; // global list of {c: <callback function>, t: <timestamp>, s:<stop function>} currently active
+	var ANIMATION_HANDLERS = {}; // global map of id->{c: <callback function>, t: <timestamp>, s:<stop function>} currently active
+	var ANIMATION_HANDLER_COUNT = 0; // number of active handlers
 
 	/** @type {!function()} */
 	var REQUEST_ANIMATION_FRAME = _window['requestAnimationFrame'] || function(callback) {
@@ -288,6 +289,11 @@ define('minified', function() {
 		return function(obj) {return  name ? re.test(obj[prop]) : _true;};
 	}
 
+	// used by IE impl of on() only
+	function push(obj, prop, value) {
+		(obj[prop] = (obj[prop] || [])).push(value);
+	}
+	// used by IE impl of on()/off() only
 	function removeFromArray(array, value) {
 		for (var i = 0; array && i < array.length; i++) 
 			if (array[i] === value) 
@@ -303,7 +309,7 @@ define('minified', function() {
 
 	// retrieves the node id of the element, create one if needed.
 	function getNodeId(el) {
-		return (el[MINIFIED_MAGIC_NODEID] = (el[MINIFIED_MAGIC_NODEID] || ++nodeId));
+		return (el[MINIFIED_MAGIC_NODEID] = (el[MINIFIED_MAGIC_NODEID] || ++idSequence));
 	}
 
 	// collect variant that filters out duplicate nodes from the given list, returns a new array
@@ -367,10 +373,13 @@ define('minified', function() {
 							return (name == eventName) && !miniHandler(eventObj, element);
 						};
 
-						registeredOn['M'] = collector(flexiEach, [registeredOn['M'], trigger], nonOp);
+						var triggerId = idSequence++;
+
+						registeredOn['M'] = registeredOn['M'] || {};
+						registeredOn['M'][triggerId] = trigger;
 						handler['M'] = collector(flexiEach, [handler['M'], function () {
 							registeredOn.removeEventListener(name, miniHandler, _false);
-							removeFromArray(registeredOn['M'], trigger);
+							delete registeredOn['M'][triggerId];
 						}], nonOp);
 						registeredOn.addEventListener(name, miniHandler, _false);
 					});
@@ -2818,7 +2827,7 @@ define('minified', function() {
 			var stopBubble, el = element;
 
 			while(el && !stopBubble) {
-			flexiEach(el['M'], function(f) {
+			eachObj(el['M'], function(id, f) {
 			stopBubble = stopBubble || f(eventName, eventObj, element); 
 			});
 			el = el['parentNode'];
@@ -3101,7 +3110,7 @@ define('minified', function() {
 	*
 	* @param paintCallback a callback <code>function(timestamp, stopFunc)</code> that will be invoked repeatedly to prepare a frame. Parameters given to callback:
 	* <dl>
-	*            <dt>timestamp</dt><dd>The number of miliseconds since the animation's start.</dd>
+	*            <dt>timestamp</dt><dd>The number of miliseconds since the animation's start (possibly as high-precision double, if the browser supports this).</dd>
 	*            <dt>stop</dt><dd>Call this <code>function()</code> to stop the currently running animation.</dd>
 	* </dl>
 	* The callback's return value will be ignored.
@@ -3109,18 +3118,26 @@ define('minified', function() {
 	* 
 	* @see ##animate() for simple, property-based animations.
 	*/
-	'loop': function(paintCallback) { 
-		var entry = {c: paintCallback, t: nowAsTime(), s: function() {
-			removeFromArray(ANIMATION_HANDLERS, entry);
-			return nowAsTime() - entry.t;
+	'loop': function(paintCallback) {
+		var id = idSequence++;
+		var entry = ANIMATION_HANDLERS[id] = {c: paintCallback,
+				//   t: last timestamp 
+				//   f: first timestamp
+				 	 s: function() {
+			delete ANIMATION_HANDLERS[id];
+			ANIMATION_HANDLER_COUNT--;
+			return entry.t || 0;
 		}};
 
-		if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
-			(function raFunc() {
-				if (flexiEach(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, nowAsTime() - a.t), a.s);})[0]) // check whether empty after run, in case the callback invoked stop func
+		if (!(ANIMATION_HANDLER_COUNT++))
+			(function raFunc(ts) {
+				eachObj(ANIMATION_HANDLERS, function(id, a) {
+					a.f = a.f || ts; 
+					a.c(ts - a.f, a.s);
+				});
+				if (ANIMATION_HANDLER_COUNT)
 					REQUEST_ANIMATION_FRAME(raFunc); 
 			})(); 
-		} 
 		return entry.s; 
 	},
 
