@@ -90,9 +90,8 @@
 		
 		var DURMS = 4000;
 		function startLoop() {
-			$.loop(function(ts, stop) {
-				if (ts > DURMS)
-					return stop();
+			$.loop(function(t, stop) {
+				var ts = Math.min(t, DURMS);
 				var a = 2 * Math.PI * ts / 1000; // 1000 ms per rotation
 				var radius = 120 * Math.sin(Math.PI * ts / DURMS);
 				$('.looper').each(function(div, index) {
@@ -100,6 +99,8 @@
 					div.style.top = Math.round(125 + Math.sin(angle) * radius) + 'px';
 					div.style.left = Math.round(125 + Math.cos(angle) * radius) + 'px';
 				});
+				if (ts >= DURMS)
+					stop();
 			});
 		}
 		startLoop();

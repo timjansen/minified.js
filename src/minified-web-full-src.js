@@ -467,18 +467,18 @@ define('minified', function() {
 							return !stop;
 						};
 						
-						var trigger = function(eventName, eventObj, element) {
-							return (name == eventName) && !miniHandler(eventObj, element);
-						};
-						
 						var triggerId = idSequence++;
 						
 						registeredOn['M'] = registeredOn['M'] || {};
-						registeredOn['M'][triggerId] = trigger;
-						handler['M'] = collector(flexiEach, [handler['M'], function () {
+						registeredOn['M'][triggerId] = function(eventName, eventObj, element) { // this function will be called by trigger()
+							return (name == eventName) && !miniHandler(eventObj, element);
+						};
+						
+						handler['M'] = collector(flexiEach, [handler['M'], function () { // this function will be called by off()
 							registeredOn.removeEventListener(name, miniHandler, _false);
 							delete registeredOn['M'][triggerId];
 						}], nonOp);
+						
 						registeredOn.addEventListener(name, miniHandler, _false);
 					});
 				});
@@ -508,11 +508,6 @@ define('minified', function() {
 		handler['M'] = _null;
 	}
 	// @condend !ie8compatibility 
-
-	
-	function nowAsTime() {
-		return +new Date();
-	}
 
 	// for remove & window.unload
 	function detachHandlerList(dummy, handlerList) {
@@ -690,6 +685,7 @@ define('minified', function() {
 	
 	
 	// Special private promise impl only for web module. A public one  is in minified-dbl, but only available if util is availble.
+	// @condblock !promise
 	function promise() {
 		var state;           // undefined/null = pending, true = fulfilled, false = rejected
 		var values = [];     // an array of values as arguments for the then() handlers
@@ -732,7 +728,7 @@ define('minified', function() {
 			if (state != _null)
 				delay(callCallbacks);
 			else
-				deferred.push(callCallbacks);    		
+				deferred.push(callCallbacks);
 			return promise2;
 		};
 
@@ -743,8 +739,9 @@ define('minified', function() {
 		 * See util module for documentation.
 		 */  
 	 	set['error'] = function(func) { return then(0, func); };
-		return set;
+	 	return set;
 	}
+	// @condend !promise
 	
 	
  	/*$
@@ -2281,7 +2278,7 @@ define('minified', function() {
 	/*$
 	 * @id animate
 	 * @group ANIMATION
-	 * @requires loop dollar dial get promise
+	 * @requires loop dollar dial get
 	 * @configurable default
 	 * @name .animate()
 	 * @syntax list.animate(properties)
@@ -2414,7 +2411,7 @@ define('minified', function() {
 	 * @see ##$.loop() allows you to write more complex animations.
 	 */	
 	'animate': function (properties, duration, linearity) {
-		var prom = promise();
+		var prom = promise(); 
 		var self = this;
 		var dials = collector(flexiEach, this, function(li, index) {
 			var elList = $(li), dialStartProps, dialEndProps = {};
@@ -2425,6 +2422,7 @@ define('minified', function() {
 			});
 			return elList['dial'](dialStartProps, dialEndProps, linearity);
 		});
+
 		var durationMs = duration || 500;
 		var loopStop;
 
@@ -2432,7 +2430,7 @@ define('minified', function() {
 		prom['stop'] = function() { prom(_false); return loopStop(); };
 		// @condend
 		// @cond promise prom['stop0'] = function() { prom(_false); return loopStop(); };
-		
+
 		// start animation
 		loopStop = $.loop(function(timePassedMs) {
 			if (timePassedMs >= durationMs || timePassedMs < 0) {
@@ -2616,9 +2614,9 @@ define('minified', function() {
 		var promise;
 		var stateDesc;
 
-		if (stateDesc2)
-			return self['set'](stateDesc1) && 
-			    function(newState) {
+		if (stateDesc2) {
+			self['set'](stateDesc1);
+			return function(newState) {
 					if (newState !== state) {
 						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
 
@@ -2628,6 +2626,7 @@ define('minified', function() {
 							self['set'](stateDesc);
 					}
 				};
+		}
 		else
 			return self['toggle'](replace(stateDesc1, /\b(?=\w)/g, '-'), replace(stateDesc1, /\b(?=\w)/g, '+'));
 	},
@@ -3112,7 +3111,7 @@ define('minified', function() {
 	/*$
 	* @id request
 	* @group REQUEST
-	* @requires promise
+	* @requires 
 	* @configurable default
 	* @name $.request()
 	* @syntax $.request(method, url)
@@ -3332,7 +3331,6 @@ define('minified', function() {
 				)
 			return eval('(' + t + ')');
 		// fall through if not valid
-		// @cond debug error('Can not parse JSON string. Aborting for security reasons.');
 	},
 	// @condend
 	// @cond !ie7compatibility 'parseJSON': JSON.parse,
@@ -3975,13 +3973,5 @@ define('minified', function() {
 		
 
 ///#/snippet  webDocs
-
-///#remove
-	 // This is used only to provide a promise block if web is used stand-alone.
-	 /*$
-	  * @id promise
-	  */
-		
-///#/remove
-		
+	
 

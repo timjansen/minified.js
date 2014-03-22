@@ -20,7 +20,7 @@
 <dt id="loop_paintCallback" class=""><a name="loop_paintCallback"><var>paintCallback</var></a></dt>
 <dd class="">a callback <code>function(timestamp, stopFunc)</code> that will be invoked repeatedly to prepare a frame. Parameters given to callback:
 <dl>
-<dt>timestamp</dt><dd>The number of miliseconds since the animation's start.</dd>
+<dt>timestamp</dt><dd>The number of miliseconds since the animation's start (possibly as high-precision double, if the browser supports this).</dd>
 <dt>stop</dt><dd>Call this <code>function()</code> to stop the currently running animation.</dd>
 </dl>
 The callback's return value will be ignored.</dd>

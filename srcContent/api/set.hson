@@ -42,7 +42,8 @@ Functions are not supported by '$'.</dd>
 value. See above for CSS syntax.
 Instead of a string, you can also specify a <code>function(oldValue, index, obj)</code> to modify the existing classes.</dd>
 <dt id="set_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="set_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">the list</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2">the list
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -63,14 +64,17 @@ be set.</p><p>The <span class="var">name</span> parameter defines what kind of d
             space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
             The name '$' can also be omitted if <span class="var">set</span> is called with class names as only argument.</td></tr>
 <tr><td>$$</td><td>$$</td><td>Style</td><td>Sets the element's style attribute in a browser-independent way.</td></tr>
+<tr><td>$$show</td><td>$$show</td><td>Show/Hide</td><td>If <span class="var">true</span> or a number not 0, it will make sure the element is visible by
+        making sure '$display' is not 'none' and by setting '$visibility' to 'visible'. Please see <code><a href='show.html' class='func'>show()</a></code> for details. If the value is <span class="var">false</span> or 0, it
+        will be hidden by setting '$display' to 'none'.</td></tr>
 <tr><td>$$fade</td><td>$$fade</td><td>Fade Effect</td><td>The name '$$fade' sets the opacity of the element in a browser-independent way. The value must be a number
-             between 0 and 1. '$$fade' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0,
+             between 0 and 1. '$$fade' will also automatically control the element's 'visibility' style. If the value is 0,
             the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to
-            'visible' and the display style to 'block'. '$$fade' only works with block elements.</td></tr>
+            'visible'. '$$fade' only works with block elements.</td></tr>
 <tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>The name '$$slide' allows a vertical slide-out or slide-in effect. The value must be a number
              between 0 and 1 and will be used to set the element's '$height'. '$$slide' will also automatically control the element's 'visibility'
-             and 'display' styles. If the value is 0, the element's visibility will automatically be set to 'hidden'. If the value is larger,
-             the visibility will be set to 'visible' and the display style to 'block'. '$$slide' only works with block elements and will not set the
+             style. If the value is 0, the element's visibility will automatically be set to 'hidden'. If the value is larger,
+             the visibility will be set to 'visible'. '$$slide' only works with block elements and will not set the
              element's margin or padding. If you need a margin or padding, you should wrap the elements in a simple &lt;div>.</td></tr>
 <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
             '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document.
@@ -164,6 +168,12 @@ $('h2').set('innerHTML', function(oldValue, index) {
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='get.html' class='func'>get()</a></code> retrieves values using the same property syntax.</li>
+<li><code><a href='animate.html' class='func'>animate()</a></code> animates values using the same property syntax.</li>
+<li><code><a href='toggle.html' class='func'>toggle()</a></code> can toggle between two sets of values.</li>
+<li><code><a href='dial.html' class='func'>dial()</a></code> allows smooth transitions between two sets of values.</li>
+</ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">

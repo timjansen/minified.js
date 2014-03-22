@@ -39,7 +39,8 @@ into a number and return 21. If the returned value is not parsable as a number, 
 <dt id="get_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="get_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">if <span class="var">get()</span> was called with a single name, it returns the corresponding value.
 If a list or map was given, <span class="var">get()</span> returns a new object map with the names as keys and the values as values.
-It returns <span class="var">undefined</span> if the list is empty.</dd>
+It returns <span class="var">undefined</span> if the list is empty.
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -58,11 +59,12 @@ get a single value if you specify only one name, or get an object map when you s
 <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <span class="var">$</span> returns the CSS classes of the element and is identical with "className".</td></tr>
 <tr><td>$$</td><td>$$</td><td>Style</td><td>Reads the element's style attribute in a browser-independent way. On legacy IEs it uses
             <span class="var">style.cssText</span>, and on everything else just the "style" attribute.</td></tr>
+<tr><td>$$show</td><td>$$show</td><td>Show/Hide</td><td>Returns 1 if the element is visible and 0 if it is not visible. An element counts as
+visible if '$visibility' is not 'hidden' and '$display' is not 'none'. Other properties will be ignored, even if they can also be used to hide the element.</td></tr>
 <tr><td>$$fade</td><td>$$fade</td><td>Fade Effect</td><td>The name '$$fade' returns the opacity of the element as a value between 0 and 1.
 			   '$$fade' will also automatically evaluate the element's 'visibility' and 'display' styles to find out whether the element is actually visible.</td></tr>
-<tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>'$$slide' returns the height of the element in pixels with a 'px' suffix and is mostly
-       equivalent to '$height'. It does, however, also evaluate the element's 'visibility' and 'display' styles to find out whether the element is
-       actually visible. If not, it returns 0.</td></tr>
+<tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>'$$slide' returns the height of the element in pixels with a 'px' suffix and is equivalent to '$height'.
+Please note that you can pass that 'px' value to '$$slide' in <code><a href='set.html' class='func'>set()</a></code>, which will then set the according '$height'.</td></tr>
 <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
             '$$scrollY' can be used on <code>$(window)</code> to retrieve the scroll coordinates of the document.
             The coordinates are specified in pixels without a 'px' unit postfix.</td></tr>

@@ -23,10 +23,11 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Make the invisible element of the list visible. It does so by making sure that the '$display' style is not 'none'.</p><p>First it will clear the element's direct '$display' style to remove any 'none' value that may be there. This helps
+<div class="description"><p>Make the invisible element of the list visible. It does so by setting '$visibility' to 'visible' and making sure that
+the '$display' style is not 'none'. Calling <span class="var">show()</span> is the same as using <code><a href='set.html' class='func'>set()</a></code> to set '$$show' to 1.</p><p>First it will clear the element's direct '$display' style to remove any 'none' value that may be there. This helps
 if the element was hidden using the style attribute, or if it has been hidden using <code><a href='hide.html' class='func'>hide()</a></code>. If the
 '$display' value is still null, it assumes that it has been hidden using a stylesheet and sets '$display' to 'none'.</p><p>Please note that because of the way <span class="var">show()</span> works, it will not work correctly if you have hidden a non-block
-element like a table row using a stylesheet. In that case you can not use <span class="var">show()</span> but should set '$display' manually using <code><a href='set.html' class='func'>set()</a></code>.</p><p>Other properties that may hide elements, like '$visibility' or '$opacity', are not modifed by <span class="var">show()</span>.</p><p></p></div>
+element like a table row using a stylesheet. In that case you can not use <span class="var">show()</span> but should set '$display' manually using <code><a href='set.html' class='func'>set()</a></code>.</p><p>Other properties that may hide elements, like '$opacity', are not modifed by <span class="var">show()</span>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -39,7 +40,7 @@ $('.hidden').show();
 
 <h4>See also..</h4>
 <ul><li><code><a href='hide.html' class='func'>hide()</a></code> hides elements.</li>
-<li><code><a href='set.html' class='func'>set()</a></code> is still required for some non-block elements.</li>
+<li><code><a href='set.html' class='func'>set()</a></code> can do the same by setting '$$show' to 1, and is also still required for some non-block elements.</li>
 <li><code><a href='animate.html' class='func'>animate()</a></code> can be used with a '$$fade' or '$$slide' if you want to animate the element.</li>
 </ul>
 <h4>Comments</h4>

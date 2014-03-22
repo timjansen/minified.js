@@ -23,7 +23,8 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Hides the elements of the list. It does so by writing 'none' into the '$display' style.</p><p>Other properties that may hide elements, like '$visibility' or '$opacity', are not modifed by <span class="var">show()</span>.</p><p></p></div>
+<div class="description"><p>Hides the elements of the list. It does so by writing 'none' into the '$display' style. This is the same as calling
+<code><a href='set.html' class='func'>set()</a></code> with the property name '$$show' and the value 0.</p><p>Other properties that may hide elements, like '$visibility' or '$opacity', are not modifed by <span class="var">hide()</span>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -36,6 +37,7 @@ $('.visible').hide();
 
 <h4>See also..</h4>
 <ul><li><code><a href='show.html' class='func'>show()</a></code> makes elements visible.</li>
+<li><code><a href='set.html' class='func'>set()</a></code> can do the same by setting '$$show' to 0.</li>
 <li><code><a href='animate.html' class='func'>animate()</a></code> can be used with a '$$fade' or '$$slide' if you want to animate the element.</li>
 </ul>
 <h4>Comments</h4>
