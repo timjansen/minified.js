@@ -5,21 +5,28 @@
  	main: `<div>
 
 <h1>5 Reasons Why Minified is Awesome</h1>
-<p>When I started with Minified, I wanted to write a library that is incredibly small but still good enough to be a viable replacement for the JavaScript libraries I used at that time, jQuery and Mootools. I tried to match jQuery feature by feature, and by doing so I created a library that was ok to use, but not much more.</p>
-<p>In the last 6 month, my focus changed a bit. Minified is still incredibly small, but it also has become very powerful. Features like HTML templates, the helpers of the Util module or the new event handling go far beyond what the libraries I wanted to replace can offer. Everyday tasks have become so much easier with Minified that using the other libraries has become a chore for me.</p>
-<p>Here are the top 5 things I miss when I don't have Minified available.</p>
+<p>When I started with Minified, I wanted to write a library that is incredibly small but still good enough to be a viable replacement for the JavaScript 
+libraries I used at that time, jQuery and Mootools. I tried to match jQuery feature by feature, and by doing so I created a library that was 
+ok to use, but not much more.</p>
+<p>In the last 6 month, my focus changed a bit. Minified is still incredibly small, but it also has become very powerful. Features like HTML templates, 
+the helpers of the Util module or the new event handling go far beyond what the libraries I wanted to replace can offer. Everyday tasks have become so 
+much easier with Minified that using the other libraries has become a chore for me.</p>
+<p>Here are the top 5 things I miss when I can't use Minified:</p>
 <h2>Reason 1: Set</h2>
 <p>Maybe Minified's most unique feature is the universal <a href="/api/set.html">set</a> syntax that allows you to modify properties, attributes and styles with a single call:</p>
 <pre><a href="/api/dollar.html">$</a>('input.custom').<a href="/api/set.html">set</a>({$backgroundColor: '#ccc', size: 16, value: ''});</pre>
 http://jsfiddle.net/tjansen/Tu4kn/
-<p><var>set()</var>'s syntax is not limited to <var>set()</var>, but available everywhere in Minified. You can use the same syntax for <a href="/api/animate.html">animations</a>, for <a href="/api/toggle.html">toggles</a> and <a href="/api/dial.html">dials</a>, when creating new elements with <a href="/api/ee.html"><var>EE()</var></a>, or to retrieve values with <a href="/api/get.html"><var>get()</var></a>. For example like this:</p>
+<p><var>set()</var>'s syntax is not limited to <var>set()</var>, but available everywhere in Minified. You can use the same syntax for <a href="/api/animate.html">animations</a>, 
+for <a href="/api/toggle.html">toggles</a> and <a href="/api/dial.html">dials</a>, when creating new elements with <a href="/api/ee.html"><var>EE()</var></a>, or to 
+retrieve values with <a href="/api/get.html"><var>get()</var></a>. For example like this:</p>
 <pre>
 <a href="/api/dollar.html">$</a>('.fade').<a href="/api/set.html">set</a>({$color: '#fff'}).<a href="/api/animate.html">animate</a>({$color: '$000'}, 500); // animate from black to white
 </pre>
 http://jsfiddle.net/tjansen/Tu4kn/
 
 <h2>Reason 2: HTML Templates</h2>
-<p>Minified's built-in template processor is a fantastic tool for dynamic HTML generation. Using templates is not only often more convenient than concatenating strings, but the template processor guarantees that all output is escaped correctly.</p>
+<p>Minified's built-in template processor is a fantastic tool for dynamic HTML generation. Using templates is not only often more convenient than concatenating strings, 
+but the template processor guarantees that all output is escaped correctly.</p>
 <pre><a href="/api/dollar.html">$</a>('#greeting').<a href="/api/ht.html">ht</a>('Welcome, {{first}} {{last}}!', {first: 'Tim', last: 'Taylor'});</pre>
 http://jsfiddle.net/tjansen/YaHp9/
 
@@ -33,24 +40,30 @@ http://jsfiddle.net/tjansen/YaHp9/
 
 <h2>Reason 3: On</h2>
 <p><var>on()</var> is Minified's way of registering event handlers. Compared two similar functions in other frameworks, it has some time-saving extra features.</p>
-<p>Possibly the main difference is that, by default, registering an event handler will prevent the event's default behavior and disable bubbling. This is the equivalent to returning <var>false</var> in jQuery and means that you do not need to worry about cancelling in your handler. If you want to keep the event's default behavior, you can prefix the event name(s) with '|'. A prefix of '?' will use the return value to determine the behavior, similar to jQuery's default behavior.</p>
+<p>Possibly the main difference is that, by default, registering an event handler will prevent the event's default behavior and disable bubbling. This is the equivalent 
+to returning <var>false</var> in jQuery and means that you do not need to worry about cancelling in your handler. If you want to keep the event's default behavior, you 
+can prefix the event name(s) with '|'. A prefix of '?' will use the return value to determine the behavior, similar to jQuery's default behavior.</p>
 <pre><a href="/api/dollar.html">$</a>('#btn1').<a href="/api/on.html">on</a>('click', function() { window.alert('Does nothing, event stopped'); } );
 <a href="/api/dollar.html">$</a>('#btn2').<a href="/api/on.html">on</a>('|click', function() { window.alert('Start default behavior now!'); } );
 <a href="/api/dollar.html">$</a>('#btn3').<a href="/api/on.html">on</a>('?click', function() { return window.confirm('Default behavior?'); } );</pre>
-<p>The prefix syntax not only saves you from adding a return to your event handler, but does something more important. It allows you to remove event handling logic from your handler, and to let do only one thing: execute the action caused by the event. This concept is taken one step further by another <var>on()</var> feature, the handler arguments:</p>
+<p>The prefix syntax not only saves you from adding a return to your event handler, but does something more important. It allows you to remove event handling logic from your 
+handler, and to let do only one thing: execute the action caused by the event. This concept is taken one step further by another <var>on()</var> feature, the handler arguments:</p>
 <pre><a href="/api/dollar.html">$</a>('#smallSizeButton').<a href="/api/on.html">on</a>('click', setFontSize, [0]);
 <a href="/api/dollar.html">$</a>('#mediumSizeButton').<a href="/api/on.html">on</a>('click', setFontSize, [1]);
 <a href="/api/dollar.html">$</a>('#largeSizeButton').<a href="/api/on.html">on</a>('click', setFontSize, [2]);</pre>
 http://jsfiddle.net/tjansen/67rG6/
-<p>The handler arguments are passed instead of the event object to the handler. Again, this allows you to concentrate on the action in the event handler. Ideally you can write a function to implement the action without even having to consider that it may be called by an event handler.</p>
-<p>When you dynamically create HTML, you often need to register events for the elements that you have created. <var>on()</var>'s new selector syntax makes this very easy:</p>
+<p>The handler arguments are passed instead of the event object to the handler. Again, this allows you to concentrate on the action in the event handler. 
+Ideally you can write a function to implement the action without even having to consider that it may be called by an event handler.</p>
+<p>When you dynamically create HTML, you often need to register events for the elements that you have created. <var>on()</var>'s new selector syntax 
+makes this very easy:</p>
 <pre><a href="/api/dollar.html">$</a>('#names').<a href="/api/add.html">add</a>(<a href="/api/html.html">HTML</a>('&lt;li>{{first}} {{last}} &lt;button class='up'>up&lt;/button>&lt;button class='down'>down&lt;/button>&lt;/li>', person)
                  .<a href="/api/on.html">on</a>('.up', 'click', moveEntry, [-1])
                  .<a href="/api/on.html">on</a>('.down', 'click', moveEntry, [1]));</pre>
 <p>By passing a selector as first argument you can register events for child elements.</p>
 
 <h2>Reason 4: Toggle</h2>
-<p>Toggles make it very easy to build animations that have exactly two states, like mouseover effects and collapsing sections. You only need to specify the two states using the universal set syntax:</p>
+<p>Toggles make it very easy to build animations that have exactly two states, like mouseover effects and collapsing sections. You only need to specify the 
+two states using the universal set syntax:</p>
 <pre>var fontSizeToggle = <a href="/api/dollar.html">$</a>('.text').<a href="/api/toggle.html">toggle</a>({$fontSize: '8pt'}, {$fontSize: '12pt'});</pre>
 http://jsfiddle.net/tjansen/MCNSb/
 <p><var>fontSizeToggle</var> contains now a function that will toggle between the two states when you invoke it. You can also set a specific state by passing a boolean.</p>
@@ -66,7 +79,9 @@ http://jsfiddle.net/tjansen/MCNSb/
 </pre>
 
 <h2>Reason 5: onChange(), onOver() and onFocus()</h2>
-<p>In addition to regular event handlers, Minified also has some specialized event handlers. <var>onFocus()</var> calls the event handler with <var>true</var> as only argument when an element gets the focus. When the focus has been removed, it calls the handler with <var>false</var>. This kind of invocation is perfect for toggles, and you can rewrite the last example like this:</p>
+<p>In addition to regular event handlers, Minified also has some specialized event handlers. <var>onFocus()</var> calls the event handler with <var>true</var> as 
+only argument when an element gets the focus. When the focus has been removed, it calls the handler with <var>false</var>. This kind of invocation is perfect for 
+toggles, and you can rewrite the last example like this:</p>
 <pre>// Change text color of focussed text fields:
 <a href="/api/dollar.html">$</a>('input[type=text]').<a href="/api/per.html">per</a>(function(el) {
 	el.<a href="/api/onfocus.html">onFocus</a>(el.<a href="/api/toggle.html">toggle</a>({$color: '#000'}, {$color: '#a00'}, 500));
@@ -79,7 +94,8 @@ http://jsfiddle.net/tjansen/MHnhe/
 	el.<a href="/api/onover.html">onOver</a>(el.<a href="/api/toggle.html">toggle</a>('isover'));
 });
 </pre>
-<p>Last, but not least, <var>onChange()</var> helps you detect changes on form elements in real-time. You can either use it to monitor a single field, and get the new value conveniently as a parameter:</p>
+<p>Last, but not least, <var>onChange()</var> helps you detect changes on form elements in real-time. You can either use it to monitor a single field, and get the 
+new value conveniently as a parameter:</p>
 <pre><a href="/api/dollar.html">$</a>('#myField').<a href="/api/onchange.html">onChange</a>(function(newValue) {
 	<a href="/api/dollar.html">$</a>('#upperValue').<a href="/api/fill.html">fill</a>(newValue.toUpperCase());
 });

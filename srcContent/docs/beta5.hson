@@ -2,7 +2,7 @@
 title: "Minified.js Beta 5: Features and Changes",
 section: docs,
 externalCss: ["../css/doc.css"],
-commentId: "docs-beta4",
+commentId: "docs-beta5",
 main: `<div>
   <h1>Minified.js Beta 5: Features and Changes</h1>
 
@@ -58,7 +58,7 @@ element is visible to to change its visibility.</p>
 <pre>
 $('#beautiful').show();
 $('#ugly').hide();
-var visibilityToggle = $('.hiddable').toggle({$show: 1}, {$show: 0});
+var visibilityToggle = $('.hiddable').toggle({$$show: 1}, {$$show: 0});
 </pre>
 
 <h2>New: isEmpty() checks for empty lists or strings</h2>
