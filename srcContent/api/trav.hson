@@ -84,6 +84,7 @@ var parents = $('.myElements').trav('parentNode', 'table.specialParent', 1);
 
 <h4>See also..</h4>
 <ul><li><code><a href='up.html' class='func'>up()</a></code> finds exactly one parent element that matches a selector.</li>
+<li><code><a href='next.html' class='func'>next()</a></code> finds one or more siblings that match a selector.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>

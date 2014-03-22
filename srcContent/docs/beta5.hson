@@ -6,9 +6,11 @@ commentId: "docs-beta4",
 main: `<div>
   <h1>Minified.js Beta 5: Features and Changes</h1>
 
-<p>The most surprising thing about beta 5 was that it was possible to get even more features into Minified's self-imposed 4kB/8Kb limit. Also I am getting closer
-to what's possible, there still seems to be room for some extras. Beside those new features, it
-has also vastly improved implementations for Promises and number formatting.</p>
+<p>I am still amazed how it is still possible to optimize Minified even further and squeeze more and more featured into Minified, while still staying under 4kB
+for the Web module and 8kB for the complete library. This release has 7 additional methods, vastly improved implementations for Promises and number formatting
+and many smaller changes.<br/>
+The focus on this release was to make Minified more comfortable to use. Minified original concept was to have only one way to do something, in order to keep
+its size down. I have softened this rule somewhat as you can see below, and added a number of convenience functions. Enjoy!</p>
 
 <h2 style="color: red">Backward-incompatible Changes</h2>
 <p>
@@ -16,11 +18,11 @@ has also vastly improved implementations for Promises and number formatting.</p>
 <li><span class="var">defer()</span> and <span class="var">delay()</span> have been removed. Use the standard setTimeout() instead.</li>
 <li><span class="var"><a href="/api/formatValue.html">formatValue()</a></span>'s handling of number group separators has been changed. It will now support all
 possible separators, but will not automatically add group separators anymore.</li>
-<li><span class="var"><a href="/api/clone.html">clone()</a></span> will only remove ids of top-level elements, but not those of children.</li>
+<li><span class="var"><a href="/api/clone.html">clone()</a></span> will only remove ids of top-level elements, but not those of child elements.</li>
 <li><span class="var">The <a href="/api/promise.html">promise.state</a></span> property has been removed. Invoke the promise function without arguments
 to obtain the current state.</li>
 <li>Setting '$$slide' and '$$fade' in <span class="var"><a href="/api/set.html">set()</a></span> or in animations will not change '$display' anymore. Only the
-$visibility and opacity/height will be modified. If you need an element to be initially hidden, set '$visibility' to 'hidden' or use '$$show'.
+'$visibility' and opacity/height will be modified. If you need an element to be initially hidden, set '$visibility' to 'hidden' or use '$$show'.
 </ul>
 </p>
 
@@ -42,14 +44,22 @@ var divAfterHr = $('hr').next('div', -1);
 var ts = $('table').not('.simple');
 </pre>
 
-<h2>New: isClick() as alternative to .on('click', ...)</h2>
+<h2>New: onClick() as alternative to .on('click', ...)</h2>
 <p><span class="var"><a href="/api/onclick.html">onClick()</a></span> is a very thin helper function that does essentially the same as 
 <code>.on('click', ...)</code>. </p>
+<pre>
+$('#myButton').onClick(function() { alert('Clicked!'); });
+</pre>
 
 <h2>New: show(), hide() and $$show to change the visibility of elements</h2>
 <p><span class="var"><a href="/api/show.html">show()</a></span> and <span class="var"><a href="/api/hide.html">hide()</a></span>
 are helper methods to manipulate the '$display' and 'style of elements. '$$show' can be used in get()/set() to find out whether an
 element is visible to to change its visibility.</p>
+<pre>
+$('#beautiful').show();
+$('#ugly').hide();
+var visibilityToggle = $('.hiddable').toggle({$show: 1}, {$show: 0});
+</pre>
 
 <h2>New: isEmpty() checks for empty lists or strings</h2>
 <p><span class="var"><a href="/api/isempty.html">isEmpty()</a></span> is a simple helper function that can check whether a list or string is either null or empty.
@@ -90,7 +100,8 @@ define('makeGreen', function() {
 
 
 <h2>Change: Promises/A+ updated to the latest spec</h2>
-<p>Minified's <a href="/api/promiseClass.html">Promise</a> implementation has been updated so that it passes the latest compliance tests. The test suite has also been incorporated into
+<p>Minified's <a href="/api/promiseClass.html">Promise</a> implementation has been updated so that it passes the latest 
+<a href="https://github.com/promises-aplus/promises-tests/">Promises/A+ compliance tests</a>. The test suite has also been incorporated into
 Minified's test cases. Please note that the simplified Promises implementation in the Web module will not pass all tests.</p>
 
 

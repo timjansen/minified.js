@@ -2457,6 +2457,7 @@ define('minified', function() {
  	 *         have been visited when traversing another node. Duplicate nodes will be automatically removed.
  	 *         
  	 * @see ##up() finds exactly one parent element that matches a selector.
+ 	 * @see ##next() finds one or more siblings that match a selector.
  	 */
 	'trav': function(property, selector, maxDepth) {
 		var isNum = isNumber(selector);
