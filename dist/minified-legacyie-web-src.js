@@ -3309,8 +3309,8 @@ define('minified', function() {
 		if (!(ANIMATION_HANDLER_COUNT++))
 			(function raFunc(ts) {
 				eachObj(ANIMATION_HANDLERS, function(id, a) {
-					a.f = a.f || ts; 
-					a.c(ts - a.f, a.s);
+					a.f = a.f || ts;
+					a.c(a.t = ts - a.f, a.s);
 				});
 				if (ANIMATION_HANDLER_COUNT)
 					REQUEST_ANIMATION_FRAME(raFunc); 
