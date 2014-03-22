@@ -194,8 +194,6 @@ describe('minified-web-getset-test.js', function() {
 		});
 	});
 
-
-
 	describe('.hide()', function() {
 		it('hides', function() {
 			$('#container2').add(EE('hr'));
@@ -218,6 +216,73 @@ describe('minified-web-getset-test.js', function() {
 		});
 	});
 
+	describe('set $$show', function() {
+		it('hides with $$show=0', function() {
+			$('#container2').add(EE('hr'));
+			$('#container2 hr').set('$$show', 0);
+			check($('#container2 hr').get('$display'), 'none');
+		});
+		it('hides with $$show=false', function() {
+			$('#container2').add(EE('hr'));
+			$('#container2 hr').set('$$show', false);
+			check($('#container2 hr').get('$display'), 'none');
+		});
+
+		it('removes display==none from style', function() {
+			$('#container2').add(EE('span', {$display: 'none'}, 'testtest'));
+			$('#container2 span').set('$$show', 0.1);
+			check($('#container2 span').get('$display'), 'inline');
+		});
+
+		it('overwrites stylesheets with block', function() {
+			$('#container2').add(EE('i', {$: 'hidden'}, 'xxxxx'));
+			$('#container2 i').show('$$show', true);
+			check($('#container2 i').get('$display'), 'block');
+		});
+	});
+
+	describe('get $$show', function() {
+		it('checks $display', function() {
+			var e = EE('div', {$display: 'none'});
+			$('#container2').add(e);
+			check(e.get('$$show'), 0);
+		});
+		it('checks $visibility', function() {
+			var e = EE('div', {$visibility: 'hidden'});
+			$('#container2').add(e);
+			check(e.get('$$show'), 0);
+		});
+		it('everything else is visible', function() {
+			var e = EE('div', {$visibility: 'visible', $display: 'block'});
+			$('#container2').add(e);
+			check(e.get('$$show'), 1);
+			e = EE('div');
+			$('#container2').add(e);
+			check(e.get('$$show'), 1);
+		});
+	});
+	
+	describe('get $$scrollX/$$scrollY', function() {
+		it('checks $display', function() {
+			var e = EE('div', {$display: 'none'});
+			$('#container2').add(e);
+			check(e.get('$$show'), 0);
+		});
+		it('checks $visibility', function() {
+			var e = EE('div', {$visibility: 'hidden'});
+			$('#container2').add(e);
+			check(e.get('$$show'), 0);
+		});
+		it('everything else is visible', function() {
+			var e = EE('div', {$visibility: 'visible', $display: 'block'});
+			$('#container2').add(e);
+			check(e.get('$$show'), 1);
+			e = EE('div');
+			$('#container2').add(e);
+			check(e.get('$$show'), 1);
+		});
+	});
+	
 
 
 /*
