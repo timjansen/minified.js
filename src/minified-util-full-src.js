@@ -379,7 +379,7 @@ define('minified', function() {
 			return r;
 		});
 	}
-	function contains(list, value) {
+	function contains(list, value) { // TODO: can Array.indexOf be used in >IE8?
 		for (var i = 0; i < list.length; i++)
 			if (list[i] == value)
 				return _true;

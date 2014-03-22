@@ -127,6 +127,8 @@ function dummy() {
 		 * stop() invocation will be propagated over promises returned by ##then() and promises assimilated by ##promise(). You only need to invoke stop
 		 * with the last promise, and all dependent promises will automatically stop as well. 
 		 *
+		 * @return In some cases, the <var>stop()</var> can return a value. This is currently only done by ##animate(), which will return the actual duration.
+		 *
 		 * @example Animation chain that can be stopped.
 		 * <pre>
 		 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
@@ -142,12 +144,12 @@ function dummy() {
 		 * </pre>
 		 */   
 		set['stop'] = function() {
-			call(set['stop0']);
-				    
 			each(assimilatedPromises, function(promise) {
 				if (promise['stop'])
 					promise['stop']();
 			});
+
+			return call(set['stop0']);
 		};
 		
 		/*$

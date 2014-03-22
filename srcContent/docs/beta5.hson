@@ -19,6 +19,8 @@ possible separators, but will not automatically add group separators anymore.</l
 <li><span class="var"><a href="/api/clone.html">clone()</a></span> will only remove ids of top-level elements, but not those of children.</li>
 <li><span class="var">The <a href="/api/promise.html">promise.state</a></span> property has been removed. Invoke the promise function without arguments
 to obtain the current state.</li>
+<li>Setting '$$slide' and '$$fade' in <span class="var"><a href="/api/set.html">set()</a></span> or in animations will not change '$display' anymore. Only the
+$visibility and opacity/height will be modified. If you need an element to be initially hidden, set '$visibility' to 'hidden' or use '$$show'.
 </ul>
 </p>
 
@@ -44,9 +46,10 @@ var ts = $('table').not('.simple');
 <p><span class="var"><a href="/api/onclick.html">onClick()</a></span> is a very thin helper function that does essentially the same as 
 <code>.on('click', ...)</code>. </p>
 
-<h2>New: show() and hide() to change the visibility of elements</h2>
+<h2>New: show(), hide() and $$show to change the visibility of elements</h2>
 <p><span class="var"><a href="/api/show.html">show()</a></span> and <span class="var"><a href="/api/hide.html">hide()</a></span>
-are helper methods to manipulate the '$display' style of elements.</p>
+are helper methods to manipulate the '$display' and 'style of elements. '$$show' can be used in get()/set() to find out whether an
+element is visible to to change its visibility.</p>
 
 <h2>New: isEmpty() checks for empty lists or strings</h2>
 <p><span class="var"><a href="/api/isempty.html">isEmpty()</a></span> is a simple helper function that can check whether a list or string is either null or empty.

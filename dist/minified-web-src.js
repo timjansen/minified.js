@@ -187,14 +187,6 @@ define('minified', function() {
 	 */
 
 	/*$
-	 * @id fadeslide
-	 * @requires animate set 
-	 * @group ANIMATION
-	 * @configurable default
-	 * @doc no
-	 * @name Support for $$fade and $$slide
-	 */
-	/*$
 	 * @id scrollxy
 	 * @requires set 
 	 * @group ANIMATION
@@ -299,7 +291,7 @@ define('minified', function() {
 	function removeFromArray(array, value) {
 		for (var i = 0; array && i < array.length; i++) 
 			if (array[i] === value) 
-				array.splice(i--, 1);
+				array['splice'](i--, 1);
 	}
 
 	function delay(f, delayMs) {
@@ -332,12 +324,12 @@ define('minified', function() {
 	}
 
 	// finds out the 'natural' height of the first element, the one if $$slide=1
-	function getNaturalHeight(elementList) {
+	function getNaturalHeight(elementList, factor) {
 		var q = {'$position': 'absolute', '$visibility': 'hidden', '$display': 'block', '$height': _null};
 		var oldStyles = elementList['get'](q);
 		var h = elementList['set'](q)['get']('$height', _true);
 		elementList['set'](oldStyles);
-		return h;
+		return h*factor + 'px';
 	}
 
 
@@ -1130,11 +1122,12 @@ define('minified', function() {
 	 * <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <var>$</var> returns the CSS classes of the element and is identical with "className".</td></tr>
 	 * <tr><td>$$</td><td>$$</td><td>Style</td><td>Reads the element's style attribute in a browser-independent way. On legacy IEs it uses
 	 *             <var>style.cssText</var>, and on everything else just the "style" attribute.</td></tr>
+	 * <tr><td>$$show</td><td>$$show</td><td>Show/Hide</td><td>Returns 1 if the element is visible and 0 if it is not visible. An element counts as
+	 * visible if '$visibility' is not 'hidden' and '$display' is not 'none'. Other properties will be ignored, even if they can also be used to hide the element.</td></tr>
 	 * <tr><td>$$fade</td><td>$$fade</td><td>Fade Effect</td><td>The name '$$fade' returns the opacity of the element as a value between 0 and 1.
 	 * 			   '$$fade' will also automatically evaluate the element's 'visibility' and 'display' styles to find out whether the element is actually visible.</td></tr>
-	 * <tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>'$$slide' returns the height of the element in pixels with a 'px' suffix and is mostly
-	 *        equivalent to '$height'. It does, however, also evaluate the element's 'visibility' and 'display' styles to find out whether the element is 
-	 *        actually visible. If not, it returns 0.</td></tr>
+	 * <tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>'$$slide' returns the height of the element in pixels with a 'px' suffix and is equivalent to '$height'.
+	 * Please note that you can pass that 'px' value to '$$slide' in ##set(), which will then set the according '$height'.</td></tr>
 	 * <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
 	 *             '$$scrollY' can be used on <code>$(window)</code> to retrieve the scroll coordinates of the document.
 	 *             The coordinates are specified in pixels without a 'px' unit postfix.</td></tr>
@@ -1177,6 +1170,7 @@ define('minified', function() {
  	 * @return if <var>get()</var> was called with a single name, it returns the corresponding value. 
  	 *         If a list or map was given, <var>get()</var> returns a new object map with the names as keys and the values as values.
  	 *         It returns <var>undefined</var> if the list is empty.
+	 *
  	 * @see ##set() sets values using the same property syntax.
  	 */
 	'get': function(spec, toNumber) {
@@ -1191,19 +1185,18 @@ define('minified', function() {
 				else if (spec == '$$') {
 						s = element.getAttribute('style');
 				}
-				// @condblock fadeslide
-				else if (spec == '$$fade' || spec == '$$slide') {
-					if  (element['style']['visibility'] == 'hidden' || element['style']['display'] == 'none')
+				else if (spec == '$$fade' || spec == '$$show') {
+					if  (self['get']('$visibility') == 'hidden' || self['get']('$display') == 'none')
 						s = 0;
 					else if (spec == '$$fade') {
-						s = isNaN(s = 
-							  extractNumber(element['style']['opacity']) 
-							 ) ? 1 : s;
+						s = 
+							isNaN(self['get']('$opacity', _true)) ? 1 : self['get']('$opacity', _true); 
 					}
-					else   // '$$slide'
-						s = self['get']('$height');
+					else // $$show
+						s = 1;
 				}
-				// @condend fadeslide
+				else if (spec == '$$slide')
+					s = self['get']('$height');
 				// @condblock scrollxy
 				// @condend scrollxy
 				else if (match[1] == '$') {
@@ -1256,14 +1249,17 @@ define('minified', function() {
 	 *             space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
 	 *             The name '$' can also be omitted if <var>set</var> is called with class names as only argument.</td></tr>
 	 * <tr><td>$$</td><td>$$</td><td>Style</td><td>Sets the element's style attribute in a browser-independent way.</td></tr>
+	 * <tr><td>$$show</td><td>$$show</td><td>Show/Hide</td><td>If <var>true</var> or a number not 0, it will make sure the element is visible by
+	 *         making sure '$display' is not 'none' and by setting '$visibility' to 'visible'. Please see ##show() for details. If the value is <var>false</var> or 0, it
+	 *         will be hidden by setting '$display' to 'none'.</td></tr>
 	 * <tr><td>$$fade</td><td>$$fade</td><td>Fade Effect</td><td>The name '$$fade' sets the opacity of the element in a browser-independent way. The value must be a number
-	 *              between 0 and 1. '$$fade' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0,
+	 *              between 0 and 1. '$$fade' will also automatically control the element's 'visibility' style. If the value is 0,
 	 *             the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to 
-	 *             'visible' and the display style to 'block'. '$$fade' only works with block elements.</td></tr>
+	 *             'visible'. '$$fade' only works with block elements.</td></tr>
 	 * <tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>The name '$$slide' allows a vertical slide-out or slide-in effect. The value must be a number
 	 *              between 0 and 1 and will be used to set the element's '$height'. '$$slide' will also automatically control the element's 'visibility' 
-	 *              and 'display' styles. If the value is 0, the element's visibility will automatically be set to 'hidden'. If the value is larger, 
-	 *              the visibility will be set to 'visible' and the display style to 'block'. '$$slide' only works with block elements and will not set the
+	 *              style. If the value is 0, the element's visibility will automatically be set to 'hidden'. If the value is larger, 
+	 *              the visibility will be set to 'visible'. '$$slide' only works with block elements and will not set the
 	 *              element's margin or padding. If you need a margin or padding, you should wrap the elements in a simple &lt;div>.</td></tr>
 	 * <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
 	 *             '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document.
@@ -1359,25 +1355,39 @@ define('minified', function() {
 	 *                   value. See above for CSS syntax.
 	 *                   Instead of a string, you can also specify a <code>function(oldValue, index, obj)</code> to modify the existing classes. 
 	 * @return the list
+	 * 
+	 * @see ##get() retrieves values using the same property syntax.
+	 * @see ##animate() animates values using the same property syntax.
+	 * @see ##toggle() can toggle between two sets of values.
+	 * @see ##dial() allows smooth transitions between two sets of values.
 	 */
 	 'set': function (name, value) {
-		 var self = this, v;
+		 var self = this;
 		 if (value !== undef) {
 			 var match = /^([$@]*)(.*)/.exec(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
 
-			 // @condblock fadeslide
 			 if (name == '$$fade') {
-				 this['set']({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', '$display': 'block', '$opacity': v});
+				 this['set']({'$visibility': value ? 'visible' : 'hidden', '$opacity': value});
 			 }
 			 else if (name == '$$slide') {
-				 this['set']({'$visibility': (v = extractNumber(value)) > 0 ? 'visible' : 'hidden', 
-						      '$display': 'block',
-						      '$height': /px/.test(value) ? value : function(oldValue, idx, element) { return v * (v && getNaturalHeight($(element)))  + 'px';},
+				 this['set']({'$visibility': value ? 'visible' : 'hidden', 
+						 	  '$height': /px/.test(value) ? value : function(oldValue, idx, element) { return getNaturalHeight($(element), value);},
 				              '$overflow': 'hidden'});
 			 }
+			 else if (name == '$$show') {
+				 if (value)
+					 this['set']({'$visibility': value ? 'visible' : 'hidden', '$display': ''}) // that value? part is only for gzip
+			 		 	 ['set']({'$display': function(oldVal) {
+			 		 		 return oldVal == 'none' ? 'block' : oldVal;
+			 			 }}); 
+				 else 
+					 this['set']({'$display': 'none'});
+			 }
+		 	 else if (name == '$$') {
+						this['set']('@style', value);
+				 }
 			 else
-				// @condend fadeslide
-				 flexiEach(self, function(obj, c) { //XX
+				 flexiEach(self, function(obj, c) { 
 					 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
 					 if (name == '$') {
 						 flexiEach(newValue && newValue.split(/\s+/), function(clzz) {
@@ -1388,9 +1398,6 @@ define('minified', function() {
 								 className += ' ' + cName;
 							 obj['className'] = replace(className, /^\s+|\s+(?=\s|$)/g);
 						 });
-					 }
-   				 	 else if (name == '$$') {
-							obj.setAttribute('style', newValue);
 					 }
    					// @condblock scrollxy
    				 	 else if (name == '$$scrollX') {
@@ -1427,7 +1434,8 @@ define('minified', function() {
 	 * @name .show()
 	 * @syntax list.show()
  	 * @module WEB
-	 * Make the invisible element of the list visible. It does so by making sure that the '$display' style is not 'none'. 
+	 * Make the invisible element of the list visible. It does so by setting '$visibility' to 'visible' and making sure that 
+	 * the '$display' style is not 'none'. Calling <var>show()</var> is the same as using ##set() to set '$$show' to 1.
 	 * 
 	 * First it will clear the element's direct '$display' style to remove any 'none' value that may be there. This helps
 	 * if the element was hidden using the style attribute, or if it has been hidden using ##hide(). If the
@@ -1436,7 +1444,7 @@ define('minified', function() {
 	 * Please note that because of the way <var>show()</var> works, it will not work correctly if you have hidden a non-block
 	 * element like a table row using a stylesheet. In that case you can not use <var>show()</var> but should set '$display' manually using ##set().
 	 *  
-	 * Other properties that may hide elements, like '$visibility' or '$opacity', are not modifed by <var>show()</var>.
+	 * Other properties that may hide elements, like '$opacity', are not modifed by <var>show()</var>.
 	 *  
 	 * @example Showing elements:
 	 * <pre>
@@ -1446,14 +1454,11 @@ define('minified', function() {
 	 * @return the current list
 	 * 
 	 * @see ##hide() hides elements.
-	 * @see ##set() is still required for some non-block elements.
+	 * @see ##set() can do the same by setting '$$show' to 1, and is also still required for some non-block elements.
 	 * @see ##animate() can be used with a '$$fade' or '$$slide' if you want to animate the element.
 	 */
 	 'show': function() {
-		 return this['set']('$display', '')
-		 			['set']('$display', function(oldVal) {
-		 				return oldVal == 'none' ? 'block' : oldVal;
-		 			}); 
+		 return this['set']('$$show', 1);
 	 },
 
 	/*$
@@ -1464,9 +1469,10 @@ define('minified', function() {
 	 * @name .hide()
 	 * @syntax list.hide()
  	 * @module WEB
-	 * Hides the elements of the list. It does so by writing 'none' into the '$display' style. 
+	 * Hides the elements of the list. It does so by writing 'none' into the '$display' style. This is the same as calling
+	 * ##set() with the property name '$$show' and the value 0. 
 	 * 
-	 * Other properties that may hide elements, like '$visibility' or '$opacity', are not modifed by <var>show()</var>.
+	 * Other properties that may hide elements, like '$visibility' or '$opacity', are not modifed by <var>hide()</var>.
 	 *  
 	 * @example Hiding elements:
 	 * <pre>
@@ -1476,10 +1482,11 @@ define('minified', function() {
 	 * @return the current list
 	 * 
 	 * @see ##show() makes elements visible.
+	 * @see ##set() can do the same by setting '$$show' to 0.
 	 * @see ##animate() can be used with a '$$fade' or '$$slide' if you want to animate the element.
 	 */
 	 'hide': function() {
-		 return this['set']('$display', 'none');
+		 return this['set']('$$show', 0);
 	 },
 
 	/*$
@@ -1579,7 +1586,7 @@ define('minified', function() {
 					if (lastAdded)
 						lastAdded['parentNode']['insertBefore'](n, lastAdded['nextSibling']);
 					else if (addFunction)
-						addFunction(n, e, e.parentNode); 
+						addFunction(n, e, e['parentNode']); 
 					else
 						e.appendChild(n);
 					lastAdded = n;
@@ -2109,7 +2116,7 @@ define('minified', function() {
 	 * 
  	 * @example Slide-in effect:
 	 * <pre>
-	 * $('#myInvisibleDiv').animate({$$slide: 1}, 1000);
+	 * $('#myInvisibleDiv').animate({$$show:1, $$slide: 1}, 1000);
 	 * </pre>
 	 *
 	 *
@@ -2168,27 +2175,27 @@ define('minified', function() {
 	 *         <dl><dt>list</dt><dd>A reference to the animated list.</dd></dl> 
 	 *         The rejection handler is called as <code>function()</code> without arguments. 
 	 *         The returned promise also has property 'stop', which is a function. Invoke the function without arguments to
-	 *         interrupt a running  animation. 
+	 *         interrupt a running animation. It will return the animations actual duration in ms. 
 	 *         
 	 * @see ##toggle() can be used to define animations between two states.
 	 * @see ##$.loop() allows you to write more complex animations.
 	 */	
-	'animate': function (properties, durationMs, linearity) {
+	'animate': function (properties, duration, linearity) {
 		var prom = promise();
 		var self = this;
-		var loopStop;
-		var dials = collector(flexiEach, self, function(li, index) {
+		var dials = collector(flexiEach, this, function(li, index) {
 			var elList = $(li), dialStartProps, dialEndProps = {};
 			eachObj(dialStartProps = elList.get(properties), function(name, start) {
 				var dest = properties[name];
 				dialEndProps[name] = isFunction(dest) ? dest(start, index, li) : 
-					name == '$$slide' ? properties[name]*getNaturalHeight(elList) + 'px' : dest;
+					name == '$$slide' ? getNaturalHeight(elList, dest) : dest;
 			});
 			return elList['dial'](dialStartProps, dialEndProps, linearity);
 		});
+		var durationMs = duration || 500;
+		var loopStop;
 
-		prom['stop0'] = function() { prom(_false); loopStop(); };
-		durationMs = durationMs || 500;
+		prom['stop0'] = function() { prom(_false); return loopStop(); };
 
 		// start animation
 		loopStop = $.loop(function(timePassedMs) {
@@ -2257,12 +2264,12 @@ define('minified', function() {
 	 *             
 	 * @see ##toggle() is a related function that allows you to define two states and automatically animate between them.
 	 */
-	'dial': function (properties1, properties2, linearity) {
+	'dial': function (properties1, properties2, linf) {
 		var self = this;
+		var linearity = linf || 0;
 		var interpolate = isFunction(linearity) ? linearity : function(startValue, endValue, t) {
 			return startValue + t * (endValue - startValue) * (linearity + (1-linearity) * t * (3 - 2*t)); 
 		};
-		linearity = linearity || 0;
 
 		function getColorComponent(colorCode, index) {
 			return (/^#/.test(colorCode)) ?
@@ -2367,8 +2374,9 @@ define('minified', function() {
 	 */
 	'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
 		var self = this;
+		var state = _false;
 		var promise;
-		var state = _false, regexg = /\b(?=\w)/g, stateDesc;
+		var stateDesc;
 
 		if (stateDesc2)
 			return self['set'](stateDesc1) && 
@@ -2379,11 +2387,11 @@ define('minified', function() {
 						if (durationMs) 
 							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity))['then'](function(){promise=_null;});
 						else
-							self['set'](stateDesc) && undef;
+							self['set'](stateDesc);
 					}
 				};
 		else
-			return self['toggle'](replace(stateDesc1, regexg, '-'), replace(stateDesc1, regexg, '+'));
+			return self['toggle'](replace(stateDesc1, /\b(?=\w)/g, '-'), replace(stateDesc1, /\b(?=\w)/g, '+'));
 	},
 
 	/*$
@@ -2429,7 +2437,7 @@ define('minified', function() {
 			var n = el['name'], v = toString(el['value']);
 			if (/form/i.test(el['tagName']))
 				// @condblock ie9compatibility 
-				for (var i = 0; i < el['elements'].length; i++) // can't call directly, as IE<=9's elements has a nodeType prop and isList does not work
+				for (var i = 0; i < el['elements'].length; i++) // can't call directly, as IE<=9's elements have a nodeType prop and isList does not work
 					$(el['elements'][i])['values'](r); 
 				// @condend
 				// @cond !ie9compatibility $(el['elements'])['values'](r);
@@ -3102,14 +3110,14 @@ define('minified', function() {
 	* @see ##animate() for simple, property-based animations.
 	*/
 	'loop': function(paintCallback) { 
-		var entry = {c: paintCallback, t: nowAsTime()};
-		entry.s = function() {
+		var entry = {c: paintCallback, t: nowAsTime(), s: function() {
 			removeFromArray(ANIMATION_HANDLERS, entry);
-		};
+			return nowAsTime() - entry.t;
+		}};
 
 		if (ANIMATION_HANDLERS.push(entry) < 2) { // if first handler.. 
 			(function raFunc() {
-				if (flexiEach(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, nowAsTime() - a.t), a.s);}).length) // check len after run, in case the callback invoked stop func
+				if (flexiEach(ANIMATION_HANDLERS, function(a) {a.c(Math.max(0, nowAsTime() - a.t), a.s);})[0]) // check whether empty after run, in case the callback invoked stop func
 					REQUEST_ANIMATION_FRAME(raFunc); 
 			})(); 
 		} 
