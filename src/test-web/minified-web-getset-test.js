@@ -262,41 +262,61 @@ describe('minified-web-getset-test.js', function() {
 		});
 	});
 	
-	describe('get $$scrollX/$$scrollY', function() {
+	describe('get $$fade', function() {
 		it('checks $display', function() {
 			var e = EE('div', {$display: 'none'});
 			$('#container2').add(e);
-			check(e.get('$$show'), 0);
+			check(e.get('$$fade'), 0);
 		});
 		it('checks $visibility', function() {
 			var e = EE('div', {$visibility: 'hidden'});
 			$('#container2').add(e);
-			check(e.get('$$show'), 0);
+			check(e.get('$$fade'), 0);
 		});
-		it('everything else is visible', function() {
-			var e = EE('div', {$visibility: 'visible', $display: 'block'});
+		it('checks $opacity and $filter', function() {
+			var e = EE('div', {$$fade: 0.75});
 			$('#container2').add(e);
-			check(e.get('$$show'), 1);
-			e = EE('div');
+			check(e.get('$$fade'), 0.75);
+		});
+		it('defaults to 1', function() {
+			var e = EE('div');
 			$('#container2').add(e);
-			check(e.get('$$show'), 1);
+			check(e.get('$$fade'), 1);
 		});
 	});
 	
+	describe('set $$fade', function() {
+		it('fades 0.72', function() {
+			var e = EE('div', {$visibility: 'hidden'});
+			$('#container2').add(e);
+			e.set('$$fade', 0.72);
 
+			check(Math.abs(e.get('$opacity', true) - 0.72) < 0.01 || Math.abs(e.get('$filter', true) - 0.72) < 0.01);
+			check(e.get('$visibility'), 'visible');
+		}); 
 
-/*
-describe('.fill()', function() {
-	it('', function() {
-		
+		it('fades 1', function() {
+			var e = EE('div', {$visibility: 'visible'});
+			$('#container2').add(e);
+			e.set('$$fade', 1);
+			check(e.get('$opacity', true) == 1 || e.get('$filter', true) == 1);
+			check(e.get('$visibility'), 'visible');
+		});
+
+		it('fades 0', function() {
+			var e = EE('div');
+			$('#container2').add(e);
+			e.set('$$fade', 0);
+			check(e.get('$visibility'), 'hidden');
+		});
 	});
-	it('', function() {
-		
+	
+	describe('get $$slide', function() {
+		it('checks $height', function() {
+			var e = EE('div', {$height: '78px'});
+			$('#container2').add(e);
+			check(e.get('$$slide', true), '78');
+		});
 	});
-	it('', function() {
-		
-	});
-});
-*/
 
 });

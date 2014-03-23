@@ -333,7 +333,7 @@ define('minified', function() {
 	function getNaturalHeight(elementList, factor) {
 		var q = {'$position': 'absolute', '$visibility': 'hidden', '$display': 'block', '$height': _null};
 		var oldStyles = elementList['get'](q);
-		var h = elementList['set'](q)['get']('$height', _true);
+		var h = elementList['set'](q)['get']('clientHeight');
 		elementList['set'](oldStyles);
 		return h*factor + 'px';
 	}
