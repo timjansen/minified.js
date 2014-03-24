@@ -45,7 +45,7 @@ called as event handler with the event object as argument.</dd>
 <div class="description"><p>Registers a function to be called for 'click' events. This is only a convenience method and identical to calling
 <code><a href='on.html' class='func'>on()</a></code> with 'click' as event type.
 You can specify a sub-selector to register only for specific children of the list elements, and you can
-specify arguments to pass to the handler instead of the default event object.</p><p></p></div>
+specify arguments to pass to the handler instead of the default event object.</p><p>Event handlers registered using <span class="var">onClick()</span> can be unregistered using <code><a href='undefinedoff.html' class='func'>$.off()</a></code>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -72,6 +72,7 @@ $('#changeColor').onClick($('#colorChanger').toggle({$color:'#000'}, {$color:'#f
 
 <h4>See also..</h4>
 <ul><li><code><a href='on.html' class='func'>on()</a></code> provides low-level event registration.</li>
+<li><code><a href='off.html' class='func'>off()</a></code> can unregister <span class="var">onClick</span> event handlers.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>

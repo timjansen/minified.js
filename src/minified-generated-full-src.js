@@ -3260,7 +3260,7 @@ define('minified', function() {
 				 // @condblock ie8compatibility 
 				 this['set']({'$visibility': value ? 'visible' : 'hidden'})
 				     ['set'](
-				    	  IS_PRE_IE9 ? (value < 1 ? {'$filter': 'alpha(opacity = '+(100*value)+')', '$zoom': 1} : {'$filter': ''}) :
+				    	  IS_PRE_IE9 ? (value < 1 ? {'$filter': 'alpha(opacity = '+(100*value)+')', '$zoom': 1} : {'$filter': ''}) : // clear filter for opacity=1!!
 				    	  {'$opacity': value}
  					);
 				 // @condend ie8compatibility
@@ -4684,6 +4684,8 @@ define('minified', function() {
 	 * You can specify a sub-selector to register only for specific children of the list elements, and you can
 	 * specify arguments to pass to the handler instead of the default event object.
 	 * 
+	 * Event handlers registered using <var>onClick()</var> can be unregistered using ##$.off().
+	 * 
 	 * @example Says hello if you click:
 	 * <pre>
 	 * $('#sayHello').onClick(function() { window.alert('Hello!'); });
@@ -4716,6 +4718,7 @@ define('minified', function() {
 	 *             called as event handler with the event object as argument.
 	 * @return the list	 
 	 * @see ##on() provides low-level event registration.
+	 * @see ##off() can unregister <var>onClick</var> event handlers.
 	 */
 	'onClick': function(subSelect, handler, args) {
 	     return isFunction(subSelect) ? this['on']('click', subSelect, handler) : this['on'](subSelect, 'click', handler, args);
