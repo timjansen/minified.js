@@ -136,6 +136,7 @@ describe('minified-web-getset-test.js', function() {
 			check($('#a_b').get('$marginTop', true), 2);
 			check($('#c').get('$marginTop', true) == 0 || isNaN($('#c').get('$marginTop', true)));
 			check(isNaN($('#a').get('@id', true)));
+			check($({a: 'xxx5xxx9xxx'}).get('a', true), 5);
 		});
 	});
 

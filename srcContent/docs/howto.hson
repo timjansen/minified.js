@@ -19,7 +19,6 @@ main: `<div>
  <li><a href="#select_sibling">Get an Element's Next Sibling</a></li>
  <li><a href="#select_prev_sibling">Get an Element's Previous Sibling</a></li>
  <li><a href="#select_abort">Abort an each() Loop</a></li>
- <li><a href="#select_extend">Extend Minified Lists with New Methods</a></li>
 </ul></li>
 <li><a href="#html">Modify HTML Structure</a><ul>
  <li><a href="#html_text">Set Text Content</a></li>
@@ -69,7 +68,12 @@ main: `<div>
  <li><a href="#formats_parsedate">Parse a Date</a></li>
  <li><a href="#formats_createtemplate">Formats and Templates</a></li>
 </ul></li>
-
+<ul>
+<li><a href="#extend">Extend Minified</a><ul>
+ <li><a href="#extend_modules">Create New Modules</a></li>
+ <li><a href="#extend_list">Add Methods to Lists</a></li>
+ <li><a href="#extend_static">Add Functions to $ and _</a></li>
+ /ul></li>
 <li><a href="#something_missing">Missing Something?</a></li>
 </ul>
 
@@ -211,19 +215,6 @@ Just use <var>find()</var> instead of <var>each()</var>, and return a value to a
 <p>
 API: <a href="/api/find.html">find()</a>.<br/>
 </p>
-
-
-<h3><a name="select_extend">Extend Minified Lists with New Methods</a></h3>
-<p>
-<pre>MINI.M.prototype.children = function() { return $('*', this, true); };
-var children = $('#parent').children();</pre>
-Minified's internal class for lists is exposed as <span class="var">MINI.M</span>. This allows you to add 
-new methods or modify existing methods.
-</p>
-<p>
-API: <a href="/api/M.html">MINI.M</a>.<br/>
-</p>
-
 
 
 <h2><a name="html">Modify HTML Structure</a></h2>
@@ -819,6 +810,51 @@ API: <a href="/api/format.html">_.format()</a>, <a href="/api/formathtml.html">_
 <a href="/api/template.html">_.template()</a>.<br/>
 </p>
 
+
+
+<h2><a name="extend">Extend Minified</a></h2>
+<h3><a name="extend_modules">Create New Modules</a></h3>
+<p>
+<pre>
+define('makeGreen', function(require) {
+    var MINI = require('minified'), $ = MINI.$; // private ref to Minified
+    return function(list) {
+        $(list).set({$color: '#0f0', $backgroundColor: '#050'});
+    });
+ });
+ 
+ var makeGreen = require('makeGreen');
+ makeGreen('.notGreenEnough');
+ </pre>
+Minified publishes a simple <var>define()</var> function in the default context. It is backward-compatible to AMD, so your module will
+also be a valid AMD module, but does not support most of AMD's features. <var>define()</var> 'publishs' a reference that can later be obtained 
+using <var>require()</var>. The callback given to <var>define()</var> will be called once to obtain the module.
+</p>
+<p>
+API: <a href="/api/define.html">define()</a>, <a href="/api/reuquire.html">require()</a>.<br/>
+</p>
+
+<h3><a name="extend_list">Add Methods to Lists</a></h3>
+<p>
+<pre>MINI.M.prototype.children = function() { return $('*', this, true); };
+var children = $('#parent').children();</pre>
+Minified's internal class for lists is exposed as <span class="var">MINI.M</span>. This allows you to add 
+new methods or modify existing methods.
+</p>
+<p>
+API: <a href="/api/M.html">MINI.M</a>.<br/>
+</p>
+
+<h3><a name="extend_static">Add Functions to $ and _</a></h3>
+<p>
+<pre>MINI.$.goTo = function(url) { window.location = url; };
+MINI._.isShorterThan = function(s, n) { return s == null || s.length &lt; n; };
+
+if (_.isShorterThan(userInput, 5))
+	$.goTo('error.html');
+</pre>
+The objects exposed by Minified can easily be modified. There is only one instance and really no magic involved. Just extend them as you wish.
+</p>
 
 
 

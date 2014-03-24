@@ -84,11 +84,11 @@ $('#stopButton').on('click', prom.stop);
 
 <h2>New: define() to define Minified modules</h2>
 <p><span class="var"><a href="/api/define.html">define()</a></span> has been around for a long time, but only in beta 5 it becomes a part of the public API. 
-<var>define()</var> is a simplified AMD implementation sufficient to provide Minified-only modules. It is AMD-backward compatible, meaning that any
+<var>define()</var> is an extremely simplified AMD implementation sufficient to provide Minified-only modules. It is AMD-backward compatible, meaning that any
 module written for Minified should also work with a fully-blown AMD implementation. It is not enough to support a library written for AMD though.</p>
 
 <pre>
-define('makeGreen', function() {
+define('makeGreen', function(require) {
     var MINI = require('minified'), $ = MINI.$; // private ref to Minified
     return function(list) {
         $(list).set({$color: '#0f0', $backgroundColor: '#050'});

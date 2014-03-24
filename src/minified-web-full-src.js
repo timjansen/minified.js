@@ -84,7 +84,7 @@
  * 
  * @example Creates a simple module and uses it:
  * <pre>
- * define('makeGreen', function() {
+ * define('makeGreen', function(require) {
  *     var MINI = require('minified'), $ = MINI.$; // obtain own ref to Minified
  *     return function(list) {
  *         $(list).set({$color: '#0f0', $backgroundColor: '#050'});
@@ -96,13 +96,16 @@
  * </pre>
  * 
  * @param name the name of the module to request. In Minified's implementation, only 'minified' is supported.
- * @param factoryFunction will be called the first the the name is defined to obtain the module reference. It must return the value that 
- *                        is returned by ##require(). The function will only be called once, without any arguments, 
- *                        and the result will be cached forever.
+ * @param factoryFunction is a <code>function(require)</code> will be called the first time the name is defined to obtain the module 
+ * 						  reference. It received a reference to ##require() (which is required for AMD backward-compatibility) and 
+ * 						  must return the value that is returned by ##require(). The function will only be called once, its result will 
+ *                        be cached.
+ *                        <dl><dt>require</dt><dd>A reference to ##require(). While you could use <var>require()</var> from the global
+ *                        context, this would prevent backward compatibility with AMD.</dd>
+ *                        <dt class="returnValue">(callback return value)</dt><dd>The reference to be returned by ##require().</dd></dl>
  *                        
  * @see ##require() can be used to obtain references defined with ##define().                       
  */
-
 
 /*$
  * @id amdsupport
@@ -116,8 +119,8 @@
  */
 if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
 	(function(def){
-		this['define'] = function(name, f) { def[name] = def[name] || f(); };
 		this['require'] = function(name) { return def[name]; };
+		this['define'] = function(name, f) { def[name] = def[name] || f(this['require']); };
 	})({});
 }
 /*$

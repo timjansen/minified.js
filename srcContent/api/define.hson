@@ -20,9 +20,13 @@
 <dt id="define_name" class=""><a name="define_name"><var>name</var></a></dt>
 <dd class="">the name of the module to request. In Minified's implementation, only 'minified' is supported.</dd>
 <dt id="define_factoryFunction" class=""><a name="define_factoryFunction"><var>factoryFunction</var></a></dt>
-<dd class="">will be called the first the the name is defined to obtain the module reference. It must return the value that
-is returned by <code><a href='require.html' class='func'>require()</a></code>. The function will only be called once, without any arguments,
-and the result will be cached forever.
+<dd class="">is a <code>function(require)</code> will be called the first time the name is defined to obtain the module
+reference. It received a reference to <code><a href='require.html' class='func'>require()</a></code> (which is required for AMD backward-compatibility) and
+must return the value that is returned by <code><a href='require.html' class='func'>require()</a></code>. The function will only be called once, its result will
+be cached.
+<dl><dt>require</dt><dd>A reference to <code><a href='require.html' class='func'>require()</a></code>. While you could use <span class="var">require()</span> from the global
+context, this would prevent backward compatibility with AMD.</dd>
+<dt class="returnValue">(callback return value)</dt><dd>The reference to be returned by <code><a href='require.html' class='func'>require()</a></code>.</dd></dl>
 </dd>
 </dl>
 
@@ -36,7 +40,7 @@ for Minified, you need a real AMD loader.</p><p></p></div>
 <h4>Example</h4>
 <div class="example"><p>Creates a simple module and uses it:
 <pre>
-define('makeGreen', function() {
+define('makeGreen', function(require) {
     var MINI = require('minified'), $ = MINI.$; // obtain own ref to Minified
     return function(list) {
         $(list).set({$color: '#0f0', $backgroundColor: '#050'});
