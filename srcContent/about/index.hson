@@ -4,17 +4,22 @@ section: about,
 main: `<div>
 <h1 class="nonInverted">About Minified</h1>
 
-<p>Call me old-fashioned, but the size of JavaScript libraries like jQuery and MooTools has always bothered me. 
-Don't get me wrong, they are fantastic libraries and I really like to use them, but they contain about 90kb of code even after minification. 
-This code needs to be parsed and executed on every page that you include them on.  For me, that just feels too large for what that they offer, 
-and especially for what I need. The 30kb size that they have after gzipping will can also cause a significant delay on low-bandwidth networks.
-</p><p>
-In the last years I worked on some personal projects (only <a href="http://timjansen.github.io/jarfiller/">jarfiller.org</a> has been published).
-When I work on them, I usually strive for perfection. Every unnecessary kilobyte hurts.  So instead of using jQuery, I started writing my own 
-little helper functions to replace jQuery functionality without the overhead. As I worked on several other projects, I wrote more and more helper 
-functions and started sharing them between projects until they became a library of their own.  By now they are so mature that I believe that this 
-library, called Minified, became a valid alternative to jQuery and MooTools at a fraction of the size.
-</p>
+<p>Minified started out because I thought that JavaScript libraries like jQuery and MooTools were too large for what they provide.  
+While they are fantastic libraries and I really liked to use them, they contain about 90kb of code even after minification. I needed just
+jQuery for some simple effects and some interactivity, but no matter how much I tried to optimize my own code, it always required a 
+JavaScript library that was 10 times as large as my code. It just felt too large for what it offered, and especially for what I actually needed.</p>
+
+<p>So I started writing my own set of helper functions that provided what I needed from jQuery. As I worked on several projects, I wrote more and more helper 
+functions and started sharing them between projects until they became a library of their own. Feature by feature I tried to match jQuery's functionality, but
+always with a focus of keeping the size as small as possible and constantly optimizing for size. In July 2013, after about a year of development, the Web module 
+was finally ready for its first beta release.</p>
+
+<p>In August 2013 I completed the Util module, a second 4kB module that provides helper functions for date arithmetic, list helpers, string helpers, date and number 
+parsing and formatting, templating, promises and other things that I frequently missed when using JavaScript. All of this is provided by other libraries, 
+of course, but only if you add half a dozen dependencies to your project.</p>
+
+<p>Today, Minified is so mature and provides so many features that I believe that Minified has become an awesome alternative to jQuery, surpassing it in
+many aspects, and all of this at a fraction of the size.</p>
 </ul>
 </p>
 <p style="margin-top: 1.5em">Thank you for your interest in Minified!
