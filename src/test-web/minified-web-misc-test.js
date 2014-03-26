@@ -54,4 +54,22 @@ describe('minified-web-misc-test.js', function() {
 			});
 		});
 	});
+	
+	describe('promise object assumptions', function() {
+		// this tests some assumptions abount plain objects that have been made in $.request(). While $.request()
+		// can not easily be tested with all its parameters, I test those assumptions to make sure they are
+		// valid on all browsers.
+		
+		var s = "Test!";
+		var n = 343;
+		var el = document.createElement('div');
+		var fd = window.FormData ? new window.FormData() : 5;
+		var plain = {};
+
+		check(!(s && s.constructor == Object.constructor));
+		check(!(n && n.constructor == Object.constructor));
+		check(!(el && el.constructor == Object.constructor));
+		check(!(fd && fd.constructor == Object.constructor));
+		check(plain && plain.constructor == Object.constructor);
+	});
 });

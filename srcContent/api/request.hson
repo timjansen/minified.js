@@ -26,9 +26,9 @@ on the server, and 'get' to request data). Not case sensitive.</dd>
 <dd class="">the server URL to request. May be a relative URL (relative to the document) or an absolute URL. Note that unless you do something
 fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only call URLs on the server your script originates from.</dd>
 <dt id="request_data" class=""><a name="request_data"><var>data (optional)</var></a></dt>
-<dd class="">data to send in the request, either as POST body or as URL parameters. It can be either an object as map of
-parameters (for all HTTP methods), a string (for all HTTP methods) or a DOM document ('post' only). If the method is
-'post', it will be sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the
+<dd class="">data to send in the request, either as POST body or as URL parameters. It can be either a plain object as map of
+parameters (for all HTTP methods), a string (for all HTTP methods), a DOM document ('post' only) or a FormData object ('post' only).
+If the method is 'post', it will be sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the
 same name, use an array of values in the map. Use null as value for a parameter without value.</dd>
 <dt id="request_settings" class=""><a name="request_settings"><var>settings (optional)</var></a></dt>
 <dd class="">a map of additional parameters. Supports the following properties (all optional):

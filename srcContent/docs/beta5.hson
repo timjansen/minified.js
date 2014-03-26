@@ -104,6 +104,9 @@ define('makeGreen', function(require) {
 <a href="https://github.com/promises-aplus/promises-tests/">Promises/A+ compliance tests</a>. The test suite has also been incorporated into
 Minified's test cases. Please note that the simplified Promises implementation in the Web module will not pass all tests.</p>
 
+<h2>Change: $.request uses only plain objects as form data</h2>
+<p><a href="/api/request.html">$.request()</a> will only use plain objects as form data. Everything else is passed directly to the
+XHR. This allows you to use <var>$.request()</var> with <var>FormData</var> objects.</p>
 
 <h2>Change: $float will work as expected</h2>
 <p><var>$float</var> will now work correctly in <a href="/api/set.html">set()</a> and all other methods. So far it didn't because in the DOM style object the property is called

@@ -589,12 +589,6 @@ define('minified', function() {
 		return signed + preDecimal;
 	}
 
-	function getTimezone(match, idx, refDate) { // internal helper, see below
-		if (idx == _null || !match)
-			return 0;
-		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
-	}
-
 	function processNumCharTemplate(tpl, input, fwd) {
 		var inputPos = 0;
 		var inHash;
@@ -614,6 +608,12 @@ define('minified', function() {
 		return fwd ? s : (input.substr(0, input.length - inputPos) + reverse(s));
 	}
 
+	function getTimezone(match, idx, refDate) { // internal helper, see below
+		if (idx == _null || !match)
+			return 0;
+		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
+	}
+
 	// formats number with format string (e.g. "#.000", "#,#", "00000", "000.00", "000.000.000,00", "000,000,000.##")
 	// choice syntax: <cmp><value>:<format>|<cmp><value>:<format>|... 
 	// e.g. 0:no item|1:one item|>=2:# items
@@ -623,20 +623,17 @@ define('minified', function() {
 		format = replace(format, /^\?/);
 		if (isDate(value)) {
 			var timezone, match;
-			var formatNoTZ = format;
-			var date = value;
-			var val;
 
 			if (match = /^\[(([+-]\d\d)(\d\d))\]\s*(.*)/.exec(format)) {
 				timezone = match[1];
-				date = dateAdd(value, 'minutes', getTimezone(match, 2, value));
-				formatNoTZ = match[4];
+				value = dateAdd(value, 'minutes', getTimezone(match, 2, value));
+				format = match[4];
 			}
 
-			return replace(formatNoTZ, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
+			return replace(format, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
 				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
-					var d = date['get' + val[0]]();
+					var d = value['get' + val[0]]();
 
 					var optionArray = (params && params.split(','));
 					if (isList(val[1])) 
@@ -4849,9 +4846,9 @@ define('minified', function() {
 	*             on the server, and 'get' to request data). Not case sensitive.
 	* @param url the server URL to request. May be a relative URL (relative to the document) or an absolute URL. Note that unless you do something 
 	*             fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only call URLs on the server your script originates from.
-	* @param data optional data to send in the request, either as POST body or as URL parameters. It can be either an object as map of 
-	*             parameters (for all HTTP methods), a string (for all HTTP methods) or a DOM document ('post' only). If the method is 
-	*             'post', it will be sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the 
+	* @param data optional data to send in the request, either as POST body or as URL parameters. It can be either a plain object as map of 
+	*             parameters (for all HTTP methods), a string (for all HTTP methods), a DOM document ('post' only) or a FormData object ('post' only). 
+	*             If the method is 'post', it will be sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the 
 	*             same name, use an array of values in the map. Use null as value for a parameter without value.
 	* @param settings optional a map of additional parameters. Supports the following properties (all optional):
 	* <dl><dt>headers</dt><dd>a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
@@ -4874,9 +4871,9 @@ define('minified', function() {
 	* @see ##$.toJSON() can create JSON messages.
 	* @see ##_.format() can be useful for creating REST-like URLs, if you use JavaScript's built-in <var>escape()</var> function.
 	*/
-	'request': function (method, url, data, settings) {
-		settings = settings || {}; 
-		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data != _null && !isNode(data) && !isString(data);
+	'request': function (method, url, data, settings0) {
+		var settings = settings0 || {}; 
+		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data && data.constructor == Object.constructor;
 		try {
 			//@condblock ie6compatibility
 			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
@@ -6434,6 +6431,7 @@ define('minified', function() {
 		 * @see ##_.formatHtml() is a variant of <var>format()</var> with HTML escaping.
 		 * @see ##_.escapeHtml() can be used by <var>template()</var> to escape HTML. 
 		 * @see ##_.escapeRegExp() can be used by <var>template()</var> to escape regular expressions. 
+		 * @see ##HTML() creates a HTML element tree from a template.
 		 */ 
 		'template': template,
 

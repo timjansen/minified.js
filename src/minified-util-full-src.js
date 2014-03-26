@@ -443,12 +443,6 @@ define('minified', function() {
 		return signed + preDecimal;
 	}
 
-	function getTimezone(match, idx, refDate) { // internal helper, see below
-		if (idx == _null || !match)
-			return 0;
-		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
-	}
-	
 	
 	function processNumCharTemplate(tpl, input, fwd) {
 		var inputPos = 0;
@@ -469,6 +463,12 @@ define('minified', function() {
 		return fwd ? s : (input.substr(0, input.length - inputPos) + reverse(s));
 	}
 	
+	function getTimezone(match, idx, refDate) { // internal helper, see below
+		if (idx == _null || !match)
+			return 0;
+		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
+	}
+	
 	
 	// formats number with format string (e.g. "#.000", "#,#", "00000", "000.00", "000.000.000,00", "000,000,000.##")
 	// choice syntax: <cmp><value>:<format>|<cmp><value>:<format>|... 
@@ -479,20 +479,17 @@ define('minified', function() {
 		format = replace(format, /^\?/);
 		if (isDate(value)) {
 			var timezone, match;
-			var formatNoTZ = format;
-			var date = value;
-			var val;
 
 			if (match = /^\[(([+-]\d\d)(\d\d))\]\s*(.*)/.exec(format)) {
 				timezone = match[1];
-				date = dateAdd(value, 'minutes', getTimezone(match, 2, value));
-				formatNoTZ = match[4];
+				value = dateAdd(value, 'minutes', getTimezone(match, 2, value));
+				format = match[4];
 			}
 
-			return replace(formatNoTZ, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
+			return replace(format, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
 				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
-					var d = date['get' + val[0]]();
+					var d = value['get' + val[0]]();
 					
 					var optionArray = (params && params.split(','));
 					if (isList(val[1])) 
@@ -2332,7 +2329,7 @@ define('minified', function() {
 		 * @return a new <var>Date</var> representing midnight in the current time zone
 		 */
 		'dateMidnight': dateMidnight,
-		
+
 		/*$
 		 * @id pad
 		 * @group FORMAT
@@ -2863,6 +2860,7 @@ define('minified', function() {
 		 * @see ##_.formatHtml() is a variant of <var>format()</var> with HTML escaping.
 		 * @see ##_.escapeHtml() can be used by <var>template()</var> to escape HTML. 
 		 * @see ##_.escapeRegExp() can be used by <var>template()</var> to escape regular expressions. 
+		 * @see ##HTML() creates a HTML element tree from a template.
 		 */ 
 		'template': template,
 		

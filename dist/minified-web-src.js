@@ -2915,9 +2915,9 @@ define('minified', function() {
 	*             on the server, and 'get' to request data). Not case sensitive.
 	* @param url the server URL to request. May be a relative URL (relative to the document) or an absolute URL. Note that unless you do something 
 	*             fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only call URLs on the server your script originates from.
-	* @param data optional data to send in the request, either as POST body or as URL parameters. It can be either an object as map of 
-	*             parameters (for all HTTP methods), a string (for all HTTP methods) or a DOM document ('post' only). If the method is 
-	*             'post', it will be sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the 
+	* @param data optional data to send in the request, either as POST body or as URL parameters. It can be either a plain object as map of 
+	*             parameters (for all HTTP methods), a string (for all HTTP methods), a DOM document ('post' only) or a FormData object ('post' only). 
+	*             If the method is 'post', it will be sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the 
 	*             same name, use an array of values in the map. Use null as value for a parameter without value.
 	* @param settings optional a map of additional parameters. Supports the following properties (all optional):
 	* <dl><dt>headers</dt><dd>a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
@@ -2940,9 +2940,9 @@ define('minified', function() {
 	* @see ##$.toJSON() can create JSON messages.
 	* @see ##_.format() can be useful for creating REST-like URLs, if you use JavaScript's built-in <var>escape()</var> function.
 	*/
-	'request': function (method, url, data, settings) {
-		settings = settings || {}; 
-		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data != _null && !isNode(data) && !isString(data);
+	'request': function (method, url, data, settings0) {
+		var settings = settings0 || {}; 
+		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data && data.constructor == Object.constructor;
 		try {
 			xhr = new XMLHttpRequest();
 			if (dataIsMap) { // if data is parameter map...

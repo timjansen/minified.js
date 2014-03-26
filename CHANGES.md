@@ -20,6 +20,8 @@ Beta 5 (in progress)
 * a promise's state can now be obtained by invoking it as a function without arguments (see promise(), full package only). promise.state has been removed.
 * set() and get() will automatically convert $float to $cssFloat
 * reverse() can be used to reverse strings
+* $.request() will only process plain objects as form data or URL parameters anymore. Everything else will be passed to XHR, allowing you to 
+  use $.request e.g. with FormData.
 
 Beta 4.2 (2014-12-26)
 ---------------------
