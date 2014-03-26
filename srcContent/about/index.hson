@@ -4,15 +4,15 @@ section: about,
 main: `<div>
 <h1 class="nonInverted">About Minified</h1>
 
-<p>Minified started out because I thought that JavaScript libraries like jQuery and MooTools were too large for what they provide.  
-While they are fantastic libraries and I really liked to use them, they contain about 90kb of code even after minification. I needed just
-jQuery for some simple effects and some interactivity, but no matter how much I tried to optimize my own code, it always required a 
-JavaScript library that was 10 times as large as my code. It just felt too large for what it offered, and especially for what I actually needed.</p>
+<p>I started working on an alternative library because the size of JavaScript libraries like jQuery and MooTools have always bothered me. Often I needed 
+jQuery only for some simple effects and some interactivity, but no matter how much I tried to optimize my own code, it always depended on a 90kB
+JavaScript library that was 10 times as large as my code. The libraries just felt too large for what they offered, and especially for what I actually needed.</p>
 
-<p>So I started writing my own set of helper functions that provided what I needed from jQuery. As I worked on several projects, I wrote more and more helper 
-functions and started sharing them between projects until they became a library of their own. Feature by feature I tried to match jQuery's functionality, but
-always with a focus of keeping the size as small as possible and constantly optimizing for size. In July 2013, after about a year of development, the Web module 
-was finally ready for its first beta release.</p>
+<p>Like so many others, I maintained my own set of helper functions that provided only what I needed from jQuery. As I worked on several projects, 
+more and more helper functions have been created. As I started sharing them between projects, they became a library of their own. Challenged by the idea of creating
+a valid replacement for jQuery at a fraction of the size, I tried to match jQuery feature by feature, but always with a focus of keeping the size as 
+small as possible and constantly optimizing for size. In July 2013, after about a year of development, the Minified Web module 
+was finally ready for its first release.</p>
 
 <p>In August 2013 I completed the Util module, a second 4kB module that provides helper functions for date arithmetic, list helpers, string helpers, date and number 
 parsing and formatting, templating, promises and other things that I frequently missed when using JavaScript. All of this is provided by other libraries, 

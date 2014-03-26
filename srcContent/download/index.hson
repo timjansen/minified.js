@@ -53,7 +53,7 @@ main: { template:`<div>
 <ul class="links">
 <li><a href="/builder/"><span class="link">Builder</span><br/>
 <span class="summary">Create your own custom-build of Minified.</span></a></li>
-<li><a href="http://sindresorhus.com/bower-components/#!/search/Minified"><span class="link">Bower Module</span><br/>
+<li><a href="http://bower.io/search/?q=Minified"><span class="link">Bower Module</span><br/>
 <span class="summary">Minified packaged for Bower.</span></a></li>
 <li><a href="https://npmjs.org/package/minified-headless"><span class="link">Minified Util for Node.js</span><br/>
 <span class="summary">Get a headless Minified Util version as npm module for use in node.js.</span></a></li>

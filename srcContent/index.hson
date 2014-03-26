@@ -13,8 +13,8 @@ main:{ template:`<div>
   <div id="whatDiv" style="margin-top: 3em;">
   	<div style="float: left; width: 20%; text-align: center;" class="wword">Wh<span class="colored">a</span>t?</div>
   	<div style="float: right; width: 80%; padding-top: 0.5em;"><div style="max-width: 45em;">Minified.js is a client-side JavaScript 
-  	library with low footprint (&lt;8kB) and a large feature set. It offers jQuery-like features (DOM manipulation, animation, 
-  	events, HTTP requests) and utility functions (collections, date&amp;number formatting, date arithmetic, templates) with a simple, coherent API.</div></div>
+  	library that's both powerful and small. It offers jQuery-like features (DOM manipulation, animation, 
+  	events, HTTP requests) and utility functions (collections, date&amp;number formatting, date arithmetic, templates) with a single, consistent API.</div></div>
   	<div style="clear: both;"></div>
   </div>
 
@@ -25,13 +25,12 @@ main:{ template:`<div>
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">Minified is smaller!</h3>
-  		Minified's size is only about 8 kB. The Web module 
-  		with it's jQuery-like feature weights even less at 4kB, <a href="#sizeCmp">a fraction of other libraries' size</a>. 
+  		Minified is smaller than 8kB. The Web module with its jQuery-like feature set is even under 4kB, <a href="#sizeCmp">a fraction of other libraries' size</a>. 
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
-  		<h3 class="nonInverted" style="margin-top: 0;">Easy to learn!</h3>
-  		Minified has a coherent API for all your basic needs - no need to include several libraries that
-  		all use different concepts and naming conventions. 
+  		<h3 class="nonInverted" style="margin-top: 0;">One-stop solution!</h3>
+  		Minified has a consistent API that fulfills all your basic needs - no need to include one library for DOM manipulation and events, another
+  		one for handling dates and a third library for templates. 
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">No surprises!</h3>
@@ -74,8 +73,8 @@ main:{ template:`<div>
 This demo shows you how to use a simple HTML template and how to handle events: 
 <iframe class="fiddle" width="100%" height="325" src="http://jsfiddle.net/tjansen/CyEr6/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe></p>
 
-<p>The next one shows how to do animation with some user interaction:
-<iframe class="fiddle" width="100%" height="325" src="http://jsfiddle.net/tjansen/y9c5q/14/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe></p>
+<p>This demo is a bit more complex and shows a simple, animated app:
+<iframe class="fiddle" width="100%" height="340" src="http://jsfiddle.net/tjansen/y9c5q/16/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe></p>
 
 <p>Check out the <a href="/docs/howto.html">How-to</a> and the <a href="/api/">API docs</a> to explore Minified on your
 own. Or go to <a href="https://docs.google.com/presentation/d/12Nq1LRNguHFO80_xQ5REwKXwdnPclaKOaA3K5PG2eoA/edit?usp=sharing">this presentation</a> or the <a href="docs/quickstart.html">tutorial</a> for some more guidance.</a></p>

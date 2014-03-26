@@ -2518,7 +2518,7 @@ define('minified', function() {
  	 * <tr><th>lastChild</th><td>Contains the last child element.</td></tr>
  	 * <tr><th>lastElementChild</th><td>Contains the last child element (not in IE &lt; 9).</td></tr>
  	 * <tr><th>nextElementSibling</th><td>Contains the element that follows the current node (not in IE &lt; 9).</td></tr>
- 	 * <tr><th>nextSibling</th><td>Contains the node that follows the current node.</td></tr>
+ 	 * <tr><th>nextSibling</th><td>Contains the node that follows the current node (see also ##next() ).</td></tr>
  	 * <tr><th>parentNode</th><td>Contains the node's parent (see also ##up() ).</td></tr>
  	 * <tr><th>previousElementSibling</th><td>Contains the element that precedes the current node (not in IE &lt; 9).</td></tr>
  	 * <tr><th>previousSibling</th><td>Contains the node that precedes the current node.</td></tr>
@@ -4873,7 +4873,7 @@ define('minified', function() {
 	*/
 	'request': function (method, url, data, settings0) {
 		var settings = settings0 || {}; 
-		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data && data.constructor == Object.constructor;
+		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data && (data['constructor'] == settings['constructor']);
 		try {
 			//@condblock ie6compatibility
 			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
@@ -4881,7 +4881,7 @@ define('minified', function() {
 			// @cond !ie6compatibility xhr = new XMLHttpRequest();
 			if (dataIsMap) { // if data is parameter map...
 				data = collector(eachObj, data, function processParam(paramName, paramValue) {
-					return collector(flexiEach, paramValue, function(v) {
+					return collector(flexiEach, paramValue, function(v) { 
 						return encodeURIComponent(paramName) + ((v != _null) ?  '=' + encodeURIComponent(v) : '');
 					});
 				}).join('&');

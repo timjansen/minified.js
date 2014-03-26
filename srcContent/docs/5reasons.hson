@@ -34,9 +34,12 @@ http://jsfiddle.net/tjansen/YaHp9/
 <pre><a href="/api/dollar.html">$</a>('#list').<a href="/api/ht.html">ht</a>('&lt;ul>{{each}}&lt;li class="{{if this.isDone}}strike{{/if}}">{{this.qty}}x {{this.desc}}&lt;/li>{{/each}}&lt;/ul>', shoppingList);</pre>
 <p>You can also create HTML structures with a template and then add it to the document:</p>
 <pre><a href="/api/dollar.html">$</a>('#list ul').<a href="/api/addFirst.html">addFirst</a>(<a href="/api/html.html">HTML</a>('&lt;li class="{{if isDone}}strike{{/if}}">{{qty}}x {{desc}}&lt;/li>', newFirstItem));</pre>
-<p>Another highlight is the support for formats. You can specify a <a href="/api/formatvalue.html">format</a> for each output value. Beside the usual numbers and dates, Minified also supports choice formats that can greatly simplify templates.</p>
+<p>Another highlight is the support for formats. You can specify a <a href="/api/formatvalue.html">format</a> for each output value. Beside the usual numbers and dates, 
+Minified also supports choice formats that can greatly simplify templates.</p>
 <pre><a href="/api/dollar.html">$</a>('#summary').<a href="/api/ht.html">ht</a>('You need to buy {{items.length :: 0:no items|1:one item|# items}} before {{target :: MM/dd}}. Estimated cost: {{cost :: $#.00}}', 
 {items: groceryList, target: targetDate, cost: totalPrice});</pre>
+<p>HTML Templates can be embedded in &lt;script> elements. Choice formats and HTML templates make it easy to support several languages in your application, as you can
+keep all text and all formatting on the HTML page. </p>
 
 <h2>Reason 3: On</h2>
 <p><var>on()</var> is Minified's way of registering event handlers. Compared two similar functions in other frameworks, it has some time-saving extra features.</p>
@@ -47,7 +50,7 @@ can prefix the event name(s) with '|'. A prefix of '?' will use the return value
 <a href="/api/dollar.html">$</a>('#btn2').<a href="/api/on.html">on</a>('|click', function() { window.alert('Start default behavior now!'); } );
 <a href="/api/dollar.html">$</a>('#btn3').<a href="/api/on.html">on</a>('?click', function() { return window.confirm('Default behavior?'); } );</pre>
 <p>The prefix syntax not only saves you from adding a return to your event handler, but does something more important. It allows you to remove event handling logic from your 
-handler, and to let do only one thing: execute the action caused by the event. This concept is taken one step further by another <var>on()</var> feature, the handler arguments:</p>
+handler and concentrate on only one thing: execute the action caused by the event. This concept is taken one step further by another <var>on()</var> feature, the handler arguments:</p>
 <pre><a href="/api/dollar.html">$</a>('#smallSizeButton').<a href="/api/on.html">on</a>('click', setFontSize, [0]);
 <a href="/api/dollar.html">$</a>('#mediumSizeButton').<a href="/api/on.html">on</a>('click', setFontSize, [1]);
 <a href="/api/dollar.html">$</a>('#largeSizeButton').<a href="/api/on.html">on</a>('click', setFontSize, [2]);</pre>

@@ -412,14 +412,14 @@ event:
 
 <p>There are several additional 'smart' events that may be useful to to you:
 <ul><li><a href="/api/onchange.html">onChange()</a> notifies you when the value of an input field or checkbox changes.</li>
-<ul><li><a href="/api/onover.html">onOver()</a> tracks whether the mouse is hovering over an element.</li>
-<ul><li><a href="/api/onchange.html">onFocus()</a> tracks whether an element has the focus.</li>
+<li><a href="/api/onover.html">onOver()</a> tracks whether the mouse is hovering over an element.</li>
+<li><a href="/api/onchange.html">onFocus()</a> tracks whether an element has the focus.</li>
 </ul></p>
 
 <p>
 Event handlers can be removed using the function <a href="/api/off.html"><code>off()</code></a>. 
 <a href="/api/off.html"><code>off()</code></a> is a global function that removes the handler function from all events and 
-all elements is has been registered for.
+all elements it has been registered for.
 <pre>
 <a href="/api/off.html">$.off</a>(setZoomLevel);
 </pre>
@@ -536,27 +536,6 @@ The next example transmits the data in JSON form to the imaginary service and th
 </pre>
 </p>
 
-
-<h2>Custom Animations</h2>
-
-<p>When doing JavaScript animation you should avoid using a simple timeout, as this will cause unneccessary CPU load when the browser 
-is not displaying your page and you also won't be able to have the optimal frame rate. Modern browsers support 'requestAnimationFrame' which 
-allows you to provide a callback to perform animation at a browser-controlled rate. This makes your animation smoother and 
-lowers the CPU load. Minified's <a href="/api/loop.html"><code>loop()</code></a> function wraps 'requestAnimationFrame' while also providing 
-backward compatibility for older browsers.</p>
-
-<p>The following example will move a div in a circular movement:
-<pre>
-var myDiv = <a href="/api/dollardollar.html">$$</a>('#myAnimatedDiv');
-var d = 2500;              // one rotation every 2.5s
-var r = 100;               // radius 100 px
-<a href="/api/loop.html">$.loop</a>(function(t, stopFunc) {
-    var a = 2 * Math.PI * t / d;               
-    myDiv.style.left = (r * Math.cos(a) + ' px';
-    myDiv.style.top = (r * Math.sin(a) + ' px';
-});
-</pre>
-</p>
 
 <h2>End</h2>
 <p>I hope this tutorial was helpful for you to get started with Minified development. If you want to read more, I would suggest 

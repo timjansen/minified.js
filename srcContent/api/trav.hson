@@ -49,7 +49,7 @@ only elements will be added. Duplicates will be automatically be removed from th
 <tr><th>lastChild</th><td>Contains the last child element.</td></tr>
 <tr><th>lastElementChild</th><td>Contains the last child element (not in IE &lt; 9).</td></tr>
 <tr><th>nextElementSibling</th><td>Contains the element that follows the current node (not in IE &lt; 9).</td></tr>
-<tr><th>nextSibling</th><td>Contains the node that follows the current node.</td></tr>
+<tr><th>nextSibling</th><td>Contains the node that follows the current node (see also <code><a href='next.html' class='func'>next()</a></code> ).</td></tr>
 <tr><th>parentNode</th><td>Contains the node's parent (see also <code><a href='up.html' class='func'>up()</a></code> ).</td></tr>
 <tr><th>previousElementSibling</th><td>Contains the element that precedes the current node (not in IE &lt; 9).</td></tr>
 <tr><th>previousSibling</th><td>Contains the node that precedes the current node.</td></tr>
