@@ -95,7 +95,7 @@ describe('minified-web-class-test.js', function() {
 		
 		it('sets style', function() {
 			var e = EE('div', {$$: 'width: 55px;'});
-			check(/width.*55.*px/.test(e.get('$$')));
+			check(/width.*55.*px/i.test(e.get('$$')));
 		});
 		
 		it('just works', function() {
@@ -119,19 +119,5 @@ describe('minified-web-class-test.js', function() {
 	});
 	
 
-
-	/*
-	describe('.fill()', function() {
-		it('', function() {
-			
-		});
-		it('', function() {
-			
-		});
-		it('', function() {
-			
-		});
-	});
-	*/
 
 });

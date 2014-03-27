@@ -108,6 +108,7 @@ module.exports = (function() {
 	 * @stop
 	 */
 
+	/** @const */
 	var MAX_CACHED_TEMPLATES = 99;
 	var templateCache={}; // template -> function
 	var templates = [];   // list of MAX_CACHED_TEMPLATES templates

@@ -31,9 +31,10 @@
 	 * require.js is available. If you always use Minified with an AMD framework, you can safely turn this off.
 	 */
 if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
-	var def = {};
-	this['define'] = function(name, f) {def[name] = def[name] || f();};
-	this['require'] = function(name) { return def[name]; }; 
+	(function(def){
+		var require = this['require'] = function(name) { return def[name]; };
+		this['define'] = function(name, f) { def[name] = def[name] || f(require); };
+	})({});
 }
 
 	/*$
@@ -131,6 +132,7 @@ module.exports = (function() {
 	 * @stop
 	 */
 
+	/** @const */
 	var MAX_CACHED_TEMPLATES = 99;
 	var templateCache={}; // template -> function
 	var templates = [];   // list of MAX_CACHED_TEMPLATES templates

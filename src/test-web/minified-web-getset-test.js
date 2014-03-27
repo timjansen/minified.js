@@ -292,7 +292,7 @@ describe('minified-web-getset-test.js', function() {
 			$('#container2').add(e);
 			e.set('$$fade', 0.72);
 
-			check(Math.abs(e.get('$opacity', true) - 0.72) < 0.01 || Math.abs(e.get('$filter', true) - 0.72) < 0.01);
+			check(Math.abs(e.get('$opacity', true) - 0.72) < 0.01 || Math.abs(e.get('$filter', true) - 72) < 0.1);
 			check(e.get('$visibility'), 'visible');
 		}); 
 
@@ -300,7 +300,7 @@ describe('minified-web-getset-test.js', function() {
 			var e = EE('div', {$visibility: 'visible'});
 			$('#container2').add(e);
 			e.set('$$fade', 1);
-			check(e.get('$opacity', true) == 1 || e.get('$filter', true) == 1);
+			check(e.get('$opacity', true) == 1 || isNaN(Math.abs(e.get('$filter', true)) ));
 			check(e.get('$visibility'), 'visible');
 		});
 

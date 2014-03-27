@@ -119,8 +119,8 @@
  */
 if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
 	(function(def){
-		this['require'] = function(name) { return def[name]; };
-		this['define'] = function(name, f) { def[name] = def[name] || f(this['require']); };
+		var require = this['require'] = function(name) { return def[name]; };
+		this['define'] = function(name, f) { def[name] = def[name] || f(require); };
 	})({});
 }
 /*$
@@ -183,12 +183,6 @@ define('minified', function() {
 	var ANIMATION_HANDLERS = {}; // global map of id->{c: <callback function>, t: <timestamp>, s:<stop function>} currently active
 	var ANIMATION_HANDLER_COUNT = 0; // number of active handlers
 	
-	/** @type {!function()} */
-	var REQUEST_ANIMATION_FRAME = _window['requestAnimationFrame'] || function(callback) {
-		delay(callback, 33); // 30 fps as fallback
-	};
-
-		
 
 	/*$
 	 * @id ie9compatibility
@@ -348,10 +342,7 @@ define('minified', function() {
 			if (array[i] === value) 
 				array['splice'](i--, 1);
 	}
-
-	function delay(f, delayMs) {
-		return setTimeout(f, delayMs||0);
-	}
+	
 	function extractNumber(v) {
 		return parseFloat(replace(v, /^[^\d-]+/));
 	}
@@ -529,7 +520,7 @@ define('minified', function() {
 		if (DOMREADY_HANDLER)
 			DOMREADY_HANDLER.push(handler);
 		else
-			delay(handler);
+			setTimeout(handler, 0);
 	}
 
 	function $$(selector) {
@@ -698,9 +689,9 @@ define('minified', function() {
 			if (state == _null) {
 				state = newState;
 				values = newValues;
-   				delay(function() {
+   				setTimeout(function() {
    					flexiEach(deferred, call);
-   				});
+   				}, 0);
 			}
 		};
 		/*$
@@ -729,7 +720,7 @@ define('minified', function() {
 				}
 			};
 			if (state != _null)
-				delay(callCallbacks);
+				setTimeout(callCallbacks, 0);
 			else
 				deferred.push(callCallbacks);
 			return promise2;
@@ -817,9 +808,9 @@ define('minified', function() {
 	'sub': function(startIndex, endIndex) {
 		var s = (startIndex < 0 ? this['length']+startIndex : startIndex);
 		var e = endIndex >= 0 ? endIndex : this['length'] + (endIndex || 0);
- 		return this['filter'](function(o, index) { 
+ 		return new M(filter(this, function(o, index) { 
  			return index >= s && index < e; 
- 		});
+ 		}));
  	},
  	
 	 
@@ -1237,7 +1228,7 @@ define('minified', function() {
  	 * @see ##filter() offers function-based filtering.
  	 */
 	'only': function(selector) {
-		return this['filter'](getFilterFunc(selector));
+		return new M(filter(this, getFilterFunc(selector)));
 	},
 	
 	
@@ -1282,7 +1273,7 @@ define('minified', function() {
  	 * @see ##only() is the opposite of <var>not()</var> - it keeps all elements that match the selector.
  	 */
 	'not': function(selector) {
-		return this['filter'](getInverseFilterFunc(selector));
+		return new M(filter(this, getInverseFilterFunc(selector)));
 	},
 
 	
@@ -1390,7 +1381,7 @@ define('minified', function() {
 					else if (spec == '$$fade') {
 						s = 
 						// @condblock ie8compatibility
-						IS_PRE_IE9 ? (isNaN(self['get']('$filter', _true)) ? 1 : self['get']('$filter', _true)) : 
+						IS_PRE_IE9 ? (isNaN(self['get']('$filter', _true)) ? 1 : self['get']('$filter', _true)/100) : 
 						// @condend
 							isNaN(self['get']('$opacity', _true)) ? 1 : self['get']('$opacity', _true); 
 					}
@@ -3427,15 +3418,19 @@ define('minified', function() {
 			ANIMATION_HANDLER_COUNT--;
 			return entry.t || 0;
 		}};
-		
 		if (!(ANIMATION_HANDLER_COUNT++))
 			(function raFunc(ts) {
 				eachObj(ANIMATION_HANDLERS, function(id, a) {
 					a.f = a.f || ts;
 					a.c(a.t = ts - a.f, a.s);
 				});
-				if (ANIMATION_HANDLER_COUNT)
-					REQUEST_ANIMATION_FRAME(raFunc); 
+				
+				if (ANIMATION_HANDLER_COUNT) {
+					if (_window['requestAnimationFrame'])
+						_window['requestAnimationFrame'](raFunc);
+					else
+						setTimeout(function() { raFunc(+new Date()); }, 33); // 30 fps as fallback
+				}
 			})(); 
 		return entry.s; 
 	},

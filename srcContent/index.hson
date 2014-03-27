@@ -139,7 +139,7 @@ own. Or go to <a href="https://docs.google.com/presentation/d/12Nq1LRNguHFO80_xQ
   <p>Minified has been tested successfully with...</p>
   <table>
 <tr><th>Firefox</th><th>Chrome</th><th>Internet Explorer</th><th>Safari / iOS</th><th>Safari / MacOS</th><th>Android browser</th></tr>
-<tr><td>3.6 and higher</td><td>14 and higher</td><td>6.0 and higher</td><td>iOS 3.0 and higher</td><td>4.0 and higher</td><td>Android 2.2 and higher</td></tr>
+<tr><td>3.6 and higher</td><td>14 and higher</td><td>6.0 and higher</td><td>iOS 3.0 and higher</td><td>5.1 and higher</td><td>Android 2.2 and higher</td></tr>
 </table>
 
 `, inputPath: ['tmp/sizes.json', 'package.json']}

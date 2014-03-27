@@ -19,7 +19,9 @@
 		var isLegacyIE = (!!document.all && ![].map); // remove non-ie versions on old ie
 		
 		function fail(text) {
-			throw new Error(text);
+			var e = new Error(text);
+			if (window.console) console.log(e.stack);
+			throw e;
 		}
 
 		function check(value, expected, extraMsg) {

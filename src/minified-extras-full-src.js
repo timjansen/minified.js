@@ -87,9 +87,9 @@ function dummy() {
 			if (state == _null && newState != _null) {
 				state = newState;
 				values = isList(newValues) ? newValues : [newValues];
-				delay(function() {
+				setTimeout(function() {
 					each(deferred, function(f) {f();});
-				});
+				}, 0);
 			}
 			return state;
 		};
@@ -248,7 +248,7 @@ function dummy() {
 			};
 			promise2['stop0'] = set['stop'];
 			if (state != _null)
-				delay(callCallbacks);
+				setTimeout(callCallbacks, 0);
 			else
 				deferred.push(callCallbacks);
 			return promise2;
@@ -617,7 +617,7 @@ function dummy() {
 		 */
 		'wait': function(durationMs, args) {
 			var p = promise();
-			var id = delay(function() { 
+			var id = setTimeout(function() { 
 				p(_true, args); 
 			}, durationMs);
 			p['stop0'] = function() { p(_false); clearTimeout(id); };
