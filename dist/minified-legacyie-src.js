@@ -5080,12 +5080,14 @@ define('minified', function() {
 	* @see ##animate() for simple, property-based animations.
 	*/
 	'loop': function(paintCallback) {
-		var id = idSequence++;
 		var startTimestamp;
-		var currentTime;
+		var currentTime = 0;
+		var id = idSequence++;
 		function stop() {
-			delete ANIMATION_HANDLERS[id];
-			ANIMATION_HANDLER_COUNT--;
+			if (ANIMATION_HANDLERS[id]) {
+				delete ANIMATION_HANDLERS[id];
+				ANIMATION_HANDLER_COUNT--;
+			}
 			return currentTime;
 		}
 		ANIMATION_HANDLERS[id] = function(ts) {

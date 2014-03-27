@@ -64,6 +64,22 @@ describe('minified-web-misc-test.js', function() {
 				}
 			});
 		});
+		it('can be stopped immediately', function(done) {
+			var count = 0;
+			var stop = $.loop(function() {
+				count++;
+			});
+			check(check, 0);
+
+			var t = stop();
+			check(check, 0);
+			check(t, 0);
+			
+			stop(); // can be stopped multiple times
+			stop();
+			
+			setTimeout(function() { done(); }, 100); // 100ms without invocation is ok
+		});
 	});
 	
 	describe('request object assumptions', function() {
