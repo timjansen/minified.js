@@ -69,10 +69,10 @@ describe('minified-web-misc-test.js', function() {
 			var stop = $.loop(function() {
 				count++;
 			});
-			check(check, 0);
+			check(count, 0);
 
 			var t = stop();
-			check(check, 0);
+			check(count, 0);
 			check(t, 0);
 			
 			stop(); // can be stopped multiple times

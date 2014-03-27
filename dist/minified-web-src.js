@@ -3124,28 +3124,25 @@ define('minified', function() {
 		var startTimestamp;
 		var currentTime = 0;
 		var id = idSequence++;
+		var requestAnim = _window['requestAnimationFrame'] || function(f) { setTimeout(function() { f(+new Date()); }, 33); }; // 30 fps as fallback
+		function raFunc(ts) {
+			eachObj(ANIMATION_HANDLERS, function(id, f) { f(ts); });
+			if (ANIMATION_HANDLER_COUNT) 
+				requestAnim(raFunc);
+		}; 
 		function stop() {
 			if (ANIMATION_HANDLERS[id]) {
 				delete ANIMATION_HANDLERS[id];
 				ANIMATION_HANDLER_COUNT--;
 			}
 			return currentTime;
-		}
+		} 
 		ANIMATION_HANDLERS[id] = function(ts) {
 			paintCallback(currentTime = ts - (startTimestamp = startTimestamp || ts), stop);
 		};
 
-		if (!(ANIMATION_HANDLER_COUNT++))
-			(function raFunc(ts) {
-				eachObj(ANIMATION_HANDLERS, function(id, f) { f(ts); });
-
-				if (ANIMATION_HANDLER_COUNT) {
-					if (_window['requestAnimationFrame'])
-						_window['requestAnimationFrame'](raFunc);
-					else
-						setTimeout(function() { raFunc(+new Date()); }, 33); // 30 fps as fallback
-				}
-			})(); 
+		if (!(ANIMATION_HANDLER_COUNT++)) 
+			requestAnim(raFunc);
 		return stop; 
 	},
 
