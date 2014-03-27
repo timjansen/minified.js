@@ -179,8 +179,7 @@ define('minified', function() {
 	 * @id animation_vars
 	 * @dependency
 	 */
-	 /** @type {!Array.<{c:!function(), t:!number, s:!function()}>} */
-	var ANIMATION_HANDLERS = {}; // global map of id->{c: <callback function>, t: <timestamp>, s:<stop function>} currently active
+	var ANIMATION_HANDLERS = {}; // global map of id->run() currently active
 	var ANIMATION_HANDLER_COUNT = 0; // number of active handlers
 	
 
@@ -3410,20 +3409,20 @@ define('minified', function() {
 	*/
 	'loop': function(paintCallback) {
 		var id = idSequence++;
-		var entry = ANIMATION_HANDLERS[id] = {c: paintCallback,
-				//   t: last timestamp 
-				//   f: first timestamp
-				 	 s: function() {
+		var startTimestamp;
+		var currentTime;
+		function stop() {
 			delete ANIMATION_HANDLERS[id];
 			ANIMATION_HANDLER_COUNT--;
-			return entry.t || 0;
-		}};
+			return currentTime;
+		}
+		ANIMATION_HANDLERS[id] = function(ts) {
+			paintCallback(currentTime = ts - (startTimestamp = startTimestamp || ts), stop);
+		};
+
 		if (!(ANIMATION_HANDLER_COUNT++))
 			(function raFunc(ts) {
-				eachObj(ANIMATION_HANDLERS, function(id, a) {
-					a.f = a.f || ts;
-					a.c(a.t = ts - a.f, a.s);
-				});
+				eachObj(ANIMATION_HANDLERS, function(id, f) { f(ts); });
 				
 				if (ANIMATION_HANDLER_COUNT) {
 					if (_window['requestAnimationFrame'])
@@ -3432,7 +3431,7 @@ define('minified', function() {
 						setTimeout(function() { raFunc(+new Date()); }, 33); // 30 fps as fallback
 				}
 			})(); 
-		return entry.s; 
+		return stop; 
 	},
 	
 	
