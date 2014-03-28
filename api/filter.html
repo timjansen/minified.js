@@ -55,7 +55,7 @@
 <dt class="returnValue">(callback return value)</dt><dd><span class="var">true</span> to include the item in the new list, <span class="var">false</span> to omit it.</dd></dl></dd>
 <dt id="filter_value" class=""><a name="filter_value"><var>value</var></a></dt>
 <dd class="">a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
-be a function.</dd>
+be a function. Requires Util module.</dd>
 <dt id="filter_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="filter_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the new, filtered <a href="list.html" class="func">list</a>
 </dd>
@@ -63,8 +63,8 @@ be a function.</dd>
 
 <h4>Description</h4>
 <div class="description"><p>Creates a new <a href="list.html" class="func">Minified list</a> by taking an existing list and omitting certain elements from it. You
-can either specify a callback function to approve those items that will be in the new list, or
-you can pass a value to remove from the new list.</p><p>If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
+can either specify a callback function to approve those items that will be in the new list (all modules), or
+you can pass a value to remove from the new list (Util module only).</p><p>If the callback function returns true, the item is shallow-copied in the new list, otherwise it will be removed.
 For values, a simple equality operation (<code>==</code>) will be used.</p><p></p></div>
 
 <div class="examples">
@@ -122,8 +122,6 @@ var disqus_url = "http://minifiedjs.com/api/filter.html";
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
 </li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
-</li><li><a href="defer.html" class="func">$.defer()</a> 
-</li><li><a href="delay.html" class="func">$.delay()</a> 
 </li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
@@ -152,14 +150,18 @@ var disqus_url = "http://minifiedjs.com/api/filter.html";
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="hide.html" class="func">.hide()</a> <span class="tocMod">Web</span>
 </li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
+</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onclick.html" class="func">.onClick()</a> <span class="tocMod">Web</span>
 </li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
@@ -170,6 +172,7 @@ var disqus_url = "http://minifiedjs.com/api/filter.html";
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="show.html" class="func">.show()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
 </li><li><a href="startswith.html" class="func">.startsWith()</a> <span class="tocMod">Util</span>
 </li><li><a href="sub.html" class="func">.sub()</a> <span class="tocMod">Web, Util</span>
@@ -180,6 +183,7 @@ var disqus_url = "http://minifiedjs.com/api/filter.html";
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="up.html" class="func">.up()</a> <span class="tocMod">Web</span>
 </li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
@@ -203,6 +207,7 @@ var disqus_url = "http://minifiedjs.com/api/filter.html";
 </li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
 </li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
 </li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isempty.html" class="func">_.isEmpty()</a> <span class="tocMod">Util</span>
 </li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
 </li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
 </li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>
@@ -221,9 +226,10 @@ var disqus_url = "http://minifiedjs.com/api/filter.html";
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="stop.html" class="func">promise.stop()</a> 
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

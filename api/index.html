@@ -42,14 +42,6 @@ Contains the number of elements in the Minified list.</div>
 <h3><a href="dollardollar.html">$$()</a></h3>
 <div class="summary">Returns a DOM object containing the first match of the given selector, or <span class="var">undefined</span> if no match was found.</div>
 
-<h3><a href="defer.html">$.defer()</a></h3>
-<div class="summary">
-Executes the function in the browser event loop, as soon as the browser can.</div>
-
-<h3><a href="delay.html">$.delay()</a></h3>
-<div class="summary">
-Executes the function after the specified delay, optionally passing arguments to it.</div>
-
 <h3><a href="getcookie.html">$.getCookie()</a></h3>
 <div class="summary">Returns the cookie with the given name.</div>
 
@@ -100,7 +92,7 @@ Creates a new  Promise that will be fulfilled as soon as the specified number of
 <div class="summary">Calls all functions in the list.</div>
 
 <h3><a href="clone.html">.clone()</a></h3>
-<div class="summary">Clones all HTML elements and text nodes in the given list by creating a deep copy of them.</div>
+<div class="summary">Clones all HTML nodes in the given list by creating a deep copy of them.</div>
 
 <h3><a href="collect.html">.collect()</a></h3>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
@@ -136,6 +128,9 @@ Creates a function allows you to set all list members to one of two states or an
 <h3><a href="get.html">.get()</a></h3>
 <div class="summary">Retrieves properties, attributes and styles from the list's first element.</div>
 
+<h3><a href="hide.html">.hide()</a></h3>
+<div class="summary">Hides the elements of the list.</div>
+
 <h3><a href="ht.html">.ht()</a></h3>
 <div class="summary">Replaces the content of the list elements with the HTML generated using the given template.</div>
 
@@ -151,6 +146,13 @@ Creates a function allows you to set all list members to one of two states or an
 <h3><a href="map.html">.map()</a></h3>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
 
+<h3><a href="next.html">.next()</a></h3>
+<div class="summary">Finds the next sibling elements matching the given selector or filter function for each list element, and returns the results as a list.</div>
+
+<h3><a href="not.html">.not()</a></h3>
+<div class="summary">Returns a new list that contains only those elements that do not match the given selector, callback function
+or have the given index.</div>
+
 <h3><a href="offset.html">.offset()</a></h3>
 <div class="summary">Returns the pixel page coordinates of the list's first element.</div>
 
@@ -159,6 +161,9 @@ Creates a function allows you to set all list members to one of two states or an
 
 <h3><a href="onchange.html">.onChange()</a></h3>
 <div class="summary">Registers a handler to be called whenever content of the list's input fields changes.</div>
+
+<h3><a href="onclick.html">.onClick()</a></h3>
+<div class="summary">Registers a function to be called for 'click' events.</div>
 
 <h3><a href="onfocus.html">.onFocus()</a></h3>
 <div class="summary">Registers a function to be called when a list element either gets the focus or the focus is removed (blur).</div>
@@ -183,7 +188,7 @@ or have the given index.</div>
 <div class="summary">Replaces the list items with the the given node(s) in the DOM tree.</div>
 
 <h3><a href="reverse.html">.reverse()</a></h3>
-<div class="summary">Returns a new Minified list with the input list's elements in reverse order.</div>
+<div class="summary">Returns a new Minified list or string with the input's elements/characters in reverse order.</div>
 
 <h3><a href="select.html">.select()</a></h3>
 <div class="summary">Executes a selector with the list as context.</div>
@@ -191,6 +196,9 @@ or have the given index.</div>
 <h3><a href="set.html">.set()</a></h3>
 <div class="summary">
 Modifies the list's elements by setting their properties, attributes, CSS styles and/or CSS classes.</div>
+
+<h3><a href="show.html">.show()</a></h3>
+<div class="summary">Make the invisible element of the list visible.</div>
 
 <h3><a href="sort.html">.sort()</a></h3>
 <div class="summary">Sorts the list elements and returns a new, sorted list.</div>
@@ -225,6 +233,9 @@ Triggers event handlers registered with on.</div>
 <h3><a href="unite.html">.unite()</a></h3>
 <div class="summary">Takes a list of functions as input to create a new function that calls all input functions with the same
 arguments.</div>
+
+<h3><a href="up.html">.up()</a></h3>
+<div class="summary">Finds the closest parent matching the given selector or filter function for each list element, and returns the results as a list.</div>
 
 <h3><a href="values.html">.values()</a></h3>
 <div class="summary">Creates a name/value map from the given form.</div>
@@ -302,6 +313,9 @@ Formats a single value as a string, using the given format template.</div>
 <h3><a href="isdate.html">_.isDate()</a></h3>
 <div class="summary">Checks whether the given object is a <span class="var">Date</span>.</div>
 
+<h3><a href="isempty.html">_.isEmpty()</a></h3>
+<div class="summary">Returns true if the given string or list is <span class="var">null</span>, <span class="var">undefined</span> or empty (zero length).</div>
+
 <h3><a href="isfunction.html">_.isFunction()</a></h3>
 <div class="summary">Checks whether the given object is a function.</div>
 
@@ -361,15 +375,17 @@ until <span class="var">end</span> (exclusive).</div>
 <h3><a href="objvalues.html">_.values()</a></h3>
 <div class="summary">Creates a Minified list containing all property values of the specified object.</div>
 
+<h3><a href="define.html">define()</a></h3>
+<div class="summary">Defines a module that can be returned by require, in case you don't have a AMD loader.</div>
+
 <h3><a href="always.html">promise.always()</a></h3>
 <div class="summary">Registers a callback that will always be called when the Promise's operation ended, no matter whether the operation succeeded or not.</div>
 
 <h3><a href="error.html">promise.error()</a></h3>
 <div class="summary">Registers a callback that will be called when the operation failed.</div>
 
-<h3><a href="state.html">promise.state</a></h3>
-<div class="summary">
-Contains the current state of the promise.</div>
+<h3><a href="stop.html">promise.stop()</a></h3>
+<div class="summary">Stops an ongoing operation, if supported.</div>
 
 <h3><a href="then.html">promise.then()</a></h3>
 <div class="summary">
@@ -384,8 +400,6 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
 </li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
-</li><li><a href="defer.html" class="func">$.defer()</a> 
-</li><li><a href="delay.html" class="func">$.delay()</a> 
 </li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
@@ -414,14 +428,18 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="hide.html" class="func">.hide()</a> <span class="tocMod">Web</span>
 </li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
+</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onclick.html" class="func">.onClick()</a> <span class="tocMod">Web</span>
 </li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
@@ -432,6 +450,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="show.html" class="func">.show()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
 </li><li><a href="startswith.html" class="func">.startsWith()</a> <span class="tocMod">Util</span>
 </li><li><a href="sub.html" class="func">.sub()</a> <span class="tocMod">Web, Util</span>
@@ -442,6 +461,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="up.html" class="func">.up()</a> <span class="tocMod">Web</span>
 </li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
@@ -465,6 +485,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
 </li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
 </li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isempty.html" class="func">_.isEmpty()</a> <span class="tocMod">Util</span>
 </li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
 </li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
 </li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>
@@ -483,9 +504,10 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="stop.html" class="func">promise.stop()</a> 
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

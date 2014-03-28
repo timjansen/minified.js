@@ -66,30 +66,31 @@ _.formatValue('1:one item|2:two items|&gt;3:many items', value);
 _.formatValue('ERR:error|WARN:warning|INFO:info|debug', value);
 </pre></p><p><b>Number Formatting</b><br>
 Number formatting allows you to specify the number of digits before and optionally after the decimal separator, the decimal separator itself
-as well as how to group digits. The following characters are used in the format:</p><p><table><tr><th>Character</th><th>Description</th></tr>
+as well as how to group and decorate the digits. The following characters are used in the format:</p><p><table><tr><th>Character</th><th>Description</th></tr>
 <tr><td>#</td><td>Optional digit before decimal separator.</td></tr>
 <tr><td>0</td><td>Required digit before decimal separator (0 if number is smaller).</td></tr>
-<tr><td>.</td><td>Either decimal separator or group separator, depending on position.</td></tr>
-<tr><td>,</td><td>Either decimal separator or group separator, depending on position.</td></tr>
-</table></p><p>If you only define a group separator, but not a decimal separator, the group separator must appear
-at least twice in the format. Otherwise it will be considered a decimal separator. Please note that when you
-have several group separators, Minified counts only the number of digit between its first and second
-appearance to determine how to group the digits. If you have only one group separator and a decimal separator,
-the number of digits between them is used to format the number.</p><p><b>Examples</b>
-<pre>var v1  = _.formatValue('#', 15); // '15'
-var v2  = _.formatValue('####', 15);   // '15' (same as '#')
-var v3  = _.formatValue('0000', 15);   // '0015'
+<tr><td>.</td><td>Decimal separator (if it occurs exactly once in the string)</td></tr>
+<tr><td>:</td><td>Required for choice formats. You can not use this in a number format.</td></tr>
+<tr><td>|</td><td>Required for choice formats. You can not use this in a number format.</td></tr>
+</table></p><p>All other characters will stay unmodified in the format string. For negative numbers, a sign (-) is placed in front of the
+first digit.</p><p>If you don't provide sufficient pre-decimal placeholders for the number, the remaining digits will be put in front of the
+rest of the number, so the rendered number is always complete. However, there will be no grouping if there are no placeholders.</p><p>If you only define a group separator, but not a decimal separator, and you use a comma (,) or period (.) as separator,
+the group separator must appear at least twice in the format. Otherwise it will be considered a decimal separator.</p><p><b>Examples</b>
+<pre>var v1  = _.formatValue('#', 15);           // '15'
+var v2  = _.formatValue('####', 15);        // '15'
+var v3  = _.formatValue('0000', 15);        // '0015'
 var v4  = _.formatValue('#.###', 15.14274); // '15.143'
 var v5  = _.formatValue('#.000', 15.14274); // '15.143'
 var v6  = _.formatValue('#.###', 15.1);     // '15.1'
 var v7  = _.formatValue('#.000', 15.1);     // '15.100'
 var v8  = _.formatValue('000,000', 15.1);   // '015,100'
-var v9  = _.formatValue('#.###', 15);     // '15'
-var v10 = _.formatValue('#.000', 15);    // '15.000'
-var v11 = _.formatValue('#,###', 15.1);  // '15,1' (comma as decimal separator)
+var v9  = _.formatValue('#.###', 15);       // '15'
+var v10 = _.formatValue('#.000', 15);       // '15.000'
+var v11 = _.formatValue('#,###', 15.1);     // '15,1' (comma as decimal separator)
+var v10 = _.formatValue('Total= $#.00 (VAT included)', 71);  // 'Total= $71.00 (VAT included)' (decoration)
 var v12 = _.formatValue('###,###,###', 92548);    // '92,548' (grouped digits)
-var v13 = _.formatValue('000,000.###', 92548.42); // '92,548.42'
-var v14 = _.formatValue('000.000,###', 92548.42); // '92.548,42' (comma as separator)
+var v14 = _.formatValue('###.###.###,###', 92548.42); // '92.548,42' (comma as decimal separator)
+var v14 = _.formatValue('### ### ###.###', 92548.42); // '92 548,42' (space as decimal separator)
 var v15 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 7.356); // '7.36' (choice format)
 var v16 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 25.04); // '25.0'
 var v17 = _.formatValue('&lt;10:#.00|&lt;100:#.0|#', 71.51); // '72'
@@ -161,8 +162,6 @@ var disqus_url = "http://minifiedjs.com/api/formatvalue.html";
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
 </li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
-</li><li><a href="defer.html" class="func">$.defer()</a> 
-</li><li><a href="delay.html" class="func">$.delay()</a> 
 </li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
@@ -191,14 +190,18 @@ var disqus_url = "http://minifiedjs.com/api/formatvalue.html";
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="hide.html" class="func">.hide()</a> <span class="tocMod">Web</span>
 </li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
+</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onclick.html" class="func">.onClick()</a> <span class="tocMod">Web</span>
 </li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
@@ -209,6 +212,7 @@ var disqus_url = "http://minifiedjs.com/api/formatvalue.html";
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="show.html" class="func">.show()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
 </li><li><a href="startswith.html" class="func">.startsWith()</a> <span class="tocMod">Util</span>
 </li><li><a href="sub.html" class="func">.sub()</a> <span class="tocMod">Web, Util</span>
@@ -219,6 +223,7 @@ var disqus_url = "http://minifiedjs.com/api/formatvalue.html";
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="up.html" class="func">.up()</a> <span class="tocMod">Web</span>
 </li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
@@ -242,6 +247,7 @@ var disqus_url = "http://minifiedjs.com/api/formatvalue.html";
 </li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
 </li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
 </li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isempty.html" class="func">_.isEmpty()</a> <span class="tocMod">Util</span>
 </li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
 </li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
 </li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>
@@ -260,9 +266,10 @@ var disqus_url = "http://minifiedjs.com/api/formatvalue.html";
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="stop.html" class="func">promise.stop()</a> 
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

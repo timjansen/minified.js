@@ -1,0 +1,78 @@
+<html>
+	<head><title>Minified.js Scroll Test</title>
+	
+	<style type="text/css">
+		body { font-family: sans-serif; }
+		#container div { 
+		    border: 1px solid black; 
+		    width: 540px;
+		    height: 40px; 
+		    position: relative; 
+		}
+		#container div div { 
+		    position: absolute; 
+		    top: 2px; 
+		    height: 36px; 
+		    width: 36px; 
+		    background-color: black;  
+		}
+	</style> 
+	<script type="text/javascript">
+	// Load the right source, depending on whether 'compiled' is in the URL query
+	var q = window.location.search, undefined;
+	var srcFiles = ["dist/minified-web-src.js", "dist/minified-web.js", "dist/minified-src.js", "dist/minified.js", 
+	                "dist/minified-legacyie-web-src.js", "dist/minified-legacyie-web.js", 
+	                "dist/minified-legacyie.js"];
+	if (!!document.all && ![].map) srcFiles = srcFiles.slice(4); // remove non-ie versions on old ie
+	
+	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;
+	var file = srcFiles[srcNum] + '?rnd=' + (new Date().getTime());
+    document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
+ 
+	</script>
+	
+	<script type="text/javascript">
+	var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
+	$(function() {
+		$('#libName').fill(srcFiles[srcNum]);
+		$$('#srcNum').value = (srcNum + 1) % srcFiles.length;
+		
+	    for (var i = 0; i < 500; i++) {
+	        $('#container').add(EE('div', EE('div', {$left: i+'px'})));
+	    }
+	    
+	    $('#down').onClick(function() {
+	        $(window).animate({$$scrollY: 500*40+200}, 4000);
+	    });
+	    $('#up').onClick(function() {
+	        $(window).animate({$$scrollY: 0}, 4000);
+	    });
+	});
+	</script>
+	
+	</head>
+	<body>
+    <button id="down">Down</button> 
+    <div id="container">
+        
+    </div>
+    <button id="up">Up</button>
+    
+    <div id="rerun" >
+		<strong>Library: </strong><span id="libName">error</span>
+		<form action="scrolltest.html" method="get">
+			<input id="srcNum" name="srcNum" type="hidden"/>
+			<input type="submit" value="Switch library"/>
+		</form>
+		<form action="vistest.html" method="get">
+			<input type="submit" value="Visual Test" />
+		</form>
+		<form action="eventtest.html" method="get">
+			<input type="submit" value="Event Test" />
+		</form>
+		<form action="autorun.html" method="get">
+			<input type="submit" value="Automated Tests" />
+		</form>
+	</div> 
+</body>
+</html>

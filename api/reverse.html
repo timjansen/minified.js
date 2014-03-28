@@ -32,12 +32,13 @@
 	<div class="container">
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
 <h2><a name="doc-reverse">.reverse()</a></h2>
-<div class="summary">Returns a new Minified list with the input list's elements in reverse order.</div>
+<div class="summary">Returns a new Minified list or string with the input's elements/characters in reverse order.</div>
 
 <div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.reverse()</div>
 <div class="syntax">_.reverse(list)</div>
+<div class="syntax">_.reverse(string)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -45,12 +46,14 @@
 <dt id="reverse_list" class=""><a name="reverse_list"><var>list</var></a></dt>
 <dd class="">A list to use as input. Can be an array, a <a href="list.html" class="func">Minified list</a> or any other array-like structure with
 <span class="var">length</span> property.</dd>
-<dt id="reverse_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="reverse_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">a new <a href="list.html" class="func">list</a> containing only the items in the index range.</dd>
+<dt id="reverse_string" class=""><a name="reverse_string"><var>string</var></a></dt>
+<dd class="">A string to use as input</dd>
+<dt id="reverse_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="reverse_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2">a new <a href="list.html" class="func">list</a> or string with the input in reverse order.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Returns a new <a href="list.html" class="func">Minified list</a> with the input list's elements in reverse order. The first element is swapped
+<div class="description"><p>Returns a new <a href="list.html" class="func">Minified list</a> or string with the input's elements/characters in reverse order. The first element is swapped
 with the last, the second with the second to last and so on.</p><p></p></div>
 
 <div class="examples">
@@ -64,6 +67,12 @@ var rev = _('a', 'b', 'c').reverse(); // returns _('c', 'b', 'a')
 <div class="example"><p>The same with an array:
 <pre>
 var rev = _.reverse(['a', 'b', 'c']); // returns _('c', 'b', 'a')
+</pre>
+</p></div>
+<h4>Example</h4>
+<div class="example"><p>Or a string:
+<pre>
+var rev = _.reverse("abc"); // returns _("cba")
 </pre>
 </p></div>
 </div>
@@ -87,8 +96,6 @@ var disqus_url = "http://minifiedjs.com/api/reverse.html";
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
 </li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
-</li><li><a href="defer.html" class="func">$.defer()</a> 
-</li><li><a href="delay.html" class="func">$.delay()</a> 
 </li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
@@ -117,14 +124,18 @@ var disqus_url = "http://minifiedjs.com/api/reverse.html";
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="hide.html" class="func">.hide()</a> <span class="tocMod">Web</span>
 </li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
+</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onclick.html" class="func">.onClick()</a> <span class="tocMod">Web</span>
 </li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
@@ -135,6 +146,7 @@ var disqus_url = "http://minifiedjs.com/api/reverse.html";
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="show.html" class="func">.show()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
 </li><li><a href="startswith.html" class="func">.startsWith()</a> <span class="tocMod">Util</span>
 </li><li><a href="sub.html" class="func">.sub()</a> <span class="tocMod">Web, Util</span>
@@ -145,6 +157,7 @@ var disqus_url = "http://minifiedjs.com/api/reverse.html";
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="up.html" class="func">.up()</a> <span class="tocMod">Web</span>
 </li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
@@ -168,6 +181,7 @@ var disqus_url = "http://minifiedjs.com/api/reverse.html";
 </li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
 </li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
 </li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isempty.html" class="func">_.isEmpty()</a> <span class="tocMod">Util</span>
 </li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
 </li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
 </li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>
@@ -186,9 +200,10 @@ var disqus_url = "http://minifiedjs.com/api/reverse.html";
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="stop.html" class="func">promise.stop()</a> 
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

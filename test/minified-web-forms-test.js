@@ -68,15 +68,18 @@ describe('minified-web-forms-test.js', function() {
 		});
 		
 		it('just works', function() {
+			$$('#id1_1').value = 'xx';
+			$$('#id1_4').value = '5';
+			
 			var a = $("#id1").values();
 			check(countKeys(a), 9);
-			check(a['i1_1'], 'a');
+			check(a['i1_1'], 'xx');
 			check(a['i1_2'].length, 3);
 			check(a['i1_2'][0], 'b1');
 			check(a['i1_2'][1], 'b2');
 			check(a['i1_2'][2], 'b3');
 			check(a['i1_3'], 'c');
-			check(a['i1_4'], 'd');
+			check(a['i1_4'], '5');
 			check(a['i1_6'].length, 3);
 			check(a['i1_6'][0], 'f');
 			check(a['i1_6'][1], 'g');

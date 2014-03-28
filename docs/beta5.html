@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Minified.js Beta 5: Features and Changes</title>
+
+<link rel="stylesheet" type="text/css" href="../css/doc.css">
+
+
+
+
+</head>
+<body>
+<div id="head">
+	<div class="container">
+		
+		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt='Minified'><![endif]-->
+		<!--[if gt IE 8]><img src='/img/minified.svg' alt='Minified'><![endif]-->
+		<!--[if !IE]>--><img src="/img/minified.svg" alt="Minified"><!--<![endif]--></a>
+
+		<div id="topMenu">
+			<a class="notSelected" href="/">Home</a>
+			<a class="notSelected" href="/download/">Download</a>
+			<a class="notSelected" href="/builder/">Build</a>
+			<a class="selected" href="/docs/">Documentation</a>
+			<a class="notSelected" href="/api/">API</a>
+			<a class="notSelected" href="/about/">About</a>
+		</div>
+	</div>
+</div>
+<div id="main">
+	<div class="container"><div>
+  <h1>Minified.js Beta 5: Features and Changes</h1>
+
+<p>I am still amazed how it is still possible to optimize Minified even further and squeeze more and more featured into Minified, while still staying under 4kB
+for the Web module and 8kB for the complete library. This release has 7 additional methods, vastly improved implementations for Promises and number formatting
+and many smaller changes.<br>
+The focus on this release was to make Minified more comfortable to use. Minified original concept was to have only one way to do something, in order to keep
+its size down. I have softened this rule somewhat as you can see below, and added a number of convenience functions. Enjoy!</p>
+
+<h2 style="color: red">Backward-incompatible Changes</h2>
+<p>
+<ul>
+<li><span class="var">defer()</span> and <span class="var">delay()</span> have been removed. Use the standard setTimeout() instead.</li>
+<li><span class="var"><a href="/api/formatValue.html">formatValue()</a></span>'s handling of number group separators has been changed. It will now support all
+possible separators, but will not automatically add group separators anymore.</li>
+<li><span class="var"><a href="/api/clone.html">clone()</a></span> will only remove ids of top-level elements, but not those of child elements.</li>
+<li><span class="var">The <a href="/api/promise.html">promise.state</a></span> property has been removed. Invoke the promise function without arguments
+to obtain the current state.</li>
+<li>Setting '$$slide' and '$$fade' in <span class="var"><a href="/api/set.html">set()</a></span> or in animations will not change '$display' anymore. Only the
+'$visibility' and opacity/height will be modified. If you need an element to be initially hidden, set '$visibility' to 'hidden' or use '$$show'.
+</li></ul>
+</p>
+
+<h2>New: Easier DOM traversal with up() and next()</h2>
+<p><span class="var"><a href="/api/up.html">up()</a></span> and <span class="var"><a href="/api/next.html">next()</a></span> are two shortcuts for
+the most important usages of <span class="var"><a href="/api/trav.html">trav()</a></span>.</p>
+<pre>
+// get all form elements that contain a &lt;select>
+var selectForms = $('select').up('form');
+
+// get all divs that follow directly an hr
+var divAfterHr = $('hr').next('div', -1);
+</pre>
+
+<h2>New: not() as inverse filter</h2>
+<p><span class="var"><a href="/api/not.html">not()</a></span> returns a list of all elements that do not match a selector or function. </p>
+<pre>
+// selects all &lt;table> elements that do not have the class 'simple'
+var ts = $('table').not('.simple');
+</pre>
+
+<h2>New: onClick() as alternative to .on('click', ...)</h2>
+<p><span class="var"><a href="/api/onclick.html">onClick()</a></span> is a very thin helper function that does essentially the same as 
+<code>.on('click', ...)</code>. </p>
+<pre>
+$('#myButton').onClick(function() { alert('Clicked!'); });
+</pre>
+
+<h2>New: show(), hide() and $$show to change the visibility of elements</h2>
+<p><span class="var"><a href="/api/show.html">show()</a></span> and <span class="var"><a href="/api/hide.html">hide()</a></span>
+are helper methods to manipulate the '$display' and 'style of elements. '$$show' can be used in get()/set() to find out whether an
+element is visible to to change its visibility.</p>
+<pre>
+$('#beautiful').show();
+$('#ugly').hide();
+var visibilityToggle = $('.hiddable').toggle({$$show: 1}, {$$show: 0});
+</pre>
+
+<h2>New: isEmpty() checks for empty lists or strings</h2>
+<p><span class="var"><a href="/api/isempty.html">isEmpty()</a></span> is a simple helper function that can check whether a list or string is either null or empty.
+When checking strings it can optionally ignore whitespace.</p>
+
+<h2>New: stop() to cancel chained animations</h2>
+<p><span class="var"><a href="/api/stop.html">stop()</a></span> now allows you to cancel even chained animations, if you are using the full distribution. All
+promises returned by Minified have a <var>stop()</var> function.</p>
+<pre>
+var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
+              .then(function() {
+			        return _.promise(div.animate({$left: '200px', $top: '200px'}, 800, 0), 
+           				             div.animate({$backgroundColor: '#f00'}, 200));
+		      }).then(function() {
+		 			return div.animate({$left: '100px', $top: '100px'}, 400);
+			  });
+
+$('#stopButton').on('click', prom.stop);
+</pre>
+
+
+<h2>New: define() to define Minified modules</h2>
+<p><span class="var"><a href="/api/define.html">define()</a></span> has been around for a long time, but only in beta 5 it becomes a part of the public API. 
+<var>define()</var> is an extremely simplified AMD implementation sufficient to provide Minified-only modules. It is AMD-backward compatible, meaning that any
+module written for Minified should also work with a fully-blown AMD implementation. It is not enough to support a library written for AMD though.</p>
+
+<pre>
+define('makeGreen', function(require) {
+    var MINI = require('minified'), $ = MINI.$; // private ref to Minified
+    return function(list) {
+        $(list).set({$color: '#0f0', $backgroundColor: '#050'});
+    });
+ });
+ var makeGreen = require('makeGreen');
+ makeGreen('.notGreenEnough');
+ </pre>
+
+
+<h2>Change: Promises/A+ updated to the latest spec</h2>
+<p>Minified's <a href="/api/promiseClass.html">Promise</a> implementation has been updated so that it passes the latest 
+<a href="https://github.com/promises-aplus/promises-tests/">Promises/A+ compliance tests</a>. The test suite has also been incorporated into
+Minified's test cases. Please note that the simplified Promises implementation in the Web module will not pass all tests.</p>
+
+<h2>Change: $.request uses only plain objects as form data</h2>
+<p><a href="/api/request.html">$.request()</a> will only use plain objects as form data. Everything else is passed directly to the
+XHR. This allows you to use <var>$.request()</var> with <var>FormData</var> objects.</p>
+
+<h2>Change: $float will work as expected</h2>
+<p><var>$float</var> will now work correctly in <a href="/api/set.html">set()</a> and all other methods. So far it didn't because in the DOM style object the property is called
+<var>cssFloat</var>. Beta 5 automatically translates the name.</p>
+
+
+<h2>Change: reverse() can also reverse strings</h2>
+<p><a href="/api/reverse.html">_.reverse()</a> can now also be used to reverse strings, and not only lists.</p>
+
+
+<h2>Download</h2>
+<p>You can download beta 5 on the <a href="/download">download page</a>.</p>
+
+  </div>
+	
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+	var disqus_shortname = "minifiedjs";
+	var disqus_identifier = "docs-beta5";
+	(function() {
+	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+	})();
+	</script>
+	
+	</div>
+	
+</div>
+
+<div id="foot">
+	<div class="container">
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
+		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
+	</div>
+</div>
+
+
+</body>
+</html>

@@ -9,7 +9,7 @@ describe('minified-web-promises-test.js', function() {
 			check(s.getAttribute('title'), 0);
 			check((s.style.backgroundColor == '#000') || (s.style.backgroundColor == '#000000') || (s.style.backgroundColor == 'rgb(0, 0, 0)'));
 
-			$(s).animate({'@title': 50, $marginTop: '2px', $backgroundColor: '#ff0'}, 300, 0).then(function() {
+			$(s).animate({'@title': 50 , $marginTop: '2px',  $backgroundColor: '#ff0'}, 300, 0).then(function() {
 				try {
 					check(s.getAttribute('title'), 50);
 					check((s.style.backgroundColor == '#ff0') || (s.style.backgroundColor == '#ffff00') || (s.style.backgroundColor == 'rgb(255, 255, 0)'));
@@ -113,9 +113,9 @@ describe('minified-web-promises-test.js', function() {
 			
 			var completed = 0;
 			function incComp() { completed++; }
-			_.promise(_.wait(10).then(incComp), 
-			          _.wait(100).then(incComp), 
-			          _.wait(500).then(incComp))
+			_.promise($.wait(10).then(incComp), 
+			          $.wait(100).then(incComp), 
+			          $.wait(500).then(incComp))
 			 .then(function() {
 				 if (completed == 3)
 					 done();
@@ -131,7 +131,7 @@ describe('minified-web-promises-test.js', function() {
 			this.timeout(500);
 			if (!_)
 				return done();
-			_.wait(50, [1, 2, 3])
+			$.wait(50, [1, 2, 3])
 			 .then(function(a, b, c, d) {
 				 if (a == 1 && b == 2 && c == 3 && !d)
 					 done();
@@ -140,21 +140,5 @@ describe('minified-web-promises-test.js', function() {
 			 });
 		});
 	});
-
-	
-
-	/*
-	describe('.fill()', function() {
-		it('', function() {
-			
-		});
-		it('', function() {
-			
-		});
-		it('', function() {
-			
-		});
-	});
-	*/
 
 });

@@ -65,16 +65,17 @@ If you would like to optimize the size of your site, you should consider <a href
 <a href="embedding.html">embedding Minified</a> into your JavaScript code.
 </p>
 
-<h2>How to Obtain the Reference to Minified</h2>
+<h2>How to Obtain a Reference to Minified</h2>
 <p>
 No matter whether you are including Minified with a script tag or you use a synchronous loader like 
 <a href="http://requirejs.org">RequireJS</a>, it is recommended to use the following 
-lines to define the five essential functions:
+lines to define the five essential references:
 <pre>
 var MINI = require('minified');
 var _=MINI._, $=MINI.$, $$=MINI.$$, EE=MINI.EE, HTML=MINI.HTML;
 </pre>
-Please note that this works even without an AMD loader. Minified provides its own <code>require</code> function if no AMD loader is present.
+Please note that even if this may look like loading an AMD module, this works even without an AMD loader. Minified provides its 
+own <code>require</code> function if no AMD loader is present.
 </p>
 
 <h2>Running Your Script at the Right Time</h2>
@@ -258,7 +259,7 @@ The argument is a space-separated list of class names. Those prefixed with '+' w
 </pre>
 </p>
 
-<p>Minified has two more 'virtual' properties called <code>$$fade</code> and <code>$$slide</code> which are mostly useful for animation (see below), 
+<p>Minified has several 'virtual' properties, for example <code>$$fade</code> and <code>$$slide</code>. They are mostly useful for animation (see below), 
 but can be used by <a href="/api/get.html"><code>get()</code></a> and <a href="/api/set.html"><code>set()</code></a> as well. 
 <code>$$fade</code> is a number between 0 and 1 that specifies the opacity of an element, allowing you to fade elements in and out. 
 <code>$$slide</code> is a number between 0 and 1 that represents the vertical size of an element relative to its 'natural' size, 
@@ -270,7 +271,7 @@ so you can slide elements in and out.
 </pre>
 </p>
 
-<p>Instead of just setting the value with <a href="/api/set.html"><code>set()</code></a>, the old value value can also be modified with a callback:
+<p>Instead of just setting the value with <a href="/api/set.html"><code>set()</code></a>, the old value value can be modified with a callback:
 <pre>
 <a href="/api/dollar.html">$</a>('#e1').<a href="/api/set.html">set</a>('innerHTML', function(oldValue, index, obj) { return oldValue.replace(/hello/i, 'Hi'); });
 </pre>
@@ -293,7 +294,7 @@ Please see the <a href="/api/animate.html"><code>animate()</code></a> documentat
 
 <h2>Creating and Modifying HTML</h2>
 
-<p>The most important functions for modifying HTML are <a href="/api/fill.html"><code>fill()</code></a> and <a href="/api/add.html"><code>add()</code></a>. 
+<p>The most important methods for modifying HTML are <a href="/api/fill.html"><code>fill()</code></a> and <a href="/api/add.html"><code>add()</code></a>. 
 <a href="/api/fill.html"><code>fill()</code></a> replaces the element's children with the given nodes, and 
 <a href="/api/add.html"><code>add()</code></a> just adds them as children.</p>
 
@@ -377,7 +378,7 @@ Events in Minified may a bit different than what you are used to. At first sight
 	alert('Button pressed!');
 });
 </pre>
-What you don't see here is that Minified will always <b>disable the default behaviour and prevent bubbling by default</b>, by 
+What you don't see here is that Minified will always <b>disable the default behavior and prevent bubbling by default</b>, by 
 calling the browser's <code>preventDefault()</code> and <code>stopPropagation()</code> functions or their respective Internet 
 Explorer equivalents. This means that if you add an event handler to a form submit button, the button will not submit the form 
 anymore, unless you explicitly allow it. Similarly, a click handler on a link would prevent the link from changing the page.
@@ -392,7 +393,7 @@ anymore, unless you explicitly allow it. Similarly, a click handler on a link wo
 </pre>
 </p>
 
-<p>Or you can keep the default behaviour by prefixing the name with a '?' (question mark) and let the handler return <code>true</code>:
+<p>Or you can keep the default behavior by prefixing the name with a '?' (question mark) and let the handler return <code>true</code>:
 <pre>
 <a href="/api/dollar.html">$</a>('#submitButton').<a href="/api/on.html">on</a>('?click', function() {
 	return confirm('Button pressed, really submit?');
@@ -429,10 +430,22 @@ function setZoomLevel(percentage) {
 </pre>
 </p>
 
+<p>As you have seen above, it's pretty common to register for 'click' events. That's why there is a special method just for the click
+event:
+<pre><a href="/api/dollar.html">$</a>('#smallButton').<a href="/api/onclick.html">onClick</a>(setZoomLevel, [50]);
+</pre>
+</p>
+
+<p>There are several additional 'smart' events that may be useful to to you:
+<ul><li><a href="/api/onchange.html">onChange()</a> notifies you when the value of an input field or checkbox changes.</li>
+<li><a href="/api/onover.html">onOver()</a> tracks whether the mouse is hovering over an element.</li>
+<li><a href="/api/onchange.html">onFocus()</a> tracks whether an element has the focus.</li>
+</ul></p>
+
 <p>
 Event handlers can be removed using the function <a href="/api/off.html"><code>off()</code></a>. 
 <a href="/api/off.html"><code>off()</code></a> is a global function that removes the handler function from all events and 
-all elements is has been registered for.
+all elements it has been registered for.
 <pre>
 <a href="/api/off.html">$.off</a>(setZoomLevel);
 </pre>
@@ -460,14 +473,14 @@ light(false);  // turn the light off (state 1)
 
 <p>So if you want to toggle the background color by clicking on a button, you only need to add the toggle function as event handler:
 <pre>
-<a href="/api/dollar.html">$</a>('#switch').on('click', light);
+<a href="/api/dollar.html">$</a>('#switch').onClick(light);
 </pre>
 </p>
 
 <p>By passing boolean arguments to the toggle function you can define a specific state for an event:
 <pre>
-<a href="/api/dollar.html">$</a>('#switchOn') .on('click', light, [true]);
-<a href="/api/dollar.html">$</a>('#switchOff').on('click', light, [false]);
+<a href="/api/dollar.html">$</a>('#switchOn') .onClick(light, [true]);
+<a href="/api/dollar.html">$</a>('#switchOff').onClick(light, [false]);
 </pre>
 </p>
 
@@ -549,27 +562,6 @@ The next example transmits the data in JSON form to the imaginary service and th
 </pre>
 </p>
 
-
-<h2>Custom Animations</h2>
-
-<p>When doing JavaScript animation you should avoid using a simple timeout, as this will cause unneccessary CPU load when the browser 
-is not displaying your page and you also won't be able to have the perfect frame rate. Modern browsers support 'requestAnimationFrame' which 
-allows you to provide a callback to perform animation at a browser-controlled rate. This will make your animation smoother and 
-lower the CPU load. Minified's <a href="/api/loop.html"><code>loop()</code></a> function wraps 'requestAnimationFrame' while also providing 
-backward compatibility for older browsers.</p>
-
-<p>The following example will move a div in a circular movement:
-<pre>
-var myDiv = <a href="/api/dollardollar.html">$$</a>('#myAnimatedDiv');
-var d = 2500;              // one rotation every 2.5s
-var r = 100;               // radius 100 px
-<a href="/api/loop.html">$.loop</a>(function(t, stopFunc) {
-    var a = 2 * Math.PI * t / d;               
-    myDiv.style.left = (r * Math.cos(a) + ' px';
-    myDiv.style.top = (r * Math.sin(a) + ' px';
-});
-</pre>
-</p>
 
 <h2>End</h2>
 <p>I hope this tutorial was helpful for you to get started with Minified development. If you want to read more, I would suggest 

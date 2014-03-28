@@ -57,7 +57,7 @@ space-separated event names. If the name is prefixed
 with '|' (pipe), the event will be passed through and the event's default actions will be executed by the browser.
 If the name is prefixed with '?', the event will only be passed through if the handler returns <span class="var">true</span>.</dd>
 <dt id="on_eventHandler" class=""><a name="on_eventHandler"><var>eventHandler</var></a></dt>
-<dd class="">the callback <code>function(event, index, selectedIndex)</code> to invoke when the event has been triggered:
+<dd class="">the callback <code>function(event, index)</code> to invoke when the event has been triggered:
 <dl>
 <dt>event</dt><dd>The original DOM event object.</dd>
 <dt>index</dt><dd>The index of the target object in the <a href="list.html" class="func">Minified list</a> .</dd>
@@ -68,10 +68,10 @@ Then, a return value <span class="var">false</span> will stop all further proces
 </dl></dd>
 <dt id="on_customFunc" class=""><a name="on_customFunc"><var>customFunc</var></a></dt>
 <dd class="">a function to be called instead of a regular event handler with the arguments given in <span class="var">args</span>.
-'this' will be set to the target element that caused the event (the same as <span class="var">event.target</span>).</dd>
+'this' will be a <a href="list.html" class="func">Minified list</a> containing the target element as only item (same element as <span class="var">event.target</span>).</dd>
 <dt id="on_args" class=""><a name="on_args"><var>args (optional)</var></a></dt>
-<dd class="">an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the
-<span class="var">customFunc</span> is called without arguments.</dd>
+<dd class="">an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the function is
+called as event handler with the event object as argument.</dd>
 <dt id="on_bubbleSelector" class=""><a name="on_bubbleSelector"><var>bubbleSelector (optional)</var></a></dt>
 <dd class="">a selector string for <a href="dollar.html" class="func">$()</a> to receive only events that bubbled up from an
 element that matches this selector.
@@ -146,6 +146,13 @@ table rows that have been added <strong>after you registered for the events</str
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href="off.html" class="func">off()</a></code> allows you to unregister an event handler.</li>
+<li><code><a href="onclick.html" class="func">onClick()</a></code> as a shortcut for 'click' events.</li>
+<li><code><a href="onover.html" class="func">onOver()</a></code> to simplify mouseover/mouseout events.</li>
+<li><code><a href="onfocus.html" class="func">onFocus()</a></code> as convenient way to register for focus events.</li>
+<li><code><a href="onchange.html" class="func">onChange()</a></code> to get notified when an input's content changes.</li>
+</ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -165,8 +172,6 @@ var disqus_url = "http://minifiedjs.com/api/on.html";
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
 </li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
-</li><li><a href="defer.html" class="func">$.defer()</a> 
-</li><li><a href="delay.html" class="func">$.delay()</a> 
 </li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
@@ -195,14 +200,18 @@ var disqus_url = "http://minifiedjs.com/api/on.html";
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="hide.html" class="func">.hide()</a> <span class="tocMod">Web</span>
 </li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
+</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onclick.html" class="func">.onClick()</a> <span class="tocMod">Web</span>
 </li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
@@ -213,6 +222,7 @@ var disqus_url = "http://minifiedjs.com/api/on.html";
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="show.html" class="func">.show()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
 </li><li><a href="startswith.html" class="func">.startsWith()</a> <span class="tocMod">Util</span>
 </li><li><a href="sub.html" class="func">.sub()</a> <span class="tocMod">Web, Util</span>
@@ -223,6 +233,7 @@ var disqus_url = "http://minifiedjs.com/api/on.html";
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="up.html" class="func">.up()</a> <span class="tocMod">Web</span>
 </li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
@@ -246,6 +257,7 @@ var disqus_url = "http://minifiedjs.com/api/on.html";
 </li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
 </li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
 </li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isempty.html" class="func">_.isEmpty()</a> <span class="tocMod">Util</span>
 </li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
 </li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
 </li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>
@@ -264,9 +276,10 @@ var disqus_url = "http://minifiedjs.com/api/on.html";
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="stop.html" class="func">promise.stop()</a> 
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

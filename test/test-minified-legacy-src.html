@@ -8,6 +8,7 @@
 		#container, #container2, #cloneTest { display: none; }
 		
 		.x { margin-top: 2px; }	/* required for testing computed css in minified-web-getset-test.js */
+		.hidden { display: none; } /* required for testing show() */
 	</style> 
 	<link rel="stylesheet" href="mocha.css" />
 
@@ -18,7 +19,9 @@
 		var isLegacyIE = (!!document.all && ![].map); // remove non-ie versions on old ie
 		
 		function fail(text) {
-			throw new Error(text);
+			var e = new Error(text);
+			if (window.console) console.log(e.stack);
+			throw e;
 		}
 
 		function check(value, expected, extraMsg) {
@@ -76,7 +79,7 @@
   	<script src="minified-web-selector-test.js"></script>
   	<script src="minified-web-element-test.js"></script>
   	<script src="minified-web-class-test.js"></script>
-  	<script src="minified-web-cookies-test.js"></script>
+  	<script src="minified-web-misc-test.js"></script>
   	<script src="minified-web-event-test.js"></script>
   	<script src="minified-web-forms-test.js"></script>
   	<script src="minified-web-getset-test.js"></script>
