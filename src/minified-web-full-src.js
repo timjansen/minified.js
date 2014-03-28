@@ -525,6 +525,15 @@ define('minified', function() {
 	function $$(selector) {
 		return dollarRaw(selector)[0];
 	}
+
+	function EE(elementName, attributes, children) {
+		var e = $(_document.createElement(elementName));
+		// @condblock UTIL
+		// this attributes != null check is only required with Util's isObject() implementation. Web's isObject() is simpler.
+		return (isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? e['add'](attributes) : e['set'](attributes)['add'](children);
+		// @condend UTIL
+		// @cond !UTIL return (isList(attributes) || (!isObject(attributes)) ) ? e['add'](attributes) : e['set'](attributes)['add'](children);
+	}
 	
 	function clone(listOrNode) {
 		return collector(flexiEach, listOrNode, function(e) {
@@ -3798,14 +3807,7 @@ define('minified', function() {
 		 *                         The syntax is exactly like ##add().
 		 * @return the HTML Element wrapped in a Minified list
 		 */
-		'EE': function (elementName, attributes, children) {
-			var e = $(_document.createElement(elementName));
-			// @condblock UTIL
-			// this attributes != null check is only required with Util's isObject() implementation. Web's isObject() is simpler.
-			return (isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? e['add'](attributes) : e['set'](attributes)['add'](children);
-			// @condend UTIL
-			// @cond !UTIL return (isList(attributes) || (!isObject(attributes)) ) ? e['add'](attributes) : e['set'](attributes)['add'](children);
-		},
+		'EE': EE,
 		
 		/*$
 		 * @id M

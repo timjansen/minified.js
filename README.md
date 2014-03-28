@@ -6,9 +6,8 @@ Latest version: <a href="http://minifiedjs.com/docs/beta5.html">beta 5</a> (<a h
 
 Overview
 ----------
-Minified.js is a client-side JavaScript library with low footprint (&lt;8kB) and a large feature set. 
-It offers jQuery-like features (DOM manipulation, animation, events, HTTP requests) and utility 
-functions (collections, date&amp;number formatting, date arithmetic, templates) with a simple, coherent API.
+Minified.js is a client-side JavaScript library that's both powerful and small. It offers jQuery-like features (DOM manipulation, animation, 
+events, HTTP requests) and utility functions (collections, date&amp;number formatting, date arithmetic, templates) with a single, consistent API.
   	
 
 Feature Comparison

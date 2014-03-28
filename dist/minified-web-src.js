@@ -415,6 +415,11 @@ define('minified', function() {
 		return dollarRaw(selector)[0];
 	}
 
+	function EE(elementName, attributes, children) {
+		var e = $(_document.createElement(elementName));
+		return (isList(attributes) || (!isObject(attributes)) ) ? e['add'](attributes) : e['set'](attributes)['add'](children);
+	}
+
 	function clone(listOrNode) {
 		return collector(flexiEach, listOrNode, function(e) {
 			var c;
@@ -3485,10 +3490,7 @@ define('minified', function() {
 		 *                         The syntax is exactly like ##add().
 		 * @return the HTML Element wrapped in a Minified list
 		 */
-		'EE': function (elementName, attributes, children) {
-			var e = $(_document.createElement(elementName));
-			return (isList(attributes) || (!isObject(attributes)) ) ? e['add'](attributes) : e['set'](attributes)['add'](children);
-		},
+		'EE': EE,
 
 		/*$
 		 * @id M
