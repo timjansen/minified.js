@@ -35,8 +35,7 @@ main:{ template:`<div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">No surprises!</h3>
   		Minified has no polyfills and does not try too hard to hide browser differences. 
-  		Your JavaScript can, for better or worse, work with the same features as your HTML
-  		and CSS.
+  		Your JavaScript code works with the same features as your HTML and CSS code.
   	</div>
   	<div style="clear: both;"></div>
   </div>
