@@ -2,13 +2,13 @@ Minified
 =========
 
 Quick Links: <a href="http://minifiedjs.com/">minifiedjs.com</a> - <a href="http://minifiedjs.com/api/">API</a> - <a href="http://minifiedjs.com/docs/">Docs</a>
-Latest version: <a href="http://minifiedjs.com/docs/beta4.html">beta 4.2</a> (<a href="CHANGES.md">changelog</a>)
+Latest version: <a href="http://minifiedjs.com/docs/beta5.html">beta 5</a> (<a href="CHANGES.md">changelog</a>)
 
 Overview
 ----------
 Minified.js is a client-side JavaScript library with low footprint (&lt;8kB) and a large feature set. 
 It offers jQuery-like features (DOM manipulation, animation, events, HTTP requests) and utility 
-functions (collections, date&amp;number formatting, date arithmtic, templates) with a simple, coherent API.
+functions (collections, date&amp;number formatting, date arithmetic, templates) with a simple, coherent API.
   	
 
 Size Comparison
@@ -27,6 +27,8 @@ For beta 4:
 </table>
 
 
+=======
+>>>>>>> refs/heads/beta5
 
 Feature Comparison
 --------------------
@@ -39,8 +41,8 @@ The goal of Minified is to provide all the basics that you may need on an HTML p
 <tr><th>Element Creation</th><td>yes</td><td>yes</td> <td>yes<div class="cmpExpl">HTML-strings only</div></td> <td>yes</td> <td>yes<div class="cmpExpl">HTML-strings only</div></td></tr>
 <tr><th>Element Cloning</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>DOM Manipulation</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
-<tr><th>Animation (numeric)</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes<div class="cmpExpl">CSS transitions only</div></td></tr>
-<tr><th>Animation (color)</th><td>yes</td><td>yes</td> <td>no</td> <td>yes</td> <td>yes<div class="cmpExpl">CSS transitions only</div></td></tr>
+<tr><th>Animation (numeric)</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>no<div class="cmpExpl">extra module, CSS only</div></td></tr>
+<tr><th>Animation (color)</th><td>yes</td><td>yes</td> <td>no</td> <td>yes</td> <td>no<div class="cmpExpl">extra module, CSS only</div></td></tr>
 <tr><th>Events</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>
 <tr><th>DOMReady</th><td>yes</td><td>yes</td><td>yes</td><td>yes</td> <td>yes</td></tr>
 <tr><th>Ajax/XHR</th><td>yes</td><td>yes</td> <td>yes</td> <td>yes</td> <td>yes</td></tr>

@@ -24,16 +24,10 @@ function dummy() {
 	function flexiEach(list, cb) {
 		if (isList(list))
 			each(list, cb);
-		else if (list != null)
+		else if (list != _null)
 			cb(list, 0);
 		return list;
 	}
-	
-	function defer(func, args) {
-		delay(function() {call(func, args);}); // TODO try partial()
-	}
-		
-	
 	
 	/*$
 	 * @id promise
@@ -45,8 +39,8 @@ function dummy() {
 	 * @module WEB+UTIL
 	 * 
 	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, 
-	 * fresh new promise is returned. The returned promise is a function that can be called directly to change the 
-	 * promises state.
+	 * a fresh new promise is returned. The returned promise is a function that can be called directly to change the 
+	 * promise's state.
 	 * 
 	 * If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards 
 	 * fulfillment and rejection with the original values.
@@ -70,11 +64,15 @@ function dummy() {
 	 * 
 	 * @param otherPromise one or more promises to assimilate
 	 * @return the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
-     * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected</dd>
-     * <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
-     * <var>state</var>).</dd></dl>
-     * The function can be called several times, but only the first invocation modifies the Promise. All subsequent calls will
-     * be ignored.
+	 * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected. If you pass <var>null</var> or
+	 * <var>undefined</var>, the promise's state does not change. The latter may be useful to obtain the promises current state.</dd>
+	 * <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
+	 * <var>state</var>).</dd>
+	 * <dt class="returnValue">(return value)</dt><dd><var>true</var> if the promise has been fulfilled, <var>false</var> if its state is rejected,
+	 * <var>undefined</var> if it is still pending. If you only want to obtain the promise's state, call the function without arguments.</dd></dl> 
+	 * </dl>
+	 * The function can be called several times, but only the first invocation modifies the Promise. All subsequent calls will
+	 * be ignored.
 	 */
 	function promise() {
 		var state; // undefined/null = pending, true = fulfilled, false = rejected
@@ -84,191 +82,227 @@ function dummy() {
 		var assimilatedNum = assimilatedPromises.length;
 		var numCompleted = 0; // number of completed, assimilated promises
 		var values = []; // array containing the result arrays of all assimilated promises, or the result of the single promise
-	    
+		
 		var set = function(newState, newValues) {
-			if (state == null) {
-				set['state'] = state = newState;
+			if (state == _null && newState != _null) {
+				state = newState;
 				values = isList(newValues) ? newValues : [newValues];
-				defer(function() {
+				setTimeout(function() {
 					each(deferred, function(f) {f();});
-				});
+				}, 0);
 			}
+			return state;
 		};
 
 		// use promise varargs
 		each(assimilatedPromises, function assimilate(promise, index) {
 			try {
 				promise['then'](function resolvePromise(v) {
-					if (v && isFunction(v['then'])) {
-						assimilate(v['then'], index);
-					}
+					var then;
+					if ((isObject(v) || isFunction(v)) && isFunction(then = v['then']))
+						assimilate(then, index);
 					else {
 						values[index] = map(arguments, nonOp);
 						if (++numCompleted == assimilatedNum)
-							set(true, assimilatedNum < 2 ? values[index] : values);
+							set(_true, assimilatedNum < 2 ? values[index] : values);
 					}
 				}, 
 				function rejectPromise(e) {
 					values[index] = map(arguments, nonOp);
-					set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
+					set(_false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
 				});
 			}
 			catch (e) {
-				set(false, [e, values, index]);
+				set(_false, [e, values, index]);
 			}
 		});
 
-    	/*$
-    	 * @id state
-    	 * @group REQUEST
-    	 * @name promise.state
-    	 * @syntax promise.state
-    	 * 
-    	 * @module WEB, UTIL
-    	 * Contains the current state of the promise. The property is only set when the Promise finished. 
-    	 * It is set to <var>true</var> when the promise completed successfully, and to 
-    	 * <var>false</var> when the promise failed.
-    	 */   
+		/*$
+		 * @id stop
+		 * @group REQUEST
+		 * @name promise.stop()
+		 * @syntax promise.stop()
+		 * @module WEB+UTIL
+		 * Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by ##animate() and ##wait(). 
+		 * stop() invocation will be propagated over promises returned by ##then() and promises assimilated by ##promise(). You only need to invoke stop
+		 * with the last promise, and all dependent promises will automatically stop as well. 
+		 *
+		 * @return In some cases, the <var>stop()</var> can return a value. This is currently only done by ##animate(), which will return the actual duration.
+		 *
+		 * @example Animation chain that can be stopped.
+		 * <pre>
+		 * var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
+		 * var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
+		 *    .then(function() {
+		 *           return _.promise(div.animate({$left: '200px', $top: '200px'}, 800, 0), 
+		 *           				  div.animate({$backgroundColor: '#f00'}, 200));
+		 *    }).then(function() {
+		 *           return div.animate({$left: '100px', $top: '100px'}, 400);
+		 *    });
+		 *    
+		 * $('#stopButton').on('click', prom.stop);
+		 * </pre>
+		 */   
+		set['stop'] = function() {
+			each(assimilatedPromises, function(promise) {
+				if (promise['stop'])
+					promise['stop']();
+			});
 
+			return call(set['stop0']);
+		};
 		
-    	/*$
-    	 * @id then
-    	 * @group REQUEST
-    	 * @name promise.then()
-    	 * @syntax promise.then()
-    	 * @syntax promise.then(onSuccess)
-    	 * @syntax promise.then(onSuccess, onError)
-    	 * 
-    	 * @module WEB, UTIL
-    	 * Registers two callbacks that will be invoked when the ##promise#Promise##'s asynchronous operation finished 
-    	 * successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after  
-    	 * <var>then()</var> returned, from the browser's event loop.
-    	 * Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
-    	 * You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to. 
-    	 *
-    	 * @example Simple handler for an HTTP request. Handles only success and ignores errors.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .then(function(txt) {
-    	 *        alert('Got response!');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @example Including an error handler.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .then(function(txt) {
-    	 *        alert('Got response!');
-    	 *     }, function(err) {
-    	 *        alert('Error!');
-    	 *     }));
-    	 * </pre>
-    	 *
-    	 * @example Chained handler.
-    	 * <pre>
-    	 * $.request('get', '/weather.do')
-    	 *     .then(function(txt) {
-    	 *        showWeather(txt);
-    	 *     }
-    	 *     .then(function() {
-    	 *        return $.request('get', '/traffic.do');
-    	 *     }
-    	 *     .then(function(txt) {
-    	 *        showTraffic(txt);
-    	 *     }
-    	 *     .then(function() {
-    	 *        alert('All result displayed');
-    	 *     }, function() {
-    	 *        alert('An error occurred');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @param onSuccess optional a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.  
-    	 *                           If the function returns a ##promise#Promise##, that Promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the 
-    	 *                           returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
-    	 *                           Pass <var>null</var> or <var>undefined</var> if you do not need the success handler. 
-    	 * @param onError optional a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a ##promise#Promise##, that promise will
-    	 *                           be evaluated to determine the state of the Promise returned by <var>then()</var>. If it returns anything else, the returned Promise will 
-    	 *                           have success status. If the function throws an error, the returned Promise will be in the error state.
-    	 *                           You can pass <var>null</var> or <var>undefined</var> if you do not need the error handler. 
-    	 * @return a new ##promise#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
-    	 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
-    	 */   
-	    var then = set['then'] = function (onFulfilled, onRejected) {
-			var newPromise = promise();
+		/*$
+		 * @id then
+		 * @group REQUEST
+		 * @name promise.then()
+		 * @syntax promise.then()
+		 * @syntax promise.then(onSuccess)
+		 * @syntax promise.then(onSuccess, onError)
+		 * 
+		 * @module WEB, UTIL
+		 * Registers two callbacks that will be invoked when the ##promise#Promise##'s asynchronous operation finished 
+		 * successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after  
+		 * <var>then()</var> returned, from the browser's event loop.
+		 * Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
+		 * You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to. 
+		 *
+		 * @example Simple handler for an HTTP request. Handles only success and ignores errors.
+		 * <pre>
+		 * $.request('get', '/weather.html')
+		 *     .then(function(txt) {
+		 *        alert('Got response!');
+		 *     });
+		 * </pre>
+		 *
+		 * @example Including an error handler.
+		 * <pre>
+		 * $.request('get', '/weather.html')
+		 *     .then(function(txt) {
+		 *        alert('Got response!');
+		 *     }, function(err) {
+		 *        alert('Error!');
+		 *     }));
+		 * </pre>
+		 *
+		 * @example Chained handler.
+		 * <pre>
+		 * $.request('get', '/weather.do')
+		 *     .then(function(txt) {
+		 *        showWeather(txt);
+		 *     }
+		 *     .then(function() {
+		 *        return $.request('get', '/traffic.do');
+		 *     }
+		 *     .then(function(txt) {
+		 *        showTraffic(txt);
+		 *     }
+		 *     .then(function() {
+		 *        alert('All result displayed');
+		 *     }, function() {
+		 *        alert('An error occurred');
+		 *     });
+		 * </pre>
+		 *
+		 * @param onSuccess optional a callback function to be called when the operation has been completed successfully. The exact arguments it receives depend on the operation.  
+		 *                           If the function returns a ##promise#Promise##, that Promise will be evaluated to determine the state of the promise returned by <var>then()</var>. If it returns any other value, the 
+		 *                           returned Promise will also succeed. If the function throws an error, the returned Promise will be in error state.
+		 *                           Pass <var>null</var> or <var>undefined</var> if you do not need the success handler. 
+		 * @param onError optional a callback function to be called when the operation failed. The exact arguments it receives depend on the operation. If the function returns a ##promise#Promise##, that promise will
+		 *                           be evaluated to determine the state of the Promise returned by <var>then()</var>. If it returns anything else, the returned Promise will 
+		 *                           have success status. If the function throws an error, the returned Promise will be in the error state.
+		 *                           You can pass <var>null</var> or <var>undefined</var> if you do not need the error handler. 
+		 * @return a new ##promise#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
+		 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
+		 */   
+		var then = set['then'] = function (onFulfilled, onRejected) {
+			var promise2 = promise();
 			var callCallbacks = function() {
-	    		try {
-	    			var f = (state ? onFulfilled : onRejected);
-	    			if (isFunction(f)) {
-		   				var r = call(f, values);
-		   				if (r && isFunction(r['then']))
-		   					r['then'](function(value){newPromise(true,[value]);}, function(value){newPromise(false,[value]);});
-		   				else
-		   					newPromise(true, [r]);
+				try {
+					var f = (state ? onFulfilled : onRejected);
+					if (isFunction(f)) {
+		   				(function resolve(x) {
+		   					try {
+			   					var then, cbCalled = 0;
+				   				if ((isObject(x) || isFunction(x)) && isFunction(then = x['then'])) {
+										if (x === promise2)
+											throw new TypeError();
+										then['call'](x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2(_false,[value]);});
+										promise2['stop0'] = x['stop'];
+				   				}
+				   				else
+				   					promise2(_true, [x]);
+		   					}
+		   					catch(e) {
+		   						if (!cbCalled++) 
+		   							promise2(_false, [e]);
+		   					}
+		   				})(call(f, undef, values));
 		   			}
 		   			else
-		   				newPromise(state, values);
+		   				promise2(state, values);
 				}
 				catch (e) {
-					newPromise(false, [e]);
+					promise2(_false, [e]);
 				}
 			};
-			if (state != null)
-				defer(callCallbacks);
+			promise2['stop0'] = set['stop'];
+			if (state != _null)
+				setTimeout(callCallbacks, 0);
 			else
-				deferred.push(callCallbacks);    		
-			return newPromise;
+				deferred.push(callCallbacks);
+			return promise2;
 		};
 
-    	/*$
-    	 * @id always
-    	 * @group REQUEST
-    	 * @name promise.always()
-    	 * @syntax promise.always(callback)
-    	 * @configurable default
-    	 * @module WEB+UTIL
-    	 * Registers a callback that will always be called when the ##promise#Promise##'s operation ended, no matter whether the operation succeeded or not.
-    	 * This is a convenience function that will call ##then() with the same function for both arguments. It shares all of its semantics.
-    	 *
-    	 * @example Simple handler for a HTTP request.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .always(function() {
-    	 *        alert('Got response or error!');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @param callback a function to be called when the operation has been finished, no matter what its result was. The exact arguments depend on the operation and may
-    	 *                 vary depending on whether it succeeded or not. If the function returns a ##promise#Promise##, that Promise will
-    	 *                 be evaluated to determine the state of the returned Promise. If provided and it returns regularly, the returned promise will 
-    	 *                 have success status. If it throws an error, the returned Promise will be in the error state.
-    	 * @return a new ##promise#Promise## object. Its state is determined by the callback.
-    	 */
+		/*$
+		 * @id always
+		 * @group REQUEST
+		 * @name promise.always()
+		 * @syntax promise.always(callback)
+		 * @configurable default
+		 * @module WEB+UTIL
+		 * Registers a callback that will always be called when the ##promise#Promise##'s operation ended, no matter whether the operation succeeded or not.
+		 * This is a convenience function that will call ##then() with the same function for both arguments. It shares all of its semantics.
+		 *
+		 * @example Simple handler for a HTTP request.
+		 * <pre>
+		 * $.request('get', '/weather.html')
+		 *     .always(function() {
+		 *        alert('Got response or error!');
+		 *     });
+		 * </pre>
+		 *
+		 * @param callback a function to be called when the operation has been finished, no matter what its result was. The exact arguments depend on the operation and may
+		 *                 vary depending on whether it succeeded or not. If the function returns a ##promise#Promise##, that Promise will
+		 *                 be evaluated to determine the state of the returned Promise. If provided and it returns regularly, the returned promise will 
+		 *                 have success status. If it throws an error, the returned Promise will be in the error state.
+		 * @return a new ##promise#Promise## object. Its state is determined by the callback.
+		 */
 	   	set['always'] = function(func) { return then(func, func); };
 	   	
-    	/*$
-    	 * @id error
-    	 * @group REQUEST
-    	 * @name promise.error()
-    	 * @syntax promise.error(callback)
-    	 * @configurable default
-    	 * @module WEB, UTIL
-    	 * Registers a callback that will be called when the operation failed.
-    	 * This is a convenience function that will invoke ##then() with only the second argument set.  It shares all of its semantics.
-    	 *
-    	 * @example Simple handler for a HTTP request.
-    	 * <pre>
-    	 * $.request('get', '/weather.html')
-    	 *     .error(function() {
-    	 *        alert('Got error!');
-    	 *     });
-    	 * </pre>
-    	 *
-    	 * @param callback a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a ##promise#Promise##, that Promise will
-    	 *                           be evaluated to determine the state of the returned Promise. If it returns regularly, the returned Promise will 
-    	 *                           have success status. If it throws an error, the returned Promise will be in error state.
-    	 * @return a new ##promise#Promise## object. Its state is determined by the callback.
-    	 */  
+		/*$
+		 * @id error
+		 * @group REQUEST
+		 * @name promise.error()
+		 * @syntax promise.error(callback)
+		 * @configurable default
+		 * @module WEB, UTIL
+		 * Registers a callback that will be called when the operation failed.
+		 * This is a convenience function that will invoke ##then() with only the second argument set.  It shares all of its semantics.
+		 *
+		 * @example Simple handler for a HTTP request.
+		 * <pre>
+		 * $.request('get', '/weather.html')
+		 *     .error(function() {
+		 *        alert('Got error!');
+		 *     });
+		 * </pre>
+		 *
+		 * @param callback a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a ##promise#Promise##, that Promise will
+		 *                           be evaluated to determine the state of the returned Promise. If it returns regularly, the returned Promise will 
+		 *                           have success status. If it throws an error, the returned Promise will be in error state.
+		 * @return a new ##promise#Promise## object. Its state is determined by the callback.
+		 */  
 	   	set['error'] = function(func) { return then(0, func); };
 	   	/*$
 	   	 * @stop
@@ -344,25 +378,23 @@ function dummy() {
 		 *                }));</pre>
 		 *
 		 * @param subSelector optional a selector as valid as first argument for #dollar#$(), to identify the descendants to iterate over.
-	     * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
-	     *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
-	     *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	     *                 <dt class="this">this</dt><dd>The list that is being iterated. If a sub-selector
-	     *                 is being used, it is the list that resulted from using the sub-selector.</dd></dl>
-	     *                 The callback's return value will be ignored.
-	     * @return the list. Even if you specified a sub-selector, it will always return the original list.
+		 * @param callback The callback <code>function(itemList, index)</code> to invoke for each list element. 
+		 *                 <dl><dt>item</dt><dd>The current list element wrapped in a Minfified list.</dd>
+		 *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
+		 *                 <dt class="this">this</dt><dd>The list that is being iterated. If a sub-selector
+		 *                 is being used, it is the list that resulted from using the sub-selector.</dd></dl>
+		 *                 The callback's return value will be ignored.
+		 * @return the list. Even if you specified a sub-selector, it will always return the original list.
 		 */
 		'per': function(subSelector, handler) {
 			if (isFunction(subSelector))
-				for (var self = this, a = [_null], len = self.length, i = 0; i < len; i++) {
-					a[0] = self[i];
-					subSelector.call(self, new M(a), i);
-				}
+				for (var len = this.length, i = 0; i < len; i++)
+					subSelector.call(this, new M(_null, this[i]), i);
 			else
 				$(subSelector, this)['per'](handler);
 			return this;
 		},
-			
+				
 		/*$
 		 * @id ht
 		 * @group ELEMENT
@@ -375,7 +407,7 @@ function dummy() {
 		 * @syntax list.ht(templateFunction, object)
 		 * @syntax list.ht(idSelector)
 		 * @syntax list.ht(idSelector, object)
-	     * @module WEB+UTIL
+		 * @module WEB+UTIL
 		 * Replaces the content of the list elements with the HTML generated using the given template. The template uses
 		 * ##template() syntax and HTML-escaped its output using ##escapeHtml(). 
 		 * 
@@ -465,129 +497,84 @@ function dummy() {
 	copyObj({
 		///#snippet extrasDollarFuncs
 		/*$
-	     * @id setcookie
-	     * @group COOKIE
-	     * @configurable default
-	     * @name $.setCookie()
-	     * @syntax $.setCookie(name, value)
-	     * @syntax $.setCookie(name, value, dateOrDays)
-	     * @module WEB+UTIL
-	     * Creates, updates or deletes a cookie. If there is an an existing cookie
-	     * of the same name, will be overwritten with the new value and settings.
-	     * 
-	     * To delete a cookie, overwrite it with an expiration date in the past. The easiest way to do this is to 
-	     * use <code>-1</code> as third argument.
-	     *
-	     * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
-	     * <pre>
-	     * var visits = $.getCookie('numberOfVisits');
-	     * $.setCookie('numberOfVisits', 
-	     *                      visits ? (parseInt(visits) + 1) : 1,   // if cookie not set, start with 1
-	     *                      365);                                  // store for 365 days
-	     * </pre>
-	     * 
-	     * @example Deletes the cookie 'numberOfVisits':
-	     * <pre>
-	     * $.setCookie('numberOfVisits', '', -1);
-	     * </pre>
-	     * 
-	     * @param name the name of the cookie. This should ideally be an alphanumeric name, as it will not be escaped by Minified and this
-	     *             guarantees compatibility with all systems.
-	     *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax. 
-	     * @param value the value of the cookie. All characters can be used. Non-Alphanumeric other than "*@-_+./" will be escaped using the 
-	     *              JavaScript <var>escape()</var> function, unless you set the optional <var>dontEscape</var> parameter.
-	     * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
-	     *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
-	     *                   browser has been closed. If the number negative or the date in the past, the cookie will be deleted.
-	     * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
-	     *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
-	     *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
-	     * @see ##$.getCookie() reads a cookie.
+		 * @id setcookie
+		 * @group COOKIE
+		 * @configurable default
+		 * @name $.setCookie()
+		 * @syntax $.setCookie(name, value)
+		 * @syntax $.setCookie(name, value, dateOrDays)
+		 * @module WEB+UTIL
+		 * Creates, updates or deletes a cookie. If there is an an existing cookie
+		 * of the same name, will be overwritten with the new value and settings.
+		 * 
+		 * To delete a cookie, overwrite it with an expiration date in the past. The easiest way to do this is to 
+		 * use <code>-1</code> as third argument.
+		 *
+		 * @example Reads the existing cookie 'numberOfVisits', increases the number and stores it:
+		 * <pre>
+		 * var visits = $.getCookie('numberOfVisits');
+		 * $.setCookie('numberOfVisits', 
+		 *                      visits ? (parseInt(visits) + 1) : 1,   // if cookie not set, start with 1
+		 *                      365);                                  // store for 365 days
+		 * </pre>
+		 * 
+		 * @example Deletes the cookie 'numberOfVisits':
+		 * <pre>
+		 * $.setCookie('numberOfVisits', '', -1);
+		 * </pre>
+		 * 
+		 * @param name the name of the cookie. This should ideally be an alphanumeric name, as it will not be escaped by Minified and this
+		 *             guarantees compatibility with all systems.
+		 *             If it contains a '=', it is guaranteed not to work, because it breaks the cookie syntax. 
+		 * @param value the value of the cookie. All characters can be used. Non-Alphanumeric other than "*@-_+./" will be escaped using the 
+		 *              JavaScript <var>escape()</var> function, unless you set the optional <var>dontEscape</var> parameter.
+		 * @param dateOrDays optional specifies when the cookie expires. Can be either a Date object or a number that specifies the
+		 *                   amount of days. If not set, the cookie has a session lifetime, which means it will be deleted as soon as the
+		 *                   browser has been closed. If the number negative or the date in the past, the cookie will be deleted.
+		 * @param dontEscape optional if set, the cookie value is not escaped. Note that without escaping you can not use every possible
+		 *                    character (e.g. ";" will break the cookie), but it may be needed for interoperability with systems that need
+		 *                    some non-alphanumeric characters unescaped or use a different escaping algorithm.
+		 * @see ##$.getCookie() reads a cookie.
 
-	     */
-	    'setCookie': function(name, value, dateOrDays, dontEscape) {
-	    	_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
-	    	    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date(nowAsTime() + dateOrDays * 8.64E7)).toUTCString()) : '');
-	    },
-	    
-	    /*$
-	     * @id getcookie
-	     * @group COOKIE
-	     * @requires
-	     * @configurable default
-	     * @name $.getCookie()
-	     * @syntax $.getCookie(name)
-	     * @syntax $.getCookie(name, dontUnescape)
-	     * @module WEB+UTIL
-	     * Returns the cookie with the given name. 
-	     *
-	     * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
-	     * <pre>
-	     * var visits = $.getCookie('numberOfVisits');
-	     * if (!visits)    // check whether cookie set. Null if not
-	     *     $('#myCounter').set('innerHML', 'Your first visit.');
-	     * else
-	     *     $('#myCounter').set('innerHTML', 'Visit No ' + visits);
-	     * </pre>
-	     *  
-	     * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
-	     *             You may want to escape the name using <var>encodeURIComponent()</var> if it contains any other characters.
-	     * @param dontUnescape optional if set and true, the value will be returned unescaped. Use this parameter only if the value has been encoded
-	     *                     in a special way and not with the standard JavaScript <var>encode()</var> method.
-	     * @return the value of the cookie, or <var>null</var> if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
-	     *         using JavaScript's <code>unescape()</code> function.
-	     *
-	     * @see ##$.setCookie() sets a cookie.
-	     */
-	    'getCookie': function(name, dontUnescape) {
-	    	var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
-	    	return dontUnescape ? match : match && unescape(match);
-	    },
+		 */
+		'setCookie': function(name, value, dateOrDays, dontEscape) {
+			_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
+			    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date((+new Date()) + dateOrDays * 8.64E7)).toUTCString()) : '');
+		},
 		
 		/*$
-		 * @id delay
-		 * @group EVENTS
-		 * @configurable default
+		 * @id getcookie
+		 * @group COOKIE
 		 * @requires
-		 * @name $.delay()
-		 * @syntax $.delay(durationMs, func)
-		 * @syntax $.delay(durationMs, func, args)
+		 * @configurable default
+		 * @name $.getCookie()
+		 * @syntax $.getCookie(name)
+		 * @syntax $.getCookie(name, dontUnescape)
 		 * @module WEB+UTIL
-		 * 
-		 * Executes the function after the specified delay, optionally passing arguments to it. Please note that it only uses <var>setTimeout</var>
-		 * internally and there is not guarantee that it will be called exactly after the given amount of milliseconds.
+		 * Returns the cookie with the given name. 
 		 *
-		 * @param durationMs the number of milliseconds to wait. If null or 0, the promise will be fulfilled as soon as the browser can run it
-		 *                   from the event loop.
-		 * @param func the function to call
-		 * @param args optional an array or list of arguments to pass to the function
-		 * 
-		 * @see ##$.defer() works like <var>$.delay</var> invoked with a delay of 0.
-		 * @see ##$.wait() creates a ##promise#Promise## that will be fulfilled after the given duration.
+		 * @example Reads the existing cookie 'numberOfVisits' and displays the number in the element 'myCounter':
+		 * <pre>
+		 * var visits = $.getCookie('numberOfVisits');
+		 * if (!visits)    // check whether cookie set. Null if not
+		 *     $('#myCounter').set('innerHML', 'Your first visit.');
+		 * else
+		 *     $('#myCounter').set('innerHTML', 'Visit No ' + visits);
+		 * </pre>
+		 *  
+		 * @param name the name of the cookie. Should consist of alphanumeric characters, percentage, minus and underscore only, as it will not be escaped. 
+		 *             You may want to escape the name using <var>encodeURIComponent()</var> if it contains any other characters.
+		 * @param dontUnescape optional if set and true, the value will be returned unescaped. Use this parameter only if the value has been encoded
+		 *                     in a special way and not with the standard JavaScript <var>encode()</var> method.
+		 * @return the value of the cookie, or <var>null</var> if not found. Unless <var>dontUnescape</var> has been set, the value has been unescaped
+		 *         using JavaScript's <code>unescape()</code> function.
+		 *
+		 * @see ##$.setCookie() sets a cookie.
 		 */
-		'delay': function(durationMs, func, args) {
-			delay(partial(func, args), durationMs);
+		'getCookie': function(name, dontUnescape) {
+			var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
+			return dontUnescape ? match : match && unescape(match);
 		},
-
-		/*$
-		 * @id defer
-		 * @group EVENTS
-		 * @configurable default
-		 * @requires
-		 * @name $.defer()
-		 * @syntax $.defer(func)
-		 * @syntax $.defer(func, args)
-		 * @module WEB+UTIL
-		 *	
-		 * Executes the function in the browser event loop, as soon as the browser can. Typically that means that
-		 * the function is called after less than 10 milliseconds.
-		 *
-		 * @param func the function to call
-		 * @param args optional an array or list of arguments to pass to the function
-		 * 
-		 * @see ##$.delay() works like <var>$.defer()</var>, but delays the execution for the specified amount of time.
-		 */
-		'defer': defer,
 		
 		/*$
 		 * @id wait
@@ -602,6 +589,8 @@ function dummy() {
 		 *
 		 * Creates a new  ##promise#Promise## that will be fulfilled as soon as the specified number of milliseconds have passed. This is mainly useful for animation,
 		 * because it allows you to chain delays into your animation chain.
+		 * 
+		 * The operation can be interrupted by calling the promise's ##stop() function.
 		 *
 		 * @example Chained animation using Promise callbacks. The element is first moved to the position 200/0, then to 200/200, waits for 50ms 
 		 *          and finally moves to 100/100.
@@ -622,16 +611,16 @@ function dummy() {
 		 * @param durationMs optional the number of milliseconds to wait. If omitted, the promise will be fulfilled as soon as the browser can run it
 		 *                   from the event loop.
 		 * @param args optional an array or list of arguments to pass to the promise handler
-		 * @return a ##promise#Promise## object that will be fulfilled when the time is over. It will never fail. The promise argument is the 
-		 *         <var>args</var> parameter as given to <var>wait()</var>.
-		 *         
-		 * @see ##$.delay() calls a simple callback function after a specified waiting period.
+		 * @return a ##promise#Promise## object that will be fulfilled when the time is over, or fail when the promise's ##stop() has been called. 
+		 *         The promise argument of a fulfilled promise is the <var>args</var> parameter as given to <var>wait()</var>. The returned promise supports ##stop()
+		 *         to interrupt the promise.
 		 */
 		'wait': function(durationMs, args) {
 			var p = promise();
-			delay(function() { 
-				call(p, null, [true, args]); 
+			var id = setTimeout(function() { 
+				p(_true, args); 
 			}, durationMs);
+			p['stop0'] = function() { p(_false); clearTimeout(id); };
 			return p;
 		}
 		
@@ -653,7 +642,7 @@ function dummy() {
 		/*$
 		 * @id html
 		 * @group ELEMENT
-		 * @requires template
+		 * @requires template ht
 		 * @configurable default
 		 * @name HTML()
 		 * @syntax HTML(templateString)
@@ -662,7 +651,7 @@ function dummy() {
 		 * @syntax HTML(templateFunction, object)
 		 * @syntax HTML(idSelector)
 		 * @syntax HTML(idSelector, object)
-	     * @module WEB
+		 * @module WEB
 		 * Creates a ##list#list## of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
 		 * The template uses the ##template() syntax with ##escapeHtml() escaping for values.
 		 * 
@@ -722,7 +711,7 @@ function dummy() {
 		 * @see ##EE() is a different way of creating HTML nodes.
 		 */
 		'HTML': function (htmlTemplate, object) {
-	        return  _(EE('div')['ht'](htmlTemplate, object)[0].childNodes);
+		    return  _(EE('div')['ht'](htmlTemplate, object)[0].childNodes);
 		},
 		/*$
 		 * @stop

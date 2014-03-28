@@ -1,8 +1,30 @@
 Minified Change Log
 ====================
 
-Beta 4.2 (2014-12-26)
--------------------
+Beta 5 (2014-03-28)
+--------------------
+* added up()
+* added next()
+* added not()
+* added isEmpty()
+* added onClick()
+* added show() and hide()
+* added define() (or, rather, documented it)
+* added stop() for all promises, to propagate animation cancellation
+* added $$show property for set() and get()
+* removed delay() and defer(), as they just duplicated setTimeout()
+* clone() will now use the browser's cloneNode(). It will only remove the element from the top-level element, but not from any children.
+* $$slide and $$fade's behaviour has slightly changed (will not modify $display anymore), please see the API docs.
+* formatValue() supports any character as group separator
+* updated Minified's promise implementation to the latest Promises/A+ spec (full package only)
+* a promise's state can now be obtained by invoking it as a function without arguments (see promise(), full package only). promise.state has been removed.
+* set() and get() will automatically convert $float to $cssFloat
+* reverse() can be used to reverse strings
+* $.request() will only process plain objects as form data or URL parameters anymore. Everything else will be passed to XHR, allowing you to 
+  use $.request e.g. with FormData.
+
+Beta 4.2 (2013-12-26)
+---------------------
 * fixed issue with delay(), wait(), setCookie() and getCookie(). They were in the wrong namespace, _ instead of $.
 * added version numbers in all source files.
 
