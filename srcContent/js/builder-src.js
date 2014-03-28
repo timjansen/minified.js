@@ -1,7 +1,7 @@
 var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = MINI._;
 
-var VERSION = "Version 2014 beta 4 b2";
+var VERSION = "Version 2014 beta 5";
 var MAX_SIZE = 8191;
 var SRC='/builder/minified-generated-full-src.js';
 
@@ -46,7 +46,7 @@ function setUpConfigurationUI(s) {
 			$$('#compile').disabled = true;
 			closureCompile(src, true, function(closureResult) {
 				$$('#compile').disabled = false;
-				$('#resultDiv').animate({$$slide: 1});
+				$('#resultDiv').animate({$$slide: 1, $$show: 1});
 				if (closureResult) {
 					$('#gzipRow, #downloadRow').set({$display: 'table-row'});
 					$$('#resultSrc').value = header + closureResult.compiledCode;

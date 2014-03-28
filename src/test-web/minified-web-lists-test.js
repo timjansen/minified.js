@@ -41,13 +41,13 @@ describe('minified-web-list-test.js', function() {
 	describe('.sub()', function() {
 		it('just works', function() {
    	 		var r1 = $([]);
-   	 		check(r1.sub(0).length, 0);
-   	 		check(r1.sub(0, 1).length, 0);
-   	 		check(r1.sub(-5, 16).length, 0);
+   	 		check(r1.sub(0).length, 0, "empty");
+   	 		check(r1.sub(0, 1).length, 0, "empty");
+   	 		check(r1.sub(-5, 16).length, 0, "empty");
 
    	 		var r2 = $([1, 2, 3, 4]);
-   	 		check(r2.sub(0, 4).length, 4);
-   	 		check(r2.sub(0, 4)[0], 1);
+   	 		check(r2.sub(0, 4).length, 4, "4e");
+   	 		check(r2.sub(0, 4)[0], 1, "4e");
    	 		check(r2.sub(0, 4)[1], 2);
    	 		check(r2.sub(0, 4)[2], 3);
    	 		check(r2.sub(0, 4)[3], 4);

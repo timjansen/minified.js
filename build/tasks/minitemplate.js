@@ -20,12 +20,12 @@ module.exports = function(grunt) {
 		});
 	
 		if (!options.template)  {
-			grunt.log.error('Required option "template" missing.');
+			grunt.fail.error('Required option "template" missing.');
 			return;
 		}
 		
 		if (!grunt.file.exists(options.template)) {
-			grunt.log.error('Template file "' + options.template + '" not found.');
+			grunt.fail.error('Template file "' + options.template + '" not found.');
 			return;
 		}
 		var templateMtime = fs.statSync(options.template).mtime.getTime();
@@ -48,7 +48,7 @@ module.exports = function(grunt) {
 				if (fatal)
 					return;
 				if (!grunt.file.exists(path)) {
-					grunt.log.error('Input file "' + path + '" not found.');
+					grunt.fail.warn('Input file "' + path + '" not found.');
 					fatal = true;
 				}
 				else {
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
 					}
 					catch (e) {
 						fatal = true;
-						grunt.log.error("Failed to parse " + path + ": " + e);
+						grunt.fail.warn("Failed to parse " + path + ": " + e + "\n");
 						return;
 					}
 					_.copyObj(pSrc, src);

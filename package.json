@@ -1,6 +1,6 @@
 {
   "name": "Minified",
-  "version": "2014.0.0-beta4.0",
+  "version": "2014.0.0-beta5.0",
   "description": "Minified is a universal, lightweight library for the web",
   "main": "WebContent/minified.js",
   "scripts": {
@@ -24,11 +24,12 @@
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-cssmin": "~0.6.1",
     "grunt-xmlmin": "~0.1.1",
-    "grunt-closure-compiler": "0.0.19",
+    "grunt-closure-compiler": "0.0.21",
     "grunt-mocha": "~0.4.1",
     "grunt-mocha-test": "~0.6.3",
     "mocha": "~1.12.1",
     "grunt-contrib-connect": "~0.3.0",
-    "grunt-contrib-watch": "~0.5.3"
+    "grunt-contrib-watch": "~0.5.3",
+    "promises-aplus-tests": "~2.0.3"
   }
 }

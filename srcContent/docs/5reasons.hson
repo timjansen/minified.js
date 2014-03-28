@@ -1,0 +1,118 @@
+{
+	title: '5 Things That Make Minified Awesome', 
+  	section: docs,
+	externalCss: ["../css/doc.css"],
+ 	main: `<div>
+
+<h1>5 Reasons Why Minified is Awesome</h1>
+<p>When I started with Minified, I wanted to write a library that is incredibly small but still good enough to be a viable replacement for the JavaScript 
+libraries I used at that time, jQuery and Mootools. I tried to match jQuery feature by feature, and by doing so I created a library that was 
+ok to use, but not much more.</p>
+<p>In the last 6 month, my focus changed a bit. Minified is still incredibly small, but it also has become very powerful. Features like HTML templates, 
+the helpers of the Util module or the new event handling go far beyond what the libraries I wanted to replace can offer. Everyday tasks have become so 
+much easier with Minified that using the other libraries has become a chore for me.</p>
+<p>Here are the top 5 things I miss when I can't use Minified:</p>
+<h2>Reason 1: Set</h2>
+<p>Maybe Minified's most unique feature is the universal <a href="/api/set.html">set</a> syntax that allows you to modify properties, attributes and styles with a single call:</p>
+<pre><a href="/api/dollar.html">$</a>('input.custom').<a href="/api/set.html">set</a>({$backgroundColor: '#ccc', size: 16, value: ''});</pre>
+http://jsfiddle.net/tjansen/Tu4kn/
+<p><var>set()</var>'s syntax is not limited to <var>set()</var>, but available everywhere in Minified. You can use the same syntax for <a href="/api/animate.html">animations</a>, 
+for <a href="/api/toggle.html">toggles</a> and <a href="/api/dial.html">dials</a>, when creating new elements with <a href="/api/ee.html"><var>EE()</var></a>, or to 
+retrieve values with <a href="/api/get.html"><var>get()</var></a>. For example like this:</p>
+<pre>
+<a href="/api/dollar.html">$</a>('.fade').<a href="/api/set.html">set</a>({$color: '#fff'}).<a href="/api/animate.html">animate</a>({$color: '$000'}, 500); // animate from black to white
+</pre>
+http://jsfiddle.net/tjansen/Tu4kn/
+
+<h2>Reason 2: HTML Templates</h2>
+<p>Minified's built-in template processor is a fantastic tool for dynamic HTML generation. Using templates is not only often more convenient than concatenating strings, 
+but the template processor guarantees that all output is escaped correctly.</p>
+<pre><a href="/api/dollar.html">$</a>('#greeting').<a href="/api/ht.html">ht</a>('Welcome, {{first}} {{last}}!', {first: 'Tim', last: 'Taylor'});</pre>
+http://jsfiddle.net/tjansen/YaHp9/
+
+<p><a href="/api/template.html">Templates</a> in Minified have full support for iteration and conditions, and they allow you to use any JavaScript expression in the template:</p>
+<pre><a href="/api/dollar.html">$</a>('#list').<a href="/api/ht.html">ht</a>('&lt;ul>{{each}}&lt;li class="{{if this.isDone}}strike{{/if}}">{{this.qty}}x {{this.desc}}&lt;/li>{{/each}}&lt;/ul>', shoppingList);</pre>
+<p>You can also create HTML structures with a template and then add it to the document:</p>
+<pre><a href="/api/dollar.html">$</a>('#list ul').<a href="/api/addFirst.html">addFirst</a>(<a href="/api/html.html">HTML</a>('&lt;li class="{{if isDone}}strike{{/if}}">{{qty}}x {{desc}}&lt;/li>', newFirstItem));</pre>
+<p>Another highlight is the support for formats. You can specify a <a href="/api/formatvalue.html">format</a> for each output value. Beside the usual numbers and dates, 
+Minified also supports choice formats that can greatly simplify templates.</p>
+<pre><a href="/api/dollar.html">$</a>('#summary').<a href="/api/ht.html">ht</a>('You need to buy {{items.length :: 0:no items|1:one item|# items}} before {{target :: MM/dd}}. Estimated cost: {{cost :: $#.00}}', 
+{items: groceryList, target: targetDate, cost: totalPrice});</pre>
+<p>HTML Templates can be embedded in &lt;script> elements. Choice formats and HTML templates make it easy to support several languages in your application, as you can
+keep all text and all formatting on the HTML page. </p>
+
+<h2>Reason 3: On</h2>
+<p><var>on()</var> is Minified's way of registering event handlers. Compared two similar functions in other frameworks, it has some time-saving extra features.</p>
+<p>Possibly the main difference is that, by default, registering an event handler will prevent the event's default behavior and disable bubbling. This is the equivalent 
+to returning <var>false</var> in jQuery and means that you do not need to worry about cancelling in your handler. If you want to keep the event's default behavior, you 
+can prefix the event name(s) with '|'. A prefix of '?' will use the return value to determine the behavior, similar to jQuery's default behavior.</p>
+<pre><a href="/api/dollar.html">$</a>('#btn1').<a href="/api/on.html">on</a>('click', function() { window.alert('Does nothing, event stopped'); } );
+<a href="/api/dollar.html">$</a>('#btn2').<a href="/api/on.html">on</a>('|click', function() { window.alert('Start default behavior now!'); } );
+<a href="/api/dollar.html">$</a>('#btn3').<a href="/api/on.html">on</a>('?click', function() { return window.confirm('Default behavior?'); } );</pre>
+<p>The prefix syntax not only saves you from adding a return to your event handler, but does something more important. It allows you to remove event handling logic from your 
+handler and concentrate on only one thing: execute the action caused by the event. This concept is taken one step further by another <var>on()</var> feature, the handler arguments:</p>
+<pre><a href="/api/dollar.html">$</a>('#smallSizeButton').<a href="/api/on.html">on</a>('click', setFontSize, [0]);
+<a href="/api/dollar.html">$</a>('#mediumSizeButton').<a href="/api/on.html">on</a>('click', setFontSize, [1]);
+<a href="/api/dollar.html">$</a>('#largeSizeButton').<a href="/api/on.html">on</a>('click', setFontSize, [2]);</pre>
+http://jsfiddle.net/tjansen/67rG6/
+<p>The handler arguments are passed instead of the event object to the handler. Again, this allows you to concentrate on the action in the event handler. 
+Ideally you can write a function to implement the action without even having to consider that it may be called by an event handler.</p>
+<p>When you dynamically create HTML, you often need to register events for the elements that you have created. <var>on()</var>'s new selector syntax 
+makes this very easy:</p>
+<pre><a href="/api/dollar.html">$</a>('#names').<a href="/api/add.html">add</a>(<a href="/api/html.html">HTML</a>('&lt;li>{{first}} {{last}} &lt;button class='up'>up&lt;/button>&lt;button class='down'>down&lt;/button>&lt;/li>', person)
+                 .<a href="/api/on.html">on</a>('.up', 'click', moveEntry, [-1])
+                 .<a href="/api/on.html">on</a>('.down', 'click', moveEntry, [1]));</pre>
+<p>By passing a selector as first argument you can register events for child elements.</p>
+
+<h2>Reason 4: Toggle</h2>
+<p>Toggles make it very easy to build animations that have exactly two states, like mouseover effects and collapsing sections. You only need to specify the 
+two states using the universal set syntax:</p>
+<pre>var fontSizeToggle = <a href="/api/dollar.html">$</a>('.text').<a href="/api/toggle.html">toggle</a>({$fontSize: '8pt'}, {$fontSize: '12pt'});</pre>
+http://jsfiddle.net/tjansen/MCNSb/
+<p><var>fontSizeToggle</var> contains now a function that will toggle between the two states when you invoke it. You can also set a specific state by passing a boolean.</p>
+<p>To allow font size toggling with a button, all you need to do is to register the toggle function as event handler:<p>
+<pre><a href="/api/dollar.html">$</a>('#changeFontSize').<a href="/api/on.html">on</a>('click', fontSizeToggle);</pre>
+<p>Toggles also supports smooth transitions between the states. Specify the duration of the transition, connect the events and you have a simple animation effect:</p>
+<pre>//Change text color of focussed text fields:
+<a href="/api/dollar.html">$</a>('input[type=text]').<a href="/api/per.html">per</a>(function(el) {
+	var tgl = el.<a href="/api/toggle.html">toggle</a>({$color: '#000'}, {$color: '#a00'}, 500);
+	el.<a href="/api/on.html">on</a>('|focus', tgl, [true])
+  .<a href="/api/on.html">on</a>('|blur', tgl, [false]);
+});
+</pre>
+
+<h2>Reason 5: onChange(), onOver() and onFocus()</h2>
+<p>In addition to regular event handlers, Minified also has some specialized event handlers. <var>onFocus()</var> calls the event handler with <var>true</var> as 
+only argument when an element gets the focus. When the focus has been removed, it calls the handler with <var>false</var>. This kind of invocation is perfect for 
+toggles, and you can rewrite the last example like this:</p>
+<pre>// Change text color of focussed text fields:
+<a href="/api/dollar.html">$</a>('input[type=text]').<a href="/api/per.html">per</a>(function(el) {
+	el.<a href="/api/onfocus.html">onFocus</a>(el.<a href="/api/toggle.html">toggle</a>({$color: '#000'}, {$color: '#a00'}, 500));
+});
+</pre>
+http://jsfiddle.net/tjansen/MHnhe/
+<p><var>onOver()</var> does mouseover effects what <var>onFocus()</var> does for focus events. You can directly assign toggles as event handlers:</p>
+<pre>// Change CSS class on mouse over:
+<a href="/api/dollar.html">$</a>('.hovering').<a href="/api/per.html">per</a>(function(el) {
+	el.<a href="/api/onover.html">onOver</a>(el.<a href="/api/toggle.html">toggle</a>('isover'));
+});
+</pre>
+<p>Last, but not least, <var>onChange()</var> helps you detect changes on form elements in real-time. You can either use it to monitor a single field, and get the 
+new value conveniently as a parameter:</p>
+<pre><a href="/api/dollar.html">$</a>('#myField').<a href="/api/onchange.html">onChange</a>(function(newValue) {
+	<a href="/api/dollar.html">$</a>('#upperValue').<a href="/api/fill.html">fill</a>(newValue.toUpperCase());
+});
+</pre>
+<p>Or you can use it to monitor a complete form for changes:</p>
+<pre><a href="/api/dollar.html">$</a>('#calculator input').<a href="/api/onchange.html">onChange</a>(function() {
+<a href="/api/dollar.html">$</a>('#result').<a href="/api/ht.html">ht</a>('{{a}} + {{b}} = {{a+b}}', 
+                        {a: parseFloat(<a href="/api/dollardollar.html">$$</a>('#a').value), b: parseFloat(<a href="/api/dollardollar.html">$$</a>('#b').value)});
+
+});
+
+
+</pre>
+
+
+  </div>`
+}

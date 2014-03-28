@@ -23,9 +23,13 @@ Creates a new Promise, optionally assimilating other promises.</div>
 <dd class="">one or more promises to assimilate</dd>
 <dt id="promise_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="promise_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
-<dl><dt>state</dt><dd><span class="var">true</span> to set the Promise to fulfilled, <span class="var">false</span> to set the state as rejected</dd>
+<dl><dt>state</dt><dd><span class="var">true</span> to set the Promise to fulfilled, <span class="var">false</span> to set the state as rejected. If you pass <span class="var">null</span> or
+<span class="var">undefined</span>, the promise's state does not change. The latter may be useful to obtain the promises current state.</dd>
 <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
-<span class="var">state</span>).</dd></dl>
+<span class="var">state</span>).</dd>
+<dt class="returnValue">(return value)</dt><dd><span class="var">true</span> if the promise has been fulfilled, <span class="var">false</span> if its state is rejected,
+<span class="var">undefined</span> if it is still pending. If you only want to obtain the promise's state, call the function without arguments.</dd></dl>
+</dl>
 The function can be called several times, but only the first invocation modifies the Promise. All subsequent calls will
 be ignored.</dd>
 </dl>
@@ -33,8 +37,8 @@ be ignored.</dd>
 <h4>Description</h4>
 <div class="description"><p>
 Creates a new <a href='promiseclass.html' class='func'>Promise</a>, optionally assimilating other promises. If no other promise is given,
-fresh new promise is returned. The returned promise is a function that can be called directly to change the
-promises state.</p><p>If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards
+a fresh new promise is returned. The returned promise is a function that can be called directly to change the
+promise's state.</p><p>If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards
 fulfillment and rejection with the original values.</p><p>If more than one promise are given, it will assimilate all of them with slightly different rules:
 <ul><li>the new promise is fulfilled if all assimilated promises have been fulfilled. The fulfillment values
         of all assimilated promises are given to the handler as arguments. Note that the fulfillment values themselves are always
@@ -75,8 +79,6 @@ var disqus_url = "http://minifiedjs.com/api/promise.html";
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
 </li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
-</li><li><a href="defer.html" class="func">$.defer()</a> 
-</li><li><a href="delay.html" class="func">$.delay()</a> 
 </li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
@@ -105,14 +107,18 @@ var disqus_url = "http://minifiedjs.com/api/promise.html";
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="hide.html" class="func">.hide()</a> <span class="tocMod">Web</span>
 </li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
+</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onclick.html" class="func">.onClick()</a> <span class="tocMod">Web</span>
 </li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
@@ -123,6 +129,7 @@ var disqus_url = "http://minifiedjs.com/api/promise.html";
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="show.html" class="func">.show()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
 </li><li><a href="startswith.html" class="func">.startsWith()</a> <span class="tocMod">Util</span>
 </li><li><a href="sub.html" class="func">.sub()</a> <span class="tocMod">Web, Util</span>
@@ -133,6 +140,7 @@ var disqus_url = "http://minifiedjs.com/api/promise.html";
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="up.html" class="func">.up()</a> <span class="tocMod">Web</span>
 </li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
@@ -156,6 +164,7 @@ var disqus_url = "http://minifiedjs.com/api/promise.html";
 </li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
 </li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
 </li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isempty.html" class="func">_.isEmpty()</a> <span class="tocMod">Util</span>
 </li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
 </li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
 </li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>
@@ -174,9 +183,10 @@ var disqus_url = "http://minifiedjs.com/api/promise.html";
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="stop.html" class="func">promise.stop()</a> 
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

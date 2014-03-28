@@ -267,6 +267,9 @@ describe('minified-web-selector-test.js', function() {
 
    			m = $('#b_a, #b_b').trav('parentNode', '#container div');
    			containsAll(m, [document.getElementById("b")], true, 'multi-hit selector');
+
+   			m = $('#a_a').trav('parentNode', '#container');
+   			containsAll(m, [document.getElementById("container")], true, 'parent by id');
    			
    			m = $('#a').trav('nextSibling', function(v) { return v.nodeType == 1 && v !== document.getElementById("b"); });
    			containsAll(m, [document.getElementById("c")], true, 'tagname selector');
@@ -289,6 +292,9 @@ describe('minified-web-selector-test.js', function() {
 
    			m = $('#b_a, #b_b').trav('parentNode', '*', 2);
    			containsAll(m, [document.getElementById("b"), document.getElementById("container")], true, 'double step');
+   			
+   			m = $('#a_a').trav('parentNode', '#container', 1);
+   			containsAll(m, [document.getElementById("container")], true, 'parent by id + count');
 
    			m = $('#a_a, #b_a, #b_b, #c_b').trav('parentNode', '*', 2);
    			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c"), document.getElementById("container")], true, 'double steps list input');
@@ -307,7 +313,52 @@ describe('minified-web-selector-test.js', function() {
    			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c"), document.getElementById("container")], true, 'double steps list input');
 		});
 	});
+	
+	describe('.up()', function() {
+		it('just works', function() {
+   			m = $('#b_b').up();
+   			containsAll(m, [document.getElementById("b")]);
 
+   			var m = $("#a_a, #b_b, #a_a").up();
+   			containsAll(m, [document.getElementById("a"), document.getElementById("b")], true, 'dupe list input with single step');
+
+   			m = $('#a_a, #b_a, #b_b, #c_b').up();
+   			containsAll(m, [document.getElementById("a"), document.getElementById("b"), document.getElementById("c")], true, 'list input, partial merge');
+
+  			m = $('#a_a').up('#container');
+   			containsAll(m, [document.getElementById("container")], true, 'single parent by id');
+   			
+   			m = $('#a_a, #b_a').up('#container');
+   			containsAll(m, [document.getElementById("container")], true, 'common parent by id');
+   			
+   			m = $('#a_a, #b_a').up('#idontexist');
+   			containsAll(m, [], true, 'parent does not exist / id');
+
+   			m = $('#b_a').up('.idontexist');
+   			containsAll(m, [], true, 'parent does not exist / class');
+
+   			m = $('#a_a, #b_a').up('body');
+   			containsAll(m, [$$('body')], true, 'parent by tag name');
+
+   			m = $('#a_a, #b_a').up(function(n) { return n.id == 'container'; });
+   			containsAll(m, [$$('#container')], true, 'parent by function');
+		});
+	});
+
+	describe('.next()', function() {
+		it('just works', function() {
+			var l = EE('div', [EE('div', 'divvy'), EE('p'), EE('ul', [EE('li', 'test')]), EE('p', 'para')]).select('*', true);
+			var l0 = l.only(0);
+			containsAll(l0.next(), l.only(1), true, 'simple next');
+			containsAll(l0.next(2), l.sub(1, 3), true, 'double next');
+ 			containsAll(l0.next(-1), l.sub(1), true, 'infinite next');
+			containsAll(l0.next('p', -1), $([l.only(1), l.only(3)]), true, 'selector');
+			containsAll(l0.next('p'), l.only(1), true, 'limited selector, default limit');
+			containsAll(l0.next('p', 1), l.only(1), true, 'limited selector');
+			containsAll(l0.next('*', -1), l.sub(1), true, 'infinite selector');
+		});
+	});
+	
 	describe('.is()', function() {
 		it('just works', function() {
    			check($('#a').is(), true, 'default');
@@ -373,6 +424,26 @@ describe('minified-web-selector-test.js', function() {
    			check(fd1.only('.d-d').length, 0, '!dash-test');
   			check(fd1.only('span.c-c').length, 3, 'class.dash-test');
   			check(fd1.only('div.c-c').length, 0, '!class.dash-test');
+		});
+	});
+	
+	describe('.not()', function() {
+		it('just works', function() {
+   			containsAll($('#a').only().not(), [], 'default');
+   			containsAll($([document.getElementById('a'), 'd']).not('*'), ['d'], '*');
+
+   			var fd0 = $([EE('span', {$: 'a x'}), EE('span', {$: 'b x'})]);
+   			containsAll(fd0.not('.a'), [fd0[1]], 'class 1');
+   			containsAll(fd0.not('.b'), [fd0[0]], 'class 2');
+   			containsAll(fd0.not('.c'), [fd0[0], fd0[1]], 'class all');
+   			containsAll(fd0.not('.x'), [], 'class empty');
+   			
+   			var fd1 = $([EE('span', {$: 'a b c-c d'}), EE('span', {$: 'c-c b a'}), EE('span', {$: 'b c-c a'})]);
+   			check(fd1.not('.d-d').length, 3, 'dash-test');
+   			check(fd1.not('.d').length, 2, '!dash-test');
+  			check(fd1.not('span.c-c').length, 0, 'class.dash-test');
+  			check(fd1.not('div.d').length, 3, 'class.dash-test 2');
+  			check(fd1.not('span.d').length, 2, '!class.dash-test');
 		});
 	});
 	

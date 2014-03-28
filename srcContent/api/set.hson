@@ -21,12 +21,8 @@ Modifies the list's elements by setting their properties, attributes, CSS styles
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="set_name" class=""><a name="set_name"><var>name</var></a></dt>
-<dd class="">the name of a single property or attribute to modify. If prefixed with '@', it is treated as a DOM element's attribute.
-'%' also is used to set attributes, but automatically adds 'data-' to the name.
-A dollar ('$') prefix is a shortcut for CSS styles. The special name dollar ('$') modifies CSS classes.
-The special name '$$' allows you to set the <span class="var">style</span> attribute in a browser independent way.
-The special names '$$fade' and '$$slide' create fade and slide effects, and both expect a value between 0 and 1.
-The special names '$$scrollX' and '$$scrollY' allow you to specify the scroll position (use only on <code>$(window)</code>!).</dd>
+<dd class="">the name of a single property or attribute to modify. Unprefixed names set properties, a '$' prefix sets CSS styles and
+'@' sets attributes. Please see the table above for special properties and other options.</dd>
 <dt id="set_value" class=""><a name="set_value"><var>value</var></a></dt>
 <dd class="">the value to set. If value is <span class="var">null</span> and name specified an attribute, the attribute will be removed.
 If dollar ('$') has been passed as name, the value can contain space-separated CSS class names. If prefixed with a '+' the class will be added,
@@ -46,7 +42,8 @@ Functions are not supported by '$'.</dd>
 value. See above for CSS syntax.
 Instead of a string, you can also specify a <code>function(oldValue, index, obj)</code> to modify the existing classes.</dd>
 <dt id="set_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="set_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">the list</dd>
+<dd class="inSyntax0 inSyntax1 inSyntax2">the list
+</dd>
 </dl>
 
 <h4>Description</h4>
@@ -61,25 +58,28 @@ be set.</p><p>The <span class="var">name</span> parameter defines what kind of d
             you should not set the attributes '@class' and '@style'. Instead use '$' and '$$' as shown below.</td></tr>
 <tr><td>%name</td><td>%phone</td><td>Data-Attribute</td><td>Sets a data attribute using setAttribute(). Data attributes are
         attributes whose names start with 'data-'. '%myattr' and '@data-myattr' are equivalent.</td></tr>
-<tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <span class="var">style</span> object.</td></tr>
+<tr><td>$name</td><td>$fontSize</td><td>CSS Property</td><td>Sets a style using the element's <span class="var">style</span> object.
+        The syntax for the CSS styles is camel-case (e.g. "$backgroundColor", not "$background-color"). </td></tr>
 <tr><td>$</td><td>$</td><td>CSS Classes</td><td>A simple <span class="var">$</span> modifies the element's CSS classes using the object's <span class="var">className</span> property. The value is a
             space-separated list of class names. If prefixed with '-' the class is removed, a '+' prefix adds the class and a class name without prefix toggles the class.
             The name '$' can also be omitted if <span class="var">set</span> is called with class names as only argument.</td></tr>
 <tr><td>$$</td><td>$$</td><td>Style</td><td>Sets the element's style attribute in a browser-independent way.</td></tr>
+<tr><td>$$show</td><td>$$show</td><td>Show/Hide</td><td>If <span class="var">true</span> or a number not 0, it will make sure the element is visible by
+        making sure '$display' is not 'none' and by setting '$visibility' to 'visible'. Please see <code><a href='show.html' class='func'>show()</a></code> for details. If the value is <span class="var">false</span> or 0, it
+        will be hidden by setting '$display' to 'none'.</td></tr>
 <tr><td>$$fade</td><td>$$fade</td><td>Fade Effect</td><td>The name '$$fade' sets the opacity of the element in a browser-independent way. The value must be a number
-             between 0 and 1. '$$fade' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0,
+             between 0 and 1. '$$fade' will also automatically control the element's 'visibility' style. If the value is 0,
             the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to
-            'visible' and the display style to 'block'. '$$fade' only works with block elements.</td></tr>
+            'visible'. '$$fade' only works with block elements.</td></tr>
 <tr><td>$$slide</td><td>$$slide</td><td>Slide Effect</td><td>The name '$$slide' allows a vertical slide-out or slide-in effect. The value must be a number
-             between 0 and 1. '$$slide' will also automatically control the element's 'visibility' and 'display' styles. If the value is 0,
-            the element's visibility will automatically be set to 'hidden'. If the value is larger, the visibility will be set to
-            'visible' and the display style to 'block'. '$$slide' only works with block elements.</td></tr>
+             between 0 and 1 and will be used to set the element's '$height'. '$$slide' will also automatically control the element's 'visibility'
+             style. If the value is 0, the element's visibility will automatically be set to 'hidden'. If the value is larger,
+             the visibility will be set to 'visible'. '$$slide' only works with block elements and will not set the
+             element's margin or padding. If you need a margin or padding, you should wrap the elements in a simple &lt;div>.</td></tr>
 <tr><td>$$scrollX, $$scrollY</td><td>$$scrollY</td><td>Scroll Coordinates</td><td>The names '$$scrollX' and
             '$$scrollY' can be used on <code>$(window)</code> to set the scroll coordinates of the document.
             The coordinates are specified in pixels, but must not use a 'px' unit postfix.</td></tr>
-</table>
- (use on <code>$(window)</code>)
-</p></div>
+</table></p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -168,6 +168,12 @@ $('h2').set('innerHTML', function(oldValue, index) {
 </p></div>
 </div>
 
+<h4>See also..</h4>
+<ul><li><code><a href='get.html' class='func'>get()</a></code> retrieves values using the same property syntax.</li>
+<li><code><a href='animate.html' class='func'>animate()</a></code> animates values using the same property syntax.</li>
+<li><code><a href='toggle.html' class='func'>toggle()</a></code> can toggle between two sets of values.</li>
+<li><code><a href='dial.html' class='func'>dial()</a></code> allows smooth transitions between two sets of values.</li>
+</ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -187,8 +193,6 @@ var disqus_url = "http://minifiedjs.com/api/set.html";
 <div id="toc"><h3>Functions</h3><ul><li><a href="dollar.html" class="func">$()</a> <span class="tocMod">Web</span>
 </li><li><a href="length.html" class="func">list.length</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="dollardollar.html" class="func">$$()</a> <span class="tocMod">Web</span>
-</li><li><a href="defer.html" class="func">$.defer()</a> 
-</li><li><a href="delay.html" class="func">$.delay()</a> 
 </li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
@@ -217,14 +221,18 @@ var disqus_url = "http://minifiedjs.com/api/set.html";
 </li><li><a href="find.html" class="func">.find()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="findlast.html" class="func">.findLast()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="get.html" class="func">.get()</a> <span class="tocMod">Web</span>
+</li><li><a href="hide.html" class="func">.hide()</a> <span class="tocMod">Web</span>
 </li><li><a href="ht.html" class="func">.ht()</a> 
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
+</li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
 </li><li><a href="on.html" class="func">.on()</a> <span class="tocMod">Web</span>
 </li><li><a href="onchange.html" class="func">.onChange()</a> <span class="tocMod">Web</span>
+</li><li><a href="onclick.html" class="func">.onClick()</a> <span class="tocMod">Web</span>
 </li><li><a href="onfocus.html" class="func">.onFocus()</a> <span class="tocMod">Web</span>
 </li><li><a href="onover.html" class="func">.onOver()</a> <span class="tocMod">Web</span>
 </li><li><a href="only.html" class="func">.only()</a> <span class="tocMod"></span>
@@ -235,6 +243,7 @@ var disqus_url = "http://minifiedjs.com/api/set.html";
 </li><li><a href="reverse.html" class="func">.reverse()</a> <span class="tocMod">Util</span>
 </li><li><a href="select.html" class="func">.select()</a> <span class="tocMod">Web</span>
 </li><li><a href="set.html" class="func">.set()</a> <span class="tocMod">Web</span>
+</li><li><a href="show.html" class="func">.show()</a> <span class="tocMod">Web</span>
 </li><li><a href="sort.html" class="func">.sort()</a> <span class="tocMod">Util</span>
 </li><li><a href="startswith.html" class="func">.startsWith()</a> <span class="tocMod">Util</span>
 </li><li><a href="sub.html" class="func">.sub()</a> <span class="tocMod">Web, Util</span>
@@ -245,6 +254,7 @@ var disqus_url = "http://minifiedjs.com/api/set.html";
 </li><li><a href="trigger.html" class="func">.trigger()</a> <span class="tocMod">Web</span>
 </li><li><a href="uniq.html" class="func">.uniq()</a> <span class="tocMod">Util</span>
 </li><li><a href="unite.html" class="func">.unite()</a> <span class="tocMod">Util</span>
+</li><li><a href="up.html" class="func">.up()</a> <span class="tocMod">Web</span>
 </li><li><a href="values.html" class="func">.values()</a> <span class="tocMod">Web</span>
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
@@ -268,6 +278,7 @@ var disqus_url = "http://minifiedjs.com/api/set.html";
 </li><li><a href="formatvalue.html" class="func">_.formatValue()</a> <span class="tocMod">Util</span>
 </li><li><a href="isbool.html" class="func">_.isBool()</a> <span class="tocMod">Util</span>
 </li><li><a href="isdate.html" class="func">_.isDate()</a> <span class="tocMod">Util</span>
+</li><li><a href="isempty.html" class="func">_.isEmpty()</a> <span class="tocMod">Util</span>
 </li><li><a href="isfunction.html" class="func">_.isFunction()</a> <span class="tocMod">Util</span>
 </li><li><a href="islist.html" class="func">_.isList()</a> <span class="tocMod">Util</span>
 </li><li><a href="isnumber.html" class="func">_.isNumber()</a> <span class="tocMod">Util</span>
@@ -286,9 +297,10 @@ var disqus_url = "http://minifiedjs.com/api/set.html";
 </li><li><a href="tostring.html" class="func">_.toString()</a> <span class="tocMod">Util</span>
 </li><li><a href="trim.html" class="func">_.trim()</a> <span class="tocMod">Util</span>
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
+</li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="state.html" class="func">promise.state</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="stop.html" class="func">promise.stop()</a> 
 </li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>

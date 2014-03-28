@@ -543,13 +543,22 @@ function runTests(loadInContext) {
 	});
 	
 	describe('_.reverse()', function() {
-		it('reverses', function() {
+		it('reverses lists', function() {
 			var _ = req();
 			var b = _.reverse([45,1]);
 			var b2 = _(3, 111, -1).reverse();
 
 			assert(_.equals(b, [1,45]));
 			assert(_.equals(b2, _(-1, 111, 3)));
+		});
+		it('reverses strings', function() {
+			var _ = req();
+
+			assert.equal(_.reverse(""), "");
+			assert.equal(_.reverse("a"), "a");
+			assert.equal(_.reverse("ab"), "ba");
+			assert.equal(_.reverse("abc"), "cba");
+			assert.equal(_.reverse("a\nbc"), "cb\na");
 		});
 	});
 	

@@ -33,6 +33,8 @@
 <span class="summary">A relatively complex template to demonstrate date formats.</span></a></li>
 <li><a href="http://jsfiddle.net/tjansen/V5yWf/"><span class="link">HTML Templates with HTML() and add()</span><br/>
 <span class="summary">Shows you how to use HTML templates with event handlers.</span></a></li>
+<li><a href="http://jsfiddle.net/tjansen/v2ucL/"><span class="link">Sticky Scroll</span><br/>
+<span class="summary">Shows a sticky scroll effect using get(), set() and $$scrollY.</span></a></li>
 </ul>
 
 <p>back to <a href="/docs">Minified documentation</a>.</p>

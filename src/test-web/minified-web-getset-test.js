@@ -136,6 +136,7 @@ describe('minified-web-getset-test.js', function() {
 			check($('#a_b').get('$marginTop', true), 2);
 			check($('#c').get('$marginTop', true) == 0 || isNaN($('#c').get('$marginTop', true)));
 			check(isNaN($('#a').get('@id', true)));
+			check($({a: 'xxx5xxx9xxx'}).get('a', true), 5);
 		});
 	});
 
@@ -194,20 +195,129 @@ describe('minified-web-getset-test.js', function() {
 		});
 	});
 
+	describe('.hide()', function() {
+		it('hides', function() {
+			$('#container2').add(EE('hr'));
+			$('#container2 hr').hide();
+			check($('#container2 hr').get('$display'), 'none');
+		});
+	});
 
+	describe('.show()', function() {
+		it('removes display==none from style', function() {
+			$('#container2').add(EE('span', {$display: 'none'}, 'testtest'));
+			$('#container2 span').show();
+			check($('#container2 span').get('$display'), 'inline');
+		});
 
-/*
-describe('.fill()', function() {
-	it('', function() {
-		
+		it('overwrites stylesheets with block', function() {
+			$('#container2').add(EE('i', {$: 'hidden'}, 'xxxxx'));
+			$('#container2 i').show();
+			check($('#container2 i').get('$display'), 'block');
+		});
 	});
-	it('', function() {
-		
+
+	describe('set $$show', function() {
+		it('hides with $$show=0', function() {
+			$('#container2').add(EE('hr'));
+			$('#container2 hr').set('$$show', 0);
+			check($('#container2 hr').get('$display'), 'none');
+		});
+		it('hides with $$show=false', function() {
+			$('#container2').add(EE('hr'));
+			$('#container2 hr').set('$$show', false);
+			check($('#container2 hr').get('$display'), 'none');
+		});
+
+		it('removes display==none from style', function() {
+			$('#container2').add(EE('span', {$display: 'none'}, 'testtest'));
+			$('#container2 span').set('$$show', 0.1);
+			check($('#container2 span').get('$display'), 'inline');
+		});
+
+		it('overwrites stylesheets with block', function() {
+			$('#container2').add(EE('i', {$: 'hidden'}, 'xxxxx'));
+			$('#container2 i').show('$$show', true);
+			check($('#container2 i').get('$display'), 'block');
+		});
 	});
-	it('', function() {
-		
+
+	describe('get $$show', function() {
+		it('checks $display', function() {
+			var e = EE('div', {$display: 'none'});
+			$('#container2').add(e);
+			check(e.get('$$show'), 0);
+		});
+		it('checks $visibility', function() {
+			var e = EE('div', {$visibility: 'hidden'});
+			$('#container2').add(e);
+			check(e.get('$$show'), 0);
+		});
+		it('everything else is visible', function() {
+			var e = EE('div', {$visibility: 'visible', $display: 'block'});
+			$('#container2').add(e);
+			check(e.get('$$show'), 1);
+			e = EE('div');
+			$('#container2').add(e);
+			check(e.get('$$show'), 1);
+		});
 	});
-});
-*/
+	
+	describe('get $$fade', function() {
+		it('checks $display', function() {
+			var e = EE('div', {$display: 'none'});
+			$('#container2').add(e);
+			check(e.get('$$fade'), 0);
+		});
+		it('checks $visibility', function() {
+			var e = EE('div', {$visibility: 'hidden'});
+			$('#container2').add(e);
+			check(e.get('$$fade'), 0);
+		});
+		it('checks $opacity and $filter', function() {
+			var e = EE('div', {$$fade: 0.75});
+			$('#container2').add(e);
+			check(e.get('$$fade'), 0.75);
+		});
+		it('defaults to 1', function() {
+			var e = EE('div');
+			$('#container2').add(e);
+			check(e.get('$$fade'), 1);
+		});
+	});
+	
+	describe('set $$fade', function() {
+		it('fades 0.72', function() {
+			var e = EE('div', {$visibility: 'hidden'});
+			$('#container2').add(e);
+			e.set('$$fade', 0.72);
+
+			check(Math.abs(e.get('$opacity', true) - 0.72) < 0.01 || Math.abs(e.get('$filter', true) - 72) < 0.1);
+			check(e.get('$visibility'), 'visible');
+		}); 
+
+		it('fades 1', function() {
+			var e = EE('div', {$visibility: 'visible'});
+			$('#container2').add(e);
+			e.set('$$fade', 1);
+			check(e.get('$opacity', true) == 1 || isNaN(Math.abs(e.get('$filter', true)) ));
+			check(e.get('$visibility'), 'visible');
+		});
+
+		it('fades 0', function() {
+			var e = EE('div');
+			$('#container2').add(e);
+			e.set('$$fade', 0);
+			check(e.get('$visibility'), 'hidden');
+		});
+	});
+	
+	describe('get $$slide', function() {
+		it('checks $height', function() {
+			var e = EE('div', {$height: '78px'});
+			$('#container2').add(e);
+			check(e.get('$$slide', true), '78');
+		});
+	});
 
 });

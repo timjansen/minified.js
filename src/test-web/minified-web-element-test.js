@@ -63,6 +63,14 @@ describe('minified-web-element-test.js', function() {
 			check(t4.data, 'user');
 			check(t4.parentNode, s5, true);
 		});
+		
+		it('styles up items', function() {
+			var a = EE('div', {$$: 'display: none;', $: 'xxx', $width: '20px'});
+			$('#container2').add(a); // realize so we can check styles 
+			check(a.get('$width', true), 20);
+			check(a.get('$display'), 'none');
+			check(a.is('.xxx'));
+		});
 
 	});
 	
@@ -89,6 +97,31 @@ describe('minified-web-element-test.js', function() {
 			sl.add(null);
 			check(sl[0].childNodes.length, 4);
 		});
+				
+		it('clones elements', function() {
+			var sl = $([EE('span'), EE('span'), EE('span')]);
+			sl.add(EE('b', 'bold'));
+			sl.each(function(el) {
+				check(el.innerHTML.toLowerCase(), '<b>bold</b>');
+			});
+		});
+		
+		it('clones texts', function() {
+			var sl = $([EE('span'), EE('span'), EE('span')]);
+			sl.add('text');
+			sl.each(function(el) {
+				check(el.innerHTML, 'text');
+			});
+		});
+
+		it('clones lists', function() {
+			var sl = $([EE('span'), EE('span'), EE('span')]);
+			sl.add([EE('b', 'bold'), 'text']);
+			sl.each(function(el) {
+				check(el.innerHTML.toLowerCase(), '<b>bold</b>text');
+			});
+		});
+
 		
 		it('supports element factories', function() {
 			var sl = EE('span');
@@ -196,6 +229,15 @@ describe('minified-web-element-test.js', function() {
 			$(sl[0].childNodes[2]).addAfter('test');
 			check(sl[0].childNodes.length, 4);
 			check(sl[0].childNodes[3].data, 'test');
+			
+			$(sl[0].childNodes[0]).addAfter(EE('b', 'bold'));
+			check(sl[0].childNodes.length, 5);
+			check(sl[0].childNodes[1].innerHTML, 'bold');
+
+			$([sl[0].childNodes[0], sl[0].childNodes[4]]).addAfter(EE('i', 'it'));
+			check(sl[0].childNodes.length, 7);
+			check(sl[0].childNodes[1].innerHTML, 'it');
+			check(sl[0].childNodes[6].innerHTML, 'it');
 		});
 	});
 
@@ -227,6 +269,7 @@ describe('minified-web-element-test.js', function() {
 		it('removes id from clone', function() {
 			var sl = $('#cloneId').clone();
 			check(sl.length, 1);
+			check(sl[0].id == '');
 			$('#container2').fill(sl);
 			check(/cloneId/i.test($$('#container2').innerHTML), false, 'Clone() id removal');
 			check(/nonono/.test($$('#container2').innerHTML), true, 'Clone() id / content');
