@@ -10,9 +10,8 @@ JavaScript library that was 10 times as large as my code. The libraries just fel
 
 <p>Like so many others, I started maintaining my own collection of helper functions that provided only what I needed from jQuery. As I worked on several projects, 
 more and more helper functions have beed added. When I packaged them for sharing between projects, they became a library of their own. Challenged by the idea of creating
-a valid replacement for jQuery at a fraction of the size, I tried to match jQuery feature by feature, but always with a focus of keeping the size as 
-small as possible and constantly optimizing for size. In July 2013, after about a year of development, the Minified Web module 
-was finally ready for its first release.</p>
+a valid replacement for jQuery at a fraction of the size, I tried to match jQuery feature by feature, but always with a focus on keeping the size as 
+small as possible. In July 2013, after about a year of development, the Minified Web module was finally ready for its first release.</p>
 
 <p>In August 2013 I completed the Util module, a second 4kB module that provides helper functions for date arithmetic, list helpers, string helpers, date and number 
 parsing and formatting, templating and promises - everything I frequently missed when using JavaScript. All of this is also provided by other libraries, 
