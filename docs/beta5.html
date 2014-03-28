@@ -59,7 +59,7 @@ the most important usages of <span class="var"><a href="/api/trav.html">trav()</
 // get all form elements that contain a &lt;select>
 var selectForms = $('select').up('form');
 
-// get all divs that follow directly an hr
+// get all divs that follow an hr as siblings
 var divAfterHr = $('hr').next('div', -1);
 </pre>
 
@@ -80,7 +80,7 @@ $('#myButton').onClick(function() { alert('Clicked!'); });
 <h2>New: show(), hide() and $$show to change the visibility of elements</h2>
 <p><span class="var"><a href="/api/show.html">show()</a></span> and <span class="var"><a href="/api/hide.html">hide()</a></span>
 are helper methods to manipulate the '$display' and 'style of elements. '$$show' can be used in get()/set() to find out whether an
-element is visible to to change its visibility.</p>
+element is visible or to change its visibility.</p>
 <pre>
 $('#beautiful').show();
 $('#ugly').hide();
@@ -104,7 +104,7 @@ var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
 			return div.animate({$left: '100px', $top: '100px'}, 400);
 	});
 
-$('#stopButton').on('click', prom.stop);
+$('#stopButton').onClick(prom.stop);
 </pre>
 
 
