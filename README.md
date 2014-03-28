@@ -11,25 +11,6 @@ It offers jQuery-like features (DOM manipulation, animation, events, HTTP reques
 functions (collections, date&amp;number formatting, date arithmetic, templates) with a simple, coherent API.
   	
 
-Size Comparison
------------------
-For beta 4:
-<table>
-<tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><th>Minified</th><td>no</td><td>19kb</td><td><strong>8167 bytes</strong></td></tr>
-<tr><th>...with IE6-8 support</th><td>no</td><td>21kb</td><td>8954 bytes</td></tr>
-<tr><th>...Web Module only</th><td>yes</td><td>9kb</td><td><strong>4083 bytes</strong></td></tr>
-<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>11kb</td><td>4930 bytes</td></tr>
-<tr><th>jQuery 1.10.2</th><td>yes</td><td>91kb</td><td>32kb</td></tr>
-<tr><th>jQuery 2.0.3</th><td>no</td><td>82kb</td><td>29kb</td></tr>
-<tr><th>MooTools Core NoCompat 1.4.5</th><td>yes</td><td>88kb</td><td>29kb</td></tr>
-<tr><th>Zepto.js 1.0</th><td>no</td><td>27kb</td><td>9.7kb</td></tr>
-</table>
-
-
-=======
->>>>>>> refs/heads/beta5
-
 Feature Comparison
 --------------------
 The goal of Minified is to provide all the basics that you may need on an HTML page. 
