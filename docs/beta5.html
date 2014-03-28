@@ -32,11 +32,11 @@
 	<div class="container"><div>
   <h1>Minified.js Beta 5: Features and Changes</h1>
 
-<p>I am still amazed how it is still possible to optimize Minified even further and squeeze more and more featured into Minified, while still staying under 4kB
-for the Web module and 8kB for the complete library. This release has 7 additional methods, vastly improved implementations for Promises and number formatting
+<p>I am still amazed how it is possible to optimize Minified even further and squeeze more and more features into Minified, while still staying under 4kB
+for the Web module and 8kB for the complete library. This release adds new 8 methods (while removing only 2), vastly improved implementations for Promises and number formatting,
 and many smaller changes.<br>
 The focus on this release was to make Minified more comfortable to use. Minified original concept was to have only one way to do something, in order to keep
-its size down. I have softened this rule somewhat as you can see below, and added a number of convenience functions. Enjoy!</p>
+its size down. As you can see below I have softened this rule somewhat and added a number of convenience functions. Enjoy!</p>
 
 <h2 style="color: red">Backward-incompatible Changes</h2>
 <p>
@@ -97,12 +97,12 @@ promises returned by Minified have a <var>stop()</var> function.</p>
 <pre>
 var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
 var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
-              .then(function() {
-			        return _.promise(div.animate({$left: '200px', $top: '200px'}, 800, 0), 
-           				             div.animate({$backgroundColor: '#f00'}, 200));
-		      }).then(function() {
-		 			return div.animate({$left: '100px', $top: '100px'}, 400);
-			  });
+	.then(function() {
+		return _.promise(div.animate({$left: '200px', $top: '200px'}, 800, 0), 
+						 div.animate({$backgroundColor: '#f00'}, 200));
+		}).then(function() {
+			return div.animate({$left: '100px', $top: '100px'}, 400);
+	});
 
 $('#stopButton').on('click', prom.stop);
 </pre>
