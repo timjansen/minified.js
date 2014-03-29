@@ -3,14 +3,14 @@
  * 
  * Here are some tasks that may be interesting for development:
  * 
- * - all: compiles and tests everything, sets up the /WebContent dir that's used for the site
+ * - all: compiles and tests everything, sets up the /webContent dir that's used for the site
  * - code: compiles the code in /src, executes automated tests
  * - test: runs all available tests (util in Node.js, web in PhantomJS)
  * - testQuick: runs the most important tests, much faster than 'test'
  * - site: use after you changed site content in /srcContent
- * - assemble (default): just create minified.js and copy test cases into /WebDevelopment, but no (slow) closure compilation
+ * - assemble (default): just create minified.js and copy test cases into /webContent, but no (slow) closure compilation
  * - watch: watches over files, execute the tasks above automatically when files change
- * - server: starts a server on port 8080 that serves /WebContent
+ * - server: starts a server on port 8080 that serves /webContent
  * 
  */ 
 
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
 			            expand: true,     
 			            cwd: 'srcContent/',  
 			            src: ['**/*.hson'],
-			            dest: 'WebContent/',
+			            dest: 'webContent/',
 			            ext: '.html'
 			          
 				}]
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
 			            expand: true,     
 			            cwd: 'src/test-web/',  
 			            src: ['**/*.hson'],
-			            dest: 'WebContent/test/',
+			            dest: 'webContent/test/',
 			            ext: '.html'
 			          
 				}]
@@ -113,9 +113,9 @@ module.exports = function(grunt) {
 		      },
 		      files: [{
 		            expand: true,     
-		            cwd: 'WebContent/',  
+		            cwd: 'webContent/',  
 		            src: ['*.html', 'about/*.html', 'api/**/*.html', 'builder/*.html', 'docs/**/*.html', 'download/*.html'],
-		            dest: 'WebContent/'		          
+		            dest: 'webContent/'		          
 		      }]
 		    }
 		},
@@ -162,8 +162,8 @@ module.exports = function(grunt) {
 					}					
 				},
 				files: {
-					'WebContent/js/builder.js': ['dist/minified-src.js', 'srcContent/js/parser-src.js', 'srcContent/js/builder-src.js'],
-					'WebContent/js/homepage.js': ['srcContent/js/minified-homepage.js', 'srcContent/js/homepage-src.js']
+					'webContent/js/builder.js': ['dist/minified-src.js', 'srcContent/js/parser-src.js', 'srcContent/js/builder-src.js'],
+					'webContent/js/homepage.js': ['srcContent/js/minified-homepage.js', 'srcContent/js/homepage-src.js']
 				}
 			}
 		},
@@ -171,15 +171,15 @@ module.exports = function(grunt) {
 		copy: {
 			sources: {
 				files: {
-					'WebContent/builder/minified-generated-full-src.js': 'src/minified-generated-full-src.js',
-					'WebContent/test/sparkplug.js': 'srcContent/js/sparkplug-src.js',
-					'WebContent/test/mocha.js':     'node_modules/mocha/mocha.js',
-					'WebContent/test/mocha.css':    'node_modules/mocha/mocha.css'
+					'webContent/builder/minified-generated-full-src.js': 'src/minified-generated-full-src.js',
+					'webContent/test/sparkplug.js': 'srcContent/js/sparkplug-src.js',
+					'webContent/test/mocha.js':     'node_modules/mocha/mocha.js',
+					'webContent/test/mocha.css':    'node_modules/mocha/mocha.css'
 				}
 			},
 			imgs: {
 				files: {
-					'WebContent/img/': 'srcContent/img/*.png'
+					'webContent/img/': 'srcContent/img/*.png'
 				}
 			},
 			test: {
@@ -187,7 +187,7 @@ module.exports = function(grunt) {
 		            expand: true,
 		            cwd: 'srcContent/',
 		            src: ['examples/*.html', 'test/**/*.js', 'test/**/*.html', 'test/**/*.txt'],
-		            dest: 'WebContent/'
+		            dest: 'webContent/'
 		      }]
 			},
 			testdist: {
@@ -195,7 +195,7 @@ module.exports = function(grunt) {
 		            expand: true,
 		            cwd: 'dist/',
 		            src: ['*.js'],
-		            dest: 'WebContent/test/dist/'
+		            dest: 'webContent/test/dist/'
 		      }]
 			},
 			testCases: {
@@ -203,13 +203,13 @@ module.exports = function(grunt) {
 		            expand: true,
 		            cwd: 'src/test-web',  
 		            src: ['*.js'],
-		            dest: 'WebContent/test/'
+		            dest: 'webContent/test/'
 		      }]
 			},
 			buildersrc: {
 				files: {
-					'WebContent/js/parser-src.js':  'srcContent/js/parser-src.js',
-					'WebContent/js/builder-src.js': 'srcContent/js/builder-src.js'
+					'webContent/js/parser-src.js':  'srcContent/js/parser-src.js',
+					'webContent/js/builder-src.js': 'srcContent/js/builder-src.js'
 				}
 			},
 			dist: {
@@ -217,7 +217,7 @@ module.exports = function(grunt) {
 		            expand: true,
 		            cwd: 'dist/',  
 		            src: ['*.js'],
-		            dest: 'WebContent/download/'
+		            dest: 'webContent/download/'
 		      }]
 			}
 		},
@@ -225,11 +225,11 @@ module.exports = function(grunt) {
 		cssmin: {
 			site: {
 				files: {
-					'WebContent/css/minimum.css': 'srcContent/css/minimum.css',
-					'WebContent/css/doc.css': ['srcContent/css/minimum.css', 'srcContent/css/doc.css'],
-					'WebContent/css/links.css': ['srcContent/css/minimum.css', 'srcContent/css/links.css'],
-					'WebContent/css/homepage.css': ['srcContent/css/minimum.css', 'srcContent/css/homepage.css'],
-					'WebContent/css/reference.css': ['srcContent/css/minimum.css', 'srcContent/css/doc.css', 'srcContent/css/reference.css']
+					'webContent/css/minimum.css': 'srcContent/css/minimum.css',
+					'webContent/css/doc.css': ['srcContent/css/minimum.css', 'srcContent/css/doc.css'],
+					'webContent/css/links.css': ['srcContent/css/minimum.css', 'srcContent/css/links.css'],
+					'webContent/css/homepage.css': ['srcContent/css/minimum.css', 'srcContent/css/homepage.css'],
+					'webContent/css/reference.css': ['srcContent/css/minimum.css', 'srcContent/css/doc.css', 'srcContent/css/reference.css']
 				}
 			}
 		},
@@ -240,7 +240,7 @@ module.exports = function(grunt) {
 			            expand: true,     
 			            cwd: 'srcContent/img',  
 			            src: ['*.svg'],
-			            dest: 'WebContent/img'		          
+			            dest: 'webContent/img'		          
 			    }]
 			}
 		},
@@ -285,21 +285,21 @@ module.exports = function(grunt) {
  	  				run: true,
  	  				timeout: 50000
  	  			},
- 	  			src: [ 'WebContent/test/test-minified.html',  
- 	  			       'WebContent/test/test-minified-legacy.html']
+ 	  			src: [ 'webContent/test/test-minified.html',  
+ 	  			       'webContent/test/test-minified-legacy.html']
  	  		  },
  	 		  all: {
  	  			options: {
  	  				run: true,
  	  				timeout: 50000
  	  			},
- 	  			src: [ 'WebContent/test/test-minified*.html' ]
+ 	  			src: [ 'webContent/test/test-minified*.html' ]
  	  		  }
  	    },
  	    
 		clean: {
 			tmp: ['tmp'],
-			webContent: ['WebContent'],
+			webContent: ['webContent'],
 			dist: ['dist']
 		},
 		
@@ -323,7 +323,7 @@ module.exports = function(grunt) {
 		      options: {
 		        port: 8080,
 		        hostname: '*',
-		        base: 'WebContent',
+		        base: 'webContent',
 		        keepalive: true
 		      }
 		    }
