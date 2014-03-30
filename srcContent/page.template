@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>{{title}}</title>
+{{if this.rssFeed}}<link rel="alternate" type="application/rss+xml"  href="{{this.rssFeed}}" title="RSS Feed"/>{{/if}}
 {{if !this.externalCss || externalCss.length == 0}}<link rel="stylesheet" type="text/css" href="/css/minimum.css"/>{{/if}}
 {{each link: this.externalCss}}<link rel="stylesheet" type="text/css" href="{{link}}"/>{{/each}}
 {{if this.inlineCss}}<style type="text/css">{{this.inlineCss}}</style>{{/if}}
@@ -31,6 +32,7 @@
 <div id="main">
 	<div class="container">{{{__formatter(main)}}}
 	{{if this.commentId}}
+	<a name="comments">&nbsp;</a>
 	<div id="disqus_thread"></div>
 	<script type="text/javascript">
 	var disqus_shortname = "minifiedjs";
@@ -47,8 +49,8 @@
 
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

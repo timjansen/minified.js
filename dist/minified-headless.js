@@ -2659,8 +2659,11 @@ module.exports = (function() {
 		 * every template is cached and consumes memory.<br/>
 		 * If you only want to format a single value, use ##_.formatValue().
 		 * 
+		 * @example Format a name:
+		 * <pre>var s = _.formatHtml("{{first}} {{last}}", {first: 'Tim', last: 'Taylor'});</pre>
+		 * 
 		 * @example Format a list of dates:
-		 * <pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+		 * <pre>var s = _.format("{{each}}{{this :: yyyy-MM-dd}}{{/each}}", dateList);</pre>
 		 * 
 		 * @param template The ##template#template## as a string. The template, once created, will be cached. 
 		 * @param object the object to format 
@@ -2821,10 +2824,13 @@ module.exports = (function() {
 		 * every template is cached and consumes memory.<br/>
 		 * If you only want to format a single value, use ##_.formatValue().
 		 * 
-		 * @example Format a list of dates:
-		 * <pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+		 * @example Format a name:
+		 * <pre>var s = _.formatHtml("{{first}} {{last}}", {first: 'Tim', last: 'Taylor'});</pre>
 		 * 
-		 * @param template The #template as a string. The template, once created, will be cached.
+		 * @example Format a list of dates:
+		 * <pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd}}{{/each}}", dateList);</pre>
+		 * 
+		 * @param template The ##template#template## as a string. The template, once created, will be cached.
 		 * @param object the object to format 
 		 * @return the string created by the template
 		 *

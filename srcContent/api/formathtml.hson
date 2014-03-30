@@ -19,7 +19,7 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="formathtml_template" class=""><a name="formathtml_template"><var>template</var></a></dt>
-<dd class="">The #template as a string. The template, once created, will be cached.</dd>
+<dd class="">The <a href='template.html' class='func'>template</a> as a string. The template, once created, will be cached.</dd>
 <dt id="formathtml_object" class=""><a name="formathtml_object"><var>object</var></a></dt>
 <dd class="">the object to format</dd>
 <dt id="formathtml_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="formathtml_RETURN"><var>(return value)</var></a></dt>
@@ -37,8 +37,12 @@ If you only want to format a single value, use <code><a href='undefinedformatval
 
 <div class="examples">
 <h4>Example</h4>
+<div class="example"><p>Format a name:
+<pre>var s = _.formatHtml("{{first}} {{last}}", {first: 'Tim', last: 'Taylor'});</pre>
+</p></div>
+<h4>Example</h4>
 <div class="example"><p>Format a list of dates:
-<pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+<pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd}}{{/each}}", dateList);</pre>
 </p></div>
 </div>
 

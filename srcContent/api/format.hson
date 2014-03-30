@@ -45,8 +45,12 @@ If you only want to format a single value, use <code><a href='undefinedformatval
 
 <div class="examples">
 <h4>Example</h4>
+<div class="example"><p>Format a name:
+<pre>var s = _.formatHtml("{{first}} {{last}}", {first: 'Tim', last: 'Taylor'});</pre>
+</p></div>
+<h4>Example</h4>
 <div class="example"><p>Format a list of dates:
-<pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+<pre>var s = _.format("{{each}}{{this :: yyyy-MM-dd}}{{/each}}", dateList);</pre>
 </p></div>
 </div>
 

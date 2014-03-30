@@ -15,6 +15,7 @@
  */ 
 
 module.exports = function(grunt) {
+	grunt.option('stack', true);
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		
@@ -47,14 +48,24 @@ module.exports = function(grunt) {
 			}
 		},
 		
+		blog: {
+			main: {
+				options: {
+					htmlTemplate: 'srcContent/page.template',
+					destDir: 'webContent/blog/'
+				},
+				files: {
+					src: ['srcContent/blog/*.blog']
+				}
+			}
+		},
+		
 		writedocs: {
 		    web: {
 		      options: {  
 		        destDir: 'srcContent/api/'
 		      },
-		      files: {
-		    	  src: ['src/minified-generated-full-src.js']
-		      }
+		      src: ['src/minified-generated-full-src.js']
 		    }
 		},
 		
@@ -114,7 +125,7 @@ module.exports = function(grunt) {
 		      files: [{
 		            expand: true,     
 		            cwd: 'webContent/',  
-		            src: ['*.html', 'about/*.html', 'api/**/*.html', 'builder/*.html', 'docs/**/*.html', 'download/*.html'],
+		            src: ['*.html', 'about/*.html', 'api/**/*.html', 'builder/*.html', 'docs/**/*.html', 'download/*.html', 'blog/*.html'],
 		            dest: 'webContent/'		          
 		      }]
 		    }
@@ -229,6 +240,7 @@ module.exports = function(grunt) {
 					'webContent/css/doc.css': ['srcContent/css/minimum.css', 'srcContent/css/doc.css'],
 					'webContent/css/links.css': ['srcContent/css/minimum.css', 'srcContent/css/links.css'],
 					'webContent/css/homepage.css': ['srcContent/css/minimum.css', 'srcContent/css/homepage.css'],
+					'webContent/css/blog.css': ['srcContent/css/minimum.css', 'srcContent/css/blog.css'],
 					'webContent/css/reference.css': ['srcContent/css/minimum.css', 'srcContent/css/doc.css', 'srcContent/css/reference.css']
 				}
 			}
@@ -347,7 +359,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('code', ['assemble', 'closurecompiler:dist', 'uglify', 'copy:testdist', 'testQuick', 'measuresize']);
 	grunt.registerTask('testQuick', ['mochaTest:util', 'mocha:quick']);
 	grunt.registerTask('test', ['mochaTest', 'mocha:all']);
-	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'copy:imgs', 'copy:test', 'copy:buildersrc', 'cssmin', 'htmlmin', 'xmlmin', 'copy:dist']);
+	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'blog', 'copy:imgs', 'copy:test', 'copy:buildersrc', 'cssmin', 'htmlmin', 'xmlmin', 'copy:dist']);
 	grunt.registerTask('all', ['code', 'test', 'site']);
 	grunt.registerTask('server', ['all', 'connect']);
 	grunt.registerTask('default', ['code']);
