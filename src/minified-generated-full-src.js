@@ -4997,6 +4997,7 @@ define('minified', function() {
 			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			//@condend
 			// @cond !ie6compatibility xhr = new XMLHttpRequest();
+
 			if (dataIsMap) { // if data is parameter map...
 				data = collector(eachObj, data, function processParam(paramName, paramValue) {
 					return collector(flexiEach, paramValue, function(v) { 
@@ -5013,6 +5014,7 @@ define('minified', function() {
 			xhr['open'](method, url, _true, settings['user'], settings['pass']);
 			if (dataIsMap && /post/i.test(method))
 				xhr['setRequestHeader']('Content-Type', 'application/x-www-form-urlencoded');
+
 			eachObj(settings['headers'], function(hdrName, hdrValue) {
 				xhr['setRequestHeader'](hdrName, hdrValue);
 			});

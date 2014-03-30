@@ -4717,6 +4717,7 @@ define('minified', function() {
 		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data && (data['constructor'] == settings['constructor']);
 		try {
 			xhr = new XMLHttpRequest();
+
 			if (dataIsMap) { // if data is parameter map...
 				data = collector(eachObj, data, function processParam(paramName, paramValue) {
 					return collector(flexiEach, paramValue, function(v) { 
@@ -4733,6 +4734,7 @@ define('minified', function() {
 			xhr['open'](method, url, _true, settings['user'], settings['pass']);
 			if (dataIsMap && /post/i.test(method))
 				xhr['setRequestHeader']('Content-Type', 'application/x-www-form-urlencoded');
+
 			eachObj(settings['headers'], function(hdrName, hdrValue) {
 				xhr['setRequestHeader'](hdrName, hdrValue);
 			});
