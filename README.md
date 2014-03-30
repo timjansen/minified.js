@@ -62,9 +62,13 @@ If you only want to compile the code, use
 
 Licensing
 -----------
-Public Domain. Use, modify and distribute it any way you like. No attribution required.
-To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
-Please see http://creativecommons.org/publicdomain/zero/1.0/
+Minified is Public Domain. Use, modify and distribute it any way you like. No attribution required.
+To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified, as published in the
+/src and /dist directories of this repository.
+See http://creativecommons.org/publicdomain/zero/1.0/ for details.
+
+Please note that some third-party content of the Minified web site, especially in the /srcContent directory, has been published under different open source licenses. 
+
 
 
 About Minified
