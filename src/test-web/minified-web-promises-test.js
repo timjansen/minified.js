@@ -55,6 +55,12 @@ describe('minified-web-promises-test.js', function() {
 			});
 			check(!!s);
 		});
+		it('exposes the underlying xhr object', function(done) {
+			var s = $.request('get', '/test/test.txt', null)
+			var expected = window.XMLHttpRequest ? XMLHttpRequest : ActiveXObject("Msxml2.XMLHTTP.3.0");
+			check(s.xhr instanceof expected)
+			done()
+		});
 	});
 		
 	describe('promise()', function() {
