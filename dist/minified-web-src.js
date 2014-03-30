@@ -2979,6 +2979,7 @@ define('minified', function() {
 			if (!callbackCalled) 
 				prom(_false, [0, _null, toString(e)]);
 		}
+
 		return prom;
 	},
 

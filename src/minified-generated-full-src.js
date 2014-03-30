@@ -4995,6 +4995,7 @@ define('minified', function() {
 		try {
 			//@condblock ie6compatibility
 			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
+			prom['xhr'] = xhr;
 			//@condend
 			// @cond !ie6compatibility xhr = new XMLHttpRequest();
 			if (dataIsMap) { // if data is parameter map...
@@ -5035,6 +5036,7 @@ define('minified', function() {
 			if (!callbackCalled) 
 				prom(_false, [0, _null, toString(e)]);
 		}
+		
 		return prom;
 	},
 	
