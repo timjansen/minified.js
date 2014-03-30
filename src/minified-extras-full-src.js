@@ -123,7 +123,7 @@ function dummy() {
 		 * @name promise.stop()
 		 * @syntax promise.stop()
 		 * @module WEB+UTIL
-		 * Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by ##animate() and ##wait(). 
+		 * Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by ##request(), ##animate() and ##wait(). 
 		 * stop() invocation will be propagated over promises returned by ##then() and promises assimilated by ##promise(). You only need to invoke stop
 		 * with the last promise, and all dependent promises will automatically stop as well. 
 		 *

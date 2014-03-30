@@ -1400,7 +1400,7 @@ define('minified', function() {
 		 * @name promise.stop()
 		 * @syntax promise.stop()
 		 * @module WEB+UTIL
-		 * Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by ##animate() and ##wait(). 
+		 * Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by ##request(), ##animate() and ##wait(). 
 		 * stop() invocation will be propagated over promises returned by ##then() and promises assimilated by ##promise(). You only need to invoke stop
 		 * with the last promise, and all dependent promises will automatically stop as well. 
 		 *
@@ -4976,13 +4976,17 @@ define('minified', function() {
 	* <dt>pass</dt><dd>password for HTTP authentication, together with the <var>user</var> parameter</dd>
 	* </dl>
 	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
-	*         the success handler will be called as <code>function(text, xml)</code>:
+	*         the promise's completion handler will be called as <code>function(text, xhr)</code>:
 	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
-	*         <dt>xml</dt><dd>If the response was a XML document, the DOM <var>Document</var>. Otherwise null.</dd></dl>
+	*         <dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different
+	*         formats (e.g. <var>responseXml</var> for an XML document</var>), to retrieve headers and more.</dd></dl>
 	*         The failure handler will be called as <code>function(statusCode, statusText, text)</code>:
 	*         <dl><dt>statusCode</dt><dd>The HTTP status (never 200; 0 if no HTTP request took place).</dd>
-	*         <dt>statusText</dt><dd>The HTTP status text (or null, if the browser threw an exception).</dd>
-	*         <dt>text</dt><dd>the response's body text, if there was any, or the exception as string if the browser threw one.</dd></dl>
+	*         <dt>text</dt><dd>The response's body text, if there was any, or the exception as string if the browser threw one.</dd>
+	*         <dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different
+	*         formats (e.g. <var>responseXml</var> for an XML document</var>), to retrieve headers and more..</dd></dl>
+	*         The returned promise supports ##stop(). Calling <var>stop()</var> will invoke the XHR's <var>abort()</var> method.
+	*         The underlying XmlHttpRequest can also be obtained from the promise's <var>xhr</var> property.
 	*         
 	* @see ##values() serializes an HTML form in a format ready to be sent by <var>$.request</var>.
 	* @see ##$.parseJSON() can be used to parse JSON responses.
@@ -4994,10 +4998,15 @@ define('minified', function() {
 		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data && (data['constructor'] == settings['constructor']);
 		try {
 			//@condblock ie6compatibility
-			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
+			prom['xhr'] = xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
 			//@condend
-			// @cond !ie6compatibility xhr = new XMLHttpRequest();
+			// @cond !ie6compatibility prom['xhr'] = xhr = new XMLHttpRequest();
 
+			//@condblock !promise
+			prom['stop'] = function() { xhr['abort'](); };
+			//@condend promise 
+			// @cond promise prom['stop0'] = function() { xhr['abort'](); };
+			
 			if (dataIsMap) { // if data is parameter map...
 				data = collector(eachObj, data, function processParam(paramName, paramValue) {
 					return collector(flexiEach, paramValue, function(v) { 
@@ -5025,9 +5034,9 @@ define('minified', function() {
 			xhr['onreadystatechange'] = function() {
 				if (xhr['readyState'] == 4 && !callbackCalled++) {
 					if (xhr['status'] == 200)
-						prom(_true, [xhr['responseText'], xhr['responseXML']]);
+						prom(_true, [xhr['responseText'], xhr]);
 					else
-						prom(_false, [xhr['status'], xhr['statusText'], xhr['responseText']]);
+						prom(_false, [xhr['status'], xhr['responseText'], xhr]);
 				}
 			};
 			
@@ -5037,6 +5046,7 @@ define('minified', function() {
 			if (!callbackCalled) 
 				prom(_false, [0, _null, toString(e)]);
 		}
+		
 		return prom;
 	},
 	

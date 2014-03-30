@@ -40,13 +40,17 @@ header 'Content-Type', if you set it, because otherwise it may be overwritten.</
 </dl></dd>
 <dt id="request_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="request_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2">a <a href='promiseclass.html' class='func'>Promise</a> containing the request's status. If the request has successfully completed with HTTP status 200,
-the success handler will be called as <code>function(text, xml)</code>:
+the promise's completion handler will be called as <code>function(text, xhr)</code>:
 <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
-<dt>xml</dt><dd>If the response was a XML document, the DOM <span class="var">Document</span>. Otherwise null.</dd></dl>
+<dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different
+formats (e.g. <span class="var">responseXml</span> for an XML document</span>), to retrieve headers and more.</dd></dl>
 The failure handler will be called as <code>function(statusCode, statusText, text)</code>:
 <dl><dt>statusCode</dt><dd>The HTTP status (never 200; 0 if no HTTP request took place).</dd>
-<dt>statusText</dt><dd>The HTTP status text (or null, if the browser threw an exception).</dd>
-<dt>text</dt><dd>the response's body text, if there was any, or the exception as string if the browser threw one.</dd></dl>
+<dt>text</dt><dd>The response's body text, if there was any, or the exception as string if the browser threw one.</dd>
+<dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different
+formats (e.g. <span class="var">responseXml</span> for an XML document</span>), to retrieve headers and more..</dd></dl>
+The returned promise supports <code><a href='stop.html' class='func'>stop()</a></code>. Calling <span class="var">stop()</span> will invoke the XHR's <span class="var">abort()</span> method.
+The underlying XmlHttpRequest can also be obtained from the promise's <span class="var">xhr</span> property.
 </dd>
 </dl>
 
