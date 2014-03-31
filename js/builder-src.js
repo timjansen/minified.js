@@ -1,7 +1,7 @@
 var MINI = require('minified'), $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
 var _ = MINI._;
 
-var VERSION = "Version 2014 beta 5";
+var VERSION = "Version 2014 beta 5 b2";
 var MAX_SIZE = 8191;
 var SRC='/builder/minified-generated-full-src.js';
 
@@ -60,7 +60,7 @@ function setUpConfigurationUI(s) {
 			});
 		}
 		else  {
-			$('#resultDiv').animate({$$slide: 1});
+			$('#resultDiv').animate({$$slide: 1, $$show: 1});
 			$$('#resultSrc').value = header + src.replace(/@@@VERSION@@@/, VERSION);
 			$('#resultPlain').fill((src.length/1024).toFixed(2) + 'kb');
 			$('#gzipRow, #downloadRow').set({$display: 'none'});
@@ -114,7 +114,7 @@ function setUpConfigurationUI(s) {
 	
 	$('#compile').on('click', compileClicked);
 	
-	var configSrcToggle = $('#configSrcDiv').toggle({$$slide: 0}, {$$slide: 1});
+	var configSrcToggle = $('#configSrcDiv').toggle({$$slide: 0, $$show: 0}, {$$slide: 1, $$show: 1});
 	$('#fromScratch').on('|click', configSrcToggle, [false]);
 	$('#loadConfig').on('|click', configSrcToggle, [true]);
 	
