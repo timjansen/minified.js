@@ -1371,7 +1371,7 @@ define('minified', function() {
 
 		if (element) {
 			if (isString(spec)) {
-				var match = /^([$@]*)(.*)/.exec(replace(replace(spec, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
+				var match = /^(\W*)(.*)/.exec(replace(replace(spec, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
 				var s;
 				if (spec == '$') 
 					s = element.className;
@@ -1576,7 +1576,7 @@ define('minified', function() {
 	 'set': function (name, value) {
 		 var self = this;
 		 if (value !== undef) {
-			 var match = /^([$@]*)(.*)/.exec(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
+			 var match = /^(\W*)(.*)/.exec(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
  			
 			 if (name == '$$fade') {
 				 // @condblock ie8compatibility 
