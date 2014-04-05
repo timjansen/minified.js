@@ -4302,9 +4302,7 @@ define('minified', function() {
 	 */
 	'onOver': function(subSelect, toggle) {
 		var self = this, curOverState = [];
-		if (!toggle)
-			return this['onOver'](_null, subSelect);
-		else 
+		if (toggle)
 			return this['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
 				var overState = ev['type'] != 'mouseout';
 				// @condblock ie9compatibility 
@@ -4318,6 +4316,8 @@ define('minified', function() {
 					}
 				}
 			});
+		else
+			return this['onOver'](_null, subSelect);
 	},
 
 	/*$
@@ -4350,11 +4350,11 @@ define('minified', function() {
 	 * @see ##on() provides low-level event registration.
 	 */
 	'onFocus': function(selector, handler) {
-		if (!handler)
-			return this['onFocus'](_null, selector);
-		else
+		if (handler)
 			return this['on'](selector, '|focus', handler, [_true])
 				       ['on'](selector, '|blur', handler, [_false]);
+		else
+			return this['onFocus'](_null, selector);
 	},
 
 	/*$
@@ -4390,17 +4390,15 @@ define('minified', function() {
 	 * @see ##on() provides low-level event registration.
 	 */
 	'onChange': function onChange(subSelect, handler) {
-		var oldValues = [];
-		if (handler)
+		if (handler) {
+
 			return this['each'](function(el, index) {
-				function register(eventNames, property) { $(el)['on'](subSelect, eventNames,  function() {handler.call(this, el[property], index);}); }
-				if (/kbox|dio/i.test(el['type'])) {
-					register('|click', 'checked');
-				}
-				else { 
-					register('|input', 'value', index);
-				}
+			var isChecked = /kbox|dio/i.test(el['type']);
+			$(el)['on'](subSelect, isChecked ? '|click' : '|input',  function() {
+			handler.call(this, isChecked ? el['checked'] : el['value'], index);
+			}); 
 			});
+		}
 		else
 			return this['onChange'](_null, subSelect); 
 

@@ -4544,9 +4544,7 @@ define('minified', function() {
 	 */
 	'onOver': function(subSelect, toggle) {
 		var self = this, curOverState = [];
-		if (!toggle)
-			return this['onOver'](_null, subSelect);
-		else 
+		if (toggle)
 			return this['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
 				var overState = ev['type'] != 'mouseout';
 				// @condblock ie9compatibility 
@@ -4560,6 +4558,8 @@ define('minified', function() {
 					}
 				}
 			});
+		else
+			return this['onOver'](_null, subSelect);
 	},
 	
 	/*$
@@ -4592,11 +4592,11 @@ define('minified', function() {
 	 * @see ##on() provides low-level event registration.
 	 */
 	'onFocus': function(selector, handler) {
-		if (!handler)
-			return this['onFocus'](_null, selector);
-		else
+		if (handler)
 			return this['on'](selector, '|focus', handler, [_true])
 				       ['on'](selector, '|blur', handler, [_false]);
+		else
+			return this['onFocus'](_null, selector);
 	},
 
 	/*$
@@ -4632,10 +4632,10 @@ define('minified', function() {
 	 * @see ##on() provides low-level event registration.
 	 */
 	'onChange': function onChange(subSelect, handler) {
-		var oldValues = [];
-		if (handler)
+		if (handler) {
+			// @condblock ie8compatibility
+			var oldValues = [];
 			return this['each'](function(el, index) {
-				// @condblock ie8compatibility
 				function register(eventNames, property) {
 					oldValues[index] = el[property];
 					$(el)['on'](subSelect, eventNames, function() {
@@ -4646,18 +4646,22 @@ define('minified', function() {
 						}
 					});
 				}
-				// @condend
-				// @cond !ie8compatibility function register(eventNames, property) { $(el)['on'](subSelect, eventNames,  function() {handler.call(this, el[property], index);}); }
 				if (/kbox|dio/i.test(el['type'])) {
 					register('|click', 'checked');
 				}
 				else { 
-					// @condblock ie8compatibility
 					register(IS_PRE_IE9 ? '|propertychange' : '|input |change |keyup', 'value');
-					// @condend
-					// @cond !ie8compatibility register('|input', 'value', index);
 				}
 			});
+			// @condend
+			
+			// @cond !ie8compatibility return this['each'](function(el, index) {
+			// @cond !ie8compatibility 	var isChecked = /kbox|dio/i.test(el['type']);
+			// @cond !ie8compatibility 	$(el)['on'](subSelect, isChecked ? '|click' : '|input',  function() {
+			// @cond !ie8compatibility 		handler.call(this, isChecked ? el['checked'] : el['value'], index);
+			// @cond !ie8compatibility 	}); 
+			// @cond !ie8compatibility });
+		}
 		else
 			return this['onChange'](_null, subSelect); 
 			
