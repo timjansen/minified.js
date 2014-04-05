@@ -159,6 +159,8 @@ define('minified', function() {
 	 */
 	var MINIFIED_MAGIC_NODEID = 'Mid';
 
+	var setter = {}, getter = {};
+
 	var idSequence = 1;  // used as node id to identify nodes, and as general id for other maps
 
 	// @condblock ie8compatibility
@@ -1269,21 +1271,25 @@ define('minified', function() {
  	 * @see ##set() sets values using the same property syntax.
  	 */
 	'get': function(spec, toNumber) {
-		var self = this, element = self[0];
+		var self = this;
+		var element = self[0];
 
 		if (element) {
 			if (isString(spec)) {
 				var match = /^(\W*)(.*)/.exec(replace(replace(spec, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
 				var s;
-				if (spec == '$') 
-					s = element.className;
+
+				if (getter[match[1]])
+					s = getter[match[1]](this, match[2]);
+				else if (spec == '$') 
+					s = self['get']('className');
 				else if (spec == '$$') {
 					// @condblock ie8compatibility
 					 if (IS_PRE_IE9)
 						s = element['style']['cssText'];
 					 else
 					// @condend
-						s = element.getAttribute('style');
+						s = self['get']('@style');
 				}
 				else if (spec == '$$fade' || spec == '$$show') {
 					if  (self['get']('$visibility') == 'hidden' || self['get']('$display') == 'none')
@@ -1480,7 +1486,9 @@ define('minified', function() {
 		 if (value !== undef) {
 			 var match = /^(\W*)(.*)/.exec(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
 
-			 if (name == '$$fade') {
+			 if (setter[match[1]])
+				 setter[match[1]](this, match[2], value);
+			 else if (name == '$$fade') {
 				 // @condblock ie8compatibility 
 				 this['set']({'$visibility': value ? 'visible' : 'hidden'})
 				     ['set'](
@@ -1491,9 +1499,9 @@ define('minified', function() {
 				 // @cond !ie8compatibility this['set']({'$visibility': value ? 'visible' : 'hidden', '$opacity': value});
 			 }
 			 else if (name == '$$slide') {
-				 this['set']({'$visibility': value ? 'visible' : 'hidden', 
-						 	  '$height': /px/.test(value) ? value : function(oldValue, idx, element) { return getNaturalHeight($(element), value);},
-				              '$overflow': 'hidden'});
+				 this['set']({'$visibility': value ? 'visible' : 'hidden', '$overflow': 'hidden', 
+						 	  '$height': /px/.test(value) ? value : function(oldValue, idx, element) { return getNaturalHeight($(element), value);}
+				              });
 			 }
 			 else if (name == '$$show') {
 				 if (value)
@@ -1505,15 +1513,15 @@ define('minified', function() {
 					 this['set']({'$display': 'none'});
 			 }
 		 	 else if (name == '$$') {
-					// @condblock ie8compatibility 
-					if (IS_PRE_IE9)
-						this['set']('$cssText', value);
-					else
-					// @condend
-						this['set']('@style', value);
-				 }
+				// @condblock ie8compatibility 
+				if (IS_PRE_IE9)
+					this['set']('$cssText', value);
+				else
+				// @condend
+					this['set']('@style', value);
+			 }
 			 else
-				 flexiEach(self, function(obj, c) { 
+				 flexiEach(this, function(obj, c) { 
 					 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
 					 if (name == '$') {
 						 flexiEach(newValue && newValue.split(/\s+/), function(clzz) {
@@ -1526,18 +1534,10 @@ define('minified', function() {
 						 });
 					 }
    					// @condblock scrollxy
-   				 	 else if (name == '$$scrollX') {
-			 			 // @cond !ie8compatibility obj['scroll'](newValue, obj['scrollY']);
-   				 		 // @condblock ie8compatibility 
+   				 	 else if (name == '$$scrollX')
 			 			 obj['scroll'](newValue, $(obj)['get']('$$scrollY'));
-			 			// @condend
-   				 	 }
-   				 	 else if (name == '$$scrollY') {
-			 			 // @cond !ie8compatibility obj['scroll'](obj['scrollX'], newValue);
-   				 		 // @condblock ie8compatibility 
+   				 	 else if (name == '$$scrollY')
 			 			 obj['scroll']($(obj)['get']('$$scrollX'), newValue);
-			 			// @condend
-   				 	 }
 					 // @condend
 					 else if (match[1] == '@') {
 						 if (newValue != _null)  
@@ -2335,16 +2335,15 @@ define('minified', function() {
 
 		// start animation
 		loopStop = $.loop(function(timePassedMs) {
-			if (timePassedMs >= durationMs || timePassedMs < 0) {
-				timePassedMs = durationMs;
-				loopStop();
-				prom(_true, [self]);
-			}
-
 			// @condblock !UTIL
 			flexiEach(dials, function(dial) {dial(timePassedMs/durationMs);}); 
 			// @condend
 			// @cond UTIL callList(dials, [timePassedMs/durationMs]);
+
+			if (timePassedMs >= durationMs) {
+				loopStop();
+				prom(_true, [self]);
+			}
 		});
 		return prom;		
 	},
@@ -3711,7 +3710,103 @@ define('minified', function() {
 		 * MINI.M.prototype.printLength = function() { console.log(this.length); };
 		 * </pre>
 		 */
-		'M': M
+		'M': M,
+
+		/*$
+		 * @id getter
+		 * @requires get
+		 * @name MINI.getter
+		 * @syntax MINI.getter
+		 * @module WEB
+		 * 
+		 * Exposes a map of prefix handlers used by ##get(). You can add support for a new prefix in <var>get()</var>
+		 * by adding a function to this map. The prefix can be any string consisting solely of non-alphanumeric characters
+		 * (\W) that's not already used by Minified. 
+		 * 
+		 * You must not replace <var>getters</var> by a new map, but must always modify the existing map.
+		 * 
+		 * The function's signature is <code>function(list, name)</code> where
+		 * <dl><dt>list</dt><dd>Is the Minified list to get the value from. By convention you should always use only the first element. The list is
+		 *                      never empty (get() automatically returns <var>undefined</var> in this case).</dd>
+		 *     <dt>name</dt><dd>The name of the property. That's the part AFTER the prefix.</dd>
+		 *     <dt class="returnValue">(callback return value)</dt><dd>The value to return to the user.</dd></dl>
+		 * 
+		 * @example Adding a shortcut '||' for accessing border style properties:
+		 * <pre>
+		 * MINI.getter['||'] = function(list, name) {
+		 * 	return list.get('$border' + name.replace(/^[a-z]/, function(a) { return a.toUpperCase()});
+		 * };
+		 * 
+		 * var borderColor = $('#box').get('||color'); // same as '$borderColor'
+		 * var borderLeftRadius = $('#box').get('||leftRadius'); // same as '$borderLeftRadius'
+		 * </pre>
+		 *
+		 * @example Adding XLink attribute support to get(). This is useful if you work with SVG. The prefix is '>'.
+		 * <pre>
+		 * MINI.getter['>'] = function(list, name) {
+		 * 	return list[0].getAttributeNS('http://www.w3.org/1999/xlink', name);
+		 * };
+		 * 
+		 * var xlinkHref = $('#svgLink').get('>href');
+		 * </pre>
+		 */
+		'getter': getter,
+
+		/*$
+		 * @id setter
+		 * @requires set
+		 * @name MINI.setter
+		 * @syntax MINI.setter
+		 * @module WEB
+		 * 
+		 * Exposes a map of prefix handlers used by ##set(). You can add support for a new prefix in <var>set()</var>
+		 * by adding a function to this map. The prefix can be any string consisting solely of non-alphanumeric characters
+		 * (\W) that's not already used by Minified. 
+		 * 
+		 * You must not replace <var>setters</var> by a new map, but must always modify the existing map.
+		 * 
+		 * The function's signature is <code>function(list, name, value)</code> where
+		 * <dl><dt>list</dt><dd>Is the Minified list to use.</dd>
+		 *     <dt>name</dt><dd>The name of the property. That's the part AFTER the prefix.</dd>
+		 *     <dt>value</dt><dd>Either the value to set, or a callback function to create the value that you must call for each
+		 *     value (see ##set() ).</dd>
+		 *     </dl>
+		 *
+		 * If you provide complete ##get() and ##set() support for a prefix, you are also able to use it in other Minified
+		 * function such as ##animate() and ##toggle().
+		 * 
+		 * @example Adding a shortcut '||' for accessing border style properties. As it's just calling ##set() for an existing
+		 * property, it is not required to extra code for the callback.
+		 * <pre>
+		 * MINI.setter['||'] = function(list, name, value) {
+		 * 	list.set('$border' + name.replace(/^[a-z]/, function(a) { return a.toUpperCase()}, value);
+		 * };
+		 * 
+		 * $('#box').set('||color', 'red');   // same as set('$borderColor', 'red')
+		 * $('#box').set('||leftRadius', 4);  // same as set('$borderLeftRadius', 4)
+		 * </pre>
+		 *
+		 * @example Adding XLink attribute support to set(). This is useful if you work with SVG. The prefix is '>'.
+		 * <pre>
+		 * MINI.setter['>'] = function(list, name, value) {
+		 * 	list.each(function(obj, index) {
+		 * 		var v;
+		 * 		if (_.isFunction(value))
+		 * 			v = value(obj.getAttributeNS('http://www.w3.org/1999/xlink', name), index, obj);
+		 * 		else 
+		 * 			v = value;
+		 *		
+		 *		if (v == null)
+		 *			obj.removeAttributeNS('http://www.w3.org/1999/xlink', name);
+		 *		else
+		 *			obj.setAttributeNS('http://www.w3.org/1999/xlink', name, v);
+		 *	});
+		 * };
+		 * 
+		 * $('#svgLink').set('>href', 'http://minifiedjs.com/');
+		 * </pre>
+		 */
+		'setter': setter
 		/*$
 		 * @stop 
 		 */
