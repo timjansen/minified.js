@@ -150,11 +150,6 @@ define('minified', function() {
 
 	/**
 	 * @const
-	 */
-	var _document = document;
-
-	/**
-	 * @const
 	 * @type {!string}
 	 */
 	var MINIFIED_MAGIC_NODEID = 'Nia';
@@ -169,7 +164,7 @@ define('minified', function() {
 	 * @dependency
 	 */
 	/** @type {!Array.<function()>} */
-	var DOMREADY_HANDLER = /^[ic]/.test(_document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
+	var DOMREADY_HANDLER = /^[ic]/.test(document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
 	/*$
 	 * @id animation_vars
 	 * @dependency
@@ -187,14 +182,6 @@ define('minified', function() {
 	 * and the 'elements' property of forms, which is a node in IE9.  
 	 */
 
-	/*$
-	 * @id scrollxy
-	 * @requires set 
-	 * @group ANIMATION
-	 * @configurable default
-	 * @doc no
-	 * @name Support for $$scrollX and $$scrollY
-	 */
 	/*$
 	 * @stop
 	 */
@@ -413,7 +400,7 @@ define('minified', function() {
 	}
 
 	function EE(elementName, attributes, children) {
-		var e = $(_document.createElement(elementName));
+		var e = $(document.createElement(elementName));
 		return (isList(attributes) || (!isObject(attributes)) ) ? e['add'](attributes) : e['set'](attributes)['add'](children);
 	}
 
@@ -481,7 +468,7 @@ define('minified', function() {
 
 		 }
 		 else if (isString(selector))
-		      return _document.querySelectorAll(selector);
+		      return document.querySelectorAll(selector);
 		 else
 		      return collector(flexiEach, selector, flatten);
 	};
@@ -1212,8 +1199,6 @@ define('minified', function() {
 				}
 				else if (spec == '$$slide')
 					s = self['get']('$height');
-				// @condblock scrollxy
-				// @condend scrollxy
 				else if (prefix == '$') {
 						s = _window['getComputedStyle'](element, _null)['getPropertyValue'](replace(match[2], /[A-Z]/g, function (match2) {  return '-' + match2.toLowerCase(); }));
 				}
@@ -1410,9 +1395,10 @@ define('minified', function() {
 					 if (prefix == '$') {
 						 if (match[2])
 							 obj['style'][match[2]] = newValue;
-						 else
-							 flexiEach(newValue && newValue.split(/\s+/), function(clzz) {
+						 else {
+							 flexiEach(newValue && newValue.split(/\s+/), function(clzz) { 
 								 var cName = replace(clzz, /^[+-]/);
+								 // @condblock ie9compatibility
 								 var oldClassName = obj['className'] || '';
 								 var className = replace(oldClassName, RegExp('(^|\\s+)' + cName + '(?=$|\\s)'));
 								 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
@@ -1421,14 +1407,22 @@ define('minified', function() {
 								 obj['className'] = replace(className, /^\s+/g); 
 								 // @condend
 								 // @cond UTIL obj['className'] = trim(className); 
+								 // @condend 
+
+								 //@cond !ie9compatibility if (/^\+/.test(clzz))
+								 //@cond !ie9compatibility 	 obj['classList'].add(cName);
+								 //@cond !ie9compatibility else if (/^-/.test(clzz))
+								 //@cond !ie9compatibility 	 obj['classList'].remove(cName);
+								 //@cond !ie9compatibility else
+								 //@cond !ie9compatibility 	 obj['classList'].toggle(cName);
 							 });
+
+						 }
 					 }
-   					// @condblock scrollxy
    				 	 else if (name == '$$scrollX')
 			 			 obj['scroll'](newValue, $(obj)['get']('$$scrollY'));
    				 	 else if (name == '$$scrollY')
 			 			 obj['scroll']($(obj)['get']('$$scrollX'), newValue);
-					 // @condend
 					 else if (prefix == '@') {
 						 if (newValue == _null)  
 							 obj.removeAttribute(match[2]);
@@ -1602,7 +1596,7 @@ define('minified', function() {
 				else if (isFunction(c))
 					appendChildren(c(e, index));
 				else if (c != _null) {   // must check null, as 0 is a valid parameter 
-					var n = isNode(c) ? c : _document.createTextNode(c);
+					var n = isNode(c) ? c : document.createTextNode(c);
 					if (lastAdded)
 						lastAdded['parentNode']['insertBefore'](n, lastAdded['nextSibling']);
 					else if (addFunction)
@@ -3220,7 +3214,7 @@ define('minified', function() {
 	 * @id ready_init
 	 * @dependency
 	 */
-		_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
+		document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
 	/*$
 	 @stop
 	 */

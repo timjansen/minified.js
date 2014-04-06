@@ -538,7 +538,7 @@ function dummy() {
 
 		 */
 		'setCookie': function(name, value, dateOrDays, dontEscape) {
-			_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
+			document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
 			    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date((+new Date()) + dateOrDays * 8.64E7)).toUTCString()) : '');
 		},
 		
@@ -572,7 +572,7 @@ function dummy() {
 		 * @see ##$.setCookie() sets a cookie.
 		 */
 		'getCookie': function(name, dontUnescape) {
-			var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
+			var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(document.cookie)) && regexp[2];
 			return dontUnescape ? match : match && unescape(match);
 		},
 		

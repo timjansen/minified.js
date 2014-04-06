@@ -150,11 +150,6 @@ define('minified', function() {
 
 	/**
 	 * @const
-	 */
-	var _document = document;
-
-	/**
-	 * @const
 	 * @type {!string}
 	 */
 	var MINIFIED_MAGIC_NODEID = 'Nia';
@@ -172,7 +167,7 @@ define('minified', function() {
 	 * @dependency
 	 */
 	/** @type {!Array.<function()>} */
-	var DOMREADY_HANDLER = /^[ic]/.test(_document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
+	var DOMREADY_HANDLER = /^[ic]/.test(document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
 	/*$
 	 * @id animation_vars
 	 * @dependency
@@ -200,7 +195,7 @@ define('minified', function() {
 	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8,
 	 * and the existence of cssText (which is used instead of the style attribute).
 	 */
-	 var IS_PRE_IE9 = !!_document['all'] && !_document['addEventListener'];
+	 var IS_PRE_IE9 = !!document['all'] && !document['addEventListener'];
 	/*$
 	 * @id ie7compatibility
 	 * @group OPTIONS
@@ -221,15 +216,6 @@ define('minified', function() {
 	 * @name Backward-Compatibility for IE6 and similar browsers
 	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6 which makes the library a tiny 
 	 * little bit larger.
-	 */
-
-	/*$
-	 * @id scrollxy
-	 * @requires set 
-	 * @group ANIMATION
-	 * @configurable default
-	 * @doc no
-	 * @name Support for $$scrollX and $$scrollY
 	 */
 	/*$
 	 * @stop
@@ -468,7 +454,7 @@ define('minified', function() {
 	}
 
 	function EE(elementName, attributes, children) {
-		var e = $(_document.createElement(elementName));
+		var e = $(document.createElement(elementName));
 		return (isList(attributes) || (!isObject(attributes)) ) ? e['add'](attributes) : e['set'](attributes)['add'](children);
 	}
 
@@ -541,11 +527,11 @@ define('minified', function() {
 			return dollarRaw(steps[2], dollarRaw(steps[1], parent), childOnly);
 
 		if (selector != (subSelectors = replace(selector, /^#/)))
-			return filterElements(_document.getElementById(subSelectors)); 
+			return filterElements(document.getElementById(subSelectors)); 
 
 		elementName = (dotPos = /([\w-]*)\.?([\w-]*)/.exec(selector))[1];
 		className = dotPos[2];
-		elements = (useGEbC = _document.getElementsByClassName && className) ? (parent || _document).getElementsByClassName(className) : (parent || _document).getElementsByTagName(elementName || '*'); 
+		elements = (useGEbC = document.getElementsByClassName && className) ? (parent || document).getElementsByClassName(className) : (parent || document).getElementsByTagName(elementName || '*'); 
 
 		if (regexpFilter = useGEbC ? elementName : className)
 			elements =  filter(elements, wordRegExpTester(regexpFilter, useGEbC ? 'nodeName' : 'className'));
@@ -1311,14 +1297,12 @@ define('minified', function() {
 				}
 				else if (spec == '$$slide')
 					s = self['get']('$height');
-				// @condblock scrollxy
 				// @condblock ie8compatibility 
 				else if (spec == '$$scrollX') // for non-IE, $$scrollX/Y fall right thought to element[match[2]]...
-					s = _window['pageXOffset'] != _null ? _window['pageXOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollLeft'];
+					s = _window['pageXOffset'] != _null ? _window['pageXOffset'] : (document['documentElement'] || document['body']['parentNode'] || document['body'])['scrollLeft'];
 				else if (spec == '$$scrollY')
-					s = _window['pageXOffset'] != _null ? _window['pageYOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollTop'];
+					s = _window['pageXOffset'] != _null ? _window['pageYOffset'] : (document['documentElement'] || document['body']['parentNode'] || document['body'])['scrollTop'];
 				// @condend ie8compatibility
-				// @condend scrollxy
 				else if (prefix == '$') {
 					// @condblock ie8compatibility 
 					if (!_window['getComputedStyle'])
@@ -1532,9 +1516,10 @@ define('minified', function() {
 					 if (prefix == '$') {
 						 if (match[2])
 							 obj['style'][match[2]] = newValue;
-						 else
-							 flexiEach(newValue && newValue.split(/\s+/), function(clzz) {
+						 else {
+							 flexiEach(newValue && newValue.split(/\s+/), function(clzz) { 
 								 var cName = replace(clzz, /^[+-]/);
+								 // @condblock ie9compatibility
 								 var oldClassName = obj['className'] || '';
 								 var className = replace(oldClassName, RegExp('(^|\\s+)' + cName + '(?=$|\\s)'));
 								 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
@@ -1543,14 +1528,22 @@ define('minified', function() {
 								 obj['className'] = replace(className, /^\s+/g); 
 								 // @condend
 								 // @cond UTIL obj['className'] = trim(className); 
+								 // @condend 
+
+								 //@cond !ie9compatibility if (/^\+/.test(clzz))
+								 //@cond !ie9compatibility 	 obj['classList'].add(cName);
+								 //@cond !ie9compatibility else if (/^-/.test(clzz))
+								 //@cond !ie9compatibility 	 obj['classList'].remove(cName);
+								 //@cond !ie9compatibility else
+								 //@cond !ie9compatibility 	 obj['classList'].toggle(cName);
 							 });
+
+						 }
 					 }
-   					// @condblock scrollxy
    				 	 else if (name == '$$scrollX')
 			 			 obj['scroll'](newValue, $(obj)['get']('$$scrollY'));
    				 	 else if (name == '$$scrollY')
 			 			 obj['scroll']($(obj)['get']('$$scrollX'), newValue);
-					 // @condend
 					 else if (prefix == '@') {
 						 if (newValue == _null)  
 							 obj.removeAttribute(match[2]);
@@ -1724,7 +1717,7 @@ define('minified', function() {
 				else if (isFunction(c))
 					appendChildren(c(e, index));
 				else if (c != _null) {   // must check null, as 0 is a valid parameter 
-					var n = isNode(c) ? c : _document.createTextNode(c);
+					var n = isNode(c) ? c : document.createTextNode(c);
 					if (lastAdded)
 						lastAdded['parentNode']['insertBefore'](n, lastAdded['nextSibling']);
 					else if (addFunction)
@@ -3403,15 +3396,15 @@ define('minified', function() {
 	 */
 	// @condblock ie8compatibility
 	if (IS_PRE_IE9) {
-		_document['attachEvent']("onreadystatechange", function() {
-			if (/^[ic]/.test(_document['readyState']))
+		document['attachEvent']("onreadystatechange", function() {
+			if (/^[ic]/.test(document['readyState']))
 				triggerDomReady();
 		});
 		_window['attachEvent']("onload", triggerDomReady);
 	}
 	else
 	// @condend
-		_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
+		document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
 	/*$
 	 @stop
 	 */
