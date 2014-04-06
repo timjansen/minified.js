@@ -1379,7 +1379,7 @@ define('minified', function() {
 
 		if (element) {
 			if (isString(spec)) {
-				var match = /^(\W*)(.*)/.exec(replace(replace(spec, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
+				var match = /^(\W*)(.*)/.exec(replace(spec, /^%/,'@data-'));
 				var s;
 	 			 
 				if (getter[match[1]])
@@ -1930,7 +1930,7 @@ define('minified', function() {
 	 * @see ##ht() is a alternative for replacing element content with a HTML snippet.
 	 */
 	'fill': function (children) {
-		return this['each'](function(e) { $(e['childNodes'])['remove'](); }).add(children);
+		return this['each'](function(e) { $(e['childNodes'])['remove'](); })['add'](children);
 	},
 
 	/*$
@@ -2163,7 +2163,7 @@ define('minified', function() {
 	 * @see ##replace() replaces existing nodes.
 	 */
 	'addFront': function (children) {
-		return this['add'](children, function(newNode, refNode) { refNode['insertBefore'](newNode, refNode.firstChild); });
+		return this['add'](children, function(newNode, refNode) { refNode['insertBefore'](newNode, refNode['firstChild']); });
 	},
 	
 	/*$

@@ -920,7 +920,7 @@ define('minified', function() {
  	 * @module WEB
  	 * Finds the closest parents matching the given selector or filter function for each list element, and returns the results as a list.
  	 * 
- 	 * <var>up(selector)</var> is just a shortcut for <code>trav('parentNode', selector, 1)</code>. 
+ 	 * <var>up(selector)</var> is just a shortcut for <code>trav('parentNode', selector, parentNum)</code>. 
  	 * <var>up()</var> uses ##trav() to traverse the DOM tree using <var>parentNode</var> for each list element, until it either finds a 
  	 * matching element or the tree's root has been reached. All matches will added to the result list, at most one for each item in the
  	 * original list. The result list is filtered to include only unique elements.
@@ -1280,7 +1280,7 @@ define('minified', function() {
 
 		if (element) {
 			if (isString(spec)) {
-				var match = /^(\W*)(.*)/.exec(replace(replace(spec, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
+				var match = /^(\W*)(.*)/.exec(replace(spec, /^%/,'@data-'));
 				var s;
 
 				if (getter[match[1]])
@@ -1829,7 +1829,7 @@ define('minified', function() {
 	 * @see ##ht() is a alternative for replacing element content with a HTML snippet.
 	 */
 	'fill': function (children) {
-		return this['each'](function(e) { $(e['childNodes'])['remove'](); }).add(children);
+		return this['each'](function(e) { $(e['childNodes'])['remove'](); })['add'](children);
 	},
 
 	/*$
@@ -2062,7 +2062,7 @@ define('minified', function() {
 	 * @see ##replace() replaces existing nodes.
 	 */
 	'addFront': function (children) {
-		return this['add'](children, function(newNode, refNode) { refNode['insertBefore'](newNode, refNode.firstChild); });
+		return this['add'](children, function(newNode, refNode) { refNode['insertBefore'](newNode, refNode['firstChild']); });
 	},
 
 	/*$
