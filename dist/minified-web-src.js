@@ -157,7 +157,7 @@ define('minified', function() {
 	 * @const
 	 * @type {!string}
 	 */
-	var MINIFIED_MAGIC_NODEID = 'Mid';
+	var MINIFIED_MAGIC_NODEID = 'Nia';
 
 	var setter = {}, getter = {};
 
@@ -492,9 +492,10 @@ define('minified', function() {
 	// by on(), and in on() only nodes in the right context will be checked
 	function getFilterFunc(selector, context) {
 		function wordRegExpTester(name, prop) {
-			var re = RegExp('(^|\\s)' + name + '(?=$|\\s)', 'i');
+			var re = RegExp('(^|\\s+)' + name + '(?=$|\\s)', 'i');
 			return function(obj) {return  name ? re.test(obj[prop]) : _true;};
 		}
+
 		var nodeSet = {};
 		var dotPos = nodeSet;
 		if (isFunction(selector))
@@ -1408,10 +1409,14 @@ define('minified', function() {
 						 flexiEach(newValue && newValue.split(/\s+/), function(clzz) {
 							 var cName = replace(clzz, /^[+-]/);
 							 var oldClassName = obj['className'] || '';
-							 var className = replace(oldClassName, RegExp('(^|\\s)' + cName + '(?=$|\\s)'));
+							 var className = replace(oldClassName, RegExp('(^|\\s+)' + cName + '(?=$|\\s)'));
 							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
 								 className += ' ' + cName;
-							 obj['className'] = replace(className, /^\s+|\s+(?=\s|$)/g);
+							 // @condblock !UTIL
+							 obj['className'] = replace(className, /^\s+/g); 
+							 // @condend
+							 // @cond UTIL
+							 obj['className'] = trim(className); 
 						 });
 					 }
    					// @condblock scrollxy
