@@ -3,8 +3,10 @@ Minified Change Log
 
 Beta 6 (ongoing)
 --------------------
+* MINI.getter and MINI.setter allow you to add new prefixes to set()/get()
 * #36: added 'xhr' property to $.request()'s promise that contains the raw promise
 * added stop() support to $.request()
+* added parentNum parameter to up()
 * changed signatures of request's promise handlers: the success handler is called with the XHR object instead of 
   'responseXml' property as second argument. The failure handler has no 'statusText' anymore (who needs that?).
   Instead it gets the XHR object as last argument.

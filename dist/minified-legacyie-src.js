@@ -2587,8 +2587,10 @@ define('minified', function() {
  	 * @syntax list.up()
  	 * @syntax list.up(selector)
  	 * @syntax list.up(filterFunc)
+ 	 * @syntax list.up(selector, parentNum)
+ 	 * @syntax list.up(filterFunc, parentNum)
  	 * @module WEB
- 	 * Finds the closest parent matching the given selector or filter function for each list element, and returns the results as a list.
+ 	 * Finds the closest parents matching the given selector or filter function for each list element, and returns the results as a list.
  	 * 
  	 * <var>up(selector)</var> is just a shortcut for <code>trav('parentNode', selector, 1)</code>. 
  	 * <var>up()</var> uses ##trav() to traverse the DOM tree using <var>parentNode</var> for each list element, until it either finds a 
@@ -2619,17 +2621,15 @@ define('minified', function() {
  	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
  	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
 	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+	 * @param maxParents maximum number of parents to return per list element. Default is 1.
  	 * @return the new list that contains matching parent elements. Duplicate nodes will be automatically removed.
  	 *         
  	 * @see ##trav() allows you to match more than one element. You can also select other relatives such as siblings or children.
  	 */
-	'up': function(selector) {
-		return this['trav']('parentNode', selector, 1);
+	'up': function(selector, maxParents) {
+		return this['trav']('parentNode', selector, maxParents||1);
 	},
 
-/*
-
- */
 	/*$
  	 * @id next
  	 * @group SELECTORS
@@ -3199,16 +3199,19 @@ define('minified', function() {
 			 else
 				 flexiEach(this, function(obj, c) { 
 					 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
-					 if (name == '$') {
-						 flexiEach(newValue && newValue.split(/\s+/), function(clzz) {
-							 var cName = replace(clzz, /^[+-]/);
-							 var oldClassName = obj['className'] || '';
-							 var className = replace(oldClassName, RegExp('(^|\\s+)' + cName + '(?=$|\\s)'));
-							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
-								 className += ' ' + cName;
-							 
-							 obj['className'] = trim(className); 
-						 });
+					 if (match[1] == '$') {
+						 if (match[2])
+							 obj['style'][match[2]] = newValue;
+						 else
+							 flexiEach(newValue && newValue.split(/\s+/), function(clzz) {
+								 var cName = replace(clzz, /^[+-]/);
+								 var oldClassName = obj['className'] || '';
+								 var className = replace(oldClassName, RegExp('(^|\\s+)' + cName + '(?=$|\\s)'));
+								 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
+									 className += ' ' + cName;
+								 
+								 obj['className'] = trim(className); 
+							 });
 					 }
    					// @condblock scrollxy
    				 	 else if (name == '$$scrollX')
@@ -3217,13 +3220,11 @@ define('minified', function() {
 			 			 obj['scroll']($(obj)['get']('$$scrollX'), newValue);
 					 // @condend
 					 else if (match[1] == '@') {
-						 if (newValue != _null)  
-							 obj.setAttribute(match[2], newValue);
-						 else
+						 if (newValue == _null)  
 							 obj.removeAttribute(match[2]);
+						 else
+						 obj.setAttribute(match[2], newValue);
 					 }
-					 else if (match[1] == '$')
-						 obj['style'][match[2]] = newValue;
 					 else
 						 obj[match[2]] = newValue;
 				 });
@@ -3385,7 +3386,7 @@ define('minified', function() {
 	'add': function (children, addFunction) {
 		return this['each'](function(e, index) {
 			var lastAdded;
-			(function appendChildren(c) {
+			function appendChildren(c) {
 				if (isList(c))
 					flexiEach(c, appendChildren);
 				else if (isFunction(c))
@@ -3400,7 +3401,8 @@ define('minified', function() {
 						e.appendChild(n);
 					lastAdded = n;
 				}
-			})(index &&!isFunction(children) ? clone(children) : children);
+			}
+			appendChildren(index &&!isFunction(children) ? clone(children) : children);
 		});
 	},
 
@@ -3729,7 +3731,7 @@ define('minified', function() {
 	 * @see ##replace() replaces existing nodes.
 	 */
 	'addFront': function (children) {
-		return this['add'](children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
+		return this['add'](children, function(newNode, refNode) { refNode['insertBefore'](newNode, refNode.firstChild); });
 	},
 
 	/*$
