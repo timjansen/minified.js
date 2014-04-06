@@ -881,11 +881,6 @@ define('minified', function() {
 		return v && v.length != _null && !isString(v) && !isNode(v) && !isFunction(v) && v !== _window;
 	}
 
-	function wordRegExpTester(name, prop) {
-		var re = RegExp('(^|\\s)' + name + '(?=$|\\s)', 'i');
-		return function(obj) {return  name ? re.test(obj[prop]) : _true;};
-	}
-
 	// used by IE impl of on() only
 	function push(obj, prop, value) {
 		(obj[prop] = (obj[prop] || [])).push(value);
@@ -1097,6 +1092,10 @@ define('minified', function() {
 	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because context is used only
 	// by on(), and in on() only nodes in the right context will be checked
 	function getFilterFunc(selector, context) {
+		function wordRegExpTester(name, prop) {
+			var re = RegExp('(^|\\s)' + name + '(?=$|\\s)', 'i');
+			return function(obj) {return  name ? re.test(obj[prop]) : _true;};
+		}
 		var nodeSet = {};
 		var dotPos = nodeSet;
 		if (isFunction(selector))
@@ -2382,7 +2381,7 @@ define('minified', function() {
  	 * will be appended to the resulting string. Without legacy support, Minified will obtain the data using
  	 * the <var>textContent</var> property of all nodes.
  	 * 
- 	 * Please note that, unlike jQuery's <var>text()</var>, Minified's will not set text content. Use ##fill() to set text.
+ 	 * Please note that unlike jQuery's <var>text()</var>, Minified's will not set text content. Use ##fill() to set text.
  	 * 
  	 * @example Returns the text of the element with the id 'myContainer'.
  	 * <pre>
@@ -3941,21 +3940,21 @@ define('minified', function() {
 		var self = this;
 		var linearity = linf || 0;
 		var interpolate = isFunction(linearity) ? linearity : function(startValue, endValue, t) {
-			return startValue + t * (endValue - startValue) * (linearity + (1-linearity) * t * (3 - 2*t)); 
+			return t * (endValue - startValue) * (linearity + (1-linearity) * t * (3 - 2*t)) + startValue; 
 		};
 
 		function getColorComponent(colorCode, index) {
 			return (/^#/.test(colorCode)) ?
-				parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
+				parseInt(colorCode.length > 6 ? colorCode.substr(index*2+1, 2) : ((colorCode=colorCode.charAt(index+1))+colorCode), 16)
 				:
-				parseInt(replace(colorCode, /[^\d,]+/g).split(',')[index]);
+				extractNumber(colorCode.split(',')[index]);
 		}
 		return function(t) {
 			eachObj(properties1, function(name, start) {
 				var end=properties2[name], i = 0; 
 				self['set'](name, t<=0?start:t>=1?end:
 					 (/^#|rgb\(/.test(end)) ? // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
-								('rgb('+ Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i++), t)) // expression repeated 3 times for gzip
+								('rgb('+ Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i++), t)) // expression repeated, gzip will do the rest
 								+ ',' + Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i++), t))
 								+ ',' + Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i++), t))
 							    + ')')
@@ -4304,11 +4303,11 @@ define('minified', function() {
 		var self = this, curOverState = [];
 		if (toggle)
 			return this['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
-				var overState = ev['type'] != 'mouseout';
 				// @condblock ie9compatibility 
 				var relatedTarget = ev['relatedTarget'] || ev['toElement'];
 				// @condend
 				// @cond !ie9compatibility var relatedTarget = ev['relatedTarget'];
+				var overState = ev['type'] != 'mouseout';
 				if (curOverState[index] !== overState) {
 					if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['up'](self[index]).length)) {
 						curOverState[index] = overState;
