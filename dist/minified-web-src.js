@@ -232,8 +232,8 @@ define('minified', function() {
 	function nonOp(v) {
 		return v;
 	}
-	function call(f) { // simplified impl without args and any checks. For web only!
-		f();
+	function callList(fl, arg) { // simplified impl with one  arg no checks. For web only!
+		flexiEach(fl, function(f) { f(arg); });
 	}
 	function eachObj(obj, cb) {
 		for (var n in obj)
@@ -312,7 +312,7 @@ define('minified', function() {
 
 		flexiEach(list, function(value) {
 			flexiEach(func(value), function(node) {
-				if (isNode(node) &&!nodeIds[currentNodeId = getNodeId(node)]) {
+				if (!nodeIds[currentNodeId = getNodeId(node)]) {
 					result.push(node);
 					nodeIds[currentNodeId] = _true;
 				}
@@ -383,7 +383,7 @@ define('minified', function() {
 
 	// @condblock !ie8compatibility 
 	function off(handler) {
-	   	flexiEach(handler['M'], call);
+		callList(handler['M']);
 		handler['M'] = _null;
 	}
 	// @condend !ie8compatibility 
@@ -397,7 +397,7 @@ define('minified', function() {
 
 	// for ready()
 	function triggerDomReady() {
-		flexiEach(DOMREADY_HANDLER, call);
+		callList(DOMREADY_HANDLER);
 		DOMREADY_HANDLER = _null;
 	}
 
@@ -542,7 +542,7 @@ define('minified', function() {
 				state = newState;
 				values = newValues;
    				setTimeout(function() {
-   					flexiEach(deferred, call);
+   					callList(deferred);
    				}, 0);
 			}
 		}; 
@@ -2222,7 +2222,7 @@ define('minified', function() {
 		// start animation
 		loopStop = $.loop(function(timePassedMs) {
 			// @condblock !UTIL
-			flexiEach(dials, function(dial) {dial(timePassedMs/durationMs);}); 
+			callList(dials, timePassedMs/durationMs);
 			// @condend
 			// @cond UTIL callList(dials, [timePassedMs/durationMs]);
 

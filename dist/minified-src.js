@@ -909,7 +909,7 @@ define('minified', function() {
 
 		flexiEach(list, function(value) {
 			flexiEach(func(value), function(node) {
-				if (isNode(node) &&!nodeIds[currentNodeId = getNodeId(node)]) {
+				if (!nodeIds[currentNodeId = getNodeId(node)]) {
 					result.push(node);
 					nodeIds[currentNodeId] = _true;
 				}
@@ -980,7 +980,7 @@ define('minified', function() {
 
 	// @condblock !ie8compatibility 
 	function off(handler) {
-	   	flexiEach(handler['M'], call);
+		callList(handler['M']);
 		handler['M'] = _null;
 	}
 	// @condend !ie8compatibility 
@@ -994,7 +994,7 @@ define('minified', function() {
 
 	// for ready()
 	function triggerDomReady() {
-		flexiEach(DOMREADY_HANDLER, call);
+		callList(DOMREADY_HANDLER);
 		DOMREADY_HANDLER = _null;
 	}
 
