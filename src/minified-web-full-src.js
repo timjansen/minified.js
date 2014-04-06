@@ -755,7 +755,10 @@ define('minified', function() {
 	
 	//// LIST FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	eachObj({ 
+	eachObj({
+	// THE FOLLOWING IMPLs are WEB-MODULE ONLY!!
+		
+		
 	/*$
 	 * @id each
 	 * @group SELECTORS
@@ -1376,6 +1379,8 @@ define('minified', function() {
 					// @condend
 						s = self['get']('@style');
 				}
+				else if (spec == '$$slide')
+					s = self['get']('$height');
 				else if (spec == '$$fade' || spec == '$$show') {
 					if  (self['get']('$visibility') == 'hidden' || self['get']('$display') == 'none')
 						s = 0;
@@ -1389,8 +1394,6 @@ define('minified', function() {
 					else // $$show
 						s = 1;
 				}
-				else if (spec == '$$slide')
-					s = self['get']('$height');
 				// @condblock ie8compatibility 
 				else if (spec == '$$scrollX') // for non-IE, $$scrollX/Y fall right thought to element[match[2]]...
 					s = _window['pageXOffset'] != _null ? _window['pageXOffset'] : (document['documentElement'] || document['body']['parentNode'] || document['body'])['scrollLeft'];

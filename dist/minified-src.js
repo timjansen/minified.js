@@ -2843,6 +2843,8 @@ define('minified', function() {
 				else if (spec == '$$') {
 						s = self['get']('@style');
 				}
+				else if (spec == '$$slide')
+					s = self['get']('$height');
 				else if (spec == '$$fade' || spec == '$$show') {
 					if  (self['get']('$visibility') == 'hidden' || self['get']('$display') == 'none')
 						s = 0;
@@ -2853,8 +2855,6 @@ define('minified', function() {
 					else // $$show
 						s = 1;
 				}
-				else if (spec == '$$slide')
-					s = self['get']('$height');
 				else if (prefix == '$') {
 						s = _window['getComputedStyle'](element, _null)['getPropertyValue'](replace(match[2], /[A-Z]/g, function (match2) {  return '-' + match2.toLowerCase(); }));
 				}
