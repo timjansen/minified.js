@@ -1542,8 +1542,7 @@ define('minified', function() {
 								 // @condblock !UTIL
 								 obj['className'] = replace(className, /^\s+/g); 
 								 // @condend
-								 // @cond UTIL
-								 obj['className'] = trim(className); 
+								 // @cond UTIL obj['className'] = trim(className); 
 							 });
 					 }
    					// @condblock scrollxy

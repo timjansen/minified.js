@@ -3211,7 +3211,6 @@ define('minified', function() {
 								 var className = replace(oldClassName, RegExp('(^|\\s+)' + cName + '(?=$|\\s)'));
 								 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
 									 className += ' ' + cName;
-								 
 								 obj['className'] = trim(className); 
 							 });
 					 }
