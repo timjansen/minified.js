@@ -1281,10 +1281,11 @@ define('minified', function() {
 		if (element) {
 			if (isString(spec)) {
 				var match = /^(\W*)(.*)/.exec(replace(spec, /^%/,'@data-'));
+				var prefix = match[1];
 				var s;
 
-				if (getter[match[1]])
-					s = getter[match[1]](this, match[2]);
+				if (getter[prefix])
+					s = getter[prefix](this, match[2]);
 				else if (spec == '$') 
 					s = self['get']('className');
 				else if (spec == '$$') {
@@ -1318,7 +1319,7 @@ define('minified', function() {
 					s = _window['pageXOffset'] != _null ? _window['pageYOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollTop'];
 				// @condend ie8compatibility
 				// @condend scrollxy
-				else if (match[1] == '$') {
+				else if (prefix == '$') {
 					// @condblock ie8compatibility 
 					if (!_window['getComputedStyle'])
 						s = (element['currentStyle']||element['style'])[replace(match[2], /^float$/, 'cssFloat')];
@@ -1326,7 +1327,7 @@ define('minified', function() {
 					// @condend
 						s = _window['getComputedStyle'](element, _null)['getPropertyValue'](replace(match[2], /[A-Z]/g, function (match2) {  return '-' + match2.toLowerCase(); }));
 				}
-				else if (match[1] == '@')
+				else if (prefix == '@')
 					s = element.getAttribute(match[2]);
 				else
 					s = element[match[2]];
@@ -1489,9 +1490,10 @@ define('minified', function() {
 		 var self = this;
 		 if (value !== undef) {
 			 var match = /^(\W*)(.*)/.exec(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
+			 var prefix = match[1];
 
-			 if (setter[match[1]])
-				 setter[match[1]](this, match[2], value);
+			 if (setter[prefix])
+				 setter[prefix](this, match[2], value);
 			 else if (name == '$$fade') {
 				 // @condblock ie8compatibility 
 				 this['set']({'$visibility': value ? 'visible' : 'hidden'})
@@ -1510,7 +1512,7 @@ define('minified', function() {
 			 else if (name == '$$show') {
 				 if (value)
 					 this['set']({'$visibility': value ? 'visible' : 'hidden', '$display': ''}) // that value? part is only for gzip
-			 		 	 ['set']({'$display': function(oldVal) {
+			 		 	 ['set']({'$display': function(oldVal) {                                // set for 2nd time: now we get the stylesheet's $display
 			 		 		 return oldVal == 'none' ? 'block' : oldVal;
 			 			 }}); 
 				 else 
@@ -1527,7 +1529,7 @@ define('minified', function() {
 			 else
 				 flexiEach(this, function(obj, c) { 
 					 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
-					 if (match[1] == '$') {
+					 if (prefix == '$') {
 						 if (match[2])
 							 obj['style'][match[2]] = newValue;
 						 else
@@ -1550,7 +1552,7 @@ define('minified', function() {
    				 	 else if (name == '$$scrollY')
 			 			 obj['scroll']($(obj)['get']('$$scrollX'), newValue);
 					 // @condend
-					 else if (match[1] == '@') {
+					 else if (prefix == '@') {
 						 if (newValue == _null)  
 							 obj.removeAttribute(match[2]);
 						 else
