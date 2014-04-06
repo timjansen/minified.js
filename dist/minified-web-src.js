@@ -382,12 +382,6 @@ define('minified', function() {
 		});
 	}
 
-	// for ready()
-	function triggerDomReady() {
-		callList(DOMREADY_HANDLER);
-		DOMREADY_HANDLER = _null;
-	}
-
 	function ready(handler) {
 		if (DOMREADY_HANDLER)
 			DOMREADY_HANDLER.push(handler);
@@ -3214,7 +3208,10 @@ define('minified', function() {
 	 * @id ready_init
 	 * @dependency
 	 */
-		document.addEventListener("DOMContentLoaded", triggerDomReady, false);
+		document.addEventListener("DOMContentLoaded", function() {
+			callList(DOMREADY_HANDLER);
+			DOMREADY_HANDLER = _null;
+		}, false);
 	/*$
 	 @stop
 	 */

@@ -142,6 +142,7 @@ define('minified', function() {
 	var registeredEvents = {}; // nodeId -> [handler objects]
 	// @condend
 
+	
 
 	/*$
 	 * @id ready_vars
@@ -1102,12 +1103,6 @@ define('minified', function() {
 		flexiEach(handlerList, function(h) {
 			h['e'].detachEvent('on'+h['n'], h['h']);
 		});
-	}
-	
-	// for ready()
-	function triggerDomReady() {
-		callList(DOMREADY_HANDLER);
-		DOMREADY_HANDLER = _null;
 	}
 	
 	function ready(handler) {
@@ -6658,6 +6653,10 @@ define('minified', function() {
 	 */
 	// @condblock ie8compatibility
 	if (IS_PRE_IE9) {
+		function triggerDomReady() {
+			callList(DOMREADY_HANDLER);
+			DOMREADY_HANDLER = _null;
+		}
 		document['attachEvent']("onreadystatechange", function() {
 			if (/^[ic]/.test(document['readyState']))
 				triggerDomReady();
@@ -6666,7 +6665,10 @@ define('minified', function() {
 	}
 	else
 	// @condend
-		document.addEventListener("DOMContentLoaded", triggerDomReady, false);
+		document.addEventListener("DOMContentLoaded", function() {
+			callList(DOMREADY_HANDLER);
+			DOMREADY_HANDLER = _null;
+		}, false);
 	/*$
 	 @stop
 	 */
