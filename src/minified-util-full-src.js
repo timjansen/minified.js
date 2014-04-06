@@ -72,7 +72,7 @@ define('minified', function() {
 	 * This id allows identifying whether the Util module is available.
 	 */
 	
-	var _null = null, _true = true, _false = false;
+	var _null = null;
 
 	/** @const */
 	var undef;
@@ -177,7 +177,7 @@ define('minified', function() {
 		return isObject(n) && !!n['getDay'];
 	}
 	function isBool(n) {
-		return n === _true || n === _false;
+		return n === true || n === false;
 	}
 	function isValue(n) {
 		var type = typeof n;
@@ -368,7 +368,7 @@ define('minified', function() {
 		var found = {};
 		return filter(list, function(item) {
 			if (found[item])
-				return _false;
+				return false;
 			else
 				return found[item] = 1;
 		});
@@ -384,8 +384,8 @@ define('minified', function() {
 	function contains(list, value) { // TODO: can Array.indexOf be used in >IE8?
 		for (var i = 0; i < list.length; i++)
 			if (list[i] == value)
-				return _true;
-		return _false;
+				return true;
+		return false;
 	}
 	// equals if a and b have the same elements and all are equal. Supports getters.
 	function equals(x, y) {
@@ -393,16 +393,16 @@ define('minified', function() {
 		var b = isFunction(y) ? y() : y;
 		var aKeys;
 		if (a == b)
-			return _true;
+			return true;
 		else if (a == _null || b == _null)
-			return _false;
+			return false;
 		else if (isValue(a) || isValue(b))
 			return isDate(a) && isDate(b) && +a==+b;
 		else if (isList(a)) {
 			return (a.length == b.length) &&
 				!find(a, function(val, index) {
 					if (!equals(val, b[index]))
-						return _true;
+						return true;
 				});
 		}
 		else {
@@ -410,7 +410,7 @@ define('minified', function() {
 				((aKeys = keys(a)).length == keyCount(b)) && 
 				!find(aKeys, function(key) {
 						if (!equals(a[key],b[key]))
-							return _true;
+							return true;
 				});
 		}
 	}
@@ -452,11 +452,11 @@ define('minified', function() {
 		var rInput = fwd ? input : reverse(input);
 		var s = (fwd ? tpl : reverse(tpl)).replace(/./g, function(tplChar) {
 			if (tplChar == '0') {
-				inHash = _false;
+				inHash = false;
 				return rInput.charAt(inputPos++) || '0';
 			}
 			else if (tplChar == '#') {
-				inHash = _true;
+				inHash = true;
 				return rInput.charAt(inputPos++) || '';
 			}
 			else
@@ -535,7 +535,7 @@ define('minified', function() {
 						var signed = value < 0 ? '-' : '';
 						var numData = /(\d+)(\.(\d+))?/.exec((signed?-value:value).toFixed(decimalFmt ? decimalFmt[3].length:0));
 						var preDecimalFmt = decimalFmt ? decimalFmt[1] : numFmt;
-						var postDecimal = decimalFmt ? processNumCharTemplate(decimalFmt[3], replace(numData[3], /0+$/), _true) : '';
+						var postDecimal = decimalFmt ? processNumCharTemplate(decimalFmt[3], replace(numData[3], /0+$/), true) : '';
 						
 						return 	(signed ? '-' : '') + 
 								(preDecimalFmt == '#' ? numData[1] : processNumCharTemplate(preDecimalFmt, numData[1])) +
@@ -828,12 +828,12 @@ define('minified', function() {
 			self[idx++] = assimilateSublists;
 				
 		self['length'] = idx;
-		self['_'] = _true;
+		self['_'] = true;
 	}
 	
 
 	function _() {
-		return new M(arguments, _true);
+		return new M(arguments, true);
 	}
 
 	///#/snippet utilM

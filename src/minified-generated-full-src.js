@@ -142,7 +142,7 @@ define('minified', function() {
 	var registeredEvents = {}; // nodeId -> [handler objects]
 	// @condend
 
-	
+
 	/*$
 	 * @id ready_vars
 	 * @dependency
@@ -213,7 +213,7 @@ define('minified', function() {
 	 * This id allows identifying whether the Util module is available.
 	 */
 	
-	var _null = null, _true = true, _false = false;
+	var _null = null;
 
 	/** @const */
 	var undef;
@@ -313,7 +313,7 @@ define('minified', function() {
 		return isObject(n) && !!n['getDay'];
 	}
 	function isBool(n) {
-		return n === _true || n === _false;
+		return n === true || n === false;
 	}
 	function isValue(n) {
 		var type = typeof n;
@@ -504,7 +504,7 @@ define('minified', function() {
 		var found = {};
 		return filter(list, function(item) {
 			if (found[item])
-				return _false;
+				return false;
 			else
 				return found[item] = 1;
 		});
@@ -520,8 +520,8 @@ define('minified', function() {
 	function contains(list, value) { // TODO: can Array.indexOf be used in >IE8?
 		for (var i = 0; i < list.length; i++)
 			if (list[i] == value)
-				return _true;
-		return _false;
+				return true;
+		return false;
 	}
 	// equals if a and b have the same elements and all are equal. Supports getters.
 	function equals(x, y) {
@@ -529,16 +529,16 @@ define('minified', function() {
 		var b = isFunction(y) ? y() : y;
 		var aKeys;
 		if (a == b)
-			return _true;
+			return true;
 		else if (a == _null || b == _null)
-			return _false;
+			return false;
 		else if (isValue(a) || isValue(b))
 			return isDate(a) && isDate(b) && +a==+b;
 		else if (isList(a)) {
 			return (a.length == b.length) &&
 				!find(a, function(val, index) {
 					if (!equals(val, b[index]))
-						return _true;
+						return true;
 				});
 		}
 		else {
@@ -546,7 +546,7 @@ define('minified', function() {
 				((aKeys = keys(a)).length == keyCount(b)) && 
 				!find(aKeys, function(key) {
 						if (!equals(a[key],b[key]))
-							return _true;
+							return true;
 				});
 		}
 	}
@@ -588,11 +588,11 @@ define('minified', function() {
 		var rInput = fwd ? input : reverse(input);
 		var s = (fwd ? tpl : reverse(tpl)).replace(/./g, function(tplChar) {
 			if (tplChar == '0') {
-				inHash = _false;
+				inHash = false;
 				return rInput.charAt(inputPos++) || '0';
 			}
 			else if (tplChar == '#') {
-				inHash = _true;
+				inHash = true;
 				return rInput.charAt(inputPos++) || '';
 			}
 			else
@@ -671,7 +671,7 @@ define('minified', function() {
 						var signed = value < 0 ? '-' : '';
 						var numData = /(\d+)(\.(\d+))?/.exec((signed?-value:value).toFixed(decimalFmt ? decimalFmt[3].length:0));
 						var preDecimalFmt = decimalFmt ? decimalFmt[1] : numFmt;
-						var postDecimal = decimalFmt ? processNumCharTemplate(decimalFmt[3], replace(numData[3], /0+$/), _true) : '';
+						var postDecimal = decimalFmt ? processNumCharTemplate(decimalFmt[3], replace(numData[3], /0+$/), true) : '';
 						
 						return 	(signed ? '-' : '') + 
 								(preDecimalFmt == '#' ? numData[1] : processNumCharTemplate(preDecimalFmt, numData[1])) +
@@ -956,7 +956,7 @@ define('minified', function() {
 			flexiEach(func(value), function(node) {
 				if (!nodeIds[currentNodeId = getNodeId(node)]) {
 					result.push(node);
-					nodeIds[currentNodeId] = _true;
+					nodeIds[currentNodeId] = true;
 				}
 			});
 		});
@@ -990,7 +990,7 @@ define('minified', function() {
 					e['preventDefault']();
 					e['stopPropagation']();
 				}
-				e['cancelBubble'] = _true; // cancel bubble for IE
+				e['cancelBubble'] = true; // cancel bubble for IE
 			}
 			return !stop;
 		};
@@ -1018,7 +1018,7 @@ define('minified', function() {
 							push(registeredEvents, getNodeId(el), handlerDescriptor);
 						}
 						else {
-							el.addEventListener(name, miniHandler, _false); // W3C DOM
+							el.addEventListener(name, miniHandler, false); // W3C DOM
 							push(el, 'M', handlerDescriptor);
 						}
 					});
@@ -1063,11 +1063,11 @@ define('minified', function() {
 						};
 						
 						handler['M'] = collector(flexiEach, [handler['M'], function () { // this function will be called by off()
-							registeredOn.removeEventListener(name, miniHandler, _false);
+							registeredOn.removeEventListener(name, miniHandler, false);
 							delete registeredOn['M'][triggerId];
 						}], nonOp);
 						
-						registeredOn.addEventListener(name, miniHandler, _false);
+						registeredOn.addEventListener(name, miniHandler, false);
 					});
 				});
 			});
@@ -1082,7 +1082,7 @@ define('minified', function() {
 				removeFromArray(registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]], h);
 			}
 			else {
-				h['e'].removeEventListener(h['n'], h['h'], _false); // W3C DOM
+				h['e'].removeEventListener(h['n'], h['h'], false); // W3C DOM
 				removeFromArray(h['e']['M'], h);
 			}
 		});
@@ -1138,7 +1138,7 @@ define('minified', function() {
 		     else if (isList(e))
 		    	 return clone(e);
 		     else if (isNode(e)) {
-		    	 c = e['cloneNode'](_true);
+		    	 c = e['cloneNode'](true);
 		    	 c['removeAttribute']('id');
 		    	 return c;
 		     }
@@ -1181,7 +1181,7 @@ define('minified', function() {
 		}
 		function wordRegExpTester(name, prop) {
 			var re = RegExp('(^|\\s+)' + name + '(?=$|\\s)', 'i');
-			return function(obj) {return  name ? re.test(obj[prop]) : _true;};
+			return function(obj) {return  name ? re.test(obj[prop]) : true;};
 		}
 
 		
@@ -1252,7 +1252,7 @@ define('minified', function() {
 	function getFilterFunc(selector, context) {
 		function wordRegExpTester(name, prop) {
 			var re = RegExp('(^|\\s+)' + name + '(?=$|\\s)', 'i');
-			return function(obj) {return  name ? re.test(obj[prop]) : _true;};
+			return function(obj) {return  name ? re.test(obj[prop]) : true;};
 		}
 
 		var nodeSet = {};
@@ -1275,7 +1275,7 @@ define('minified', function() {
 			};
 		else {
 			$(selector)['each'](function(node) {
-				nodeSet[getNodeId(node)] = _true;
+				nodeSet[getNodeId(node)] = true;
 			});
 			return function(v) { 
 				return nodeSet[getNodeId(v)]; 
@@ -1285,7 +1285,7 @@ define('minified', function() {
 	
 	function getInverseFilterFunc(selector) {
 		var f = getFilterFunc(selector);
-		return function(v) {return f(v) ? _null : _true;};
+		return function(v) {return f(v) ? _null : true;};
 	}
 	///#/snippet webFunctions
 	
@@ -1373,16 +1373,16 @@ define('minified', function() {
 					else {
 						values[index] = map(arguments, nonOp);
 						if (++numCompleted == assimilatedNum)
-							set(_true, assimilatedNum < 2 ? values[index] : values);
+							set(true, assimilatedNum < 2 ? values[index] : values);
 					}
 				}, 
 				function rejectPromise(e) {
 					values[index] = map(arguments, nonOp);
-					set(_false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
+					set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
 				});
 			}
 			catch (e) {
-				set(_false, [e, values, index]);
+				set(false, [e, values, index]);
 			}
 		});
 
@@ -1496,15 +1496,15 @@ define('minified', function() {
 				   				if ((isObject(x) || isFunction(x)) && isFunction(then = x['then'])) {
 										if (x === promise2)
 											throw new TypeError();
-										then['call'](x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2(_false,[value]);});
+										then['call'](x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2(false,[value]);});
 										promise2['stop0'] = x['stop'];
 				   				}
 				   				else
-				   					promise2(_true, [x]);
+				   					promise2(true, [x]);
 		   					}
 		   					catch(e) {
 		   						if (!cbCalled++) 
-		   							promise2(_false, [e]);
+		   							promise2(false, [e]);
 		   					}
 		   				})(call(f, undef, values));
 		   			}
@@ -1512,7 +1512,7 @@ define('minified', function() {
 		   				promise2(state, values);
 				}
 				catch (e) {
-					promise2(_false, [e]);
+					promise2(false, [e]);
 				}
 			};
 			promise2['stop0'] = set['stop'];
@@ -1635,12 +1635,12 @@ define('minified', function() {
 			self[idx++] = assimilateSublists;
 				
 		self['length'] = idx;
-		self['_'] = _true;
+		self['_'] = true;
 	}
 	
 
 	function _() {
-		return new M(arguments, _true);
+		return new M(arguments, true);
 	}
 
 	///#/snippet utilM
@@ -3062,9 +3062,9 @@ define('minified', function() {
 					else if (spec == '$$fade') {
 						s = 
 						// @condblock ie8compatibility
-						IS_PRE_IE9 ? (isNaN(self['get']('$filter', _true)) ? 1 : self['get']('$filter', _true)/100) : 
+						IS_PRE_IE9 ? (isNaN(self['get']('$filter', true)) ? 1 : self['get']('$filter', true)/100) : 
 						// @condend
-							isNaN(self['get']('$opacity', _true)) ? 1 : self['get']('$opacity', _true); 
+							isNaN(self['get']('$opacity', true)) ? 1 : self['get']('$opacity', true); 
 					}
 					else // $$show
 						s = 1;
@@ -4110,9 +4110,9 @@ define('minified', function() {
 		var loopStop;
 
 		// @condblock !promise
-		prom['stop'] = function() { prom(_false); return loopStop(); };
+		prom['stop'] = function() { prom(false); return loopStop(); };
 		// @condend
-		// @cond promise prom['stop0'] = function() { prom(_false); return loopStop(); };
+		// @cond promise prom['stop0'] = function() { prom(false); return loopStop(); };
 
 		// start animation
 		loopStop = $.loop(function(timePassedMs) {
@@ -4123,7 +4123,7 @@ define('minified', function() {
 
 			if (timePassedMs >= durationMs) {
 				loopStop();
-				prom(_true, [self]);
+				prom(true, [self]);
 			}
 		});
 		return prom;		
@@ -4292,7 +4292,7 @@ define('minified', function() {
 	 */
 	'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
 		var self = this;
-		var state = _false;
+		var state = false;
 		var promise;
 		var stateDesc;
 
@@ -4300,7 +4300,7 @@ define('minified', function() {
 			self['set'](stateDesc1);
 			return function(newState) {
 					if (newState !== state) {
-						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
+						stateDesc = (state = newState===true||newState===false ? newState : !state) ? stateDesc2 : stateDesc1;
 
 						if (durationMs) 
 							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity))['then'](function(){promise=_null;});
@@ -4599,8 +4599,8 @@ define('minified', function() {
 	 */
 	'onFocus': function(selector, handler) {
 		if (handler)
-			return this['on'](selector, '|focus', handler, [_true])
-				       ['on'](selector, '|blur', handler, [_false]);
+			return this['on'](selector, '|focus', handler, [true])
+				       ['on'](selector, '|blur', handler, [false]);
 		else
 			return this['onFocus'](_null, selector);
 	},
@@ -5028,7 +5028,7 @@ define('minified', function() {
 				data = _null;
 			}
 
-			xhr['open'](method, url, _true, settings['user'], settings['pass']);
+			xhr['open'](method, url, true, settings['user'], settings['pass']);
 			if (dataIsMap && /post/i.test(method))
 				xhr['setRequestHeader']('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -5042,9 +5042,9 @@ define('minified', function() {
 			xhr['onreadystatechange'] = function() {
 				if (xhr['readyState'] == 4 && !callbackCalled++) {
 					if (xhr['status'] == 200)
-						prom(_true, [xhr['responseText'], xhr]);
+						prom(true, [xhr['responseText'], xhr]);
 					else
-						prom(_false, [xhr['status'], xhr['responseText'], xhr]);
+						prom(false, [xhr['status'], xhr['responseText'], xhr]);
 				}
 			};
 			
@@ -5052,7 +5052,7 @@ define('minified', function() {
 		}
 		catch (e) {
 			if (!callbackCalled) 
-				prom(_false, [0, _null, toString(e)]);
+				prom(false, [0, _null, toString(e)]);
 		}
 		
 		return prom;
@@ -5418,9 +5418,9 @@ define('minified', function() {
 		'wait': function(durationMs, args) {
 			var p = promise();
 			var id = setTimeout(function() { 
-				p(_true, args); 
+				p(true, args); 
 			}, durationMs);
-			p['stop0'] = function() { p(_false); clearTimeout(id); };
+			p['stop0'] = function() { p(false); clearTimeout(id); };
 			return p;
 		}
 		
@@ -6666,7 +6666,7 @@ define('minified', function() {
 	}
 	else
 	// @condend
-		document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
+		document.addEventListener("DOMContentLoaded", triggerDomReady, false);
 	/*$
 	 @stop
 	 */
