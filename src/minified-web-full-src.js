@@ -2280,9 +2280,12 @@ define('minified', function() {
 	 * 
 	 * @see ##add() can add a cloned element to the HTML document.
 	 */
+	// @condblock !UTIL
 	'clone':  function() {
 		return new M(clone(this));
 	},
+	// @condend
+	// @cond UTIL 'clone': listBindArray(clone),
 
 
 	/*$

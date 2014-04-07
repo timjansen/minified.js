@@ -35,12 +35,16 @@ function dummy() {
 	 * @name _.promise()
 	 * @configurable default
 	 * @syntax _.promise()
+	 * @syntax _.promise(callback)
 	 * @syntax _.promise(otherPromise...)
 	 * @module WEB+UTIL
 	 * 
 	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, 
 	 * a fresh new promise is returned. The returned promise is a function that can be called directly to change the 
 	 * promise's state.
+	 * 
+	 * Alternatively you can provide a callback that will be invoked with one function to fulfill the promise and a function
+	 * to reject it. This is the ES6-compatible way of using Minified's promise implementation.
 	 * 
 	 * If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards 
 	 * fulfillment and rejection with the original values.
@@ -55,13 +59,23 @@ function dummy() {
 	 *     promise as third.
 	 * </li></ul>
 	 * 
-	 * @example A simple promise that is fulfilled after 1 second:
+	 * @example A simple promise that is fulfilled after 1 second, using Minified's invocation syntax:
 	 * <pre>var p = _.promise();
 	 * setTimeout(function() { 
 	 *     p(true, []); 
 	 * }, 1000);
 	 * </pre>
+	 /
+	 * @example A simple promise that is fulfilled after 1 second, using the ES6 syntax:
+	 * <pre>var p = _.promise(function(resolve, reject) {
+	 * 		setTimeout(resolve, 1000);
+	 * });
+	 * </pre>
 	 * 
+	 * @param callback a <code>function(resolve, reject)</code> that will be immediately invoked. The promise will be fulfilled when the callback
+	 * calls <var>resolve</var> and will be rejected if <var>reject</var> is called. <var>resolve</var> and <var>reject</var> can be called asynchronously,
+	 * after the callback returned. Both can have any number of parameters, which will be passed to the ##then() handler. Please note that this is a Minified
+	 * extension, and the Promises/A+ standard supports only a single argument.
 	 * @param otherPromise one or more promises to assimilate
 	 * @return the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
 	 * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected. If you pass <var>null</var> or
@@ -88,7 +102,7 @@ function dummy() {
 				state = newState;
 				values = isList(newValues) ? newValues : [newValues];
 				setTimeout(function() {
-					each(deferred, function(f) {f();});
+					each(deferred, function(f) {f();}); // calllist?
 				}, 0);
 			}
 			return state;
@@ -97,20 +111,23 @@ function dummy() {
 		// use promise varargs
 		each(assimilatedPromises, function assimilate(promise, index) {
 			try {
-				promise['then'](function resolvePromise(v) {
-					var then;
-					if ((isObject(v) || isFunction(v)) && isFunction(then = v['then']))
-						assimilate(then, index);
-					else {
+				if (promise['then'])
+					promise['then'](function resolvePromise(v) {
+						var then;
+						if ((isObject(v) || isFunction(v)) && isFunction(then = v['then']))
+							assimilate(then, index);
+						else {
+							values[index] = map(arguments, nonOp);
+							if (++numCompleted == assimilatedNum)
+								set(true, assimilatedNum < 2 ? values[index] : values);
+						}
+					}, 
+					function rejectPromise(e) {
 						values[index] = map(arguments, nonOp);
-						if (++numCompleted == assimilatedNum)
-							set(true, assimilatedNum < 2 ? values[index] : values);
-					}
-				}, 
-				function rejectPromise(e) {
-					values[index] = map(arguments, nonOp);
-					set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
-				});
+						set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
+					});
+				else
+					promise(function() {set(true, arguments);}, function() {set(false, arguments); });
 			}
 			catch (e) {
 				set(false, [e, values, index]);

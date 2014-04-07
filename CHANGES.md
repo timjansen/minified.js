@@ -4,6 +4,7 @@ Minified Change Log
 Beta 6 (ongoing)
 --------------------
 * MINI.getter and MINI.setter allow you to add new prefixes to set()/get()
+* _.promise() supports ES6-style promise resolution
 * #36: added 'xhr' property to $.request()'s promise that contains the raw promise
 * added stop() support to $.request()
 * added parentNum parameter to up()

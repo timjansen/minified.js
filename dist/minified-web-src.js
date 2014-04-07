@@ -615,9 +615,12 @@ define('minified', function() {
    	 * @module WEB, UTIL
 	 * See util module for documentation.
 	 */
+	// @condblock !UTIL
 	'filter': function(filterFunc) {
 		return new M(filter(this, filterFunc));
 	},
+	// @condend
+	// @cond UTIL 'filter': listBindArray(filter),
 
 	/*$ 
 	 * @id collect 
@@ -2052,9 +2055,12 @@ define('minified', function() {
 	 * 
 	 * @see ##add() can add a cloned element to the HTML document.
 	 */
+	// @condblock !UTIL
 	'clone':  function() {
 		return new M(clone(this));
 	},
+	// @condend
+	// @cond UTIL 'clone': listBindArray(clone),
 
 	/*$
 	 * @id animate
