@@ -889,58 +889,6 @@ define('minified', function() {
 	},
 
 	/*$
- 	 * @id up
- 	 * @group SELECTORS
- 	 * @requires trav
- 	 * @configurable default
- 	 * @name .up()
- 	 * @syntax list.up()
- 	 * @syntax list.up(selector)
- 	 * @syntax list.up(filterFunc)
- 	 * @syntax list.up(selector, parentNum)
- 	 * @syntax list.up(filterFunc, parentNum)
- 	 * @module WEB
- 	 * Finds the closest parents matching the given selector or filter function for each list element, and returns the results as a list.
- 	 * 
- 	 * <var>up(selector)</var> is just a shortcut for <code>trav('parentNode', selector, parentNum)</code>. 
- 	 * <var>up()</var> uses ##trav() to traverse the DOM tree using <var>parentNode</var> for each list element, until it either finds a 
- 	 * matching element or the tree's root has been reached. All matches will added to the result list, at most one for each item in the
- 	 * original list. The result list is filtered to include only unique elements.
-	 * 
- 	 * Instead of the selector, you can also specify a function that evaluates whether an element matches.
- 	 * 
- 	 * @example Returns the immediate parent of a node:
- 	 * <pre>
- 	 * var parent = $('#child').up(); 
- 	 * </pre>
- 	 *
- 	 * @example Returns all table elements that the list elements are directly contained in.
- 	 * <pre>
- 	 * var tables = $('td.selected').up('table'); 
- 	 * </pre>
- 	 * 
- 	 * @example Returns a list of all direct parent nodes that have a class that starts with 'special':
- 	 * <pre>
- 	 * var specialParents = $('.myElements').up(function(node) {
- 	 *     return /(^|\\s)special/.test(node.className);
- 	 * }); 
- 	 * </pre>
- 	 *
-  	 * @parm property the name of the property to traverse.
- 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
- 	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
- 	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
-	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
-	 * @param maxParents maximum number of parents to return per list element. Default is 1.
- 	 * @return the new list that contains matching parent elements. Duplicate nodes will be automatically removed.
- 	 *         
- 	 * @see ##trav() allows you to match more than one element. You can also select other relatives such as siblings or children.
- 	 */
-	'up': function(selector, maxParents) {
-		return this['trav']('parentNode', selector, maxParents||1);
-	},
-
-	/*$
  	 * @id next
  	 * @group SELECTORS
  	 * @requires trav
@@ -1008,6 +956,58 @@ define('minified', function() {
  	 */
 	'next': function(selector, maxSiblings) {
 		return this['trav']('nextSibling', selector, maxSiblings||1);
+	},
+
+	/*$
+ 	 * @id up
+ 	 * @group SELECTORS
+ 	 * @requires trav
+ 	 * @configurable default
+ 	 * @name .up()
+ 	 * @syntax list.up()
+ 	 * @syntax list.up(selector)
+ 	 * @syntax list.up(filterFunc)
+ 	 * @syntax list.up(selector, parentNum)
+ 	 * @syntax list.up(filterFunc, parentNum)
+ 	 * @module WEB
+ 	 * Finds the closest parents matching the given selector or filter function for each list element, and returns the results as a list.
+ 	 * 
+ 	 * <var>up(selector)</var> is just a shortcut for <code>trav('parentNode', selector, parentNum)</code>. 
+ 	 * <var>up()</var> uses ##trav() to traverse the DOM tree using <var>parentNode</var> for each list element, until it either finds a 
+ 	 * matching element or the tree's root has been reached. All matches will added to the result list, at most one for each item in the
+ 	 * original list. The result list is filtered to include only unique elements.
+	 * 
+ 	 * Instead of the selector, you can also specify a function that evaluates whether an element matches.
+ 	 * 
+ 	 * @example Returns the immediate parent of a node:
+ 	 * <pre>
+ 	 * var parent = $('#child').up(); 
+ 	 * </pre>
+ 	 *
+ 	 * @example Returns all table elements that the list elements are directly contained in.
+ 	 * <pre>
+ 	 * var tables = $('td.selected').up('table'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @example Returns a list of all direct parent nodes that have a class that starts with 'special':
+ 	 * <pre>
+ 	 * var specialParents = $('.myElements').up(function(node) {
+ 	 *     return /(^|\\s)special/.test(node.className);
+ 	 * }); 
+ 	 * </pre>
+ 	 *
+  	 * @parm property the name of the property to traverse.
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
+ 	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
+	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+	 * @param maxParents maximum number of parents to return per list element. Default is 1.
+ 	 * @return the new list that contains matching parent elements. Duplicate nodes will be automatically removed.
+ 	 *         
+ 	 * @see ##trav() allows you to match more than one element. You can also select other relatives such as siblings or children.
+ 	 */
+	'up': function(selector, maxParents) {
+		return this['trav']('parentNode', selector, maxParents||1);
 	},
 
  	/*$
@@ -1823,6 +1823,78 @@ define('minified', function() {
 	},
 
 	/*$
+	 * @id addafter
+	 * @group ELEMENT
+	 * @requires dollar add
+	 * @configurable default
+	 * @name .addAfter()
+	 * @syntax list.addAfter(text)
+	 * @syntax list.addAfter(node)
+	 * @syntax list.addAfter(list)
+	 * @syntax list.addAfter(factoryFunction)
+ 	 * @module WEB
+	 * Inserts the given text or element(s) as siblings after each HTML element in the list. 
+	 * If a string has been given, it will be added as text node.
+	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
+	 *
+	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
+	 * and ##clone#clones## to all following list elements.
+	 * 
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>addAfter()</var> and can help you create new HTML ndoes.
+	 *
+	 * @example Using the following HTML:
+	 * <pre>
+	 * &lt;div>
+	 *   &lt;div id="mainText">Here is some text&lt;/div>
+	 * &lt;/div>
+	 * </pre>   
+	 * Use addAfter() with a simple string to add a text node.
+	 * <pre>
+	 * $('#mainText').addAfter('Disclaimer: bla bla bla');
+	 * </pre>
+	 * This results in the following HTML:
+	 * <pre>
+	 * &lt;div>
+	 *   &lt;div id="mainText">Here is some text&lt;/div>
+	 *   Disclaimer: bla bla bla
+	 * &lt;/div>
+	 * </pre>   
+	 *
+	 * @example You can also pass an element:
+	 * <pre>
+	 * $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
+	 * </pre>
+	 * With the previous example's HTML, this would create this:
+	 * <pre>
+	 * &lt;div>
+	 *   &lt;div id="mainText">Disclaimer: bla bla bla&lt;/div>
+	 *   &lt;span class="disclaimer">WARNING&lt;/span>
+	 * &lt;/div>
+	 * </pre> 
+	 *
+	 * @param text a string to add as text node to the list elements
+	 * @param node a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
+	 *             For all additional elements, the node will be cloned using ##clone().
+	 * @param list a list containing text and/or nodes. May also contain nested lists with nodes or text..
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
+	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
+	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
+	 * @return the current list
+	 *
+	 * @see ##fill() replaces all children with new nodes.
+	 * @see ##add() adds elements as last child.
+	 * @see ##addFront() adds nodes as first child.
+	 * @see ##addBefore() also adds nodes as next sibling but as preceding sibling.
+	 * @see ##replace() replaces existing nodes.
+	 */
+	'addAfter': function (children) {
+		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode['nextSibling']); });
+	},
+
+	/*$
 	 * @id addbefore
 	 * @group ELEMENT
 	 * @requires dollar add
@@ -1897,78 +1969,6 @@ define('minified', function() {
 	 */
 	'addBefore': function (children) {
 		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode); });
-	},
-
-	/*$
-	 * @id addafter
-	 * @group ELEMENT
-	 * @requires dollar add
-	 * @configurable default
-	 * @name .addAfter()
-	 * @syntax list.addAfter(text)
-	 * @syntax list.addAfter(node)
-	 * @syntax list.addAfter(list)
-	 * @syntax list.addAfter(factoryFunction)
- 	 * @module WEB
-	 * Inserts the given text or element(s) as siblings after each HTML element in the list. 
-	 * If a string has been given, it will be added as text node.
-	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
-	 *
-	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
-	 * and ##clone#clones## to all following list elements.
-	 * 
-	 * ##EE(), ##HTML() and ##clone() are compatible with <var>addAfter()</var> and can help you create new HTML ndoes.
-	 *
-	 * @example Using the following HTML:
-	 * <pre>
-	 * &lt;div>
-	 *   &lt;div id="mainText">Here is some text&lt;/div>
-	 * &lt;/div>
-	 * </pre>   
-	 * Use addAfter() with a simple string to add a text node.
-	 * <pre>
-	 * $('#mainText').addAfter('Disclaimer: bla bla bla');
-	 * </pre>
-	 * This results in the following HTML:
-	 * <pre>
-	 * &lt;div>
-	 *   &lt;div id="mainText">Here is some text&lt;/div>
-	 *   Disclaimer: bla bla bla
-	 * &lt;/div>
-	 * </pre>   
-	 *
-	 * @example You can also pass an element:
-	 * <pre>
-	 * $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
-	 * </pre>
-	 * With the previous example's HTML, this would create this:
-	 * <pre>
-	 * &lt;div>
-	 *   &lt;div id="mainText">Disclaimer: bla bla bla&lt;/div>
-	 *   &lt;span class="disclaimer">WARNING&lt;/span>
-	 * &lt;/div>
-	 * </pre> 
-	 *
-	 * @param text a string to add as text node to the list elements
-	 * @param node a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
-	 *             For all additional elements, the node will be cloned using ##clone().
-	 * @param list a list containing text and/or nodes. May also contain nested lists with nodes or text..
-	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
-	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
-	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
-	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
-	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
-	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
-	 * @return the current list
-	 *
-	 * @see ##fill() replaces all children with new nodes.
-	 * @see ##add() adds elements as last child.
-	 * @see ##addFront() adds nodes as first child.
-	 * @see ##addBefore() also adds nodes as next sibling but as preceding sibling.
-	 * @see ##replace() replaces existing nodes.
-	 */
-	'addAfter': function (children) {
-		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode['nextSibling']); });
 	},
 
 	/*$
@@ -2541,7 +2541,8 @@ define('minified', function() {
 	 * @module WEB
 	 * Creates a name/value map from the given form. values() looks at the list's form elements and writes each element's name into the map,
 	 * using the element name as key and the element's value as value. As there can be more than one value with the same name, 
-	 * the map's values are arrays if there is more than one value with the same name in the form. Form elements without name will be ignored.
+	 * the map's values are arrays if there is more than one value with the same name in the form. If an element does not
+	 * have a name, its id will be used. Elements without name and id will be ignored.
 	 *
 	 * values() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
 	 * elements will be serialized.
@@ -2570,7 +2571,7 @@ define('minified', function() {
 	'values': function(data) {
 		var r = data || {};
 		this['each'](function(el) {
-			var n = el['name'], v = toString(el['value']);
+			var n = el['name'] || el['id'], v = toString(el['value']);
 			if (/form/i.test(el['tagName']))
 				// @condblock ie9compatibility 
 				for (var i = 0; i < el['elements'].length; i++) // can't call directly, as IE<=9's elements have a nodeType prop and isList does not work

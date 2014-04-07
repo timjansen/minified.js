@@ -7,6 +7,7 @@ Beta 6 (ongoing)
 * #36: added 'xhr' property to $.request()'s promise that contains the raw promise
 * added stop() support to $.request()
 * added parentNum parameter to up()
+* values() uses ids if a form element has no name
 * changed signatures of request's promise handlers: the success handler is called with the XHR object instead of 
   'responseXml' property as second argument. The failure handler has no 'statusText' anymore (who needs that?).
   Instead it gets the XHR object as last argument.
