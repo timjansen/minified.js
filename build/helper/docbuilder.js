@@ -12,7 +12,7 @@ function parseDescription(desc, paragraphSeparator, plainText) {
 			return plainText ? text :  "<a href='"+id.toLowerCase()+".html' class='func'>"+text+"</a>";
 		})
 		.replace(/#(\w*)#([\w$._]+)\(\)/g, function(all, id, name) { // #id#name()  and   ##name()
-			var rId = id || name.replace(/[_.$]+/g);
+			var rId = id || name.replace(/[_.$]+/g, '');
 			return plainText ? name : "<code><a href='"+rId.toLowerCase()+".html' class='func'>"+name+"()</a></code>";
 		})
 		.replace(/\n\n/mg, paragraphSeparator || '')

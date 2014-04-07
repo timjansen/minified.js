@@ -40,7 +40,7 @@ there won't be any arguments appended. If you need to append a <span class="var"
 
 <h4>Description</h4>
 <div class="description"><p>Creates a new function that calls the given function bound to the given object as 'this', and optionally with the specified 'pre-filled' arguments
-to be appended or prepended to the arguments you all the new function with.</p><p>See also <code><a href='undefinedpartial.html' class='func'>_.partial()</a></code>, if you do not need to set 'this'.</p><p></p></div>
+to be appended or prepended to the arguments you all the new function with.</p><p>See also <code><a href='partial.html' class='func'>_.partial()</a></code>, if you do not need to set 'this'.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -143,6 +143,8 @@ var disqus_url = "http://minifiedjs.com/api/bind.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>

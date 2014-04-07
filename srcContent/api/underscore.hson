@@ -18,13 +18,13 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="underscore_item" class=""><a name="underscore_item"><var>item</var></a></dt>
-<dd class="">an item to add to the new list. If it is a list (as defined by <code><a href='undefinedislist.html' class='func'>_.isList()</a></code>), its content will be to the new
+<dd class="">an item to add to the new list. If it is a list (as defined by <code><a href='islist.html' class='func'>_.isList()</a></code>), its content will be to the new
 ##Minified list#list## (but NOT recursively).</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>Creates a new Minified list. Supports variable arguments so you can add items directly to the list. For arguments that are lists
-(as defined by <code><a href='undefinedislist.html' class='func'>_.isList()</a></code>), the list content will be added to the new list. Unlike <code><a href='dollar.html' class='func'>$()</a></code>#, this is not done recursively
+(as defined by <code><a href='islist.html' class='func'>_.isList()</a></code>), the list content will be added to the new list. Unlike <code><a href='dollar.html' class='func'>$()</a></code>#, this is not done recursively
 and thus you can create a list of lists by wrapping arguments in a list. Another difference between <span class="var">_()</span> and <span class="var">$()</span>
 is that <span class="var">$()</span> will automatically remove <span class="var">null</span> values while <span class="var">_()</span> will keep them.</p><p></p></div>
 
@@ -149,6 +149,8 @@ var disqus_url = "http://minifiedjs.com/api/underscore.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>

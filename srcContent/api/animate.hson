@@ -59,7 +59,7 @@ interrupt a running animation. It will return the animations actual duration in 
 <h4>Description</h4>
 <div class="description"><p>Animates the items of the list by modifying their properties, CSS styles and attributes. <span class="var">animate()</span> can work with numbers, strings that contain exactly one
 number, and with colors in the CSS notations 'rgb(r,g,b)', '#rrggbb' or '#rgb'.</p><p>When you invoke the function, it will first read all old values from the object and extract their numbers and colors. These start values will be compared to
-the destination values that have been specified in the given properties. Then <span class="var">animate()</span> will create a background task using <code><a href='undefinedloop.html' class='func'>$.loop()</a></code> that updates the
+the destination values that have been specified in the given properties. Then <span class="var">animate()</span> will create a background task using <code><a href='loop.html' class='func'>$.loop()</a></code> that updates the
 specified properties in frequent intervals so that they transition to their destination values.</p><p>The start values will be obtained using <code><a href='get.html' class='func'>get()</a></code>. It is recommended to set the start values using <code><a href='set.html' class='func'>set()</a></code> before you start the animation, even if this is not
 always required.</p><p>You can define the kind of transition using the <span class="var">linearity</span> parameter. If you omit it or pass 0, animate's default algorithm will cause a smooth transition
 from the start value to the end value. If you pass 1, the transition will be linear, with a sudden start and end of the animation. Any value between 0 and 1
@@ -143,7 +143,7 @@ var p = div.animate({$left: '200px', $top: '0px'}, 600, 0)
 
 <h4>See also..</h4>
 <ul><li><code><a href='toggle.html' class='func'>toggle()</a></code> can be used to define animations between two states.</li>
-<li><code><a href='undefinedloop.html' class='func'>$.loop()</a></code> allows you to write more complex animations.</li>
+<li><code><a href='loop.html' class='func'>$.loop()</a></code> allows you to write more complex animations.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
@@ -230,6 +230,8 @@ var disqus_url = "http://minifiedjs.com/api/animate.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>

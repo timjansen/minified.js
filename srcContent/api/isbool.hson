@@ -28,7 +28,7 @@
 <div class="description"><p>Checks whether the given reference is a boolean <span class="var">true</span>  or <span class="var">false</span>.</p><p></p></div>
 
 <h4>See also..</h4>
-<ul><li><code><a href='undefinedisvalue.html' class='func'>_.isValue()</a></code> matches basic types such as booleans.</li>
+<ul><li><code><a href='isvalue.html' class='func'>_.isValue()</a></code> matches basic types such as booleans.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
@@ -115,6 +115,8 @@ var disqus_url = "http://minifiedjs.com/api/isbool.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>

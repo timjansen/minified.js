@@ -211,7 +211,7 @@ Triggers event handlers registered with on.</div>
 arguments.</div>
 
 <h3><a href="up.html">.up()</a></h3>
-<div class="summary">Finds the closest parent matching the given selector or filter function for each list element, and returns the results as a list.</div>
+<div class="summary">Finds the closest parents matching the given selector or filter function for each list element, and returns the results as a list.</div>
 
 <h3><a href="values.html">.values()</a></h3>
 <div class="summary">Creates a name/value map from the given form.</div>
@@ -225,6 +225,14 @@ arguments.</div>
 <h3><a href="M.html">M</a></h3>
 <div class="summary">
 Exposes the internal class used by all  Minified lists.</div>
+
+<h3><a href="getter.html">MINI.getter</a></h3>
+<div class="summary">
+Exposes a map of prefix handlers used by get.</div>
+
+<h3><a href="setter.html">MINI.setter</a></h3>
+<div class="summary">
+Exposes a map of prefix handlers used by set.</div>
 
 <h3><a href="list.html">Minified Lists</a></h3>
 <div class="summary">
@@ -442,6 +450,8 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>

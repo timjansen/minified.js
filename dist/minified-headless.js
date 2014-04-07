@@ -2652,6 +2652,7 @@ module.exports = (function() {
 		 * @name _.format() 
 		 * @syntax _.format()
 		 * @syntax _.format(template, object)
+		 * @syntax _.format(template, object, escapeFunction)
 	   	 * @module UTIL
 		 * Formats an object using a ##template#template##. The template syntax is shared with ##_.template(). The only difference is that
 		 * <var>format()</var> frees you from the extra step of creating the template. In any case, whether you use 

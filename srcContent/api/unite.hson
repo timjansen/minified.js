@@ -24,7 +24,7 @@ arguments.</div>
 <span class="var">length</span> property.</dd>
 <dt id="unite_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="unite_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">A function that will invoke all underlying functions with the arguments is has been called with. The function
-returns a <a href='list.html' class='func'>Minified list</a> of result values, using the same mechanics as <code><a href='undefinedcall.html' class='func'>_.call()</a></code>.</dd>
+returns a <a href='list.html' class='func'>Minified list</a> of result values, using the same mechanics as <code><a href='call.html' class='func'>_.call()</a></code>.</dd>
 </dl>
 
 <h4>Description</h4>
@@ -116,6 +116,8 @@ var disqus_url = "http://minifiedjs.com/api/unite.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>

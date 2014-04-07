@@ -48,7 +48,7 @@ var jsonString = $.toJSON(myObj);
 </div>
 
 <h4>See also..</h4>
-<ul><li><code><a href='undefinedparsejon.html' class='func'>$.parseJON()</a></code> parses JSON structures.</li>
+<ul><li><code><a href='parsejon.html' class='func'>$.parseJON()</a></code> parses JSON structures.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
@@ -135,6 +135,8 @@ var disqus_url = "http://minifiedjs.com/api/tojson.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>

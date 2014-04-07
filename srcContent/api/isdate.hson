@@ -26,10 +26,10 @@
 
 <h4>Description</h4>
 <div class="description"><p>Checks whether the given object is a <span class="var">Date</span>. To be recognized as a date, the object
-must pass <code><a href='undefinedisobject.html' class='func'>_.isObject()</a></code> and have a <span class="var">getDate</span> property.</p><p></p></div>
+must pass <code><a href='isobject.html' class='func'>_.isObject()</a></code> and have a <span class="var">getDate</span> property.</p><p></p></div>
 
 <h4>See also..</h4>
-<ul><li><code><a href='undefinedisvalue.html' class='func'>_.isValue()</a></code> matches basic types such as dates.</li>
+<ul><li><code><a href='isvalue.html' class='func'>_.isValue()</a></code> matches basic types such as dates.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
@@ -116,6 +116,8 @@ var disqus_url = "http://minifiedjs.com/api/isdate.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>

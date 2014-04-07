@@ -29,7 +29,7 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Checks whether the list contains the given item.</p><p>Each item of the other list is compared with the item using <code><a href='undefinedequals.html' class='func'>_.equals()</a></code>. The function
+<div class="description"><p>Checks whether the list contains the given item.</p><p>Each item of the other list is compared with the item using <code><a href='equals.html' class='func'>_.equals()</a></code>. The function
 returns <span class="var">true</span> as soon as one list item equals the requested item.</p><p>
 </p></div>
 
@@ -137,6 +137,8 @@ var disqus_url = "http://minifiedjs.com/api/contains.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>

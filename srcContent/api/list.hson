@@ -18,7 +18,7 @@ they provide a <span class="var">length</span> property and you can access their
 However, they do not provide the same methods as JavaScript's native array and are designed to be immutable, so
 there is no direct way to add something to a Minified list. Instead Minified provides a number of functions and methods
 that take a list and create a modified copy which, for example, may contain additional elements.</p><p>Minified lists are typically created either using the Web module's <code><a href='dollar.html' class='func'>$()</a></code></a></code> function or with the Util module's
-<code><a href='underscore.html' class='func'>_()</a></code></a></code> function, but many functions in the Util module also return a Minified list.</p><p>The Util module provides a function <code><a href='undefinedarray.html' class='func'>_.array()</a></code> that converts a Minified list to a regular JavaScript array.
+<code><a href='underscore.html' class='func'>_()</a></code></a></code> function, but many functions in the Util module also return a Minified list.</p><p>The Util module provides a function <code><a href='array.html' class='func'>_.array()</a></code> that converts a Minified list to a regular JavaScript array.
 </p></div>
 
 <h4>Comments</h4>
@@ -106,6 +106,8 @@ var disqus_url = "http://minifiedjs.com/api/list.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>

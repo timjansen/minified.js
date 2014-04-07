@@ -26,7 +26,7 @@ to escape all output:
 <dl><dt>inputString</dt><dd>The string to escape.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
 If no escapeFunction has been given, the output will not be escaped.
-<code><a href='undefinedescapehtml.html' class='func'>_.escapeHtml()</a></code> can be used as an escape function for HTML, and <code><a href='undefinedescaperegexp.html' class='func'>_.escapeRegExp()</a></code> for regular expressions.
+<code><a href='escapehtml.html' class='func'>_.escapeHtml()</a></code> can be used as an escape function for HTML, and <code><a href='escaperegexp.html' class='func'>_.escapeRegExp()</a></code> for regular expressions.
 JavaScript's built-in <span class="var">escape()</span> function can escape URL components.</dd>
 <dt id="template_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="template_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the value returned by the last invocation of <span class="var">func</span>
@@ -49,7 +49,7 @@ var result = myTemplate(17);</pre>
 Alternatively, you could also access the input as <span class="var">this</span>, but be aware that JavaScript wraps simples types
 such as Number and Boolean. <span class="var">this</span> is the default, so you can omit it to get the same result:
 <pre>var myTemplate = _.template('The result is {{ }}.');
-var result = myTemplate(17);</pre></p><p>Minified templates can use <code><a href='undefinedformatvalue.html' class='func'>_.formatValue()</a></code> formats directly. Just separate them from the expression by
+var result = myTemplate(17);</pre></p><p>Minified templates can use <code><a href='formatvalue.html' class='func'>_.formatValue()</a></code> formats directly. Just separate them from the expression by
 a double-colon:
 <pre>The price is {{obj::#.00}}.</pre></p><p>Conditions can be expressed using <code>if</code> and <code>else</code>:
 <pre>Hello {{if visits==0}}New{{else if visits&lt;10}}Returning{{else}}Regular{{/if}} Customer.</pre>
@@ -91,15 +91,15 @@ following variables for you:
 <tr><td>each</td><td>A <code>function(listOrObject, eachCallback)</code> that can iterate over lists or object properties.
 The <span class="var">eachCallback</span> is a <code>function(key, value)</code> for objects or <code>function(value, index)</code>
 for arrays that will be invoked for each item.
-</table></p><p>Every template you create is already cached, so it not an expensive operation to call <code><a href='undefinedtemplate.html' class='func'>_.template()</a></code> a second
+</table></p><p>Every template you create is already cached, so it not an expensive operation to call <code><a href='template.html' class='func'>_.template()</a></code> a second
 time with the same template. However, because of caching, you should be careful when creating templates
 dynamically, as this will fill the cache up quickly.</p><p></p></div>
 
 <h4>See also..</h4>
-<ul><li><code><a href='undefinedformat.html' class='func'>_.format()</a></code> shares <span class="var">template()</span>'s syntax but returns the result directly.</li>
-<li><code><a href='undefinedformathtml.html' class='func'>_.formatHtml()</a></code> is a variant of <span class="var">format()</span> with HTML escaping.</li>
-<li><code><a href='undefinedescapehtml.html' class='func'>_.escapeHtml()</a></code> can be used by <span class="var">template()</span> to escape HTML.</li>
-<li><code><a href='undefinedescaperegexp.html' class='func'>_.escapeRegExp()</a></code> can be used by <span class="var">template()</span> to escape regular expressions.</li>
+<ul><li><code><a href='format.html' class='func'>_.format()</a></code> shares <span class="var">template()</span>'s syntax but returns the result directly.</li>
+<li><code><a href='formathtml.html' class='func'>_.formatHtml()</a></code> is a variant of <span class="var">format()</span> with HTML escaping.</li>
+<li><code><a href='escapehtml.html' class='func'>_.escapeHtml()</a></code> can be used by <span class="var">template()</span> to escape HTML.</li>
+<li><code><a href='escaperegexp.html' class='func'>_.escapeRegExp()</a></code> can be used by <span class="var">template()</span> to escape regular expressions.</li>
 <li><code><a href='html.html' class='func'>HTML()</a></code> creates a HTML element tree from a template.</li>
 </ul>
 <h4>Comments</h4>
@@ -187,6 +187,8 @@ var disqus_url = "http://minifiedjs.com/api/template.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
