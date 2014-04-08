@@ -2623,6 +2623,8 @@ define('minified', function() {
 	 * @name .onOver()
 	 * @syntax list.onOver(handler)
 	 * @syntax list.onOver(selector, handler)
+	 * @syntax list.onOver(handler, bubbleSelector)
+	 * @syntax list.onOver(selector, handler, bubbleSelector)
 	 * @module WEB
 	 * Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.
 	 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
@@ -2642,6 +2644,10 @@ define('minified', function() {
  	 *             <dt>event</dt><dd>The original event object given to ##on().</dd>
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
+	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
+	 *                element that matches this selector.
+	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
@@ -2673,6 +2679,8 @@ define('minified', function() {
 	 * @name .onFocus()
 	 * @syntax list.onFocus(handler)
 	 * @syntax list.onFocus(selector, handler)
+	 * @syntax list.onFocus(handler, bubbleSelector)
+	 * @syntax list.onFocus(selector, handler, bubbleSelector)
 	 * @module WEB
 	 * Registers a function to be called when a list element either gets the focus or the focus is removed (blur).
 	 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
@@ -2691,6 +2699,10 @@ define('minified', function() {
  	 *             <dt>hasFocus</dt><dd><var>true</var> if an element gets the focus, <var>false</var> when an element looses it.</dd>
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
+	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
+	 *                element that matches this selector.
+	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
@@ -2710,11 +2722,16 @@ define('minified', function() {
 	 * @name .onChange()
 	 * @syntax list.onChange(handler)
 	 * @syntax list.onChange(selector, handler)
+	 * @syntax list.onChange(handler, bubbleSelector)
+	 * @syntax list.onChange(selector, handler, bubbleSelector)
 	 * @module WEB
 	 * Registers a handler to be called whenever content of the list's input fields changes. The handler is
 	 * called in realtime and does not wait for the focus to change. Text fields as well
 	 * as checkboxes and radio buttons are supported. The handler is called with the new value as first argument.
 	 * It is boolean for checkbox/radio buttons and the new text as string for text fields. 
+	 * 
+	 * Please note that when you use a bubble selectors in a build for legacy browsers, the handler may be called on the user's first interaction
+	 * even without an actual content change. After that, the handler will only be called when the content actually changed.
 	 * 
 	 * @example Creates a handler that writes the input's content into a text node:
 	 * <pre>
@@ -2731,6 +2748,10 @@ define('minified', function() {
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
+	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
+	 *                element that matches this selector.
+	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
@@ -2797,6 +2818,10 @@ define('minified', function() {
 	 *                   'this' will be a ##list#Minified list## containing the target element as only item (same element as <var>event.target</var>).
 	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the function is
 	 *             called as event handler with the event object as argument.
+	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
+	 *                element that matches this selector.
+	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list	 
 	 * @see ##on() provides low-level event registration.
 	 * @see ##off() can unregister <var>onClick</var> event handlers.
