@@ -2997,11 +2997,11 @@ define('minified', function() {
 			return this['each'](function(el, index) {
 				function register(eventNames, property) {
 					$(el)['on'](subSelect, eventNames, function() {
-						var newValue = el[property]; 
-						var oldValue = lastValues[getNodeId(el)];
-						if (oldValue === undef || newValue != oldValue) {
+						var newValue = el[property], nodeId; 
+						var oldValue = lastValues[nodeId = getNodeId(el)];
+						if (newValue != null && (oldValue === undef || newValue != oldValue)) {
 							handler.call(this, newValue, index);
-							lastValues[el[MINIFIED_MAGIC_NODEID]] = newValue;
+							lastValues[nodeId] = newValue;
 						}
 					}, bubbleSelector);
 				}
