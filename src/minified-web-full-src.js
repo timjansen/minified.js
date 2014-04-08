@@ -161,7 +161,8 @@ define('minified', function() {
 	var idSequence = 1;  // used as node id to identify nodes, and as general id for other maps
 
 	// @condblock ie8compatibility
-	var registeredEvents = {}; // nodeId -> [handler objects]
+	var registeredEvents = {}; // nodeId -> [handler objects] ; for on()
+	var lastValues = {};       // nodeId -> value ; for onOver()
 	// @condend
 
 	
@@ -396,9 +397,9 @@ define('minified', function() {
 						var name = replace(namePrefixed, /[?|]/);
 						var miniHandler = createEventHandler(handler, el, args,	index, replace(namePrefixed, /[^?|]/g), bubbleSelector && getFilterFunc(bubbleSelector, el));
 		
-						var handlerDescriptor = {'e': el,          // the element  
-								                 'h': miniHandler, // minified's handler 
-								                 'n': name         // event type        
+						var handlerDescriptor = {element: el,          
+								                 handlerFunc: miniHandler, 
+								                 eventType: name
 								                };
 						push(handler, 'M', handlerDescriptor);
 						if (IS_PRE_IE9) {
@@ -466,12 +467,12 @@ define('minified', function() {
 	function off(handler) {
 	   	flexiEach(handler['M'], function(h) {
 			if (IS_PRE_IE9) {
-				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
-				removeFromArray(registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]], h);
+				h.element.detachEvent('on'+h.eventType, h.handlerFunc);  // IE < 9 version
+				removeFromArray(registeredEvents[h.element[MINIFIED_MAGIC_NODEID]], h);
 			}
 			else {
-				h['e'].removeEventListener(h['n'], h['h'], false); // W3C DOM
-				removeFromArray(h['e']['M'], h);
+				h.element.removeEventListener(h.eventType, h.handlerFunc, false); // W3C DOM
+				removeFromArray(h.element['M'], h);
 			}
 		});
 		handler['M'] = _null;
@@ -488,7 +489,7 @@ define('minified', function() {
 	// for remove & window.unload
 	function detachHandlerList(dummy, handlerList) {
 		flexiEach(handlerList, function(h) {
-			h['e'].detachEvent('on'+h['n'], h['h']);
+			h.element.detachEvent('on'+h.eventType, h.handlerFunc);
 		});
 	}
 	
@@ -858,6 +859,7 @@ define('minified', function() {
 				});
 				detachHandlerList(0, registeredEvents[obj[MINIFIED_MAGIC_NODEID]]);
 				delete registeredEvents[obj[MINIFIED_MAGIC_NODEID]];
+				delete lastValues[obj[MINIFIED_MAGIC_NODEID]];
 			}
 			// @condend
 
@@ -2879,9 +2881,9 @@ define('minified', function() {
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onOver': function(subSelect, toggle) {
+	'onOver': function(subSelect, toggle, bubbleSelector) {
 		var self = this, curOverState = [];
-		if (toggle)
+		if (isFunction(toggle))
 			return this['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
 				// @condblock ie9compatibility 
 				var relatedTarget = ev['relatedTarget'] || ev['toElement'];
@@ -2894,9 +2896,9 @@ define('minified', function() {
 						toggle.call(this, overState, ev);
 					}
 				}
-			});
+			}, bubbleSelector);
 		else
-			return this['onOver'](_null, subSelect);
+			return this['onOver'](_null, subSelect, toggle);
 	},
 	
 	/*$
@@ -2928,12 +2930,12 @@ define('minified', function() {
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onFocus': function(selector, handler) {
-		if (handler)
-			return this['on'](selector, '|focus', handler, [true])
-				       ['on'](selector, '|blur', handler, [false]);
+	'onFocus': function(selector, handler, bubbleSelector) {
+		if (isFunction(handler))
+			return this['on'](selector, '|focus', handler, [true], bubbleSelector)
+				       ['on'](selector, '|blur', handler, [false], bubbleSelector);
 		else
-			return this['onFocus'](_null, selector);
+			return this['onFocus'](_null, selector, handler);
 	},
 
 	/*$
@@ -2968,20 +2970,19 @@ define('minified', function() {
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onChange': function onChange(subSelect, handler) {
-		if (handler) {
+	'onChange': function onChange(subSelect, handler, bubbleSelector) {
+		if (isFunction(handler)) {
 			// @condblock ie8compatibility
-			var oldValues = [];
 			return this['each'](function(el, index) {
 				function register(eventNames, property) {
-					oldValues[index] = el[property];
 					$(el)['on'](subSelect, eventNames, function() {
 						var newValue = el[property]; 
-						if (newValue != oldValues[index]) {
+						var oldValue = lastValues[getNodeId(el)];
+						if (oldValue === undef || newValue != oldValue) {
 							handler.call(this, newValue, index);
-							oldValues[index] = newValue;
+							lastValues[el[MINIFIED_MAGIC_NODEID]] = newValue;
 						}
-					});
+					}, bubbleSelector);
 				}
 				if (/kbox|dio/i.test(el['type'])) {
 					register('|click', 'checked');
@@ -2993,14 +2994,14 @@ define('minified', function() {
 			// @condend
 			
 			// @cond !ie8compatibility return this['each'](function(el, index) {
-			// @cond !ie8compatibility 	var isChecked = /kbox|dio/i.test(el['type']);
-			// @cond !ie8compatibility 	$(el)['on'](subSelect, isChecked ? '|click' : '|input',  function() {
-			// @cond !ie8compatibility 		handler.call(this, isChecked ? el['checked'] : el['value'], index);
-			// @cond !ie8compatibility 	}); 
+			// @cond !ie8compatibility 	var isCheckBox = /kbox|dio/i.test(el['type']);
+			// @cond !ie8compatibility 	$(el)['on'](subSelect, isCheckBox ? '|click' : '|input',  function() {
+			// @cond !ie8compatibility 		handler.call(this, isCheckBox ? el['checked'] : el['value'], index);
+			// @cond !ie8compatibility 	}, bubbleSelector); 
 			// @cond !ie8compatibility });
 		}
 		else
-			return this['onChange'](_null, subSelect); 
+			return this['onChange'](_null, subSelect, handler); 
 			
 	},
 	
@@ -3056,8 +3057,11 @@ define('minified', function() {
 	 * @see ##on() provides low-level event registration.
 	 * @see ##off() can unregister <var>onClick</var> event handlers.
 	 */
-	'onClick': function(subSelect, handler, args) {
-	     return isFunction(subSelect) ? this['on']('click', subSelect, handler) : this['on'](subSelect, 'click', handler, args);
+	'onClick': function(subSelect, handler, args, bubbleSelector) {
+	     if (isFunction(handler))
+	    	 return this['on'](subSelect, 'click', handler, args, bubbleSelector);
+	     else
+	    	 return this['onClick'](_null, subSelect, handler, args);
 	},
 
 	
@@ -3098,8 +3102,8 @@ define('minified', function() {
 				flexiEach(
 						IS_PRE_IE9 ? registeredEvents[el[MINIFIED_MAGIC_NODEID]] :
 						el['M'], function(hDesc) {
-							if (hDesc['n'] == eventName)
-								stopBubble = stopBubble || !hDesc['h'](eventObj, element);
+							if (hDesc.eventType == eventName)
+								stopBubble = stopBubble || !hDesc.handlerFunc(eventObj, element);
 						});
 				el = el['parentNode'];
 			}

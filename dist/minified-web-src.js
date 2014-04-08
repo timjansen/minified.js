@@ -378,7 +378,7 @@ define('minified', function() {
 	// for remove & window.unload
 	function detachHandlerList(dummy, handlerList) {
 		flexiEach(handlerList, function(h) {
-			h['e'].detachEvent('on'+h['n'], h['h']);
+			h.element.detachEvent('on'+h.eventType, h.handlerFunc);
 		});
 	}
 
@@ -615,12 +615,9 @@ define('minified', function() {
    	 * @module WEB, UTIL
 	 * See util module for documentation.
 	 */
-	// @condblock !UTIL
 	'filter': function(filterFunc) {
 		return new M(filter(this, filterFunc));
 	},
-	// @condend
-	// @cond UTIL 'filter': listBindArray(filter),
 
 	/*$ 
 	 * @id collect 
@@ -2648,9 +2645,9 @@ define('minified', function() {
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onOver': function(subSelect, toggle) {
+	'onOver': function(subSelect, toggle, bubbleSelector) {
 		var self = this, curOverState = [];
-		if (toggle)
+		if (isFunction(toggle))
 			return this['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
 				// @condblock ie9compatibility 
 				var relatedTarget = ev['relatedTarget'] || ev['toElement'];
@@ -2663,9 +2660,9 @@ define('minified', function() {
 						toggle.call(this, overState, ev);
 					}
 				}
-			});
+			}, bubbleSelector);
 		else
-			return this['onOver'](_null, subSelect);
+			return this['onOver'](_null, subSelect, toggle);
 	},
 
 	/*$
@@ -2697,12 +2694,12 @@ define('minified', function() {
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onFocus': function(selector, handler) {
-		if (handler)
-			return this['on'](selector, '|focus', handler, [true])
-				       ['on'](selector, '|blur', handler, [false]);
+	'onFocus': function(selector, handler, bubbleSelector) {
+		if (isFunction(handler))
+			return this['on'](selector, '|focus', handler, [true], bubbleSelector)
+				       ['on'](selector, '|blur', handler, [false], bubbleSelector);
 		else
-			return this['onFocus'](_null, selector);
+			return this['onFocus'](_null, selector, handler);
 	},
 
 	/*$
@@ -2737,18 +2734,18 @@ define('minified', function() {
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onChange': function onChange(subSelect, handler) {
-		if (handler) {
+	'onChange': function onChange(subSelect, handler, bubbleSelector) {
+		if (isFunction(handler)) {
 
 			return this['each'](function(el, index) {
-			var isChecked = /kbox|dio/i.test(el['type']);
-			$(el)['on'](subSelect, isChecked ? '|click' : '|input',  function() {
-			handler.call(this, isChecked ? el['checked'] : el['value'], index);
-			}); 
+			var isCheckBox = /kbox|dio/i.test(el['type']);
+			$(el)['on'](subSelect, isCheckBox ? '|click' : '|input',  function() {
+			handler.call(this, isCheckBox ? el['checked'] : el['value'], index);
+			}, bubbleSelector); 
 			});
 		}
 		else
-			return this['onChange'](_null, subSelect); 
+			return this['onChange'](_null, subSelect, handler); 
 
 	},
 
@@ -2804,8 +2801,11 @@ define('minified', function() {
 	 * @see ##on() provides low-level event registration.
 	 * @see ##off() can unregister <var>onClick</var> event handlers.
 	 */
-	'onClick': function(subSelect, handler, args) {
-	     return isFunction(subSelect) ? this['on']('click', subSelect, handler) : this['on'](subSelect, 'click', handler, args);
+	'onClick': function(subSelect, handler, args, bubbleSelector) {
+	     if (isFunction(handler))
+	    	 return this['on'](subSelect, 'click', handler, args, bubbleSelector);
+	     else
+	    	 return this['onClick'](_null, subSelect, handler, args);
 	},
 
 	/*$
