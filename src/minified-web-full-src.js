@@ -537,7 +537,6 @@ define('minified', function() {
 	
 	function $(selector, context, childOnly) { 
 		// @condblock ready
-		// isList(selector) is no joke, older Webkit versions return a function for childNodes...
 		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context, childOnly));
 		// @condend
 		// @cond !ready return new M(dollarRaw(selector, context));
@@ -678,7 +677,7 @@ define('minified', function() {
 	// @condblock !promise
 	function promise() {
 		var state;           // undefined/null = pending, true = fulfilled, false = rejected
-		var values = [];     // an array of values as arguments for the then() handlers
+		var values;     // an array of values as arguments for the then() handlers
  		var deferred = [];   // functions to call when set() is invoked
  	 	
 		var set = function (newState, newValues) {
@@ -703,7 +702,7 @@ define('minified', function() {
 					var f = (state ? onFulfilled : onRejected);
 					if (isFunction(f)) {
 		   				var r = f.apply(undef, values);
-		   				if (r && isFunction(r['then']))
+		   				if (r && r['then'])
 		   					r['then'](function(value){promise2(true,[value]);}, function(value){promise2(false,[value]);});
 		   				else
 		   					promise2(true, [r]);
@@ -715,10 +714,10 @@ define('minified', function() {
 					promise2(false, [e]);
 				}
 			};
-			if (state != _null)
-				setTimeout(callCallbacks, 0);
-			else
+			if (state == _null)
 				deferred.push(callCallbacks);
+			else
+				setTimeout(callCallbacks, 0);
 			return promise2;
 		};
 

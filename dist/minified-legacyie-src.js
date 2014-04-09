@@ -1087,7 +1087,6 @@ define('minified', function() {
 
 	function $(selector, context, childOnly) { 
 		// @condblock ready
-		// isList(selector) is no joke, older Webkit versions return a function for childNodes...
 		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context, childOnly));
 		// @condend
 		// @cond !ready return new M(dollarRaw(selector, context));
