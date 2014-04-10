@@ -387,6 +387,23 @@ describe('minified-web-event-test.js', function() {
 			inp.trigger('focus');
 			check(c, 3); 
 		});
+
+		it('supports sub-selectors', function() {
+			var inp, c = 0, expect;
+			$('#container2').add(inp = EE('input', {id:'spe212'}));
+			$('#container2').onFocus('input', function(arg) {
+				c++;
+				check(expect, arg, 'Error at c='+c);
+				check(this[0].id, inp[0].id);
+			});
+			expect = true;
+			inp.trigger('focus');
+			expect = false;
+			inp.trigger('blur');
+			expect = true;
+			inp.trigger('focus');
+			check(c, 3); 
+		});
 	});
 
 	describe('.onOver()', function() {
@@ -396,7 +413,7 @@ describe('minified-web-event-test.js', function() {
 			inp.onOver(function(arg) {
 				check(expect, arg, 'Error at c='+c);
 				c++;
-			});
+			}); 
 			expect = true;
 			inp.trigger('mouseover', {relatedTarget: inp[0], type: 'mouseover'});
 			chld.trigger('mouseover', {relatedTarget: inp[0], type: 'mouseover'});
@@ -417,6 +434,7 @@ describe('minified-web-event-test.js', function() {
 			inp.trigger('mouseout', {relatedTarget: $$('#container2'), type: 'mouseout'});
 			check(c, 4); 
 		});
+		
 	});
 	
 
@@ -452,7 +470,7 @@ describe('minified-web-event-test.js', function() {
 			check(lastIndex, 1, "index");
 			check(error, null);
 		});
-				
+
 		it('works with sub-selectors', function() {
 			var p = $('#container2').fill();
 			var handler;
@@ -485,6 +503,38 @@ describe('minified-web-event-test.js', function() {
 			check(error, null);
 		});
 
+		it('works with bubble-selectors', function() {
+			var p = $('#container2').fill();
+			var handler;
+			var callNum = 0, lastIndex = 0;
+			var expect = null, error = null;
+			var s, s2;
+			
+			p.add(s = EE('div', {$width: '30px', $height: '10px'})[0]);
+			$(p).onClick(handler = function(e, index) {
+				callNum++;
+				lastIndex = index;
+				if (this[0] != expect || this.length != 1)
+					error = 'Did not get called on expected event';
+			}, 'div');
+
+			check(handler.M != null);
+		
+			expect = s;
+			triggerEvent(s, createClick());
+			check(callNum, 1, "callNum");
+			check(lastIndex, 0, "index");
+			check(error, null);
+
+			p.add(s2 = EE('div', {$width: '30px', $height: '10px'})[0]);
+			expect = s2;
+			triggerEvent(s2, createClick());
+			check(callNum, 2, "callNum");
+			check(lastIndex, 0, "index");
+			check(error, null);
+		});
+
+		
 		it('passes arguments and this correctly', function() {
 			var p = $('#container2');
 			var callNum = 0;

@@ -319,5 +319,58 @@ describe('minified-web-getset-test.js', function() {
 			check(e.get('$$slide', true), '78');
 		});
 	});
-
+	
+	describe('MINI.getter', function() {
+		it('just works', function() {
+			var prefix = '&-#';
+			var count = 0;
+			var lastName = null;
+			var list = $([{a:9, b: 7}]);
+			MINI.getter[prefix] = function(list0, name) {
+				check(list, list0, true);
+				lastName = name;
+				return count++;
+			};
+			
+			check(list.get(prefix), 0);
+			check(lastName, '');
+			check(list.get(prefix+'rt$3'), 1);
+			check(lastName, 'rt$3');
+			check(list.get(prefix+'_3'), 2);
+			check(lastName, '_3');
+			check(list.get('a'), 9);
+			check(count, 3);
+			delete MINI.getter[prefix];
+		});
+	});
+ 
+	describe('MINI.setter', function() {
+		it('just works', function() {
+			var prefix = '&-#';
+			var count = 0;
+			var lastName = null, lastValue = null;
+			var list = $([{a:9, b: 7}]);
+			MINI.setter[prefix] = function(list0, name, value) {
+				check(list, list0, true);
+				lastName = name;
+				lastValue = value;
+				count++;
+			};
+			
+			list.set(prefix, 99);
+			check(lastName, '');
+			check(lastValue, 99);
+			list.set(prefix+'rt$3', 'wew');
+			check(lastName, 'rt$3');
+			check(lastValue, 'wew');
+	
+			list.set(prefix+'3', 23);
+			check(lastName, '3');
+			list.set('a', 11);
+			check(list[0].a, 11);
+			check(count, 3);
+			delete MINI.setter[prefix];
+		});
+	});
+	
 });

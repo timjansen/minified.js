@@ -162,9 +162,8 @@ define('minified', function() {
 
 	// @condblock ie8compatibility
 	var registeredEvents = {}; // nodeId -> [handler objects] ; for on()
-	var lastValues = {};       // nodeId -> value ; for onOver()
+	var lastValues = {};       // nodeId -> value ; for onChange()
 	// @condend
-
 	
 
 	/*$
@@ -2859,7 +2858,6 @@ define('minified', function() {
 	 * @syntax list.onOver(handler)
 	 * @syntax list.onOver(selector, handler)
 	 * @syntax list.onOver(handler, bubbleSelector)
-	 * @syntax list.onOver(selector, handler, bubbleSelector)
 	 * @module WEB
 	 * Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.
 	 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
@@ -2879,15 +2877,11 @@ define('minified', function() {
  	 *             <dt>event</dt><dd>The original event object given to ##on().</dd>
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
-	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
-	 *                element that matches this selector.
-	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
-	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onOver': function(subSelect, toggle, bubbleSelector) {
-		var self = this, curOverState = [];
+	'onOver': function(subSelect, toggle) {
+		var self = this, curOverState = []; 
 		if (isFunction(toggle))
 			return this['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
 				// @condblock ie9compatibility 
@@ -2901,9 +2895,9 @@ define('minified', function() {
 						toggle.call(this, overState, ev);
 					}
 				}
-			}, bubbleSelector);
+			});
 		else
-			return this['onOver'](_null, subSelect, toggle);
+			return this['onOver'](_null, subSelect);
 	},
 	
 	/*$
@@ -2914,8 +2908,6 @@ define('minified', function() {
 	 * @name .onFocus()
 	 * @syntax list.onFocus(handler)
 	 * @syntax list.onFocus(selector, handler)
-	 * @syntax list.onFocus(handler, bubbleSelector)
-	 * @syntax list.onFocus(selector, handler, bubbleSelector)
 	 * @module WEB
 	 * Registers a function to be called when a list element either gets the focus or the focus is removed (blur).
 	 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
@@ -2933,20 +2925,16 @@ define('minified', function() {
 	 * 		  <dl>
  	 *             <dt>hasFocus</dt><dd><var>true</var> if an element gets the focus, <var>false</var> when an element looses it.</dd>
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
- 	 *             </dl>
-	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
-	 *                element that matches this selector.
-	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
-	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
+ 	 *             </dl>      
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onFocus': function(selector, handler, bubbleSelector) {
+	'onFocus': function(selector, handler) {
 		if (isFunction(handler))
-			return this['on'](selector, '|focus', handler, [true], bubbleSelector)
-				       ['on'](selector, '|blur', handler, [false], bubbleSelector);
+			return this['on'](selector, '|focus', handler, [true])
+				       ['on'](selector, '|blur', handler, [false]);
 		else
-			return this['onFocus'](_null, selector, handler);
+			return this['onFocus'](_null, selector);
 	},
 
 	/*$

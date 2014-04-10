@@ -328,7 +328,7 @@ describe('minified-web-selector-test.js', function() {
   			m = $('#a_a').up('#container');
    			containsAll(m, [document.getElementById("container")], true, 'single parent by id');
    			
-   			m = $('#a_a, #b_a').up('#container');
+   			m = $('#a_a, #b_a').up('#container', 1);
    			containsAll(m, [document.getElementById("container")], true, 'common parent by id');
    			
    			m = $('#a_a, #b_a').up('#idontexist');
@@ -342,6 +342,10 @@ describe('minified-web-selector-test.js', function() {
 
    			m = $('#a_a, #b_a').up(function(n) { return n.id == 'container'; });
    			containsAll(m, [$$('#container')], true, 'parent by function');
+   			
+   			var e;
+   			EE('div', EE('span', EE('div', e = EE('hr'))));
+   			check(e.up('div', 100).length, 2);
 		});
 	});
 
