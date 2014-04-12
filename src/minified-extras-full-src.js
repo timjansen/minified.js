@@ -500,7 +500,7 @@ function dummy() {
 		// @condblock promise
 		'promise': promise
 		// @condend promise
-		
+
 		/*$
 		 * @stop
 		 */

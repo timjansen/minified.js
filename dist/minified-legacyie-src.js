@@ -446,20 +446,20 @@ define('minified', function() {
 		});
 		return obj;
 	}
-	function copyObj(from, to, dontOverwrite) {
-		eachObj(from, function(name, value) {
-			if (to[name] == _null || !dontOverwrite)
-				to[name] = value;
-		});
-		return to;
+	function copyObj(from, to) {
+		var dest = to || {};
+        for (var name in from)
+        	dest[name] = from[name];
+        return dest;
+	}
+	function merge(list, target) {
+		var o = target;
+		for (var i = 0; i < list.length; i++)
+			o = copyObj(list[i], o);
+		return o;
 	}
 	function extend(target) {
-		for (var i = 1; i < arguments.length; i++)
-			eachObj(arguments[i], function(name, value) {
-				if (value != undef)
-					target[name] = value;
-			});
-		return target;
+		return merge(sub(arguments, 1), target);
 	}
 	function getFindFunc(findFunc) {
 		return isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
@@ -2283,6 +2283,27 @@ define('minified', function() {
 	 *         returns a ##list#Minified list## of result values, using the same mechanics as ##_.call().
 	 */
 	'unite': listBind(unite), 
+
+	/*$ 
+	 * @id merge 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .merge()
+	 * @altname _.merge()
+	 * @syntax list.merge() 
+	 * @syntax _.merge(list) 
+	 * @module UTIL
+	 * Takes a list of objects and contains a new object that contains the properties of all objects in the list. Their values will
+	 * be shallow-copied. If a property is in the list more than once, the last one will be used.
+	 *
+	 * @param list The list of objects. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @return A new object that contains the pro
+	 * @see ##_.extend() is similar, but uses varargs.
+	 * @see ##_.copyObj() copies a single object.
+	 */
+	'merge': listBind(merge), 
 
 	/*$ 
 	 * @id uniq 
@@ -5381,6 +5402,9 @@ define('minified', function() {
 		 // @condblock unite
 		'unite': unite,
 		 // @condend
+		 // @condblock merge
+		'merge': merge,
+		 // @condend
 		 // @condblock uniq
 		'uniq': funcArrayBind(uniq),
 		 // @condend
@@ -5440,10 +5464,10 @@ define('minified', function() {
 		 * @requires 
 		 * @configurable default
 		 * @name _.copyObj()
+		 * @syntax _.copyObj(from)
 		 * @syntax _.copyObj(from, to)
 		 * @module UTIL
-		 * Copies every property of the first object into the second object. The properties are copied as shallow-copies. Only own properties
-		 * are copied, but not inherited properties.
+		 * Copies every property of the first object into the second object. The properties are copied as shallow-copies. 
 		 * 
 		 *  @example Copying properties:
 		 * <pre>var target = {a:3, c: 3};
@@ -5452,13 +5476,17 @@ define('minified', function() {
 		 *  @example Inline property merge:
 		 * <pre>var target = _.copyObj({a: 1, b: 2}, {a:3, c: 3}); // target is now {a: 1, b: 2, c: 3}</pre>
 		 *
+		 *  @example Duplicating an object:
+		 * <pre>var target = _.copyObj({a: 1, b: 2}); // target is now {a: 1, b: 2}</pre>
+		 *
 		 * @param from the object to copy from
-		 * @param to the object to copy to
+		 * @param to optional the object to copy to. If not given, a new object will be created.
 		 * @return the object that has been copied to
 		 * 
-		 * @see ##extend() is very similar to <var>copyObj()</var>, but with a slightly different syntax.
+		 * @see ##_.extend() is very similar to <var>copyObj()</var>, but with a slightly different syntax.
+		 * @see ##_.merge() copies a list of objects into a new object.
 		 */
-		'copyObj': copyObj,
+		'copyObj': copyObj, 
 
 		/*$
 		 * @id extend
@@ -5469,11 +5497,10 @@ define('minified', function() {
 		 * @syntax _.extend(target, src...)
 		 * @module UTIL
 		 * Copies every property of the source objects into the first object. The source objects are specified using variable arguments. 
-		 * There can be more than one. If a source parameter is <var>undefined</var> or <var>null</var>, it will be ignored.
-		 * The properties are copied as shallow-copies. <var>undefined</var> values will not be copied or inherited properties
-		 * will not be copied.
+		 * There can be more than one. 
+		 * The properties are copied as shallow-copies.
 		 * 
-		 * <b>Please note:</b> Unlike jQuery, <var>extend</var> does not directly a function to extend Minified, although
+		 * <b>Please note:</b> Unlike jQuery, <var>extend</var> does not directly add a function to extend Minified, although
 		 * you can use it to for this. To add a function to ##list#Minified lists##, add a property to
 		 * ##M#MINI.M##. If you want to extend <var>$</var> or <var>_</var>, just assign the new function(s) as property.
 		 * 
@@ -5489,7 +5516,8 @@ define('minified', function() {
 		 *            parameters will be ignored.
 		 * @return the target
 		 *
-		 * @see ##copyObj() is very similar to <var>extend()</var>, but with a slightly different and more straightforward syntax.
+		 * @see ##_.copyObj() is very similar to <var>extend()</var>, but with a slightly different and more straightforward syntax.
+		 * @see ##_.merge() copies a list of objects into a new object.
 		 */
 		'extend': extend,
 

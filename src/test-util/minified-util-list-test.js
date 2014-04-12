@@ -693,16 +693,11 @@ function runTests(loadInContext) {
 			assert(_.equals(_.copyObj(a, d), a));
 		});
 		
-		it('copies cond', function() {
+		it('creates a destiation', function() {
 			var _ = req();
-			var a = {a:2, b:1, c:4, '34':23, d:4};
-			var b = {a:2, b:1, d:4};
-			var c = {a:2, b:2, c:4, '34':23, d:4};
-			var d = {};
-			assert(_.equals(_.copyObj(null, d, true), {}));
-			assert(_.equals(_.copyObj(b, d, true), b));
-			assert(_.equals(_.copyObj(c, d, 1), a));
-			assert(_.equals(_.copyObj(a, d, 1), a));
+			var a = {a:2, b:1, d:4};
+			assert(_.equals(_.copyObj(a), a));
+			assert(_.copyObj(a) != a);
 		});
 	});
 
@@ -713,11 +708,14 @@ function runTests(loadInContext) {
 			var b = {a:2, b:1, d:4};
 			var c = {a:2, b:2, c:4, '34':23, d:4};
 			var d = {};
+			assert(_.equals(_.extend({}, a), a));
 			assert(_.equals(_.extend({}), {}));
 			assert(_.equals(_.extend(d, {}, null, undef, {}), {}));
-			assert(_.equals(_.extend(d, {a: 222}, b, {a: undef}), b));
+			assert(_.equals(_.extend({}, {a: 5}, b, {a: 222}), {a: 222, b: 1, d: 4}));
 			assert(_.equals(_.extend(d, null, {}, c), c));
-			assert(_.equals(_.extend(d, a), a));
+			assert(_.equals(_.extend({a: 2}, {b: 5}), {a: 2, b: 5}));
+			assert(_.equals(_.extend({a: 2}, {a: null}), {a: null}));
+			assert(_.equals(_.extend({a: 2}, {a: undefined}), {a: undefined}));
 		});
 	});
 

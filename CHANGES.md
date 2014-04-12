@@ -3,6 +3,7 @@ Minified Change Log
 
 Beta 6 (ongoing)
 --------------------
+* added merge()
 * MINI.getter and MINI.setter allow you to add new prefixes to set()/get()
 * _.promise() supports ES6-style promise resolution
 * #36: added 'xhr' property to $.request()'s promise that contains the raw promise
@@ -10,6 +11,8 @@ Beta 6 (ongoing)
 * added parentNum parameter to up()
 * values() uses ids if a form element has no name
 * support for bubble selectors in onChange() and onClick()
+* copyObj() can be used to duplicate objects, and will copy inherited values.
+* extend() no longer ignores null values and will now copy inherited values.
 * changed signatures of request's promise handlers: the success handler is called with the XHR object instead of 
   'responseXml' property as second argument. The failure handler has no 'statusText' anymore (who needs that?).
   Instead it gets the XHR object as last argument.
