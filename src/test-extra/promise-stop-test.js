@@ -83,8 +83,6 @@ function runTests(loadInContext) {
 		});
 
 		
-		// TODO: TC to set pn.stop0 after p(true)!!
-		
 	});
 }
 

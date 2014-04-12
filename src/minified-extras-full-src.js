@@ -555,7 +555,7 @@ function dummy() {
 		 */
 		'setCookie': function(name, value, dateOrDays, dontEscape) {
 			document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
-			    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date((+new Date()) + dateOrDays * 8.64E7)).toUTCString()) : '');
+				(dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date((+new Date()) + dateOrDays * 8.64E7)).toUTCString()) : '');
 		},
 		
 		/*$

@@ -255,7 +255,7 @@ define('minified', function() {
 	function startsWith(base, start) {
 		if (isList(base)) {
 			var s2 = _(start); // convert start as we don't know whether it is a list yet
-			return equals(_(base).sub(0, s2.length), s2);
+			return equals(sub(base, 0, s2.length), s2);
 		}
 		else
 			return start != _null && base.substr(0, start.length) == start;
@@ -263,7 +263,7 @@ define('minified', function() {
 	function endsWith(base, end) {
 		if (isList(base)) {
 			var e2 = _(end);
-			return _(base).sub(-e2.length).equals(e2) || !e2.length;
+			return equals(sub(base, -e2.length), e2) || !e2.length;
 		}
 		else
 			return end != _null && base.substr(base.length - end.length) == end;
@@ -275,15 +275,6 @@ define('minified', function() {
 		else
 			return replace(list, /[\s\S]/g, function() { return list.charAt(--len); });
 	}
-	function sub(list, startIndex, endIndex) {
-		if (!list)
-			return [];
-		var s = getFindIndex(list, startIndex, 0);
-		var e = getFindIndex(list, endIndex, list.length);
- 		return filter(list, function(o, index) { 
- 			return index >= s && index < e; 
- 		});
- 	}
 	function toObject(list, value) {
 		var obj = {};
 		each(list, function(item, index) {
@@ -307,7 +298,7 @@ define('minified', function() {
 		return isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 	}
 	function getFindIndex(list, index, defaultIndex) {
-		return index == _null ? defaultIndex : index < 0 ? list.length+index : index;
+		return index == _null ? defaultIndex : index < 0 ? Math.max(list.length+index, 0) : Math.min(list.length, index);
 	}
 	function find(list, findFunc, startIndex, endIndex) {
 		var f = getFindFunc(findFunc);
@@ -325,7 +316,15 @@ define('minified', function() {
 			if ((r = f.call(list, list[i], i)) != _null)
 				return r;
 	}
-	
+	function sub(list, startIndex, endIndex) {
+		var r = [];
+		if (list) {
+			var e = getFindIndex(list, endIndex, list.length);
+			for (var i = getFindIndex(list, startIndex, 0); i < e; i++)
+				r.push(list[i]);
+		}
+		return r;
+ 	}
 	function array(list) {
 		return map(list, nonOp);
 	}
@@ -455,8 +454,8 @@ define('minified', function() {
 				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
 					var d = value['get' + val[0]]();
-					
 					var optionArray = (params && params.split(','));
+					
 					if (isList(val[1])) 
 						d = (optionArray || val[1])[d];
 					else
@@ -772,8 +771,11 @@ define('minified', function() {
 
 	///#snippet utilM
 	
-	/*$
-	 * @id listctor
+	/*
+	 * syntax: M(list, assimilateSublists)
+	 *         M(null, singleElement) 
+	 * 
+	 * 
 	 */
 	/** @constructor */
 	function M(list, assimilateSublists) {
@@ -2058,10 +2060,10 @@ define('minified', function() {
 		 * @see ##_.filterObj() filters an object.
 		 * @see ##map() maps a list.
 		 */
-		'mapObj': function(list, mapFunc) {
+		'mapObj': function(obj, mapFunc) {
 			var result = {};
-			eachObj(list, function(key, value) {
-				result[key] = mapFunc.call(list, key, value);
+			eachObj(obj, function(key, value) {
+				result[key] = mapFunc.call(obj, key, value);
 			});
 			return result;
 		},
