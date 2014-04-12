@@ -313,22 +313,7 @@ function runTests(loadInContext) {
 	});
 
 	describe('parseNumber()', function() {
-		it('parse numbers, no format', function() {
-			assert.equal(_.parseNumber("0"), 0);
-			assert.equal(_.parseNumber("1"), 1);
-			assert.equal(_.parseNumber("02020"), 2020);
-			assert.equal(_.parseNumber("-15"), -15);
-			assert.equal(_.parseNumber("-3e3"), -3000);
-			assert.equal(_.parseNumber("2,222,333"), 2222333);
-			assert.equal(_.parseNumber("0.1"), 0.1);
-			assert.equal(_.parseNumber("012.135"), 12.135);
-			assert.equal(_.parseNumber("-43,3,3,3,0.12"), -433330.12);
-			assert.equal(_.parseNumber("sderes,.df282020dsfewe"), 282020);
-			assert.equal(_.parseNumber("sderes,.df-282020e3dsfewe"), -282020000);
-			assert.equal(_.parseNumber("sderes,.df-282020.3dsfewe"), -282020.3);
-		});
-		
-		it('parse numbers, with format', function() {
+		it('parse numbers', function() {
 			assert.equal(_.parseNumber("000", "0"), 0);
 			assert.equal(_.parseNumber("#", "1"), 1);
 			assert.equal(_.parseNumber("####,###", "02020"), 2020);

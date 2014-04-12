@@ -500,8 +500,8 @@ define('minified', function() {
 	}
 
 	function processNumCharTemplate(tpl, input, fwd) {
-		var inputPos = 0;
 		var inHash;
+		var inputPos = 0;
 		var rInput = fwd ? input : reverse(input);
 		var s = (fwd ? tpl : reverse(tpl)).replace(/./g, function(tplChar) {
 			if (tplChar == '0') {
@@ -529,8 +529,8 @@ define('minified', function() {
 	// e.g. 0:no item|1:one item|>=2:# items
 	// <value>="null" used to compare with nulls.
 	// choice also works with strings or bools, e.g. ERR:error|WAR:warning|FAT:fatal|ok
-	function formatValue(format, value) {
-		format = replace(format, /^\?/);
+	function formatValue(fmt, value) {
+		var format = replace(fmt, /^\?/);
 		if (isDate(value)) {
 			var timezone, match;
 
@@ -599,18 +599,16 @@ define('minified', function() {
 			});
 	}
 	// returns date; null if optional and not set; undefined if parsing failed
-	function parseDate(format, date) {
+	function parseDate(fmt, date) {
 		var indexMap = {}; // contains reGroupPosition -> typeLetter or [typeLetter, value array]
 		var reIndex = 1;
 		var timezoneOffsetMatch;
 		var timezoneIndex;
 		var match;
 
-		if (/^\?/.test(format)) {
-			if (!trim(date))
-				return _null;
-			format = format.substr(1);
-		}
+		var format = replace(fmt, /^\?/);
+		if (format!=fmt && !trim(date))
+			return _null;
 
 		if (match = /^\[([+-]\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
 			timezoneOffsetMatch = match;
@@ -674,14 +672,10 @@ define('minified', function() {
 	}
 	// format ?##00,00##
 	// returns number; null if optional and not set; undefined if parsing failed
-	function parseNumber(format, value) {
-		if (arguments.length == 1)
-			return parseNumber(_null, format);
-		if (/^\?/.test(format)) {
-			if (!trim(value))
-				return _null;
-			format = format.substr(1);
-		}
+	function parseNumber(fmt, value) {
+		var format = replace(fmt, /^\?/);
+		if (format!=fmt && !trim(value))
+			return _null;
 		var decSep = (/(^|[^0#.,])(,|[0#.]*,[0#]+|[0#]+\.[0#]+\.[0#.,]*)($|[^0#.,])/.test(format)) ? ',' : '.';
 		var r = parseFloat(replace(replace(replace(value, decSep == ',' ? /\./g : /,/g), decSep, '.'), /^[^\d-]*(-?\d)/, '$1'));
 		return isNaN(r) ? undef : r;
