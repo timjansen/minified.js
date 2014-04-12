@@ -1561,14 +1561,17 @@ module.exports = (function() {
 	 * @name .merge()
 	 * @altname _.merge()
 	 * @syntax list.merge() 
+	 * @syntax list.merge(target) 
 	 * @syntax _.merge(list) 
+	 * @syntax _.merge(list, target) 
 	 * @module UTIL
-	 * Takes a list of objects and contains a new object that contains the properties of all objects in the list. Their values will
-	 * be shallow-copied. If a property is in the list more than once, the last one will be used.
+	 * Takes a list of objects and copies the properties into the target object. If no target object has been given, a new object will be created.
+	 * Values will be shallow-copied. If a property is in the list more than once, the last one will be used.
 	 *
 	 * @param list The list of objects. Can be an array, a ##list#Minified list## or any other array-like structure with 
 	 *             <var>length</var> property.
-	 * @return A new object that contains the pro
+	 * @param target optional a target object to copy the properties to. If no target is given, <var>merge()</var creates a new object.
+	 * @return a new object that contains the pro
 	 * @see ##_.extend() is similar, but uses varargs.
 	 * @see ##_.copyObj() copies a single object.
 	 */

@@ -320,6 +320,14 @@ describe('minified-web-element-test.js', function() {
 			check(sl.text(), '122');
 		});
 
+		it('supports merging objects', function() {
+			if (!_)
+				return;
+			var sl = EE('span').ht('{{a}} {{b}} {{c}}', {a:122}, {b: 23}, {c: 1}, {b: 22});
+			check(sl.length, 1);
+			check(sl.text(), '122 22 1');
+		});
+
 	});
 	
 	describe('HTML()', function() {
@@ -343,7 +351,6 @@ describe('minified-web-element-test.js', function() {
 			check(sl[1].data, 'xx');
 			check(sl[2].tagName.toLowerCase(), 'i');
 			check(sl[2].innerHTML, 'eek', 'check inner html elem 2');
-
 			
 			sl = HTML('abc');
 			check(sl[0].data, 'abc');
@@ -364,6 +371,14 @@ describe('minified-web-element-test.js', function() {
 			var sl = HTML('#minifiedTemplate', {a:122});
 			check(sl.length, 1);
 			check(sl[0].data, '122');
+		});
+		
+		it('supports merging objects', function() {
+			if (!_)
+				return;
+			var sl = HTML('{{a}} {{b}} {{c}}', {a:122}, {b: 23}, {c: 1}, {b: 22});
+			check(sl.length, 1);
+			check(sl[0].data, '122 22 1');
 		});
 	});
 

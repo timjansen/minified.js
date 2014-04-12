@@ -2292,14 +2292,17 @@ define('minified', function() {
 	 * @name .merge()
 	 * @altname _.merge()
 	 * @syntax list.merge() 
+	 * @syntax list.merge(target) 
 	 * @syntax _.merge(list) 
+	 * @syntax _.merge(list, target) 
 	 * @module UTIL
-	 * Takes a list of objects and contains a new object that contains the properties of all objects in the list. Their values will
-	 * be shallow-copied. If a property is in the list more than once, the last one will be used.
+	 * Takes a list of objects and copies the properties into the target object. If no target object has been given, a new object will be created.
+	 * Values will be shallow-copied. If a property is in the list more than once, the last one will be used.
 	 *
 	 * @param list The list of objects. Can be an array, a ##list#Minified list## or any other array-like structure with 
 	 *             <var>length</var> property.
-	 * @return A new object that contains the pro
+	 * @param target optional a target object to copy the properties to. If no target is given, <var>merge()</var creates a new object.
+	 * @return a new object that contains the pro
 	 * @see ##_.extend() is similar, but uses varargs.
 	 * @see ##_.copyObj() copies a single object.
 	 */
@@ -4766,12 +4769,9 @@ define('minified', function() {
 		 * @requires set template
 		 * @configurable default
 		 * @name .ht()
-		 * @syntax list.ht(templateString)
-		 * @syntax list.ht(templateString, object)
-		 * @syntax list.ht(templateFunction)
-		 * @syntax list.ht(templateFunction, object)
-		 * @syntax list.ht(idSelector)
-		 * @syntax list.ht(idSelector, object)
+		 * @syntax list.ht(templateString, object...)
+		 * @syntax list.ht(templateFunction, object...)
+		 * @syntax list.ht(idSelector, object...)
 		 * @module WEB+UTIL
 		 * Replaces the content of the list elements with the HTML generated using the given template. The template uses
 		 * ##template() syntax and HTML-escaped its output using ##escapeHtml(). 
@@ -4822,16 +4822,18 @@ define('minified', function() {
 		 *                   of the specified &lt;script> element as template. This allows you to put your template into 
 		 *                   a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
 		 *                   contain any spaces is used as selector.
-		 * @param object optional the object to pass to the template. If object is not set, the template is called with <var>undefined</var>
-		 *                        as object.
+		 * @param object optional one or more objects to pass to the template. If object is not set, the template is called with <var>undefined</var>
+		 *                        as object. If exactly one object is given, it is passed directly to the template. If you specify more than one 
+		 *                        object, they are ##merge#merged##.
 		 * @return the current list
 		 * 
 		 * @see ##HTML() creates only the nodes and can be used with ##add() and other methods to add the nodes to the DOM, giving you more flexibility than <var>ht()</var>.
 		 */
 		'ht': function(htmlTemplate, object) {
-			return this['set']('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : 
-				                            /{{/.test(htmlTemplate) ? formatHtml(htmlTemplate, object) : 
-				                            /^#\S+$/.test(htmlTemplate) ? formatHtml($$(htmlTemplate)['text'], object) : htmlTemplate);
+			var o = arguments.length > 2 ? merge(sub(arguments, 1)) : object;
+			return this['set']('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(o) : 
+				                            /{{/.test(htmlTemplate) ? formatHtml(htmlTemplate, o) : 
+				                            /^#\S+$/.test(htmlTemplate) ? formatHtml($$(htmlTemplate)['text'], o) : htmlTemplate);
 		 }
 		/*$
 		 * @stop
@@ -6610,12 +6612,9 @@ define('minified', function() {
 		 * @requires template ht
 		 * @configurable default
 		 * @name HTML()
-		 * @syntax HTML(templateString)
-		 * @syntax HTML(templateString, object)
-		 * @syntax HTML(templateFunction)
-		 * @syntax HTML(templateFunction, object)
-		 * @syntax HTML(idSelector)
-		 * @syntax HTML(idSelector, object)
+		 * @syntax HTML(templateString, object...)
+		 * @syntax HTML(templateFunction, object...)
+		 * @syntax HTML(idSelector, object...)
 		 * @module WEB
 		 * Creates a ##list#list## of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
 		 * The template uses the ##template() syntax with ##escapeHtml() escaping for values.
@@ -6669,14 +6668,17 @@ define('minified', function() {
 		 *                   of the specified &lt;script> element as template. This allows you to put your template into 
 		 *                   a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
 		 *                   contain any spaces is used as selector.
-		 * @param object optional the object to pass to the template
+		 * @param object optional one or more objects to pass to the template. If object is not set, the template is called with <var>undefined</var>
+		 *                        as object. If exactly one object is given, it is passed directly to the template. If you specify more than one 
+		 *                        object, they are ##merge#merged##.
 		 * @return the list containing the new HTML nodes
 		 *  
 		 * @see ##ht() is a shortcut for <code>fill(HTML())</code>.
 		 * @see ##EE() is a different way of creating HTML nodes.
 		 */
-		'HTML': function (htmlTemplate, object) {
-		    return  _(EE('div')['ht'](htmlTemplate, object)[0].childNodes);
+		'HTML': function () {
+			var div = EE('div');
+		    return  _(call(div['ht'], div, arguments)[0].childNodes);
 		},
 		/*$
 		 * @stop

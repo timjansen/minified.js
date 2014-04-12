@@ -6,6 +6,7 @@ Beta 6 (ongoing)
 * added merge()
 * MINI.getter and MINI.setter allow you to add new prefixes to set()/get()
 * _.promise() supports ES6-style promise resolution
+* HTML() and ht() support more than one object as parameter. Objects will be merged automatically.
 * #36: added 'xhr' property to $.request()'s promise that contains the raw promise
 * added stop() support to $.request()
 * added parentNum parameter to up()
