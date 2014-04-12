@@ -168,9 +168,6 @@ module.exports = (function() {
 	function trim(s) {
 		return replace(s, /^\s+|\s+$/g);
 	}
-	function isEmpty(s, ignoreWhitespace) {
-		return s == _null || !s.length || (ignoreWhitespace && /^\s*$/.test(s));
-	}
 	function eachObj(obj, cb) {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
@@ -182,14 +179,6 @@ module.exports = (function() {
 			for (var i = 0; i < list.length; i++)
 				cb.call(list, list[i], i);
 		return list;
-	}
-	function filterObj(obj, f) {
-		var r = {};
-		eachObj(obj, function(key, value) {
-			if (f.call(obj, key, value))
-				r[key] = value;
-		});
-		return r;
 	}
 	function filter(list, filterFuncOrObject) {
 		var r = []; 
@@ -225,22 +214,6 @@ module.exports = (function() {
 		var list = [];
 		eachObj(obj, function(key) { list.push(key); });
 		return list;
-	}
-	function values(obj, keys) {
-		var list = [];
-		if (keys)
-			each(keys, function(value) { list.push(obj[value]); });
-		else
-			eachObj(obj, function(key, value) { list.push(value); });
-		return list;
-	}	
-
-	function mapObj(list, mapFunc) {
-		var result = {};
-		eachObj(list, function(key, value) {
-			result[key] = mapFunc.call(list, key, value);
-		});
-		return result;
 	}
 	function map(list, mapFunc) {
 		var result = [];
@@ -299,9 +272,6 @@ module.exports = (function() {
 		for (var i = 0; i < list.length; i++)
 			o = copyObj(list[i], o);
 		return o;
-	}
-	function extend(target) {
-		return merge(sub(arguments, 1), target);
 	}
 	function getFindFunc(findFunc) {
 		return isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
@@ -385,13 +355,6 @@ module.exports = (function() {
 		}
 	}
 
-	function once(f) {
-		var called = 0;
-		return function() {
-			if (!(called++))
-				return call(f, this, arguments);
-		};
-	}
 	function call(f, fThisOrArgs, args) {
 		if (isFunction(f))
 			return f.apply(args && fThisOrArgs, map(args || fThisOrArgs, nonOp));
@@ -1785,7 +1748,14 @@ module.exports = (function() {
 		 * 
 		 * @see ##_.keys() retrieves the property names of an object as a list.
 		 */
-		'values': funcArrayBind(values),
+		'values': funcArrayBind(function(obj, keys) {
+			var list = [];
+			if (keys)
+				each(keys, function(value) { list.push(obj[value]); });
+			else
+				eachObj(obj, function(key, value) { list.push(value); });
+			return list;
+		}),
 
 		/*$
 		 * @id copyobj
@@ -1848,7 +1818,9 @@ module.exports = (function() {
 		 * @see ##_.copyObj() is very similar to <var>extend()</var>, but with a slightly different and more straightforward syntax.
 		 * @see ##_.merge() copies a list of objects into a new object.
 		 */
-		'extend': extend,
+		'extend': function(target) {
+			return merge(sub(arguments, 1), target);
+		},
 
 		/*$ 
 		 * @id range 
@@ -2030,7 +2002,13 @@ module.exports = (function() {
 		 * @see ##_.filterObj() filters an object.
 		 * @see ##map() maps a list.
 		 */
-		'mapObj': mapObj,
+		'mapObj': function(list, mapFunc) {
+			var result = {};
+			eachObj(list, function(key, value) {
+				result[key] = mapFunc.call(list, key, value);
+			});
+			return result;
+		},
 
 		/*$
 		 * @id filterobj
@@ -2061,7 +2039,14 @@ module.exports = (function() {
 		 * 
 		 * @see ##_.mapObj() can be used to modify the values og an object.
 		 */
-		'filterObj': filterObj,
+		'filterObj': function(obj, f) {
+			var r = {};
+			eachObj(obj, function(key, value) {
+				if (f.call(obj, key, value))
+					r[key] = value;
+			});
+			return r;
+		},
 
 		/*$
 		 * @id islist
@@ -2625,7 +2610,9 @@ module.exports = (function() {
 		 * @param ignoreWhitespace if true and a string was given, <var>isEmpty</var> will also return true if the string contains only whitespace.
 		 * @return true if empty, false otherwise
 		 */
-		'isEmpty': isEmpty,
+		'isEmpty': function(s, ignoreWhitespace) {
+			return s == _null || !s.length || (ignoreWhitespace && /^\s*$/.test(s));
+		},
 
 		/*$
 		 * @id escaperegexp
