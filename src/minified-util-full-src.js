@@ -430,7 +430,7 @@ define('minified', function() {
 	function getTimezone(match, idx, refDate) { // internal helper, see below
 		if (idx == _null || !match)
 			return 0;
-		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
+		return parseFloat(match[idx])*60 + parseFloat(match[idx+1]) + refDate.getTimezoneOffset();
 	}
 	
 	
@@ -473,7 +473,7 @@ define('minified', function() {
 			return find(format.split(/\s*\|\s*/), function(fmtPart) {
 				var match, numFmtOrResult;
 				if (match = /^([<>]?)(=?)([^:]*?)\s*:\s*(.*)$/.exec(fmtPart)) {
-					var cmpVal1 = value, cmpVal2 = parseFloat(match[3]);
+					var cmpVal1 = value, cmpVal2 = +(match[3]);
 					if (isNaN(cmpVal2) || !isNumber(cmpVal1)) {
 						cmpVal1 = (cmpVal1==_null) ? "null" : toString(cmpVal1); // not ""+value, because undefined is treated as null here
 						cmpVal2 = match[3];
@@ -569,7 +569,7 @@ define('minified', function() {
 					ctorArgs[ctorIndex] = listValue;
 			}
 			else if (indexEntry) { // for numeric values (yHmMs)
-				var value = parseInt(matchVal);
+				var value = parseFloat(matchVal);
 				var mapEntry  = PARSE_DATE_MAP[indexEntry];
 				if (isList(mapEntry))
 					ctorArgs[mapEntry[0]] += value - mapEntry[1];
