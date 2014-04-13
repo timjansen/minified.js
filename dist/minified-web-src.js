@@ -324,6 +324,7 @@ define('minified', function() {
 
 
 
+
 	// @condblock !ie8compatibility 
 	function on(subSelector, eventSpec, handler, args, bubbleSelector) {
 		if (isFunction(eventSpec))
@@ -489,9 +490,9 @@ define('minified', function() {
 			return function(v, index) { return index == selector; };
 		else if (!selector || selector == '*' ||
 				 (isString(selector) && (dotPos = /^([\w-]*)\.?([\w-]*)$/.exec(selector)))) {
-			var nodeNameFilter = wordRegExpTester(dotPos[1], 'nodeName');
+			var nodeNameFilter = wordRegExpTester(dotPos[1], 'tagName');
 			var classNameFilter = wordRegExpTester(dotPos[2], 'className');
-			return function(v) { 
+			return function(v) {
 				return isNode(v) == 1 && nodeNameFilter(v) && classNameFilter(v);
 			};
 		}
@@ -2725,6 +2726,10 @@ define('minified', function() {
 	 * 
 	 * Please note that the handler may be called on the user's first interaction even without an actual content change. After that, 
 	 * the handler will only be called when the content actually changed.
+	 * 
+	 * On legacy IE platforms, <var>onChange</var> tries to report every change as soon as possible. When used with bubbling selector, 
+	 * some text changes may not be reported before the input loses focus. This is because there is no reliable event to report text 
+	 * changes that supports bubbling. 
 	 * 
 	 * @example Creates a handler that writes the input's content into a text node:
 	 * <pre>

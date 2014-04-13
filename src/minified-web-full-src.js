@@ -371,10 +371,11 @@ define('minified', function() {
 		return function(event, triggerOriginalTarget) {
 			var stop;
 			var e = event || _window.event;
-			var match = !selectorFilter, el = triggerOriginalTarget || e['target'];
+			var match = !selectorFilter, el = triggerOriginalTarget || e['target'] || e['srcElement'];
 			if (selectorFilter)
 				while (el && el != registeredOn && !(match = selectorFilter(el)))
 					el = el['parentNode'];
+
 			if (match && 
 			   (stop = (((!handler.apply($(selectorFilter ? el : registeredOn), args || [e, index])) || prefix=='') && prefix != '|')) && 
 			   !triggerOriginalTarget) {
@@ -594,7 +595,7 @@ define('minified', function() {
 		elements = (useGEbC = document.getElementsByClassName && className) ? (parent || document).getElementsByClassName(className) : (parent || document).getElementsByTagName(elementName || '*'); 
 	
 		if (regexpFilter = useGEbC ? elementName : className)
-			elements =  filter(elements, wordRegExpTester(regexpFilter, useGEbC ? 'nodeName' : 'className'));
+			elements =  filter(elements, wordRegExpTester(regexpFilter, useGEbC ? 'tagName' : 'className'));
 		return childOnly ? filterElements(elements) : elements;
 	};
 	// @condend ie7compatibility
@@ -648,9 +649,9 @@ define('minified', function() {
 			return function(v, index) { return index == selector; };
 		else if (!selector || selector == '*' ||
 				 (isString(selector) && (dotPos = /^([\w-]*)\.?([\w-]*)$/.exec(selector)))) {
-			var nodeNameFilter = wordRegExpTester(dotPos[1], 'nodeName');
+			var nodeNameFilter = wordRegExpTester(dotPos[1], 'tagName');
 			var classNameFilter = wordRegExpTester(dotPos[2], 'className');
-			return function(v) { 
+			return function(v) {
 				return isNode(v) == 1 && nodeNameFilter(v) && classNameFilter(v);
 			};
 		}
@@ -2958,6 +2959,10 @@ define('minified', function() {
 	 * 
 	 * Please note that the handler may be called on the user's first interaction even without an actual content change. After that, 
 	 * the handler will only be called when the content actually changed.
+	 * 
+	 * On legacy IE platforms, <var>onChange</var> tries to report every change as soon as possible. When used with bubbling selector, 
+	 * some text changes may not be reported before the input loses focus. This is because there is no reliable event to report text 
+	 * changes that also supports bubbling. 
 	 * 
 	 * @example Creates a handler that writes the input's content into a text node:
 	 * <pre>

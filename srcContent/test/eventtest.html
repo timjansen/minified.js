@@ -67,7 +67,6 @@
 		function changeHandler(value) {
 			if (!(this.is('input') || this.is('select') || this.is('textarea')))
 				alert('Wrong value in "this".')
-console.log(this);
 			var span = this.next('span');
 			var oldCount = parseInt(span.text().replace(/\D.$/, ''));
 			span.fill((oldCount+1) + " (" + value + ")");
