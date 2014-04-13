@@ -14,15 +14,21 @@ Creates a new Promise, optionally assimilating other promises.</div>
 <div class="availability">Complete distribution only, not available in stand-alone modules.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">_.promise()</div>
+<div class="syntax">_.promise(callback)</div>
 <div class="syntax">_.promise(otherPromise...)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
+<dt id="promise_callback" class=""><a name="promise_callback"><var>callback</var></a></dt>
+<dd class="">a <code>function(resolve, reject)</code> that will be immediately invoked. The promise will be fulfilled when the callback
+calls <span class="var">resolve</span> and will be rejected if <span class="var">reject</span> is called. <span class="var">resolve</span> and <span class="var">reject</span> can be called asynchronously,
+after the callback returned. Both can have any number of parameters, which will be passed to the <code><a href='then.html' class='func'>then()</a></code> handler. Please note that this is a Minified
+extension, and the Promises/A+ standard supports only a single argument.</dd>
 <dt id="promise_otherPromise" class=""><a name="promise_otherPromise"><var>otherPromise</var></a></dt>
 <dd class="">one or more promises to assimilate</dd>
-<dt id="promise_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="promise_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
+<dt id="promise_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="promise_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2">the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
 <dl><dt>state</dt><dd><span class="var">true</span> to set the Promise to fulfilled, <span class="var">false</span> to set the state as rejected. If you pass <span class="var">null</span> or
 <span class="var">undefined</span>, the promise's state does not change. The latter may be useful to obtain the promises current state.</dd>
 <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
@@ -38,7 +44,8 @@ be ignored.</dd>
 <div class="description"><p>
 Creates a new <a href='promiseclass.html' class='func'>Promise</a>, optionally assimilating other promises. If no other promise is given,
 a fresh new promise is returned. The returned promise is a function that can be called directly to change the
-promise's state.</p><p>If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards
+promise's state.</p><p>Alternatively you can provide a callback that will be invoked with one function to fulfill the promise and a function
+to reject it. This is the ES6-compatible way of using Minified's promise implementation.</p><p>If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards
 fulfillment and rejection with the original values.</p><p>If more than one promise are given, it will assimilate all of them with slightly different rules:
 <ul><li>the new promise is fulfilled if all assimilated promises have been fulfilled. The fulfillment values
         of all assimilated promises are given to the handler as arguments. Note that the fulfillment values themselves are always
@@ -51,11 +58,18 @@ fulfillment and rejection with the original values.</p><p>If more than one promi
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>A simple promise that is fulfilled after 1 second:
+<div class="example"><p>A simple promise that is fulfilled after 1 second, using Minified's invocation syntax:
 <pre>var p = _.promise();
 setTimeout(function() {
     p(true, []);
 }, 1000);
+</pre>
+/</p></div>
+<h4>Example</h4>
+<div class="example"><p>A simple promise that is fulfilled after 1 second, using the ES6 syntax:
+<pre>var p = _.promise(function(resolve, reject) {
+		setTimeout(resolve, 1000);
+});
 </pre>
 </p></div>
 </div>
@@ -113,6 +127,7 @@ var disqus_url = "http://minifiedjs.com/api/promise.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 

@@ -176,8 +176,8 @@ define('minified', function() {
 	 * @id animation_vars
 	 * @dependency
 	 */
-	var ANIMATION_HANDLERS = {}; // global map of id->run() currently active
-	var ANIMATION_HANDLER_COUNT = 0; // number of active handlers
+	var animationHandlers = {}; // global map of id->run() currently active
+	var animationHandlerCount = 0; // number of active handlers
 	
 
 	/*$
@@ -264,10 +264,9 @@ define('minified', function() {
 	function callList(fl, arg) { // simplified impl with one  arg no checks. For web only!
 		flexiEach(fl, function(f) { f(arg); });
 	}
-	function eachObj(obj, cb) {
+	function eachObj(obj, cb) { // web version does not use hasOwnProperty()
 		for (var n in obj)
-			if (obj.hasOwnProperty(n))
-				cb(n, obj[n]);
+			cb(n, obj[n]);
 		// web version has no return, no 'this', as this implementation is not exported
 	}
 	function filter(list, f) { // web version, no filter by idenitity
@@ -289,7 +288,7 @@ define('minified', function() {
 		return toString(s).replace(regexp, sub||'');
 	}
 
-	function flexiEach(list, cb) {
+	function flexiEach(list, cb) { // extras contains an alt impl that uses Util
 		if (isList(list))
 			for (var i = 0; i < list.length; i++)
 				cb.call(list, list[i], i);
@@ -2630,7 +2629,7 @@ define('minified', function() {
 			self['set'](stateDesc1);
 			return function(newState) {
 					if (newState !== state) {
-						stateDesc = (state = newState===true||newState===false ? newState : !state) ? stateDesc2 : stateDesc1;
+						stateDesc = (state = (newState===true||newState===false ? newState : !state)) ? stateDesc2 : stateDesc1;
 
 						if (durationMs) 
 							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity))['then'](function(){promise=_null;});
@@ -2693,7 +2692,7 @@ define('minified', function() {
 					$(el['elements'][i])['values'](r); 
 				// @condend
 				// @cond !ie9compatibility $(el['elements'])['values'](r);
-			else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // kbox|dio => short for checkbox, radio
+			else if (n && (!/ox|io/i.test(el['type']) || el['checked'])) { // ox|io => short for checkbox, radio
 				r[n] = r[n] == _null ? v : collector(flexiEach, [r[n], v], nonOp);
 			}
 		});
@@ -2949,9 +2948,10 @@ define('minified', function() {
 	 * @syntax list.onChange(selector, handler, bubbleSelector)
 	 * @module WEB
 	 * Registers a handler to be called whenever content of the list's input fields changes. The handler is
-	 * called in realtime and does not wait for the focus to change. Text fields as well
+	 * called in realtime and does not wait for the focus to change. Text fields, text areas, selects as well
 	 * as checkboxes and radio buttons are supported. The handler is called with the new value as first argument.
-	 * It is boolean for checkbox/radio buttons and the new text as string for text fields. 
+	 * For selects the value is the first selected item, but the function will be called for every change.
+	 * The value is boolean for checkbox/radio buttons and a string for all other types. 
 	 * 
 	 * Please note that when you use a bubble selectors in a build for legacy browsers, the handler may be called on the user's first interaction
 	 * even without an actual content change. After that, the handler will only be called when the content actually changed.
@@ -2966,7 +2966,7 @@ define('minified', function() {
 	 *                Supports all valid parameters for <var>$()</var> except functions.            
 	 * @param handler the callback <code>function(newValue, index, ev)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
- 	 *             <dt>newValue</dt><dd>For text fields the new <var>value</var> string. 
+ 	 *             <dt>newValue</dt><dd>For text fields and selects the new <var>value</var> string. 
  	 *              For checkboxes/radio buttons it is the boolean returned by <var>checked</var>.</dd>
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
@@ -2992,7 +2992,7 @@ define('minified', function() {
 						}
 					}, bubbleSelector);
 				}
-				if (/kbox|dio/i.test(el['type'])) {
+				if (/ox|io/i.test(el['type'])) {
 					register('|click', 'checked');
 				}
 				else { 
@@ -3002,8 +3002,8 @@ define('minified', function() {
 			// @condend
 			
 			// @cond !ie8compatibility return this['each'](function(el, index) {
-			// @cond !ie8compatibility 	var isCheckBox = /kbox|dio/i.test(el['type']);
-			// @cond !ie8compatibility 	$(el)['on'](subSelect, isCheckBox ? '|click' : '|input',  function() {
+			// @cond !ie8compatibility 	var isCheckBox = /ox|io/i.test(el['type']);
+			// @cond !ie8compatibility 	$(el)['on'](subSelect, isCheckBox ? '|click' : /select/i.test(el['tagName']) ? '|change' : '|input',  function() {
 			// @cond !ie8compatibility 		handler.call(this, isCheckBox ? el['checked'] : el['value'], index);
 			// @cond !ie8compatibility 	}, bubbleSelector); 
 			// @cond !ie8compatibility });
@@ -3464,22 +3464,23 @@ define('minified', function() {
 		var id = idSequence++;
 		var requestAnim = _window['requestAnimationFrame'] || function(f) { setTimeout(function() { f(+new Date()); }, 33); }; // 30 fps as fallback
 		function raFunc(ts) {
-			eachObj(ANIMATION_HANDLERS, function(id, f) { f(ts); });
-			if (ANIMATION_HANDLER_COUNT) 
+			eachObj(animationHandlers, function(id, f) { f(ts); });
+			if (animationHandlerCount) 
 				requestAnim(raFunc);
 		}; 
 		function stop() {
-			if (ANIMATION_HANDLERS[id]) {
-				delete ANIMATION_HANDLERS[id];
-				ANIMATION_HANDLER_COUNT--;
+			if (animationHandlers[id]) {
+				delete animationHandlers[id];
+				animationHandlerCount--;
 			}
 			return currentTime;
 		} 
-		ANIMATION_HANDLERS[id] = function(ts) {
-			paintCallback(currentTime = ts - (startTimestamp = startTimestamp || ts), stop);
+		animationHandlers[id] = function(ts) {
+			startTimestamp = startTimestamp || ts;
+			paintCallback(currentTime = ts - startTimestamp, stop);
 		};
 
-		if (!(ANIMATION_HANDLER_COUNT++)) 
+		if (!(animationHandlerCount++)) 
 			requestAnim(raFunc);
 		return stop; 
 	},
@@ -3883,7 +3884,7 @@ define('minified', function() {
 		 * 
 		 * Exposes a map of prefix handlers used by ##get(). You can add support for a new prefix in <var>get()</var>
 		 * by adding a function to this map. The prefix can be any string consisting solely of non-alphanumeric characters
-		 * (\W) that's not already used by Minified. 
+		 * that's not already used by Minified. 
 		 * 
 		 * You must not replace <var>getters</var> by a new map, but must always modify the existing map.
 		 * 
@@ -3923,7 +3924,7 @@ define('minified', function() {
 		 * 
 		 * Exposes a map of prefix handlers used by ##set(). You can add support for a new prefix in <var>set()</var>
 		 * by adding a function to this map. The prefix can be any string consisting solely of non-alphanumeric characters
-		 * (\W) that's not already used by Minified. 
+		 * that's not already used by Minified. 
 		 * 
 		 * You must not replace <var>setters</var> by a new map, but must always modify the existing map.
 		 * 

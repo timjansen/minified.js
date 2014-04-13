@@ -12,12 +12,9 @@
 
 <div class="availability">Web module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">HTML(templateString)</div>
-<div class="syntax">HTML(templateString, object)</div>
-<div class="syntax">HTML(templateFunction)</div>
-<div class="syntax">HTML(templateFunction, object)</div>
-<div class="syntax">HTML(idSelector)</div>
-<div class="syntax">HTML(idSelector, object)</div>
+<div class="syntax">HTML(templateString, object...)</div>
+<div class="syntax">HTML(templateFunction, object...)</div>
+<div class="syntax">HTML(idSelector, object...)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -38,9 +35,11 @@ of the specified &lt;script> element as template. This allows you to put your te
 a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
 contain any spaces is used as selector.</dd>
 <dt id="html_object" class=""><a name="html_object"><var>object (optional)</var></a></dt>
-<dd class="">the object to pass to the template</dd>
-<dt id="html_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="html_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">the list containing the new HTML nodes
+<dd class="">one or more objects to pass to the template. If object is not set, the template is called with <span class="var">undefined</span>
+as object. If exactly one object is given, it is passed directly to the template. If you specify more than one
+object, they are <a href='merge.html' class='func'>merged</a>.</dd>
+<dt id="html_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="html_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2">the list containing the new HTML nodes
 </dd>
 </dl>
 
@@ -146,6 +145,7 @@ var disqus_url = "http://minifiedjs.com/api/html.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 

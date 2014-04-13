@@ -10,8 +10,9 @@
 <h2><a name="doc-copyobj">_.copyObj()</a></h2>
 <div class="summary">Copies every property of the first object into the second object.</div>
 
-<div class="availability">Util module only.</div><h4>Syntax</h4>
+<div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
+<div class="syntax">_.copyObj(from)</div>
 <div class="syntax">_.copyObj(from, to)</div>
 </div>
 
@@ -19,16 +20,15 @@
 <dl class="params">
 <dt id="copyobj_from" class=""><a name="copyobj_from"><var>from</var></a></dt>
 <dd class="">the object to copy from</dd>
-<dt id="copyobj_to" class=""><a name="copyobj_to"><var>to</var></a></dt>
-<dd class="">the object to copy to</dd>
-<dt id="copyobj_RETURN" class="returnValue inSyntax0"><a name="copyobj_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the object that has been copied to
+<dt id="copyobj_to" class=""><a name="copyobj_to"><var>to (optional)</var></a></dt>
+<dd class="">the object to copy to. If not given, a new object will be created.</dd>
+<dt id="copyobj_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="copyobj_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1">the object that has been copied to
 </dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Copies every property of the first object into the second object. The properties are copied as shallow-copies. Only own properties
-are copied, but not inherited properties.</p><p></p></div>
+<div class="description"><p>Copies every property of the first object into the second object. The properties are copied as shallow-copies.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -40,10 +40,15 @@ _.copyObj({a: 1, b: 2}, target); // target is now {a: 1, b: 2, c: 3}</pre>
 <div class="example"><p>Inline property merge:
 <pre>var target = _.copyObj({a: 1, b: 2}, {a:3, c: 3}); // target is now {a: 1, b: 2, c: 3}</pre>
 </p></div>
+<h4>Example</h4>
+<div class="example"><p>Duplicating an object:
+<pre>var target = _.copyObj({a: 1, b: 2}); // target is now {a: 1, b: 2}</pre>
+</p></div>
 </div>
 
 <h4>See also..</h4>
-<ul><li><code><a href='extend.html' class='func'>extend()</a></code> is very similar to <span class="var">copyObj()</span>, but with a slightly different syntax.</li>
+<ul><li><code><a href='extend.html' class='func'>_.extend()</a></code> is very similar to <span class="var">copyObj()</span>, but with a slightly different syntax.</li>
+<li><code><a href='merge.html' class='func'>_.merge()</a></code> copies a list of objects into a new object.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
@@ -98,6 +103,7 @@ var disqus_url = "http://minifiedjs.com/api/copyobj.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 

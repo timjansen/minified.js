@@ -122,6 +122,9 @@ Creates a function allows you to set all list members to one of two states or an
 <h3><a href="map.html">.map()</a></h3>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
 
+<h3><a href="merge.html">.merge()</a></h3>
+<div class="summary">Takes a list of objects and copies the properties into the target object.</div>
+
 <h3><a href="next.html">.next()</a></h3>
 <div class="summary">Finds the next sibling elements matching the given selector or filter function for each list element, and returns the results as a list.</div>
 
@@ -418,6 +421,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 

@@ -11,6 +11,7 @@
 var fs = require('fs');
 var hanson = require('hanson');
 var _ = require('minified-headless');
+var markdown = require( "markdown" ).markdown;
 
 var minitemplate = require('./minitemplate.js');
 
@@ -85,7 +86,8 @@ function createPath() {
 	title: 'First Blog Entry',
 	timestamp: '2014-04-01 15:00',
 	author: 'Tim Jansen',
-	html: `This is <b>my first</b> entry.`
+	html: `This is <b>my first</b> entry.`,
+	markdown: `Markdown data (instead of HTML).`
  * }
  */
 function parseEntry(file, prevEntry, opts) {
@@ -96,6 +98,8 @@ function parseEntry(file, prevEntry, opts) {
 	entry.fileName = opts.entryFileNameTemplate(entry);
 	entry.url = opts.urlBase + entry.fileName;
 	entry.prevEntry = prevEntry;
+	if (entry.markdown)
+		entry.html = markdown.toHTML(entry.markdown);
 	if (prevEntry)
 		prevEntry.nextEntry = entry;
 

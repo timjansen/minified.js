@@ -12,6 +12,7 @@ Beta 6 (ongoing)
 * added parentNum parameter to up()
 * values() uses ids if a form element has no name
 * support for bubble selectors in onChange() and onClick()
+* onChange() will now work with select elements
 * copyObj() can be used to duplicate objects, and will copy inherited values.
 * extend() no longer ignores null values and will now copy inherited values.
 * changed signatures of request's promise handlers: the success handler is called with the XHR object instead of 

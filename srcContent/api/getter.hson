@@ -20,7 +20,7 @@ Exposes a map of prefix handlers used by get.</div>
 <div class="description"><p>
 Exposes a map of prefix handlers used by <code><a href='get.html' class='func'>get()</a></code>. You can add support for a new prefix in <span class="var">get()</span>
 by adding a function to this map. The prefix can be any string consisting solely of non-alphanumeric characters
-(\W) that's not already used by Minified.</p><p>You must not replace <span class="var">getters</span> by a new map, but must always modify the existing map.</p><p>The function's signature is <code>function(list, name)</code> where
+that's not already used by Minified.</p><p>You must not replace <span class="var">getters</span> by a new map, but must always modify the existing map.</p><p>The function's signature is <code>function(list, name)</code> where
 <dl><dt>list</dt><dd>Is the Minified list to get the value from. By convention you should always use only the first element. The list is
                      never empty (get() automatically returns <span class="var">undefined</span> in this case).</dd>
     <dt>name</dt><dd>The name of the property. That's the part AFTER the prefix.</dd>
@@ -102,6 +102,7 @@ var disqus_url = "http://minifiedjs.com/api/getter.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 

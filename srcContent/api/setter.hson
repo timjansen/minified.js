@@ -20,7 +20,7 @@ Exposes a map of prefix handlers used by set.</div>
 <div class="description"><p>
 Exposes a map of prefix handlers used by <code><a href='set.html' class='func'>set()</a></code>. You can add support for a new prefix in <span class="var">set()</span>
 by adding a function to this map. The prefix can be any string consisting solely of non-alphanumeric characters
-(\W) that's not already used by Minified.</p><p>You must not replace <span class="var">setters</span> by a new map, but must always modify the existing map.</p><p>The function's signature is <code>function(list, name, value)</code> where
+that's not already used by Minified.</p><p>You must not replace <span class="var">setters</span> by a new map, but must always modify the existing map.</p><p>The function's signature is <code>function(list, name, value)</code> where
 <dl><dt>list</dt><dd>Is the Minified list to use.</dd>
     <dt>name</dt><dd>The name of the property. That's the part AFTER the prefix.</dd>
     <dt>value</dt><dd>Either the value to set, or a callback function to create the value that you must call for each
@@ -116,6 +116,7 @@ var disqus_url = "http://minifiedjs.com/api/setter.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 

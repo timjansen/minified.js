@@ -4,7 +4,9 @@
 	timestamp: '2014-04-02 15:00',
 	author: 'Tim Jansen',
 	desc: "The blog's second entry.", // for RSS only
-	html: `This is <b>my second</b> entry.`
-	
+	markdown: `
+This is my *second* entry! Written in markdown.
+`
 }
+
 

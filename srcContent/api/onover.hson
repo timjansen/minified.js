@@ -14,6 +14,7 @@
 <div class="syntaxVariant">
 <div class="syntax">list.onOver(handler)</div>
 <div class="syntax">list.onOver(selector, handler)</div>
+<div class="syntax">list.onOver(handler, bubbleSelector)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -29,8 +30,8 @@ Supports all valid parameters for <span class="var">$()</span> except functions.
 <dt>event</dt><dd>The original event object given to <code><a href='on.html' class='func'>on()</a></code>.</dd>
 <dt class="this">this</dt><dd>A <a href='list.html' class='func'>Minified list</a> containing the target element that caused the event as only item.</dd>
 </dl></dd>
-<dt id="onover_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="onover_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the list</dd>
+<dt id="onover_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="onover_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2">the list</dd>
 </dl>
 
 <h4>Description</h4>
@@ -103,6 +104,7 @@ var disqus_url = "http://minifiedjs.com/api/onover.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 

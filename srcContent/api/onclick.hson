@@ -37,6 +37,11 @@ Supports all valid parameters for <span class="var">$()</span> except functions.
 <dt id="onclick_args" class=""><a name="onclick_args"><var>args (optional)</var></a></dt>
 <dd class="">an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the function is
 called as event handler with the event object as argument.</dd>
+<dt id="onclick_bubbleSelector" class=""><a name="onclick_bubbleSelector"><var>bubbleSelector (optional)</var></a></dt>
+<dd class="">a selector string for <a href='dollar.html' class='func'>$()</a> to receive only events that bubbled up from an
+element that matches this selector.
+Supports all valid parameters for <span class="var">$()</span> except functions. Analog to <code><a href='is.html' class='func'>is()</a></code>,
+the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.</dd>
 <dt id="onclick_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="onclick_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the list</dd>
 </dl>
@@ -127,6 +132,7 @@ var disqus_url = "http://minifiedjs.com/api/onclick.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
