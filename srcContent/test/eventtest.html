@@ -65,12 +65,27 @@
 		
 		// Test 3 / onChange() + onFocus()
 		function changeHandler(value) {
+			if (!this.is('input'))
+				alert('Wrong value in "this".')
 			var span = this.next('span');
 			var oldCount = parseInt(span.text().replace(/\D.$/, ''));
 			span.fill((oldCount+1) + " (" + value + ")");
 		}
 		$('#focussingText').onFocus(changeHandler);
 		$('#changingText, #changingCheckbox, #changingSelect, #changingTextarea').onChange(changeHandler);
+		
+		$('#bubbleInputContainer').onChange(changeHandler, 'input');
+		$('#bubbleButtonContainer').onClick(function() {
+			if (!this.is('button'))
+				alert('Wrong value in "this".')
+			var span = this.next('span');
+			var oldCount = parseInt(span.text().replace(/\D.$/, ''));
+			span.fill(oldCount+1);
+		}, 'button');
+
+		$('#bubbleInputContainer').fill([EE('input', {value: 'bubbled input'}), EE('span', '0')]);
+		$('#bubbleButtonContainer').fill([EE('button', 'Bubbling Click'), EE('span', '0')]);
+		
 		
 		// Test 4 / event cancellation
 		function cancelCounter() {
@@ -109,6 +124,8 @@
 				<div><input id="changingCheckbox" value="x" type="checkbox"/> <span>0</span> </div>
 				<div><select id="changingSelect"><option>A</option><option>B</option><option>C</option></select> <span>0</span> </div>
 				<div><textarea id="changingTextarea" rows="1" cols="10">Change me</textarea> <span>0</span></div>
+				<div id="bubbleInputContainer"></div>
+				<div id="bubbleButtonContainer"></div>
 				<span class="desc">onChange()/onFocus() test of input field, select and checkbox</span>
 			</div>
 		</div>

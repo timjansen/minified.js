@@ -140,8 +140,8 @@ define('minified', function() {
 
 	// @condblock ie8compatibility
 	var registeredEvents = {}; // nodeId -> [handler objects] ; for on()
-	var lastValues = {};       // nodeId -> value ; for onChange()
 	// @condend
+	var lastValues = {};       // nodeId -> value ; for onChange()
 	
 
 	/*$
@@ -2529,10 +2529,10 @@ define('minified', function() {
 				});
 				detachHandlerList(0, registeredEvents[obj[MINIFIED_MAGIC_NODEID]]);
 				delete registeredEvents[obj[MINIFIED_MAGIC_NODEID]];
-				delete lastValues[obj[MINIFIED_MAGIC_NODEID]];
 			}
 			// @condend
 
+			delete lastValues[obj[MINIFIED_MAGIC_NODEID]];
 			obj['parentNode'].removeChild(obj);
 		});
 	 },
@@ -3251,7 +3251,7 @@ define('minified', function() {
 				 setter[prefix](this, match[2], value);
 			 else if (name == '$$fade') {
 				 // @condblock ie8compatibility 
-				 this['set']({'$visibility': value ? 'visible' : 'hidden'})
+				 self['set']({'$visibility': value ? 'visible' : 'hidden'})
 				     ['set'](
 				    	  IS_PRE_IE9 ? (value < 1 ? {'$filter': 'alpha(opacity = '+(100*value)+')', '$zoom': 1} : {'$filter': ''}) : // clear filter for opacity=1!!
 				    	  {'$opacity': value}
@@ -3260,26 +3260,26 @@ define('minified', function() {
 				 // @cond !ie8compatibility this['set']({'$visibility': value ? 'visible' : 'hidden', '$opacity': value});
 			 }
 			 else if (name == '$$slide') {
-				 this['set']({'$visibility': value ? 'visible' : 'hidden', '$overflow': 'hidden', 
+				 self['set']({'$visibility': value ? 'visible' : 'hidden', '$overflow': 'hidden', 
 						 	  '$height': /px/.test(value) ? value : function(oldValue, idx, element) { return getNaturalHeight($(element), value);}
 				              });
 			 }
 			 else if (name == '$$show') {
 				 if (value)
-					 this['set']({'$visibility': value ? 'visible' : 'hidden', '$display': ''}) // that value? part is only for gzip
+					 self['set']({'$visibility': value ? 'visible' : 'hidden', '$display': ''}) // that value? part is only for gzip
 			 		 	 ['set']({'$display': function(oldVal) {                                // set for 2nd time: now we get the stylesheet's $display
 			 		 		 return oldVal == 'none' ? 'block' : oldVal;
 			 			 }}); 
 				 else 
-					 this['set']({'$display': 'none'});
+					 self['set']({'$display': 'none'});
 			 }
 		 	 else if (name == '$$') {
 				// @condblock ie8compatibility 
 				if (IS_PRE_IE9)
-					this['set']('$cssText', value);
+					self['set']('$cssText', value);
 				else
 				// @condend
-					this['set']('@style', value);
+					self['set']('@style', value);
 			 }
 			 else
 				 flexiEach(this, function(obj, c) { 
@@ -3308,7 +3308,6 @@ define('minified', function() {
 								 //@cond !ie9compatibility else
 								 //@cond !ie9compatibility 	 obj['classList'].toggle(cName);
 							 });
-
 						 }
 					 }
    				 	 else if (name == '$$scrollX')
@@ -3326,7 +3325,7 @@ define('minified', function() {
 				 });
 		 }
 		 else if (isString(name) || isFunction(name))
-			 this['set']('$', name);
+			 self['set']('$', name);
 		 else
 			 eachObj(name, function(n,v) { self['set'](n, v); });
 		 return self;
@@ -4603,8 +4602,8 @@ define('minified', function() {
 	 */
 	'onFocus': function(selector, handler) {
 		if (isFunction(handler))
-			return this['on'](selector, '|focus', handler, [true])
-				       ['on'](selector, '|blur', handler, [false]);
+			return this['on'](selector, '|blur', handler, [false])
+					   ['on'](selector, '|focus', handler, [true]);
 		else
 			return this['onFocus'](_null, selector);
 	},
@@ -4626,8 +4625,8 @@ define('minified', function() {
 	 * For selects the value is the first selected item, but the function will be called for every change.
 	 * The value is boolean for checkbox/radio buttons and a string for all other types. 
 	 * 
-	 * Please note that when you use a bubble selectors in a build for legacy browsers, the handler may be called on the user's first interaction
-	 * even without an actual content change. After that, the handler will only be called when the content actually changed.
+	 * Please note that the handler may be called on the user's first interaction even without an actual content change. After that, 
+	 * the handler will only be called when the content actually changed.
 	 * 
 	 * @example Creates a handler that writes the input's content into a text node:
 	 * <pre>
@@ -4655,29 +4654,25 @@ define('minified', function() {
 		if (isFunction(handler)) {
 			// @condblock ie8compatibility
 			return this['each'](function(el, index) {
-				function register(eventNames, property) {
-					$(el)['on'](subSelect, eventNames, function() {
-						var newValue = el[property], nodeId; 
-						var oldValue = lastValues[nodeId = getNodeId(el)];
-						if (newValue != null && (oldValue === undef || newValue != oldValue)) {
-							handler.call(this, newValue, index);
-							lastValues[nodeId] = newValue;
-						}
-					}, bubbleSelector);
-				}
-				if (/ox|io/i.test(el['type'])) {
-					register('|click', 'checked');
-				}
-				else { 
-					register(IS_PRE_IE9 ? '|propertychange' : '|input |change |keyup', 'value');
-				}
+				$(el)['on'](subSelect, IS_PRE_IE9 ? '|propertychange' : '|input |change |keyup |clicked', function() {
+					var e = this[0];
+					var v = /ox|io/i.test(e['type']) ? e['checked'] : e['value']; 
+					if (v != lastValues[getNodeId(e)]) {
+						handler.call(this, v, index);
+						lastValues[getNodeId(e)] = v;
+					}
+				}, bubbleSelector);
 			});
 			// @condend
-			
+
 			// @cond !ie8compatibility return this['each'](function(el, index) {
-			// @cond !ie8compatibility 	var isCheckBox = /ox|io/i.test(el['type']);
-			// @cond !ie8compatibility 	$(el)['on'](subSelect, isCheckBox ? '|click' : /select/i.test(el['tagName']) ? '|change' : '|input',  function() {
-			// @cond !ie8compatibility 		handler.call(this, isCheckBox ? el['checked'] : el['value'], index);
+			// @cond !ie8compatibility 	$(el)['on'](subSelect, '|input |change |click',  function() { // |change for select elements, |click for checkboxes...
+			// @cond !ie8compatibility 		var e = this[0];
+			// @cond !ie8compatibility      var v = /ox|io/i.test(e['type']) ? e['checked'] : e['value'];
+			// @cond !ie8compatibility 	    if (lastValues[getNodeId(e)] != v) {
+			// @cond !ie8compatibility 	        handler.call(this, v, index);
+			// @cond !ie8compatibility 			lastValues[getNodeId(e)] = v;
+			// @cond !ie8compatibility 		}
 			// @cond !ie8compatibility 	}, bubbleSelector); 
 			// @cond !ie8compatibility });
 		}

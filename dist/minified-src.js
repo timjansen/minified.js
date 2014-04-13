@@ -132,6 +132,7 @@ define('minified', function() {
 
 	var idSequence = 1;  // used as node id to identify nodes, and as general id for other maps
 
+	var lastValues = {};       // nodeId -> value ; for onChange()
 
 	/*$
 	 * @id ready_vars
@@ -2345,6 +2346,7 @@ define('minified', function() {
 	 'remove': function() {
 		flexiEach(this, function(obj) {
 
+			delete lastValues[obj[MINIFIED_MAGIC_NODEID]];
 			obj['parentNode'].removeChild(obj);
 		});
 	 },
@@ -3028,21 +3030,21 @@ define('minified', function() {
 				 this['set']({'$visibility': value ? 'visible' : 'hidden', '$opacity': value});
 			 }
 			 else if (name == '$$slide') {
-				 this['set']({'$visibility': value ? 'visible' : 'hidden', '$overflow': 'hidden', 
+				 self['set']({'$visibility': value ? 'visible' : 'hidden', '$overflow': 'hidden', 
 						 	  '$height': /px/.test(value) ? value : function(oldValue, idx, element) { return getNaturalHeight($(element), value);}
 				              });
 			 }
 			 else if (name == '$$show') {
 				 if (value)
-					 this['set']({'$visibility': value ? 'visible' : 'hidden', '$display': ''}) // that value? part is only for gzip
+					 self['set']({'$visibility': value ? 'visible' : 'hidden', '$display': ''}) // that value? part is only for gzip
 			 		 	 ['set']({'$display': function(oldVal) {                                // set for 2nd time: now we get the stylesheet's $display
 			 		 		 return oldVal == 'none' ? 'block' : oldVal;
 			 			 }}); 
 				 else 
-					 this['set']({'$display': 'none'});
+					 self['set']({'$display': 'none'});
 			 }
 		 	 else if (name == '$$') {
-					this['set']('@style', value);
+					self['set']('@style', value);
 			 }
 			 else
 				 flexiEach(this, function(obj, c) { 
@@ -3068,7 +3070,6 @@ define('minified', function() {
 								 //@cond !ie9compatibility else
 								 //@cond !ie9compatibility 	 obj['classList'].toggle(cName);
 							 });
-
 						 }
 					 }
    				 	 else if (name == '$$scrollX')
@@ -3086,7 +3087,7 @@ define('minified', function() {
 				 });
 		 }
 		 else if (isString(name) || isFunction(name))
-			 this['set']('$', name);
+			 self['set']('$', name);
 		 else
 			 eachObj(name, function(n,v) { self['set'](n, v); });
 		 return self;
@@ -4342,8 +4343,8 @@ define('minified', function() {
 	 */
 	'onFocus': function(selector, handler) {
 		if (isFunction(handler))
-			return this['on'](selector, '|focus', handler, [true])
-				       ['on'](selector, '|blur', handler, [false]);
+			return this['on'](selector, '|blur', handler, [false])
+					   ['on'](selector, '|focus', handler, [true]);
 		else
 			return this['onFocus'](_null, selector);
 	},
@@ -4365,8 +4366,8 @@ define('minified', function() {
 	 * For selects the value is the first selected item, but the function will be called for every change.
 	 * The value is boolean for checkbox/radio buttons and a string for all other types. 
 	 * 
-	 * Please note that when you use a bubble selectors in a build for legacy browsers, the handler may be called on the user's first interaction
-	 * even without an actual content change. After that, the handler will only be called when the content actually changed.
+	 * Please note that the handler may be called on the user's first interaction even without an actual content change. After that, 
+	 * the handler will only be called when the content actually changed.
 	 * 
 	 * @example Creates a handler that writes the input's content into a text node:
 	 * <pre>
@@ -4394,9 +4395,13 @@ define('minified', function() {
 		if (isFunction(handler)) {
 
 			return this['each'](function(el, index) {
-			var isCheckBox = /ox|io/i.test(el['type']);
-			$(el)['on'](subSelect, isCheckBox ? '|click' : /select/i.test(el['tagName']) ? '|change' : '|input',  function() {
-			handler.call(this, isCheckBox ? el['checked'] : el['value'], index);
+			$(el)['on'](subSelect, '|input |change |click',  function() { // |change for select elements, |click for checkboxes...
+			var e = this[0];
+			var v = /ox|io/i.test(e['type']) ? e['checked'] : e['value'];
+			if (lastValues[getNodeId(e)] != v) {
+			handler.call(this, v, index);
+			lastValues[getNodeId(e)] = v;
+			}
 			}, bubbleSelector); 
 			});
 		}
