@@ -134,6 +134,12 @@ define('minified', function() {
 	 */
 	var MINIFIED_MAGIC_NODEID = 'Nia';
 
+	/**
+	 * @const
+	 * @type {!string}
+	 */
+	var MINIFIED_MAGIC_PREV = 'NiaP';
+
 	var setter = {}, getter = {};
 	
 	var idSequence = 1;  // used as node id to identify nodes, and as general id for other maps
@@ -141,7 +147,6 @@ define('minified', function() {
 	// @condblock ie8compatibility
 	var registeredEvents = {}; // nodeId -> [handler objects] ; for on()
 	// @condend
-	var lastValues = {};       // nodeId -> value ; for onChange()
 	
 
 	/*$
@@ -2532,7 +2537,6 @@ define('minified', function() {
 			}
 			// @condend
 
-			delete lastValues[obj[MINIFIED_MAGIC_NODEID]];
 			obj['parentNode'].removeChild(obj);
 		});
 	 },
@@ -3265,7 +3269,7 @@ define('minified', function() {
 				              });
 			 }
 			 else if (name == '$$show') {
-				 if (value)
+				 if (value) 
 					 self['set']({'$visibility': value ? 'visible' : 'hidden', '$display': ''}) // that value? part is only for gzip
 			 		 	 ['set']({'$display': function(oldVal) {                                // set for 2nd time: now we get the stylesheet's $display
 			 		 		 return oldVal == 'none' ? 'block' : oldVal;
@@ -3283,7 +3287,7 @@ define('minified', function() {
 			 }
 			 else
 				 flexiEach(this, function(obj, c) { 
-					 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
+					 var newValue = isFunction(value) ? value($(obj)['get'](name), c, obj) : value;
 					 if (prefix == '$') {
 						 if (match[2])
 							 obj['style'][match[2]] = newValue;
@@ -4654,24 +4658,27 @@ define('minified', function() {
 		if (isFunction(handler)) {
 			// @condblock ie8compatibility
 			return this['each'](function(el, index) {
-				$(el)['on'](subSelect, IS_PRE_IE9 ? '|propertychange' : '|input |change |keyup |clicked', function() {
+				$(el)['on'](subSelect, IS_PRE_IE9 ? '|propertychange |change |keyup |clicked' : '|input |change |clicked', function() {
 					var e = this[0];
-					var v = /ox|io/i.test(e['type']) ? e['checked'] : e['value']; 
-					if (v != lastValues[getNodeId(e)]) {
-						handler.call(this, v, index);
-						lastValues[getNodeId(e)] = v;
+					var v;
+					if (IS_PRE_IE9 && /select/i.test(e['tagName']))
+						v = e['options'][e['selectedIndex']]['text'];
+					else
+						v = /ox|io/i.test(e['type']) ? e['checked'] : e['value']; 
+					if (v != e[MINIFIED_MAGIC_PREV]) {
+						handler.call(this, e[MINIFIED_MAGIC_PREV] = v, index);
 					}
 				}, bubbleSelector);
 			});
-			// @condend
+			// @condend 
 
 			// @cond !ie8compatibility return this['each'](function(el, index) {
 			// @cond !ie8compatibility 	$(el)['on'](subSelect, '|input |change |click',  function() { // |change for select elements, |click for checkboxes...
 			// @cond !ie8compatibility 		var e = this[0];
 			// @cond !ie8compatibility      var v = /ox|io/i.test(e['type']) ? e['checked'] : e['value'];
-			// @cond !ie8compatibility 	    if (lastValues[getNodeId(e)] != v) {
-			// @cond !ie8compatibility 	        handler.call(this, v, index);
-			// @cond !ie8compatibility 			lastValues[getNodeId(e)] = v;
+			// @cond !ie8compatibility 	    if (e[MINIFIED_MAGIC_PREV] != v) {
+			// @cond !ie8compatibility 	        handler.call(this, e[MINIFIED_MAGIC_PREV] = v, index);
+			// @cond !ie8compatibility 			
 			// @cond !ie8compatibility 		}
 			// @cond !ie8compatibility 	}, bubbleSelector); 
 			// @cond !ie8compatibility });

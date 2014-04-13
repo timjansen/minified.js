@@ -46,8 +46,8 @@ the selector is optimized for the simple patterns '.classname', 'tagname' and 't
 called in realtime and does not wait for the focus to change. Text fields, text areas, selects as well
 as checkboxes and radio buttons are supported. The handler is called with the new value as first argument.
 For selects the value is the first selected item, but the function will be called for every change.
-The value is boolean for checkbox/radio buttons and a string for all other types.</p><p>Please note that when you use a bubble selectors in a build for legacy browsers, the handler may be called on the user's first interaction
-even without an actual content change. After that, the handler will only be called when the content actually changed.</p><p></p></div>
+The value is boolean for checkbox/radio buttons and a string for all other types.</p><p>Please note that the handler may be called on the user's first interaction even without an actual content change. After that,
+the handler will only be called when the content actually changed.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

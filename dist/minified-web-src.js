@@ -154,11 +154,16 @@ define('minified', function() {
 	 */
 	var MINIFIED_MAGIC_NODEID = 'Nia';
 
+	/**
+	 * @const
+	 * @type {!string}
+	 */
+	var MINIFIED_MAGIC_PREV = 'NiaP';
+
 	var setter = {}, getter = {};
 
 	var idSequence = 1;  // used as node id to identify nodes, and as general id for other maps
 
-	var lastValues = {};       // nodeId -> value ; for onChange()
 
 	/*$
 	 * @id ready_vars
@@ -685,7 +690,6 @@ define('minified', function() {
 	 'remove': function() {
 		flexiEach(this, function(obj) {
 
-			delete lastValues[obj[MINIFIED_MAGIC_NODEID]];
 			obj['parentNode'].removeChild(obj);
 		});
 	 },
@@ -1374,7 +1378,7 @@ define('minified', function() {
 				              });
 			 }
 			 else if (name == '$$show') {
-				 if (value)
+				 if (value) 
 					 self['set']({'$visibility': value ? 'visible' : 'hidden', '$display': ''}) // that value? part is only for gzip
 			 		 	 ['set']({'$display': function(oldVal) {                                // set for 2nd time: now we get the stylesheet's $display
 			 		 		 return oldVal == 'none' ? 'block' : oldVal;
@@ -1387,7 +1391,7 @@ define('minified', function() {
 			 }
 			 else
 				 flexiEach(this, function(obj, c) { 
-					 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
+					 var newValue = isFunction(value) ? value($(obj)['get'](name), c, obj) : value;
 					 if (prefix == '$') {
 						 if (match[2])
 							 obj['style'][match[2]] = newValue;
@@ -2751,9 +2755,9 @@ define('minified', function() {
 			$(el)['on'](subSelect, '|input |change |click',  function() { // |change for select elements, |click for checkboxes...
 			var e = this[0];
 			var v = /ox|io/i.test(e['type']) ? e['checked'] : e['value'];
-			if (lastValues[getNodeId(e)] != v) {
-			handler.call(this, v, index);
-			lastValues[getNodeId(e)] = v;
+			if (e[MINIFIED_MAGIC_PREV] != v) {
+			handler.call(this, e[MINIFIED_MAGIC_PREV] = v, index);
+			
 			}
 			}, bubbleSelector); 
 			});
