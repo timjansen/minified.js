@@ -100,6 +100,8 @@ function parseEntry(file, prevEntry, opts) {
 	entry.prevEntry = prevEntry;
 	if (entry.markdown)
 		entry.html = markdown.toHTML(entry.markdown);
+	else
+		entry.html = '<p>'+entry.html+'</p>';
 	if (prevEntry)
 		prevEntry.nextEntry = entry;
 
