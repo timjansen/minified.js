@@ -19,6 +19,7 @@ Beta 6 (ongoing)
   'responseXml' property as second argument. The failure handler has no 'statusText' anymore (who needs that?).
   Instead it gets the XHR object as last argument.
 
+
 Beta 5 (2014-03-28)
 --------------------
 * added up()
@@ -40,6 +41,7 @@ Beta 5 (2014-03-28)
 * reverse() can be used to reverse strings
 * $.request() will only process plain objects as form data or URL parameters anymore. Everything else will be passed to XHR, allowing you to 
   use $.request e.g. with FormData.
+
 
 Beta 4.2 (2013-12-26)
 ---------------------

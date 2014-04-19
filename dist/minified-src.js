@@ -970,8 +970,8 @@ define('minified', function() {
 		     else if (isList(e))
 		    	 return clone(e);
 		     else if (isNode(e)) {
-		    	 c = e['cloneNode'](true);
-		    	 c['removeAttribute']('id');
+		    	 c = e['cloneNode'](true); 
+		    	 c['removeAttribute'] && c['removeAttribute']('id');
 		    	 return c;
 		     }
 		     else
@@ -3690,8 +3690,10 @@ define('minified', function() {
 	 * will be removed.
 	 *
 	 * <var>clone()</var> uses the browser's <var>cloneNode()</var> function to clone HTML internally, but will remove the ids from
-	 * all top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
-	 * The ids of child elements will removed. 
+	 * all HTML top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
+	 * The ids of child elements will removed.
+	 * 
+	 * Please note that clone() does work with SVG, but will not remove ids from SVG.
 	 * 
 	 * Please note that event handlers will not be cloned.
 	 * 
@@ -4376,7 +4378,7 @@ define('minified', function() {
 	 * 
 	 * On legacy IE platforms, <var>onChange</var> tries to report every change as soon as possible. When used with bubbling selector, 
 	 * some text changes may not be reported before the input loses focus. This is because there is no reliable event to report text 
-	 * changes that supports bubbling. 
+	 * changes that also supports bubbling. 
 	 * 
 	 * @example Creates a handler that writes the input's content into a text node:
 	 * <pre>
@@ -6835,7 +6837,8 @@ define('minified', function() {
 		 * 
 		 * The function's signature is <code>function(list, name)</code> where
 		 * <dl><dt>list</dt><dd>Is the Minified list to get the value from. By convention you should always use only the first element. The list is
-		 *                      never empty (get() automatically returns <var>undefined</var> in this case).</dd>
+		 *                      non-empty and the first elememt can't be null or undefined (get() automatically returns <var>undefined</var> in 
+		 *                      all other case).</dd>
 		 *     <dt>name</dt><dd>The name of the property. That's the part AFTER the prefix.</dd>
 		 *     <dt class="returnValue">(callback return value)</dt><dd>The value to return to the user.</dd></dl>
 		 * 
