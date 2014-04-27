@@ -217,6 +217,14 @@ describe('minified-web-selector-test.js', function() {
 		it('takes the first element of a list', function() {
 			check(/^div$/i.test($$("div").tagName));
 		});
+		it('supports contexts', function() {
+			check($$("#a", "#container") === document.getElementById("a"));
+			check($$(".y", "#c") === document.getElementById("c_a"));
+		});
+		it('supports the child-only parameter', function() {
+   			check($$("div", "#c", true) === document.getElementById("c_a"), true);
+		});
+
 	});
 
 	

@@ -504,8 +504,8 @@ define('minified', function() {
 			setTimeout(handler, 0);
 	}
 
-	function $$(selector) {
-		return dollarRaw(selector)[0];
+	function $$(selector, context, childrenOnly) {
+		return dollarRaw(selector, context, childrenOnly)[0];
 	}
 
 	function EE(elementName, attributes, children) {
@@ -3738,7 +3738,9 @@ define('minified', function() {
 		 * @requires 
 		 * @configurable default
 		 * @name $$()
-		 * @syntax $$(selector)
+		 * @syntax $(selector)
+		 * @syntax $(selector, context)
+		 * @syntax $(selector, context, childOnly)
 		 * @shortcut $$() - It is recommended that you assign MINI.$$ to a variable $$.
 	 	 * @module WEB
 		 * Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found. 
@@ -3755,8 +3757,13 @@ define('minified', function() {
 		 * $$('#myCheckbox').checked = true;
 		 * </pre>
 		 * 
-		 * @param selector a simple, CSS-like selector for the element. Uses the full syntax described in #dollar#$(). The most common
+		 * @param selector a simple, CSS-like selector for the element. Uses the same syntax as #dollar#$(). The most common
 		 *                 parameter for this function is the id selector with the syntax "#id".
+		 * @param context optional an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection. The context can be specified as
+		 *             a selector, a list or using a single object, just like the first argument.
+		 *             The returned list will contain only descendants of the context nodes. All others will be filtered out. 
+		 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
+		 *             true, all descendants of the context will be included. 
 		 * @return a DOM object of the first match, or <var>undefined</var> if the selector did not return at least one match
 		 * 
 		 * @see ##dollar#$()## creates a list using the selector, instead of returning only the first result.
