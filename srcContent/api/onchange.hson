@@ -47,7 +47,9 @@ called in realtime and does not wait for the focus to change. Text fields, text 
 as checkboxes and radio buttons are supported. The handler is called with the new value as first argument.
 For selects the value is the first selected item, but the function will be called for every change.
 The value is boolean for checkbox/radio buttons and a string for all other types.</p><p>Please note that the handler may be called on the user's first interaction even without an actual content change. After that,
-the handler will only be called when the content actually changed.</p><p></p></div>
+the handler will only be called when the content actually changed.</p><p>On legacy IE platforms, <span class="var">onChange</span> tries to report every change as soon as possible. When used with bubbling selector,
+some text changes may not be reported before the input loses focus. This is because there is no reliable event to report text
+changes that also supports bubbling.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

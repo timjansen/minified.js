@@ -1060,7 +1060,6 @@ define('minified', function() {
 		return this['trav']('nextSibling', selector, maxSiblings||1);
 	},
 
-
 	
 	/*$
  	 * @id up
@@ -1147,7 +1146,7 @@ define('minified', function() {
 	'select': function(selector, childOnly) {
 		return $(selector, this, childOnly);
 	},
-		
+	
  	/*$
  	 * @id is
  	 * @group SELECTORS

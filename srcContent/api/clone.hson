@@ -26,8 +26,8 @@
 <div class="description"><p>Clones all HTML nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
 and everything else will be removed. Nested lists will be automatically flattened. Objects other than nodes, strings or lists
 will be removed.</p><p><span class="var">clone()</span> uses the browser's <span class="var">cloneNode()</span> function to clone HTML internally, but will remove the ids from
-all top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
-The ids of child elements will removed.</p><p>Please note that event handlers will not be cloned.</p><p></p></div>
+all HTML top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
+The ids of child elements will removed.</p><p>Please note that clone() does work with SVG, but will not remove ids from SVG.</p><p>Please note that event handlers will not be cloned.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

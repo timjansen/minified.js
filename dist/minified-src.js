@@ -2253,7 +2253,7 @@ define('minified', function() {
 	 * This method is identical to Array's built-in <var>join()</var> method and also uses it internally.
 	 *
 	 * @example Join a few string:
-	 * <pre>var sorted = _('Harry', 'Bert', 'Tom', 'Bo').join(', '); // returns 'Harry, Bert, Tom, Bo'</pre>
+	 * <pre>var joined = _('Harry', 'Bert', 'Tom', 'Bo').join(', '); // returns 'Harry, Bert, Tom, Bo'</pre>
 	 *
 	 * @param separator optional a separator to put between the joined strings. If omitted, the string "," (comma) will be used.
 	 * @param otherList The other list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 

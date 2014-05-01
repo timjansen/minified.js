@@ -22,7 +22,8 @@ Exposes a map of prefix handlers used by <code><a href='get.html' class='func'>g
 by adding a function to this map. The prefix can be any string consisting solely of non-alphanumeric characters
 that's not already used by Minified.</p><p>You must not replace <span class="var">getters</span> by a new map, but must always modify the existing map.</p><p>The function's signature is <code>function(list, name)</code> where
 <dl><dt>list</dt><dd>Is the Minified list to get the value from. By convention you should always use only the first element. The list is
-                     never empty (get() automatically returns <span class="var">undefined</span> in this case).</dd>
+                     non-empty and the first elememt can't be null or undefined (get() automatically returns <span class="var">undefined</span> in
+                     all other case).</dd>
     <dt>name</dt><dd>The name of the property. That's the part AFTER the prefix.</dd>
     <dt class="returnValue">(callback return value)</dt><dd>The value to return to the user.</dd></dl></p><p></p></div>
 
