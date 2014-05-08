@@ -2828,8 +2828,8 @@ define('minified', function() {
 	 */
 	'onFocus': function(selector, handler, bubbleSelector) {
 		if (isFunction(handler))
-			return this['on'](selector, '|blur', handler, [false])
-					   ['on'](selector, '|focus', handler, [true]);
+			return this['on'](selector, '|blur', handler, [false], bubbleSelector)
+					   ['on'](selector, '|focus', handler, [true], bubbleSelector);
 		else
 			return this['onFocus'](_null, selector, handler);
 	},

@@ -75,6 +75,7 @@
 		$('#changingText, #changingCheckbox, #changingSelect, #changingTextarea').onChange(changeHandler);
 		
 		$('#bubbleInputContainer').onChange(changeHandler, 'input');
+		$('#bubbleInputFocusContainer').onFocus(changeHandler, 'input');
 		$('#bubbleButtonContainer').onClick(function() {
 			if (!this.is('button'))
 				alert('Wrong value in "this".')
@@ -84,6 +85,7 @@
 		}, 'button');
 
 		$('#bubbleInputContainer').fill([EE('input', {value: 'bubbled input'}), EE('span', '0')]);
+		$('#bubbleInputFocusContainer').fill([EE('input', {value: 'bubbling focus'}), EE('span', '0')]);
 		$('#bubbleButtonContainer').fill([EE('button', 'Bubbling Click'), EE('span', '0')]);
 		
 		
@@ -125,6 +127,7 @@
 				<div><select id="changingSelect"><option>A</option><option>B</option><option>C</option></select> <span>0</span> </div>
 				<div><textarea id="changingTextarea" rows="1" cols="10">Change me</textarea> <span>0</span></div>
 				<div id="bubbleInputContainer"></div>
+				<div id="bubbleInputFocusContainer"></div>
 				<div id="bubbleButtonContainer"></div>
 				<span class="desc">onChange()/onFocus() test of input field, select and checkbox</span>
 			</div>
