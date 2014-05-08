@@ -410,17 +410,15 @@ define('minified', function() {
 	function clone(listOrNode) {
 		return collector(flexiEach, listOrNode, function(e) {
 			var c;
-		     if (isString(e))
-		    	 return e;
-		     else if (isList(e))
-		    	 return clone(e);
-		     else if (isNode(e)) {
-		    	 c = e['cloneNode'](true); 
-		    	 c['removeAttribute'] && c['removeAttribute']('id');
-		    	 return c;
-		     }
-		     else
-		    	 return _null;
+			if (isList(e))
+				return clone(e);
+			else if (isNode(e)) {
+				c = e['cloneNode'](true); 
+				c['removeAttribute'] && c['removeAttribute']('id');
+				return c;
+			}
+		    else
+		    	return e;
 		});
    }
 
@@ -2030,9 +2028,8 @@ define('minified', function() {
 	 * @name .clone()
 	 * @syntax list.clone()
  	 * @module WEB
-	 * Clones all HTML nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
-	 * and everything else will be removed. Nested lists will be automatically flattened. Objects other than nodes, strings or lists
-	 * will be removed.
+	 * Clones all HTML nodes in the given list by creating a deep copy of them. Nested lists will be automatically flattened. 
+	 * Everything else will be copied as-is into the new list.
 	 *
 	 * <var>clone()</var> uses the browser's <var>cloneNode()</var> function to clone HTML internally, but will remove the ids from
 	 * all HTML top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
