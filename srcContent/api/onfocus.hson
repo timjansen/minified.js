@@ -28,6 +28,11 @@ Supports all valid parameters for <span class="var">$()</span> except functions.
 <dt>hasFocus</dt><dd><span class="var">true</span> if an element gets the focus, <span class="var">false</span> when an element looses it.</dd>
 <dt class="this">this</dt><dd>A <a href='list.html' class='func'>Minified list</a> containing the target element that caused the event as only item.</dd>
 </dl></dd>
+<dt id="onfocus_bubbleSelector" class=""><a name="onfocus_bubbleSelector"><var>bubbleSelector (optional)</var></a></dt>
+<dd class="">a selector string for <a href='dollar.html' class='func'>$()</a> to receive only events that bubbled up from an
+element that matches this selector.
+Supports all valid parameters for <span class="var">$()</span> except functions. Analog to <code><a href='is.html' class='func'>is()</a></code>,
+the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.</dd>
 <dt id="onfocus_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="onfocus_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1">the list</dd>
 </dl>

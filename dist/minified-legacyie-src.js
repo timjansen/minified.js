@@ -936,7 +936,7 @@ define('minified', function() {
 			if (match && 
 			   (stop = (((!handler.apply($(selectorFilter ? el : registeredOn), args || [e, index])) || prefix=='') && prefix != '|')) && 
 			   !triggerOriginalTarget) {
-				if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
+				if (e['preventDefault']) {// W3C DOM3 event cancelling available?
 					e['preventDefault']();
 					e['stopPropagation']();
 				}
@@ -956,19 +956,21 @@ define('minified', function() {
 				flexiEach(subSelector ? dollarRaw(subSelector, baseElement) : baseElement, function(el) {
 					flexiEach(toString(eventSpec).split(/\s/), function(namePrefixed) {
 						var name = replace(namePrefixed, /[?|]/);
+						var capture = !!bubbleSelector && (name == 'blur' || name == 'focus'); // bubble selectors for 'blur' and 'focus' registered as capuring!
 						var miniHandler = createEventHandler(handler, el, args,	index, replace(namePrefixed, /[^?|]/g), bubbleSelector && getFilterFunc(bubbleSelector, el));
 
 						var handlerDescriptor = {element: el,          
 								                 handlerFunc: miniHandler, 
-								                 eventType: name
+								                 eventType: name,
+								                 capture: capture
 								                };
 						push(handler, 'M', handlerDescriptor);
 						if (IS_PRE_IE9) {
-							el.attachEvent('on'+name, miniHandler);  // IE < 9 version
+							el.attachEvent('on'+handlerDescriptor.eventType + (capture ? 'in' : ''), miniHandler);  // IE < 9 version
 							push(registeredEvents, getNodeId(el), handlerDescriptor);
 						}
 						else {
-							el.addEventListener(name, miniHandler, false); // W3C DOM
+							el.addEventListener(name, miniHandler, capture); // W3C DOM
 							push(el, 'M', handlerDescriptor);
 						}
 					});
@@ -982,15 +984,16 @@ define('minified', function() {
 
 
 
+
 	// @condblock ie8compatibility 
 	function off(handler) {
 	   	flexiEach(handler['M'], function(h) {
 			if (IS_PRE_IE9) {
-				h.element.detachEvent('on'+h.eventType, h.handlerFunc);  // IE < 9 version
+				h.element.detachEvent('on'+h.eventType + (h.capture ? 'in' : ''), h.handlerFunc);  // IE < 9 version
 				removeFromArray(registeredEvents[h.element[MINIFIED_MAGIC_NODEID]], h);
 			}
 			else {
-				h.element.removeEventListener(h.eventType, h.handlerFunc, false); // W3C DOM
+				h.element.removeEventListener(h.eventType, h.handlerFunc, h.capture); // W3C DOM
 				removeFromArray(h.element['M'], h);
 			}
 		});
@@ -999,7 +1002,7 @@ define('minified', function() {
 	// @condend ie8compatibility 
 
 
-	// for remove & window.unload
+	// for remove & window.unload, IE only
 	function detachHandlerList(dummy, handlerList) {
 		flexiEach(handlerList, function(h) {
 			h.element.detachEvent('on'+h.eventType, h.handlerFunc);
@@ -4476,15 +4479,19 @@ define('minified', function() {
  	 *             <dt>hasFocus</dt><dd><var>true</var> if an element gets the focus, <var>false</var> when an element looses it.</dd>
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>      
+	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
+	 *                element that matches this selector.
+	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onFocus': function(selector, handler) {
+	'onFocus': function(selector, handler, bubbleSelector) {
 		if (isFunction(handler))
 			return this['on'](selector, '|blur', handler, [false])
 					   ['on'](selector, '|focus', handler, [true]);
 		else
-			return this['onFocus'](_null, selector);
+			return this['onFocus'](_null, selector, handler);
 	},
 
 	/*$
@@ -4660,9 +4667,8 @@ define('minified', function() {
 	 */
 	'trigger': function (eventName, eventObj) {
 		return this['each'](function(element, index) {
-			var stopBubble, el = element;
-
 			// @condblock ie8compatibility 
+			var stopBubble, el = element;
 			while(el && !stopBubble) {
 				flexiEach(
 						IS_PRE_IE9 ? registeredEvents[el[MINIFIED_MAGIC_NODEID]] :
@@ -4673,9 +4679,10 @@ define('minified', function() {
 				el = el['parentNode'];
 			}
 			//@condend
-			// @cond !ie8compatibility while(el && !stopBubble) {
+			// @cond !ie8compatibility var bubbleOn = true, el = element;
+			// @cond !ie8compatibility while(el && bubbleOn) {
 			// @cond !ie8compatibility 	eachObj(el['M'], function(id, f) {
-			// @cond !ie8compatibility 		stopBubble = stopBubble || f(eventName, eventObj, element); 
+			// @cond !ie8compatibility 		bubbleOn = bubbleOn && f(eventName, eventObj, element); 
 			// @cond !ie8compatibility 	});
 			// @cond !ie8compatibility 	el = el['parentNode'];
 			// @cond !ie8compatibility }
@@ -4904,7 +4911,7 @@ define('minified', function() {
 		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data && (data['constructor'] == settings['constructor']);
 		try {
 			//@condblock ie6compatibility
-			prom['xhr'] = xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
+			prom['xhr'] = xhr = (_window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0"));
 			//@condend
 			// @cond !ie6compatibility prom['xhr'] = xhr = new XMLHttpRequest();
 

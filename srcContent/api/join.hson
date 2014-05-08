@@ -34,7 +34,7 @@ This method is identical to Array's built-in <span class="var">join()</span> met
 <div class="examples">
 <h4>Example</h4>
 <div class="example"><p>Join a few string:
-<pre>var sorted = _('Harry', 'Bert', 'Tom', 'Bo').join(', '); // returns 'Harry, Bert, Tom, Bo'</pre>
+<pre>var joined = _('Harry', 'Bert', 'Tom', 'Bo').join(', '); // returns 'Harry, Bert, Tom, Bo'</pre>
 </p></div>
 </div>
 

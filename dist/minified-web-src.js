@@ -335,38 +335,41 @@ define('minified', function() {
 			return this['each'](function(baseElement, index) {
 				flexiEach(subSelector ? dollarRaw(subSelector, baseElement) : baseElement, function(registeredOn) {
 					flexiEach(toString(eventSpec).split(/\s/), function(namePrefixed) {
-						var name = replace(namePrefixed, /[?|]/);
+						var name = replace(namePrefixed, /[?|]/g);
 						var prefix = replace(namePrefixed, /[^?|]/g);
+						var capture = (name == 'blur' || name == 'focus') && !!bubbleSelector; // bubble selectors for 'blur' and 'focus' registered as capuring!
+						var triggerId = idSequence++;
 
-						var miniHandler = function(event, triggerOriginalTarget) {
-							var stop;
+						// returns true if processing should be continued
+						function triggerHandler(eventName, event, target) {
 							var match = !bubbleSelector;
-							var el = bubbleSelector ? (triggerOriginalTarget || event['target']) : registeredOn;
+							var el = bubbleSelector ? target : registeredOn;
 							if (bubbleSelector) {
 								var selectorFilter = getFilterFunc(bubbleSelector, registeredOn);
 								while (el && el != registeredOn && !(match = selectorFilter(el)))
 									el = el['parentNode'];
 							}
-							if (match && (stop = (((!handler.apply($(el), args || [event, index])) || prefix=='') && prefix != '|')) && !triggerOriginalTarget) {
+							return (name != eventName) || (match && ((handler.apply($(el), args || [event, index]) && prefix=='?') || prefix == '|'));
+						};
+
+						function miniHandler(event) {
+							if (!triggerHandler(name, event, event['target'])) {
 								event['preventDefault']();
 								event['stopPropagation']();
 							}
-							return !stop;
 						};
 
-						var triggerId = idSequence++;
+						registeredOn.addEventListener(name, miniHandler, capture);
 
-						registeredOn['M'] = registeredOn['M'] || {};
-						registeredOn['M'][triggerId] = function(eventName, eventObj, element) { // this function will be called by trigger()
-							return (name == eventName) && !miniHandler(eventObj, element);
-						};
+						if (!registeredOn['M']) 
+							registeredOn['M'] = {};
+						registeredOn['M'][triggerId] = triggerHandler;                  // to be called by trigger()
 
 						handler['M'] = collector(flexiEach, [handler['M'], function () { // this function will be called by off()
-							registeredOn.removeEventListener(name, miniHandler, false);
+							registeredOn.removeEventListener(name, miniHandler, capture);
 							delete registeredOn['M'][triggerId];
 						}], nonOp);
 
-						registeredOn.addEventListener(name, miniHandler, false);
 					});
 				});
 			});
@@ -381,7 +384,7 @@ define('minified', function() {
 	}
 	// @condend !ie8compatibility 
 
-	// for remove & window.unload
+	// for remove & window.unload, IE only
 	function detachHandlerList(dummy, handlerList) {
 		flexiEach(handlerList, function(h) {
 			h.element.detachEvent('on'+h.eventType, h.handlerFunc);
@@ -2698,15 +2701,19 @@ define('minified', function() {
  	 *             <dt>hasFocus</dt><dd><var>true</var> if an element gets the focus, <var>false</var> when an element looses it.</dd>
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>      
+	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
+	 *                element that matches this selector.
+	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onFocus': function(selector, handler) {
+	'onFocus': function(selector, handler, bubbleSelector) {
 		if (isFunction(handler))
 			return this['on'](selector, '|blur', handler, [false])
 					   ['on'](selector, '|focus', handler, [true]);
 		else
-			return this['onFocus'](_null, selector);
+			return this['onFocus'](_null, selector, handler);
 	},
 
 	/*$
@@ -2867,11 +2874,10 @@ define('minified', function() {
 	 */
 	'trigger': function (eventName, eventObj) {
 		return this['each'](function(element, index) {
-			var stopBubble, el = element;
-
-			while(el && !stopBubble) {
+			var bubbleOn = true, el = element;
+			while(el && bubbleOn) {
 			eachObj(el['M'], function(id, f) {
-			stopBubble = stopBubble || f(eventName, eventObj, element); 
+			bubbleOn = bubbleOn && f(eventName, eventObj, element); 
 			});
 			el = el['parentNode'];
 			}
