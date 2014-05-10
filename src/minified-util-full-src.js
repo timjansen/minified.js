@@ -538,10 +538,10 @@ define('minified', function() {
 			}
 			else if (/[Nna]/.test(placeholderChar)) {
 				indexMap[reIndex++] = [placeholderChar, param && param.split(',')];
-				return "([a-zA-Z\x80Ð\u1fff]+)"; 
+				return "([a-zA-Z\\u0080-\\u1fff]+)";
 			}
 			else if (/w/i.test(placeholderChar))
-				return "[a-zA-Z\x80Ð\u1fff]+";
+			    return "[a-zA-Z\\u0080-\\u1fff]+";
 			else if (/\s/.test(placeholderChar))
 				return "\\s+"; 
 			else 

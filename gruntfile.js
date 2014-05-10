@@ -76,7 +76,7 @@ module.exports = function(grunt) {
 		      },
 		      files: {
 		    	  'src/minified-generated-full-src.js': ['src/minified-master.js', 
-		    	                                         'src/minified-web-full-src.js', 
+		    	                                         'src/minified-web-full-src.js', // the last three are only listed to check modification time
 		    	                                         'src/minified-util-full-src.js',
 		    	                                         'src/minified-extras-full-src.js']
 		      }

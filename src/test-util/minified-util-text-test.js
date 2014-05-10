@@ -282,7 +282,7 @@ function runTests(loadInContext) {
 			assert(_.equals(_.parseDate("?y,M,d,h,m,s,S,a[AMM,PAM]", "2011,12,6,1,30,10,501,PAM"), d));
 			assert(_.equals(_.parseDate("y,M,d,h,m,s,a[AMM,PAM]", "2013,1,5,2,0,0,AMM"), d2));
 
-			assert(_.equals(_.parseDate("yyyy-N[J1M,M2M,M3M,M4M,M5M,M6M,M7M,M8M,M9M,M10M,M11M,Dšc]-dd", "2011-Dšc-06"), d0)); // non-ASCII
+			assert(_.equals(_.parseDate("yyyy-N[J1M,M2M,M3M,M4M,M5M,M6M,M7M,M8M,M9M,M10M,M11M,D\u00d6c]-dd", "2011-D\u00d6c-06"), d0)); // non-ASCII
 			assert(_.equals(_.parseDate("yyyynddhhmmssa", "2013Jan05020000AM"), d2)); 
 		});
 		it('handles timezones', function() {

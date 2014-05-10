@@ -3228,7 +3228,7 @@ define('minified', function() {
 		if (value == _null)
 			return ""+value;                  //result: "null"; toString(value) is not possible, because it returns an empty string for null
 		if (isString(value = value.valueOf()))
-			return '"' + replace(value, /[\\\"\x00-\x1f\x22\x5c\u2028\u2029]/g, ucode) + '"' ;
+			return '"' + replace(value, /[\\\"\x00-\x1f\u2028\u2029]/g, ucode) + '"' ;
 		if (isList(value)) 
 			return '[' + collector(flexiEach, value, toJSON).join() + ']';
 		if (isObject(value))

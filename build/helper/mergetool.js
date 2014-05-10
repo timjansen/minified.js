@@ -19,13 +19,14 @@
 
 var _ = require('minified-headless');
 
-
-function merge(src, readFile) {
+var log;
+function merge(src, readFile, logg) {
+log = logg;
 	var inRemove = false;
 	var fileCache = {}; // fileName -> snippetName -> [lineArray]
 	var match;
 	
-	return _.collect(src.split('\n'), function(line) {
+var cc = _.collect(src.split('\n'), function(line) {
 		if (inRemove) {
 			if (/^\s*\/\/+\s*#\/remove\b/.test(line))
 				inRemove = false;
@@ -40,7 +41,18 @@ function merge(src, readFile) {
 		else
 			return line;
 	
-	}).join('\n');
+	});
+	
+cc.each(function(line) {
+	if (/x80/.test(line)) {
+		var mmm = /0080(.)/.exec(line);
+		log('line out: ', line, mmm[1], mmm[1].charCodeAt(0));
+		}
+});
+var oo = cc.join('\n');
+
+return oo;
+	
 }
 
 function parseIncludeFile(src) {
@@ -61,6 +73,9 @@ function parseIncludeFile(src) {
 				inSnippet = null;
 				currentSnippet = [];
 			}
+if (/0080/.test(line)) {
+log('line in: ', line);
+}
 		}
 		else if (match = /^\s*\/\/+\s*#snippet\s+(\w+)\b/.exec(line)) {
 			inSnippet = match[1];

@@ -70,7 +70,7 @@ module.exports = function(grunt) {
 			}
 			
 			try {
-				var merged = mergetool.merge(src, function(name) { return grunt.file.read(srcDir + name); } );
+				var merged = mergetool.merge(src, function(name) { return grunt.file.read(srcDir + name); } , function(l1, l2, l3, l4) {grunt.verbose.writeln(l1, l2, l3, l4); });
 				grunt.file.write(destPath, options.prolog + merged);
 			}
 			catch(e) {
