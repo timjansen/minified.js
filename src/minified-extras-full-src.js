@@ -512,6 +512,7 @@ function dummy() {
 	
 	copyObj({
 		///#snippet extrasDollarFuncs
+
 		/*$
 		 * @id setcookie
 		 * @group COOKIE

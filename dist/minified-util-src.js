@@ -1,6 +1,6 @@
 /*
  * Minified-util.js - Collections, formatting and other helpers.
- * Version: 2014.0.0-beta5.0
+ * Version: 2014.0.0-beta6.0
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -636,7 +636,7 @@ module.exports = (function() {
 		return replace(s, /[\x00-\x1f'"\u2028\u2029]/g, ucode);
 	}
 
-	// reimplemented split for IE<=8
+	// reimplemented split for IE8
 	function split(str, regexp) {
 		// @condblock ie8compatibility
 		var start = 0;

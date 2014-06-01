@@ -25,11 +25,11 @@ main:{ template:`<div>
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">Minified is smaller!</h3>
-  		Minified is smaller than 8kB. The Web module with its jQuery-like feature set is even under 4kB, <a href="#sizeCmp">a fraction of other libraries' size</a>. 
+  		Minified weighs less than 8kB. The Web module with its jQuery-like feature set is even under 4kB, <a href="#sizeCmp">a fraction of other libraries' size</a>. 
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">
   		<h3 class="nonInverted" style="margin-top: 0;">More features!</h3>
-  		Minified has a consistent API that fulfills all your basic needs - no need to include one library for DOM manipulation and events, another
+  		Minified has a powerful API that offers much more than similar libraries - no need to include one library for DOM manipulation and events, another
   		one for handling dates and a third library for templates. 
   	</div>
   	<div style="float: left; width: 18%; padding-top: 0.5em; padding-right: 3em;">

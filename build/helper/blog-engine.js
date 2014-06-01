@@ -30,50 +30,52 @@ var defaultOptions = {
 		rssFileName: 'rss20.xml',
 		pageTemplateDefaults: {section: 'blog', externalCss: ['/css/blog.css'], rssFeed: 'http://localhost:8080/blog/rss20.xml'},
 		timestampFormat: 'yyyy-MM-dd HH:mm',
-		entryHtmlTemplate: '<div>'+
-			'{{if instr.nav}}<div class="nav">{{if entry.prevEntry}}<a href="{{entry.prevEntry.url}}">{{entry.prevEntry.title}}</a> | {{/if}}'+
-			'<a href="{{opts.urlBase}}">Main</a>'+
-			'{{if entry.nextEntry}} | <a href="{{entry.nextEntry.url}}">{{entry.nextEntry.title}}</a>{{/if}}</div>{{/if}}\n'+
-			'<h2>{{entry.title}}</h2>\n'+
-			'<div class="entry">{{{entry.html}}}</div>\n'+
-			'<div class="entryFooter">'+
-			'<div>Posted by {{entry.author}} on {{entry.timestamp::N d, yyyy}} - <a href="{{entry.url}}">Permalink</a> - '+
-			'<a href="{{entry.url}}{{opts.commentRef}}">Comments</a></div>'+
-		    '</div>'+
-		    '{{if instr.rss}}<div class="rss"><a href="{{opts.urlBase}}{{opts.rssFileName}}">subscribe to this blog&apos;s feed</a></div>{{/if}}'+
-		    '</div>\n',
-			indexHtmlTemplate: '<div>'+
-			'{{each entries}}{{{opts.entryHtmlTemplate({entry: this, opts: opts, instr: {} })}}}{{/each}}\n'+
-			'<div class="nav">{{if index}}<a href="{{opts.indexFileNameTemplate({index:index-1})}}">previous</a> | '+
-			'<a href="{{opts.indexFileNameTemplate({index:0})}}">Main</a> | {{/if}}'+
-			'{{if index+1 < pageNum}}<a href="{{opts.indexFileNameTemplate({index:index+1})}}">next</a>{{/if}}'+
-		    '</div>'+
-		    '<div class="rss"><a href="{{opts.urlBase}}{{opts.rssFileName}}">subscribe to this blog&apos;s feed</a></div>'+
-		    '<div class="archive">Archive: {{each aYear, aIndex: _.keys(yearEntries).sort()}}'+
-		          '{{if aIndex}} - {{/if}}<a href="{{opts.archiveFileNameTemplate({year:aYear})}}">{{aYear}}</a>'+
-		    '{{/each}}</div>'+
-		    '</div>\n',
-			archiveHtmlTemplate: '<div>\n'+
-			'<h2>Archive: {{year}}</h2>\n'+
-			'{{each entries}}{{{opts.entryHtmlTemplate({entry: this, opts: opts, instr: {} })}}}{{/each}}\n'+
-			'<div class="nav"><a href="{{opts.urlBase}}">Main</a></div>'+
-		    '<div class="archive">Archive: {{each aYear, aIndex: _.keys(yearEntries).sort()}}'+
+		entryHtmlTemplate: '{{if instr.nav}}<div class="nav">{{if entry.prevEntry}}<a href="{{entry.prevEntry.url}}">{{entry.prevEntry.title}}</a> | {{/if}}'+
+		'<a href="{{opts.urlBase}}">Main</a>'+
+		'{{if entry.nextEntry}} | <a href="{{entry.nextEntry.url}}">{{entry.nextEntry.title}}</a>{{/if}}</div>{{/if}}\n'+
+		'<h2 class="title">{{entry.title}}</h2>\n'+
+		'<div class="entry">{{{entry.html}}}</div>\n'+
+		'<div class="entryFooter">'+
+		'<div>Posted by {{entry.author}} on {{entry.timestamp::N d, yyyy}} - <a href="{{entry.url}}">Permalink</a> - '+
+		'<a href="{{entry.url}}{{opts.commentRef}}">Comments</a></div>'+
+	    '</div>'+
+	    '{{if instr.rss}}<div class="rss"><a href="{{opts.urlBase}}{{opts.rssFileName}}">subscribe to this blog&apos;s feed</a></div>{{/if}}'+
+	    '\n',
+	    singleEntryHtmlTemplate: '<div class="single">'+
+	    '{{{opts.entryHtmlTemplate({entry: entry, opts: opts, instr: instr })}}}'+
+	    '</div>\n',
+		indexHtmlTemplate: '<div class="index">'+
+		'{{each entries}}{{{opts.entryHtmlTemplate({entry: this, opts: opts, instr: {} })}}}{{/each}}\n'+
+		'<div class="nav">{{if index}}<a href="{{opts.indexFileNameTemplate({index:index-1})}}">previous</a> | '+
+		'<a href="{{opts.indexFileNameTemplate({index:0})}}">Main</a> | {{/if}}'+
+		'{{if index+1 < pageNum}}<a href="{{opts.indexFileNameTemplate({index:index+1})}}">next</a>{{/if}}'+
+	    '</div>'+
+	    '<div class="rss"><a href="{{opts.urlBase}}{{opts.rssFileName}}">subscribe to this blog&apos;s feed</a></div>'+
+	    '<div class="archive">Archive: {{each aYear, aIndex: _.keys(yearEntries).sort()}}'+
 	          '{{if aIndex}} - {{/if}}<a href="{{opts.archiveFileNameTemplate({year:aYear})}}">{{aYear}}</a>'+
-	        '{{/each}}</div>'+
-			'</div>',
-			rssXmlTemplate: '<rss version="2.0"><channel>\n'+
-			'<title>{{opts.blogTitle}}</title>\n'+
-			'<link>{{opts.urlBase}}</link>\n'+
-			'<language>en-us</language>\n'+
-			'<pubDate>{{entries[0].timestamp :: [+0000]w, dd n yyyy HH:mm:ss}} GMT</pubDate>\n'+
-			'<lastBuildDate>{{new Date() :: [+0000]w, dd n yyyy HH:mm:ss}} GMT</lastBuildDate>\n'+
-			'<docs>http://blogs.law.harvard.edu/tech/rss</docs>\n'+
-			'<generator>Minified Homebrewn Feed</generator>\n'+
-			'<managingEditor>tim@tjansen.de</managingEditor>\n'+
-			'<webMaster>tim@tjansen.de</webMaster>\n'+
-			'{{each entries}}  <item><title>{{this.title}}</title><link>{{this.url}}</link><description>{{this.desc}}</description>'+
-			  '<pubDate>{{this.timestamp :: [+0000]w, dd n yyyy HH:mm:ss}} GMT</pubDate></item>{{/each}}\n\n'+
-			'</channel></rss>\n'
+	    '{{/each}}</div>'+
+	    '</div>\n',
+		archiveHtmlTemplate: '<div class="archive">\n'+
+		'<h1>Archive: {{year}}</h1>\n'+
+		'{{each entries}}{{{opts.entryHtmlTemplate({entry: this, opts: opts, instr: {} })}}}{{/each}}\n'+
+		'<div class="nav"><a href="{{opts.urlBase}}">Main</a></div>'+
+	    '<div class="archive">Archive: {{each aYear, aIndex: _.keys(yearEntries).sort()}}'+
+          '{{if aIndex}} - {{/if}}<a href="../{{opts.archiveFileNameTemplate({year:aYear})}}">{{aYear}}</a>'+
+        '{{/each}}</div>'+
+		'</div>',
+		rssXmlTemplate: '<rss version="2.0"><channel>\n'+
+		'<title>{{opts.blogTitle}}</title>\n'+
+		'<link>{{opts.urlBase}}</link>\n'+
+		'<language>en-us</language>\n'+
+		'<pubDate>{{entries[0].timestamp :: [+0000]w, dd n yyyy HH:mm:ss}} GMT</pubDate>\n'+
+		'<lastBuildDate>{{new Date() :: [+0000]w, dd n yyyy HH:mm:ss}} GMT</lastBuildDate>\n'+
+		'<docs>http://blogs.law.harvard.edu/tech/rss</docs>\n'+
+		'<generator>Minified Homebrewn Feed</generator>\n'+
+		'<managingEditor>tim@tjansen.de</managingEditor>\n'+
+		'<webMaster>tim@tjansen.de</webMaster>\n'+
+		'{{each entries}}  <item><title>{{this.title}}</title><link>{{this.url}}</link><description>{{this.desc}}</description>'+
+		  '<pubDate>{{this.timestamp :: [+0000]w, dd n yyyy HH:mm:ss}} GMT</pubDate></item>{{/each}}\n\n'+
+		'</channel></rss>\n'
 };
 
 function createPath() {
@@ -98,12 +100,12 @@ function parseEntry(file, prevEntry, opts) {
 	entry.fileName = opts.entryFileNameTemplate(entry);
 	entry.url = opts.urlBase + entry.fileName;
 	entry.prevEntry = prevEntry;
+	if (prevEntry)
+		prevEntry.nextEntry = entry;
 	if (entry.markdown)
 		entry.html = markdown.toHTML(entry.markdown);
 	else
 		entry.html = '<p>'+entry.html+'</p>';
-	if (prevEntry)
-		prevEntry.nextEntry = entry;
 
 	return entry;
 }
@@ -113,7 +115,7 @@ function createEntryPage(entry, htmlTemplatePath, fileWriter, opts) {
 	var obj = _.extend({
 		title: opts.pageTitleTemplate(entry),
 		commentId: opts.commentIdTemplate(entry),
-		main: opts.entryHtmlTemplate({entry: entry, opts: opts, instr: {nav: 1, rss: 1}})
+		main: opts.singleEntryHtmlTemplate({entry: entry, opts: opts, instr: {nav: 1, rss: 1}})
 	}, opts.pageTemplateDefaults);
 	
 	fileWriter(entry.fileName, minitemplate.process(htmlTemplatePath, obj));
@@ -144,23 +146,22 @@ function createRssPage(entryList, htmlTemplatePath, fileWriter, opts) {
 
 exports.process = function(entryFiles, htmlTemplatePath, fileWriter, options) {
 	var opts = _.extend({}, defaultOptions, options);
-	_.eachObj(opts, function(key, val) {
+	_.eachObj(opts, function(key, val) { // compile all templates
 		if (/Template$/.test(key) && !_.isFunction(val))
 			opts[key] = _.template(val, /(Ht|X)mlTemplate$/.test(key) ? _.escapeHtml : null);
 	});
 
 	var entryFilesSorted = _.reverse(entryFiles.sort());
 	
-	var nextEntry = parseEntry(entryFilesSorted[0], null, opts);
 	var prevEntry = null;
-	
 	var entries = _.map(entryFilesSorted, function(entryFile, index) {
-		var entry = nextEntry;
-		nextEntry = parseEntry(entryFilesSorted[index+1], prevEntry, opts);
+		var entry = parseEntry(entryFile, prevEntry, opts);
 		prevEntry = entry;
-
-		createEntryPage(entry, htmlTemplatePath, fileWriter, opts);
 		return entry;
+	});
+
+	entries.each(function(entry) {
+		createEntryPage(entry, htmlTemplatePath, fileWriter, opts);
 	});
 
 	var yearEntries = {}; // year -> []

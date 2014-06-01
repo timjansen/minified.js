@@ -1,16 +1,32 @@
 
 .nav {
-	
+	text-align: center;
+	font-size: smaller;
+	margin-top: 2em;
+	margin-bottom: 0.5em;
 }
 
-.entry {
-	
+.single h2.title {
+	margin-top: 0;
+}
+
+.entry p {
+	margin-bottom: 2px;
 }
 
 .entryFooter {
-	
+	font-size: smaller;
+	background-color: #eee;
+	color: #333;
+	padding: 4px;
+	margin-top: 0.25em;
 }
 
 .rss {
-	
+	text-align: center; 
+	font-size: smaller;
+}
+
+.archive {
+	margin-top: 3em;
 }

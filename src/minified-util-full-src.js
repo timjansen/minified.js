@@ -645,7 +645,7 @@ define('minified', function() {
 		return replace(s, /[\x00-\x1f'"\u2028\u2029]/g, ucode);
 	}
 
-	// reimplemented split for IE<=8
+	// reimplemented split for IE8
 	function split(str, regexp) {
 		// @condblock ie8compatibility
 		var start = 0;
