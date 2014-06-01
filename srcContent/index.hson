@@ -59,14 +59,9 @@ main:{ template:`<div>
   </div>
 
 <h2 style="margin-top: 1em">News</h2>
- <div class="newsItem"><strong>March 28, 2014</strong>: <a href="/docs/beta5.html">Beta 5 released</a></div>
- <div class="newsItem"><strong>March 9, 2014</strong>: <a href="http://www.moloc.net/minified/">Check out Minified Components by Moloc Lab!</a></div>
- <div class="newsItem"><strong>December 17, 2013</strong>: <a href="https://plus.google.com/100950045026999226880/posts/3p9Qyc4SNr4">Beta 4 released</a></div>
- <div class="newsItem"><strong>November 8, 2013</strong>: <a href="https://plus.google.com/b/100950045026999226880/+Minifiedjs/posts/cuCuDa26auJ">Beta 3 released!</a></div>
- <div class="newsItem"><strong>August 20, 2013</strong>: <a href="https://plus.google.com/100950045026999226880/posts/PvnVamzAzpp">Beta 3 Update</a></div>
- <div class="newsItem"><strong>July 31, 2013</strong>: <a href="/docs/beta2.html">Minified Web beta 2 released</a></div>
- <div class="newsItem"><strong>July 20, 2013</strong>: <a href="https://plus.google.com/u/0/b/100950045026999226880/100950045026999226880/posts/fy2GCAEsJgD">Redefining the 4kB size limit</a></div>
- <div class="newsItem"><strong>July 13, 2013</strong>: <a href="https://plus.google.com/u/0/b/100950045026999226880/100950045026999226880/posts/PgTwrYMcX9a">Minified Web beta 1 released</a></div>
+ {{each headlines}}
+ <div class="newsItem"><strong>{{_.parseDate('yyyy-MM-dd', this.timestamp) :: N d, yyyy}}</strong>: <a href="/blog/{{this.fileName}}">{{this.title}}</a></div>
+ {{/each}}
 
 
 <h2>Getting Started</h2>
@@ -143,5 +138,5 @@ own. Or go to <a href="https://docs.google.com/presentation/d/12Nq1LRNguHFO80_xQ
 <tr><td>3.6 and higher</td><td>14 and higher</td><td>6.0 and higher</td><td>iOS 3.0 and higher</td><td>5.1 and higher</td><td>Android 2.2 and higher</td></tr>
 </table>
 
-`, inputPath: ['tmp/sizes.json', 'package.json']}
+`, inputPath: ['tmp/sizes.json', 'tmp/headlines.json', 'package.json']}
 }

@@ -52,7 +52,8 @@ module.exports = function(grunt) {
 			main: {
 				options: {
 					htmlTemplate: 'srcContent/page.template',
-					destDir: 'webContent/blog/'
+					destDir: 'webContent/blog/',
+					tmpDir: 'tmp/'
 				},
 				files: {
 					src: ['srcContent/blog/*.blog']
@@ -359,7 +360,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('code', ['assemble', 'closurecompiler:dist', 'uglify', 'copy:testdist', 'testQuick', 'measuresize']);
 	grunt.registerTask('testQuick', ['mochaTest:util', 'mocha:quick']);
 	grunt.registerTask('test', ['mochaTest', 'mocha:all']);
-	grunt.registerTask('site', ['uglify:site', 'writedocs', 'minitemplate', 'blog', 'copy:imgs', 'copy:test', 'copy:buildersrc', 'cssmin', 'htmlmin', 'xmlmin', 'copy:dist']);
+	grunt.registerTask('site', ['uglify:site', 'writedocs', 'blog', 'minitemplate', 'copy:imgs', 'copy:test', 'copy:buildersrc', 'cssmin', 'htmlmin', 'xmlmin', 'copy:dist']);
 	grunt.registerTask('all', ['code', 'test', 'site']);
 	grunt.registerTask('server', ['all', 'connect']);
 	grunt.registerTask('default', ['code']);

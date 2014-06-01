@@ -19,6 +19,7 @@ var defaultOptions = {
 		entriesOnIndexPage: 15,
 		maxIndexPages: 10,
 		entriesOnRss: 20,
+		entriesInHeadlines: 20,
 		blogTitle: 'Minified.js Blog',
 		pageTitleTemplate: '{{title}} - Minified.js Blog',
 		commentIdTemplate: 'blog-{{id}}',
@@ -28,6 +29,7 @@ var defaultOptions = {
 		indexFileNameTemplate: '/index{{if index > 0}}-{{index}}{{/if}}.html',
 		archiveFileNameTemplate: '{{year}}/index.html',
 		rssFileName: 'rss20.xml',
+		headlinesFileName: 'headlines.json',
 		pageTemplateDefaults: {section: 'blog', externalCss: ['/css/blog.css'], rssFeed: 'http://localhost:8080/blog/rss20.xml'},
 		timestampFormat: 'yyyy-MM-dd HH:mm',
 		entryHtmlTemplate: '{{if instr.nav}}<div class="nav">{{if entry.prevEntry}}<a href="{{entry.prevEntry.url}}">{{entry.prevEntry.title}}</a> | {{/if}}'+
@@ -35,6 +37,7 @@ var defaultOptions = {
 		'{{if entry.nextEntry}} | <a href="{{entry.nextEntry.url}}">{{entry.nextEntry.title}}</a>{{/if}}</div>{{/if}}\n'+
 		'<h2 class="title">{{entry.title}}</h2>\n'+
 		'<div class="entry">{{{entry.html}}}</div>\n'+
+		'{{if entry.link}}<div class="link"><a href="{{(/^https?:/.test(entry.link))?entry.link:("http://"+entry.link)}}">Link</a></div>{{/if}}\n'+
 		'<div class="entryFooter">'+
 		'<div>Posted by {{entry.author}} on {{entry.timestamp::N d, yyyy}} - <a href="{{entry.url}}">Permalink</a> - '+
 		'<a href="{{entry.url}}{{opts.commentRef}}">Comments</a></div>'+
@@ -45,6 +48,7 @@ var defaultOptions = {
 	    '{{{opts.entryHtmlTemplate({entry: entry, opts: opts, instr: instr })}}}'+
 	    '</div>\n',
 		indexHtmlTemplate: '<div class="index">'+
+		'<h1>{{opts.blogTitle}}</h1>\n'+
 		'{{each entries}}{{{opts.entryHtmlTemplate({entry: this, opts: opts, instr: {} })}}}{{/each}}\n'+
 		'<div class="nav">{{if index}}<a href="{{opts.indexFileNameTemplate({index:index-1})}}">previous</a> | '+
 		'<a href="{{opts.indexFileNameTemplate({index:0})}}">Main</a> | {{/if}}'+
@@ -73,7 +77,7 @@ var defaultOptions = {
 		'<generator>Minified Homebrewn Feed</generator>\n'+
 		'<managingEditor>tim@tjansen.de</managingEditor>\n'+
 		'<webMaster>tim@tjansen.de</webMaster>\n'+
-		'{{each entries}}  <item><title>{{this.title}}</title><link>{{this.url}}</link><description>{{this.desc}}</description>'+
+		'{{each entries}}  <item><title>{{this.title}}</title><link>{{this.url}}</link><description>{{this.rssDesc||this.html}}</description>'+
 		  '<pubDate>{{this.timestamp :: [+0000]w, dd n yyyy HH:mm:ss}} GMT</pubDate></item>{{/each}}\n\n'+
 		'</channel></rss>\n'
 };
@@ -83,14 +87,16 @@ function createPath() {
 }
 
 /* Entry example:
- * {
+   {
 	id: 'my-first-entry'
 	title: 'First Blog Entry',
 	timestamp: '2014-04-01 15:00',
 	author: 'Tim Jansen',
+	rssDesc: 'This will show up in RSS if set.', // optional, default is html/markdown
 	html: `This is <b>my first</b> entry.`,
-	markdown: `Markdown data (instead of HTML).`
- * }
+	markdown: `Markdown data (instead of HTML).`,
+	link: 'www.example.com/' // optional
+   }
  */
 function parseEntry(file, prevEntry, opts) {
 	if (!file)
@@ -139,12 +145,24 @@ function createArchivePage(year, entryList, yearEntries, htmlTemplatePath, fileW
 	fileWriter(opts.archiveFileNameTemplate({year: year}), minitemplate.process(htmlTemplatePath, obj));
 }
 
-function createRssPage(entryList, htmlTemplatePath, fileWriter, opts) {
+function createRssPage(entryList, fileWriter, opts) {
 
 	fileWriter(opts.rssFileName, opts.rssXmlTemplate({ entries: entryList, opts: opts}));
 }
 
-exports.process = function(entryFiles, htmlTemplatePath, fileWriter, options) {
+function createOverviewJson(entryList, tmpWriter, opts) {
+	tmpWriter(opts.headlinesFileName, JSON.stringify(
+		{headlines: _.map(entryList, function(e) {
+		return {
+			id: e.id,
+			title: e.title,
+			timestamp: e.timestamp,
+			fileName: e.fileName
+		};
+	}).array()}));
+}
+
+exports.process = function(entryFiles, htmlTemplatePath, fileWriter, tmpWriter, options) {
 	var opts = _.extend({}, defaultOptions, options);
 	_.eachObj(opts, function(key, val) { // compile all templates
 		if (/Template$/.test(key) && !_.isFunction(val))
@@ -165,7 +183,7 @@ exports.process = function(entryFiles, htmlTemplatePath, fileWriter, options) {
 	});
 
 	var yearEntries = {}; // year -> []
-	var currentRssEntries = [];
+	var currentRssEntries = [], currentHeadlineEntries = [];
 	entries.each(function(entry, index) {
 		var currentYear = entry.timestamp.getFullYear();
 		if (!yearEntries[currentYear])
@@ -175,17 +193,20 @@ exports.process = function(entryFiles, htmlTemplatePath, fileWriter, options) {
 		
 		if (index < opts.entriesOnRss)
 			currentRssEntries.push(entry);
+		if (index < opts.entriesInHeadlines)
+			currentHeadlineEntries.push(entry);
 	});
 	
 	_.eachObj(yearEntries, function(year, entryList) {
-		createArchivePage(year, entryList, yearEntries, htmlTemplatePath, fileWriter, opts);
+		createArchivePage(year, _.reverse(entryList), yearEntries, htmlTemplatePath, fileWriter, opts);
 	});
 	
 	var pageCount = Math.min(Math.ceil(entries.length / opts.entriesOnIndexPage), opts.maxIndexPages);
 	for (var page = 0; page < pageCount; page++)
 		createIndexPage(page, pageCount, entries.sub(page*opts.entriesOnIndexPage, (page+1)*opts.entriesOnIndexPage), yearEntries, htmlTemplatePath, fileWriter, opts);
 	
-	createRssPage(currentRssEntries, htmlTemplatePath, fileWriter, opts);
+	createRssPage(currentRssEntries, fileWriter, opts);
+	createOverviewJson(currentHeadlineEntries, tmpWriter, opts);
 };
 
 

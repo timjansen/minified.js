@@ -73,6 +73,7 @@ main: `<div>
  <li><a href="#extend_modules">Create New Modules</a></li>
  <li><a href="#extend_list">Add Methods to Lists</a></li>
  <li><a href="#extend_static">Add Functions to $ and _</a></li>
+ <li><a href="#extend_getter">Add prefixes to get() and set()</a></li>
  /ul></li>
 <li><a href="#something_missing">Missing Something?</a></li>
 </ul>
@@ -827,7 +828,7 @@ define('makeGreen', function(require) {
  makeGreen('.notGreenEnough');
  </pre>
 Minified publishes a simple <var>define()</var> function in the default context. It is backward-compatible to AMD, so your module will
-also be a valid AMD module, but does not support most of AMD's features. <var>define()</var> 'publishs' a reference that can later be obtained 
+also be a valid AMD module, but does not support most of AMD's features. <var>define()</var> 'publishes' a reference that can later be obtained 
 using <var>require()</var>. The callback given to <var>define()</var> will be called once to obtain the module.
 </p>
 <p>
@@ -855,6 +856,32 @@ if (_.isShorterThan(userInput, 5))
 </pre>
 The objects exposed by Minified can easily be modified. There is only one instance and really no magic involved. Just extend them as you wish.
 </p>
+
+<h3><a name="extend_getter">Add prefixes to get() and set()</a></h3>
+<p>
+<pre>MINI.getter['&gt;'] = function(list, name) {
+	return list[0].getAttributeNS('http://www.w3.org/1999/xlink', name);
+};
+MINI.setter['&gt;'] = function(list, name, value) {
+	list.each(function(obj, index) {
+		var v;
+		if (_.isFunction(value))
+			v = value(obj.getAttributeNS('http://www.w3.org/1999/xlink', name), index, obj);
+		else 
+			v = value;
+		if (v == null)
+			obj.removeAttributeNS('http://www.w3.org/1999/xlink', name);
+		else
+			obj.setAttributeNS('http://www.w3.org/1999/xlink', name, v);
+	});
+};
+</pre>
+<var>MINI.getter</var> and <var>MINI.setter</var> can be used to add additional prefixes for <var>get()</var> and <var>set()</var>.
+<p>
+API: <a href="/api/getter.html">MINI.getter</a>, <a href="/api/setter.html">MINI.setter</a>.<br/>
+</p>
+</p>
+
 
 
 

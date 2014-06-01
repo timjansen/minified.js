@@ -29,6 +29,11 @@ module.exports = function(grunt) {
 			return;
 		}
 		
+		if (!options.tmpDir) {
+			grunt.log.error('Required option "tmpDir" missing');
+			return;
+		}
+
 		if (!this.filesSrc.length) {
 			grunt.log.error('No src files given.');
 			return;
@@ -51,6 +56,7 @@ module.exports = function(grunt) {
 			
 		blog.process(this.filesSrc, options.htmlTemplate, 
 				function(name, data) { grunt.file.write(createPath(options.destDir, name), data); },
+				function(name, data) { grunt.file.write(createPath(options.tmpDir, name), data); },
 		options.extraOptions);
 		
 		grunt.file.write(timestampFile, "" + new Date() + "\n");
