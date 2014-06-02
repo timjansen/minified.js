@@ -19,6 +19,7 @@ var ctx = {
 	define: function(name, obj) { defs[name] = obj(); },
 	require: function(name) { return defs[name]; },
 	document: { addEventListener: function() {} },
+	window: {},
 	setTimeout: function(f, d) { setTimeout(f, d); },
 	console: console,
 	TypeError: TypeError

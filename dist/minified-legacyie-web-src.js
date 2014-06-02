@@ -3132,7 +3132,7 @@ define('minified', function() {
 		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data && (data['constructor'] == settings['constructor']);
 		try {
 			//@condblock ie6compatibility
-			prom['xhr'] = xhr = (_window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0"));
+			prom['xhr'] = xhr = ((_window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0")));
 			//@condend
 			// @cond !ie6compatibility prom['xhr'] = xhr = new XMLHttpRequest();
 

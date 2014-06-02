@@ -24,12 +24,11 @@ describe('minified-web-promises-test.js', function() {
 
 	describe('request()', function() {
 		it('requests', function(done) {
-			var s = $.request('get', '/test/test.txt', null)
-			.then(function(txt, xhr) {
+			var s = $.request('get', '/test/test.txt', null);
+			s.then(function(txt, xhr) {
 				try {
 					check(txt.indexOf('Used for testing') > 0);
-					check(xhr.send); // validate it's XHR
-					check(s.xhr.send);
+					check(!!xhr.send); // validate it's XHR
 					done();
 				}
 				catch (e) {
@@ -39,6 +38,8 @@ describe('minified-web-promises-test.js', function() {
 				done('onFailure called, but should not be called');
 			});
 			check(!!s);
+			check(!!s.xhr);
+			check(!!s.xhr.send);
 		});
 		
 		it('handles 404', function(done) {
@@ -144,7 +145,7 @@ describe('minified-web-promises-test.js', function() {
 			_.promise(function(resolve, reject) {
 				reject('x', 2);
 			})
-			.then(function(a, b, c) {
+			.then(0, function(a, b, c) {
 				try {
 					check(a, 'x');
 					check(b, 2);
