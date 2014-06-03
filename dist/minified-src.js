@@ -4752,6 +4752,7 @@ define('minified', function() {
 			prom['xhr'] = xhr = new XMLHttpRequest();
 
 			prom['stop0'] = function() { xhr['abort'](); };
+			// @condend
 
 			if (dataIsMap) { // if data is parameter map...
 				data = collector(eachObj, data, function processParam(paramName, paramValue) {

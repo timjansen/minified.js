@@ -3248,16 +3248,17 @@ define('minified', function() {
 		var settings = settings0 || {}; 
 		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data && (data['constructor'] == settings['constructor']);
 		try {
-			//@condblock ie6compatibility
-			prom['xhr'] = xhr = ((_window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0")));
-			//@condend
+			// @condblock ie6compatibility
+			prom['xhr'] = xhr = (_window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0"));
+			// @condend
 			// @cond !ie6compatibility prom['xhr'] = xhr = new XMLHttpRequest();
 
-			//@condblock !promise
+			// @condblock !promise
 			prom['stop'] = function() { xhr['abort'](); };
-			//@condend promise 
+			// @condend promise 
 			// @cond promise prom['stop0'] = function() { xhr['abort'](); };
-			
+			// @condend
+
 			if (dataIsMap) { // if data is parameter map...
 				data = collector(eachObj, data, function processParam(paramName, paramValue) {
 					return collector(flexiEach, paramValue, function(v) { 

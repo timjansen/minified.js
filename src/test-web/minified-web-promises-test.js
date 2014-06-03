@@ -28,7 +28,7 @@ describe('minified-web-promises-test.js', function() {
 			s.then(function(txt, xhr) {
 				try {
 					check(txt.indexOf('Used for testing') > 0);
-					check(!!xhr.send); // validate it's XHR
+					check(isLegacyIE || !!xhr.send); // validate it's XHR (not in old IE's, they can't handle this)
 					done();
 				}
 				catch (e) {
@@ -39,7 +39,7 @@ describe('minified-web-promises-test.js', function() {
 			});
 			check(!!s);
 			check(!!s.xhr);
-			check(!!s.xhr.send);
+			check(isLegacyIE || !!s.xhr.send);
 		});
 		
 		it('handles 404', function(done) {
@@ -50,7 +50,7 @@ describe('minified-web-promises-test.js', function() {
 			}, function(status, txt, xhr) {
 				try {
 					check(status,  404);
-					check(xhr.send); // validate it's XHR
+					check(isLegacyIE || !!xhr.send); // validate it's XHR
 					done();
 				}
 				catch (e) {

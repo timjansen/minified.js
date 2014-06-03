@@ -2985,10 +2985,11 @@ define('minified', function() {
 		try {
 			prom['xhr'] = xhr = new XMLHttpRequest();
 
-			//@condblock !promise
+			// @condblock !promise
 			prom['stop'] = function() { xhr['abort'](); };
-			//@condend promise 
+			// @condend promise 
 			// @cond promise prom['stop0'] = function() { xhr['abort'](); };
+			// @condend
 
 			if (dataIsMap) { // if data is parameter map...
 				data = collector(eachObj, data, function processParam(paramName, paramValue) {
