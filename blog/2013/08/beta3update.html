@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Beta 3 Update - Minified.js Blog</title>
+<link rel="alternate" type="application/rss+xml"  href="http://localhost:8080/blog/rss20.xml" title="RSS Feed"/>
+
+<link rel="stylesheet" type="text/css" href="/css/blog.css"/>
+
+
+
+
+</head>
+<body>
+<div id="head">
+	<div class="container">
+		
+		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt='Minified'><![endif]-->
+		<!--[if gt IE 8]><img src='/img/minified.svg' alt='Minified'><![endif]-->
+		<!--[if !IE]> --><img src='/img/minified.svg' alt='Minified'/><!-- <![endif]--></a>
+
+		<div id="topMenu">
+			<a class="notSelected" href="/">Home</a>
+			<a class="notSelected" href="/download/">Download</a>
+			<a class="notSelected" href="/builder/">Build</a>
+			<a class="notSelected" href="/docs/">Documentation</a>
+			<a class="notSelected" href="/api/">API</a>
+			<a class="notSelected" href="/about/">About</a>
+		</div>
+	</div>
+</div>
+<div id="main">
+	<div class="container"><div class="single"><div class="nav"><a href="http://localhost:8080/blog/2013/11/beta3.html">Beta 3 released!</a> | <a href="http://localhost:8080/blog/">Main</a> | <a href="http://localhost:8080/blog/2013/07/beta2.html">Minified Web beta 2 is out</a></div>
+<h2 class="title">Beta 3 Update</h2>
+<div class="entry"><p>Just wanted to give you an update about my plans for Minified Beta 3.</p>
+
+<p>First of all, beta 3 will officially introduce the Util module. The Util module is roughly inspired by Underscore and similar libraries. It provides helpers for collections, functions, string manipulation, Date arithmetics, number and date parsing and formatting, a Promises/A+ implementation as well a template system - in less than 4kB. Both modules share the list implementation, so you can use all of Util&#39;s methods to manipulate a list of elements or use Web&#39;s set() to modify Util&#39;s list.</p>
+
+<p>The Util module has been on Github for a long time, but I have finally extended the build system so that it is capable of merging the Web module and the Util module into a single module which currently weighs about 7.5kB. Both modules will, of course, also stay available as stand-alone downloads. In addition to that, the Util module will be available as a CommonJS module ready for use in Node.js and available on npm.</p>
+
+<p>The changes to the existing Web module are relatively small. Two new features have been added: offset() will allow you to get a element&#39;s position on the page, very similar to jQuery&#39;s function of the same name. And the universal get()/set() syntax will get two new virtual properties $$scrollX/$$scrollY that allow you to scroll the current page. This, and some smaller changes, can also be found in the <a href="https://github.com/timjansen/minified.js/blob/master/CHANGES.md">CHANGES.md</a> file on Github.</p>
+
+<p>Beta 3 will also replace the ant-based build-system with a new one based on Grunt. I hope that this will make the source code more accessible, as relatively few JavaScript developer are familiar with ant and the old build system is pretty slow. Replacing the current XML/XSLT-based template system was a bit more complicated than I anticipated though, which is why I came up with a new side-project called <a href="https://github.com/timjansen/hanson">HanSON</a>. HanSON extends JSON&#39;s syntax with multi-line strings and some other things to make larger, hand-written JSON files possible. Together with the Util module&#39;s template system, HanSON is will be used to create Minified&#39;s web site.</p>
+
+<p>There&#39;s still a lot of work to be done, but if everything works out I expect Beta 3 to be ready in September or early October.﻿</p></div>
+
+<div class="entryFooter"><div>Posted by Tim Jansen on August 20, 2013 - <a href="http://localhost:8080/blog/2013/08/beta3update.html">Permalink</a> - <a href="http://localhost:8080/blog/2013/08/beta3update.html#comments">Comments</a></div></div><div class="rss"><a href="http://localhost:8080/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div>
+</div>
+
+	
+	<a name="comments">&nbsp;</a>
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+	var disqus_shortname = "minifiedjs";
+	var disqus_identifier = "blog-beta3update";
+	(function() {
+	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+	})();
+	</script>
+	
+	</div>
+	
+</div>
+
+<div id="foot">
+	<div class="container">
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
+		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
+	</div>
+</div>
+
+
+</body>
+</html>
