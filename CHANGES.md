@@ -1,7 +1,7 @@
 Minified Change Log
 ====================
 
-Beta 6 (ongoing)
+Beta 6 (2014-06-06)
 --------------------
 * added merge()
 * MINI.getter and MINI.setter allow you to add new prefixes to set()/get()
