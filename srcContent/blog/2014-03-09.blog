@@ -1,0 +1,8 @@
+{
+	id: 'moloc-components',
+	title: 'Minified Components by Moloc Lab',
+	timestamp: '2014-03-09 20:00',
+	author: 'Tim Jansen',
+	markdown: `@molocLab released some [awesome components](http://www.moloc.net/minified) for Minified,  be sure to check them out. First lib using Minified, thanks!﻿
+`}
+

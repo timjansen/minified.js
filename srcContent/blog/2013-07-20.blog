@@ -1,0 +1,15 @@
+{
+	id: 'redefining4k',
+	title: 'Redefining the 4kB size limit',
+	timestamp: '2013-07-20 20:00',
+	author: 'Tim Jansen',
+	markdown: `After the beta 1 release I got a lot of great feedback. Most of the feedback was about missing features or things that were too hard to do with Minified. There were also event handler memory leaks in the legacy-IE version that need to be fixed, but require a lot of code and thus would break the 4kB limit.
+
+So I made the hard decision to modify my self-imposed 4kB limit. In beta 1, the goal was to get even the full version with legacy IE support under 4kB. But with beta 2, the goal will be to get only the version without IE support under 4 kB.
+
+This allows me to add some much requested, missing features and will also ensure that I do not need to remove anything just to get Minified working correctly in the older IEs. At the same time, I keep a limit that will hopefully prevent feature-bloat in the library. 
+
+You can see new features as they are being added in [CHANGES.md](https://github.com/timjansen/minified.js/blob/master/CHANGES.md).`
+
+}
+

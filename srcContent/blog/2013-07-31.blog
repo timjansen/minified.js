@@ -1,0 +1,11 @@
+{
+	id: 'beta2',
+	title: 'Minified Web beta 2 is out',
+	timestamp: '2013-07-31 20:00',
+	author: 'Tim Jansen',
+	markdown: `
+This is mainly a feature release and adds many much requested features. For a complete overview, follow [this link] (http://minifiedjs.com/docs/beta2.html).﻿
+`
+}
+
+

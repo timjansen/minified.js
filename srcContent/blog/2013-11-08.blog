@@ -1,0 +1,10 @@
+{
+	id: 'beta3',
+	title: 'Beta 3 released!',
+	timestamp: '2013-11-08 20:00',
+	author: 'Tim Jansen',
+	markdown: `After several months of development, I am very happy and also a bit relieved to announce that Minified beta 3 is finally ready. It features the new Util module, HTML templates and many smaller changes. Also, Minified's build system has been overhauled and is now based on grunt.
+
+A complete description of all changes can be [found here](http://localhost:8080/docs/beta3.html). Please note the incompatibilities section, because there are some backward-incompatible changes, especially in on().﻿`
+}
+

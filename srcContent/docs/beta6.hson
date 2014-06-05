@@ -1,0 +1,106 @@
+{
+title: "Minified.js Beta 6: Features and Changes",
+section: docs,
+externalCss: ["../css/doc.css"],
+commentId: "docs-beta6",
+main: `<div>
+  <h1>Minified.js Beta 6: Features and Changes</h1>
+
+<p>Beta 6 will likely be the last Minified beta. It contains a large number of smaller improvements and prepares Minified for the next step.
+Expect some surprises!</p>
+
+<h2 style="color: red">Backward-incompatible Changes</h2>
+<p>
+<ul>
+<li><var><a href="/api/request.html">$.request()</a></var>'s promise signatures have changed a bit. The xml document is not part of the response anymore,
+nor is the status text in the error handler. Instead both now include a reference to the
+<a href="https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest">XHR</a> object. I apologize to anyone who's inconvenienced
+by that, but it didn't really make sense to include them in the first place. You can still get the data from the
+<a href="https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest">XHR</a> though.</li>
+<li><var><a href="/api/values.html">values()</a></var> will no longer ignore form elements without name if they have an id instead.</li>
+<li><var><a href="/api/extend.html">extend()</a></var> and <var><a href="/api/copyObj.html">copyObj()</a></var> will now also copy nulls and inherited properties.</li>
+</ul>
+</p>
+
+<h2>New: Merging objects with merge()</h2>
+<p><span class="var"><a href="/api/merge.html">merge()</a></span> takes a list of objects and creates a new one
+that includes the properties of all given objects.</p>
+<pre>
+var merged = _.merge([{a: 1}, {b: 2}, {c: 3}]);   // creates object {a: 1, b: 2, c: 3}
+</pre>
+
+<h2>New: Adding new prefixes to set() and get()</h2>
+<p>The universal <span class="var"><a href="/api/set.html">set()</a></span> property names can now be extended with new custom prefixes, using 
+<span class="var"><a href="/api/setter.html">MINI.setter</a></span> and <span class="var"><a href="/api/getter.html">MINI.getter</a></span>.</p>
+<pre>
+// Adding XLink attribute support to get() and set(). This is useful if you work with SVG. The prefix is '&gt;'.
+MINI.getter['&gt;'] = function(list, name) {
+	return list[0].getAttributeNS('http://www.w3.org/1999/xlink', name);
+};
+MINI.setter['&gt;'] = function(list, name, value) {
+	list.each(function(obj, index) {
+		if (value == null)
+			obj.removeAttributeNS('http://www.w3.org/1999/xlink', name);
+		else
+			obj.setAttributeNS('http://www.w3.org/1999/xlink', name, value);
+	});
+};
+</pre>
+
+<h2>New: ES6-style promise resolution</h2>
+<p>In addition to the original way to fulfilling or rejecting a <span class="var"><a href="/api/promise.html">promise()</a></span>, by calling it as a function,
+beta 6 supports the ES6-style of promise resolution:</p>
+<pre>
+// A simple promise that is fulfilled after 1 second:
+var p = _.promise(function(resolve, reject) {
+	setTimeout(resolve, 1000);
+});
+</pre>
+
+<h2>New: Passing several objects to HTML() and ht() templates</h2>
+<p><span class="var"><a href="/api/html.html">HTML()</a></span> and <span class="var"><a href="/api/ht.html">ht()</a></span>
+can now take more than one object as parameter for the template. The objects will be automatically merged.</p>
+<pre>
+// A simple promise that is fulfilled after 1 second:
+var p = _.promise(function(resolve, reject) {
+	setTimeout(resolve, 1000);
+});
+</pre>
+
+<h2>Change: _.request() allows access to XmlHttpRequest</h2>
+<p><span class="var"><a href="/api/request.html">request()</a></span> has several improvements, albeit some of them incompatible to previous versions.
+The promises do not return the XML object on success and the status text on error anymore. Instead they contain the XmlHttpRequest object that can
+be used to obtain them and other properties that were not available before. In addition to that, the XmlHttpRequest object has also been
+added as property in the returned promise, so you can access it outside of the handlers.</p>
+
+<h2>Change: _.request() can be stop()'d</h2>
+<p><span class="var"><a href="/api/request.html">request()</a></span> also supports <span class="var"><a href="/api/stop.html">stop()</a></span> to abort a
+running HTTP request.</p>
+
+<h2>Change: values() uses id if form element has no name</h2>
+<p><span class="var"><a href="/api/values.html">values()</a></span> will now use a field's id if a field has no name but only an id. In many cases
+this means that you do not have to declare both.</p>
+
+<h2>Change: up() allows getting more than one ancestor</h2>
+<p><span class="var"><a href="/api/up.html">up()</a></span> has got a new, optional <var>parentNum</var> parameter to select not only the direct parent, but
+also additional ancestors.</p>
+
+<h2>Change: Bubble selectors for onClick() and onChange(), work with select fields</h2>
+<p><span class="var"><a href="/api/onclick.html">onClick()</a></span> and <span class="var"><a href="/api/onchange.html">onChange()</a></span> allow you to
+specify a bubble selector (also known as live selector). In addition to that, <var>onChange()</var> also supports select fields now.</p>
+
+<h2>Change: Support for contexts in $$()</h2>
+<p>For consistency, <span class="var"><a href="/api/dollardollar.html">$$()</a></span>'s arguments are not the same as <span class="var"><a href="/api/dollar.html">$()</a></span>'s.</p>
+
+<h2>Change: Shallow copy of objects with _.copyObj()</h2>
+<p><span class="var"><a href="/api/copyobj.html">copyObj()</a></span> will duplicate an object when called with only one argument. 
+It will also now copy nulls and inherited properties.</p>
+
+
+
+<h2>Download</h2>
+<p>You can download beta 6 on the <a href="/download">download page</a>.</p>
+
+  </div>`
+  
+}

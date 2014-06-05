@@ -1,0 +1,9 @@
+{
+	id: 'beta5',
+	title: 'Beta 5 released',
+	timestamp: '2014-03-28 20:00',
+	author: 'Tim Jansen',
+	markdown: `Even more features, still under 8kB: beta 5 is ready for download. 
+
+As usual, you can find a detailed list of changes [here](http://localhost:8080/docs/beta5.html).﻿`}
+

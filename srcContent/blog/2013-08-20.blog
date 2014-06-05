@@ -1,0 +1,18 @@
+{
+	id: 'beta3update',
+	title: 'Beta 3 Update',
+	timestamp: '2013-08-20 20:00',
+	author: 'Tim Jansen',
+	markdown: `Just wanted to give you an update about my plans for Minified Beta 3.
+
+First of all, beta 3 will officially introduce the Util module. The Util module is roughly inspired by Underscore and similar libraries. It provides helpers for collections, functions, string manipulation, Date arithmetics, number and date parsing and formatting, a Promises/A+ implementation as well a template system - in less than 4kB. Both modules share the list implementation, so you can use all of Util's methods to manipulate a list of elements or use Web's set() to modify Util's list.
+
+The Util module has been on Github for a long time, but I have finally extended the build system so that it is capable of merging the Web module and the Util module into a single module which currently weighs about 7.5kB. Both modules will, of course, also stay available as stand-alone downloads. In addition to that, the Util module will be available as a CommonJS module ready for use in Node.js and available on npm.
+
+The changes to the existing Web module are relatively small. Two new features have been added: offset() will allow you to get a element's position on the page, very similar to jQuery's function of the same name. And the universal get()/set() syntax will get two new virtual properties $$scrollX/$$scrollY that allow you to scroll the current page. This, and some smaller changes, can also be found in the [CHANGES.md](https://github.com/timjansen/minified.js/blob/master/CHANGES.md) file on Github.
+
+Beta 3 will also replace the ant-based build-system with a new one based on Grunt. I hope that this will make the source code more accessible, as relatively few JavaScript developer are familiar with ant and the old build system is pretty slow. Replacing the current XML/XSLT-based template system was a bit more complicated than I anticipated though, which is why I came up with a new side-project called [HanSON] (https://github.com/timjansen/hanson). HanSON extends JSON's syntax with multi-line strings and some other things to make larger, hand-written JSON files possible. Together with the Util module's template system, HanSON is will be used to create Minified's web site.
+
+There's still a lot of work to be done, but if everything works out I expect Beta 3 to be ready in September or early October.﻿`
+}
+

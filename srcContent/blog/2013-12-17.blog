@@ -1,0 +1,12 @@
+{
+	id: 'beta4',
+	title: 'Beta 4 is out!',
+	timestamp: '2013-12-17 20:00',
+	author: 'Tim Jansen',
+	markdown: `This is a rather small release, but with some backward-incompatible changes for event handlers. It was important to me to get them out as soon as possible, so I can now focus on stabilizing Minified and stop breaking existing code.
+
+Beside the event handler changes, I am really happy with the new iteration method per(), which has been very helpfully for me in several situations.  HTML() and ht() are now capable of reading templates directly from <script> tags, to make it easier to use large templates.
+
+You can find a changelog [here](http://localhost:8080/docs/beta4.html).
+`}
+

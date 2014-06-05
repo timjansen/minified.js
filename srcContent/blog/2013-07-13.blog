@@ -1,0 +1,9 @@
+{
+	id: 'beta1',
+	title: 'Minified Web beta 1 released!',
+	timestamp: '2013-07-13 20:00',
+	author: 'Tim Jansen',
+	desc: "After over 1 year of development I am proud to release the first version of Minified Web, my tiny but fully featured alternative to libraries like jQuery and MooTools.", // for RSS only
+	markdown: `After over 1 year of development I am proud to release the first version of Minified Web, my tiny but fully featured alternative to libraries like jQuery and MooTools.  ﻿`
+}
+
