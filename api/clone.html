@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>.clone() - Minified.js</title>
 
+
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
 
 
@@ -47,11 +48,10 @@
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Clones all HTML nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
-and everything else will be removed. Nested lists will be automatically flattened. Objects other than nodes, strings or lists
-will be removed.</p><p><span class="var">clone()</span> uses the browser's <span class="var">cloneNode()</span> function to clone HTML internally, but will remove the ids from
-all top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
-The ids of child elements will removed.</p><p>Please note that event handlers will not be cloned.</p><p></p></div>
+<div class="description"><p>Clones all HTML nodes in the given list by creating a deep copy of them. Nested lists will be automatically flattened.
+Everything else will be copied as-is into the new list.</p><p><span class="var">clone()</span> uses the browser's <span class="var">cloneNode()</span> function to clone HTML internally, but will remove the ids from
+all HTML top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
+The ids of child elements will removed.</p><p>Please note that clone() does work with SVG, but will not remove ids from SVG.</p><p>Please note that event handlers will not be cloned.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -128,6 +128,7 @@ var disqus_url = "http://minifiedjs.com/api/clone.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
@@ -160,6 +161,8 @@ var disqus_url = "http://minifiedjs.com/api/clone.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
@@ -214,8 +217,8 @@ var disqus_url = "http://minifiedjs.com/api/clone.html";
 
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

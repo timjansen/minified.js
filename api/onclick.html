@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>.onClick() - Minified.js</title>
 
+
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
 
 
@@ -61,6 +62,11 @@ Supports all valid parameters for <span class="var">$()</span> except functions.
 <dt id="onclick_args" class=""><a name="onclick_args"><var>args (optional)</var></a></dt>
 <dd class="">an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the function is
 called as event handler with the event object as argument.</dd>
+<dt id="onclick_bubbleSelector" class=""><a name="onclick_bubbleSelector"><var>bubbleSelector (optional)</var></a></dt>
+<dd class="">a selector string for <a href="dollar.html" class="func">$()</a> to receive only events that bubbled up from an
+element that matches this selector.
+Supports all valid parameters for <span class="var">$()</span> except functions. Analog to <code><a href="is.html" class="func">is()</a></code>,
+the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.</dd>
 <dt id="onclick_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="onclick_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the list</dd>
 </dl>
@@ -69,7 +75,7 @@ called as event handler with the event object as argument.</dd>
 <div class="description"><p>Registers a function to be called for 'click' events. This is only a convenience method and identical to calling
 <code><a href="on.html" class="func">on()</a></code> with 'click' as event type.
 You can specify a sub-selector to register only for specific children of the list elements, and you can
-specify arguments to pass to the handler instead of the default event object.</p><p>Event handlers registered using <span class="var">onClick()</span> can be unregistered using <code><a href="undefinedoff.html" class="func">$.off()</a></code>.</p><p></p></div>
+specify arguments to pass to the handler instead of the default event object.</p><p>Event handlers registered using <span class="var">onClick()</span> can be unregistered using <code><a href="off.html" class="func">$.off()</a></code>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -151,6 +157,7 @@ var disqus_url = "http://minifiedjs.com/api/onclick.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
@@ -183,6 +190,8 @@ var disqus_url = "http://minifiedjs.com/api/onclick.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
@@ -237,8 +246,8 @@ var disqus_url = "http://minifiedjs.com/api/onclick.html";
 
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

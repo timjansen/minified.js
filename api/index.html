@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Reference - Minified.js</title>
 
+
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
 
 
@@ -146,6 +147,9 @@ Creates a function allows you to set all list members to one of two states or an
 <h3><a href="map.html">.map()</a></h3>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
 
+<h3><a href="merge.html">.merge()</a></h3>
+<div class="summary">Takes a list of objects and copies the properties into the target object.</div>
+
 <h3><a href="next.html">.next()</a></h3>
 <div class="summary">Finds the next sibling elements matching the given selector or filter function for each list element, and returns the results as a list.</div>
 
@@ -235,7 +239,7 @@ Triggers event handlers registered with on.</div>
 arguments.</div>
 
 <h3><a href="up.html">.up()</a></h3>
-<div class="summary">Finds the closest parent matching the given selector or filter function for each list element, and returns the results as a list.</div>
+<div class="summary">Finds the closest parents matching the given selector or filter function for each list element, and returns the results as a list.</div>
 
 <h3><a href="values.html">.values()</a></h3>
 <div class="summary">Creates a name/value map from the given form.</div>
@@ -249,6 +253,14 @@ arguments.</div>
 <h3><a href="M.html">M</a></h3>
 <div class="summary">
 Exposes the internal class used by all  Minified lists.</div>
+
+<h3><a href="getter.html">MINI.getter</a></h3>
+<div class="summary">
+Exposes a map of prefix handlers used by get.</div>
+
+<h3><a href="setter.html">MINI.setter</a></h3>
+<div class="summary">
+Exposes a map of prefix handlers used by set.</div>
 
 <h3><a href="list.html">Minified Lists</a></h3>
 <div class="summary">
@@ -434,6 +446,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
@@ -466,6 +479,8 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
@@ -520,8 +535,8 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

@@ -1,6 +1,6 @@
 /*
  * Minified-util.js - Collections, formatting and other helpers.
- * Version: 2014.0.0-beta5.0
+ * Version: 2014.0.0-beta6.0
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -44,7 +44,7 @@ module.exports = (function() {
 	 * This id allows identifying whether the Util module is available.
 	 */
 
-	var _null = null, _true = true, _false = false;
+	var _null = null;
 
 	/** @const */
 	var undef;
@@ -147,7 +147,7 @@ module.exports = (function() {
 		return isObject(n) && !!n['getDay'];
 	}
 	function isBool(n) {
-		return n === _true || n === _false;
+		return n === true || n === false;
 	}
 	function isValue(n) {
 		var type = typeof n;
@@ -168,9 +168,6 @@ module.exports = (function() {
 	function trim(s) {
 		return replace(s, /^\s+|\s+$/g);
 	}
-	function isEmpty(s, ignoreWhitespace) {
-		return s == _null || !s.length || (ignoreWhitespace && /^\s*$/.test(s));
-	}
 	function eachObj(obj, cb) {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
@@ -182,14 +179,6 @@ module.exports = (function() {
 			for (var i = 0; i < list.length; i++)
 				cb.call(list, list[i], i);
 		return list;
-	}
-	function filterObj(obj, f) {
-		var r = {};
-		eachObj(obj, function(key, value) {
-			if (f.call(obj, key, value))
-				r[key] = value;
-		});
-		return r;
 	}
 	function filter(list, filterFuncOrObject) {
 		var r = []; 
@@ -226,22 +215,6 @@ module.exports = (function() {
 		eachObj(obj, function(key) { list.push(key); });
 		return list;
 	}
-	function values(obj, keys) {
-		var list = [];
-		if (keys)
-			each(keys, function(value) { list.push(obj[value]); });
-		else
-			eachObj(obj, function(key, value) { list.push(value); });
-		return list;
-	}	
-
-	function mapObj(list, mapFunc) {
-		var result = {};
-		eachObj(list, function(key, value) {
-			result[key] = mapFunc.call(list, key, value);
-		});
-		return result;
-	}
 	function map(list, mapFunc) {
 		var result = [];
 		each(list, function(item, index) {
@@ -252,7 +225,7 @@ module.exports = (function() {
 	function startsWith(base, start) {
 		if (isList(base)) {
 			var s2 = _(start); // convert start as we don't know whether it is a list yet
-			return equals(_(base).sub(0, s2.length), s2);
+			return equals(sub(base, 0, s2.length), s2);
 		}
 		else
 			return start != _null && base.substr(0, start.length) == start;
@@ -260,7 +233,7 @@ module.exports = (function() {
 	function endsWith(base, end) {
 		if (isList(base)) {
 			var e2 = _(end);
-			return _(base).sub(-e2.length).equals(e2) || !e2.length;
+			return equals(sub(base, -e2.length), e2) || !e2.length;
 		}
 		else
 			return end != _null && base.substr(base.length - end.length) == end;
@@ -272,15 +245,6 @@ module.exports = (function() {
 		else
 			return replace(list, /[\s\S]/g, function() { return list.charAt(--len); });
 	}
-	function sub(list, startIndex, endIndex) {
-		if (!list)
-			return [];
-		var s = getFindIndex(list, startIndex, 0);
-		var e = getFindIndex(list, endIndex, list.length);
- 		return filter(list, function(o, index) { 
- 			return index >= s && index < e; 
- 		});
- 	}
 	function toObject(list, value) {
 		var obj = {};
 		each(list, function(item, index) {
@@ -288,26 +252,23 @@ module.exports = (function() {
 		});
 		return obj;
 	}
-	function copyObj(from, to, dontOverwrite) {
-		eachObj(from, function(name, value) {
-			if (to[name] == _null || !dontOverwrite)
-				to[name] = value;
-		});
-		return to;
+	function copyObj(from, to) {
+		var dest = to || {};
+        for (var name in from)
+        	dest[name] = from[name];
+        return dest;
 	}
-	function extend(target) {
-		for (var i = 1; i < arguments.length; i++)
-			eachObj(arguments[i], function(name, value) {
-				if (value != undef)
-					target[name] = value;
-			});
-		return target;
+	function merge(list, target) {
+		var o = target;
+		for (var i = 0; i < list.length; i++)
+			o = copyObj(list[i], o);
+		return o;
 	}
 	function getFindFunc(findFunc) {
 		return isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 	}
 	function getFindIndex(list, index, defaultIndex) {
-		return index == _null ? defaultIndex : index < 0 ? list.length+index : index;
+		return index == _null ? defaultIndex : index < 0 ? Math.max(list.length+index, 0) : Math.min(list.length, index);
 	}
 	function find(list, findFunc, startIndex, endIndex) {
 		var f = getFindFunc(findFunc);
@@ -325,7 +286,15 @@ module.exports = (function() {
 			if ((r = f.call(list, list[i], i)) != _null)
 				return r;
 	}
-
+	function sub(list, startIndex, endIndex) {
+		var r = [];
+		if (list) {
+			var e = getFindIndex(list, endIndex, list.length);
+			for (var i = getFindIndex(list, startIndex, 0); i < e; i++)
+				r.push(list[i]);
+		}
+		return r;
+ 	}
 	function array(list) {
 		return map(list, nonOp);
 	}
@@ -338,7 +307,7 @@ module.exports = (function() {
 		var found = {};
 		return filter(list, function(item) {
 			if (found[item])
-				return _false;
+				return false;
 			else
 				return found[item] = 1;
 		});
@@ -354,8 +323,8 @@ module.exports = (function() {
 	function contains(list, value) { // TODO: can Array.indexOf be used in >IE8?
 		for (var i = 0; i < list.length; i++)
 			if (list[i] == value)
-				return _true;
-		return _false;
+				return true;
+		return false;
 	}
 	// equals if a and b have the same elements and all are equal. Supports getters.
 	function equals(x, y) {
@@ -363,16 +332,16 @@ module.exports = (function() {
 		var b = isFunction(y) ? y() : y;
 		var aKeys;
 		if (a == b)
-			return _true;
+			return true;
 		else if (a == _null || b == _null)
-			return _false;
+			return false;
 		else if (isValue(a) || isValue(b))
 			return isDate(a) && isDate(b) && +a==+b;
 		else if (isList(a)) {
 			return (a.length == b.length) &&
 				!find(a, function(val, index) {
 					if (!equals(val, b[index]))
-						return _true;
+						return true;
 				});
 		}
 		else {
@@ -380,18 +349,11 @@ module.exports = (function() {
 				((aKeys = keys(a)).length == keyCount(b)) && 
 				!find(aKeys, function(key) {
 						if (!equals(a[key],b[key]))
-							return _true;
+							return true;
 				});
 		}
 	}
 
-	function once(f) {
-		var called = 0;
-		return function() {
-			if (!(called++))
-				return call(f, this, arguments);
-		};
-	}
 	function call(f, fThisOrArgs, args) {
 		if (isFunction(f))
 			return f.apply(args && fThisOrArgs, map(args || fThisOrArgs, nonOp));
@@ -416,16 +378,16 @@ module.exports = (function() {
 	}
 
 	function processNumCharTemplate(tpl, input, fwd) {
-		var inputPos = 0;
 		var inHash;
+		var inputPos = 0;
 		var rInput = fwd ? input : reverse(input);
 		var s = (fwd ? tpl : reverse(tpl)).replace(/./g, function(tplChar) {
 			if (tplChar == '0') {
-				inHash = _false;
+				inHash = false;
 				return rInput.charAt(inputPos++) || '0';
 			}
 			else if (tplChar == '#') {
-				inHash = _true;
+				inHash = true;
 				return rInput.charAt(inputPos++) || '';
 			}
 			else
@@ -437,7 +399,7 @@ module.exports = (function() {
 	function getTimezone(match, idx, refDate) { // internal helper, see below
 		if (idx == _null || !match)
 			return 0;
-		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
+		return parseFloat(match[idx])*60 + parseFloat(match[idx+1]) + refDate.getTimezoneOffset();
 	}
 
 	// formats number with format string (e.g. "#.000", "#,#", "00000", "000.00", "000.000.000,00", "000,000,000.##")
@@ -445,8 +407,8 @@ module.exports = (function() {
 	// e.g. 0:no item|1:one item|>=2:# items
 	// <value>="null" used to compare with nulls.
 	// choice also works with strings or bools, e.g. ERR:error|WAR:warning|FAT:fatal|ok
-	function formatValue(format, value) {
-		format = replace(format, /^\?/);
+	function formatValue(fmt, value) {
+		var format = replace(fmt, /^\?/);
 		if (isDate(value)) {
 			var timezone, match;
 
@@ -460,8 +422,8 @@ module.exports = (function() {
 				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
 					var d = value['get' + val[0]]();
-
 					var optionArray = (params && params.split(','));
+
 					if (isList(val[1])) 
 						d = (optionArray || val[1])[d];
 					else
@@ -479,7 +441,7 @@ module.exports = (function() {
 			return find(format.split(/\s*\|\s*/), function(fmtPart) {
 				var match, numFmtOrResult;
 				if (match = /^([<>]?)(=?)([^:]*?)\s*:\s*(.*)$/.exec(fmtPart)) {
-					var cmpVal1 = value, cmpVal2 = parseFloat(match[3]);
+					var cmpVal1 = value, cmpVal2 = +(match[3]);
 					if (isNaN(cmpVal2) || !isNumber(cmpVal1)) {
 						cmpVal1 = (cmpVal1==_null) ? "null" : toString(cmpVal1); // not ""+value, because undefined is treated as null here
 						cmpVal2 = match[3];
@@ -503,7 +465,7 @@ module.exports = (function() {
 						var signed = value < 0 ? '-' : '';
 						var numData = /(\d+)(\.(\d+))?/.exec((signed?-value:value).toFixed(decimalFmt ? decimalFmt[3].length:0));
 						var preDecimalFmt = decimalFmt ? decimalFmt[1] : numFmt;
-						var postDecimal = decimalFmt ? processNumCharTemplate(decimalFmt[3], replace(numData[3], /0+$/), _true) : '';
+						var postDecimal = decimalFmt ? processNumCharTemplate(decimalFmt[3], replace(numData[3], /0+$/), true) : '';
 
 						return 	(signed ? '-' : '') + 
 								(preDecimalFmt == '#' ? numData[1] : processNumCharTemplate(preDecimalFmt, numData[1])) +
@@ -515,18 +477,16 @@ module.exports = (function() {
 			});
 	}
 	// returns date; null if optional and not set; undefined if parsing failed
-	function parseDate(format, date) {
+	function parseDate(fmt, date) {
 		var indexMap = {}; // contains reGroupPosition -> typeLetter or [typeLetter, value array]
 		var reIndex = 1;
 		var timezoneOffsetMatch;
 		var timezoneIndex;
 		var match;
 
-		if (/^\?/.test(format)) {
-			if (!trim(date))
-				return _null;
-			format = format.substr(1);
-		}
+		var format = replace(fmt, /^\?/);
+		if (format!=fmt && !trim(date))
+			return _null;
 
 		if (match = /^\[([+-]\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
 			timezoneOffsetMatch = match;
@@ -546,10 +506,10 @@ module.exports = (function() {
 			}
 			else if (/[Nna]/.test(placeholderChar)) {
 				indexMap[reIndex++] = [placeholderChar, param && param.split(',')];
-				return "([a-zA-Z\x80�\u1fff]+)"; 
+				return "([a-zA-Z\\u0080-\\u1fff]+)";
 			}
 			else if (/w/i.test(placeholderChar))
-				return "[a-zA-Z\x80�\u1fff]+";
+			    return "[a-zA-Z\\u0080-\\u1fff]+";
 			else if (/\s/.test(placeholderChar))
 				return "\\s+"; 
 			else 
@@ -577,7 +537,7 @@ module.exports = (function() {
 					ctorArgs[ctorIndex] = listValue;
 			}
 			else if (indexEntry) { // for numeric values (yHmMs)
-				var value = parseInt(matchVal);
+				var value = parseFloat(matchVal);
 				var mapEntry  = PARSE_DATE_MAP[indexEntry];
 				if (isList(mapEntry))
 					ctorArgs[mapEntry[0]] += value - mapEntry[1];
@@ -590,14 +550,10 @@ module.exports = (function() {
 	}
 	// format ?##00,00##
 	// returns number; null if optional and not set; undefined if parsing failed
-	function parseNumber(format, value) {
-		if (arguments.length == 1)
-			return parseNumber(_null, format);
-		if (/^\?/.test(format)) {
-			if (!trim(value))
-				return _null;
-			format = format.substr(1);
-		}
+	function parseNumber(fmt, value) {
+		var format = replace(fmt, /^\?/);
+		if (format!=fmt && !trim(value))
+			return _null;
 		var decSep = (/(^|[^0#.,])(,|[0#.]*,[0#]+|[0#]+\.[0#]+\.[0#.,]*)($|[^0#.,])/.test(format)) ? ',' : '.';
 		var r = parseFloat(replace(replace(replace(value, decSep == ',' ? /\./g : /,/g), decSep, '.'), /^[^\d-]*(-?\d)/, '$1'));
 		return isNaN(r) ? undef : r;
@@ -656,7 +612,7 @@ module.exports = (function() {
 		return replace(s, /[\x00-\x1f'"\u2028\u2029]/g, ucode);
 	}
 
-	// reimplemented split for IE<=8
+	// reimplemented split for IE8
 	function split(str, regexp) {
 
 		return str.split(regexp);
@@ -764,8 +720,11 @@ module.exports = (function() {
 
 	///#snippet utilM
 
-	/*$
-	 * @id listctor
+	/*
+	 * syntax: M(list, assimilateSublists)
+	 *         M(null, singleElement) 
+	 * 
+	 * 
 	 */
 	/** @constructor */
 	function M(list, assimilateSublists) {
@@ -783,11 +742,11 @@ module.exports = (function() {
 			self[idx++] = assimilateSublists;
 
 		self['length'] = idx;
-		self['_'] = _true;
+		self['_'] = true;
 	}
 
 	function _() {
-		return new M(arguments, _true);
+		return new M(arguments, true);
 	}
 
 	///#/snippet utilM
@@ -1520,6 +1479,30 @@ module.exports = (function() {
 	'unite': listBind(unite), 
 
 	/*$ 
+	 * @id merge 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .merge()
+	 * @altname _.merge()
+	 * @syntax list.merge() 
+	 * @syntax list.merge(target) 
+	 * @syntax _.merge(list) 
+	 * @syntax _.merge(list, target) 
+	 * @module UTIL
+	 * Takes a list of objects and copies the properties into the target object. If no target object has been given, a new object will be created.
+	 * Values will be shallow-copied. If a property is in the list more than once, the last one will be used.
+	 *
+	 * @param list The list of objects. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param target optional a target object to copy the properties to. If no target is given, <var>merge()</var creates a new object.
+	 * @return a new object that contains the pro
+	 * @see ##_.extend() is similar, but uses varargs.
+	 * @see ##_.copyObj() copies a single object.
+	 */
+	'merge': listBind(merge), 
+
+	/*$ 
 	 * @id uniq 
 	 * @group LIST 
 	 * @requires
@@ -1577,7 +1560,7 @@ module.exports = (function() {
 	 * This method is identical to Array's built-in <var>join()</var> method and also uses it internally.
 	 *
 	 * @example Join a few string:
-	 * <pre>var sorted = _('Harry', 'Bert', 'Tom', 'Bo').join(', '); // returns 'Harry, Bert, Tom, Bo'</pre>
+	 * <pre>var joined = _('Harry', 'Bert', 'Tom', 'Bo').join(', '); // returns 'Harry, Bert, Tom, Bo'</pre>
 	 *
 	 * @param separator optional a separator to put between the joined strings. If omitted, the string "," (comma) will be used.
 	 * @param otherList The other list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
@@ -1707,6 +1690,9 @@ module.exports = (function() {
 		 // @condblock unite
 		'unite': unite,
 		 // @condend
+		 // @condblock merge
+		'merge': merge,
+		 // @condend
 		 // @condblock uniq
 		'uniq': funcArrayBind(uniq),
 		 // @condend
@@ -1758,7 +1744,14 @@ module.exports = (function() {
 		 * 
 		 * @see ##_.keys() retrieves the property names of an object as a list.
 		 */
-		'values': funcArrayBind(values),
+		'values': funcArrayBind(function(obj, keys) {
+			var list = [];
+			if (keys)
+				each(keys, function(value) { list.push(obj[value]); });
+			else
+				eachObj(obj, function(key, value) { list.push(value); });
+			return list;
+		}),
 
 		/*$
 		 * @id copyobj
@@ -1766,10 +1759,10 @@ module.exports = (function() {
 		 * @requires 
 		 * @configurable default
 		 * @name _.copyObj()
+		 * @syntax _.copyObj(from)
 		 * @syntax _.copyObj(from, to)
 		 * @module UTIL
-		 * Copies every property of the first object into the second object. The properties are copied as shallow-copies. Only own properties
-		 * are copied, but not inherited properties.
+		 * Copies every property of the first object into the second object. The properties are copied as shallow-copies. 
 		 * 
 		 *  @example Copying properties:
 		 * <pre>var target = {a:3, c: 3};
@@ -1778,13 +1771,17 @@ module.exports = (function() {
 		 *  @example Inline property merge:
 		 * <pre>var target = _.copyObj({a: 1, b: 2}, {a:3, c: 3}); // target is now {a: 1, b: 2, c: 3}</pre>
 		 *
+		 *  @example Duplicating an object:
+		 * <pre>var target = _.copyObj({a: 1, b: 2}); // target is now {a: 1, b: 2}</pre>
+		 *
 		 * @param from the object to copy from
-		 * @param to the object to copy to
+		 * @param to optional the object to copy to. If not given, a new object will be created.
 		 * @return the object that has been copied to
 		 * 
-		 * @see ##extend() is very similar to <var>copyObj()</var>, but with a slightly different syntax.
+		 * @see ##_.extend() is very similar to <var>copyObj()</var>, but with a slightly different syntax.
+		 * @see ##_.merge() copies a list of objects into a new object.
 		 */
-		'copyObj': copyObj,
+		'copyObj': copyObj, 
 
 		/*$
 		 * @id extend
@@ -1795,11 +1792,10 @@ module.exports = (function() {
 		 * @syntax _.extend(target, src...)
 		 * @module UTIL
 		 * Copies every property of the source objects into the first object. The source objects are specified using variable arguments. 
-		 * There can be more than one. If a source parameter is <var>undefined</var> or <var>null</var>, it will be ignored.
-		 * The properties are copied as shallow-copies. <var>undefined</var> values will not be copied or inherited properties
-		 * will not be copied.
+		 * There can be more than one. 
+		 * The properties are copied as shallow-copies.
 		 * 
-		 * <b>Please note:</b> Unlike jQuery, <var>extend</var> does not directly a function to extend Minified, although
+		 * <b>Please note:</b> Unlike jQuery, <var>extend</var> does not directly add a function to extend Minified, although
 		 * you can use it to for this. To add a function to ##list#Minified lists##, add a property to
 		 * ##M#MINI.M##. If you want to extend <var>$</var> or <var>_</var>, just assign the new function(s) as property.
 		 * 
@@ -1815,9 +1811,12 @@ module.exports = (function() {
 		 *            parameters will be ignored.
 		 * @return the target
 		 *
-		 * @see ##copyObj() is very similar to <var>extend()</var>, but with a slightly different and more straightforward syntax.
+		 * @see ##_.copyObj() is very similar to <var>extend()</var>, but with a slightly different and more straightforward syntax.
+		 * @see ##_.merge() copies a list of objects into a new object.
 		 */
-		'extend': extend,
+		'extend': function(target) {
+			return merge(sub(arguments, 1), target);
+		},
 
 		/*$ 
 		 * @id range 
@@ -1999,7 +1998,13 @@ module.exports = (function() {
 		 * @see ##_.filterObj() filters an object.
 		 * @see ##map() maps a list.
 		 */
-		'mapObj': mapObj,
+		'mapObj': function(obj, mapFunc) {
+			var result = {};
+			eachObj(obj, function(key, value) {
+				result[key] = mapFunc.call(obj, key, value);
+			});
+			return result;
+		},
 
 		/*$
 		 * @id filterobj
@@ -2030,7 +2035,14 @@ module.exports = (function() {
 		 * 
 		 * @see ##_.mapObj() can be used to modify the values og an object.
 		 */
-		'filterObj': filterObj,
+		'filterObj': function(obj, f) {
+			var r = {};
+			eachObj(obj, function(key, value) {
+				if (f.call(obj, key, value))
+					r[key] = value;
+			});
+			return r;
+		},
 
 		/*$
 		 * @id islist
@@ -2594,7 +2606,9 @@ module.exports = (function() {
 		 * @param ignoreWhitespace if true and a string was given, <var>isEmpty</var> will also return true if the string contains only whitespace.
 		 * @return true if empty, false otherwise
 		 */
-		'isEmpty': isEmpty,
+		'isEmpty': function(s, ignoreWhitespace) {
+			return s == _null || !s.length || (ignoreWhitespace && /^\s*$/.test(s));
+		},
 
 		/*$
 		 * @id escaperegexp
@@ -2652,6 +2666,7 @@ module.exports = (function() {
 		 * @name _.format() 
 		 * @syntax _.format()
 		 * @syntax _.format(template, object)
+		 * @syntax _.format(template, object, escapeFunction)
 	   	 * @module UTIL
 		 * Formats an object using a ##template#template##. The template syntax is shared with ##_.template(). The only difference is that
 		 * <var>format()</var> frees you from the extra step of creating the template. In any case, whether you use 
@@ -2659,8 +2674,11 @@ module.exports = (function() {
 		 * every template is cached and consumes memory.<br/>
 		 * If you only want to format a single value, use ##_.formatValue().
 		 * 
+		 * @example Format a name:
+		 * <pre>var s = _.formatHtml("{{first}} {{last}}", {first: 'Tim', last: 'Taylor'});</pre>
+		 * 
 		 * @example Format a list of dates:
-		 * <pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+		 * <pre>var s = _.format("{{each}}{{this :: yyyy-MM-dd}}{{/each}}", dateList);</pre>
 		 * 
 		 * @param template The ##template#template## as a string. The template, once created, will be cached. 
 		 * @param object the object to format 
@@ -2821,10 +2839,13 @@ module.exports = (function() {
 		 * every template is cached and consumes memory.<br/>
 		 * If you only want to format a single value, use ##_.formatValue().
 		 * 
-		 * @example Format a list of dates:
-		 * <pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+		 * @example Format a name:
+		 * <pre>var s = _.formatHtml("{{first}} {{last}}", {first: 'Tim', last: 'Taylor'});</pre>
 		 * 
-		 * @param template The #template as a string. The template, once created, will be cached.
+		 * @example Format a list of dates:
+		 * <pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd}}{{/each}}", dateList);</pre>
+		 * 
+		 * @param template The ##template#template## as a string. The template, once created, will be cached.
 		 * @param object the object to format 
 		 * @return the string created by the template
 		 *

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>$$() - Minified.js</title>
 
+
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
 
 
@@ -34,18 +35,27 @@
 <h2><a name="doc-dollardollar">$$()</a></h2>
 <div class="summary">Returns a DOM object containing the first match of the given selector, or <span class="var">undefined</span> if no match was found.</div>
 
-<div class="availability">Web module only.</div><h4>Syntax</h4>
+<div class="availability">Web module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">$$(selector)</div>
+<div class="syntax">$(selector)</div>
+<div class="syntax">$(selector, context)</div>
+<div class="syntax">$(selector, context, childOnly)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="dollardollar_selector" class=""><a name="dollardollar_selector"><var>selector</var></a></dt>
-<dd class="">a simple, CSS-like selector for the element. Uses the full syntax described in <code><a href="dollar.html" class="func">$()</a></code>. The most common
+<dd class="">a simple, CSS-like selector for the element. Uses the same syntax as <code><a href="dollar.html" class="func">$()</a></code>. The most common
 parameter for this function is the id selector with the syntax "#id".</dd>
-<dt id="dollardollar_RETURN" class="returnValue inSyntax0"><a name="dollardollar_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">a DOM object of the first match, or <span class="var">undefined</span> if the selector did not return at least one match
+<dt id="dollardollar_context" class=""><a name="dollardollar_context"><var>context (optional)</var></a></dt>
+<dd class="">an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection. The context can be specified as
+a selector, a list or using a single object, just like the first argument.
+The returned list will contain only descendants of the context nodes. All others will be filtered out.</dd>
+<dt id="dollardollar_childOnly" class=""><a name="dollardollar_childOnly"><var>childOnly (optional)</var></a></dt>
+<dd class="">if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not
+true, all descendants of the context will be included.</dd>
+<dt id="dollardollar_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="dollardollar_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2">a DOM object of the first match, or <span class="var">undefined</span> if the selector did not return at least one match
 </dd>
 </dl>
 
@@ -122,6 +132,7 @@ var disqus_url = "http://minifiedjs.com/api/dollardollar.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
@@ -154,6 +165,8 @@ var disqus_url = "http://minifiedjs.com/api/dollardollar.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
@@ -208,8 +221,8 @@ var disqus_url = "http://minifiedjs.com/api/dollardollar.html";
 
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

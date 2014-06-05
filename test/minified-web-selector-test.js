@@ -217,6 +217,14 @@ describe('minified-web-selector-test.js', function() {
 		it('takes the first element of a list', function() {
 			check(/^div$/i.test($$("div").tagName));
 		});
+		it('supports contexts', function() {
+			check($$("#a", "#container") === document.getElementById("a"));
+			check($$(".y", "#c") === document.getElementById("c_a"));
+		});
+		it('supports the child-only parameter', function() {
+   			check($$("div", "#c", true) === document.getElementById("c_a"), true);
+		});
+
 	});
 
 	
@@ -328,7 +336,7 @@ describe('minified-web-selector-test.js', function() {
   			m = $('#a_a').up('#container');
    			containsAll(m, [document.getElementById("container")], true, 'single parent by id');
    			
-   			m = $('#a_a, #b_a').up('#container');
+   			m = $('#a_a, #b_a').up('#container', 1);
    			containsAll(m, [document.getElementById("container")], true, 'common parent by id');
    			
    			m = $('#a_a, #b_a').up('#idontexist');
@@ -342,6 +350,10 @@ describe('minified-web-selector-test.js', function() {
 
    			m = $('#a_a, #b_a').up(function(n) { return n.id == 'container'; });
    			containsAll(m, [$$('#container')], true, 'parent by function');
+   			
+   			var e;
+   			EE('div', EE('span', EE('div', e = EE('hr'))));
+   			check(e.up('div', 100).length, 2);
 		});
 	});
 

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>.ht() - Minified.js</title>
 
+
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
 
 
@@ -36,12 +37,9 @@
 
 <div class="availability">Complete distribution only, not available in stand-alone modules.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
-<div class="syntax">list.ht(templateString)</div>
-<div class="syntax">list.ht(templateString, object)</div>
-<div class="syntax">list.ht(templateFunction)</div>
-<div class="syntax">list.ht(templateFunction, object)</div>
-<div class="syntax">list.ht(idSelector)</div>
-<div class="syntax">list.ht(idSelector, object)</div>
+<div class="syntax">list.ht(templateString, object...)</div>
+<div class="syntax">list.ht(templateFunction, object...)</div>
+<div class="syntax">list.ht(idSelector, object...)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -62,10 +60,11 @@ of the specified &lt;script> element as template. This allows you to put your te
 a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
 contain any spaces is used as selector.</dd>
 <dt id="ht_object" class=""><a name="ht_object"><var>object (optional)</var></a></dt>
-<dd class="">the object to pass to the template. If object is not set, the template is called with <span class="var">undefined</span>
-as object.</dd>
-<dt id="ht_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="ht_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">the current list
+<dd class="">one or more objects to pass to the template. If object is not set, the template is called with <span class="var">undefined</span>
+as object. If exactly one object is given, it is passed directly to the template. If you specify more than one
+object, they are <a href="merge.html" class="func">merged</a>.</dd>
+<dt id="ht_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="ht_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2">the current list
 </dd>
 </dl>
 
@@ -169,6 +168,7 @@ var disqus_url = "http://minifiedjs.com/api/ht.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
@@ -201,6 +201,8 @@ var disqus_url = "http://minifiedjs.com/api/ht.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
@@ -255,8 +257,8 @@ var disqus_url = "http://minifiedjs.com/api/ht.html";
 
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

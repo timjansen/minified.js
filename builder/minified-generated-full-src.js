@@ -130,35 +130,37 @@ define('minified', function() {
 
 	/**
 	 * @const
+	 * @type {!string}
 	 */
-	var _document = document;
-	
+	var MINIFIED_MAGIC_NODEID = 'Nia';
+
 	/**
 	 * @const
 	 * @type {!string}
 	 */
-	var MINIFIED_MAGIC_NODEID = 'Mid';
+	var MINIFIED_MAGIC_PREV = 'NiaP';
 
+	var setter = {}, getter = {};
 	
 	var idSequence = 1;  // used as node id to identify nodes, and as general id for other maps
 
 	// @condblock ie8compatibility
-	var registeredEvents = {}; // nodeId -> [handler objects]
+	var registeredEvents = {}; // nodeId -> [handler objects] ; for on()
 	// @condend
-
 	
+
 	/*$
 	 * @id ready_vars
 	 * @dependency
 	 */
 	/** @type {!Array.<function()>} */
-	var DOMREADY_HANDLER = /^[ic]/.test(_document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
+	var DOMREADY_HANDLER = /^[ic]/.test(document['readyState']) ? _null : []; // check for 'interactive' and 'complete'
 	/*$
 	 * @id animation_vars
 	 * @dependency
 	 */
-	var ANIMATION_HANDLERS = {}; // global map of id->run() currently active
-	var ANIMATION_HANDLER_COUNT = 0; // number of active handlers
+	var animationHandlers = {}; // global map of id->run() currently active
+	var animationHandlerCount = 0; // number of active handlers
 	
 
 	/*$
@@ -182,7 +184,7 @@ define('minified', function() {
 	 * The only difference for Minified between IE8 and IE9 is the lack of support for the CSS opacity attribute in IE8,
 	 * and the existence of cssText (which is used instead of the style attribute).
 	 */
-	 var IS_PRE_IE9 = !!_document['all'] && !_document['addEventListener'];
+	 var IS_PRE_IE9 = !!document['all'] && !document['addEventListener'];
 	/*$
 	 * @id ie7compatibility
 	 * @group OPTIONS
@@ -204,15 +206,6 @@ define('minified', function() {
 	 * The only difference for Minified between IE6 and IE7 is the lack of a native XmlHttpRequest in IE6 which makes the library a tiny 
 	 * little bit larger.
 	 */
-
-	/*$
-	 * @id scrollxy
-	 * @requires set 
-	 * @group ANIMATION
-	 * @configurable default
-	 * @doc no
-	 * @name Support for $$scrollX and $$scrollY
-	 */
 	/*$
 	 * @stop
 	 */
@@ -226,7 +219,7 @@ define('minified', function() {
 	 * This id allows identifying whether the Util module is available.
 	 */
 	
-	var _null = null, _true = true, _false = false;
+	var _null = null;
 
 	/** @const */
 	var undef;
@@ -326,7 +319,7 @@ define('minified', function() {
 		return isObject(n) && !!n['getDay'];
 	}
 	function isBool(n) {
-		return n === _true || n === _false;
+		return n === true || n === false;
 	}
 	function isValue(n) {
 		var type = typeof n;
@@ -347,9 +340,6 @@ define('minified', function() {
 	function trim(s) {
 		return replace(s, /^\s+|\s+$/g);
 	}
-	function isEmpty(s, ignoreWhitespace) {
-		return s == _null || !s.length || (ignoreWhitespace && /^\s*$/.test(s));
-	}
 	function eachObj(obj, cb) {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
@@ -361,14 +351,6 @@ define('minified', function() {
 			for (var i = 0; i < list.length; i++)
 				cb.call(list, list[i], i);
 		return list;
-	}
-	function filterObj(obj, f) {
-		var r = {};
-		eachObj(obj, function(key, value) {
-			if (f.call(obj, key, value))
-				r[key] = value;
-		});
-		return r;
 	}
 	function filter(list, filterFuncOrObject) {
 		var r = []; 
@@ -405,22 +387,6 @@ define('minified', function() {
 		eachObj(obj, function(key) { list.push(key); });
 		return list;
 	}
-	function values(obj, keys) {
-		var list = [];
-		if (keys)
-			each(keys, function(value) { list.push(obj[value]); });
-		else
-			eachObj(obj, function(key, value) { list.push(value); });
-		return list;
-	}	
-	
-	function mapObj(list, mapFunc) {
-		var result = {};
-		eachObj(list, function(key, value) {
-			result[key] = mapFunc.call(list, key, value);
-		});
-		return result;
-	}
 	function map(list, mapFunc) {
 		var result = [];
 		each(list, function(item, index) {
@@ -431,7 +397,7 @@ define('minified', function() {
 	function startsWith(base, start) {
 		if (isList(base)) {
 			var s2 = _(start); // convert start as we don't know whether it is a list yet
-			return equals(_(base).sub(0, s2.length), s2);
+			return equals(sub(base, 0, s2.length), s2);
 		}
 		else
 			return start != _null && base.substr(0, start.length) == start;
@@ -439,7 +405,7 @@ define('minified', function() {
 	function endsWith(base, end) {
 		if (isList(base)) {
 			var e2 = _(end);
-			return _(base).sub(-e2.length).equals(e2) || !e2.length;
+			return equals(sub(base, -e2.length), e2) || !e2.length;
 		}
 		else
 			return end != _null && base.substr(base.length - end.length) == end;
@@ -451,15 +417,6 @@ define('minified', function() {
 		else
 			return replace(list, /[\s\S]/g, function() { return list.charAt(--len); });
 	}
-	function sub(list, startIndex, endIndex) {
-		if (!list)
-			return [];
-		var s = getFindIndex(list, startIndex, 0);
-		var e = getFindIndex(list, endIndex, list.length);
- 		return filter(list, function(o, index) { 
- 			return index >= s && index < e; 
- 		});
- 	}
 	function toObject(list, value) {
 		var obj = {};
 		each(list, function(item, index) {
@@ -467,26 +424,23 @@ define('minified', function() {
 		});
 		return obj;
 	}
-	function copyObj(from, to, dontOverwrite) {
-		eachObj(from, function(name, value) {
-			if (to[name] == _null || !dontOverwrite)
-				to[name] = value;
-		});
-		return to;
+	function copyObj(from, to) {
+		var dest = to || {};
+        for (var name in from)
+        	dest[name] = from[name];
+        return dest;
 	}
-	function extend(target) {
-		for (var i = 1; i < arguments.length; i++)
-			eachObj(arguments[i], function(name, value) {
-				if (value != undef)
-					target[name] = value;
-			});
-		return target;
+	function merge(list, target) {
+		var o = target;
+		for (var i = 0; i < list.length; i++)
+			o = copyObj(list[i], o);
+		return o;
 	}
 	function getFindFunc(findFunc) {
 		return isFunction(findFunc) ? findFunc : function(obj, index) { if (findFunc === obj) return index; };
 	}
 	function getFindIndex(list, index, defaultIndex) {
-		return index == _null ? defaultIndex : index < 0 ? list.length+index : index;
+		return index == _null ? defaultIndex : index < 0 ? Math.max(list.length+index, 0) : Math.min(list.length, index);
 	}
 	function find(list, findFunc, startIndex, endIndex) {
 		var f = getFindFunc(findFunc);
@@ -504,7 +458,15 @@ define('minified', function() {
 			if ((r = f.call(list, list[i], i)) != _null)
 				return r;
 	}
-	
+	function sub(list, startIndex, endIndex) {
+		var r = [];
+		if (list) {
+			var e = getFindIndex(list, endIndex, list.length);
+			for (var i = getFindIndex(list, startIndex, 0); i < e; i++)
+				r.push(list[i]);
+		}
+		return r;
+ 	}
 	function array(list) {
 		return map(list, nonOp);
 	}
@@ -517,7 +479,7 @@ define('minified', function() {
 		var found = {};
 		return filter(list, function(item) {
 			if (found[item])
-				return _false;
+				return false;
 			else
 				return found[item] = 1;
 		});
@@ -533,8 +495,8 @@ define('minified', function() {
 	function contains(list, value) { // TODO: can Array.indexOf be used in >IE8?
 		for (var i = 0; i < list.length; i++)
 			if (list[i] == value)
-				return _true;
-		return _false;
+				return true;
+		return false;
 	}
 	// equals if a and b have the same elements and all are equal. Supports getters.
 	function equals(x, y) {
@@ -542,16 +504,16 @@ define('minified', function() {
 		var b = isFunction(y) ? y() : y;
 		var aKeys;
 		if (a == b)
-			return _true;
+			return true;
 		else if (a == _null || b == _null)
-			return _false;
+			return false;
 		else if (isValue(a) || isValue(b))
 			return isDate(a) && isDate(b) && +a==+b;
 		else if (isList(a)) {
 			return (a.length == b.length) &&
 				!find(a, function(val, index) {
 					if (!equals(val, b[index]))
-						return _true;
+						return true;
 				});
 		}
 		else {
@@ -559,18 +521,11 @@ define('minified', function() {
 				((aKeys = keys(a)).length == keyCount(b)) && 
 				!find(aKeys, function(key) {
 						if (!equals(a[key],b[key]))
-							return _true;
+							return true;
 				});
 		}
 	}
 	
-	function once(f) {
-		var called = 0;
-		return function() {
-			if (!(called++))
-				return call(f, this, arguments);
-		};
-	}
 	function call(f, fThisOrArgs, args) {
 		if (isFunction(f))
 			return f.apply(args && fThisOrArgs, map(args || fThisOrArgs, nonOp));
@@ -596,16 +551,16 @@ define('minified', function() {
 
 	
 	function processNumCharTemplate(tpl, input, fwd) {
-		var inputPos = 0;
 		var inHash;
+		var inputPos = 0;
 		var rInput = fwd ? input : reverse(input);
 		var s = (fwd ? tpl : reverse(tpl)).replace(/./g, function(tplChar) {
 			if (tplChar == '0') {
-				inHash = _false;
+				inHash = false;
 				return rInput.charAt(inputPos++) || '0';
 			}
 			else if (tplChar == '#') {
-				inHash = _true;
+				inHash = true;
 				return rInput.charAt(inputPos++) || '';
 			}
 			else
@@ -617,7 +572,7 @@ define('minified', function() {
 	function getTimezone(match, idx, refDate) { // internal helper, see below
 		if (idx == _null || !match)
 			return 0;
-		return parseInt(match[idx])*60 + parseInt(match[idx+1]) + refDate.getTimezoneOffset();
+		return parseFloat(match[idx])*60 + parseFloat(match[idx+1]) + refDate.getTimezoneOffset();
 	}
 	
 	
@@ -626,8 +581,8 @@ define('minified', function() {
 	// e.g. 0:no item|1:one item|>=2:# items
 	// <value>="null" used to compare with nulls.
 	// choice also works with strings or bools, e.g. ERR:error|WAR:warning|FAT:fatal|ok
-	function formatValue(format, value) {
-		format = replace(format, /^\?/);
+	function formatValue(fmt, value) {
+		var format = replace(fmt, /^\?/);
 		if (isDate(value)) {
 			var timezone, match;
 
@@ -641,8 +596,8 @@ define('minified', function() {
 				var val = FORMAT_DATE_MAP[placeholderChar];
 				if (val) {
 					var d = value['get' + val[0]]();
-					
 					var optionArray = (params && params.split(','));
+					
 					if (isList(val[1])) 
 						d = (optionArray || val[1])[d];
 					else
@@ -660,7 +615,7 @@ define('minified', function() {
 			return find(format.split(/\s*\|\s*/), function(fmtPart) {
 				var match, numFmtOrResult;
 				if (match = /^([<>]?)(=?)([^:]*?)\s*:\s*(.*)$/.exec(fmtPart)) {
-					var cmpVal1 = value, cmpVal2 = parseFloat(match[3]);
+					var cmpVal1 = value, cmpVal2 = +(match[3]);
 					if (isNaN(cmpVal2) || !isNumber(cmpVal1)) {
 						cmpVal1 = (cmpVal1==_null) ? "null" : toString(cmpVal1); // not ""+value, because undefined is treated as null here
 						cmpVal2 = match[3];
@@ -684,7 +639,7 @@ define('minified', function() {
 						var signed = value < 0 ? '-' : '';
 						var numData = /(\d+)(\.(\d+))?/.exec((signed?-value:value).toFixed(decimalFmt ? decimalFmt[3].length:0));
 						var preDecimalFmt = decimalFmt ? decimalFmt[1] : numFmt;
-						var postDecimal = decimalFmt ? processNumCharTemplate(decimalFmt[3], replace(numData[3], /0+$/), _true) : '';
+						var postDecimal = decimalFmt ? processNumCharTemplate(decimalFmt[3], replace(numData[3], /0+$/), true) : '';
 						
 						return 	(signed ? '-' : '') + 
 								(preDecimalFmt == '#' ? numData[1] : processNumCharTemplate(preDecimalFmt, numData[1])) +
@@ -696,19 +651,17 @@ define('minified', function() {
 			});
 	}
 	// returns date; null if optional and not set; undefined if parsing failed
-	function parseDate(format, date) {
+	function parseDate(fmt, date) {
 		var indexMap = {}; // contains reGroupPosition -> typeLetter or [typeLetter, value array]
 		var reIndex = 1;
 		var timezoneOffsetMatch;
 		var timezoneIndex;
 		var match;
 	
-		if (/^\?/.test(format)) {
-			if (!trim(date))
-				return _null;
-			format = format.substr(1);
-		}
-		
+		var format = replace(fmt, /^\?/);
+		if (format!=fmt && !trim(date))
+			return _null;
+
 		if (match = /^\[([+-]\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
 			timezoneOffsetMatch = match;
 			format = match[3];
@@ -727,10 +680,10 @@ define('minified', function() {
 			}
 			else if (/[Nna]/.test(placeholderChar)) {
 				indexMap[reIndex++] = [placeholderChar, param && param.split(',')];
-				return "([a-zA-Z\x80�\u1fff]+)"; 
+				return "([a-zA-Z\\u0080-\\u1fff]+)";
 			}
 			else if (/w/i.test(placeholderChar))
-				return "[a-zA-Z\x80�\u1fff]+";
+			    return "[a-zA-Z\\u0080-\\u1fff]+";
 			else if (/\s/.test(placeholderChar))
 				return "\\s+"; 
 			else 
@@ -758,7 +711,7 @@ define('minified', function() {
 					ctorArgs[ctorIndex] = listValue;
 			}
 			else if (indexEntry) { // for numeric values (yHmMs)
-				var value = parseInt(matchVal);
+				var value = parseFloat(matchVal);
 				var mapEntry  = PARSE_DATE_MAP[indexEntry];
 				if (isList(mapEntry))
 					ctorArgs[mapEntry[0]] += value - mapEntry[1];
@@ -771,14 +724,10 @@ define('minified', function() {
 	}
 	// format ?##00,00##
 	// returns number; null if optional and not set; undefined if parsing failed
-	function parseNumber(format, value) {
-		if (arguments.length == 1)
-			return parseNumber(_null, format);
-		if (/^\?/.test(format)) {
-			if (!trim(value))
-				return _null;
-			format = format.substr(1);
-		}
+	function parseNumber(fmt, value) {
+		var format = replace(fmt, /^\?/);
+		if (format!=fmt && !trim(value))
+			return _null;
 		var decSep = (/(^|[^0#.,])(,|[0#.]*,[0#]+|[0#]+\.[0#]+\.[0#.,]*)($|[^0#.,])/.test(format)) ? ',' : '.';
 		var r = parseFloat(replace(replace(replace(value, decSep == ',' ? /\./g : /,/g), decSep, '.'), /^[^\d-]*(-?\d)/, '$1'));
 		return isNaN(r) ? undef : r;
@@ -838,7 +787,7 @@ define('minified', function() {
 		return replace(s, /[\x00-\x1f'"\u2028\u2029]/g, ucode);
 	}
 
-	// reimplemented split for IE<=8
+	// reimplemented split for IE8
 	function split(str, regexp) {
 		// @condblock ie8compatibility
 		var start = 0;
@@ -939,11 +888,6 @@ define('minified', function() {
 		return v && v.length != _null && !isString(v) && !isNode(v) && !isFunction(v) && v !== _window;
 	}
 	
-	function wordRegExpTester(name, prop) {
-		var re = RegExp('(^|\\s)' + name + '(?=$|\\s)', 'i');
-		return function(obj) {return  name ? re.test(obj[prop]) : _true;};
-	}
-
 	// used by IE impl of on() only
 	function push(obj, prop, value) {
 		(obj[prop] = (obj[prop] || [])).push(value);
@@ -972,9 +916,9 @@ define('minified', function() {
 		
 		flexiEach(list, function(value) {
 			flexiEach(func(value), function(node) {
-				if (isNode(node) &&!nodeIds[currentNodeId = getNodeId(node)]) {
+				if (!nodeIds[currentNodeId = getNodeId(node)]) {
 					result.push(node);
-					nodeIds[currentNodeId] = _true;
+					nodeIds[currentNodeId] = true;
 				}
 			});
 		});
@@ -997,18 +941,19 @@ define('minified', function() {
 		return function(event, triggerOriginalTarget) {
 			var stop;
 			var e = event || _window.event;
-			var match = !selectorFilter, el = triggerOriginalTarget || e['target'];
+			var match = !selectorFilter, el = triggerOriginalTarget || e['target'] || e['srcElement'];
 			if (selectorFilter)
 				while (el && el != registeredOn && !(match = selectorFilter(el)))
 					el = el['parentNode'];
+
 			if (match && 
 			   (stop = (((!handler.apply($(selectorFilter ? el : registeredOn), args || [e, index])) || prefix=='') && prefix != '|')) && 
 			   !triggerOriginalTarget) {
-				if (e['stopPropagation']) {// W3C DOM3 event cancelling available?
+				if (e['preventDefault']) {// W3C DOM3 event cancelling available?
 					e['preventDefault']();
 					e['stopPropagation']();
 				}
-				e['cancelBubble'] = _true; // cancel bubble for IE
+				e['cancelBubble'] = true; // cancel bubble for IE
 			}
 			return !stop;
 		};
@@ -1024,19 +969,21 @@ define('minified', function() {
 				flexiEach(subSelector ? dollarRaw(subSelector, baseElement) : baseElement, function(el) {
 					flexiEach(toString(eventSpec).split(/\s/), function(namePrefixed) {
 						var name = replace(namePrefixed, /[?|]/);
+						var capture = !!bubbleSelector && (name == 'blur' || name == 'focus'); // bubble selectors for 'blur' and 'focus' registered as capuring!
 						var miniHandler = createEventHandler(handler, el, args,	index, replace(namePrefixed, /[^?|]/g), bubbleSelector && getFilterFunc(bubbleSelector, el));
 		
-						var handlerDescriptor = {'e': el,          // the element  
-								                 'h': miniHandler, // minified's handler 
-								                 'n': name         // event type        
+						var handlerDescriptor = {element: el,          
+								                 handlerFunc: miniHandler, 
+								                 eventType: name,
+								                 capture: capture
 								                };
 						push(handler, 'M', handlerDescriptor);
 						if (IS_PRE_IE9) {
-							el.attachEvent('on'+name, miniHandler);  // IE < 9 version
+							el.attachEvent('on'+handlerDescriptor.eventType + (capture ? 'in' : ''), miniHandler);  // IE < 9 version
 							push(registeredEvents, getNodeId(el), handlerDescriptor);
 						}
 						else {
-							el.addEventListener(name, miniHandler, _false); // W3C DOM
+							el.addEventListener(name, miniHandler, capture); // W3C DOM
 							push(el, 'M', handlerDescriptor);
 						}
 					});
@@ -1054,38 +1001,42 @@ define('minified', function() {
 			return this['each'](function(baseElement, index) {
 				flexiEach(subSelector ? dollarRaw(subSelector, baseElement) : baseElement, function(registeredOn) {
 					flexiEach(toString(eventSpec).split(/\s/), function(namePrefixed) {
-						var name = replace(namePrefixed, /[?|]/);
+						var name = replace(namePrefixed, /[?|]/g);
 						var prefix = replace(namePrefixed, /[^?|]/g);
+						var capture = (name == 'blur' || name == 'focus') && !!bubbleSelector; // bubble selectors for 'blur' and 'focus' registered as capuring!
+						var triggerId = idSequence++;
 
-						var miniHandler = function(event, triggerOriginalTarget) {
-							var stop;
+						// returns true if processing should be continued
+						function triggerHandler(eventName, event, target) {
 							var match = !bubbleSelector;
-							var el = bubbleSelector ? (triggerOriginalTarget || event['target']) : registeredOn;
+							var el = bubbleSelector ? target : registeredOn;
 							if (bubbleSelector) {
 								var selectorFilter = getFilterFunc(bubbleSelector, registeredOn);
 								while (el && el != registeredOn && !(match = selectorFilter(el)))
 									el = el['parentNode'];
 							}
-							if (match && (stop = (((!handler.apply($(el), args || [event, index])) || prefix=='') && prefix != '|')) && !triggerOriginalTarget) {
+							return (name != eventName) || (match && ((handler.apply($(el), args || [event, index]) && prefix=='?') || prefix == '|'));
+						};
+						
+						function miniHandler(event) {
+							if (!triggerHandler(name, event, event['target'])) {
 								event['preventDefault']();
 								event['stopPropagation']();
 							}
-							return !stop;
 						};
+
 						
-						var triggerId = idSequence++;
+						registeredOn.addEventListener(name, miniHandler, capture);
 						
-						registeredOn['M'] = registeredOn['M'] || {};
-						registeredOn['M'][triggerId] = function(eventName, eventObj, element) { // this function will be called by trigger()
-							return (name == eventName) && !miniHandler(eventObj, element);
-						};
+						if (!registeredOn['M']) 
+							registeredOn['M'] = {};
+						registeredOn['M'][triggerId] = triggerHandler;                  // to be called by trigger()
 						
 						handler['M'] = collector(flexiEach, [handler['M'], function () { // this function will be called by off()
-							registeredOn.removeEventListener(name, miniHandler, _false);
+							registeredOn.removeEventListener(name, miniHandler, capture);
 							delete registeredOn['M'][triggerId];
 						}], nonOp);
 						
-						registeredOn.addEventListener(name, miniHandler, _false);
 					});
 				});
 			});
@@ -1096,12 +1047,12 @@ define('minified', function() {
 	function off(handler) {
 	   	flexiEach(handler['M'], function(h) {
 			if (IS_PRE_IE9) {
-				h['e'].detachEvent('on'+h['n'], h['h']);  // IE < 9 version
-				removeFromArray(registeredEvents[h['e'][MINIFIED_MAGIC_NODEID]], h);
+				h.element.detachEvent('on'+h.eventType + (h.capture ? 'in' : ''), h.handlerFunc);  // IE < 9 version
+				removeFromArray(registeredEvents[h.element[MINIFIED_MAGIC_NODEID]], h);
 			}
 			else {
-				h['e'].removeEventListener(h['n'], h['h'], _false); // W3C DOM
-				removeFromArray(h['e']['M'], h);
+				h.element.removeEventListener(h.eventType, h.handlerFunc, h.capture); // W3C DOM
+				removeFromArray(h.element['M'], h);
 			}
 		});
 		handler['M'] = _null;
@@ -1110,22 +1061,16 @@ define('minified', function() {
 
 	// @condblock !ie8compatibility 
 	function off(handler) {
-	   	flexiEach(handler['M'], call);
+		callList(handler['M']);
 		handler['M'] = _null;
 	}
 	// @condend !ie8compatibility 
 
-	// for remove & window.unload
+	// for remove & window.unload, IE only
 	function detachHandlerList(dummy, handlerList) {
 		flexiEach(handlerList, function(h) {
-			h['e'].detachEvent('on'+h['n'], h['h']);
+			h.element.detachEvent('on'+h.eventType, h.handlerFunc);
 		});
-	}
-	
-	// for ready()
-	function triggerDomReady() {
-		flexiEach(DOMREADY_HANDLER, call);
-		DOMREADY_HANDLER = _null;
 	}
 	
 	function ready(handler) {
@@ -1135,12 +1080,12 @@ define('minified', function() {
 			setTimeout(handler, 0);
 	}
 
-	function $$(selector) {
-		return dollarRaw(selector)[0];
+	function $$(selector, context, childrenOnly) {
+		return dollarRaw(selector, context, childrenOnly)[0];
 	}
 
 	function EE(elementName, attributes, children) {
-		var e = $(_document.createElement(elementName));
+		var e = $(document.createElement(elementName));
 		// @condblock UTIL
 		// this attributes != null check is only required with Util's isObject() implementation. Web's isObject() is simpler.
 		return (isList(attributes) || (attributes != _null && !isObject(attributes)) ) ? e['add'](attributes) : e['set'](attributes)['add'](children);
@@ -1151,17 +1096,15 @@ define('minified', function() {
 	function clone(listOrNode) {
 		return collector(flexiEach, listOrNode, function(e) {
 			var c;
-		     if (isString(e))
-		    	 return e;
-		     else if (isList(e))
-		    	 return clone(e);
-		     else if (isNode(e)) {
-		    	 c = e['cloneNode'](_true);
-		    	 c['removeAttribute']('id');
-		    	 return c;
-		     }
-		     else
-		    	 return _null;
+			if (isList(e))
+				return clone(e);
+			else if (isNode(e)) {
+				c = e['cloneNode'](true); 
+				c['removeAttribute'] && c['removeAttribute']('id');
+				return c;
+			}
+		    else
+		    	return e;
 		});
    }
    
@@ -1172,7 +1115,6 @@ define('minified', function() {
 	
 	function $(selector, context, childOnly) { 
 		// @condblock ready
-		// isList(selector) is no joke, older Webkit versions return a function for childNodes...
 		return isFunction(selector) ? ready(selector) : new M(dollarRaw(selector, context, childOnly));
 		// @condend
 		// @cond !ready return new M(dollarRaw(selector, context));
@@ -1197,6 +1139,11 @@ define('minified', function() {
 			else
 				return retList;
 		}
+		function wordRegExpTester(name, prop) {
+			var re = RegExp('(^|\\s+)' + name + '(?=$|\\s)', 'i');
+			return function(obj) {return  name ? re.test(obj[prop]) : true;};
+		}
+
 		
 		var parent, steps, dotPos, subSelectors;
 		var elements, regexpFilter, useGEbC, className, elementName;
@@ -1215,14 +1162,14 @@ define('minified', function() {
 			return dollarRaw(steps[2], dollarRaw(steps[1], parent), childOnly);
 	
 		if (selector != (subSelectors = replace(selector, /^#/)))
-			return filterElements(_document.getElementById(subSelectors)); 
+			return filterElements(document.getElementById(subSelectors)); 
 	
 		elementName = (dotPos = /([\w-]*)\.?([\w-]*)/.exec(selector))[1];
 		className = dotPos[2];
-		elements = (useGEbC = _document.getElementsByClassName && className) ? (parent || _document).getElementsByClassName(className) : (parent || _document).getElementsByTagName(elementName || '*'); 
+		elements = (useGEbC = document.getElementsByClassName && className) ? (parent || document).getElementsByClassName(className) : (parent || document).getElementsByTagName(elementName || '*'); 
 	
 		if (regexpFilter = useGEbC ? elementName : className)
-			elements =  filter(elements, wordRegExpTester(regexpFilter, useGEbC ? 'nodeName' : 'className'));
+			elements =  filter(elements, wordRegExpTester(regexpFilter, useGEbC ? 'tagName' : 'className'));
 		return childOnly ? filterElements(elements) : elements;
 	};
 	// @condend ie7compatibility
@@ -1252,7 +1199,7 @@ define('minified', function() {
 		          
 		 }
 		 else if (isString(selector))
-		      return _document.querySelectorAll(selector);
+		      return document.querySelectorAll(selector);
 		 else
 		      return collector(flexiEach, selector, flatten);
 	};
@@ -1263,6 +1210,11 @@ define('minified', function() {
 	// Please note that the context is not evaluated for the '*' and 'tagname.classname' patterns, because context is used only
 	// by on(), and in on() only nodes in the right context will be checked
 	function getFilterFunc(selector, context) {
+		function wordRegExpTester(name, prop) {
+			var re = RegExp('(^|\\s+)' + name + '(?=$|\\s)', 'i');
+			return function(obj) {return  name ? re.test(obj[prop]) : true;};
+		}
+
 		var nodeSet = {};
 		var dotPos = nodeSet;
 		if (isFunction(selector))
@@ -1271,9 +1223,9 @@ define('minified', function() {
 			return function(v, index) { return index == selector; };
 		else if (!selector || selector == '*' ||
 				 (isString(selector) && (dotPos = /^([\w-]*)\.?([\w-]*)$/.exec(selector)))) {
-			var nodeNameFilter = wordRegExpTester(dotPos[1], 'nodeName');
+			var nodeNameFilter = wordRegExpTester(dotPos[1], 'tagName');
 			var classNameFilter = wordRegExpTester(dotPos[2], 'className');
-			return function(v) { 
+			return function(v) {
 				return isNode(v) == 1 && nodeNameFilter(v) && classNameFilter(v);
 			};
 		}
@@ -1283,7 +1235,7 @@ define('minified', function() {
 			};
 		else {
 			$(selector)['each'](function(node) {
-				nodeSet[getNodeId(node)] = _true;
+				nodeSet[getNodeId(node)] = true;
 			});
 			return function(v) { 
 				return nodeSet[getNodeId(v)]; 
@@ -1293,7 +1245,7 @@ define('minified', function() {
 	
 	function getInverseFilterFunc(selector) {
 		var f = getFilterFunc(selector);
-		return function(v) {return f(v) ? _null : _true;};
+		return function(v) {return f(v) ? _null : true;};
 	}
 	///#/snippet webFunctions
 	
@@ -1312,12 +1264,16 @@ define('minified', function() {
 	 * @name _.promise()
 	 * @configurable default
 	 * @syntax _.promise()
+	 * @syntax _.promise(callback)
 	 * @syntax _.promise(otherPromise...)
 	 * @module WEB+UTIL
 	 * 
 	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, 
 	 * a fresh new promise is returned. The returned promise is a function that can be called directly to change the 
 	 * promise's state.
+	 * 
+	 * Alternatively you can provide a callback that will be invoked with one function to fulfill the promise and a function
+	 * to reject it. This is the ES6-compatible way of using Minified's promise implementation.
 	 * 
 	 * If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards 
 	 * fulfillment and rejection with the original values.
@@ -1332,13 +1288,23 @@ define('minified', function() {
 	 *     promise as third.
 	 * </li></ul>
 	 * 
-	 * @example A simple promise that is fulfilled after 1 second:
+	 * @example A simple promise that is fulfilled after 1 second, using Minified's invocation syntax:
 	 * <pre>var p = _.promise();
 	 * setTimeout(function() { 
 	 *     p(true, []); 
 	 * }, 1000);
 	 * </pre>
+	 /
+	 * @example A simple promise that is fulfilled after 1 second, using the ES6 syntax:
+	 * <pre>var p = _.promise(function(resolve, reject) {
+	 * 		setTimeout(resolve, 1000);
+	 * });
+	 * </pre>
 	 * 
+	 * @param callback a <code>function(resolve, reject)</code> that will be immediately invoked. The promise will be fulfilled when the callback
+	 * calls <var>resolve</var> and will be rejected if <var>reject</var> is called. <var>resolve</var> and <var>reject</var> can be called asynchronously,
+	 * after the callback returned. Both can have any number of parameters, which will be passed to the ##then() handler. Please note that this is a Minified
+	 * extension, and the Promises/A+ standard supports only a single argument.
 	 * @param otherPromise one or more promises to assimilate
 	 * @return the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
 	 * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected. If you pass <var>null</var> or
@@ -1365,7 +1331,7 @@ define('minified', function() {
 				state = newState;
 				values = isList(newValues) ? newValues : [newValues];
 				setTimeout(function() {
-					each(deferred, function(f) {f();});
+					each(deferred, function(f) {f();}); // calllist?
 				}, 0);
 			}
 			return state;
@@ -1374,23 +1340,26 @@ define('minified', function() {
 		// use promise varargs
 		each(assimilatedPromises, function assimilate(promise, index) {
 			try {
-				promise['then'](function resolvePromise(v) {
-					var then;
-					if ((isObject(v) || isFunction(v)) && isFunction(then = v['then']))
-						assimilate(then, index);
-					else {
+				if (promise['then'])
+					promise['then'](function resolvePromise(v) {
+						var then;
+						if ((isObject(v) || isFunction(v)) && isFunction(then = v['then']))
+							assimilate(then, index);
+						else {
+							values[index] = map(arguments, nonOp);
+							if (++numCompleted == assimilatedNum)
+								set(true, assimilatedNum < 2 ? values[index] : values);
+						}
+					}, 
+					function rejectPromise(e) {
 						values[index] = map(arguments, nonOp);
-						if (++numCompleted == assimilatedNum)
-							set(_true, assimilatedNum < 2 ? values[index] : values);
-					}
-				}, 
-				function rejectPromise(e) {
-					values[index] = map(arguments, nonOp);
-					set(_false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
-				});
+						set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
+					});
+				else
+					promise(function() {set(true, arguments);}, function() {set(false, arguments); });
 			}
 			catch (e) {
-				set(_false, [e, values, index]);
+				set(false, [e, values, index]);
 			}
 		});
 
@@ -1400,7 +1369,7 @@ define('minified', function() {
 		 * @name promise.stop()
 		 * @syntax promise.stop()
 		 * @module WEB+UTIL
-		 * Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by ##animate() and ##wait(). 
+		 * Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by ##request(), ##animate() and ##wait(). 
 		 * stop() invocation will be propagated over promises returned by ##then() and promises assimilated by ##promise(). You only need to invoke stop
 		 * with the last promise, and all dependent promises will automatically stop as well. 
 		 *
@@ -1504,15 +1473,15 @@ define('minified', function() {
 				   				if ((isObject(x) || isFunction(x)) && isFunction(then = x['then'])) {
 										if (x === promise2)
 											throw new TypeError();
-										then['call'](x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2(_false,[value]);});
+										then['call'](x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2(false,[value]);});
 										promise2['stop0'] = x['stop'];
 				   				}
 				   				else
-				   					promise2(_true, [x]);
+				   					promise2(true, [x]);
 		   					}
 		   					catch(e) {
 		   						if (!cbCalled++) 
-		   							promise2(_false, [e]);
+		   							promise2(false, [e]);
 		   					}
 		   				})(call(f, undef, values));
 		   			}
@@ -1520,7 +1489,7 @@ define('minified', function() {
 		   				promise2(state, values);
 				}
 				catch (e) {
-					promise2(_false, [e]);
+					promise2(false, [e]);
 				}
 			};
 			promise2['stop0'] = set['stop'];
@@ -1624,8 +1593,11 @@ define('minified', function() {
 	
 	///#snippet utilM
 	
-	/*$
-	 * @id listctor
+	/*
+	 * syntax: M(list, assimilateSublists)
+	 *         M(null, singleElement) 
+	 * 
+	 * 
 	 */
 	/** @constructor */
 	function M(list, assimilateSublists) {
@@ -1643,12 +1615,12 @@ define('minified', function() {
 			self[idx++] = assimilateSublists;
 				
 		self['length'] = idx;
-		self['_'] = _true;
+		self['_'] = true;
 	}
 	
 
 	function _() {
-		return new M(arguments, _true);
+		return new M(arguments, true);
 	}
 
 	///#/snippet utilM
@@ -2379,6 +2351,30 @@ define('minified', function() {
 	'unite': listBind(unite), 
 
 	/*$ 
+	 * @id merge 
+	 * @group LIST 
+	 * @requires
+	 * @configurable default 
+	 * @name .merge()
+	 * @altname _.merge()
+	 * @syntax list.merge() 
+	 * @syntax list.merge(target) 
+	 * @syntax _.merge(list) 
+	 * @syntax _.merge(list, target) 
+	 * @module UTIL
+	 * Takes a list of objects and copies the properties into the target object. If no target object has been given, a new object will be created.
+	 * Values will be shallow-copied. If a property is in the list more than once, the last one will be used.
+	 *
+	 * @param list The list of objects. Can be an array, a ##list#Minified list## or any other array-like structure with 
+	 *             <var>length</var> property.
+	 * @param target optional a target object to copy the properties to. If no target is given, <var>merge()</var creates a new object.
+	 * @return a new object that contains the pro
+	 * @see ##_.extend() is similar, but uses varargs.
+	 * @see ##_.copyObj() copies a single object.
+	 */
+	'merge': listBind(merge), 
+
+	/*$ 
 	 * @id uniq 
 	 * @group LIST 
 	 * @requires
@@ -2437,7 +2433,7 @@ define('minified', function() {
 	 * This method is identical to Array's built-in <var>join()</var> method and also uses it internally.
 	 *
 	 * @example Join a few string:
-	 * <pre>var sorted = _('Harry', 'Bert', 'Tom', 'Bo').join(', '); // returns 'Harry, Bert, Tom, Bo'</pre>
+	 * <pre>var joined = _('Harry', 'Bert', 'Tom', 'Bo').join(', '); // returns 'Harry, Bert, Tom, Bo'</pre>
 	 *
 	 * @param separator optional a separator to put between the joined strings. If omitted, the string "," (comma) will be used.
 	 * @param otherList The other list of values. Can be an array, a ##list#Minified list## or any other array-like structure with 
@@ -2447,7 +2443,7 @@ define('minified', function() {
 	'join': function(separator) {
 		return map(this, nonOp).join(separator);
 	},
-
+ 
 	/*$ 
 	 * @id reduce 
 	 * @group LIST 
@@ -2563,7 +2559,7 @@ define('minified', function() {
  	 * will be appended to the resulting string. Without legacy support, Minified will obtain the data using
  	 * the <var>textContent</var> property of all nodes.
  	 * 
- 	 * Please note that, unlike jQuery's <var>text()</var>, Minified's will not set text content. Use ##fill() to set text.
+ 	 * Please note that unlike jQuery's <var>text()</var>, Minified's will not set text content. Use ##fill() to set text.
  	 * 
  	 * @example Returns the text of the element with the id 'myContainer'.
  	 * <pre>
@@ -2669,59 +2665,8 @@ define('minified', function() {
 				return r;
 			}));
 	},
-	
-	/*$
- 	 * @id up
- 	 * @group SELECTORS
- 	 * @requires trav
- 	 * @configurable default
- 	 * @name .up()
- 	 * @syntax list.up()
- 	 * @syntax list.up(selector)
- 	 * @syntax list.up(filterFunc)
- 	 * @module WEB
- 	 * Finds the closest parent matching the given selector or filter function for each list element, and returns the results as a list.
- 	 * 
- 	 * <var>up(selector)</var> is just a shortcut for <code>trav('parentNode', selector, 1)</code>. 
- 	 * <var>up()</var> uses ##trav() to traverse the DOM tree using <var>parentNode</var> for each list element, until it either finds a 
- 	 * matching element or the tree's root has been reached. All matches will added to the result list, at most one for each item in the
- 	 * original list. The result list is filtered to include only unique elements.
-	 * 
- 	 * Instead of the selector, you can also specify a function that evaluates whether an element matches.
- 	 * 
- 	 * @example Returns the immediate parent of a node:
- 	 * <pre>
- 	 * var parent = $('#child').up(); 
- 	 * </pre>
- 	 *
- 	 * @example Returns all table elements that the list elements are directly contained in.
- 	 * <pre>
- 	 * var tables = $('td.selected').up('table'); 
- 	 * </pre>
- 	 * 
- 	 * @example Returns a list of all direct parent nodes that have a class that starts with 'special':
- 	 * <pre>
- 	 * var specialParents = $('.myElements').up(function(node) {
- 	 *     return /(^|\\s)special/.test(node.className);
- 	 * }); 
- 	 * </pre>
- 	 *
-  	 * @parm property the name of the property to traverse.
- 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
- 	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
- 	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
-	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
- 	 * @return the new list that contains matching parent elements. Duplicate nodes will be automatically removed.
- 	 *         
- 	 * @see ##trav() allows you to match more than one element. You can also select other relatives such as siblings or children.
- 	 */
-	'up': function(selector) {
-		return this['trav']('parentNode', selector, 1);
-	},
 
-/*
- 
- */
+
 	/*$
  	 * @id next
  	 * @group SELECTORS
@@ -2793,6 +2738,59 @@ define('minified', function() {
 	},
 
 	
+	/*$
+ 	 * @id up
+ 	 * @group SELECTORS
+ 	 * @requires trav
+ 	 * @configurable default
+ 	 * @name .up()
+ 	 * @syntax list.up()
+ 	 * @syntax list.up(selector)
+ 	 * @syntax list.up(filterFunc)
+ 	 * @syntax list.up(selector, parentNum)
+ 	 * @syntax list.up(filterFunc, parentNum)
+ 	 * @module WEB
+ 	 * Finds the closest parents matching the given selector or filter function for each list element, and returns the results as a list.
+ 	 * 
+ 	 * <var>up(selector)</var> is just a shortcut for <code>trav('parentNode', selector, parentNum)</code>. 
+ 	 * <var>up()</var> uses ##trav() to traverse the DOM tree using <var>parentNode</var> for each list element, until it either finds a 
+ 	 * matching element or the tree's root has been reached. All matches will added to the result list, at most one for each item in the
+ 	 * original list. The result list is filtered to include only unique elements.
+	 * 
+ 	 * Instead of the selector, you can also specify a function that evaluates whether an element matches.
+ 	 * 
+ 	 * @example Returns the immediate parent of a node:
+ 	 * <pre>
+ 	 * var parent = $('#child').up(); 
+ 	 * </pre>
+ 	 *
+ 	 * @example Returns all table elements that the list elements are directly contained in.
+ 	 * <pre>
+ 	 * var tables = $('td.selected').up('table'); 
+ 	 * </pre>
+ 	 * 
+ 	 * @example Returns a list of all direct parent nodes that have a class that starts with 'special':
+ 	 * <pre>
+ 	 * var specialParents = $('.myElements').up(function(node) {
+ 	 *     return /(^|\\s)special/.test(node.className);
+ 	 * }); 
+ 	 * </pre>
+ 	 *
+  	 * @parm property the name of the property to traverse.
+ 	 * @param selector optional any selector valid for #dollar#$(), including CSS selectors and lists.
+ 	 *        <br/>Selectors are optimized for '*', '.classname', 'tagname' and 'tagname.classname'. The performance for other selectors
+ 	 *        is relative to the number of matches for the selector in the document. Default is '*', which includes all elements.
+	 * @param filterFunc a <code>function(node)</code> returning <var>true</var> for those nodes that match.
+	 * @param maxParents maximum number of parents to return per list element. Default is 1.
+ 	 * @return the new list that contains matching parent elements. Duplicate nodes will be automatically removed.
+ 	 *         
+ 	 * @see ##trav() allows you to match more than one element. You can also select other relatives such as siblings or children.
+ 	 */
+	'up': function(selector, maxParents) {
+		return this['trav']('parentNode', selector, maxParents||1);
+	},
+
+	
  	/*$
  	 * @id select
  	 * @group SELECTORS
@@ -2825,7 +2823,7 @@ define('minified', function() {
 	'select': function(selector, childOnly) {
 		return $(selector, this, childOnly);
 	},
-		
+	
  	/*$
  	 * @id is
  	 * @group SELECTORS
@@ -3042,46 +3040,49 @@ define('minified', function() {
  	 * @see ##set() sets values using the same property syntax.
  	 */
 	'get': function(spec, toNumber) {
-		var self = this, element = self[0];
+		var self = this;
+		var element = self[0];
 
 		if (element) {
 			if (isString(spec)) {
-				var match = /^([$@]*)(.*)/.exec(replace(replace(spec, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
+				var match = /^(\W*)(.*)/.exec(replace(spec, /^%/,'@data-'));
+				var prefix = match[1];
 				var s;
-				if (spec == '$') 
-					s = element.className;
+	 			 
+				if (getter[prefix])
+					s = getter[prefix](this, match[2]);
+				else if (spec == '$') 
+					s = self['get']('className');
 				else if (spec == '$$') {
 					// @condblock ie8compatibility
 					 if (IS_PRE_IE9)
 						s = element['style']['cssText'];
 					 else
 					// @condend
-						s = element.getAttribute('style');
+						s = self['get']('@style');
 				}
+				else if (spec == '$$slide')
+					s = self['get']('$height');
 				else if (spec == '$$fade' || spec == '$$show') {
 					if  (self['get']('$visibility') == 'hidden' || self['get']('$display') == 'none')
 						s = 0;
 					else if (spec == '$$fade') {
 						s = 
 						// @condblock ie8compatibility
-						IS_PRE_IE9 ? (isNaN(self['get']('$filter', _true)) ? 1 : self['get']('$filter', _true)/100) : 
+						IS_PRE_IE9 ? (isNaN(self['get']('$filter', true)) ? 1 : self['get']('$filter', true)/100) : 
 						// @condend
-							isNaN(self['get']('$opacity', _true)) ? 1 : self['get']('$opacity', _true); 
+							isNaN(self['get']('$opacity', true)) ? 1 : self['get']('$opacity', true); 
 					}
 					else // $$show
 						s = 1;
 				}
-				else if (spec == '$$slide')
-					s = self['get']('$height');
-				// @condblock scrollxy
 				// @condblock ie8compatibility 
 				else if (spec == '$$scrollX') // for non-IE, $$scrollX/Y fall right thought to element[match[2]]...
-					s = _window['pageXOffset'] != _null ? _window['pageXOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollLeft'];
+					s = _window['pageXOffset'] != _null ? _window['pageXOffset'] : (document['documentElement'] || document['body']['parentNode'] || document['body'])['scrollLeft'];
 				else if (spec == '$$scrollY')
-					s = _window['pageXOffset'] != _null ? _window['pageYOffset'] : (_document['documentElement'] || _document['body']['parentNode'] || _document['body'])['scrollTop'];
+					s = _window['pageXOffset'] != _null ? _window['pageYOffset'] : (document['documentElement'] || document['body']['parentNode'] || document['body'])['scrollTop'];
 				// @condend ie8compatibility
-				// @condend scrollxy
-				else if (match[1] == '$') {
+				else if (prefix == '$') {
 					// @condblock ie8compatibility 
 					if (!_window['getComputedStyle'])
 						s = (element['currentStyle']||element['style'])[replace(match[2], /^float$/, 'cssFloat')];
@@ -3089,7 +3090,7 @@ define('minified', function() {
 					// @condend
 						s = _window['getComputedStyle'](element, _null)['getPropertyValue'](replace(match[2], /[A-Z]/g, function (match2) {  return '-' + match2.toLowerCase(); }));
 				}
-				else if (match[1] == '@')
+				else if (prefix == '@')
 					s = element.getAttribute(match[2]);
 				else
 					s = element[match[2]];
@@ -3251,11 +3252,14 @@ define('minified', function() {
 	 'set': function (name, value) {
 		 var self = this;
 		 if (value !== undef) {
-			 var match = /^([$@]*)(.*)/.exec(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
- 			
-			 if (name == '$$fade') {
+			 var match = /^(\W*)(.*)/.exec(replace(replace(name, /^\$float$/, 'cssFloat'), /^%/,'@data-'));
+			 var prefix = match[1];
+	 
+			 if (setter[prefix])
+				 setter[prefix](this, match[2], value);
+			 else if (name == '$$fade') {
 				 // @condblock ie8compatibility 
-				 this['set']({'$visibility': value ? 'visible' : 'hidden'})
+				 self['set']({'$visibility': value ? 'visible' : 'hidden'})
 				     ['set'](
 				    	  IS_PRE_IE9 ? (value < 1 ? {'$filter': 'alpha(opacity = '+(100*value)+')', '$zoom': 1} : {'$filter': ''}) : // clear filter for opacity=1!!
 				    	  {'$opacity': value}
@@ -3264,68 +3268,72 @@ define('minified', function() {
 				 // @cond !ie8compatibility this['set']({'$visibility': value ? 'visible' : 'hidden', '$opacity': value});
 			 }
 			 else if (name == '$$slide') {
-				 this['set']({'$visibility': value ? 'visible' : 'hidden', 
-						 	  '$height': /px/.test(value) ? value : function(oldValue, idx, element) { return getNaturalHeight($(element), value);},
-				              '$overflow': 'hidden'});
+				 self['set']({'$visibility': value ? 'visible' : 'hidden', '$overflow': 'hidden', 
+						 	  '$height': /px/.test(value) ? value : function(oldValue, idx, element) { return getNaturalHeight($(element), value);}
+				              });
 			 }
 			 else if (name == '$$show') {
-				 if (value)
-					 this['set']({'$visibility': value ? 'visible' : 'hidden', '$display': ''}) // that value? part is only for gzip
-			 		 	 ['set']({'$display': function(oldVal) {
+				 if (value) 
+					 self['set']({'$visibility': value ? 'visible' : 'hidden', '$display': ''}) // that value? part is only for gzip
+			 		 	 ['set']({'$display': function(oldVal) {                                // set for 2nd time: now we get the stylesheet's $display
 			 		 		 return oldVal == 'none' ? 'block' : oldVal;
 			 			 }}); 
 				 else 
-					 this['set']({'$display': 'none'});
+					 self['set']({'$display': 'none'});
 			 }
 		 	 else if (name == '$$') {
-					// @condblock ie8compatibility 
-					if (IS_PRE_IE9)
-						this['set']('$cssText', value);
-					else
-					// @condend
-						this['set']('@style', value);
-				 }
+				// @condblock ie8compatibility 
+				if (IS_PRE_IE9)
+					self['set']('$cssText', value);
+				else
+				// @condend
+					self['set']('@style', value);
+			 }
 			 else
-				 flexiEach(self, function(obj, c) { 
-					 var newValue = isFunction(value) ? value($(obj).get(name), c, obj) : value;
-					 if (name == '$') {
-						 flexiEach(newValue && newValue.split(/\s+/), function(clzz) {
-							 var cName = replace(clzz, /^[+-]/);
-							 var oldClassName = obj['className'] || '';
-							 var className = replace(oldClassName, RegExp('(^|\\s)' + cName + '(?=$|\\s)'));
-							 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
-								 className += ' ' + cName;
-							 obj['className'] = replace(className, /^\s+|\s+(?=\s|$)/g);
-						 });
+				 flexiEach(this, function(obj, c) { 
+					 var newValue = isFunction(value) ? value($(obj)['get'](name), c, obj) : value;
+					 if (prefix == '$') {
+						 if (match[2])
+							 obj['style'][match[2]] = newValue;
+						 else {
+							 flexiEach(newValue && newValue.split(/\s+/), function(clzz) { 
+								 var cName = replace(clzz, /^[+-]/);
+								 // @condblock ie9compatibility
+								 var oldClassName = obj['className'] || '';
+								 var className = replace(oldClassName, RegExp('(^|\\s+)' + cName + '(?=$|\\s)'));
+								 if (/^\+/.test(clzz) || (cName==clzz && oldClassName == className)) // for + and toggle-add
+									 className += ' ' + cName;
+								 // @condblock !UTIL
+								 obj['className'] = replace(className, /^\s+/g); 
+								 // @condend
+								 // @cond UTIL obj['className'] = trim(className); 
+								 // @condend 
+								 
+								 //@cond !ie9compatibility if (/^\+/.test(clzz))
+								 //@cond !ie9compatibility 	 obj['classList'].add(cName);
+								 //@cond !ie9compatibility else if (/^-/.test(clzz))
+								 //@cond !ie9compatibility 	 obj['classList'].remove(cName);
+								 //@cond !ie9compatibility else
+								 //@cond !ie9compatibility 	 obj['classList'].toggle(cName);
+							 });
+						 }
 					 }
-   					// @condblock scrollxy
-   				 	 else if (name == '$$scrollX') {
-			 			 // @cond !ie8compatibility obj['scroll'](newValue, obj['scrollY']);
-   				 		 // @condblock ie8compatibility 
+   				 	 else if (name == '$$scrollX')
 			 			 obj['scroll'](newValue, $(obj)['get']('$$scrollY'));
-			 			// @condend
-   				 	 }
-   				 	 else if (name == '$$scrollY') {
-			 			 // @cond !ie8compatibility obj['scroll'](obj['scrollX'], newValue);
-   				 		 // @condblock ie8compatibility 
+   				 	 else if (name == '$$scrollY')
 			 			 obj['scroll']($(obj)['get']('$$scrollX'), newValue);
-			 			// @condend
-   				 	 }
-					 // @condend
-					 else if (match[1] == '@') {
-						 if (newValue != _null)  
-							 obj.setAttribute(match[2], newValue);
-						 else
+					 else if (prefix == '@') {
+						 if (newValue == _null)  
 							 obj.removeAttribute(match[2]);
+						 else
+						 obj.setAttribute(match[2], newValue);
 					 }
-					 else if (match[1] == '$')
-						 obj['style'][match[2]] = newValue;
 					 else
 						 obj[match[2]] = newValue;
 				 });
 		 }
 		 else if (isString(name) || isFunction(name))
-			 this['set']('$', name);
+			 self['set']('$', name);
 		 else
 			 eachObj(name, function(n,v) { self['set'](n, v); });
 		 return self;
@@ -3482,13 +3490,13 @@ define('minified', function() {
 	'add': function (children, addFunction) {
 		return this['each'](function(e, index) {
 			var lastAdded;
-			(function appendChildren(c) {
+			function appendChildren(c) {
 				if (isList(c))
 					flexiEach(c, appendChildren);
 				else if (isFunction(c))
 					appendChildren(c(e, index));
 				else if (c != _null) {   // must check null, as 0 is a valid parameter 
-					var n = isNode(c) ? c : _document.createTextNode(c);
+					var n = isNode(c) ? c : document.createTextNode(c);
 					if (lastAdded)
 						lastAdded['parentNode']['insertBefore'](n, lastAdded['nextSibling']);
 					else if (addFunction)
@@ -3497,7 +3505,8 @@ define('minified', function() {
 						e.appendChild(n);
 					lastAdded = n;
 				}
-			})(index &&!isFunction(children) ? clone(children) : children);
+			}
+			appendChildren(index &&!isFunction(children) ? clone(children) : children);
 		});
 	},
 
@@ -3594,9 +3603,82 @@ define('minified', function() {
 	 * @see ##ht() is a alternative for replacing element content with a HTML snippet.
 	 */
 	'fill': function (children) {
-		return this['each'](function(e) { $(e['childNodes'])['remove'](); }).add(children);
+		return this['each'](function(e) { $(e['childNodes'])['remove'](); })['add'](children);
 	},
 
+
+	/*$
+	 * @id addafter
+	 * @group ELEMENT
+	 * @requires dollar add
+	 * @configurable default
+	 * @name .addAfter()
+	 * @syntax list.addAfter(text)
+	 * @syntax list.addAfter(node)
+	 * @syntax list.addAfter(list)
+	 * @syntax list.addAfter(factoryFunction)
+ 	 * @module WEB
+	 * Inserts the given text or element(s) as siblings after each HTML element in the list. 
+	 * If a string has been given, it will be added as text node.
+	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
+	 *
+	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
+	 * and ##clone#clones## to all following list elements.
+	 * 
+	 * ##EE(), ##HTML() and ##clone() are compatible with <var>addAfter()</var> and can help you create new HTML ndoes.
+	 *
+	 * @example Using the following HTML:
+	 * <pre>
+	 * &lt;div>
+	 *   &lt;div id="mainText">Here is some text&lt;/div>
+	 * &lt;/div>
+	 * </pre>   
+	 * Use addAfter() with a simple string to add a text node.
+	 * <pre>
+	 * $('#mainText').addAfter('Disclaimer: bla bla bla');
+	 * </pre>
+	 * This results in the following HTML:
+	 * <pre>
+	 * &lt;div>
+	 *   &lt;div id="mainText">Here is some text&lt;/div>
+	 *   Disclaimer: bla bla bla
+	 * &lt;/div>
+	 * </pre>   
+	 *
+	 * @example You can also pass an element:
+	 * <pre>
+	 * $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
+	 * </pre>
+	 * With the previous example's HTML, this would create this:
+	 * <pre>
+	 * &lt;div>
+	 *   &lt;div id="mainText">Disclaimer: bla bla bla&lt;/div>
+	 *   &lt;span class="disclaimer">WARNING&lt;/span>
+	 * &lt;/div>
+	 * </pre> 
+	 *
+	 * @param text a string to add as text node to the list elements
+	 * @param node a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
+	 *             For all additional elements, the node will be cloned using ##clone().
+	 * @param list a list containing text and/or nodes. May also contain nested lists with nodes or text..
+	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
+	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
+	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
+	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
+	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
+	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
+	 * @return the current list
+	 *
+	 * @see ##fill() replaces all children with new nodes.
+	 * @see ##add() adds elements as last child.
+	 * @see ##addFront() adds nodes as first child.
+	 * @see ##addBefore() also adds nodes as next sibling but as preceding sibling.
+	 * @see ##replace() replaces existing nodes.
+	 */
+	'addAfter': function (children) {
+		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode['nextSibling']); });
+	},
+	
 	/*$
 	 * @id addbefore
 	 * @group ELEMENT
@@ -3674,77 +3756,6 @@ define('minified', function() {
 		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode); });
 	},
 	
-	/*$
-	 * @id addafter
-	 * @group ELEMENT
-	 * @requires dollar add
-	 * @configurable default
-	 * @name .addAfter()
-	 * @syntax list.addAfter(text)
-	 * @syntax list.addAfter(node)
-	 * @syntax list.addAfter(list)
-	 * @syntax list.addAfter(factoryFunction)
- 	 * @module WEB
-	 * Inserts the given text or element(s) as siblings after each HTML element in the list. 
-	 * If a string has been given, it will be added as text node.
-	 * DOM nodes will be added directly. If you pass a list, all its elements will be added using the rules above.
-	 *
-	 * When you pass a DOM node and the target list has more than one element, the original node will be added to the first list element,
-	 * and ##clone#clones## to all following list elements.
-	 * 
-	 * ##EE(), ##HTML() and ##clone() are compatible with <var>addAfter()</var> and can help you create new HTML ndoes.
-	 *
-	 * @example Using the following HTML:
-	 * <pre>
-	 * &lt;div>
-	 *   &lt;div id="mainText">Here is some text&lt;/div>
-	 * &lt;/div>
-	 * </pre>   
-	 * Use addAfter() with a simple string to add a text node.
-	 * <pre>
-	 * $('#mainText').addAfter('Disclaimer: bla bla bla');
-	 * </pre>
-	 * This results in the following HTML:
-	 * <pre>
-	 * &lt;div>
-	 *   &lt;div id="mainText">Here is some text&lt;/div>
-	 *   Disclaimer: bla bla bla
-	 * &lt;/div>
-	 * </pre>   
-	 *
-	 * @example You can also pass an element:
-	 * <pre>
-	 * $('#mainText').addAfter(EE('span', {'className': 'disclaimer'}, 'Disclaimer: bla bla bla'));
-	 * </pre>
-	 * With the previous example's HTML, this would create this:
-	 * <pre>
-	 * &lt;div>
-	 *   &lt;div id="mainText">Disclaimer: bla bla bla&lt;/div>
-	 *   &lt;span class="disclaimer">WARNING&lt;/span>
-	 * &lt;/div>
-	 * </pre> 
-	 *
-	 * @param text a string to add as text node to the list elements
-	 * @param node a DOM node to add to the list. If the list has more than one element, the given node will be added to the first element.
-	 *             For all additional elements, the node will be cloned using ##clone().
-	 * @param list a list containing text and/or nodes. May also contain nested lists with nodes or text..
-	 * @param factoryFunction a <code>function(listItem, listIndex)</code> that will be invoked for each list element to create the nodes:
-	 * <dl><dt>listItem</dt><dd>The list element that will receive the new children.</dd>
-	 * <dt>listIndex</dt><dd>The index of the list element that will receive the new children.</dd>
-	 * <dt class="returnValue">(callback return value)<dt><dd>The node(s) to be added to the list element.
-	 * Can be either a string for a text node, an HTML element or a list containing strings and/or DOM nodes.
-	 * If a function is returned, it will be invoked recursively with the same arguments.</dd></dl>
-	 * @return the current list
-	 *
-	 * @see ##fill() replaces all children with new nodes.
-	 * @see ##add() adds elements as last child.
-	 * @see ##addFront() adds nodes as first child.
-	 * @see ##addBefore() also adds nodes as next sibling but as preceding sibling.
-	 * @see ##replace() replaces existing nodes.
-	 */
-	'addAfter': function (children) {
-		return this['add'](children, function(newNode, refNode, parent) { parent['insertBefore'](newNode, refNode['nextSibling']); });
-	},
 	
 	/*$
 	 * @id addfront
@@ -3827,7 +3838,7 @@ define('minified', function() {
 	 * @see ##replace() replaces existing nodes.
 	 */
 	'addFront': function (children) {
-		return this['add'](children, function(newNode, refNode) { refNode.insertBefore(newNode, refNode.firstChild); });
+		return this['add'](children, function(newNode, refNode) { refNode['insertBefore'](newNode, refNode['firstChild']); });
 	},
 	
 	/*$
@@ -3919,13 +3930,14 @@ define('minified', function() {
 	 * @name .clone()
 	 * @syntax list.clone()
  	 * @module WEB
-	 * Clones all HTML nodes in the given list by creating a deep copy of them. Strings in the list will remain unchanged,
-	 * and everything else will be removed. Nested lists will be automatically flattened. Objects other than nodes, strings or lists
-	 * will be removed.
+	 * Clones all HTML nodes in the given list by creating a deep copy of them. Nested lists will be automatically flattened. 
+	 * Everything else will be copied as-is into the new list.
 	 *
 	 * <var>clone()</var> uses the browser's <var>cloneNode()</var> function to clone HTML internally, but will remove the ids from
-	 * all top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
-	 * The ids of child elements will removed. 
+	 * all HTML top-level elements. This allows you to specify an element to clone by id without creating duplicate ids in the document.
+	 * The ids of child elements will removed.
+	 * 
+	 * Please note that clone() does work with SVG, but will not remove ids from SVG.
 	 * 
 	 * Please note that event handlers will not be cloned.
 	 * 
@@ -3948,9 +3960,12 @@ define('minified', function() {
 	 * 
 	 * @see ##add() can add a cloned element to the HTML document.
 	 */
+	// @condblock !UTIL
 	'clone':  function() {
 		return new M(clone(this));
 	},
+	// @condend
+	// @cond UTIL 'clone': listBindArray(clone),
 
 
 	/*$
@@ -4105,22 +4120,21 @@ define('minified', function() {
 		var loopStop;
 
 		// @condblock !promise
-		prom['stop'] = function() { prom(_false); return loopStop(); };
+		prom['stop'] = function() { prom(false); return loopStop(); };
 		// @condend
-		// @cond promise prom['stop0'] = function() { prom(_false); return loopStop(); };
+		// @cond promise prom['stop0'] = function() { prom(false); return loopStop(); };
 
 		// start animation
 		loopStop = $.loop(function(timePassedMs) {
-			if (timePassedMs >= durationMs || timePassedMs < 0) {
-				timePassedMs = durationMs;
-				loopStop();
-				prom(_true, [self]);
-			}
-
 			// @condblock !UTIL
-			flexiEach(dials, function(dial) {dial(timePassedMs/durationMs);}); 
+			callList(dials, timePassedMs/durationMs);
 			// @condend
 			// @cond UTIL callList(dials, [timePassedMs/durationMs]);
+
+			if (timePassedMs >= durationMs) {
+				loopStop();
+				prom(true, [self]);
+			}
 		});
 		return prom;		
 	},
@@ -4181,21 +4195,21 @@ define('minified', function() {
 		var self = this;
 		var linearity = linf || 0;
 		var interpolate = isFunction(linearity) ? linearity : function(startValue, endValue, t) {
-			return startValue + t * (endValue - startValue) * (linearity + (1-linearity) * t * (3 - 2*t)); 
+			return t * (endValue - startValue) * (linearity + (1-linearity) * t * (3 - 2*t)) + startValue; 
 		};
 
 		function getColorComponent(colorCode, index) {
 			return (/^#/.test(colorCode)) ?
-				parseInt(colorCode.length > 6 ? colorCode.substr(1+index*2, 2) : ((colorCode=colorCode.charAt(1+index))+colorCode), 16)
+				parseInt(colorCode.length > 6 ? colorCode.substr(index*2+1, 2) : ((colorCode=colorCode.charAt(index+1))+colorCode), 16)
 				:
-				parseInt(replace(colorCode, /[^\d,]+/g).split(',')[index]);
+				extractNumber(colorCode.split(',')[index]);
 		}
 		return function(t) {
 			eachObj(properties1, function(name, start) {
 				var end=properties2[name], i = 0; 
 				self['set'](name, t<=0?start:t>=1?end:
 					 (/^#|rgb\(/.test(end)) ? // color in format '#rgb' or '#rrggbb' or 'rgb(r,g,b)'?
-								('rgb('+ Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i++), t)) // expression repeated 3 times for gzip
+								('rgb('+ Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i++), t)) // expression repeated, gzip will do the rest
 								+ ',' + Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i++), t))
 								+ ',' + Math.round(interpolate(getColorComponent(start, i), getColorComponent(end, i++), t))
 							    + ')')
@@ -4288,7 +4302,7 @@ define('minified', function() {
 	 */
 	'toggle': function(stateDesc1, stateDesc2, durationMs, linearity) {
 		var self = this;
-		var state = _false;
+		var state = false;
 		var promise;
 		var stateDesc;
 
@@ -4296,7 +4310,7 @@ define('minified', function() {
 			self['set'](stateDesc1);
 			return function(newState) {
 					if (newState !== state) {
-						stateDesc = (state = newState===_true||newState===_false ? newState : !state) ? stateDesc2 : stateDesc1;
+						stateDesc = (state = (newState===true||newState===false ? newState : !state)) ? stateDesc2 : stateDesc1;
 
 						if (durationMs) 
 							(promise = self['animate'](stateDesc, promise ? promise['stop']() : durationMs, linearity))['then'](function(){promise=_null;});
@@ -4322,7 +4336,8 @@ define('minified', function() {
 	 * @module WEB
 	 * Creates a name/value map from the given form. values() looks at the list's form elements and writes each element's name into the map,
 	 * using the element name as key and the element's value as value. As there can be more than one value with the same name, 
-	 * the map's values are arrays if there is more than one value with the same name in the form. Form elements without name will be ignored.
+	 * the map's values are arrays if there is more than one value with the same name in the form. If an element does not
+	 * have a name, its id will be used. Elements without name and id will be ignored.
 	 *
 	 * values() will use all elements in the list that have a name, such as input, textarea and select elements. For form elements in the list, all child form
 	 * elements will be serialized.
@@ -4351,14 +4366,14 @@ define('minified', function() {
 	'values': function(data) {
 		var r = data || {};
 		this['each'](function(el) {
-			var n = el['name'], v = toString(el['value']);
+			var n = el['name'] || el['id'], v = toString(el['value']);
 			if (/form/i.test(el['tagName']))
 				// @condblock ie9compatibility 
 				for (var i = 0; i < el['elements'].length; i++) // can't call directly, as IE<=9's elements have a nodeType prop and isList does not work
 					$(el['elements'][i])['values'](r); 
 				// @condend
 				// @cond !ie9compatibility $(el['elements'])['values'](r);
-			else if (n && (!/kbox|dio/i.test(el['type']) || el['checked'])) { // kbox|dio => short for checkbox, radio
+			else if (n && (!/ox|io/i.test(el['type']) || el['checked'])) { // ox|io => short for checkbox, radio
 				r[n] = r[n] == _null ? v : collector(flexiEach, [r[n], v], nonOp);
 			}
 		});
@@ -4522,6 +4537,7 @@ define('minified', function() {
 	 * @name .onOver()
 	 * @syntax list.onOver(handler)
 	 * @syntax list.onOver(selector, handler)
+	 * @syntax list.onOver(handler, bubbleSelector)
 	 * @module WEB
 	 * Registers a function to be called whenever the mouse pointer enters or leaves one of the list's elements.
 	 * The handler is called with a boolean parameter, <var>true</var> for entering and <var>false</var> for leaving,
@@ -4545,16 +4561,14 @@ define('minified', function() {
 	 * @see ##on() provides low-level event registration.
 	 */
 	'onOver': function(subSelect, toggle) {
-		var self = this, curOverState = [];
-		if (!toggle)
-			return this['onOver'](_null, subSelect);
-		else 
+		var self = this, curOverState = []; 
+		if (isFunction(toggle))
 			return this['on'](subSelect, '|mouseover |mouseout', function(ev, index) {
-				var overState = ev['type'] != 'mouseout';
 				// @condblock ie9compatibility 
 				var relatedTarget = ev['relatedTarget'] || ev['toElement'];
 				// @condend
 				// @cond !ie9compatibility var relatedTarget = ev['relatedTarget'];
+				var overState = ev['type'] != 'mouseout';
 				if (curOverState[index] !== overState) {
 					if (overState || (!relatedTarget) || (relatedTarget != self[index] && !$(relatedTarget)['up'](self[index]).length)) {
 						curOverState[index] = overState;
@@ -4562,6 +4576,8 @@ define('minified', function() {
 					}
 				}
 			});
+		else
+			return this['onOver'](_null, subSelect);
 	},
 	
 	/*$
@@ -4589,16 +4605,20 @@ define('minified', function() {
 	 * 		  <dl>
  	 *             <dt>hasFocus</dt><dd><var>true</var> if an element gets the focus, <var>false</var> when an element looses it.</dd>
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
- 	 *             </dl>
+ 	 *             </dl>      
+	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
+	 *                element that matches this selector.
+	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onFocus': function(selector, handler) {
-		if (!handler)
-			return this['onFocus'](_null, selector);
+	'onFocus': function(selector, handler, bubbleSelector) {
+		if (isFunction(handler))
+			return this['on'](selector, '|blur', handler, [false], bubbleSelector)
+					   ['on'](selector, '|focus', handler, [true], bubbleSelector);
 		else
-			return this['on'](selector, '|focus', handler, [_true])
-				       ['on'](selector, '|blur', handler, [_false]);
+			return this['onFocus'](_null, selector, handler);
 	},
 
 	/*$
@@ -4609,11 +4629,21 @@ define('minified', function() {
 	 * @name .onChange()
 	 * @syntax list.onChange(handler)
 	 * @syntax list.onChange(selector, handler)
+	 * @syntax list.onChange(handler, bubbleSelector)
+	 * @syntax list.onChange(selector, handler, bubbleSelector)
 	 * @module WEB
 	 * Registers a handler to be called whenever content of the list's input fields changes. The handler is
-	 * called in realtime and does not wait for the focus to change. Text fields as well
+	 * called in realtime and does not wait for the focus to change. Text fields, text areas, selects as well
 	 * as checkboxes and radio buttons are supported. The handler is called with the new value as first argument.
-	 * It is boolean for checkbox/radio buttons and the new text as string for text fields. 
+	 * For selects the value is the first selected item, but the function will be called for every change.
+	 * The value is boolean for checkbox/radio buttons and a string for all other types. 
+	 * 
+	 * Please note that the handler may be called on the user's first interaction even without an actual content change. After that, 
+	 * the handler will only be called when the content actually changed.
+	 * 
+	 * On legacy IE platforms, <var>onChange</var> tries to report every change as soon as possible. When used with bubbling selector, 
+	 * some text changes may not be reported before the input loses focus. This is because there is no reliable event to report text 
+	 * changes that also supports bubbling. 
 	 * 
 	 * @example Creates a handler that writes the input's content into a text node:
 	 * <pre>
@@ -4625,43 +4655,49 @@ define('minified', function() {
 	 *                Supports all valid parameters for <var>$()</var> except functions.            
 	 * @param handler the callback <code>function(newValue, index, ev)</code> to invoke when the event has been triggered:
 	 * 		  <dl>
- 	 *             <dt>newValue</dt><dd>For text fields the new <var>value</var> string. 
+ 	 *             <dt>newValue</dt><dd>For text fields and selects the new <var>value</var> string. 
  	 *              For checkboxes/radio buttons it is the boolean returned by <var>checked</var>.</dd>
  	 *             <dt>index</dt><dd>The index of the target element in the ##list#Minified list## .</dd>
  	 *             <dt class="this">this</dt><dd>A ##list#Minified list## containing the target element that caused the event as only item.</dd>
  	 *             </dl>
+	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
+	 *                element that matches this selector.
+	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list
 	 * @see ##on() provides low-level event registration.
 	 */
-	'onChange': function onChange(subSelect, handler) {
-		var oldValues = [];
-		if (handler)
+	'onChange': function onChange(subSelect, handler, bubbleSelector) {
+		if (isFunction(handler)) {
+			// @condblock ie8compatibility
 			return this['each'](function(el, index) {
-				// @condblock ie8compatibility
-				function register(eventNames, property) {
-					oldValues[index] = el[property];
-					$(el)['on'](subSelect, eventNames, function() {
-						var newValue = el[property]; 
-						if (newValue != oldValues[index]) {
-							handler.call(this, newValue, index);
-							oldValues[index] = newValue;
-						}
-					});
-				}
-				// @condend
-				// @cond !ie8compatibility function register(eventNames, property) { $(el)['on'](subSelect, eventNames,  function() {handler.call(this, el[property], index);}); }
-				if (/kbox|dio/i.test(el['type'])) {
-					register('|click', 'checked');
-				}
-				else { 
-					// @condblock ie8compatibility
-					register(IS_PRE_IE9 ? '|propertychange' : '|input |change |keyup', 'value');
-					// @condend
-					// @cond !ie8compatibility register('|input', 'value', index);
-				}
+				$(el)['on'](subSelect, IS_PRE_IE9 ? '|propertychange |change |keyup |clicked' : '|input |change |clicked', function() {
+					var e = this[0];
+					var v;
+					if (IS_PRE_IE9 && /select/i.test(e['tagName']))
+						v = e['options'][e['selectedIndex']]['text'];
+					else
+						v = /ox|io/i.test(e['type']) ? e['checked'] : e['value']; 
+					if (v != e[MINIFIED_MAGIC_PREV]) {
+						handler.call(this, e[MINIFIED_MAGIC_PREV] = v, index);
+					}
+				}, bubbleSelector);
 			});
+			// @condend 
+
+			// @cond !ie8compatibility return this['each'](function(el, index) {
+			// @cond !ie8compatibility 	$(el)['on'](subSelect, '|input |change |click',  function() { // |change for select elements, |click for checkboxes...
+			// @cond !ie8compatibility 		var e = this[0];
+			// @cond !ie8compatibility      var v = /ox|io/i.test(e['type']) ? e['checked'] : e['value'];
+			// @cond !ie8compatibility 	    if (e[MINIFIED_MAGIC_PREV] != v) {
+			// @cond !ie8compatibility 	        handler.call(this, e[MINIFIED_MAGIC_PREV] = v, index);
+			// @cond !ie8compatibility 			
+			// @cond !ie8compatibility 		}
+			// @cond !ie8compatibility 	}, bubbleSelector); 
+			// @cond !ie8compatibility });
+		}
 		else
-			return this['onChange'](_null, subSelect); 
+			return this['onChange'](_null, subSelect, handler); 
 			
 	},
 	
@@ -4713,12 +4749,19 @@ define('minified', function() {
 	 *                   'this' will be a ##list#Minified list## containing the target element as only item (same element as <var>event.target</var>).
 	 * @param args optional an array of arguments to pass to the custom callback function instead of the event objects. If omitted, the function is
 	 *             called as event handler with the event object as argument.
+	 * @param bubbleSelector optional a selector string for ##dollar#$()## to receive only events that bubbled up from an
+	 *                element that matches this selector.
+	 *                Supports all valid parameters for <var>$()</var> except functions. Analog to ##is(), 
+	 *                the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.                
 	 * @return the list	 
 	 * @see ##on() provides low-level event registration.
 	 * @see ##off() can unregister <var>onClick</var> event handlers.
 	 */
-	'onClick': function(subSelect, handler, args) {
-	     return isFunction(subSelect) ? this['on']('click', subSelect, handler) : this['on'](subSelect, 'click', handler, args);
+	'onClick': function(subSelect, handler, args, bubbleSelector) {
+	     if (isFunction(handler))
+	    	 return this['on'](subSelect, 'click', handler, args, bubbleSelector);
+	     else
+	    	 return this['onClick'](_null, subSelect, handler, args);
 	},
 
 	
@@ -4752,22 +4795,22 @@ define('minified', function() {
 	 */
 	'trigger': function (eventName, eventObj) {
 		return this['each'](function(element, index) {
-			var stopBubble, el = element;
-			
 			// @condblock ie8compatibility 
+			var stopBubble, el = element;
 			while(el && !stopBubble) {
 				flexiEach(
 						IS_PRE_IE9 ? registeredEvents[el[MINIFIED_MAGIC_NODEID]] :
 						el['M'], function(hDesc) {
-							if (hDesc['n'] == eventName)
-								stopBubble = stopBubble || !hDesc['h'](eventObj, element);
+							if (hDesc.eventType == eventName)
+								stopBubble = stopBubble || !hDesc.handlerFunc(eventObj, element);
 						});
 				el = el['parentNode'];
 			}
 			//@condend
-			// @cond !ie8compatibility while(el && !stopBubble) {
+			// @cond !ie8compatibility var bubbleOn = true, el = element;
+			// @cond !ie8compatibility while(el && bubbleOn) {
 			// @cond !ie8compatibility 	eachObj(el['M'], function(id, f) {
-			// @cond !ie8compatibility 		stopBubble = stopBubble || f(eventName, eventObj, element); 
+			// @cond !ie8compatibility 		bubbleOn = bubbleOn && f(eventName, eventObj, element); 
 			// @cond !ie8compatibility 	});
 			// @cond !ie8compatibility 	el = el['parentNode'];
 			// @cond !ie8compatibility }
@@ -4830,12 +4873,9 @@ define('minified', function() {
 		 * @requires set template
 		 * @configurable default
 		 * @name .ht()
-		 * @syntax list.ht(templateString)
-		 * @syntax list.ht(templateString, object)
-		 * @syntax list.ht(templateFunction)
-		 * @syntax list.ht(templateFunction, object)
-		 * @syntax list.ht(idSelector)
-		 * @syntax list.ht(idSelector, object)
+		 * @syntax list.ht(templateString, object...)
+		 * @syntax list.ht(templateFunction, object...)
+		 * @syntax list.ht(idSelector, object...)
 		 * @module WEB+UTIL
 		 * Replaces the content of the list elements with the HTML generated using the given template. The template uses
 		 * ##template() syntax and HTML-escaped its output using ##escapeHtml(). 
@@ -4886,16 +4926,18 @@ define('minified', function() {
 		 *                   of the specified &lt;script> element as template. This allows you to put your template into 
 		 *                   a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
 		 *                   contain any spaces is used as selector.
-		 * @param object optional the object to pass to the template. If object is not set, the template is called with <var>undefined</var>
-		 *                        as object.
+		 * @param object optional one or more objects to pass to the template. If object is not set, the template is called with <var>undefined</var>
+		 *                        as object. If exactly one object is given, it is passed directly to the template. If you specify more than one 
+		 *                        object, they are ##merge#merged##.
 		 * @return the current list
 		 * 
 		 * @see ##HTML() creates only the nodes and can be used with ##add() and other methods to add the nodes to the DOM, giving you more flexibility than <var>ht()</var>.
 		 */
 		'ht': function(htmlTemplate, object) {
-			return this['set']('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(object) : 
-				                            /{{/.test(htmlTemplate) ? formatHtml(htmlTemplate, object) : 
-				                            /^#\S+$/.test(htmlTemplate) ? formatHtml($$(htmlTemplate)['text'], object) : htmlTemplate);
+			var o = arguments.length > 2 ? merge(sub(arguments, 1)) : object;
+			return this['set']('innerHTML', isFunction(htmlTemplate) ? htmlTemplate(o) : 
+				                            /{{/.test(htmlTemplate) ? formatHtml(htmlTemplate, o) : 
+				                            /^#\S+$/.test(htmlTemplate) ? formatHtml($$(htmlTemplate)['text'], o) : htmlTemplate);
 		 }
 		/*$
 		 * @stop
@@ -4976,13 +5018,17 @@ define('minified', function() {
 	* <dt>pass</dt><dd>password for HTTP authentication, together with the <var>user</var> parameter</dd>
 	* </dl>
 	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
-	*         the success handler will be called as <code>function(text, xml)</code>:
+	*         the promise's completion handler will be called as <code>function(text, xhr)</code>:
 	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
-	*         <dt>xml</dt><dd>If the response was a XML document, the DOM <var>Document</var>. Otherwise null.</dd></dl>
+	*         <dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different
+	*         formats (e.g. <var>responseXml</var> for an XML document</var>), to retrieve headers and more.</dd></dl>
 	*         The failure handler will be called as <code>function(statusCode, statusText, text)</code>:
 	*         <dl><dt>statusCode</dt><dd>The HTTP status (never 200; 0 if no HTTP request took place).</dd>
-	*         <dt>statusText</dt><dd>The HTTP status text (or null, if the browser threw an exception).</dd>
-	*         <dt>text</dt><dd>the response's body text, if there was any, or the exception as string if the browser threw one.</dd></dl>
+	*         <dt>text</dt><dd>The response's body text, if there was any, or the exception as string if the browser threw one.</dd>
+	*         <dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different
+	*         formats (e.g. <var>responseXml</var> for an XML document</var>), to retrieve headers and more..</dd></dl>
+	*         The returned promise supports ##stop(). Calling <var>stop()</var> will invoke the XHR's <var>abort()</var> method.
+	*         The underlying XmlHttpRequest can also be obtained from the promise's <var>xhr</var> property.
 	*         
 	* @see ##values() serializes an HTML form in a format ready to be sent by <var>$.request</var>.
 	* @see ##$.parseJSON() can be used to parse JSON responses.
@@ -4993,10 +5039,17 @@ define('minified', function() {
 		var settings = settings0 || {}; 
 		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data && (data['constructor'] == settings['constructor']);
 		try {
-			//@condblock ie6compatibility
-			xhr = _window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0");
-			//@condend
-			// @cond !ie6compatibility xhr = new XMLHttpRequest();
+			// @condblock ie6compatibility
+			prom['xhr'] = xhr = (_window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0"));
+			// @condend
+			// @cond !ie6compatibility prom['xhr'] = xhr = new XMLHttpRequest();
+
+			// @condblock !promise
+			prom['stop'] = function() { xhr['abort'](); };
+			// @condend promise 
+			// @cond promise prom['stop0'] = function() { xhr['abort'](); };
+			// @condend
+
 			if (dataIsMap) { // if data is parameter map...
 				data = collector(eachObj, data, function processParam(paramName, paramValue) {
 					return collector(flexiEach, paramValue, function(v) { 
@@ -5010,9 +5063,10 @@ define('minified', function() {
 				data = _null;
 			}
 
-			xhr['open'](method, url, _true, settings['user'], settings['pass']);
+			xhr['open'](method, url, true, settings['user'], settings['pass']);
 			if (dataIsMap && /post/i.test(method))
 				xhr['setRequestHeader']('Content-Type', 'application/x-www-form-urlencoded');
+
 			eachObj(settings['headers'], function(hdrName, hdrValue) {
 				xhr['setRequestHeader'](hdrName, hdrValue);
 			});
@@ -5023,9 +5077,9 @@ define('minified', function() {
 			xhr['onreadystatechange'] = function() {
 				if (xhr['readyState'] == 4 && !callbackCalled++) {
 					if (xhr['status'] == 200)
-						prom(_true, [xhr['responseText'], xhr['responseXML']]);
+						prom(true, [xhr['responseText'], xhr]);
 					else
-						prom(_false, [xhr['status'], xhr['statusText'], xhr['responseText']]);
+						prom(false, [xhr['status'], xhr['responseText'], xhr]);
 				}
 			};
 			
@@ -5033,8 +5087,9 @@ define('minified', function() {
 		}
 		catch (e) {
 			if (!callbackCalled) 
-				prom(_false, [0, _null, toString(e)]);
+				prom(false, [0, _null, toString(e)]);
 		}
+		
 		return prom;
 	},
 	
@@ -5084,7 +5139,7 @@ define('minified', function() {
 		if (value == _null)
 			return ""+value;                  //result: "null"; toString(value) is not possible, because it returns an empty string for null
 		if (isString(value = value.valueOf()))
-			return '"' + replace(value, /[\\\"\x00-\x1f\x22\x5c\u2028\u2029]/g, ucode) + '"' ;
+			return '"' + replace(value, /[\\\"\x00-\x1f\u2028\u2029]/g, ucode) + '"' ;
 		if (isList(value)) 
 			return '[' + collector(flexiEach, value, toJSON).join() + ']';
 		if (isObject(value))
@@ -5216,22 +5271,23 @@ define('minified', function() {
 		var id = idSequence++;
 		var requestAnim = _window['requestAnimationFrame'] || function(f) { setTimeout(function() { f(+new Date()); }, 33); }; // 30 fps as fallback
 		function raFunc(ts) {
-			eachObj(ANIMATION_HANDLERS, function(id, f) { f(ts); });
-			if (ANIMATION_HANDLER_COUNT) 
+			eachObj(animationHandlers, function(id, f) { f(ts); });
+			if (animationHandlerCount) 
 				requestAnim(raFunc);
 		}; 
 		function stop() {
-			if (ANIMATION_HANDLERS[id]) {
-				delete ANIMATION_HANDLERS[id];
-				ANIMATION_HANDLER_COUNT--;
+			if (animationHandlers[id]) {
+				delete animationHandlers[id];
+				animationHandlerCount--;
 			}
 			return currentTime;
 		} 
-		ANIMATION_HANDLERS[id] = function(ts) {
-			paintCallback(currentTime = ts - (startTimestamp = startTimestamp || ts), stop);
+		animationHandlers[id] = function(ts) {
+			startTimestamp = startTimestamp || ts;
+			paintCallback(currentTime = ts - startTimestamp, stop);
 		};
 
-		if (!(ANIMATION_HANDLER_COUNT++)) 
+		if (!(animationHandlerCount++)) 
 			requestAnim(raFunc);
 		return stop; 
 	},
@@ -5276,6 +5332,7 @@ define('minified', function() {
 	// @cond ALL ,
 	///#/snippet webDollarFuncs
 		///#snippet extrasDollarFuncs
+
 		/*$
 		 * @id setcookie
 		 * @group COOKIE
@@ -5318,8 +5375,8 @@ define('minified', function() {
 
 		 */
 		'setCookie': function(name, value, dateOrDays, dontEscape) {
-			_document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
-			    (dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date((+new Date()) + dateOrDays * 8.64E7)).toUTCString()) : '');
+			document.cookie = name + '=' + (dontEscape ? value : escape(value)) + 
+				(dateOrDays ? ('; expires='+(isObject(dateOrDays) ? dateOrDays : new Date((+new Date()) + dateOrDays * 8.64E7)).toUTCString()) : '');
 		},
 		
 		/*$
@@ -5352,7 +5409,7 @@ define('minified', function() {
 		 * @see ##$.setCookie() sets a cookie.
 		 */
 		'getCookie': function(name, dontUnescape) {
-			var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(_document.cookie)) && regexp[2];
+			var regexp, match = (regexp = new RegExp('(^|;)\\s*'+name+'=([^;]*)').exec(document.cookie)) && regexp[2];
 			return dontUnescape ? match : match && unescape(match);
 		},
 		
@@ -5398,9 +5455,9 @@ define('minified', function() {
 		'wait': function(durationMs, args) {
 			var p = promise();
 			var id = setTimeout(function() { 
-				p(_true, args); 
+				p(true, args); 
 			}, durationMs);
-			p['stop0'] = function() { p(_false); clearTimeout(id); };
+			p['stop0'] = function() { p(false); clearTimeout(id); };
 			return p;
 		}
 		
@@ -5468,6 +5525,9 @@ define('minified', function() {
 		 // @condblock unite
 		'unite': unite,
 		 // @condend
+		 // @condblock merge
+		'merge': merge,
+		 // @condend
 		 // @condblock uniq
 		'uniq': funcArrayBind(uniq),
 		 // @condend
@@ -5519,7 +5579,14 @@ define('minified', function() {
 		 * 
 		 * @see ##_.keys() retrieves the property names of an object as a list.
 		 */
-		'values': funcArrayBind(values),
+		'values': funcArrayBind(function(obj, keys) {
+			var list = [];
+			if (keys)
+				each(keys, function(value) { list.push(obj[value]); });
+			else
+				eachObj(obj, function(key, value) { list.push(value); });
+			return list;
+		}),
 
 		
 		/*$
@@ -5528,10 +5595,10 @@ define('minified', function() {
 		 * @requires 
 		 * @configurable default
 		 * @name _.copyObj()
+		 * @syntax _.copyObj(from)
 		 * @syntax _.copyObj(from, to)
 		 * @module UTIL
-		 * Copies every property of the first object into the second object. The properties are copied as shallow-copies. Only own properties
-		 * are copied, but not inherited properties.
+		 * Copies every property of the first object into the second object. The properties are copied as shallow-copies. 
 		 * 
 		 *  @example Copying properties:
 		 * <pre>var target = {a:3, c: 3};
@@ -5540,13 +5607,17 @@ define('minified', function() {
 		 *  @example Inline property merge:
 		 * <pre>var target = _.copyObj({a: 1, b: 2}, {a:3, c: 3}); // target is now {a: 1, b: 2, c: 3}</pre>
 		 *
+		 *  @example Duplicating an object:
+		 * <pre>var target = _.copyObj({a: 1, b: 2}); // target is now {a: 1, b: 2}</pre>
+		 *
 		 * @param from the object to copy from
-		 * @param to the object to copy to
+		 * @param to optional the object to copy to. If not given, a new object will be created.
 		 * @return the object that has been copied to
 		 * 
-		 * @see ##extend() is very similar to <var>copyObj()</var>, but with a slightly different syntax.
+		 * @see ##_.extend() is very similar to <var>copyObj()</var>, but with a slightly different syntax.
+		 * @see ##_.merge() copies a list of objects into a new object.
 		 */
-		'copyObj': copyObj,
+		'copyObj': copyObj, 
 		
 		/*$
 		 * @id extend
@@ -5557,11 +5628,10 @@ define('minified', function() {
 		 * @syntax _.extend(target, src...)
 		 * @module UTIL
 		 * Copies every property of the source objects into the first object. The source objects are specified using variable arguments. 
-		 * There can be more than one. If a source parameter is <var>undefined</var> or <var>null</var>, it will be ignored.
-		 * The properties are copied as shallow-copies. <var>undefined</var> values will not be copied or inherited properties
-		 * will not be copied.
+		 * There can be more than one. 
+		 * The properties are copied as shallow-copies.
 		 * 
-		 * <b>Please note:</b> Unlike jQuery, <var>extend</var> does not directly a function to extend Minified, although
+		 * <b>Please note:</b> Unlike jQuery, <var>extend</var> does not directly add a function to extend Minified, although
 		 * you can use it to for this. To add a function to ##list#Minified lists##, add a property to
 		 * ##M#MINI.M##. If you want to extend <var>$</var> or <var>_</var>, just assign the new function(s) as property.
 		 * 
@@ -5577,9 +5647,12 @@ define('minified', function() {
 		 *            parameters will be ignored.
 		 * @return the target
 		 *
-		 * @see ##copyObj() is very similar to <var>extend()</var>, but with a slightly different and more straightforward syntax.
+		 * @see ##_.copyObj() is very similar to <var>extend()</var>, but with a slightly different and more straightforward syntax.
+		 * @see ##_.merge() copies a list of objects into a new object.
 		 */
-		'extend': extend,
+		'extend': function(target) {
+			return merge(sub(arguments, 1), target);
+		},
 		
 		/*$ 
 		 * @id range 
@@ -5761,7 +5834,13 @@ define('minified', function() {
 		 * @see ##_.filterObj() filters an object.
 		 * @see ##map() maps a list.
 		 */
-		'mapObj': mapObj,
+		'mapObj': function(obj, mapFunc) {
+			var result = {};
+			eachObj(obj, function(key, value) {
+				result[key] = mapFunc.call(obj, key, value);
+			});
+			return result;
+		},
 		
 
 
@@ -5794,7 +5873,14 @@ define('minified', function() {
 		 * 
 		 * @see ##_.mapObj() can be used to modify the values og an object.
 		 */
-		'filterObj': filterObj,
+		'filterObj': function(obj, f) {
+			var r = {};
+			eachObj(obj, function(key, value) {
+				if (f.call(obj, key, value))
+					r[key] = value;
+			});
+			return r;
+		},
 
 		/*$
 		 * @id islist
@@ -6309,7 +6395,7 @@ define('minified', function() {
 		 * @see ##_.formatValue() can format numbers using the same syntax.
 		 */
 		'parseNumber': parseNumber,
-
+		
 		/*$
 		 * @id trim
 		 * @group STRING
@@ -6359,7 +6445,9 @@ define('minified', function() {
 		 * @param ignoreWhitespace if true and a string was given, <var>isEmpty</var> will also return true if the string contains only whitespace.
 		 * @return true if empty, false otherwise
 		 */
-		'isEmpty': isEmpty,
+		'isEmpty': function(s, ignoreWhitespace) {
+			return s == _null || !s.length || (ignoreWhitespace && /^\s*$/.test(s));
+		},
 		
 		/*$
 		 * @id escaperegexp
@@ -6417,6 +6505,7 @@ define('minified', function() {
 		 * @name _.format() 
 		 * @syntax _.format()
 		 * @syntax _.format(template, object)
+		 * @syntax _.format(template, object, escapeFunction)
 	   	 * @module UTIL
 		 * Formats an object using a ##template#template##. The template syntax is shared with ##_.template(). The only difference is that
 		 * <var>format()</var> frees you from the extra step of creating the template. In any case, whether you use 
@@ -6424,8 +6513,11 @@ define('minified', function() {
 		 * every template is cached and consumes memory.<br/>
 		 * If you only want to format a single value, use ##_.formatValue().
 		 * 
+		 * @example Format a name:
+		 * <pre>var s = _.formatHtml("{{first}} {{last}}", {first: 'Tim', last: 'Taylor'});</pre>
+		 * 
 		 * @example Format a list of dates:
-		 * <pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+		 * <pre>var s = _.format("{{each}}{{this :: yyyy-MM-dd}}{{/each}}", dateList);</pre>
 		 * 
 		 * @param template The ##template#template## as a string. The template, once created, will be cached. 
 		 * @param object the object to format 
@@ -6589,10 +6681,13 @@ define('minified', function() {
 		 * every template is cached and consumes memory.<br/>
 		 * If you only want to format a single value, use ##_.formatValue().
 		 * 
-		 * @example Format a list of dates:
-		 * <pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+		 * @example Format a name:
+		 * <pre>var s = _.formatHtml("{{first}} {{last}}", {first: 'Tim', last: 'Taylor'});</pre>
 		 * 
-		 * @param template The #template as a string. The template, once created, will be cached.
+		 * @example Format a list of dates:
+		 * <pre>var s = _.formatHtml("{{each}}{{::yyyy-MM-dd}}{{/each}}", dateList);</pre>
+		 * 
+		 * @param template The ##template#template## as a string. The template, once created, will be cached.
 		 * @param object the object to format 
 		 * @return the string created by the template
 		 *
@@ -6614,7 +6709,7 @@ define('minified', function() {
 		// @condblock promise
 		'promise': promise
 		// @condend promise
-		
+
 		/*$
 		 * @stop
 		 */
@@ -6632,15 +6727,22 @@ define('minified', function() {
 	 */
 	// @condblock ie8compatibility
 	if (IS_PRE_IE9) {
-		_document['attachEvent']("onreadystatechange", function() {
-			if (/^[ic]/.test(_document['readyState']))
+		function triggerDomReady() {
+			callList(DOMREADY_HANDLER);
+			DOMREADY_HANDLER = _null;
+		}
+		document['attachEvent']("onreadystatechange", function() {
+			if (/^[ic]/.test(document['readyState']))
 				triggerDomReady();
 		});
 		_window['attachEvent']("onload", triggerDomReady);
 	}
 	else
 	// @condend
-		_document.addEventListener("DOMContentLoaded", triggerDomReady, _false);
+		document.addEventListener("DOMContentLoaded", function() {
+			callList(DOMREADY_HANDLER);
+			DOMREADY_HANDLER = _null;
+		}, false);
 	/*$
 	 @stop
 	 */
@@ -6668,12 +6770,9 @@ define('minified', function() {
 		 * @requires template ht
 		 * @configurable default
 		 * @name HTML()
-		 * @syntax HTML(templateString)
-		 * @syntax HTML(templateString, object)
-		 * @syntax HTML(templateFunction)
-		 * @syntax HTML(templateFunction, object)
-		 * @syntax HTML(idSelector)
-		 * @syntax HTML(idSelector, object)
+		 * @syntax HTML(templateString, object...)
+		 * @syntax HTML(templateFunction, object...)
+		 * @syntax HTML(idSelector, object...)
 		 * @module WEB
 		 * Creates a ##list#list## of HTML nodes from the given HTML template. The list is compatible with ##add(), ##fill() and related methods.
 		 * The template uses the ##template() syntax with ##escapeHtml() escaping for values.
@@ -6727,14 +6826,17 @@ define('minified', function() {
 		 *                   of the specified &lt;script> element as template. This allows you to put your template into 
 		 *                   a &lt;script&gt; tag with a non-JavaScript type (see example). Any string that starts with '#' and does not
 		 *                   contain any spaces is used as selector.
-		 * @param object optional the object to pass to the template
+		 * @param object optional one or more objects to pass to the template. If object is not set, the template is called with <var>undefined</var>
+		 *                        as object. If exactly one object is given, it is passed directly to the template. If you specify more than one 
+		 *                        object, they are ##merge#merged##.
 		 * @return the list containing the new HTML nodes
 		 *  
 		 * @see ##ht() is a shortcut for <code>fill(HTML())</code>.
 		 * @see ##EE() is a different way of creating HTML nodes.
 		 */
-		'HTML': function (htmlTemplate, object) {
-		    return  _(EE('div')['ht'](htmlTemplate, object)[0].childNodes);
+		'HTML': function () {
+			var div = EE('div');
+		    return  _(call(div['ht'], div, arguments)[0].childNodes);
 		},
 		/*$
 		 * @stop
@@ -6943,7 +7045,9 @@ define('minified', function() {
 		 * @requires 
 		 * @configurable default
 		 * @name $$()
-		 * @syntax $$(selector)
+		 * @syntax $(selector)
+		 * @syntax $(selector, context)
+		 * @syntax $(selector, context, childOnly)
 		 * @shortcut $$() - It is recommended that you assign MINI.$$ to a variable $$.
 	 	 * @module WEB
 		 * Returns a DOM object containing the first match of the given selector, or <var>undefined</var> if no match was found. 
@@ -6960,8 +7064,13 @@ define('minified', function() {
 		 * $$('#myCheckbox').checked = true;
 		 * </pre>
 		 * 
-		 * @param selector a simple, CSS-like selector for the element. Uses the full syntax described in #dollar#$(). The most common
+		 * @param selector a simple, CSS-like selector for the element. Uses the same syntax as #dollar#$(). The most common
 		 *                 parameter for this function is the id selector with the syntax "#id".
+		 * @param context optional an optional selector, node or list of nodes which specifies one or more common ancestor nodes for the selection. The context can be specified as
+		 *             a selector, a list or using a single object, just like the first argument.
+		 *             The returned list will contain only descendants of the context nodes. All others will be filtered out. 
+		 * @param childOnly optional if set, only direct children of the context nodes are included in the list. Children of children will be filtered out. If omitted or not 
+		 *             true, all descendants of the context will be included. 
 		 * @return a DOM object of the first match, or <var>undefined</var> if the selector did not return at least one match
 		 * 
 		 * @see ##dollar#$()## creates a list using the selector, instead of returning only the first result.
@@ -7087,7 +7196,104 @@ define('minified', function() {
 		 * MINI.M.prototype.printLength = function() { console.log(this.length); };
 		 * </pre>
 		 */
-		'M': M
+		'M': M,
+		
+		/*$
+		 * @id getter
+		 * @requires get
+		 * @name MINI.getter
+		 * @syntax MINI.getter
+		 * @module WEB
+		 * 
+		 * Exposes a map of prefix handlers used by ##get(). You can add support for a new prefix in <var>get()</var>
+		 * by adding a function to this map. The prefix can be any string consisting solely of non-alphanumeric characters
+		 * that's not already used by Minified. 
+		 * 
+		 * You must not replace <var>getters</var> by a new map, but must always modify the existing map.
+		 * 
+		 * The function's signature is <code>function(list, name)</code> where
+		 * <dl><dt>list</dt><dd>Is the Minified list to get the value from. By convention you should always use only the first element. The list is
+		 *                      non-empty and the first elememt can't be null or undefined (get() automatically returns <var>undefined</var> in 
+		 *                      all other case).</dd>
+		 *     <dt>name</dt><dd>The name of the property. That's the part AFTER the prefix.</dd>
+		 *     <dt class="returnValue">(callback return value)</dt><dd>The value to return to the user.</dd></dl>
+		 * 
+		 * @example Adding a shortcut '||' for accessing border style properties:
+		 * <pre>
+		 * MINI.getter['||'] = function(list, name) {
+		 * 	return list.get('$border' + name.replace(/^[a-z]/, function(a) { return a.toUpperCase()});
+		 * };
+		 * 
+		 * var borderColor = $('#box').get('||color'); // same as '$borderColor'
+		 * var borderLeftRadius = $('#box').get('||leftRadius'); // same as '$borderLeftRadius'
+		 * </pre>
+		 *
+		 * @example Adding XLink attribute support to get(). This is useful if you work with SVG. The prefix is '>'.
+		 * <pre>
+		 * MINI.getter['>'] = function(list, name) {
+		 * 	return list[0].getAttributeNS('http://www.w3.org/1999/xlink', name);
+		 * };
+		 * 
+		 * var xlinkHref = $('#svgLink').get('>href');
+		 * </pre>
+		 */
+		'getter': getter,
+		
+		/*$
+		 * @id setter
+		 * @requires set
+		 * @name MINI.setter
+		 * @syntax MINI.setter
+		 * @module WEB
+		 * 
+		 * Exposes a map of prefix handlers used by ##set(). You can add support for a new prefix in <var>set()</var>
+		 * by adding a function to this map. The prefix can be any string consisting solely of non-alphanumeric characters
+		 * that's not already used by Minified. 
+		 * 
+		 * You must not replace <var>setters</var> by a new map, but must always modify the existing map.
+		 * 
+		 * The function's signature is <code>function(list, name, value)</code> where
+		 * <dl><dt>list</dt><dd>Is the Minified list to use.</dd>
+		 *     <dt>name</dt><dd>The name of the property. That's the part AFTER the prefix.</dd>
+		 *     <dt>value</dt><dd>Either the value to set, or a callback function to create the value that you must call for each
+		 *     value (see ##set() ).</dd>
+		 *     </dl>
+		 *
+		 * If you provide complete ##get() and ##set() support for a prefix, you are also able to use it in other Minified
+		 * function such as ##animate() and ##toggle().
+		 * 
+		 * @example Adding a shortcut '||' for accessing border style properties. As it's just calling ##set() for an existing
+		 * property, it is not required to extra code for the callback.
+		 * <pre>
+		 * MINI.setter['||'] = function(list, name, value) {
+		 * 	list.set('$border' + name.replace(/^[a-z]/, function(a) { return a.toUpperCase()}, value);
+		 * };
+		 * 
+		 * $('#box').set('||color', 'red');   // same as set('$borderColor', 'red')
+		 * $('#box').set('||leftRadius', 4);  // same as set('$borderLeftRadius', 4)
+		 * </pre>
+		 *
+		 * @example Adding XLink attribute support to set(). This is useful if you work with SVG. The prefix is '>'.
+		 * <pre>
+		 * MINI.setter['>'] = function(list, name, value) {
+		 * 	list.each(function(obj, index) {
+		 * 		var v;
+		 * 		if (_.isFunction(value))
+		 * 			v = value(obj.getAttributeNS('http://www.w3.org/1999/xlink', name), index, obj);
+		 * 		else 
+		 * 			v = value;
+		 *		
+		 *		if (v == null)
+		 *			obj.removeAttributeNS('http://www.w3.org/1999/xlink', name);
+		 *		else
+		 *			obj.setAttributeNS('http://www.w3.org/1999/xlink', name, v);
+		 *	});
+		 * };
+		 * 
+		 * $('#svgLink').set('>href', 'http://minifiedjs.com/');
+		 * </pre>
+		 */
+		'setter': setter
 		/*$
 		 * @stop 
 		 */

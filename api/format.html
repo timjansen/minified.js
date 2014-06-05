@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>_.format() - Minified.js</title>
 
+
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
 
 
@@ -38,6 +39,7 @@
 <div class="syntaxVariant">
 <div class="syntax">_.format()</div>
 <div class="syntax">_.format(template, object)</div>
+<div class="syntax">_.format(template, object, escapeFunction)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -52,33 +54,37 @@ to escape all output:
 <dl><dt>inputString</dt><dd>The string to escape.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>The escaped string.</dd></dl>
 If no escapeFunction has been given, the output will not be escaped.
-<code><a href="undefinedescapehtml.html" class="func">_.escapeHtml()</a></code> can be used as an escape function for HTML, and <code><a href="undefinedescaperegexp.html" class="func">_.escapeRegExp()</a></code> for regular expressions.
+<code><a href="escapehtml.html" class="func">_.escapeHtml()</a></code> can be used as an escape function for HTML, and <code><a href="escaperegexp.html" class="func">_.escapeRegExp()</a></code> for regular expressions.
 JavaScript's built-in <span class="var">escape()</span> function can escape URL components.
-See <code><a href="undefinedhtmlformat.html" class="func">_.htmlFormat()</a></code> for a version of <span class="var">format()</span> that already includes HTML escaping.</dd>
-<dt id="format_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="format_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the string created by the template
+See <code><a href="htmlformat.html" class="func">_.htmlFormat()</a></code> for a version of <span class="var">format()</span> that already includes HTML escaping.</dd>
+<dt id="format_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="format_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2">the string created by the template
 </dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Formats an object using a <a href="template.html" class="func">template</a>. The template syntax is shared with <code><a href="undefinedtemplate.html" class="func">_.template()</a></code>. The only difference is that
+<div class="description"><p>Formats an object using a <a href="template.html" class="func">template</a>. The template syntax is shared with <code><a href="template.html" class="func">_.template()</a></code>. The only difference is that
 <span class="var">format()</span> frees you from the extra step of creating the template. In any case, whether you use
-<span class="var">format()</span> or <code><a href="undefinedtemplate.html" class="func">_.template()</a></code>, the template will be cached. Be careful when you create templates dynamically, as
+<span class="var">format()</span> or <code><a href="template.html" class="func">_.template()</a></code>, the template will be cached. Be careful when you create templates dynamically, as
 every template is cached and consumes memory.<br>
-If you only want to format a single value, use <code><a href="undefinedformatvalue.html" class="func">_.formatValue()</a></code>.</p><p></p></div>
+If you only want to format a single value, use <code><a href="formatvalue.html" class="func">_.formatValue()</a></code>.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
+<div class="example"><p>Format a name:
+<pre>var s = _.formatHtml("{{first}} {{last}}", {first: 'Tim', last: 'Taylor'});</pre>
+</p></div>
+<h4>Example</h4>
 <div class="example"><p>Format a list of dates:
-<pre>var s = _.format("{{each}}{{::yyyy-MM-dd{{/each}}", dateList);</pre>
+<pre>var s = _.format("{{each}}{{this :: yyyy-MM-dd}}{{/each}}", dateList);</pre>
 </p></div>
 </div>
 
 <h4>See also..</h4>
-<ul><li><code><a href="undefinedtemplate.html" class="func">_.template()</a></code> creates a template function, using the same syntax.</li>
-<li><code><a href="undefinedformathtml.html" class="func">_.formatHtml()</a></code> is a variant of <span class="var">format()</span> with HTML-escpaping built it.</li>
-<li><code><a href="undefinedformatvalue.html" class="func">_.formatValue()</a></code> formats a single number or date.</li>
-<li><code><a href="undefinedescaperegexp.html" class="func">_.escapeRegExp()</a></code> can be used by <span class="var">format()</span> to escape regular expressions.</li>
+<ul><li><code><a href="template.html" class="func">_.template()</a></code> creates a template function, using the same syntax.</li>
+<li><code><a href="formathtml.html" class="func">_.formatHtml()</a></code> is a variant of <span class="var">format()</span> with HTML-escpaping built it.</li>
+<li><code><a href="formatvalue.html" class="func">_.formatValue()</a></code> formats a single number or date.</li>
+<li><code><a href="escaperegexp.html" class="func">_.escapeRegExp()</a></code> can be used by <span class="var">format()</span> to escape regular expressions.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
@@ -133,6 +139,7 @@ var disqus_url = "http://minifiedjs.com/api/format.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
@@ -165,6 +172,8 @@ var disqus_url = "http://minifiedjs.com/api/format.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
@@ -219,8 +228,8 @@ var disqus_url = "http://minifiedjs.com/api/format.html";
 
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

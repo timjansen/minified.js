@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>$.request() - Minified.js</title>
 
+
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
 
 
@@ -64,13 +65,17 @@ header 'Content-Type', if you set it, because otherwise it may be overwritten.</
 </dl></dd>
 <dt id="request_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="request_RETURN"><var>(return value)</var></a></dt>
 <dd class="inSyntax0 inSyntax1 inSyntax2">a <a href="promiseclass.html" class="func">Promise</a> containing the request's status. If the request has successfully completed with HTTP status 200,
-the success handler will be called as <code>function(text, xml)</code>:
+the promise's completion handler will be called as <code>function(text, xhr)</code>:
 <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
-<dt>xml</dt><dd>If the response was a XML document, the DOM <span class="var">Document</span>. Otherwise null.</dd></dl>
+<dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different
+formats (e.g. <span class="var">responseXml</span> for an XML document), to retrieve headers and more.</dd></dl>
 The failure handler will be called as <code>function(statusCode, statusText, text)</code>:
 <dl><dt>statusCode</dt><dd>The HTTP status (never 200; 0 if no HTTP request took place).</dd>
-<dt>statusText</dt><dd>The HTTP status text (or null, if the browser threw an exception).</dd>
-<dt>text</dt><dd>the response's body text, if there was any, or the exception as string if the browser threw one.</dd></dl>
+<dt>text</dt><dd>The response's body text, if there was any, or the exception as string if the browser threw one.</dd>
+<dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different
+formats (e.g. <span class="var">responseXml</span> for an XML document), to retrieve headers and more..</dd></dl>
+The returned promise supports <code><a href="stop.html" class="func">stop()</a></code>. Calling <span class="var">stop()</span> will invoke the XHR's <span class="var">abort()</span> method.
+The underlying XmlHttpRequest can also be obtained from the promise's <span class="var">xhr</span> property.
 </dd>
 </dl>
 
@@ -125,9 +130,9 @@ $.request('post', 'http://service.example.com/directory', $.toJSON(myRequest))
 
 <h4>See also..</h4>
 <ul><li><code><a href="values.html" class="func">values()</a></code> serializes an HTML form in a format ready to be sent by <span class="var">$.request</span>.</li>
-<li><code><a href="undefinedparsejson.html" class="func">$.parseJSON()</a></code> can be used to parse JSON responses.</li>
-<li><code><a href="undefinedtojson.html" class="func">$.toJSON()</a></code> can create JSON messages.</li>
-<li><code><a href="undefinedformat.html" class="func">_.format()</a></code> can be useful for creating REST-like URLs, if you use JavaScript's built-in <span class="var">escape()</span> function.</li>
+<li><code><a href="parsejson.html" class="func">$.parseJSON()</a></code> can be used to parse JSON responses.</li>
+<li><code><a href="tojson.html" class="func">$.toJSON()</a></code> can create JSON messages.</li>
+<li><code><a href="format.html" class="func">_.format()</a></code> can be useful for creating REST-like URLs, if you use JavaScript's built-in <span class="var">escape()</span> function.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
@@ -182,6 +187,7 @@ var disqus_url = "http://minifiedjs.com/api/request.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
@@ -214,6 +220,8 @@ var disqus_url = "http://minifiedjs.com/api/request.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
@@ -268,8 +276,8 @@ var disqus_url = "http://minifiedjs.com/api/request.html";
 
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

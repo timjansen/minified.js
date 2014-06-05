@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>_.extend() - Minified.js</title>
 
+
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
 
 
@@ -53,9 +54,8 @@ parameters will be ignored.</dd>
 
 <h4>Description</h4>
 <div class="description"><p>Copies every property of the source objects into the first object. The source objects are specified using variable arguments.
-There can be more than one. If a source parameter is <span class="var">undefined</span> or <span class="var">null</span>, it will be ignored.
-The properties are copied as shallow-copies. <span class="var">undefined</span> values will not be copied or inherited properties
-will not be copied.</p><p><b>Please note:</b> Unlike jQuery, <span class="var">extend</span> does not directly a function to extend Minified, although
+There can be more than one.
+The properties are copied as shallow-copies.</p><p><b>Please note:</b> Unlike jQuery, <span class="var">extend</span> does not directly add a function to extend Minified, although
 you can use it to for this. To add a function to <a href="list.html" class="func">Minified lists</a>, add a property to
 <a href="m.html" class="func">MINI.M</a>. If you want to extend <span class="var">$</span> or <span class="var">_</span>, just assign the new function(s) as property.</p><p></p></div>
 
@@ -72,7 +72,8 @@ _.extend(target, {a: 1, b: 2}); // target is now {a: 1, b: 2, c: 3}</pre>
 </div>
 
 <h4>See also..</h4>
-<ul><li><code><a href="copyobj.html" class="func">copyObj()</a></code> is very similar to <span class="var">extend()</span>, but with a slightly different and more straightforward syntax.</li>
+<ul><li><code><a href="copyobj.html" class="func">_.copyObj()</a></code> is very similar to <span class="var">extend()</span>, but with a slightly different and more straightforward syntax.</li>
+<li><code><a href="merge.html" class="func">_.merge()</a></code> copies a list of objects into a new object.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
@@ -127,6 +128,7 @@ var disqus_url = "http://minifiedjs.com/api/extend.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
@@ -159,6 +161,8 @@ var disqus_url = "http://minifiedjs.com/api/extend.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
@@ -213,8 +217,8 @@ var disqus_url = "http://minifiedjs.com/api/extend.html";
 
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

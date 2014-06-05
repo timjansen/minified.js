@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>.onChange() - Minified.js</title>
 
+
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
 
 
@@ -38,6 +39,8 @@
 <div class="syntaxVariant">
 <div class="syntax">list.onChange(handler)</div>
 <div class="syntax">list.onChange(selector, handler)</div>
+<div class="syntax">list.onChange(handler, bubbleSelector)</div>
+<div class="syntax">list.onChange(selector, handler, bubbleSelector)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -49,20 +52,29 @@ Supports all valid parameters for <span class="var">$()</span> except functions.
 <dt id="onchange_handler" class=""><a name="onchange_handler"><var>handler</var></a></dt>
 <dd class="">the callback <code>function(newValue, index, ev)</code> to invoke when the event has been triggered:
 <dl>
-<dt>newValue</dt><dd>For text fields the new <span class="var">value</span> string.
+<dt>newValue</dt><dd>For text fields and selects the new <span class="var">value</span> string.
 For checkboxes/radio buttons it is the boolean returned by <span class="var">checked</span>.</dd>
 <dt>index</dt><dd>The index of the target element in the <a href="list.html" class="func">Minified list</a> .</dd>
 <dt class="this">this</dt><dd>A <a href="list.html" class="func">Minified list</a> containing the target element that caused the event as only item.</dd>
 </dl></dd>
-<dt id="onchange_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="onchange_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the list</dd>
+<dt id="onchange_bubbleSelector" class=""><a name="onchange_bubbleSelector"><var>bubbleSelector (optional)</var></a></dt>
+<dd class="">a selector string for <a href="dollar.html" class="func">$()</a> to receive only events that bubbled up from an
+element that matches this selector.
+Supports all valid parameters for <span class="var">$()</span> except functions. Analog to <code><a href="is.html" class="func">is()</a></code>,
+the selector is optimized for the simple patterns '.classname', 'tagname' and 'tagname.classname'.</dd>
+<dt id="onchange_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="onchange_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the list</dd>
 </dl>
 
 <h4>Description</h4>
 <div class="description"><p>Registers a handler to be called whenever content of the list's input fields changes. The handler is
-called in realtime and does not wait for the focus to change. Text fields as well
+called in realtime and does not wait for the focus to change. Text fields, text areas, selects as well
 as checkboxes and radio buttons are supported. The handler is called with the new value as first argument.
-It is boolean for checkbox/radio buttons and the new text as string for text fields.</p><p></p></div>
+For selects the value is the first selected item, but the function will be called for every change.
+The value is boolean for checkbox/radio buttons and a string for all other types.</p><p>Please note that the handler may be called on the user's first interaction even without an actual content change. After that,
+the handler will only be called when the content actually changed.</p><p>On legacy IE platforms, <span class="var">onChange</span> tries to report every change as soon as possible. When used with bubbling selector,
+some text changes may not be reported before the input loses focus. This is because there is no reliable event to report text
+changes that also supports bubbling.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -129,6 +141,7 @@ var disqus_url = "http://minifiedjs.com/api/onchange.html";
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
 </li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
 </li><li><a href="offset.html" class="func">.offset()</a> 
@@ -161,6 +174,8 @@ var disqus_url = "http://minifiedjs.com/api/onchange.html";
 </li><li><a href="ee.html" class="func">EE()</a> <span class="tocMod">Web</span>
 </li><li><a href="html.html" class="func">HTML()</a> <span class="tocMod">Web</span>
 </li><li><a href="M.html" class="func">M</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="getter.html" class="func">MINI.getter</a> <span class="tocMod">Web</span>
+</li><li><a href="setter.html" class="func">MINI.setter</a> <span class="tocMod">Web</span>
 </li><li><a href="list.html" class="func">Minified Lists</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="promiseClass.html" class="func">Promise</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="underscore.html" class="func">_()</a> <span class="tocMod">Util</span>
@@ -215,8 +230,8 @@ var disqus_url = "http://minifiedjs.com/api/onchange.html";
 
 <div id="foot">
 	<div class="container">
-		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates visit the 
-		<a href="http://google.com/+Minifiedjs">Google+ page</a>.
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
 		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
 	</div>
 </div>

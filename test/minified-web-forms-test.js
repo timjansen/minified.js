@@ -67,6 +67,11 @@ describe('minified-web-forms-test.js', function() {
 			check(a['i1_9'], 'abc');
 		});
 		
+		it('uses id if no name', function() {
+			var input = EE('input', {id:'xxx', value:'y'});
+			check(input.values().xxx, 'y');
+		});
+		
 		it('just works', function() {
 			$$('#id1_1').value = 'xx';
 			$$('#id1_4').value = '5';

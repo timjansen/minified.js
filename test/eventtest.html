@@ -50,16 +50,14 @@
 		// Test 2 / Event Handler Mem Leaks
 		var timeoutId;
 		var creationCount = 0; 
-		$('#memLeakStartStop').on('click', function() {
+		$('#memLeakStartStop').onClick(function() {
 			if (timeoutId)  {
 				window.clearInterval(timeoutId);
 				timeoutId = null;
 			}
 			else {
 				function createOne() {
-					$('#memLeakCounter').fill(EE('div', {}, creationCount++ + '', function(list) {
-						list.on('click', function() {});
-					}));
+					$('#memLeakCounter').fill(EE('div', {}, creationCount++ + '').onClick(function(){}));
 				}
 				timeoutId = window.setInterval(createOne, 1);
 			}
@@ -67,16 +65,33 @@
 		
 		// Test 3 / onChange() + onFocus()
 		function changeHandler(value) {
-			var span = $(this).trav('nextSibling', 'span');
+			if (!(this.is('input') || this.is('select') || this.is('textarea')))
+				alert('Wrong value in "this".')
+			var span = this.next('span');
 			var oldCount = parseInt(span.text().replace(/\D.$/, ''));
 			span.fill((oldCount+1) + " (" + value + ")");
 		}
 		$('#focussingText').onFocus(changeHandler);
-		$('#changingText, #changingCheckbox').onChange(changeHandler);
+		$('#changingText, #changingCheckbox, #changingSelect, #changingTextarea').onChange(changeHandler);
+		
+		$('#bubbleInputContainer').onChange(changeHandler, 'input');
+		$('#bubbleInputFocusContainer').onFocus(changeHandler, 'input');
+		$('#bubbleButtonContainer').onClick(function() {
+			if (!this.is('button'))
+				alert('Wrong value in "this".')
+			var span = this.next('span');
+			var oldCount = parseInt(span.text().replace(/\D.$/, ''));
+			span.fill(oldCount+1);
+		}, 'button');
+
+		$('#bubbleInputContainer').fill([EE('input', {value: 'bubbled input'}), EE('span', '0')]);
+		$('#bubbleInputFocusContainer').fill([EE('input', {value: 'bubbling focus'}), EE('span', '0')]);
+		$('#bubbleButtonContainer').fill([EE('button', 'Bubbling Click'), EE('span', '0')]);
+		
 		
 		// Test 4 / event cancellation
 		function cancelCounter() {
-			var span = $(this).trav('nextSibling', 'span');
+			var span = this.next('span');
 			var oldCount = parseInt(span.text().replace(/\D.$/, ''));
 			span.fill((oldCount+1) + "");
 		}		
@@ -109,7 +124,12 @@
 				<div><input id="focussingText" value="focus me..."/> <span>0</span></div>
 				<div><input id="changingText" value="change me..."/> <span>0</span></div>
 				<div><input id="changingCheckbox" value="x" type="checkbox"/> <span>0</span> </div>
-				<span class="desc">onChange()/onFocus() test of input field and checkbox</span>
+				<div><select id="changingSelect"><option>A</option><option>B</option><option>C</option></select> <span>0</span> </div>
+				<div><textarea id="changingTextarea" rows="1" cols="10">Change me</textarea> <span>0</span></div>
+				<div id="bubbleInputContainer"></div>
+				<div id="bubbleInputFocusContainer"></div>
+				<div id="bubbleButtonContainer"></div>
+				<span class="desc">onChange()/onFocus() test of input field, select and checkbox</span>
 			</div>
 		</div>
 		<div id="cancelDiv" class="test">

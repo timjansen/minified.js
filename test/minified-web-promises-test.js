@@ -24,10 +24,11 @@ describe('minified-web-promises-test.js', function() {
 
 	describe('request()', function() {
 		it('requests', function(done) {
-			var s = $.request('get', '/test/test.txt', null)
-			.then(function(txt) {
+			var s = $.request('get', '/test/test.txt', null);
+			s.then(function(txt, xhr) {
 				try {
 					check(txt.indexOf('Used for testing') > 0);
+					check(isLegacyIE || !!xhr.send); // validate it's XHR (not in old IE's, they can't handle this)
 					done();
 				}
 				catch (e) {
@@ -37,6 +38,8 @@ describe('minified-web-promises-test.js', function() {
 				done('onFailure called, but should not be called');
 			});
 			check(!!s);
+			check(!!s.xhr);
+			check(isLegacyIE || !!s.xhr.send);
 		});
 		
 		it('handles 404', function(done) {
@@ -44,9 +47,10 @@ describe('minified-web-promises-test.js', function() {
 			.then(function(txt) {
 				setSuccess(false, 'onSuccess called, but should be 404');
 
-			}, function(status) {
+			}, function(status, txt, xhr) {
 				try {
 					check(status,  404);
+					check(isLegacyIE || !!xhr.send); // validate it's XHR
 					done();
 				}
 				catch (e) {
@@ -105,6 +109,48 @@ describe('minified-web-promises-test.js', function() {
 			});
 			check(!!s);
 		});
+		
+		
+		it('supports ES6 syntax for resolve', function(done) {
+			if (!_)
+				return done();
+			
+			_.promise(function(resolve, reject) {
+				setTimeout(function() { resolve(99, 2, 11); }, 2);
+			})
+			.then(function(a, b, c) {
+				try {
+					check(a, 99);
+					check(b, 2);
+					check(c, 11);
+					done();
+				}
+				catch (e) {
+					done(e);
+				}
+			});
+		});
+
+		
+		it('supports ES6 syntax for reject', function(done) {
+			if (!_)
+				return done();
+			
+			_.promise(function(resolve, reject) {
+				reject('x', 2);
+			})
+			.then(0, function(a, b, c) {
+				try {
+					check(a, 'x');
+					check(b, 2);
+					done();
+				}
+				catch (e) {
+					done(e);
+				}
+			});
+		});
+
 		
 	    it('combines promises', function(done) {
 	    	this.timeout(2000);
