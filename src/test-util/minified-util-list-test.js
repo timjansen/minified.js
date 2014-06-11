@@ -228,6 +228,13 @@ function runTests(loadInContext) {
 			_.each(x.x, function() { c++; });
 			assert.equal(c, 0);
 		});
+		it('supports contexts', function() {
+			var _ = req();
+			var ctx = {x: 222};
+			_.each([1, 2, 3], function(value, index) {
+				assert.equal(this, ctx);
+			}, ctx);
+		});
 	});
 	
 	describe('_.eachObj()', function() {
@@ -251,6 +258,13 @@ function runTests(loadInContext) {
 			assert.equal(c, 0);
 			_.eachObj(x.x, function() { c++; });
 			assert.equal(c, 0);
+		});
+		it('supports contexts', function() {
+			var _ = req();
+			var ctx = {x: 222};
+			_.eachObj({a:2}, function() {
+				assert.equal(this, ctx);
+			}, ctx);
 		});
 	});
 
@@ -291,6 +305,14 @@ function runTests(loadInContext) {
 			assert(_.equals(flt, []));
 			assert.equal(c, 0);
 		});
+		it('supports contexts', function() {
+			var _ = req();
+			var ctx = {x: 222};
+			_.filter([1, 2], function() {
+				assert.equal(this, ctx);
+			}, ctx);
+		});
+
 	});
 	
 	describe('_.filterObj()', function() {
@@ -310,6 +332,13 @@ function runTests(loadInContext) {
 			assert(_.equals(flt, {}));
 			assert.equal(c, 0);
 		});
+		it('supports contexts', function() {
+			var _ = req();
+			var ctx = {x: 222};
+			_.filterObj({a:2}, function() {
+				assert.equal(this, ctx);
+			}, ctx);
+		});
 	});
 
 	describe('_.collect()', function() {
@@ -327,6 +356,13 @@ function runTests(loadInContext) {
 			var flt = _.collect(null, function(v, index) { assert.equal(index, c++); });
 			assert(_.equals(flt, []));
 			assert.equal(c, 0);
+		});
+		it('supports contexts', function() {
+			var _ = req();
+			var ctx = {x: 222};
+			_.collect([3, 5], function() {
+				assert.equal(this, ctx);
+			}, ctx);
 		});
 	});
 	
@@ -363,6 +399,13 @@ function runTests(loadInContext) {
 			var flt = _.mapObj(null, function() { c++; });
 			assert(_.equals(flt, {}));
 			assert.equal(c, 0);
+		});
+		it('supports contexts', function() {
+			var _ = req();
+			var ctx = {x: 222};
+			_.mapObj({a:2}, function() {
+				assert.equal(this, ctx);
+			}, ctx);
 		});
 	});
 

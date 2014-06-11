@@ -1,6 +1,12 @@
 Minified Change Log
 ====================
 
+Ongoing 
+--------
+* added ctx parameter to iterator functions each(), eachObj(), map(), mapObj(), collect(), collectObj(), filter(), filterObj().
+
+
+
 Beta 6 (2014-06-06)
 --------------------
 * added merge()

@@ -10,9 +10,10 @@
 <h2><a name="doc-eachobj">_.eachObj()</a></h2>
 <div class="summary">Invokes the given function once for each property of the given object.</div>
 
-<div class="availability">Util module only.</div><h4>Syntax</h4>
+<div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">_.eachObj(obj, callback)</div>
+<div class="syntax">_.eachObj(obj, callback, ctx)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -23,10 +24,12 @@
 <dd class="">The callback <code>function(key, value)</code> to invoke for each property.
 <dl><dt>key</dt><dd>The name of the current property.</dd>
 <dt>value</dt><dd>The value of the current property.</dd>
-<dt class="this">this</dt><dd>This object.</dd></dl>
+<dt class="this">this</dt><dd>The given context. If not set, the object itself.</dd>
 The callback's return value will be ignored.</dd>
-<dt id="eachobj_RETURN" class="returnValue inSyntax0"><a name="eachobj_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the object
+<dt id="eachobj_ctx" class=""><a name="eachobj_ctx"><var>ctx (optional)</var></a></dt>
+<dd class="">a context to pass to the callback as 'this'.</dd>
+<dt id="eachobj_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="eachobj_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1">the object
 </dd>
 </dl>
 
@@ -100,7 +103,7 @@ var disqus_url = "http://minifiedjs.com/api/eachobj.html";
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Util</span>
 </li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
