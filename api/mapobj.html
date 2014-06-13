@@ -35,9 +35,10 @@
 <h2><a name="doc-mapobj">_.mapObj()</a></h2>
 <div class="summary">Creates a new object with the same properties but different values using the given callback function.</div>
 
-<div class="availability">Util module only.</div><h4>Syntax</h4>
+<div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">_.mapObj(obj, callback)</div>
+<div class="syntax">_.mapObj(obj, callback, ctx)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -48,10 +49,12 @@
 <dd class="">The callback <code>function(key, value)</code> to invoke for each property.
 <dl><dt>key</dt><dd>The name of the current property.</dd>
 <dt>value</dt><dd>The value of the current property.</dd>
-<dt class="this">this</dt><dd>This object.</dd>
+<dt class="this">this</dt><dd>The given context. If not set, the object itself.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new object.</dd></dl></dd>
-<dt id="mapobj_RETURN" class="returnValue inSyntax0"><a name="mapobj_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">the new object
+<dt id="mapobj_ctx" class=""><a name="mapobj_ctx"><var>ctx (optional)</var></a></dt>
+<dd class="">a context to pass to the callback as 'this'.</dd>
+<dt id="mapobj_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="mapobj_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1">the new object
 </dd>
 </dl>
 
@@ -127,7 +130,7 @@ var disqus_url = "http://minifiedjs.com/api/mapobj.html";
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Util</span>
 </li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>

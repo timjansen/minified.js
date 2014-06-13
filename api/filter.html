@@ -38,8 +38,10 @@
 <div class="availability">Available in all modules.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.filter(filterFunc)</div>
+<div class="syntax">list.filter(filterFunc, ctx)</div>
 <div class="syntax">list.filter(value)</div>
 <div class="syntax">_.filter(list, filterFunc)</div>
+<div class="syntax">_.filter(list, filterFunc, ctx)</div>
 <div class="syntax">_.filter(list, value)</div>
 </div>
 
@@ -52,13 +54,15 @@
 <dd class="">The filter callback <code>function(item, index)</code> that decides which elements to include:
 <dl><dt>item</dt><dd>The current list element.</dd>
 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-<dt class="this">this</dt><dd>This list.</dd>
+<dt class="this">this</dt><dd>The given context if not null. Otherwise the list.</dd>
 <dt class="returnValue">(callback return value)</dt><dd><span class="var">true</span> to include the item in the new list, <span class="var">false</span> to omit it.</dd></dl></dd>
+<dt id="filter_ctx" class=""><a name="filter_ctx"><var>ctx (optional)</var></a></dt>
+<dd class="">a context to pass to the callback as 'this'. Only supported in UTIL module.</dd>
 <dt id="filter_value" class=""><a name="filter_value"><var>value</var></a></dt>
 <dd class="">a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
 be a function. Requires Util module.</dd>
-<dt id="filter_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="filter_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the new, filtered <a href="list.html" class="func">list</a>
+<dt id="filter_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5"><a name="filter_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3 inSyntax4 inSyntax5">the new, filtered <a href="list.html" class="func">list</a>
 </dd>
 </dl>
 
@@ -156,7 +160,7 @@ var disqus_url = "http://minifiedjs.com/api/filter.html";
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Util</span>
 </li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>

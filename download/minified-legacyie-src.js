@@ -331,42 +331,42 @@ define('minified', function() {
 	function trim(s) {
 		return replace(s, /^\s+|\s+$/g);
 	}
-	function eachObj(obj, cb) {
+	function eachObj(obj, cb, ctx) {
 		for (var n in obj)
 			if (obj.hasOwnProperty(n))
-				cb.call(obj, n, obj[n]);
+				cb.call(ctx || obj, n, obj[n]);
 		return obj;
-	}
-	function each(list, cb) {
+	} 
+	function each(list, cb, ctx) {
 		if (list)
 			for (var i = 0; i < list.length; i++)
-				cb.call(list, list[i], i);
+				cb.call(ctx || list, list[i], i);
 		return list;
 	}
-	function filter(list, filterFuncOrObject) {
+	function filter(list, filterFuncOrObject, ctx) {
 		var r = []; 
 		var f = isFunction(filterFuncOrObject) ? filterFuncOrObject : function(value) { return filterFuncOrObject != value; };
 		each(list, function(value, index) {
-			if (f.call(list, value, index))
+			if (f.call(ctx || list, value, index))
 				r.push(value);
 		});
 		return r;
 	}
-	function collector(iterator, obj, collectFunc) {
+	function collector(iterator, obj, collectFunc, ctx) {
 		var result = [];
 		iterator(obj, function (a, b) {
-			if (isList(a = collectFunc.call(obj, a, b))) // extreme variable reusing: a is now the callback result
+			if (isList(a = collectFunc.call(ctx || obj, a, b))) // extreme variable reusing: a is now the callback result
 				each(a, function(rr) { result.push(rr); });
 			else if (a != _null)
 				result.push(a);
 		});
 		return result;
 	}
-	function collectObj(obj, collectFunc) {
-		return collector(eachObj, obj, collectFunc);
+	function collectObj(obj, collectFunc, ctx) {
+		return collector(eachObj, obj, collectFunc, ctx);
 	}
-	function collect(list, collectFunc) {
-		return collector(each, list, collectFunc);
+	function collect(list, collectFunc, ctx) {
+		return collector(each, list, collectFunc, ctx);
 	}
 	function keyCount(obj) {
 		var c = 0;
@@ -378,10 +378,10 @@ define('minified', function() {
 		eachObj(obj, function(key) { list.push(key); });
 		return list;
 	}
-	function map(list, mapFunc) {
+	function map(list, mapFunc, ctx) {
 		var result = [];
 		each(list, function(item, index) {
-			result.push(mapFunc.call(list, item, index));
+			result.push(mapFunc.call(ctx || list, item, index));
 		});
 		return result;
 	}
@@ -1540,7 +1540,9 @@ define('minified', function() {
 	 * @name .each()
 	 * @altname _.each()
 	 * @syntax list.each(callback)
+	 * @syntax list.each(callback, ctx)
 	 * @syntax _.each(list, callback)
+	 * @syntax _.each(list, callback, ctx)
 	 * @module UTIL, WEB
 	 * Invokes the given function once for each item in the list. The function will be called with the item as first parameter and 
 	 * the zero-based index as second. Unlike JavaScript's built-in <var>forEach()</var> it will be invoked for each item in the list, 
@@ -1574,8 +1576,9 @@ define('minified', function() {
 	 * @param callback The callback <code>function(item, index)</code> to invoke for each list element. 
 	 *                 <dl><dt>item</dt><dd>The current list element.</dd>
 	 *                 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	 *                 <dt class="this">this</dt><dd>This list.</dd></dl>
+	 * 			       <dt class="this">this</dt><dd>The given context if not null. Otherwise the list.</dd>
 	 *                 The callback's return value will be ignored.
+	 * @param ctx optional a context to pass to the callback as 'this'. Only supported in UTIL module.
 	 * @return the list
 	 * 
 	 * @see ##per() works like <var>each()</var>, but wraps the list elements in a list.
@@ -1592,8 +1595,10 @@ define('minified', function() {
 	 * @name .filter()
 	 * @altname _.filter()
 	 * @syntax list.filter(filterFunc)
+	 * @syntax list.filter(filterFunc, ctx)
 	 * @syntax list.filter(value)
 	 * @syntax _.filter(list, filterFunc)
+	 * @syntax _.filter(list, filterFunc, ctx)
 	 * @syntax _.filter(list, value)
    	 * @module WEB, UTIL
 	 * Creates a new ##list#Minified list## by taking an existing list and omitting certain elements from it. You
@@ -1634,8 +1639,9 @@ define('minified', function() {
 	 * @param filterFunc The filter callback <code>function(item, index)</code> that decides which elements to include:
 	 *        <dl><dt>item</dt><dd>The current list element.</dd>
 	 *        <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	 *        <dt class="this">this</dt><dd>This list.</dd>
+	 *        <dt class="this">this</dt><dd>The given context if not null. Otherwise the list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the item in the new list, <var>false</var> to omit it.</dd></dl>  
+	 * @param ctx optional a context to pass to the callback as 'this'. Only supported in UTIL module.
 	 * @param value a value to remove from the list. It will be determined which elements to remove using <code>==</code>. Must not
 	 *              be a function. Requires Util module.
 	 * @return the new, filtered ##list#list##
@@ -1652,7 +1658,9 @@ define('minified', function() {
 	 * @name .collect()
 	 * @altname _.collect
 	 * @syntax list.collect(collectFunc) 
+	 * @syntax list.collect(collectFunc, ctx) 
 	 * @syntax _.collect(list, collectFunc)
+	 * @syntax _.collect(list, collectFunc, ctx)
    	 * @module WEB, UTIL
 	 * Creates a new ##list#Minified list## from the current list using the given callback function. 
 	 * The callback is invoked once for each element of the current list. The callback results will be added to the result list. 
@@ -1705,10 +1713,11 @@ define('minified', function() {
 	 *             <var>length</var> property.
 	 * @param collectFunc The callback <code>function(item, index)</code> to invoke for each item:
 	 * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	 *        <dt class="this">this</dt><dd>This list.</dd>
+	 *        <dt class="this">this</dt><dd>The given context if not null. Otherwise the list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>If the callback returns a list, its elements will be added to 
 	 *        the result list. Other objects will also be added. Nulls and <var>undefined</var> will be ignored and not be added to 
 	 *        the new result list. </dd></dl>
+	 * @param ctx optional a context to pass to the callback as 'this'. Only supported in UTIL module.
 	 * @return the new ##list#list##
 	 * 
 	 * @see ##map() is a simpler version of <var>collect()</var> that can be useful if there is a 1:1 mapping between
@@ -1724,8 +1733,10 @@ define('minified', function() {
 	 * @name .map()
 	 * @altname _.map()
 	 * @syntax list.map(mapFunc) 
+	 * @syntax list.map(mapFunc, ctx) 
 	 * @syntax _.map(list, mapFunc)
-   	 * @module WEB, UTIL
+	 * @syntax _.map(list, mapFunc, ctx)
+   	 * @module UTIL
 	 * Creates a new ##list#Minified list## from the current list using the given callback function. 
 	 * The callback is invoked once for each element of the current list. The callback results will be added to the result list.
 	 *  
@@ -1750,8 +1761,9 @@ define('minified', function() {
 	 *             <var>length</var> property.
 	 * @param mapFunc The callback <code>function(item, index)</code> to invoke for each item:
 	 * <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-	 *        <dt class="this">this</dt><dd>This list.</dd>
+	 *        <dt class="this">this</dt><dd>The given context if not null. Otherwise the list.</dd>
 	 *        <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new list.</dd></dl>
+	 * @param ctx optional a context to pass to the callback as 'this'.
 	 * @return the new ##list#list##
 	 * 
 	 * @see ##collect() is a more powerful version of <var>map()</var>.
@@ -5635,6 +5647,7 @@ define('minified', function() {
 		 * @configurable default
 		 * @name _.eachObj()
 		 * @syntax _.eachObj(obj, callback)
+		 * @syntax _.eachObj(obj, callback, ctx)
 		 * @module UTIL
 		 * Invokes the given function once for each property of the given object. The callback is not invoked for inherited properties.
 		 *
@@ -5650,8 +5663,9 @@ define('minified', function() {
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
-		 *                 <dt class="this">this</dt><dd>This object.</dd></dl>
+		 *                 <dt class="this">this</dt><dd>The given context. If not set, the object itself.</dd>
 		 *                 The callback's return value will be ignored.
+		 * @param ctx optional a context to pass to the callback as 'this'.
 		 * @return the object
 		 * 
 		 * @see ##_.each() iterates through a list.
@@ -5665,6 +5679,7 @@ define('minified', function() {
 		 * @configurable default
 		 * @name _.mapObj()
 		 * @syntax _.mapObj(obj, callback)
+		 * @syntax _.mapObj(obj, callback, ctx)
 		 * @module UTIL
 		 * Creates a new object with the same properties but different values using the given callback function. The function is called
 		 * for each property of the input object to provice a new value for the property.
@@ -5681,17 +5696,18 @@ define('minified', function() {
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
-		 *                 <dt class="this">this</dt><dd>This object.</dd>
+		 *                 <dt class="this">this</dt><dd>The given context. If not set, the object itself.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new object.</dd></dl>
+		 * @param ctx optional a context to pass to the callback as 'this'.
 		 * @return the new object
 		 * 
 		 * @see ##_.filterObj() filters an object.
 		 * @see ##map() maps a list.
 		 */
-		'mapObj': function(obj, mapFunc) {
+		'mapObj': function(obj, mapFunc, ctx) {
 			var result = {};
 			eachObj(obj, function(key, value) {
-				result[key] = mapFunc.call(obj, key, value);
+				result[key] = mapFunc.call(ctx || obj, key, value);
 			});
 			return result;
 		},
@@ -5703,6 +5719,7 @@ define('minified', function() {
 		 * @configurable default
 		 * @name _.filterObj()
 		 * @syntax _.filterObj(obj, filterFunc)
+		 * @syntax _.filterObj(obj, filterFunc, ctx)
 		 * @module UTIL
 		 * Creates a new object that contains only those properties of the input object that have been approved by the filter function.
 		 *  
@@ -5719,16 +5736,17 @@ define('minified', function() {
 		 * @param callback The callback <code>function(key, value)</code> to invoke for each property. 
 		 *                 <dl><dt>key</dt><dd>The name of the current property.</dd>
 		 *                 <dt>value</dt><dd>The value of the current property.</dd>
-		 *                 <dt class="this">this</dt><dd>This object.</dd>
+		 *                 <dt class="this">this</dt><dd>The given context. If not set, the object itself.</dd>
 		 *                 <dt class="returnValue">(callback return value)</dt><dd><var>true</var> to include the property in the new object, <var>false</var> to omit it.</dd></dl>
+		 * @param ctx optional a context to pass to the callback as 'this'.
 		 * @return the new object
 		 * 
 		 * @see ##_.mapObj() can be used to modify the values og an object.
 		 */
-		'filterObj': function(obj, f) {
+		'filterObj': function(obj, f, ctx) {
 			var r = {};
 			eachObj(obj, function(key, value) {
-				if (f.call(obj, key, value))
+				if (f.call(ctx || obj, key, value))
 					r[key] = value;
 			});
 			return r;

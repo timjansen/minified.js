@@ -35,10 +35,12 @@
 <h2><a name="doc-map">.map()</a></h2>
 <div class="summary">Creates a new Minified list from the current list using the given callback function.</div>
 
-<div class="availability">Available in all modules.</div><h4>Syntax Variants</h4>
+<div class="availability">Util module only.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.map(mapFunc)</div>
+<div class="syntax">list.map(mapFunc, ctx)</div>
 <div class="syntax">_.map(list, mapFunc)</div>
+<div class="syntax">_.map(list, mapFunc, ctx)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -49,10 +51,12 @@
 <dt id="map_mapFunc" class=""><a name="map_mapFunc"><var>mapFunc</var></a></dt>
 <dd class="">The callback <code>function(item, index)</code> to invoke for each item:
 <dl><dt>item</dt><dd>The current list element.</dd><dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-<dt class="this">this</dt><dd>This list.</dd>
+<dt class="this">this</dt><dd>The given context if not null. Otherwise the list.</dd>
 <dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new list.</dd></dl></dd>
-<dt id="map_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="map_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the new <a href="list.html" class="func">list</a>
+<dt id="map_ctx" class=""><a name="map_ctx"><var>ctx (optional)</var></a></dt>
+<dd class="">a context to pass to the callback as 'this'.</dd>
+<dt id="map_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="map_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the new <a href="list.html" class="func">list</a>
 </dd>
 </dl>
 
@@ -135,7 +139,7 @@ var disqus_url = "http://minifiedjs.com/api/map.html";
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Util</span>
 </li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>

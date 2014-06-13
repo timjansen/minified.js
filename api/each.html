@@ -38,7 +38,9 @@
 <div class="availability">Available in all modules.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">list.each(callback)</div>
+<div class="syntax">list.each(callback, ctx)</div>
 <div class="syntax">_.each(list, callback)</div>
+<div class="syntax">_.each(list, callback, ctx)</div>
 </div>
 
 <h4>Parameters</h4>
@@ -50,10 +52,12 @@
 <dd class="">The callback <code>function(item, index)</code> to invoke for each list element.
 <dl><dt>item</dt><dd>The current list element.</dd>
 <dt>index</dt><dd>The second the zero-based index of the current element.</dd>
-<dt class="this">this</dt><dd>This list.</dd></dl>
-The callback's return value will be ignored.</dd>
-<dt id="each_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="each_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the list
+<dt class="this">this</dt><dd>The given context if not null. Otherwise the list.</dd>
+The callback's return value will be ignored.</dl></dd>
+<dt id="each_ctx" class=""><a name="each_ctx"><var>ctx (optional)</var></a></dt>
+<dd class="">a context to pass to the callback as 'this'. Only supported in UTIL module.</dd>
+<dt id="each_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2 inSyntax3"><a name="each_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1 inSyntax2 inSyntax3">the list
 </dd>
 </dl>
 
@@ -148,7 +152,7 @@ var disqus_url = "http://minifiedjs.com/api/each.html";
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Util</span>
 </li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
