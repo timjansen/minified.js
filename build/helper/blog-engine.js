@@ -24,13 +24,13 @@ var defaultOptions = {
 		pageTitleTemplate: '{{title}} - Minified.js Blog',
 		commentIdTemplate: 'blog-{{id}}',
 		commentRef: '#comments',
-		urlBase: 'http://localhost:8080/blog/',
+		urlBase: 'http://minifiedjs.com/blog/',
 		entryFileNameTemplate: '{{timestamp::yyyy}}/{{timestamp::MM}}/{{id}}.html',
 		indexFileNameTemplate: '/index{{if index > 0}}-{{index}}{{/if}}.html',
 		archiveFileNameTemplate: '{{year}}/index.html',
 		rssFileName: 'rss20.xml',
 		headlinesFileName: 'headlines.json',
-		pageTemplateDefaults: {section: 'blog', externalCss: ['/css/blog.css'], rssFeed: 'http://localhost:8080/blog/rss20.xml'},
+		pageTemplateDefaults: {section: 'blog', externalCss: ['/css/blog.css'], rssFeed: 'http://minifiedjs.com/blog/rss20.xml'},
 		timestampFormat: 'yyyy-MM-dd HH:mm',
 		entryHtmlTemplate: '{{if instr.nav}}<div class="nav">{{if entry.prevEntry}}<a href="{{entry.prevEntry.url}}">{{entry.prevEntry.title}}</a> | {{/if}}'+
 		'<a href="{{opts.urlBase}}">Main</a>'+

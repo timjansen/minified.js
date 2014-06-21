@@ -4,5 +4,5 @@
 	timestamp: '2014-06-06 04:00',
 	author: 'Tim Jansen',
 	markdown: `Beta 6 is likely the last Minified beta. It contains a large number of smaller improvements and prepares Minified for the next step. Expect some surprises! 
-You can find a detailed list of changes [here](http://minifiedjs.com:8080/docs/beta6.html).﻿`}
+You can find a detailed list of changes [here](http://minifiedjs.com/docs/beta6.html).﻿`}
 

@@ -445,10 +445,10 @@ define('minified', function() {
 								while (el && el != registeredOn && !(match = selectorFilter(el)))
 									el = el['parentNode'];
 							}
-							return (name != eventName) || (match && ((handler.apply($(el), args || [event, index]) && prefix=='?') || prefix == '|'));
+							return (!match) || (name != eventName) || ((handler.apply($(el), args || [event, index]) && prefix=='?') || prefix == '|');
 						};
 						
-						function miniHandler(event) {
+						function eventHandler(event) {
 							if (!triggerHandler(name, event, event['target'])) {
 								event['preventDefault']();
 								event['stopPropagation']();
@@ -456,14 +456,14 @@ define('minified', function() {
 						};
 
 						
-						registeredOn.addEventListener(name, miniHandler, capture);
+						registeredOn.addEventListener(name, eventHandler, capture);
 						
 						if (!registeredOn['M']) 
 							registeredOn['M'] = {};
 						registeredOn['M'][triggerId] = triggerHandler;                  // to be called by trigger()
 						
 						handler['M'] = collector(flexiEach, [handler['M'], function () { // this function will be called by off()
-							registeredOn.removeEventListener(name, miniHandler, capture);
+							registeredOn.removeEventListener(name, eventHandler, capture);
 							delete registeredOn['M'][triggerId];
 						}], nonOp);
 						
