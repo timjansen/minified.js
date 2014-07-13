@@ -724,8 +724,8 @@ define('minified', function() {
 		};
 	}
 	function listBind(func) {
-		return function(arg1, arg2) {
-			return func(this, arg1, arg2);
+		return function(arg1, arg2, arg3) {
+			return func(this, arg1, arg2, arg3);
 		};
 	}
 	function funcArrayBind(func) {

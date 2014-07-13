@@ -1,6 +1,6 @@
  /*
  * Minified-web.js - Lightweight Client-Side JavaScript Libary (web module only)
- * Version: 2014.0.0-beta6.0
+ * Version: 2014.0.0-beta6.2
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -443,6 +443,7 @@ define('minified', function() {
 
 
 
+
 	// @condblock !ie7compatibility
 	function dollarRaw(selector, context, childOnly) { 
 		function flatten(a) { // flatten list, keep non-lists, remove nulls
@@ -461,8 +462,12 @@ define('minified', function() {
 		 if (context) {
 		      if ((context = dollarRaw(context)).length != 1)
 		           return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
-		      else if (isString(selector))
-		           return childOnly ? filterElements(context[0].querySelectorAll(selector)) : context[0].querySelectorAll(selector);
+		      else if (isString(selector)) {
+		      		if (isNode(context[0]) != 1)
+						return [];
+					else 
+		        		return childOnly ? filterElements(context[0].querySelectorAll(selector)) : context[0].querySelectorAll(selector);
+		      }
 		      else
 		           return filterElements(selector);
 
@@ -2762,16 +2767,13 @@ define('minified', function() {
 	'onChange': function onChange(subSelect, handler, bubbleSelector) {
 		if (isFunction(handler)) {
 
-			return this['each'](function(el, index) {
-			$(el)['on'](subSelect, '|input |change |click',  function() { // |change for select elements, |click for checkboxes...
+			return this['on'](subSelect, '|input |change |click',  function(ev, index) { // |change for select elements, |click for checkboxes...
 			var e = this[0];
 			var v = /ox|io/i.test(e['type']) ? e['checked'] : e['value'];
 			if (e[MINIFIED_MAGIC_PREV] != v) {
 			handler.call(this, e[MINIFIED_MAGIC_PREV] = v, index);
-			
 			}
 			}, bubbleSelector); 
-			});
 		}
 		else
 			return this['onChange'](_null, subSelect, handler); 

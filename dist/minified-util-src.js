@@ -1,6 +1,6 @@
 /*
  * Minified-util.js - Collections, formatting and other helpers.
- * Version: 2014.0.0-beta6.0
+ * Version: 2014.0.0-beta6.2
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -714,8 +714,8 @@ module.exports = (function() {
 		};
 	}
 	function listBind(func) {
-		return function(arg1, arg2) {
-			return func(this, arg1, arg2);
+		return function(arg1, arg2, arg3) {
+			return func(this, arg1, arg2, arg3);
 		};
 	}
 	function funcArrayBind(func) {

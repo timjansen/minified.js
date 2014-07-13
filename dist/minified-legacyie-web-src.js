@@ -1,6 +1,6 @@
  /*
  * Minified-web.js - Lightweight Client-Side JavaScript Libary (web module only)
- * Version: 2014.0.0-beta6.0
+ * Version: 2014.0.0-beta6.2
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -519,6 +519,9 @@ define('minified', function() {
 
 		if (!isString(selector))
 		    return filterElements(selector); 
+
+		if (parent && isNode(parent) != 1)
+			return [];
 
 		if ((subSelectors = selector.split(/\s*,\s*/)).length>1)
 			return collectUniqNodes(subSelectors, function(ssi) { return dollarRaw(ssi, parent, childOnly);});
@@ -2883,8 +2886,7 @@ define('minified', function() {
 	'onChange': function onChange(subSelect, handler, bubbleSelector) {
 		if (isFunction(handler)) {
 			// @condblock ie8compatibility
-			return this['each'](function(el, index) {
-				$(el)['on'](subSelect, IS_PRE_IE9 ? '|propertychange |change |keyup |clicked' : '|input |change |clicked', function() {
+			return this['on'](subSelect, IS_PRE_IE9 ? '|propertychange |change |keyup |clicked' : '|input |change |clicked', function(ev, index) {
 					var e = this[0];
 					var v;
 					if (IS_PRE_IE9 && /select/i.test(e['tagName']))
@@ -2895,19 +2897,15 @@ define('minified', function() {
 						handler.call(this, e[MINIFIED_MAGIC_PREV] = v, index);
 					}
 				}, bubbleSelector);
-			});
 			// @condend 
 
-			// @cond !ie8compatibility return this['each'](function(el, index) {
-			// @cond !ie8compatibility 	$(el)['on'](subSelect, '|input |change |click',  function() { // |change for select elements, |click for checkboxes...
+			// @cond !ie8compatibility return this['on'](subSelect, '|input |change |click',  function(ev, index) { // |change for select elements, |click for checkboxes...
 			// @cond !ie8compatibility 		var e = this[0];
 			// @cond !ie8compatibility      var v = /ox|io/i.test(e['type']) ? e['checked'] : e['value'];
 			// @cond !ie8compatibility 	    if (e[MINIFIED_MAGIC_PREV] != v) {
 			// @cond !ie8compatibility 	        handler.call(this, e[MINIFIED_MAGIC_PREV] = v, index);
-			// @cond !ie8compatibility 			
 			// @cond !ie8compatibility 		}
 			// @cond !ie8compatibility 	}, bubbleSelector); 
-			// @cond !ie8compatibility });
 		}
 		else
 			return this['onChange'](_null, subSelect, handler); 

@@ -199,7 +199,10 @@ describe('minified-web-selector-test.js', function() {
    			contains(m, document.getElementById("c_b"));
    			contains(m, document.getElementById("c_a"));
 		});
-		
+      it('handles text node selections', function() {
+            var m = $('p', document.createTextNode('abc'));
+            check(m.length, 0);
+      });
 	});
 	
 	describe('$$()', function() {

@@ -1,9 +1,15 @@
 Minified Change Log
 ====================
 
-Ongoing 
+Ongoing
 --------
+* Avoid crashes when text nodes are used as selector context.
+
+
+Beta 6.2 (2014-06-22)
+--------------------
 * added ctx parameter to iterator functions each(), eachObj(), map(), mapObj(), collect(), collectObj(), filter(), filterObj().
+* fixed bubble selectors in on(): they cancelled the event even for non-maching elements
 
 
 

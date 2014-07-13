@@ -490,7 +490,7 @@ function runTests(loadInContext) {
 			var l= _("a", 3, "c", 9, 3, 9);
 			
 			assert.equal(_.find(l, 3, 2), 4);
-			assert.equal(l.find(3, 3, 2), 4);
+			assert.equal(l.find(3, 2), 4);
 			assert.equal(l.find(3, -2), 4);
 			assert.equal(l.find(3, -1), null);
 		});
@@ -522,7 +522,7 @@ function runTests(loadInContext) {
 			var _ = req();
 			var l= _("a", 3, "c", 9, 3, 9);
 			assert.equal(_.findLast(l, 3, 2), 1);
-			assert.equal(l.findLast(3, 3, 2), 1);
+			assert.equal(l.findLast(3, 2), 1);
 			assert.equal(l.findLast(3, -2), 4);
 			assert.equal(l.findLast(3, -3), 1);
 			assert.equal(l.findLast(3, -5), 1);

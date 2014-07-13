@@ -24,7 +24,8 @@ var defaultOptions = {
 		pageTitleTemplate: '{{title}} - Minified.js Blog',
 		commentIdTemplate: 'blog-{{id}}',
 		commentRef: '#comments',
-		urlBase: 'http://minifiedjs.com/blog/',
+		externalUrlBase: 'http://minifiedjs.com/blog/',
+		internalUrlBase: '/blog/',
 		entryFileNameTemplate: '{{timestamp::yyyy}}/{{timestamp::MM}}/{{id}}.html',
 		indexFileNameTemplate: '/index{{if index > 0}}-{{index}}{{/if}}.html',
 		archiveFileNameTemplate: '{{year}}/index.html',
@@ -32,17 +33,17 @@ var defaultOptions = {
 		headlinesFileName: 'headlines.json',
 		pageTemplateDefaults: {section: 'blog', externalCss: ['/css/blog.css'], rssFeed: 'http://minifiedjs.com/blog/rss20.xml'},
 		timestampFormat: 'yyyy-MM-dd HH:mm',
-		entryHtmlTemplate: '{{if instr.nav}}<div class="nav">{{if entry.prevEntry}}<a href="{{entry.prevEntry.url}}">{{entry.prevEntry.title}}</a> | {{/if}}'+
-		'<a href="{{opts.urlBase}}">Main</a>'+
-		'{{if entry.nextEntry}} | <a href="{{entry.nextEntry.url}}">{{entry.nextEntry.title}}</a>{{/if}}</div>{{/if}}\n'+
+		entryHtmlTemplate: '{{if instr.nav}}<div class="nav">{{if entry.prevEntry}}<a href="{{entry.prevEntry.internalUrl}}">{{entry.prevEntry.title}}</a> | {{/if}}'+
+		'<a href="{{opts.internalUrlBase}}">Main</a>'+
+		'{{if entry.nextEntry}} | <a href="{{entry.nextEntry.internalUrl}}">{{entry.nextEntry.title}}</a>{{/if}}</div>{{/if}}\n'+
 		'<h2 class="title">{{entry.title}}</h2>\n'+
 		'<div class="entry">{{{entry.html}}}</div>\n'+
 		'{{if entry.link}}<div class="link"><a href="{{(/^https?:/.test(entry.link))?entry.link:("http://"+entry.link)}}">Link</a></div>{{/if}}\n'+
 		'<div class="entryFooter">'+
-		'<div>Posted by {{entry.author}} on {{entry.timestamp::N d, yyyy}} - <a href="{{entry.url}}">Permalink</a> - '+
-		'<a href="{{entry.url}}{{opts.commentRef}}">Comments</a></div>'+
+		'<div>Posted by {{entry.author}} on {{entry.timestamp::N d, yyyy}} - <a href="{{entry.externalUrl}}">Permalink</a> - '+
+		'<a href="{{entry.internalUrl}}{{opts.commentRef}}">Comments</a></div>'+
 	    '</div>'+
-	    '{{if instr.rss}}<div class="rss"><a href="{{opts.urlBase}}{{opts.rssFileName}}">subscribe to this blog&apos;s feed</a></div>{{/if}}'+
+	    '{{if instr.rss}}<div class="rss"><a href="{{opts.externalUrlBase}}{{opts.rssFileName}}">subscribe to this blog&apos;s feed</a></div>{{/if}}'+
 	    '\n',
 	    singleEntryHtmlTemplate: '<div class="single">'+
 	    '{{{opts.entryHtmlTemplate({entry: entry, opts: opts, instr: instr })}}}'+
@@ -54,7 +55,7 @@ var defaultOptions = {
 		'<a href="{{opts.indexFileNameTemplate({index:0})}}">Main</a> | {{/if}}'+
 		'{{if index+1 < pageNum}}<a href="{{opts.indexFileNameTemplate({index:index+1})}}">next</a>{{/if}}'+
 	    '</div>'+
-	    '<div class="rss"><a href="{{opts.urlBase}}{{opts.rssFileName}}">subscribe to this blog&apos;s feed</a></div>'+
+	    '<div class="rss"><a href="{{opts.externalUrlBase}}{{opts.rssFileName}}">subscribe to this blog&apos;s feed</a></div>'+
 	    '<div class="archive">Archive: {{each aYear, aIndex: _.keys(yearEntries).sort()}}'+
 	          '{{if aIndex}} - {{/if}}<a href="{{opts.archiveFileNameTemplate({year:aYear})}}">{{aYear}}</a>'+
 	    '{{/each}}</div>'+
@@ -62,14 +63,14 @@ var defaultOptions = {
 		archiveHtmlTemplate: '<div class="archive">\n'+
 		'<h1>Archive: {{year}}</h1>\n'+
 		'{{each entries}}{{{opts.entryHtmlTemplate({entry: this, opts: opts, instr: {} })}}}{{/each}}\n'+
-		'<div class="nav"><a href="{{opts.urlBase}}">Main</a></div>'+
+		'<div class="nav"><a href="{{opts.internalUrlBase}}">Main</a></div>'+
 	    '<div class="archive">Archive: {{each aYear, aIndex: _.keys(yearEntries).sort()}}'+
           '{{if aIndex}} - {{/if}}<a href="../{{opts.archiveFileNameTemplate({year:aYear})}}">{{aYear}}</a>'+
         '{{/each}}</div>'+
 		'</div>',
 		rssXmlTemplate: '<rss version="2.0"><channel>\n'+
 		'<title>{{opts.blogTitle}}</title>\n'+
-		'<link>{{opts.urlBase}}</link>\n'+
+		'<link>{{opts.externalUrlBase}}</link>\n'+
 		'<language>en-us</language>\n'+
 		'<pubDate>{{entries[0].timestamp :: [+0000]w, dd n yyyy HH:mm:ss}} GMT</pubDate>\n'+
 		'<lastBuildDate>{{new Date() :: [+0000]w, dd n yyyy HH:mm:ss}} GMT</lastBuildDate>\n'+
@@ -77,7 +78,7 @@ var defaultOptions = {
 		'<generator>Minified Homebrewn Feed</generator>\n'+
 		'<managingEditor>tim@tjansen.de</managingEditor>\n'+
 		'<webMaster>tim@tjansen.de</webMaster>\n'+
-		'{{each entries}}  <item><title>{{this.title}}</title><link>{{this.url}}</link><description>{{this.rssDesc||this.html}}</description>'+
+		'{{each entries}}  <item><title>{{this.title}}</title><link>{{this.externalUrl}}</link><description>{{this.rssDesc||this.html}}</description>'+
 		  '<pubDate>{{this.timestamp :: [+0000]w, dd n yyyy HH:mm:ss}} GMT</pubDate></item>{{/each}}\n\n'+
 		'</channel></rss>\n'
 };
@@ -104,7 +105,8 @@ function parseEntry(file, prevEntry, opts) {
 	var entry = hanson.parse(_.toString(fs.readFileSync(file)));
 	entry.timestamp = _.parseDate(opts.timestampFormat, entry.timestamp);
 	entry.fileName = opts.entryFileNameTemplate(entry);
-	entry.url = opts.urlBase + entry.fileName;
+	entry.externalUrl = opts.externalUrlBase + entry.fileName;
+	entry.internalUrl = opts.internalUrlBase + entry.fileName;
 	entry.prevEntry = prevEntry;
 	if (prevEntry)
 		prevEntry.nextEntry = entry;

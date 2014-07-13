@@ -1,0 +1,33 @@
+{
+	id: 'anouncement-reboot',
+	title: 'Announcement: Minified Reboot',
+	timestamp: '2014-07-13 14:00',
+	author: 'Tim Jansen',
+	markdown: `Minified 1.0 will be released in the next 1-2 weeks. Before I release it, I wanted to announce my future plans for Minified. 1.0 will not only be the first non-beta, it will also likely be the last major release in its current form. So let me explain my plan for a Minified reboot: 
+
+Minified started with the goal of being a library that's almost as capable as jQuery or Mootools, but at a fraction of the size. Its name reflected that goal. The name also describes my development process pretty accurately. Typically I write a first implementation of a feature in an hour or less, and then spend many hours or sometimes even days trying to get that code as compact as possible. In the last months optimizing the modified function itself was usually not enough to add a new feature into Minified without breaking its self-imposed 4kb/8kb size limit, so I spend even more time finding other places to optimize. For me, developing for Minified is less than 10% about writing features and more than 90% is optimizing the code for size. 
+
+Minified's first beta has been released exactly one year ago. In this past year Minified has evolved more than I would have ever imagined. Despite of its initial focus on size, I was able to add a lot of higher level functionality that I didn't think would be feasible. It now has a template engine, date arithmetics, a Promise implementation, number formatting and other things far exceeding what the other libraries can offer. Even though Minified is still a very small library, in many aspects it does not feel like one anymore.
+
+I am very glad that so many people are trying out Minified and some are even using it in real projects, and I think Minified has the potential for even more widespread adoption. But for this Minfied needs to be a bigger improvement over the pre-existing libraries. So far size was Minified's most visible advantage. That's not enough to convine most people to switch. A kB more or less does not matter as much as their productivity. In order to succeed, a library needs to be significantly more pleasant to use, or offer features unmatched by the competitors. I am striving to achieve both. Minified also needs to become a bit more accessible. Developers coming from jQuery often have a hard time finding some of the features they are used to, because Minified does a lot of things differently, and sometimes because the feature just does not exist. 
+
+So hereby I am officially changing my mission. Instead of being 'almost as usable', I want it to be easier to use and more powerful than any other comparable library. And in order to do this, I need to make some changes:
+
+- Minified's core will always stay small, but there is a lot of stuff that needs to change for a truly easy and powerful library. Therefore I am increasing the size limit. I think the initial size of the next version will be either 11 or 12 kb.
+- In order to allow useful features to be added as needed, but at the same time prevent feature creep and also keep at least some focus on size optimization, I still intend to have a size limit, but I am going to increase it by 10% every year.
+- Because of the very granular builder-tool and the 5 different distributions (web, headless and complete, with and without legacy IE support), Minified's source code has become quite a mess. That's why the Builder tool needs to go, and also the web-only distribution. Sorry, I know both are quite popular, but they are not sustainable. The 1.0 builder will stay on the site though.
+- The build process will be cleaned up and reduced to a single-pass compilation. Also, I am replacing Google Closure with Uglify as primary minifier. That alone will help making the source code more friendly.
+- The three additional kB will allow not only some new features, but they will allow me to get rid of the API's rough edges that were caused by its size limitation.
+- The next version will be more similar to jQuery where it makes sense. For example, text() will work like jQuery's text() and allow setting text. ht() will be renamed to html() and behave more like jQuery's version, just with additional template support. And on()'s default prefix will be '|', to work more like jQ. But I do not plan to change any of Minified's essentials, like the get()/set() syntax.
+- Despite those changes, the number of backward-incompatible changes won't be larger than in some of the previous betas. To stay compatible with existing code, I will provide a Minified-compatibility module that makes the new version fully backward-compatible.
+- The license will change from a Public Domain-like license to MIT. While I personally like the freedom that PD offers, the MIT license will make it easier to incorporate code from other sources, adds some more legal protection and may be friendlier to contributors.
+- I have been preparing Minified for additional modules for a while, and now is the time. Be prepared for a number of modules that add additional capabilities such as SVG-support, keyframe/timeline-based animation, touch event support and Sizzle as alternative selector engine.
+
+Last, but not least:
+The name 'Minified' has always been a somewhat unfortunate choice. It's hard to Google and confusing to many people. I kept it because it described the library for me very well, and also because I had no better idea. But with the planned change of direction after the 1.0 release there's just no good reason to keep it, other than inertia.
+
+The rebooted Minified will be called **Nia**.
+
+You can track its development [here](https://github.com/niajs/nia). Actually the Core module is already pretty far. I hope to have it released, together with several modules and a brand new site, by the end of the year.`
+}
+
