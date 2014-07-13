@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Minified.js Blog</title>
-<link rel="alternate" type="application/rss+xml" href="http://minifiedjs.com/blog/rss20.xml" title="RSS Feed">
+<meta charset="UTF-8" />
+<title>2014 - Minified.js Blog</title>
+<link rel="alternate" type="application/rss+xml"  href="http://minifiedjs.com/blog/rss20.xml" title="RSS Feed"/>
 
-<link rel="stylesheet" type="text/css" href="/css/blog.css">
+<link rel="stylesheet" type="text/css" href="/css/blog.css"/>
 
 
 
@@ -17,7 +17,7 @@
 		
 		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt='Minified'><![endif]-->
 		<!--[if gt IE 8]><img src='/img/minified.svg' alt='Minified'><![endif]-->
-		<!--[if !IE]>--><img src="/img/minified.svg" alt="Minified"><!--<![endif]--></a>
+		<!--[if !IE]> --><img src='/img/minified.svg' alt='Minified'/><!-- <![endif]--></a>
 
 		<div id="topMenu">
 			<a class="notSelected" href="/">Home</a>
@@ -30,80 +30,50 @@
 	</div>
 </div>
 <div id="main">
-	<div class="container"><div class="index"><h1>Minified.js Blog</h1>
+	<div class="container"><div class="archive">
+<h1>Archive: 2014</h1>
 
-<h2 class="title">Beta 6 released</h2>
-<div class="entry"><p>Beta 6 is likely the last Minified beta. It contains a large number of smaller improvements and prepares Minified for the next step. Expect some surprises! 
-You can find a detailed list of changes <a href="http://minifiedjs.com/docs/beta6.html">here</a>.﻿</p></div>
+<h2 class="title">Minified Components by Moloc Lab</h2>
+<div class="entry"><p>@molocLab released some <a href="http://www.moloc.net/minified">awesome components</a> for Minified,  be sure to check them out. First lib using Minified, thanks!﻿</p></div>
 
-<div class="entryFooter"><div>Posted by Tim Jansen on June 6, 2014 - <a href="http://minifiedjs.com/blog/2014/06/beta6.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2014/06/beta6.html#comments">Comments</a></div></div>
+<div class="entryFooter"><div>Posted by Tim Jansen on March 9, 2014 - <a href="http://minifiedjs.com/blog/2014/03/moloc-components.html">Permalink</a> - <a href="/blog/2014/03/moloc-components.html#comments">Comments</a></div></div>
 
 <h2 class="title">Beta 5 released</h2>
 <div class="entry"><p>Even more features, still under 8kB: beta 5 is ready for download. </p>
 
 <p>As usual, you can find a detailed list of changes <a href="http://localhost:8080/docs/beta5.html">here</a>.﻿</p></div>
 
-<div class="entryFooter"><div>Posted by Tim Jansen on March 28, 2014 - <a href="http://minifiedjs.com/blog/2014/03/beta5.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2014/03/beta5.html#comments">Comments</a></div></div>
+<div class="entryFooter"><div>Posted by Tim Jansen on March 28, 2014 - <a href="http://minifiedjs.com/blog/2014/03/beta5.html">Permalink</a> - <a href="/blog/2014/03/beta5.html#comments">Comments</a></div></div>
 
-<h2 class="title">Minified Components by Moloc Lab</h2>
-<div class="entry"><p>@molocLab released some <a href="http://www.moloc.net/minified">awesome components</a> for Minified,  be sure to check them out. First lib using Minified, thanks!﻿</p></div>
+<h2 class="title">Beta 6 released</h2>
+<div class="entry"><p>Beta 6 is likely the last Minified beta. It contains a large number of smaller improvements and prepares Minified for the next step. Expect some surprises! 
+You can find a detailed list of changes <a href="http://minifiedjs.com/docs/beta6.html">here</a>.﻿</p></div>
 
-<div class="entryFooter"><div>Posted by Tim Jansen on March 9, 2014 - <a href="http://minifiedjs.com/blog/2014/03/moloc-components.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2014/03/moloc-components.html#comments">Comments</a></div></div>
+<div class="entryFooter"><div>Posted by Tim Jansen on June 6, 2014 - <a href="http://minifiedjs.com/blog/2014/06/beta6.html">Permalink</a> - <a href="/blog/2014/06/beta6.html#comments">Comments</a></div></div>
 
-<h2 class="title">Beta 4 is out!</h2>
-<div class="entry"><p>This is a rather small release, but with some backward-incompatible changes for event handlers. It was important to me to get them out as soon as possible, so I can now focus on stabilizing Minified and stop breaking existing code.</p>
+<h2 class="title">Announcement: Minified Reboot</h2>
+<div class="entry"><p>Minified 1.0 will be released in the next 1-2 weeks. Before I release it, I wanted to announce my future plans for Minified. 1.0 will not only be the first non-beta, it will also likely be the last major release in its current form. So let me explain my plan for a Minified reboot: </p>
 
-<p>Beside the event handler changes, I am really happy with the new iteration method per(), which has been very helpfully for me in several situations.  HTML() and ht() are now capable of reading templates directly from &lt;script&gt; tags, to make it easier to use large templates.</p>
+<p>Minified started with the goal of being a library that&#39;s almost as capable as jQuery or Mootools, but at a fraction of the size. Its name reflected that goal. The name also describes my development process pretty accurately. Typically I write a first implementation of a feature in an hour or less, and then spend many hours or sometimes even days trying to get that code as compact as possible. In the last months optimizing the modified function itself was usually not enough to add a new feature into Minified without breaking its self-imposed 4kb/8kb size limit, so I spend even more time finding other places to optimize. For me, developing for Minified is less than 10% about writing features and more than 90% is optimizing the code for size. </p>
 
-<p>You can find a changelog <a href="http://localhost:8080/docs/beta4.html">here</a>.</p></div>
+<p>Minified&#39;s first beta has been released exactly one year ago. In this past year Minified has evolved more than I would have ever imagined. Despite of its initial focus on size, I was able to add a lot of higher level functionality that I didn&#39;t think would be feasible. It now has a template engine, date arithmetics, a Promise implementation, number formatting and other things far exceeding what the other libraries can offer. Even though Minified is still a very small library, in many aspects it does not feel like one anymore.</p>
 
-<div class="entryFooter"><div>Posted by Tim Jansen on December 17, 2013 - <a href="http://minifiedjs.com/blog/2013/12/beta4.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2013/12/beta4.html#comments">Comments</a></div></div>
+<p>I am very glad that so many people are trying out Minified and some are even using it in real projects, and I think Minified has the potential for even more widespread adoption. But for this Minfied needs to be a bigger improvement over the pre-existing libraries. So far size was Minified&#39;s most visible advantage. That&#39;s not enough to convine most people to switch. A kB more or less does not matter as much as their productivity. In order to succeed, a library needs to be significantly more pleasant to use, or offer features unmatched by the competitors. I am striving to achieve both. Minified also needs to become a bit more accessible. Developers coming from jQuery often have a hard time finding some of the features they are used to, because Minified does a lot of things differently, and sometimes because the feature just does not exist. </p>
 
-<h2 class="title">Beta 3 released!</h2>
-<div class="entry"><p>After several months of development, I am very happy and also a bit relieved to announce that Minified beta 3 is finally ready. It features the new Util module, HTML templates and many smaller changes. Also, Minified&#39;s build system has been overhauled and is now based on grunt.</p>
+<p>So hereby I am officially changing my mission. Instead of being &#39;almost as usable&#39;, I want it to be easier to use and more powerful than any other comparable library. And in order to do this, I need to make some changes:</p>
 
-<p>A complete description of all changes can be <a href="http://localhost:8080/docs/beta3.html">found here</a>. Please note the incompatibilities section, because there are some backward-incompatible changes, especially in on().﻿</p></div>
+<ul><li>Minified&#39;s core will always stay small, but there is a lot of stuff that needs to change for a truly easy and powerful library. Therefore I am increasing the size limit. I think the initial size of the next version will be either 11 or 12 kb.</li><li>In order to allow useful features to be added as needed, but at the same time prevent feature creep and also keep at least some focus on size optimization, I still intend to have a size limit, but I am going to increase it by 10% every year.</li><li>Because of the very granular builder-tool and the 5 different distributions (web, headless and complete, with and without legacy IE support), Minified&#39;s source code has become quite a mess. That&#39;s why the Builder tool needs to go, and also the web-only distribution. Sorry, I know both are quite popular, but they are not sustainable. The 1.0 builder will stay on the site though.</li><li>The build process will be cleaned up and reduced to a single-pass compilation. Also, I am replacing Google Closure with Uglify as primary minifier. That alone will help making the source code more friendly.</li><li>The three additional kB will allow not only some new features, but they will allow me to get rid of the API&#39;s rough edges that were caused by its size limitation.</li><li>The next version will be more similar to jQuery where it makes sense. For example, text() will work like jQuery&#39;s text() and allow setting text. ht() will be renamed to html() and behave more like jQuery&#39;s version, just with additional template support. And on()&#39;s default prefix will be &#39;|&#39;, to work more like jQ. But I do not plan to change any of Minified&#39;s essentials, like the get()/set() syntax.</li><li>Despite those changes, the number of backward-incompatible changes won&#39;t be larger than in some of the previous betas. To stay compatible with existing code, I will provide a Minified-compatibility module that makes the new version fully backward-compatible.</li><li>The license will change from a Public Domain-like license to MIT. While I personally like the freedom that PD offers, the MIT license will make it easier to incorporate code from other sources, adds some more legal protection and may be friendlier to contributors.</li><li>I have been preparing Minified for additional modules for a while, and now is the time. Be prepared for a number of modules that add additional capabilities such as SVG-support, keyframe/timeline-based animation, touch event support and Sizzle as alternative selector engine.</li></ul>
 
-<div class="entryFooter"><div>Posted by Tim Jansen on November 8, 2013 - <a href="http://minifiedjs.com/blog/2013/11/beta3.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2013/11/beta3.html#comments">Comments</a></div></div>
+<p>Last, but not least:
+The name &#39;Minified&#39; has always been a somewhat unfortunate choice. It&#39;s hard to Google and confusing to many people. I kept it because it described the library for me very well, and also because I had no better idea. But with the planned change of direction after the 1.0 release there&#39;s just no good reason to keep it, other than inertia.</p>
 
-<h2 class="title">Beta 3 Update</h2>
-<div class="entry"><p>Just wanted to give you an update about my plans for Minified Beta 3.</p>
+<p>The rebooted Minified will be called <strong>Nia</strong>.</p>
 
-<p>First of all, beta 3 will officially introduce the Util module. The Util module is roughly inspired by Underscore and similar libraries. It provides helpers for collections, functions, string manipulation, Date arithmetics, number and date parsing and formatting, a Promises/A+ implementation as well a template system - in less than 4kB. Both modules share the list implementation, so you can use all of Util&#39;s methods to manipulate a list of elements or use Web&#39;s set() to modify Util&#39;s list.</p>
+<p>You can track its development <a href="https://github.com/niajs/nia">here</a>. Actually the Core module is already pretty far. I hope to have it released, together with several modules and a brand new site, by the end of the year.</p></div>
 
-<p>The Util module has been on Github for a long time, but I have finally extended the build system so that it is capable of merging the Web module and the Util module into a single module which currently weighs about 7.5kB. Both modules will, of course, also stay available as stand-alone downloads. In addition to that, the Util module will be available as a CommonJS module ready for use in Node.js and available on npm.</p>
+<div class="entryFooter"><div>Posted by Tim Jansen on July 13, 2014 - <a href="http://minifiedjs.com/blog/2014/07/anouncement-reboot.html">Permalink</a> - <a href="/blog/2014/07/anouncement-reboot.html#comments">Comments</a></div></div>
 
-<p>The changes to the existing Web module are relatively small. Two new features have been added: offset() will allow you to get a element&#39;s position on the page, very similar to jQuery&#39;s function of the same name. And the universal get()/set() syntax will get two new virtual properties $$scrollX/$$scrollY that allow you to scroll the current page. This, and some smaller changes, can also be found in the <a href="https://github.com/timjansen/minified.js/blob/master/CHANGES.md">CHANGES.md</a> file on Github.</p>
-
-<p>Beta 3 will also replace the ant-based build-system with a new one based on Grunt. I hope that this will make the source code more accessible, as relatively few JavaScript developer are familiar with ant and the old build system is pretty slow. Replacing the current XML/XSLT-based template system was a bit more complicated than I anticipated though, which is why I came up with a new side-project called <a href="https://github.com/timjansen/hanson">HanSON</a>. HanSON extends JSON&#39;s syntax with multi-line strings and some other things to make larger, hand-written JSON files possible. Together with the Util module&#39;s template system, HanSON is will be used to create Minified&#39;s web site.</p>
-
-<p>There&#39;s still a lot of work to be done, but if everything works out I expect Beta 3 to be ready in September or early October.﻿</p></div>
-
-<div class="entryFooter"><div>Posted by Tim Jansen on August 20, 2013 - <a href="http://minifiedjs.com/blog/2013/08/beta3update.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2013/08/beta3update.html#comments">Comments</a></div></div>
-
-<h2 class="title">Minified Web beta 2 is out</h2>
-<div class="entry"><p>This is mainly a feature release and adds many much requested features. For a complete overview, follow <a href="http://minifiedjs.com/docs/beta2.html">this link</a>.﻿</p></div>
-
-<div class="entryFooter"><div>Posted by Tim Jansen on July 31, 2013 - <a href="http://minifiedjs.com/blog/2013/07/beta2.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2013/07/beta2.html#comments">Comments</a></div></div>
-
-<h2 class="title">Redefining the 4kB size limit</h2>
-<div class="entry"><p>After the beta 1 release I got a lot of great feedback. Most of the feedback was about missing features or things that were too hard to do with Minified. There were also event handler memory leaks in the legacy-IE version that need to be fixed, but require a lot of code and thus would break the 4kB limit.</p>
-
-<p>So I made the hard decision to modify my self-imposed 4kB limit. In beta 1, the goal was to get even the full version with legacy IE support under 4kB. But with beta 2, the goal will be to get only the version without IE support under 4 kB.</p>
-
-<p>This allows me to add some much requested, missing features and will also ensure that I do not need to remove anything just to get Minified working correctly in the older IEs. At the same time, I keep a limit that will hopefully prevent feature-bloat in the library. </p>
-
-<p>You can see new features as they are being added in <a href="https://github.com/timjansen/minified.js/blob/master/CHANGES.md">CHANGES.md</a>.</p></div>
-
-<div class="entryFooter"><div>Posted by Tim Jansen on July 20, 2013 - <a href="http://minifiedjs.com/blog/2013/07/redefining4k.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2013/07/redefining4k.html#comments">Comments</a></div></div>
-
-<h2 class="title">Minified Web beta 1 released!</h2>
-<div class="entry"><p>After over 1 year of development I am proud to release the first version of Minified Web, my tiny but fully featured alternative to libraries like jQuery and MooTools.  ﻿</p></div>
-
-<div class="entryFooter"><div>Posted by Tim Jansen on July 13, 2013 - <a href="http://minifiedjs.com/blog/2013/07/beta1.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2013/07/beta1.html#comments">Comments</a></div></div>
-
-<div class="nav"></div><div class="rss"><a href="http://minifiedjs.com/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div><div class="archive">Archive: <a href="2013/index.html">2013</a> - <a href="2014/index.html">2014</a></div></div>
-
+<div class="nav"><a href="/blog/">Main</a></div><div class="archive">Archive: <a href="../2013/index.html">2013</a> - <a href="../2014/index.html">2014</a></div></div>
 	
 	</div>
 	
