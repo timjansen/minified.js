@@ -1,8 +1,8 @@
 Minified Change Log
 ====================
 
-Ongoing
---------
+1.0 (2014-07-27)
+-----------------
 * Avoid crashes when text nodes are used as selector context.
 
 

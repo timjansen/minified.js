@@ -2,7 +2,7 @@ Minified
 =========
 
 Quick Links: <a href="http://minifiedjs.com/">minifiedjs.com</a> - <a href="http://minifiedjs.com/api/">API</a> - <a href="http://minifiedjs.com/docs/">Docs</a>
-Latest version: <a href="http://minifiedjs.com/docs/beta6.html">beta 6</a> (<a href="CHANGES.md">changelog</a>)
+Latest version: <a href="http://minifiedjs.com/blog/2014/07/release10.html">1.0</a> (<a href="CHANGES.md">changelog</a>)
 
 Overview
 ----------
@@ -69,20 +69,6 @@ See http://creativecommons.org/publicdomain/zero/1.0/ for details.
 
 Please note that some third-party content of the Minified web site, especially in the /srcContent directory, has been published under different open source licenses. 
 
-
-
-About Minified
----------------
-Call me old-fashioned, but the size of JavaScript libraries like jQuery and MooTools has always bothered me. 
-Don't get me wrong, they are fantastic libraries and I really like to use them, but they contain about 90kb of code even after minification. 
-This code needs to be parsed and executed on every page that you include them on.  For me, that just feels too large for what that they offer, 
-and especially for what I need. The 30kb size that they have after gzipping will can also cause a significant delay on low-bandwidth networks.
-
-In the last years I worked on some personal projects (<a href="http://timjansen.github.io/jarfiller/">jarfiller.org</a> is the only one that has been published), 
-and when I work on them, I usually strive for perfection. Every unnecessary kilobyte hurts.  So instead of using jQuery, I started writing my own 
-little helper functions to replace jQuery functionality without the overhead. As I worked on several other projects, I wrote more and more helper 
-functions and started sharing them between projects until they became a library of their own.  By now they are so mature that I believe that this 
-library, called Minified, became a valid alternative to jQuery and MooTools at a fraction of the size.
 
 Thank you for checking out Minified.
 			Tim Jansen

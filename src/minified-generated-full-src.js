@@ -881,7 +881,7 @@ define('minified', function() {
 
 	// note: only the web version has the f.item check
 	function isFunction(f) {
-		return isType(f, 'function') && !f['item']; // item check as work-around for webkit bug 14547
+		return typeof f == 'function' && !f['item']; // item check as work-around for webkit bug 14547
 	}
 
 	function isList(v) {
