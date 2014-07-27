@@ -30,11 +30,11 @@
 	</div>
 </div>
 <div id="main">
-	<div class="container"><div class="single"><div class="nav"><a href="http://minifiedjs.com/blog/2013/07/redefining4k.html">Redefining the 4kB size limit</a> | <a href="http://minifiedjs.com/blog/">Main</a></div>
+	<div class="container"><div class="single"><div class="nav"><a href="/blog/2013/07/redefining4k.html">Redefining the 4kB size limit</a> | <a href="/blog/">Main</a></div>
 <h2 class="title">Minified Web beta 1 released!</h2>
 <div class="entry"><p>After over 1 year of development I am proud to release the first version of Minified Web, my tiny but fully featured alternative to libraries like jQuery and MooTools.  ﻿</p></div>
 
-<div class="entryFooter"><div>Posted by Tim Jansen on July 13, 2013 - <a href="http://minifiedjs.com/blog/2013/07/beta1.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2013/07/beta1.html#comments">Comments</a></div></div><div class="rss"><a href="http://minifiedjs.com/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div>
+<div class="entryFooter"><div>Posted by Tim Jansen on July 13, 2013 - <a href="http://minifiedjs.com/blog/2013/07/beta1.html">Permalink</a> - <a href="/blog/2013/07/beta1.html#comments">Comments</a></div></div><div class="rss"><a href="http://minifiedjs.com/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div>
 </div>
 
 	
@@ -43,10 +43,11 @@
 	<script type="text/javascript">
 	var disqus_shortname = "minifiedjs";
 	var disqus_identifier = "blog-beta1";
-	(function() {
-	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
-	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
-	})();
+	if (!///localhost/.test(window.location))
+		(function() {
+		 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+		 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+		})();
 	</script>
 	
 	</div>

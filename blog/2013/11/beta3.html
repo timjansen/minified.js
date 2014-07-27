@@ -30,13 +30,13 @@
 	</div>
 </div>
 <div id="main">
-	<div class="container"><div class="single"><div class="nav"><a href="http://minifiedjs.com/blog/2013/12/beta4.html">Beta 4 is out!</a> | <a href="http://minifiedjs.com/blog/">Main</a> | <a href="http://minifiedjs.com/blog/2013/08/beta3update.html">Beta 3 Update</a></div>
+	<div class="container"><div class="single"><div class="nav"><a href="/blog/2013/12/beta4.html">Beta 4 is out!</a> | <a href="/blog/">Main</a> | <a href="/blog/2013/08/beta3update.html">Beta 3 Update</a></div>
 <h2 class="title">Beta 3 released!</h2>
 <div class="entry"><p>After several months of development, I am very happy and also a bit relieved to announce that Minified beta 3 is finally ready. It features the new Util module, HTML templates and many smaller changes. Also, Minified&#39;s build system has been overhauled and is now based on grunt.</p>
 
 <p>A complete description of all changes can be <a href="http://localhost:8080/docs/beta3.html">found here</a>. Please note the incompatibilities section, because there are some backward-incompatible changes, especially in on().﻿</p></div>
 
-<div class="entryFooter"><div>Posted by Tim Jansen on November 8, 2013 - <a href="http://minifiedjs.com/blog/2013/11/beta3.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2013/11/beta3.html#comments">Comments</a></div></div><div class="rss"><a href="http://minifiedjs.com/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div>
+<div class="entryFooter"><div>Posted by Tim Jansen on November 8, 2013 - <a href="http://minifiedjs.com/blog/2013/11/beta3.html">Permalink</a> - <a href="/blog/2013/11/beta3.html#comments">Comments</a></div></div><div class="rss"><a href="http://minifiedjs.com/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div>
 </div>
 
 	
@@ -45,10 +45,11 @@
 	<script type="text/javascript">
 	var disqus_shortname = "minifiedjs";
 	var disqus_identifier = "blog-beta3";
-	(function() {
-	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
-	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
-	})();
+	if (!///localhost/.test(window.location))
+		(function() {
+		 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+		 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+		})();
 	</script>
 	
 	</div>

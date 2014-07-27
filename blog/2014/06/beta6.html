@@ -44,10 +44,11 @@ You can find a detailed list of changes <a href="http://minifiedjs.com/docs/beta
 	<script type="text/javascript">
 	var disqus_shortname = "minifiedjs";
 	var disqus_identifier = "blog-beta6";
-	(function() {
-	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
-	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
-	})();
+	if (!///localhost/.test(window.location))
+		(function() {
+		 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+		 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+		})();
 	</script>
 	
 	</div>

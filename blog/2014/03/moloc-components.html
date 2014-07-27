@@ -30,11 +30,11 @@
 	</div>
 </div>
 <div id="main">
-	<div class="container"><div class="single"><div class="nav"><a href="http://minifiedjs.com/blog/2014/03/beta5.html">Beta 5 released</a> | <a href="http://minifiedjs.com/blog/">Main</a> | <a href="http://minifiedjs.com/blog/2013/12/beta4.html">Beta 4 is out!</a></div>
+	<div class="container"><div class="single"><div class="nav"><a href="/blog/2014/03/beta5.html">Beta 5 released</a> | <a href="/blog/">Main</a> | <a href="/blog/2013/12/beta4.html">Beta 4 is out!</a></div>
 <h2 class="title">Minified Components by Moloc Lab</h2>
 <div class="entry"><p>@molocLab released some <a href="http://www.moloc.net/minified">awesome components</a> for Minified,  be sure to check them out. First lib using Minified, thanks!﻿</p></div>
 
-<div class="entryFooter"><div>Posted by Tim Jansen on March 9, 2014 - <a href="http://minifiedjs.com/blog/2014/03/moloc-components.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2014/03/moloc-components.html#comments">Comments</a></div></div><div class="rss"><a href="http://minifiedjs.com/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div>
+<div class="entryFooter"><div>Posted by Tim Jansen on March 9, 2014 - <a href="http://minifiedjs.com/blog/2014/03/moloc-components.html">Permalink</a> - <a href="/blog/2014/03/moloc-components.html#comments">Comments</a></div></div><div class="rss"><a href="http://minifiedjs.com/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div>
 </div>
 
 	
@@ -43,10 +43,11 @@
 	<script type="text/javascript">
 	var disqus_shortname = "minifiedjs";
 	var disqus_identifier = "blog-moloc-components";
-	(function() {
-	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
-	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
-	})();
+	if (!///localhost/.test(window.location))
+		(function() {
+		 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+		 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+		})();
 	</script>
 	
 	</div>

@@ -154,10 +154,11 @@ XHR. This allows you to use <var>$.request()</var> with <var>FormData</var> obje
 	<script type="text/javascript">
 	var disqus_shortname = "minifiedjs";
 	var disqus_identifier = "docs-beta5";
-	(function() {
-	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
-	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
-	})();
+	if (!///localhost/.test(window.location))
+		(function() {
+		 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+		 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+		})();
 	</script>
 	
 	</div>

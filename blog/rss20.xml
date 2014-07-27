@@ -2,13 +2,20 @@
 <title>Minified.js Blog</title>
 <link>http://minifiedjs.com/blog/</link>
 <language>en-us</language>
-<pubDate>Sun, 13 Jul 2014 12:00:00 GMT</pubDate>
-<lastBuildDate>Sun, 13 Jul 2014 12:26:16 GMT</lastBuildDate>
+<pubDate>Sun, 27 Jul 2014 12:00:00 GMT</pubDate>
+<lastBuildDate>Sun, 27 Jul 2014 09:03:58 GMT</lastBuildDate>
 <docs>http://blogs.law.harvard.edu/tech/rss</docs>
 <generator>Minified Homebrewn Feed</generator>
 <managingEditor>tim@tjansen.de</managingEditor>
 <webMaster>tim@tjansen.de</webMaster>
-  <item><title>Announcement: Minified Reboot</title><link>http://minifiedjs.com/blog/2014/07/anouncement-reboot.html</link><description>&#60;p&#62;Minified 1.0 will be released in the next 1-2 weeks. Before I release it, I wanted to announce my future plans for Minified. 1.0 will not only be the first non-beta, it will also likely be the last major release in its current form. So let me explain my plan for a Minified reboot: &#60;/p&#62;
+  <item><title>Minified 1.0</title><link>http://minifiedjs.com/blog/2014/07/release10.html</link><description>&#60;p&#62;After a year of beta releases, Minified 1.0 is ready for download! &#60;/p&#62;
+
+&#60;p&#62;Version 1.0 is a pure bug-fix release and does not offer any new features over beta 6.&#60;/p&#62;
+
+&#60;p&#62;As explained in an &#60;a href=&#34;http://minifiedjs.com/blog/2014/07/anouncement-reboot.html&#34;&#62;earlier post&#60;/a&#62;, this will likely be the last major release of Minified, aside from bug fixes. 
+Because of the self-imposed size limit, there is hardly any room for improvement left in Minified.&#60;/p&#62;
+
+&#60;p&#62;Its successor &#60;a href=&#34;https://github.com/niajs/nia&#34;&#62;Nia&#60;/a&#62; will break out of the size limit to become a friendlier and more practical library, albeit with a larger footprint.&#60;/p&#62;</description><pubDate>Sun, 27 Jul 2014 12:00:00 GMT</pubDate></item>  <item><title>Announcement: Minified Reboot</title><link>http://minifiedjs.com/blog/2014/07/anouncement-reboot.html</link><description>&#60;p&#62;Minified 1.0 will be released in the next 1-2 weeks. Before I release it, I wanted to announce my future plans for Minified. 1.0 will not only be the first non-beta, it will also likely be the last major release in its current form. So let me explain my plan for a Minified reboot: &#60;/p&#62;
 
 &#60;p&#62;Minified started with the goal of being a library that&#38;#39;s almost as capable as jQuery or Mootools, but at a fraction of the size. Its name reflected that goal. The name also describes my development process pretty accurately. Typically I write a first implementation of a feature in an hour or less, and then spend many hours or sometimes even days trying to get that code as compact as possible. In the last months optimizing the modified function itself was usually not enough to add a new feature into Minified without breaking its self-imposed 4kb/8kb size limit, so I spend even more time finding other places to optimize. For me, developing for Minified is less than 10% about writing features and more than 90% is optimizing the code for size. &#60;/p&#62;
 

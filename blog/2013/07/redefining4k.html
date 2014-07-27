@@ -30,7 +30,7 @@
 	</div>
 </div>
 <div id="main">
-	<div class="container"><div class="single"><div class="nav"><a href="http://minifiedjs.com/blog/2013/07/beta2.html">Minified Web beta 2 is out</a> | <a href="http://minifiedjs.com/blog/">Main</a> | <a href="http://minifiedjs.com/blog/2013/07/beta1.html">Minified Web beta 1 released!</a></div>
+	<div class="container"><div class="single"><div class="nav"><a href="/blog/2013/07/beta2.html">Minified Web beta 2 is out</a> | <a href="/blog/">Main</a> | <a href="/blog/2013/07/beta1.html">Minified Web beta 1 released!</a></div>
 <h2 class="title">Redefining the 4kB size limit</h2>
 <div class="entry"><p>After the beta 1 release I got a lot of great feedback. Most of the feedback was about missing features or things that were too hard to do with Minified. There were also event handler memory leaks in the legacy-IE version that need to be fixed, but require a lot of code and thus would break the 4kB limit.</p>
 
@@ -40,7 +40,7 @@
 
 <p>You can see new features as they are being added in <a href="https://github.com/timjansen/minified.js/blob/master/CHANGES.md">CHANGES.md</a>.</p></div>
 
-<div class="entryFooter"><div>Posted by Tim Jansen on July 20, 2013 - <a href="http://minifiedjs.com/blog/2013/07/redefining4k.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2013/07/redefining4k.html#comments">Comments</a></div></div><div class="rss"><a href="http://minifiedjs.com/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div>
+<div class="entryFooter"><div>Posted by Tim Jansen on July 20, 2013 - <a href="http://minifiedjs.com/blog/2013/07/redefining4k.html">Permalink</a> - <a href="/blog/2013/07/redefining4k.html#comments">Comments</a></div></div><div class="rss"><a href="http://minifiedjs.com/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div>
 </div>
 
 	
@@ -49,10 +49,11 @@
 	<script type="text/javascript">
 	var disqus_shortname = "minifiedjs";
 	var disqus_identifier = "blog-redefining4k";
-	(function() {
-	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
-	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
-	})();
+	if (!///localhost/.test(window.location))
+		(function() {
+		 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+		 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+		})();
 	</script>
 	
 	</div>

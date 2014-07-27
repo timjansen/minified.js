@@ -30,7 +30,7 @@
 	</div>
 </div>
 <div id="main">
-	<div class="container"><div class="single"><div class="nav"><a href="/blog/">Main</a> | <a href="/blog/2014/06/beta6.html">Beta 6 released</a></div>
+	<div class="container"><div class="single"><div class="nav"><a href="/blog/2014/07/release10.html">Minified 1.0</a> | <a href="/blog/">Main</a> | <a href="/blog/2014/06/beta6.html">Beta 6 released</a></div>
 <h2 class="title">Announcement: Minified Reboot</h2>
 <div class="entry"><p>Minified 1.0 will be released in the next 1-2 weeks. Before I release it, I wanted to announce my future plans for Minified. 1.0 will not only be the first non-beta, it will also likely be the last major release in its current form. So let me explain my plan for a Minified reboot: </p>
 
@@ -60,10 +60,11 @@ The name &#39;Minified&#39; has always been a somewhat unfortunate choice. It&#3
 	<script type="text/javascript">
 	var disqus_shortname = "minifiedjs";
 	var disqus_identifier = "blog-anouncement-reboot";
-	(function() {
-	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
-	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
-	})();
+	if (!///localhost/.test(window.location))
+		(function() {
+		 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+		 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+		})();
 	</script>
 	
 	</div>

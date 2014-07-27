@@ -2,7 +2,7 @@
 
 /*
  * Minified.js - Lightweight Client-Side JavaScript Library (full package)
- * Version: 2014.0.0-beta6.0
+ * Version: 2014.1.0
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -808,8 +808,8 @@ define('minified', function() {
 		};
 	}
 	function listBind(func) {
-		return function(arg1, arg2) {
-			return func(this, arg1, arg2);
+		return function(arg1, arg2, arg3) {
+			return func(this, arg1, arg2, arg3);
 		};
 	}
 	function funcArrayBind(func) {
@@ -823,7 +823,7 @@ define('minified', function() {
 
 	// note: only the web version has the f.item check
 	function isFunction(f) {
-		return isType(f, 'function') && !f['item']; // item check as work-around for webkit bug 14547
+		return typeof f == 'function' && !f['item']; // item check as work-around for webkit bug 14547
 	}
 
 	function isList(v) {
@@ -903,24 +903,24 @@ define('minified', function() {
 								while (el && el != registeredOn && !(match = selectorFilter(el)))
 									el = el['parentNode'];
 							}
-							return (name != eventName) || (match && ((handler.apply($(el), args || [event, index]) && prefix=='?') || prefix == '|'));
+							return (!match) || (name != eventName) || ((handler.apply($(el), args || [event, index]) && prefix=='?') || prefix == '|');
 						};
 
-						function miniHandler(event) {
+						function eventHandler(event) {
 							if (!triggerHandler(name, event, event['target'])) {
 								event['preventDefault']();
 								event['stopPropagation']();
 							}
 						};
 
-						registeredOn.addEventListener(name, miniHandler, capture);
+						registeredOn.addEventListener(name, eventHandler, capture);
 
 						if (!registeredOn['M']) 
 							registeredOn['M'] = {};
 						registeredOn['M'][triggerId] = triggerHandler;                  // to be called by trigger()
 
 						handler['M'] = collector(flexiEach, [handler['M'], function () { // this function will be called by off()
-							registeredOn.removeEventListener(name, miniHandler, capture);
+							registeredOn.removeEventListener(name, eventHandler, capture);
 							delete registeredOn['M'][triggerId];
 						}], nonOp);
 
@@ -1001,6 +1001,7 @@ define('minified', function() {
 
 
 
+
 	// @condblock !ie7compatibility
 	function dollarRaw(selector, context, childOnly) { 
 		function flatten(a) { // flatten list, keep non-lists, remove nulls
@@ -1019,8 +1020,12 @@ define('minified', function() {
 		 if (context) {
 		      if ((context = dollarRaw(context)).length != 1)
 		           return collectUniqNodes(context, function(ci) { return dollarRaw(selector, ci, childOnly);});
-		      else if (isString(selector))
-		           return childOnly ? filterElements(context[0].querySelectorAll(selector)) : context[0].querySelectorAll(selector);
+		      else if (isString(selector)) {
+		      		if (isNode(context[0]) != 1)
+						return [];
+					else 
+		        		return childOnly ? filterElements(context[0].querySelectorAll(selector)) : context[0].querySelectorAll(selector);
+		      }
 		      else
 		           return filterElements(selector);
 
@@ -4421,16 +4426,13 @@ define('minified', function() {
 	'onChange': function onChange(subSelect, handler, bubbleSelector) {
 		if (isFunction(handler)) {
 
-			return this['each'](function(el, index) {
-			$(el)['on'](subSelect, '|input |change |click',  function() { // |change for select elements, |click for checkboxes...
+			return this['on'](subSelect, '|input |change |click',  function(ev, index) { // |change for select elements, |click for checkboxes...
 			var e = this[0];
 			var v = /ox|io/i.test(e['type']) ? e['checked'] : e['value'];
 			if (e[MINIFIED_MAGIC_PREV] != v) {
 			handler.call(this, e[MINIFIED_MAGIC_PREV] = v, index);
-			
 			}
 			}, bubbleSelector); 
-			});
 		}
 		else
 			return this['onChange'](_null, subSelect, handler); 

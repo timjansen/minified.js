@@ -30,7 +30,7 @@
 	</div>
 </div>
 <div id="main">
-	<div class="container"><div class="single"><div class="nav"><a href="http://minifiedjs.com/blog/2014/03/moloc-components.html">Minified Components by Moloc Lab</a> | <a href="http://minifiedjs.com/blog/">Main</a> | <a href="http://minifiedjs.com/blog/2013/11/beta3.html">Beta 3 released!</a></div>
+	<div class="container"><div class="single"><div class="nav"><a href="/blog/2014/03/moloc-components.html">Minified Components by Moloc Lab</a> | <a href="/blog/">Main</a> | <a href="/blog/2013/11/beta3.html">Beta 3 released!</a></div>
 <h2 class="title">Beta 4 is out!</h2>
 <div class="entry"><p>This is a rather small release, but with some backward-incompatible changes for event handlers. It was important to me to get them out as soon as possible, so I can now focus on stabilizing Minified and stop breaking existing code.</p>
 
@@ -38,7 +38,7 @@
 
 <p>You can find a changelog <a href="http://localhost:8080/docs/beta4.html">here</a>.</p></div>
 
-<div class="entryFooter"><div>Posted by Tim Jansen on December 17, 2013 - <a href="http://minifiedjs.com/blog/2013/12/beta4.html">Permalink</a> - <a href="http://minifiedjs.com/blog/2013/12/beta4.html#comments">Comments</a></div></div><div class="rss"><a href="http://minifiedjs.com/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div>
+<div class="entryFooter"><div>Posted by Tim Jansen on December 17, 2013 - <a href="http://minifiedjs.com/blog/2013/12/beta4.html">Permalink</a> - <a href="/blog/2013/12/beta4.html#comments">Comments</a></div></div><div class="rss"><a href="http://minifiedjs.com/blog/rss20.xml">subscribe to this blog&apos;s feed</a></div>
 </div>
 
 	
@@ -47,10 +47,11 @@
 	<script type="text/javascript">
 	var disqus_shortname = "minifiedjs";
 	var disqus_identifier = "blog-beta4";
-	(function() {
-	 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
-	 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
-	})();
+	if (!///localhost/.test(window.location))
+		(function() {
+		 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+		 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+		})();
 	</script>
 	
 	</div>
