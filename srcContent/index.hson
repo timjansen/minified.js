@@ -45,7 +45,7 @@ main:{ template:`<div>
   	<div style="float: right; width: 80%; padding-top: 0.5em;">
   		<div style="text-align: left; margin-bottom: 1em;">
 	  		<a href="https://github.com/timjansen/minified.js/" class="ghButton" style="margin-right: 1em;">View on GitHub</a>
-	  		<a href="/download/" class="actionButton" style="margin-right: 1em;">Download <span>({{version.replace(/.*beta/, 'beta ').replace(/.0$/, '')}})</span></a>
+	  		<a href="/download/" class="actionButton" style="margin-right: 1em;">Download <span>({{version.replace('2014.', '')}})</span></a>
 	  		<a href="#share" class="shareButton">Share <span>(G+, Twitter..)</span></a>
 	  		<a href="https://plus.google.com/100950045026999226880" rel="publisher"></a>
 		</div>
