@@ -2708,7 +2708,16 @@ define('minified', function() {
 				// @condend
 				// @cond !ie9compatibility $(el['elements'])['values'](r);
 			else if (n && (!/ox|io/i.test(el['type']) || el['checked'])) { // ox|io => short for checkbox, radio
-				r[n] = r[n] == _null ? v : collector(flexiEach, [r[n], v], nonOp);
+				if(el['tagName'] == 'SELECT') {
+					var oa = [];
+					$(el.children).each(function(item){
+						if(item.selected)
+							oa.push(item.value);
+					});
+					r[n] = (oa.length > 1 ? oa : oa[0] || '');
+				} else {
+					r[n] = r[n] == _null ? v : collector(flexiEach, [r[n], v], nonOp);
+				}
 			}
 		});
 		return r;
