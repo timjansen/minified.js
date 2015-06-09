@@ -1,6 +1,11 @@
 Minified Change Log
 ====================
 
+1.1 (ongoing)
+-------------
+* broke the 4kb/8kb barrier
+
+
 1.0 (2014-07-27)
 -----------------
 * Avoid crashes when text nodes are used as selector context.
