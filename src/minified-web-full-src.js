@@ -245,7 +245,7 @@ define('minified', function() {
 	}
 	/**
 	 * @param s {?}
-	 * @param o {string}
+	 * @param regexp {string}
 	 */
 	function isType(s,regexp) {
 		return regexp.test(typeof s);

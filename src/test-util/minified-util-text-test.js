@@ -223,7 +223,7 @@ function runTests(loadInContext) {
 		
 		it('formats dates', function() {
 			var d = new Date(2011, 11, 6,  13, 30, 10, 501);
-			var d2 = new Date(2013, 0, 5,  02, 00, 00, 00);
+			var d2 = new Date(2013, 0, 5,  02,  0,  0,   0);
 			assert.equal(_.formatValue("yMd", d), "2011126");
 			assert.equal(_.formatValue("yyyyMMdd", d), "20111206");
 			assert.equal(_.formatValue("yyyyyyMMMMMddd", d), "00201100012006");
@@ -287,9 +287,10 @@ function runTests(loadInContext) {
 		});
 		it('handles timezones', function() {
 			var d = new Date(2011, 11, 6,  13, 30, 10, 501);
-			var d2 = new Date(2013, 0, 5,  02, 00, 00, 00);
-			var f1 = "[+0000] yyyy-MM-dd hh:mm:ss.SSS ";
+			var d2 = new Date(2013, 0, 5,  02,  0,  0,   0);
+			var f1 = "[+0000] yyyy-MM-dd HH:mm:ss.SSS ";
 			var f2 = "[-0500] y,M,d,H,m,s,S";
+
 			assert(_.equals(_.parseDate(f1, _.formatValue(f1, d)), d));
 			assert(_.equals(_.parseDate(f2, _.formatValue(f2, d)), d));
 			assert(_.equals(_.parseDate(f1, _.formatValue(f1, d2)), d2));
