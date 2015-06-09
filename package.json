@@ -1,6 +1,6 @@
 {
   "name": "Minified",
-  "version": "2014.1.0",
+  "version": "2015.1.1",
   "description": "Minified is a universal, lightweight library for the web",
   "main": "WebContent/minified.js",
   "scripts": {
@@ -11,11 +11,11 @@
     "url": "https://github.com/timjansen/minified.js.git"
   },
   "author": "Tim Jansen",
-  "license": "PD",
+  "license": "CC0-1.0",
   "readmeFilename": "README.md",
   "gitHead": "e84ec55301d1d9e7ee7eb04cf9c253f53d81e1d0",
   "devDependencies": {
-    "grunt": "~0.4.1",
+    "grunt": "~0.4.5",
     "hanson": "~1.1.0",
     "markdown": "~0.5.0",
     "minified-headless": "~0.0.4",
