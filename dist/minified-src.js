@@ -1091,9 +1091,9 @@ define('minified', function() {
 	}
 
 	function Promise() {
-		 this['state'] = null; 
-		 this['values'] = []; 
-		 this['parent'] = null; 
+        this['state'] = null; 
+        this['values'] = []; 
+        this['parent'] = null; 
 	}
 
 	/*$
@@ -1157,8 +1157,8 @@ define('minified', function() {
 
 		obj['errHandled'] = function() {
 			rejectionHandlerNum++;
-			if (obj.parent)
-				obj.parent.errHandled();
+			if (obj['parent'])
+				obj['parent']['errHandled']();
 		};
 
 		/*$
@@ -1193,9 +1193,9 @@ define('minified', function() {
 		 * @return the promise 
 		 */
 		var fire = obj['fire'] = function(newState, newValues) {
-			if (obj.state == null && newState != null) {
-				obj.state = !!newState;
-				obj.values = isList(newValues) ? newValues : [newValues];
+			if (obj['state'] == null && newState != null) {
+				obj['state'] = !!newState;
+				obj['values'] = isList(newValues) ? newValues : [newValues];
 				setTimeout(function() {
 					each(deferred, function(f) {f();});
 				}, 0);
@@ -1207,25 +1207,25 @@ define('minified', function() {
 		each(assimilatedPromises, function assimilate(promise, index) {
 			try {
 			    if (promise['then'])
-                    promise.then(function(v) {
+                    promise['then'](function(v) {
                         var then;
-                        if ((isObject(v) || isFunction(v)) && isFunction(then = v.then))
+                        if ((isObject(v) || isFunction(v)) && isFunction(then = v['then']))
                             assimilate(v, index);
                         else {
-                            obj.values[index] = array(arguments);
+                            obj['values'][index] = array(arguments);
                             if (++numCompleted == assimilatedNum)
-                                fire(true, assimilatedNum < 2 ? obj.values[index] : obj.values);
+                                fire(true, assimilatedNum < 2 ? obj['values'][index] : obj['values']);
                         }
                     }, 
                     function(e) {
-                        obj.values[index] = array(arguments);
-                        fire(false, assimilatedNum < 2 ? obj.values[index] : [obj.values[index][0], obj.values, index]);
+                        obj['values'][index] = array(arguments);
+                        fire(false, assimilatedNum < 2 ? obj['values'][index] : [obj['values'][index][0], obj['values'], index]);
                     });
 				else
-					promise(function() {fire(true, _(arguments));}, function() {fire(false, _(arguments)); });
+					promise(function() {fire(true, array(arguments));}, function() {fire(false, array(arguments)); });
 			}
 			catch (e) {
-				fire(false, [e, obj.values, index]);
+				fire(false, [e, obj['values'], index]);
 			}
 		});
 
@@ -1260,11 +1260,11 @@ define('minified', function() {
 		 */   
 		obj['stop'] = function() {
 			each(assimilatedPromises, function(promise) {
-				if (promise.stop)
-					promise.stop();
+				if (promise['stop'])
+					promise['stop']();
 			});
 
-			return obj.stop0 && call(obj.stop0);
+			return obj['stop0'] && call(obj['stop0']);
 		};
 
 		/*$
@@ -1333,43 +1333,43 @@ define('minified', function() {
 			var promise2 = promise();
 			var callCallbacks = function() {
 				try {
-					var f = (obj.state ? onFulfilled : onRejected);
+					var f = (obj['state'] ? onFulfilled : onRejected);
 					if (isFunction(f)) {
                         (function resolve(x) {
                             try {
                                 var then, cbCalled = 0;
-                                if ((isObject(x) || isFunction(x)) && isFunction(then = x.then)) {
+                                if ((isObject(x) || isFunction(x)) && isFunction(then = x['then'])) {
 										if (x === promise2)
 											throw new TypeError();
-										then.call(x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2.fire(false, [value]);});
-										promise2.stop0 = x.stop;
+										then.call(x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2['fire'](false, [value]);});
+										promise2['stop0'] = x['stop'];
                                 }
                                 else
-                                    promise2.fire(true, [x]);
+                                    promise2['fire'](true, [x]);
                             }
                             catch(e) {
                                 if (!cbCalled++) {
-                                    promise2.fire(false, [e]);
+                                    promise2['fire'](false, [e]);
                                     if (!rejectionHandlerNum)
 										throw e;
                                 }
                             }
-                        })(call(f, undef, obj.values));
+                        })(call(f, undef, obj['values']));
                     }
                     else
-                        promise2.fire(obj.state, obj.values);
+                        promise2['fire'](obj['state'], obj['values']);
 				}
 				catch (e) {
-					promise2.fire(false, [e]);
+					promise2['fire'](false, [e]);
 					if (!rejectionHandlerNum)
 						throw e;
 				} 
 			};
 			if (isFunction(onRejected))
-				obj.errHandled();
-			promise2.stop0 = obj.stop;
-			promise2.parent = obj;
-			if (obj.state != null)
+				obj['errHandled']();
+			promise2['stop0'] = obj['stop'];
+			promise2['parent'] = obj;
+			if (obj['state'] != null)
 				setTimeout(callCallbacks, 0);
 			else
 				deferred.push(callCallbacks);
@@ -5184,9 +5184,9 @@ define('minified', function() {
 		'wait': function(durationMs, args) {
 			var p = promise();
 			var id = setTimeout(function() { 
-				p.fire(true, args); 
+				p['fire'](true, args); 
 			}, durationMs);
-			p['stop0'] = function() { p.fire(false); clearTimeout(id); };
+			p['stop0'] = function() { p['fire'](false); clearTimeout(id); };
 			return p;
 		}
 
