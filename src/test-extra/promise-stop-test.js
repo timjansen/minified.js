@@ -65,7 +65,7 @@ function runTests(loadInContext) {
 			p.stop0 = function() { console.log('boo1');};
 			var p2 = p.then(function() { var pn = _.promise(); pn.stop0 = stop0; return pn; });
 			p.stop0 = function() { console.log('boo2');};
-			p(true);
+			p.fire(true);
 			setTimeout(p2.stop, 50); // must be delayed, as the then() handler is called via defer()
 		});
 
@@ -75,7 +75,7 @@ function runTests(loadInContext) {
 			p.stop0 = function() { console.log('boo1');};
 			var p2 = p.then(function() { pn = _.promise(); return pn; });
 			p.stop0 = function() { console.log('boo2');};
-			p(true);
+			p.fire(true);
 			setTimeout(function() {
 				pn.stop0 = stop0; 
 				p2.stop(); 

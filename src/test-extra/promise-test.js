@@ -8,17 +8,17 @@ var fs = require("fs");
 
 function getAdapter(pinkySwear) {
 	return adapter = {
-			resolved: function(value) { var p = pinkySwear(); p(true, [value]); return p; },
-			rejected: function(reason) { var p = pinkySwear(); p(false, [reason]); return p;},
+			resolved: function(value) { var p = pinkySwear(); p.fire(true, [value]); return p; },
+			rejected: function(reason) { var p = pinkySwear(); p.fire(false, [reason]); return p;},
 			deferred: function() { 
 				var p = pinkySwear();
 				return {
 					promise: p, 
 					resolve: function(value) {
-						p(true, [value]);
+						p.fire(true, [value]);
 					},
 					reject: function(reason) {
-						p(false, [reason]);
+						p.fire(false, [reason]);
 					}
 				};
 			}

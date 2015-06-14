@@ -18,7 +18,8 @@
 <h4>Parameters</h4>
 <dl class="params">
 <dt id="stop_RETURN" class="returnValue inSyntax0"><a name="stop_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">In some cases, the <span class="var">stop()</span> can return a value. This is currently only done by <code><a href='animate.html' class='func'>animate()</a></code>, which will return the actual duration.<pre>
+<dd class="inSyntax0">In some cases, the <span class="var">stop()</span> can return a value. This is currently only done by <code><a href='animate.html' class='func'>animate()</a></code> and <code><a href='wait.html' class='func'>wait()</a></code>, which will return the actual duration.
+<code><a href='asynceach.html' class='func'>asyncEach()</a></code>'s promise will also return any value it got from the promise that it stopped.<pre>
 var div = $('#myMovingDiv').set({$left: '0px', $top: '0px'});
 var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
 .then(function() {
@@ -31,9 +32,10 @@ return div.animate({$left: '100px', $top: '100px'}, 400);
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by <code><a href='request.html' class='func'>request()</a></code>, <code><a href='animate.html' class='func'>animate()</a></code> and <code><a href='wait.html' class='func'>wait()</a></code>.
+<div class="description"><p>Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by <code><a href='request.html' class='func'>request()</a></code>, <code><a href='animate.html' class='func'>animate()</a></code>, <code><a href='wait.html' class='func'>wait()</a></code> and
+<code><a href='asynceach.html' class='func'>asyncEach()</a></code>.
 stop() invocation will be propagated over promises returned by <code><a href='then.html' class='func'>then()</a></code> and promises assimilated by <code><a href='promise.html' class='func'>promise()</a></code>. You only need to invoke stop
-with the last promise, and all dependent promises will automatically stop as well.</p><p></p></div>
+with the last promise, and all dependent promises will automatically stop as well.</p><p> <span class="var">stop()</span> can be invoked as a function without context ('this'). Every promise has its own instance.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
@@ -169,8 +171,9 @@ var disqus_url = "http://minifiedjs.com/api/stop.html";
 </li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="fire.html" class="func">promise.fire()</a> 
 </li><li><a href="stop.html" class="func">promise.stop()</a> 
-</li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
 
