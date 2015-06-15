@@ -4835,7 +4835,7 @@ define('minified', function() {
 
 			xhr['onreadystatechange'] = function() {
 				if (xhr['readyState'] == 4 && !callbackCalled++) {
-					if (xhr['status'] == 200)
+					if (xhr['status'] >= 200 && xhr['status'] < 300)
 						prom['fire'](true, [xhr['responseText'], xhr]);
 					else
 						prom['fire'](false, [xhr['status'], xhr['responseText'], xhr]);
