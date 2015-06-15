@@ -6,8 +6,9 @@ Minified Change Log
 * broke the 4kb/8kb barrier
 * New implementation for promise(), backported from Nia, with better error handling. Unhandled exceptions are re-thrown to the event loop. 
   INCOMPATIBILITY: the promise is not a function anymore, but an object. Use fire() to reject/fulfill.
-* Chnaged promise implementation in web module. 
+* Changed promise implementation in web module. 
   INCOMPATIBILITY: if your then() handler throws an exception, it will be reported to the event loop, but the returned promise will not be rejected anymore.
+* $.request() will accept all 2xx status codes as success.
 
 
 1.0 (2014-07-27)
