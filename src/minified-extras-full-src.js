@@ -119,10 +119,10 @@ function dummy() {
 		 *     p.fire(true, []); 
 		 * }, 1000);
 		 * </pre>
-		 /
+		 *
 		 * @example Call <var>fire()</var> without a context:
 		 * <pre>var p = _.promise(function(resolve, reject) {
-		 * 		setTimeout(resolve.fire, 1000);
+         *     setTimeout(resolve.fire, 1000);
 		 * });
 		 * </pre>
 		 *
@@ -146,7 +146,7 @@ function dummy() {
 		// use promise varargs
 		each(assimilatedPromises, function assimilate(promise, index) {
 			try {
-			    if (promise['then'])
+		        if (promise['then'])
                     promise['then'](function(v) {
                         var then;
                         if ((isObject(v) || isFunction(v)) && isFunction(then = v['then']))
@@ -190,7 +190,7 @@ function dummy() {
 		 * var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
 		 *    .then(function() {
 		 *           return _.promise(div.animate({$left: '200px', $top: '200px'}, 800, 0), 
-		 *           				  div.animate({$backgroundColor: '#f00'}, 200));
+		 *                            div.animate({$backgroundColor: '#f00'}, 200));
 		 *    }).then(function() {
 		 *           return div.animate({$left: '100px', $top: '100px'}, 400);
 		 *    });
@@ -218,8 +218,13 @@ function dummy() {
 		 * Registers two callbacks that will be invoked when the ##promise#Promise##'s asynchronous operation finished 
 		 * successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after  
 		 * <var>then()</var> returned, from the browser's event loop.
-		 * Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
 		 * You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to. 
+         *
+		 * The full distribution of Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
+		 *
+		 * <strong>Note:</strong> If you use the Web module, you will get a simplified Promises implementation that cuts some corners. The most notable
+		 * difference is that when a <code>then()</code> handler throws an exception, this will not be caught and the promise returned by 
+		 * <code>then</code> will not be automatically rejected.
 		 *
 		 * @example Simple handler for an HTTP request. Handles only success and ignores errors.
 		 * <pre>
@@ -288,7 +293,7 @@ function dummy() {
                                     promise2['fire'](true, [x]);
                             }
                             catch(e) {
-                                if (!cbCalled++) {
+                                if (!(cbCalled++)) {
                                     promise2['fire'](false, [e]);
                                     if (!rejectionHandlerNum)
 										throw e;
@@ -341,8 +346,8 @@ function dummy() {
 		 *                 have success status. If it throws an error, the returned Promise will be in the error state.
 		 * @return a new ##promise#Promise## object. Its state is determined by the callback.
 		 */
-	   	obj['always'] = function(func) { return then(func, func); };
-	   	
+        obj['always'] = function(func) { return then(func, func); };
+
 		/*$
 		 * @id error
 		 * @group REQUEST
@@ -377,13 +382,13 @@ function dummy() {
 
 	
 	///#snippet extrasDocs
- 	/*$
+    /*$
 	 * @id length
 	 * @group SELECTORS
 	 * @requires dollar
 	 * @name list.length
 	 * @syntax length
-   	 * @module WEB, UTIL
+     * @module WEB, UTIL
 	 * 
 	 * Contains the number of elements in the ##list#Minified list##.
 	 * 

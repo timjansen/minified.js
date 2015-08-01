@@ -41,8 +41,9 @@ If no callback has been provided and the original Promise changes to that state,
 Registers two callbacks that will be invoked when the <a href='promise.html' class='func'>Promise</a>'s asynchronous operation finished
 successfully (<span class="var">onSuccess</span>) or an error occurred (<span class="var">onError</span>). The callbacks will be called after
 <span class="var">then()</span> returned, from the browser's event loop.
-Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks.
-You can chain <span class="var">then()</span> invocations, as <span class="var">then()</span> returns another Promise object that you can attach to.</p><p></p></div>
+You can chain <span class="var">then()</span> invocations, as <span class="var">then()</span> returns another Promise object that you can attach to.</p><p>The full distribution of Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks.</p><p><strong>Note:</strong> If you use the Web module, you will get a simplified Promises implementation that cuts some corners. The most notable
+difference is that when a <code>then()</code> handler throws an exception, this will not be caught and the promise returned by
+<code>then</code> will not be automatically rejected.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>

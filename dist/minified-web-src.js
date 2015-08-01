@@ -146,7 +146,7 @@ define('minified', function() {
 	/**
 	 * @const
 	 */
-	var _window = this;
+	var _window = window;
 
 	/**
 	 * @const
@@ -2944,7 +2944,7 @@ define('minified', function() {
 	* </pre>
 	* 
 	* @example Using HTTP authentication and a custom XMLHttpRequest property.
-	* <pre>var handler = $.request('get', 'http://service.example.com/userinfo', null, {withCredentials: true, user: 'me', pass: 'secret'});</pre>
+	* <pre>var handler = $.request('get', 'http://service.example.com/userinfo', null, {xhr: {withCredentials: true}, user: 'me', pass: 'secret'});</pre>
 	*
 	* 
 	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data 
@@ -2962,7 +2962,7 @@ define('minified', function() {
 	* <dt>user</dt><dd>username for HTTP authentication, together with the <var>pass</var> parameter</dd>
 	* <dt>pass</dt><dd>password for HTTP authentication, together with the <var>user</var> parameter</dd>
 	* </dl>
-	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
+	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with a HTTP status 2xx, 
 	*         the promise's completion handler will be called as <code>function(text, xhr)</code>:
 	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
 	*         <dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different

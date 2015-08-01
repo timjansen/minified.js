@@ -30,14 +30,13 @@
 		#toggleDiv div { position: absolute; width: 20px; height: 20px; background-color: black;}
 	</style> 
 	<script type="text/javascript">
-	// Load the right source, depending on whether 'compiled' is in the URL query
 	var q = window.location.search, undefined;
 	var srcFiles = ["dist/minified-web-src.js", "dist/minified-web.js", "dist/minified-src.js", "dist/minified.js", 
 	                "dist/minified-legacyie-web-src.js", "dist/minified-legacyie-web.js", 
 	                "dist/minified-legacyie.js"];
 	if (!!document.all && ![].map) srcFiles = srcFiles.slice(4); // remove non-ie versions on old ie
 	
-	var srcNum = parseInt((q||'').replace(/[^0-9]/g, '')||'0') || 0;
+	var srcNum = parseInt((q||'').replace(/\D+/g, '')||'0') || 0;
 	var file = srcFiles[srcNum] + '?rnd=' + (new Date().getTime());
     document.write('\x3Cscript type="text/javascript" src="'+file+'">\x3C/script>');
  

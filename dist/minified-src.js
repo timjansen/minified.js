@@ -120,7 +120,7 @@ define('minified', function() {
 	/**
 	 * @const
 	 */
-	var _window = this;
+	var _window = window;
 
 	/**
 	 * @const
@@ -1179,10 +1179,10 @@ define('minified', function() {
 		 *     p.fire(true, []); 
 		 * }, 1000);
 		 * </pre>
-		 /
+		 *
 		 * @example Call <var>fire()</var> without a context:
 		 * <pre>var p = _.promise(function(resolve, reject) {
-		 * 		setTimeout(resolve.fire, 1000);
+         *     setTimeout(resolve.fire, 1000);
 		 * });
 		 * </pre>
 		 *
@@ -1206,7 +1206,7 @@ define('minified', function() {
 		// use promise varargs
 		each(assimilatedPromises, function assimilate(promise, index) {
 			try {
-			    if (promise['then'])
+		        if (promise['then'])
                     promise['then'](function(v) {
                         var then;
                         if ((isObject(v) || isFunction(v)) && isFunction(then = v['then']))
@@ -1250,7 +1250,7 @@ define('minified', function() {
 		 * var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
 		 *    .then(function() {
 		 *           return _.promise(div.animate({$left: '200px', $top: '200px'}, 800, 0), 
-		 *           				  div.animate({$backgroundColor: '#f00'}, 200));
+		 *                            div.animate({$backgroundColor: '#f00'}, 200));
 		 *    }).then(function() {
 		 *           return div.animate({$left: '100px', $top: '100px'}, 400);
 		 *    });
@@ -1278,8 +1278,13 @@ define('minified', function() {
 		 * Registers two callbacks that will be invoked when the ##promise#Promise##'s asynchronous operation finished 
 		 * successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after  
 		 * <var>then()</var> returned, from the browser's event loop.
-		 * Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
 		 * You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to. 
+         *
+		 * The full distribution of Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
+		 *
+		 * <strong>Note:</strong> If you use the Web module, you will get a simplified Promises implementation that cuts some corners. The most notable
+		 * difference is that when a <code>then()</code> handler throws an exception, this will not be caught and the promise returned by 
+		 * <code>then</code> will not be automatically rejected.
 		 *
 		 * @example Simple handler for an HTTP request. Handles only success and ignores errors.
 		 * <pre>
@@ -1348,7 +1353,7 @@ define('minified', function() {
                                     promise2['fire'](true, [x]);
                             }
                             catch(e) {
-                                if (!cbCalled++) {
+                                if (!(cbCalled++)) {
                                     promise2['fire'](false, [e]);
                                     if (!rejectionHandlerNum)
 										throw e;
@@ -1400,7 +1405,7 @@ define('minified', function() {
 		 *                 have success status. If it throws an error, the returned Promise will be in the error state.
 		 * @return a new ##promise#Promise## object. Its state is determined by the callback.
 		 */
-	   	obj['always'] = function(func) { return then(func, func); };
+        obj['always'] = function(func) { return then(func, func); };
 
 		/*$
 		 * @id error
@@ -1432,13 +1437,13 @@ define('minified', function() {
 
 	///#/snippet extrasFunctions
 	///#snippet extrasDocs
- 	/*$
+    /*$
 	 * @id length
 	 * @group SELECTORS
 	 * @requires dollar
 	 * @name list.length
 	 * @syntax length
-   	 * @module WEB, UTIL
+     * @module WEB, UTIL
 	 * 
 	 * Contains the number of elements in the ##list#Minified list##.
 	 * 
@@ -4764,7 +4769,7 @@ define('minified', function() {
 	* </pre>
 	* 
 	* @example Using HTTP authentication and a custom XMLHttpRequest property.
-	* <pre>var handler = $.request('get', 'http://service.example.com/userinfo', null, {withCredentials: true, user: 'me', pass: 'secret'});</pre>
+	* <pre>var handler = $.request('get', 'http://service.example.com/userinfo', null, {xhr: {withCredentials: true}, user: 'me', pass: 'secret'});</pre>
 	*
 	* 
 	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data 
@@ -4782,7 +4787,7 @@ define('minified', function() {
 	* <dt>user</dt><dd>username for HTTP authentication, together with the <var>pass</var> parameter</dd>
 	* <dt>pass</dt><dd>password for HTTP authentication, together with the <var>user</var> parameter</dd>
 	* </dl>
-	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
+	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with a HTTP status 2xx, 
 	*         the promise's completion handler will be called as <code>function(text, xhr)</code>:
 	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
 	*         <dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different
