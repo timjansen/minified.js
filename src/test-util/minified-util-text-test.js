@@ -234,7 +234,7 @@ function runTests(loadInContext) {
 			assert.equal(_.formatValue("n[a,b,c,d,e,f,g,h,i,j,k,l],N[01,02,03,04,05,06,07,08,09,10,11,12]", d), "l,12");
 			assert.equal(_.formatValue("w[a,b,c,d,e,f,g],W[01,02,03,04,05,06,07]", d), "c,03");
 
-			var zzzz = (d.getTimezoneOffset() > 0 ? '-' : '+') + _.pad(2, Math.abs(Math.floor(d.getTimezoneOffset()/60))) + _.pad(2, Math.floor(Math.abs(d.getTimezoneOffset()%60)));
+			var zzzz = (d.getTimezoneOffset() < 0 ? '-' : '+') + _.pad(2, Math.abs(Math.floor(d.getTimezoneOffset()/60))) + _.pad(2, Math.floor(Math.abs(d.getTimezoneOffset()%60)));
 			assert.equal(_.formatValue("HHmmss z", d), "133010 " + zzzz);
 			assert.equal(_.formatValue("HHmmss zzzzz", d), "133010 " + zzzz);
 
