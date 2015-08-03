@@ -16,6 +16,18 @@ var loadInContextSrc = testCommon.loadInContextSrc;
 function runTests(loadInContext) {
 	var _ = loadInContext().require(AMD_NAME)._;
 
+	function cloneWithTimezone(d, tz) {
+		var d2 = _.dateClone(d);
+		d2.getTimezoneOffset = function() { return tz; };
+		return d2;
+	}
+	
+	function assertDateEqual(d1, d2) {
+        if ((!!d1 != !!d2) || (d1 && (d1.getTime() != d2.getTime())))
+            throw new Error("Failed date assertion: " + (d1&&d1.toUTCString())+ " == "+(d2&&d2.toUTCString()));
+	}
+
+
 	describe('escapeRegExp()', function() {
 		it('escapes all special chars', function() {
 			var test = "w2 dsb ^ & \\ * . e+ e3 []4{3}$ 3";
@@ -234,6 +246,14 @@ function runTests(loadInContext) {
 			assert.equal(_.formatValue("n[a,b,c,d,e,f,g,h,i,j,k,l],N[01,02,03,04,05,06,07,08,09,10,11,12]", d), "l,12");
 			assert.equal(_.formatValue("w[a,b,c,d,e,f,g],W[01,02,03,04,05,06,07]", d), "c,03");
 
+			assert.equal(_.formatValue("HHmmss z", cloneWithTimezone(d, 0)), "133010 +0000");
+			assert.equal(_.formatValue("HHmmss z", cloneWithTimezone(d, 60)), "133010 +0100");
+			assert.equal(_.formatValue("HHmmss z", cloneWithTimezone(d, -60)), "133010 -0100");
+			assert.equal(_.formatValue("HHmmss z", cloneWithTimezone(d, 300)), "133010 +0500");
+			assert.equal(_.formatValue("HHmmss zzzzz", cloneWithTimezone(d, 0)), "133010 +0000");
+			assert.equal(_.formatValue("HHmmss zzzzz", cloneWithTimezone(d, -30)), "133010 -0030");
+			assert.equal(_.formatValue("HHmmss zzzzz", cloneWithTimezone(d, 300)), "133010 +0500");
+
 			var zzzz = (d.getTimezoneOffset() < 0 ? '-' : '+') + _.pad(2, Math.abs(Math.floor(d.getTimezoneOffset()/60))) + _.pad(2, Math.floor(Math.abs(d.getTimezoneOffset()%60)));
 			assert.equal(_.formatValue("HHmmss z", d), "133010 " + zzzz);
 			assert.equal(_.formatValue("HHmmss zzzzz", d), "133010 " + zzzz);
@@ -261,55 +281,71 @@ function runTests(loadInContext) {
 		it('parses dates', function() {
 			var d0 = new Date(2011, 11, 6);
 			var d = new Date(2011, 11, 6,  13, 30, 10, 501);
-			var d2 = new Date(2013, 0, 5,  02, 00, 00, 00);
+			var d2 = new Date(2013, 0, 5,  02,  0,  0, 0);
 			
-			assert(_.equals(_.parseDate("yyyyMMdd", "20111206"), d0));
-			assert(_.equals(_.parseDate("yyyy,MM,dd", "2011,12,06"), d0));
-			assert(_.equals(_.parseDate("y,M,d", "2011,12,06"), d0));
-			assert(_.equals(_.parseDate("y,M,d", "2011,12,6"), d0));
-			assert(_.equals(_.parseDate("Y,M,d", "11,12,6"), d0));
-			assert(_.equals(_.parseDate("yyyyMMddhhmmssaa", "20130105020000am"), d2));
-			assert(_.equals(_.parseDate("y,M,d,h,m,s,a", "2013,1,5,2,0,0,am"), d2));
-			assert(_.equals(_.parseDate("Y,M,d,h,m,s,a", "13,1,5,2,0,0,AM"), d2));
+			assertDateEqual(_.parseDate("yyyyMMdd", "20111206"), d0);
+			assertDateEqual(_.parseDate("yyyy,MM,dd", "2011,12,06"), d0);
+			assertDateEqual(_.parseDate("y,M,d", "2011,12,06"), d0);
+			assertDateEqual(_.parseDate("y,M,d", "2011,12,6"), d0);
+			assertDateEqual(_.parseDate("Y,M,d", "11,12,6"), d0);
+			assertDateEqual(_.parseDate("yyyyMMddhhmmssaa", "20130105020000am"), d2);
+			assertDateEqual(_.parseDate("y,M,d,h,m,s,a", "2013,1,5,2,0,0,am"), d2);
+			assertDateEqual(_.parseDate("Y,M,d,h,m,s,a", "13,1,5,2,0,0,AM"), d2);
 
-			assert(_.equals(_.parseDate("yyyy,d,n,m,H,s,S,w,W", "2011,6,Dec,30,13,10,501,Tue,Tuesday"), d));
-			assert(_.equals(_.parseDate("yyyy,d,n,m,h,s,S,a,w,W", "2011,6,Decem,30,1,10,501,pm,Tue,Tuesday"), d));
-			assert(_.equals(_.parseDate("yyyy,d,n,m,K,s,S,w,W", "2011,06,Dec,30,14,10,501,Wed,Wednesday"), d)); // ignored w/W
-			assert(_.equals(_.parseDate("?yyyy,d,N,m,k,s,S,a,w,W", "2011,06,December,30,2,10,501,pm,Tue,Tuesday"), d));
-			assert(_.equals(_.parseDate("yyyy+d-N(m)k,s,S,a\\w,W", "2011+06-December(30)2,10,501,pm\\Tue,Tuesday"), d));
+			assertDateEqual(_.parseDate("yyyy,d,n,m,H,s,S,w,W", "2011,6,Dec,30,13,10,501,Tue,Tuesday"), d);
+			assertDateEqual(_.parseDate("yyyy,d,n,m,h,s,S,a,w,W", "2011,6,Decem,30,1,10,501,pm,Tue,Tuesday"), d);
+			assertDateEqual(_.parseDate("yyyy,d,n,m,K,s,S,w,W", "2011,06,Dec,30,14,10,501,Wed,Wednesday"), d); // ignored w/W
+			assertDateEqual(_.parseDate("?yyyy,d,N,m,k,s,S,a,w,W", "2011,06,December,30,2,10,501,pm,Tue,Tuesday"), d);
+			assertDateEqual(_.parseDate("yyyy+d-N(m)k,s,S,a\\w,W", "2011+06-December(30)2,10,501,pm\\Tue,Tuesday"), d);
 
-			assert(_.equals(_.parseDate("yyyy-N[MoneM,Mtwo,Mthree,Mfour,Mfive,Msix,Mseven,Meight,Mnine,Mten,Meleven,Mtwelve]-dd", "2011-Mtwelve-06"), d0));
-			assert(_.equals(_.parseDate("?y,M,d,h,m,s,S,a[AMM,PAM]", "2011,12,6,1,30,10,501,PAM"), d));
-			assert(_.equals(_.parseDate("y,M,d,h,m,s,a[AMM,PAM]", "2013,1,5,2,0,0,AMM"), d2));
+			assertDateEqual(_.parseDate("yyyy-N[MoneM,Mtwo,Mthree,Mfour,Mfive,Msix,Mseven,Meight,Mnine,Mten,Meleven,Mtwelve]-dd", "2011-Mtwelve-06"), d0);
+			assertDateEqual(_.parseDate("?y,M,d,h,m,s,S,a[AMM,PAM]", "2011,12,6,1,30,10,501,PAM"), d);
+			assertDateEqual(_.parseDate("y,M,d,h,m,s,a[AMM,PAM]", "2013,1,5,2,0,0,AMM"), d2);
 
-			assert(_.equals(_.parseDate("yyyy-N[J1M,M2M,M3M,M4M,M5M,M6M,M7M,M8M,M9M,M10M,M11M,D\u00d6c]-dd", "2011-D\u00d6c-06"), d0)); // non-ASCII
-			assert(_.equals(_.parseDate("yyyynddhhmmssa", "2013Jan05020000AM"), d2)); 
+            assertDateEqual(_.parseDate("yyyy-N[J1M,M2M,M3M,M4M,M5M,M6M,M7M,M8M,M9M,M10M,M11M,D\u00d6c]-dd", "2011-D\u00d6c-06"), d0); // non-ASCII
+			assertDateEqual(_.parseDate("yyyynddhhmmssa", "2013Jan05020000AM"), d2); 
 		});
 		it('handles timezones', function() {
-			var d = new Date(2011, 11, 6,  13, 30, 10, 501);
-			var d2 = new Date(2013, 0, 5,  02,  0,  0,   0);
-			var f1 = "[+0000] yyyy-MM-dd HH:mm:ss.SSS ";
-			var f2 = "[-0500] y,M,d,H,m,s,S";
+			var dUtc = new Date(1323178210501); //new Date(2011, 11, 6,  13, 30, 10, 501); in UTC
+			var d2Utc = new Date(1357351200000); // new Date(2013, 0, 5,  02,  0,  0,   0); in UTC
+			var f1 = "[+0000] yyyy-MM-dd HH:mm:ss.SSS";
 
-			assert(_.equals(_.parseDate(f1, _.formatValue(f1, d)), d));
-			assert(_.equals(_.parseDate(f2, _.formatValue(f2, d)), d));
-			assert(_.equals(_.parseDate(f1, _.formatValue(f1, d2)), d2));
-			assert(_.equals(_.parseDate(f2, _.formatValue(f2, d2)), d2));
+			assertDateEqual(_.parseDate("yyyy-MM-dd HH:mm:ss.SSS", "2011-12-06 13:30:10.501"), dUtc);
 
-			var f3 = "yyyy-MM-dd HH:mm:ss.SSS zz";
-			assert(_.equals(_.parseDate(f3, _.formatValue(f3, d)), d));
-			assert(_.equals(_.parseDate(f3, _.formatValue(f3, d2)), d2));			
+			assertDateEqual(_.parseDate("[+0000] yyyy-MM-dd HH:mm:ss.SSS", "2011-12-06 13:30:10.501"), dUtc);
+			assertDateEqual(_.parseDate("[+0200] yyyy-MM-dd HH:mm:ss.SSS", "2011-12-06 15:30:10.501"), dUtc);
+			assertDateEqual(_.parseDate("[+0201] yyyy-MM-dd HH:mm:ss.SSS", "2011-12-06 15:31:10.501"), dUtc);
+			assertDateEqual(_.parseDate("[+1200] yyyy-MM-dd HH:mm:ss.SSS", "2011-12-07 01:30:10.501"), dUtc);
+			assertDateEqual(_.parseDate("[-0005] yyyy-MM-dd HH:mm:ss.SSS", "2011-12-06 13:25:10.501"), dUtc);
+			assertDateEqual(_.parseDate("[-1200] yyyy-MM-dd HH:mm:ss.SSS", "2011-12-06 01:30:10.501"), dUtc);
+			assertDateEqual(_.parseDate("[-1400] yyyy-MM-dd HH:mm:ss.SSS", "2011-12-05 23:30:10.501"), dUtc);
+
+			assertDateEqual(_.parseDate(f1, "2013-01-05 02:00:00.000"), d2Utc);
+			assertDateEqual(_.parseDate("[-0500] y,M,d,H,m,s,S", "2013,1,5,2,0,0,0"), _.dateAdd(d2Utc, 'minutes', 300));
+			assertDateEqual(_.parseDate("[+0501] y,M,d,H,m,s,S", "2013,1,5,2,0,0,0"), _.dateAdd(d2Utc, 'minutes', -301));
+
+			var f2 = "yyyy-MM-dd HH:mm:ss.SSS zz";
+			assertDateEqual(_.parseDate(f2, "2011-12-06 13:30:10.501 +0000"), dUtc);
+			assertDateEqual(_.parseDate(f2, "2011-12-06 13:30:10.501 +0030"),  _.dateAdd(dUtc, 'minutes', -30));
+			assertDateEqual(_.parseDate(f2, "2011-12-06 13:30:10.501 +0200"),  _.dateAdd(dUtc, 'minutes', -120));
+			assertDateEqual(_.parseDate(f2, "2011-12-06 13:30:10.501 +0230"),  _.dateAdd(dUtc, 'minutes', -150));
+			assertDateEqual(_.parseDate(f2, "2011-12-06 13:30:10.501 +1200"),  _.dateAdd(dUtc, 'minutes', -720));
+			assertDateEqual(_.parseDate(f2, "2011-12-06 13:30:10.501 -0030"), _.dateAdd(dUtc, 'minutes', 30));
+			assertDateEqual(_.parseDate(f2, "2011-12-06 13:30:10.501 -0100"), _.dateAdd(dUtc, 'minutes', 60));
+			assertDateEqual(_.parseDate(f2, "2011-12-06 13:30:10.501 -0125"), _.dateAdd(dUtc, 'minutes', 85));
+
+			assert.equal(_.formatValue(f2, _.parseDate(f2, _.formatValue(f2, dUtc))), _.formatValue(f2, dUtc));
 		});
 		it('does not parse broken strings', function() {
-			assert.equal(_.parseDate("yyyy-MM-dd", "2010-a2-02"), undefined);
-			assert.equal(_.parseDate("yyyy-MM-dd", "2010.02.02"), undefined);
-			assert.equal(_.parseDate("yyyy-MM-dd", "2010-02-"), undefined);
-			assert.equal(_.parseDate("yyyy-NN-dd", "2010-Snowctober-07"), undefined);
-			assert.equal(_.parseDate("yyyy-NN[Jan,Feb]-dd", "2010-October-07"), undefined);
+			assert.strictEqual(_.parseDate("yyyy-MM-dd", "2010-a2-02"), undefined);
+			assert.strictEqual(_.parseDate("yyyy-MM-dd", "2010.02.02"), undefined);
+			assert.strictEqual(_.parseDate("yyyy-MM-dd", "2010-02-"), undefined);
+			assert.strictEqual(_.parseDate("yyyy-NN-dd", "2010-Snowctober-07"), undefined);
+			assert.strictEqual(_.parseDate("yyyy-NN[Jan,Feb]-dd", "2010-October-07"), undefined);
 		});
 		it('parses empty strings', function() {
-			assert.equal(_.parseDate("?yyyy-MM-dd", ""), null);
-			assert.equal(_.parseDate("?__yyyy-MM-dd ()()(", "    "), null);
+			assert.strictEqual(_.parseDate("?yyyy-MM-dd", ""), null);
+			assert.strictEqual(_.parseDate("?__yyyy-MM-dd ()()(", "    "), null);
 		});
 	});
 

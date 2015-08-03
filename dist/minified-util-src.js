@@ -424,7 +424,7 @@ module.exports = (function() {
 	function getTimezone(match, idx, refDate) { // internal helper, see below
 		if (idx == _null || !match)
 			return 0;
-		return parseFloat(match[idx])*60 + parseFloat(match[idx+1]) + refDate.getTimezoneOffset();
+		return parseFloat(match[idx]+match[idx+1])*60 + parseFloat(match[idx]+match[idx+2]) + refDate.getTimezoneOffset();
 	}
 
 	// formats number with format string (e.g. "#.000", "#,#", "00000", "000.00", "000.000.000,00", "000,000,000.##")
@@ -437,10 +437,10 @@ module.exports = (function() {
 		if (isDate(value)) {
 			var timezone, match;
 
-			if (match = /^\[(([+-]\d\d)(\d\d))\]\s*(.*)/.exec(format)) {
+			if (match = /^\[(([+-])(\d\d)(\d\d))\]\s*(.*)/.exec(format)) {
 				timezone = match[1];
 				value = dateAdd(value, 'minutes', getTimezone(match, 2, value));
-				format = match[4];
+				format = match[5];
 			}
 
 			return replace(format, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
@@ -513,9 +513,9 @@ module.exports = (function() {
 		if (format!=fmt && !trim(date))
 			return _null;
 
-		if (match = /^\[([+-]\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
+		if (match = /^\[([+-])(\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
 			timezoneOffsetMatch = match;
-			format = match[3];
+			format = match[4];
 		}
 
 		var parser = new RegExp(format.replace(/(.)(\1*)(?:\[([^\]]*)\])?/g, function(wholeMatch, placeholderChar, placeholderDigits, param) {
@@ -526,8 +526,8 @@ module.exports = (function() {
 			}
 			else if (placeholderChar == 'z') {
 				timezoneIndex = reIndex;
-				reIndex += 2;
-				return "([+-]\\d\\d)(\\d\\d)";
+				reIndex += 3;
+				return "([+-])(\\d\\d)(\\d\\d)";
 			}
 			else if (/[Nna]/.test(placeholderChar)) {
 				indexMap[reIndex++] = [placeholderChar, param && param.split(',')];
