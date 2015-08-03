@@ -37,6 +37,10 @@ setTimeout(function() {
 <p>Minified 1.0 used <span class="var">this</span> as a shortcut to get the browser's <span class="var">window</span>. This caused issues
 with webpack, so 1.1 is using only  <span class="var">window</span>.</p>
 
+<h2>Fix: Timezone handling in format()/parseDate()</h2>
+<p><span class="var"><a href="/api/format.html">_.format()</a></span> and <span class="var"><a href="/api/parsedate.html">_.parseDate()</a></span>
+did not handle timezones correctly that had an offset using the minutes field (e.g. "+0530").</p>
+
 
 
 <h2>Download</h2>

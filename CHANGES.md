@@ -1,7 +1,7 @@
 Minified Change Log
 ====================
 
-1.1 (2015-08-02)
+1.1 (2015-08-04)
 -------------
 * broke the 4kb/8kb barrier
 * New implementation for promise(), backported from Nia, with better error handling. Unhandled exceptions are re-thrown to the event loop. 
@@ -10,6 +10,7 @@ Minified Change Log
   INCOMPATIBILITY: if your then() handler throws an exception, it will be reported to the event loop, but the returned promise will not be rejected anymore. (#54)
 * $.request() will accept all 2xx status codes as success (#51)
 * Avoid using 'this' instead of 'window' (#56)
+* Fixed format() and parseDate() for timezones that are not full hours.
 
 
 1.0 (2014-07-27)
