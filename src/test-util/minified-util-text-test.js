@@ -310,8 +310,6 @@ function runTests(loadInContext) {
 			var d2Utc = new Date(1357351200000); // new Date(2013, 0, 5,  02,  0,  0,   0); in UTC
 			var f1 = "[+0000] yyyy-MM-dd HH:mm:ss.SSS";
 
-			assertDateEqual(_.parseDate("yyyy-MM-dd HH:mm:ss.SSS", "2011-12-06 13:30:10.501"), dUtc);
-
 			assertDateEqual(_.parseDate("[+0000] yyyy-MM-dd HH:mm:ss.SSS", "2011-12-06 13:30:10.501"), dUtc);
 			assertDateEqual(_.parseDate("[+0200] yyyy-MM-dd HH:mm:ss.SSS", "2011-12-06 15:30:10.501"), dUtc);
 			assertDateEqual(_.parseDate("[+0201] yyyy-MM-dd HH:mm:ss.SSS", "2011-12-06 15:31:10.501"), dUtc);
