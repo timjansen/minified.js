@@ -235,7 +235,7 @@ function runTests(loadInContext) {
 		
 		it('formats dates', function() {
 			var d = new Date(2011, 11, 6,  13, 30, 10, 501);
-			var d2 = new Date(2013, 0, 5,  02,  0,  0,   0);
+			var d2 = new Date(2013, 0, 5,  02,  0,  0,  0);
 			assert.equal(_.formatValue("yMd", d), "2011126");
 			assert.equal(_.formatValue("yyyyMMdd", d), "20111206");
 			assert.equal(_.formatValue("yyyyyyMMMMMddd", d), "00201100012006");
@@ -246,34 +246,37 @@ function runTests(loadInContext) {
 			assert.equal(_.formatValue("n[a,b,c,d,e,f,g,h,i,j,k,l],N[01,02,03,04,05,06,07,08,09,10,11,12]", d), "l,12");
 			assert.equal(_.formatValue("w[a,b,c,d,e,f,g],W[01,02,03,04,05,06,07]", d), "c,03");
 
-			assert.equal(_.formatValue("HHmmss z", cloneWithTimezone(d, 0)), "133010 +0000");
-			assert.equal(_.formatValue("HHmmss z", cloneWithTimezone(d, 60)), "133010 +0100");
-			assert.equal(_.formatValue("HHmmss z", cloneWithTimezone(d, -60)), "133010 -0100");
-			assert.equal(_.formatValue("HHmmss z", cloneWithTimezone(d, 300)), "133010 +0500");
-			assert.equal(_.formatValue("HHmmss zzzzz", cloneWithTimezone(d, 0)), "133010 +0000");
-			assert.equal(_.formatValue("HHmmss zzzzz", cloneWithTimezone(d, -30)), "133010 -0030");
-			assert.equal(_.formatValue("HHmmss zzzzz", cloneWithTimezone(d, 300)), "133010 +0500");
+			var d3 = new Date(2011, 11, 6,  12, 37, 10, 501);
+			assert.equal(_.formatValue("hhmmss aa", d3), "123710 pm");
+		});
+		
+		it('formats timezone', function() {
+			var d = new Date(2011, 11, 6,  13, 30, 10, 501);
 
-			var zzzz = (d.getTimezoneOffset() < 0 ? '-' : '+') + _.pad(2, Math.abs(Math.floor(d.getTimezoneOffset()/60))) + _.pad(2, Math.floor(Math.abs(d.getTimezoneOffset()%60)));
+			var zzzz = (d.getTimezoneOffset() > 0 ? '-' : '+') + _.pad(2, Math.abs(Math.floor(d.getTimezoneOffset()/60))) + _.pad(2, Math.floor(Math.abs(d.getTimezoneOffset()%60)));
 			assert.equal(_.formatValue("HHmmss z", d), "133010 " + zzzz);
 			assert.equal(_.formatValue("HHmmss zzzzz", d), "133010 " + zzzz);
 
-			var d3 = new Date(1362956403000); // Sun, 10 Mar 2013 23:00:03 GMT  NO DAYLIGHT SAVING
-			assert.equal(_.formatValue("[+0000] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-10 23:00:03 +0000");
-			assert.equal(_.formatValue("[+0001] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-10 23:01:03 +0001");
-			assert.equal(_.formatValue("[+0100] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-11 00:00:03 +0100");
-			assert.equal(_.formatValue("[-1100] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-10 12:00:03 -1100");
-			assert.equal(_.formatValue("?[-1100] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2013-03-10 12:00:03 -1100");
+			var d2 = new Date(1362956403000); // Sun, 10 Mar 2013 23:00:03 GMT  NO DAYLIGHT SAVING
+			assert.equal(_.formatValue("[+0000] yyyy-MM-dd HH:mm:ss zzzzz", d2), "2013-03-10 23:00:03 +0000");
+			assert.equal(_.formatValue("[+0001] yyyy-MM-dd HH:mm:ss zzzzz", d2), "2013-03-10 23:01:03 +0001");
+			assert.equal(_.formatValue("[+0100] yyyy-MM-dd HH:mm:ss zzzzz", d2), "2013-03-11 00:00:03 +0100");
+			assert.equal(_.formatValue("[-1100] yyyy-MM-dd HH:mm:ss zzzzz", d2), "2013-03-10 12:00:03 -1100");
+			assert.equal(_.formatValue("?[-1100] yyyy-MM-dd HH:mm:ss zzzzz", d2), "2013-03-10 12:00:03 -1100");
 			
-			var d4 = new Date(1530973632000); // Sat, 07 Jul 2018 14:27:12 GMT  DAYLIGHT SAVING
-			assert.equal(_.formatValue("[+0000] yyyy-MM-dd HH:mm:ss zzzzz", d4), "2018-07-07 14:27:12 +0000");
-			assert.equal(_.formatValue("[+0001] yyyy-MM-dd HH:mm:ss zzzzz", d4), "2018-07-07 14:28:12 +0001");
-			assert.equal(_.formatValue("[+0100] yyyy-MM-dd HH:mm:ss zzzzz", d4), "2018-07-07 15:27:12 +0100");
-			assert.equal(_.formatValue("[-1100] yyyy-MM-dd HH:mm:ss zzzzz", d4), "2018-07-07 03:27:12 -1100");
-			assert.equal(_.formatValue("?[-1100] yyyy-MM-dd HH:mm:ss zzzzz", d4), "2018-07-07 03:27:12 -1100");
-			
-			var d5 = new Date(2011, 11, 6,  12, 37, 10, 501);
-			assert.equal(_.formatValue("hhmmss aa", d5), "123710 pm");
+			var d3 = new Date(1530973632000); // Sat, 07 Jul 2018 14:27:12 GMT  DAYLIGHT SAVING
+			assert.equal(_.formatValue("[+0000] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2018-07-07 14:27:12 +0000");
+			assert.equal(_.formatValue("[+0001] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2018-07-07 14:28:12 +0001");
+			assert.equal(_.formatValue("[+0100] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2018-07-07 15:27:12 +0100");
+			assert.equal(_.formatValue("[-1100] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2018-07-07 03:27:12 -1100");
+			assert.equal(_.formatValue("?[-1100] yyyy-MM-dd HH:mm:ss zzzzz", d3), "2018-07-07 03:27:12 -1100");
+
+			assert.equal(_.formatValue("yyyy-MM-dd HH:mm:ss zzzzz", cloneWithTimezone(d, 0)), "2011-12-06 13:30:10 +0000");
+			assert.equal(_.formatValue("yyyy-MM-dd HH:mm:ss zzzzz", cloneWithTimezone(d, -1)), "2011-12-06 13:30:10 +0001");
+			assert.equal(_.formatValue("yyyy-MM-dd HH:mm:ss zzzzz", cloneWithTimezone(d, 1)), "2011-12-06 13:30:10 -0001");
+			assert.equal(_.formatValue("yyyy-MM-dd HH:mm:ss zzzzz", cloneWithTimezone(d, -60)), "2011-12-06 13:30:10 +0100");
+			assert.equal(_.formatValue("yyyy-MM-dd HH:mm:ss zzzzz", cloneWithTimezone(d, 660)), "2011-12-06 13:30:10 -1100");
+			assert.equal(_.formatValue("?yyyy-MM-dd HH:mm:ss zzzzz", cloneWithTimezone(d, 660)), "2011-12-06 13:30:10 -1100");
 		});
 	});
 	

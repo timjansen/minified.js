@@ -248,7 +248,7 @@ define('minified', function() {
 				if (timezone)
 					return timezone;
 
-				var sign = d < 0 ? '-' : '+'; 
+				var sign = d > 0 ? '-' : '+'; 
 				var off = d < 0 ? -d : d; 
 				return sign + pad(2, Math.floor(off/60)) + pad(2, off%60); 
 			}]
