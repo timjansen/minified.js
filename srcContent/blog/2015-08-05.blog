@@ -1,0 +1,12 @@
+{
+	id: 'release11',
+	title: 'Minified 1.1',
+	timestamp: '2015-08-05 23:00',
+	author: 'Tim Jansen',
+	markdown: `Minified 1.1 is a long overdue maintenance release. Most importantly, it solves issues with 'swallowed' exceptions in promise handlers. They
+	will now be reported. Unfortunately, the new promise implementation is slightly incompatible with the earlier releases. Please read the 
+	[release notes](/docs/release11.html) for details.
+	
+	Minified 1.1 is also the first release that breaks the 4kB/8kB barrier. That's mostly caused by the new promise implementations.`
+}
+

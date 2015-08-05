@@ -10,38 +10,38 @@ main: { template:`<div>
 	<tr><th></th><th>IE9+ compatibility only</th><th>with IE 6+ compatibility</th></tr>
 	<tr><th>Development<br/><span class="smaller">(full distribution)</span></th>
 		<td><a href="/download/minified-src.js"><span class="link">minified-src.js</span><br/>
-			<span class="summary">Version: {{version.replace('2014.', '')}}</span><br/>
+			<span class="summary">Version: {{version.replace('201?.', '')}}</span><br/>
 			<span class="summary">Size: {{Math.round(this['minified-src.js'].uncompressed/1024)::#}} kBytes</span><br/>
 			<span class="summary">Sourcecode, Web and Util module, IE9+ only.</span></a></td>
 		<td><a href="/download/minified-legacyie-src.js"><span class="link">minified-legacyie-src.js</span><br/>
-			<span class="summary">Version: {{version.replace('2014.', '')}}</span><br/>
+			<span class="summary">Version: {{version.replace('201?.', '')}}</span><br/>
 			<span class="summary">Size: {{Math.round(this['minified-legacyie-src.js'].uncompressed/1024)::#}} kBytes</span><br/>
 			<span class="summary">Sourcecode, Web and Util module, with IE6+ support.</span></a></td>
 	</tr>
 	<tr><th>Production<br/><span class="smaller">(full distribution)</span></th>
 		<td><a href="/download/minified.js"><span class="link"><strong>minified.js</strong></span><br/>
-			<span class="summary">Version: {{version.replace('2014.', '')}}</span><br/>
+			<span class="summary">Version: {{version.replace('201?.', '')}}</span><br/>
 			<span class="summary">Size: <strong>{{this['minified.js'].compressed::# bytes}}</strong> (gzip'd)</span><br/>
 			<span class="summary">Compiled Version, Web and Util module, IE9+ only.</span></a></td>
 		<td><a href="/download/minified-legacyie.js"><span class="link">minified-legacyie.js</span><br/>
-			<span class="summary">Version: {{version.replace('2014.', '')}}</span><br/>
+			<span class="summary">Version: {{version.replace('201?.', '')}}</span><br/>
 			<span class="summary">Size: {{this['minified-legacyie.js'].compressed::# bytes}} (gzip'd)</span><br/>
 			<span class="summary">Compiled Version, Web and Util module, with IE6+ support.</span></a></td>
 	</tr>
 	<tr><th>Web Module only</span></th>
 		<td><a href="/download/minified-web.js"><span class="link">minified-web.js</span><br/>
-			<span class="summary">Version: {{version.replace('2014.', '')}}</span><br/>
+			<span class="summary">Version: {{version.replace('201?.', '')}}</span><br/>
 			<span class="summary">Size: <strong>{{this['minified-web.js'].compressed::# bytes}}</strong> (gzip'd)</span><br/>
 			<span class="summary">Compiled Version, Web module only, IE9+ only.</span></a></td>
 		<td><a href="/download/minified-legacyie-web.js"><span class="link">minified-legacyie-web.js</span><br/>
-			<span class="summary">Version: {{version.replace('2014.', '')}}</span><br/>
+			<span class="summary">Version: {{version.replace('201?.', '')}}</span><br/>
 			<span class="summary">Size: {{this['minified-legacyie-web.js'].compressed::# bytes}} bytes (gzip'd)</span><br/>
 			<span class="summary">Compiled Version, Web module only, with IE6+ support.</span></a></td>
 	</tr>
 	<tr><th>Util Module only</span></th>
 		<td></td>
 		<td><a href="/download/minified-util.js"><span class="link">minified-util.js</span><br/>
-			<span class="summary">Version: {{version.replace('2014.', '')}}</span><br/>
+			<span class="summary">Version: {{version.replace('201?.', '')}}</span><br/>
 			<span class="summary">Size: {{this['minified-util.js'].compressed::# bytes}} bytes (gzip'd)</span><br/>
 			<span class="summary">Compiled Version, Util module only, all browsers.</span></a></td>
 	</tr>

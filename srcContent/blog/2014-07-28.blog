@@ -1,0 +1,15 @@
+{
+	id: 'release10',
+	title: 'Minified 1.0',
+	timestamp: '2014-07-27 14:00',
+	author: 'Tim Jansen',
+	markdown: `After a year of beta releases, Minified 1.0 is ready for download! 
+
+Version 1.0 is a pure bug-fix release and does not offer any new features over beta 6.
+
+As explained in an [earlier post](http://minifiedjs.com/blog/2014/07/anouncement-reboot.html), this will likely be the last major release of Minified, aside from bug fixes. 
+Because of the self-imposed size limit, there is hardly any room for improvement left in Minified.
+
+Its successor [Nia](https://github.com/niajs/nia) will break out of the size limit to become a friendlier and more practical library, albeit with a larger footprint.`
+}
+
