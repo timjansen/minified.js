@@ -6,7 +6,7 @@ commentId: "docs-beta6",
 main: `<div>
   <h1>Minified.js 1.1 Release Notes</h1>
 
-<p>Release 1.1 features a new promise implementation that improves error reporting, as well as some minor bug fixes.</p>
+<p>Release 1.1 features a new promise implementation that improves error reporting and contains some minor bug fixes.</p>
 
 <h2 style="color: red">Backward-incompatible Changes</h2>
 <p>
@@ -30,8 +30,8 @@ setTimeout(function() {
 }, 1000);
 </pre>
 
-<h2>Fix #51: $.request() accepts all 2xx status codes as success</h2>
-<p><span class="var"><a href="/api/request.html">$.request()</a></span> will accept all 2xx status codes as success, and not only 200 anymore.</p>
+<h2>Fix #51: $.request() accepts all 2xx HTTP status codes as success</h2>
+<p><span class="var"><a href="/api/request.html">$.request()</a></span> will accept all 2xx HTTP status codes as success, and not only 200.</p>
 
 <h2>Fix #56: Webpack Incompatibility</h2>
 <p>Minified 1.0 used <span class="var">this</span> as a shortcut to get the browser's <span class="var">window</span>. This caused issues

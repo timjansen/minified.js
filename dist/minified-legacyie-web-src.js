@@ -1,6 +1,6 @@
  /*
  * Minified-web.js - Lightweight Client-Side JavaScript Libary (web module only)
- * Version: 2014.1.0
+ * Version: 2015.1.1
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
