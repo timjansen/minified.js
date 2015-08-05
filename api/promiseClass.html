@@ -94,7 +94,7 @@ $.request('get', 'http://example.com/zipcode?location=Beverly+Hills,+CA')
  	alert('Something went wrong');
  });
 </pre></p><p>Only the full Minified distribution allows you to create promises yourself, using the <code><a href="promise.html" class="func">promise()</a></code> function. The Promises/A+
-specification does not specify how to fulfill a promise, but in Minified's implementation every Promise object is a function
+specification does not specify how to fulfill a promise, but in Minified's implementation every Promise object has a function <code>fire()</code>
 that needs to be called when the promise result is ready. It requires two arguments.
 The first is a boolean, <span class="var">true</span> for a successful operation and <span class="var">false</span> for a failure. The second is an array or list containing the
 arguments to call the corresponding <code><a href="then.html" class="func">then()</a></code> handler with.</p><p>The following example is a function, similar to <code><a href="wait.html" class="func">wait()</a></code>, that returns a Promise which succeeds after the given amount
@@ -102,7 +102,7 @@ of milliseconds has passed.
 It then fulfills the promise with the number of milliseconds as argument.</p><p><pre>
 function timeout(durationMs) {
 	var p = _.promise();
-	setTimeout(function() { p(true, [durationMs]); }, durationMs);
+	setTimeout(function() { p.fire(true, [durationMs]); }, durationMs);
 	return p;
 }
 </pre>
@@ -251,8 +251,9 @@ var disqus_url = "http://minifiedjs.com/api/promiseClass.html";
 </li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="fire.html" class="func">promise.fire()</a> 
 </li><li><a href="stop.html" class="func">promise.stop()</a> 
-</li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
 

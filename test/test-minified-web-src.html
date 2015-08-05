@@ -186,7 +186,7 @@
 			});
 		};
 		
-    	mocha.checkLeaks();
+    	// mocha.checkLeaks(); - disable: does not work with many Chrome extensions
     	
     	if (!isPhantomJS) 
 			mocha.run(function() {

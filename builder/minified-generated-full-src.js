@@ -126,7 +126,7 @@ define('minified', function() {
 	/**
 	 * @const
 	 */
-	var _window = this;
+	var _window = window;
 
 	/**
 	 * @const
@@ -256,8 +256,9 @@ define('minified', function() {
 			'z': ['TimezoneOffset', function(d, dummy, timezone) {
 				if (timezone)
 					return timezone;
-				var sign = d < 0 ? '+' : '-'; 
-				var off = d > 0 ? d : -d; 
+					
+				var sign = d > 0 ? '-' : '+'; 
+				var off = d < 0 ? -d : d; 
 				return sign + pad(2, Math.floor(off/60)) + pad(2, off%60); 
 			}]
 		};
@@ -572,7 +573,7 @@ define('minified', function() {
 	function getTimezone(match, idx, refDate) { // internal helper, see below
 		if (idx == _null || !match)
 			return 0;
-		return parseFloat(match[idx])*60 + parseFloat(match[idx+1]) + refDate.getTimezoneOffset();
+		return parseFloat(match[idx]+match[idx+1])*60 + parseFloat(match[idx]+match[idx+2]) + refDate.getTimezoneOffset();
 	}
 	
 	
@@ -586,10 +587,10 @@ define('minified', function() {
 		if (isDate(value)) {
 			var timezone, match;
 
-			if (match = /^\[(([+-]\d\d)(\d\d))\]\s*(.*)/.exec(format)) {
+			if (match = /^\[(([+-])(\d\d)(\d\d))\]\s*(.*)/.exec(format)) {
 				timezone = match[1];
 				value = dateAdd(value, 'minutes', getTimezone(match, 2, value));
-				format = match[4];
+				format = match[5];
 			}
 
 			return replace(format, /(\w)(\1*)(?:\[([^\]]+)\])?/g, function(s, placeholderChar, placeholderDigits, params) {
@@ -662,9 +663,9 @@ define('minified', function() {
 		if (format!=fmt && !trim(date))
 			return _null;
 
-		if (match = /^\[([+-]\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
+		if (match = /^\[([+-])(\d\d)(\d\d)\]\s*(.*)/.exec(format)) {
 			timezoneOffsetMatch = match;
-			format = match[3];
+			format = match[4];
 		}
 
 		var parser = new RegExp(format.replace(/(.)(\1*)(?:\[([^\]]*)\])?/g, function(wholeMatch, placeholderChar, placeholderDigits, param) {
@@ -675,8 +676,8 @@ define('minified', function() {
 			}
 			else if (placeholderChar == 'z') {
 				timezoneIndex = reIndex;
-				reIndex += 2;
-				return "([+-]\\d\\d)(\\d\\d)";
+				reIndex += 3;
+				return "([+-])(\\d\\d)(\\d\\d)";
 			}
 			else if (/[Nna]/.test(placeholderChar)) {
 				indexMap[reIndex++] = [placeholderChar, param && param.split(',')];
@@ -1265,22 +1266,25 @@ define('minified', function() {
 		return list;
 	}
 	
+	function Promise() {
+        this['state'] = null; 
+        this['values'] = []; 
+        this['parent'] = null; 
+	}
+
+
 	/*$
 	 * @id promise
-	 * @group REQUEST
 	 * @name _.promise()
-	 * @configurable default
 	 * @syntax _.promise()
-	 * @syntax _.promise(callback)
-	 * @syntax _.promise(otherPromise...)
+	 * @syntax _.promise(otherPromises...)
 	 * @module WEB+UTIL
 	 * 
 	 * Creates a new ##promiseClass#Promise##, optionally assimilating other promises. If no other promise is given, 
-	 * a fresh new promise is returned. The returned promise is a function that can be called directly to change the 
-	 * promise's state.
-	 * 
-	 * Alternatively you can provide a callback that will be invoked with one function to fulfill the promise and a function
-	 * to reject it. This is the ES6-compatible way of using Minified's promise implementation.
+	 * a fresh new promise is returned. 
+	 *
+	 * The returned promise provides the methods ##fulfill() and ##reject() that can be called directly to change the promise's state,
+	 * as well as the more powerful ##fire().
 	 * 
 	 * If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards 
 	 * fulfillment and rejection with the original values.
@@ -1298,89 +1302,124 @@ define('minified', function() {
 	 * @example A simple promise that is fulfilled after 1 second, using Minified's invocation syntax:
 	 * <pre>var p = _.promise();
 	 * setTimeout(function() { 
-	 *     p(true, []); 
+	 *     p.fire(true); 
 	 * }, 1000);
 	 * </pre>
-	 /
-	 * @example A simple promise that is fulfilled after 1 second, using the ES6 syntax:
-	 * <pre>var p = _.promise(function(resolve, reject) {
-	 * 		setTimeout(resolve, 1000);
-	 * });
-	 * </pre>
+	 *
+	 * @example Request three files in parallel. When all three have been downloaded, concatenate them into a single string.
+     * <pre>
+     * var files = _('fileA.txt', 'fileA.txt', 'fileC.txt');
+     * var content;
+     * _.promise(files.map(function(file) {
+     *      return $.request('get', '/txts/' + file);
+     * })).then(function(fileRslt1, fileRslt2, fileRslt3) {
+     *      content = _(fileRslt1, fileRslt2, fileRslt3).map( function(result) { return result[0]; }).join('');
+     * }).error(function(status, response, xhr, url) {
+     *    alert('failed to load file '+url);
+     * });
+     * </pre>
 	 * 
-	 * @param callback a <code>function(resolve, reject)</code> that will be immediately invoked. The promise will be fulfilled when the callback
-	 * calls <var>resolve</var> and will be rejected if <var>reject</var> is called. <var>resolve</var> and <var>reject</var> can be called asynchronously,
-	 * after the callback returned. Both can have any number of parameters, which will be passed to the ##then() handler. Please note that this is a Minified
-	 * extension, and the Promises/A+ standard supports only a single argument.
-	 * @param otherPromise one or more promises to assimilate
-	 * @return the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
-	 * <dl><dt>state</dt><dd><var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected. If you pass <var>null</var> or
-	 * <var>undefined</var>, the promise's state does not change. The latter may be useful to obtain the promises current state.</dd>
-	 * <dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
-	 * <var>state</var>).</dd>
-	 * <dt class="returnValue">(return value)</dt><dd><var>true</var> if the promise has been fulfilled, <var>false</var> if its state is rejected,
-	 * <var>undefined</var> if it is still pending. If you only want to obtain the promise's state, call the function without arguments.</dd></dl> 
-	 * </dl>
-	 * The function can be called several times, but only the first invocation modifies the Promise. All subsequent calls will
-	 * be ignored.
+	 * @param otherPromises one or more promises to assimilate (varargs). You can also pass lists of promises.
+	 * @return the new promise.
 	 */
 	function promise() {
-		var state; // undefined/null = pending, true = fulfilled, false = rejected
 		var deferred = [];   // this function calls the functions supplied by then()
 
 		var assimilatedPromises = arguments;
 		var assimilatedNum = assimilatedPromises.length;
 		var numCompleted = 0; // number of completed, assimilated promises
-		var values = []; // array containing the result arrays of all assimilated promises, or the result of the single promise
-		
-		var set = function(newState, newValues) {
-			if (state == _null && newState != _null) {
-				state = newState;
-				values = isList(newValues) ? newValues : [newValues];
+		var rejectionHandlerNum = 0;
+
+		var obj = new Promise();
+
+		obj['errHandled'] = function() {
+			rejectionHandlerNum++;
+			if (obj['parent'])
+				obj['parent']['errHandled']();
+		};
+
+		/*$
+		 * @id fire
+		 * @name promise.fire()
+		 * @syntax _.fire(newState)
+		 * @syntax _.fire(newState, values)
+		 * @module WEB+UTIL
+		 * 
+		 * Changes the state of the promise into either fulfilled or rejected. This will also notify all ##then() handlers. If the promise
+		 * already has a state, the call will be ignored.
+		 *
+		 * <var>fire()</var> can be invoked as a function without context ('this'). Every promise has its own instance.
+		 * 
+		 * @example A simple promise that is fulfilled after 1 second, using Minified's invocation syntax:
+		 * <pre>var p = _.promise();
+		 * setTimeout(function() { 
+		 *     p.fire(true, []); 
+		 * }, 1000);
+		 * </pre>
+		 *
+		 * @example Call <var>fire()</var> without a context:
+		 * <pre>var p = _.promise(function(resolve, reject) {
+         *     setTimeout(resolve.fire, 1000);
+		 * });
+		 * </pre>
+		 *
+		 * @param newState <var>true</var> to set the Promise to fulfilled, <var>false</var> to set the state as rejected. If you pass <var>null</var> or
+		 * <var>undefined</var>, the promise's state does not change.
+		 * @param values optional an array of values to pass to ##then() handlers as arguments. You can also pass a non-list argument, which will then 
+		 *               be passed as only argument.
+		 * @return the promise 
+		 */
+		var fire = obj['fire'] = function(newState, newValues) {
+			if (obj['state'] == null && newState != null) {
+				obj['state'] = !!newState;
+				obj['values'] = isList(newValues) ? newValues : [newValues];
 				setTimeout(function() {
-					each(deferred, function(f) {f();}); // calllist?
+					each(deferred, function(f) {f();});
 				}, 0);
 			}
-			return state;
+			return obj;
 		};
 
 		// use promise varargs
 		each(assimilatedPromises, function assimilate(promise, index) {
 			try {
-				if (promise['then'])
-					promise['then'](function resolvePromise(v) {
-						var then;
-						if ((isObject(v) || isFunction(v)) && isFunction(then = v['then']))
-							assimilate(then, index);
-						else {
-							values[index] = map(arguments, nonOp);
-							if (++numCompleted == assimilatedNum)
-								set(true, assimilatedNum < 2 ? values[index] : values);
-						}
-					}, 
-					function rejectPromise(e) {
-						values[index] = map(arguments, nonOp);
-						set(false, assimilatedNum < 2 ? values[index] : [values[index][0], values, index]);
-					});
+		        if (promise['then'])
+                    promise['then'](function(v) {
+                        var then;
+                        if ((isObject(v) || isFunction(v)) && isFunction(then = v['then']))
+                            assimilate(v, index);
+                        else {
+                            obj['values'][index] = array(arguments);
+                            if (++numCompleted == assimilatedNum)
+                                fire(true, assimilatedNum < 2 ? obj['values'][index] : obj['values']);
+                        }
+                    }, 
+                    function(e) {
+                        obj['values'][index] = array(arguments);
+                        fire(false, assimilatedNum < 2 ? obj['values'][index] : [obj['values'][index][0], obj['values'], index]);
+                    });
 				else
-					promise(function() {set(true, arguments);}, function() {set(false, arguments); });
+					promise(function() {fire(true, array(arguments));}, function() {fire(false, array(arguments)); });
 			}
 			catch (e) {
-				set(false, [e, values, index]);
+				fire(false, [e, obj['values'], index]);
 			}
 		});
 
 		/*$
 		 * @id stop
-		 * @group REQUEST
 		 * @name promise.stop()
 		 * @syntax promise.stop()
 		 * @module WEB+UTIL
-		 * Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by ##request(), ##animate() and ##wait(). 
+		 * Stops an ongoing operation, if supported. Currently the only promises supporting this are those returned by ##request(), ##animate(), ##wait() and
+		 * ##asyncEach(). 
 		 * stop() invocation will be propagated over promises returned by ##then() and promises assimilated by ##promise(). You only need to invoke stop
 		 * with the last promise, and all dependent promises will automatically stop as well. 
+		 * 
+		 *  <var>stop()</var> can be invoked as a function without context ('this'). Every promise has its own instance.
 		 *
-		 * @return In some cases, the <var>stop()</var> can return a value. This is currently only done by ##animate(), which will return the actual duration.
+		 * @return In some cases, the <var>stop()</var> can return a value. This is currently only done by ##animate() and ##wait(), which will return the actual duration.
+		 *         ##asyncEach()'s promise will also return any value it got from the promise that it stopped.
 		 *
 		 * @example Animation chain that can be stopped.
 		 * <pre>
@@ -1388,7 +1427,7 @@ define('minified', function() {
 		 * var prom = div.animate({$left: '200px', $top: '0px'}, 600, 0)
 		 *    .then(function() {
 		 *           return _.promise(div.animate({$left: '200px', $top: '200px'}, 800, 0), 
-		 *           				  div.animate({$backgroundColor: '#f00'}, 200));
+		 *                            div.animate({$backgroundColor: '#f00'}, 200));
 		 *    }).then(function() {
 		 *           return div.animate({$left: '100px', $top: '100px'}, 400);
 		 *    });
@@ -1396,29 +1435,33 @@ define('minified', function() {
 		 * $('#stopButton').on('click', prom.stop);
 		 * </pre>
 		 */   
-		set['stop'] = function() {
+		obj['stop'] = function() {
 			each(assimilatedPromises, function(promise) {
 				if (promise['stop'])
 					promise['stop']();
 			});
 
-			return call(set['stop0']);
+			return obj['stop0'] && call(obj['stop0']);
 		};
 		
 		/*$
 		 * @id then
-		 * @group REQUEST
 		 * @name promise.then()
 		 * @syntax promise.then()
 		 * @syntax promise.then(onSuccess)
 		 * @syntax promise.then(onSuccess, onError)
 		 * 
-		 * @module WEB, UTIL
+		 * @module WEB
 		 * Registers two callbacks that will be invoked when the ##promise#Promise##'s asynchronous operation finished 
 		 * successfully (<var>onSuccess</var>) or an error occurred (<var>onError</var>). The callbacks will be called after  
 		 * <var>then()</var> returned, from the browser's event loop.
-		 * Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
 		 * You can chain <var>then()</var> invocations, as <var>then()</var> returns another Promise object that you can attach to. 
+         *
+		 * The full distribution of Minified implements the Promises/A+ specification, allowing interoperability with other Promises frameworks. 
+		 *
+		 * <strong>Note:</strong> If you use the Web module, you will get a simplified Promises implementation that cuts some corners. The most notable
+		 * difference is that when a <code>then()</code> handler throws an exception, this will not be caught and the promise returned by 
+		 * <code>then</code> will not be automatically rejected.
 		 *
 		 * @example Simple handler for an HTTP request. Handles only success and ignores errors.
 		 * <pre>
@@ -1468,45 +1511,54 @@ define('minified', function() {
 		 * @return a new ##promise#Promise## object. If you specified a callback for success or error, the new Promises's state will be determined by that callback if it is called.
 		 *         If no callback has been provided and the original Promise changes to that state, the new Promise will change to that state as well.
 		 */   
-		var then = set['then'] = function (onFulfilled, onRejected) {
+		var then = obj['then'] = function (onFulfilled, onRejected) {
 			var promise2 = promise();
 			var callCallbacks = function() {
 				try {
-					var f = (state ? onFulfilled : onRejected);
+					var f = (obj['state'] ? onFulfilled : onRejected);
 					if (isFunction(f)) {
-		   				(function resolve(x) {
-		   					try {
-			   					var then, cbCalled = 0;
-				   				if ((isObject(x) || isFunction(x)) && isFunction(then = x['then'])) {
+                        (function resolve(x) {
+                            try {
+                                var then, cbCalled = 0;
+                                if ((isObject(x) || isFunction(x)) && isFunction(then = x['then'])) {
 										if (x === promise2)
 											throw new TypeError();
-										then['call'](x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2(false,[value]);});
+										then.call(x, function(x) { if (!cbCalled++) resolve(x); }, function(value) { if (!cbCalled++) promise2['fire'](false, [value]);});
 										promise2['stop0'] = x['stop'];
-				   				}
-				   				else
-				   					promise2(true, [x]);
-		   					}
-		   					catch(e) {
-		   						if (!cbCalled++) 
-		   							promise2(false, [e]);
-		   					}
-		   				})(call(f, undef, values));
-		   			}
-		   			else
-		   				promise2(state, values);
+                                }
+                                else
+                                    promise2['fire'](true, [x]);
+                            }
+                            catch(e) {
+                                if (!(cbCalled++)) {
+                                    promise2['fire'](false, [e]);
+                                    if (!rejectionHandlerNum)
+										throw e;
+                                }
+                            }
+                        })(call(f, undef, obj['values']));
+                    }
+                    else
+                        promise2['fire'](obj['state'], obj['values']);
 				}
 				catch (e) {
-					promise2(false, [e]);
-				}
+					promise2['fire'](false, [e]);
+					if (!rejectionHandlerNum)
+						throw e;
+				} 
 			};
-			promise2['stop0'] = set['stop'];
-			if (state != _null)
+			if (isFunction(onRejected))
+				obj['errHandled']();
+			promise2['stop0'] = obj['stop'];
+			promise2['parent'] = obj;
+			if (obj['state'] != null)
 				setTimeout(callCallbacks, 0);
 			else
 				deferred.push(callCallbacks);
 			return promise2;
 		};
-
+		
+		
 		/*$
 		 * @id always
 		 * @group REQUEST
@@ -1531,8 +1583,8 @@ define('minified', function() {
 		 *                 have success status. If it throws an error, the returned Promise will be in the error state.
 		 * @return a new ##promise#Promise## object. Its state is determined by the callback.
 		 */
-	   	set['always'] = function(func) { return then(func, func); };
-	   	
+        obj['always'] = function(func) { return then(func, func); };
+
 		/*$
 		 * @id error
 		 * @group REQUEST
@@ -1556,24 +1608,22 @@ define('minified', function() {
 		 *                           have success status. If it throws an error, the returned Promise will be in error state.
 		 * @return a new ##promise#Promise## object. Its state is determined by the callback.
 		 */  
-	   	set['error'] = function(func) { return then(0, func); };
-	   	/*$
-	   	 * @stop
-	   	 */
-	   	// @condblock promise
-	   	return set;
-	}
-	// @condend promise
+        obj['error'] = function(func) { return then(0, func); };
+
+        return obj;
+    }
+
+
 
 	///#/snippet extrasFunctions
 	///#snippet extrasDocs
- 	/*$
+    /*$
 	 * @id length
 	 * @group SELECTORS
 	 * @requires dollar
 	 * @name list.length
 	 * @syntax length
-   	 * @module WEB, UTIL
+     * @module WEB, UTIL
 	 * 
 	 * Contains the number of elements in the ##list#Minified list##.
 	 * 
@@ -4139,9 +4189,9 @@ define('minified', function() {
 		var loopStop;
 
 		// @condblock !promise
-		prom['stop'] = function() { prom(false); return loopStop(); };
+		prom['stop'] = function() { prom['fire'](false); return loopStop(); };
 		// @condend
-		// @cond promise prom['stop0'] = function() { prom(false); return loopStop(); };
+		// @cond promise prom['stop0'] = function() { prom['fire'](false); return loopStop(); };
 
 		// start animation
 		loopStop = $.loop(function(timePassedMs) {
@@ -4152,7 +4202,7 @@ define('minified', function() {
 
 			if (timePassedMs >= durationMs) {
 				loopStop();
-				prom(true, [self]);
+				prom['fire'](true, [self]);
 			}
 		});
 		return prom;		
@@ -5013,7 +5063,7 @@ define('minified', function() {
 	* </pre>
 	* 
 	* @example Using HTTP authentication and a custom XMLHttpRequest property.
-	* <pre>var handler = $.request('get', 'http://service.example.com/userinfo', null, {withCredentials: true, user: 'me', pass: 'secret'});</pre>
+	* <pre>var handler = $.request('get', 'http://service.example.com/userinfo', null, {xhr: {withCredentials: true}, user: 'me', pass: 'secret'});</pre>
 	*
 	* 
 	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data 
@@ -5031,7 +5081,7 @@ define('minified', function() {
 	* <dt>user</dt><dd>username for HTTP authentication, together with the <var>pass</var> parameter</dd>
 	* <dt>pass</dt><dd>password for HTTP authentication, together with the <var>user</var> parameter</dd>
 	* </dl>
-	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
+	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with a HTTP status 2xx, 
 	*         the promise's completion handler will be called as <code>function(text, xhr)</code>:
 	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
 	*         <dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different
@@ -5090,10 +5140,10 @@ define('minified', function() {
 			
 			xhr['onreadystatechange'] = function() {
 				if (xhr['readyState'] == 4 && !callbackCalled++) {
-					if (xhr['status'] == 200)
-						prom(true, [xhr['responseText'], xhr]);
+					if (xhr['status'] >= 200 && xhr['status'] < 300)
+						prom['fire'](true, [xhr['responseText'], xhr]);
 					else
-						prom(false, [xhr['status'], xhr['responseText'], xhr]);
+						prom['fire'](false, [xhr['status'], xhr['responseText'], xhr]);
 				}
 			};
 			
@@ -5101,7 +5151,7 @@ define('minified', function() {
 		}
 		catch (e) {
 			if (!callbackCalled) 
-				prom(false, [0, _null, toString(e)]);
+				prom['fire'](false, [0, _null, toString(e)]);
 		}
 		
 		return prom;
@@ -5469,9 +5519,9 @@ define('minified', function() {
 		'wait': function(durationMs, args) {
 			var p = promise();
 			var id = setTimeout(function() { 
-				p(true, args); 
+				p['fire'](true, args); 
 			}, durationMs);
-			p['stop0'] = function() { p(false); clearTimeout(id); };
+			p['stop0'] = function() { p['fire'](false); clearTimeout(id); };
 			return p;
 		}
 		
@@ -7422,7 +7472,7 @@ define('minified', function() {
  * </pre>
  *  
  * Only the full Minified distribution allows you to create promises yourself, using the ##promise() function. The Promises/A+ 
- * specification does not specify how to fulfill a promise, but in Minified's implementation every Promise object is a function  
+ * specification does not specify how to fulfill a promise, but in Minified's implementation every Promise object has a function <code>fire()</code>  
  * that needs to be called when the promise result is ready. It requires two arguments.
  * The first is a boolean, <var>true</var> for a successful operation and <var>false</var> for a failure. The second is an array or list containing the
  * arguments to call the corresponding ##then() handler with.
@@ -7434,7 +7484,7 @@ define('minified', function() {
  * <pre>
  * function timeout(durationMs) {
  *		var p = _.promise();
- *		setTimeout(function() { p(true, [durationMs]); }, durationMs);
+ *		setTimeout(function() { p.fire(true, [durationMs]); }, durationMs);
  *		return p;
  * }
  * </pre>

@@ -1,6 +1,6 @@
  /*
  * Minified-web.js - Lightweight Client-Side JavaScript Libary (web module only)
- * Version: 2014.1.0
+ * Version: 2015.1.1
  * 
  * Public Domain. Use, modify and distribute it any way you like. No attribution required.
  * To the extent possible under law, Tim Jansen has waived all copyright and related or neighboring rights to Minified.
@@ -146,7 +146,7 @@ define('minified', function() {
 	/**
 	 * @const
 	 */
-	var _window = this;
+	var _window = window;
 
 	/**
 	 * @const
@@ -239,7 +239,7 @@ define('minified', function() {
 	}
 	/**
 	 * @param s {?}
-	 * @param o {string}
+	 * @param regexp {string}
 	 */
 	function isType(s,regexp) {
 		return regexp.test(typeof s);
@@ -588,46 +588,26 @@ define('minified', function() {
 	}
 	///#/snippet webFunctions
 
-	// Special private promise impl only for web module. A public one  is in minified-dbl, but only available if util is availble.
+	// Special private promise impl only for web module. A public one  is in minified-extras, but only available if util is availble.
 	// @condblock !promise
 	function promise() {
 		var state;           // undefined/null = pending, true = fulfilled, false = rejected
 		var values;     // an array of values as arguments for the then() handlers
  		var deferred = [];   // functions to call when set() is invoked
 
-		var set = function (newState, newValues) {
-			if (state == _null) {
-				state = newState;
-				values = newValues;
-   				setTimeout(function() {
-   					callList(deferred);
-   				}, 0);
-			}
-		}; 
-		/*$
-		 * @id then
-		 * @group REQUEST
-		 * @module WEB, UTIL
-		 * See extras module for documentation.
-		 */   
-		var then = set['then'] = function(onFulfilled, onRejected) {
+		var then = function(onFulfilled, onRejected) {
 			var promise2 = promise();
 			var callCallbacks = function() {
-				try {
-					var f = (state ? onFulfilled : onRejected);
-					if (isFunction(f)) {
-		   				var r = f.apply(undef, values);
-		   				if (r && r['then'])
-		   					r['then'](function(value){promise2(true,[value]);}, function(value){promise2(false,[value]);});
-		   				else
-		   					promise2(true, [r]);
-		   			}
-		   			else
-		   				promise2(state, values);
-				}
-				catch (e) {
-					promise2(false, [e]);
-				}
+				var f = (state ? onFulfilled : onRejected);
+				if (isFunction(f)) {
+	   				var r = f.apply(undef, values);
+	   				if (r && r['then'])
+	   					r['then'](function(value){promise2['fire'](true,[value]);}, function(value){promise2['fire'](false,[value]);});
+	   				else
+	   					promise2['fire'](true, [r]);
+	   			}
+	   			else
+	   				promise2['fire'](state, values);
 			};
 			if (state == _null)
 				deferred.push(callCallbacks);
@@ -636,14 +616,33 @@ define('minified', function() {
 			return promise2;
 		};
 
-		/*$
-		 * @id error
-		 * @group REQUEST
-		 * @module WEB, UTIL
-		 * See util module for documentation.
-		 */  
-	 	set['error'] = function(func) { return then(0, func); };
-	 	return set;
+ 	 	var obj = {
+ 	 	    'fire': function (newState, newValues) {
+    			if (state == _null) {
+    				state = newState;
+    				values = newValues;
+       				setTimeout(function() {
+       					callList(deferred);
+       				}, 0);
+    			}
+    		},
+    		/*$
+	    	 * @id then
+		     * @group REQUEST
+		     * @module WEB, UTIL
+		     * See extras module for documentation.
+		     */ 
+    		'then': then,
+    		/*$
+    		 * @id error
+    		 * @group REQUEST
+    		 * @module WEB, UTIL
+    		 * See util module for documentation.
+    		 */  
+    		'error': function(func) { return then(0, func); }
+
+ 	 	}; 
+	 	return obj;
 	}
 	// @condend !promise
 
@@ -2341,9 +2340,9 @@ define('minified', function() {
 		var loopStop;
 
 		// @condblock !promise
-		prom['stop'] = function() { prom(false); return loopStop(); };
+		prom['stop'] = function() { prom['fire'](false); return loopStop(); };
 		// @condend
-		// @cond promise prom['stop0'] = function() { prom(false); return loopStop(); };
+		// @cond promise prom['stop0'] = function() { prom['fire'](false); return loopStop(); };
 
 		// start animation
 		loopStop = $.loop(function(timePassedMs) {
@@ -2354,7 +2353,7 @@ define('minified', function() {
 
 			if (timePassedMs >= durationMs) {
 				loopStop();
-				prom(true, [self]);
+				prom['fire'](true, [self]);
 			}
 		});
 		return prom;		
@@ -3089,7 +3088,7 @@ define('minified', function() {
 	* </pre>
 	* 
 	* @example Using HTTP authentication and a custom XMLHttpRequest property.
-	* <pre>var handler = $.request('get', 'http://service.example.com/userinfo', null, {withCredentials: true, user: 'me', pass: 'secret'});</pre>
+	* <pre>var handler = $.request('get', 'http://service.example.com/userinfo', null, {xhr: {withCredentials: true}, user: 'me', pass: 'secret'});</pre>
 	*
 	* 
 	* @param method the HTTP method, e.g. 'get', 'post' or 'head' (rule of thumb: use 'post' for requests that change data 
@@ -3107,7 +3106,7 @@ define('minified', function() {
 	* <dt>user</dt><dd>username for HTTP authentication, together with the <var>pass</var> parameter</dd>
 	* <dt>pass</dt><dd>password for HTTP authentication, together with the <var>user</var> parameter</dd>
 	* </dl>
-	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with HTTP status 200, 
+	* @return a ##promiseClass#Promise## containing the request's status. If the request has successfully completed with a HTTP status 2xx, 
 	*         the promise's completion handler will be called as <code>function(text, xhr)</code>:
 	*         <dl><dt>text</dt><dd>The response sent by the server as text.</dd>
 	*         <dt>xhr</dt><dd>The XMLHttpRequest used for the request. This allows you to retrieve the response in different
@@ -3166,10 +3165,10 @@ define('minified', function() {
 
 			xhr['onreadystatechange'] = function() {
 				if (xhr['readyState'] == 4 && !callbackCalled++) {
-					if (xhr['status'] == 200)
-						prom(true, [xhr['responseText'], xhr]);
+					if (xhr['status'] >= 200 && xhr['status'] < 300)
+						prom['fire'](true, [xhr['responseText'], xhr]);
 					else
-						prom(false, [xhr['status'], xhr['responseText'], xhr]);
+						prom['fire'](false, [xhr['status'], xhr['responseText'], xhr]);
 				}
 			};
 
@@ -3177,7 +3176,7 @@ define('minified', function() {
 		}
 		catch (e) {
 			if (!callbackCalled) 
-				prom(false, [0, _null, toString(e)]);
+				prom['fire'](false, [0, _null, toString(e)]);
 		}
 
 		return prom;
@@ -3969,7 +3968,7 @@ define('minified', function() {
  * </pre>
  *  
  * Only the full Minified distribution allows you to create promises yourself, using the ##promise() function. The Promises/A+ 
- * specification does not specify how to fulfill a promise, but in Minified's implementation every Promise object is a function  
+ * specification does not specify how to fulfill a promise, but in Minified's implementation every Promise object has a function <code>fire()</code>  
  * that needs to be called when the promise result is ready. It requires two arguments.
  * The first is a boolean, <var>true</var> for a successful operation and <var>false</var> for a failure. The second is an array or list containing the
  * arguments to call the corresponding ##then() handler with.
@@ -3981,7 +3980,7 @@ define('minified', function() {
  * <pre>
  * function timeout(durationMs) {
  *		var p = _.promise();
- *		setTimeout(function() { p(true, [durationMs]); }, durationMs);
+ *		setTimeout(function() { p.fire(true, [durationMs]); }, durationMs);
  *		return p;
  * }
  * </pre>

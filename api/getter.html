@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>.dial() - Minified.js</title>
+<title>MINI.getter - Minified.js</title>
 
 
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
@@ -32,77 +32,55 @@
 <div id="main">
 	<div class="container">
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-dial">.dial()</a></h2>
+<h2><a name="doc-getter">MINI.getter</a></h2>
 <div class="summary">
-Creates a function allows you to set all list members to one of two states or any transitional state between them.</div>
+Exposes a map of prefix handlers used by get.</div>
 
-<div class="availability">Web module only.</div><h4>Syntax Variants</h4>
+<div class="availability">Web module only.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">list.dial(state1, state2)</div>
-<div class="syntax">list.dial(state1, state2, linearity)</div>
-<div class="syntax">list.dial(state1, state2, interpolationFunc)</div>
+<div class="syntax">MINI.getter</div>
 </div>
-
-<h4>Parameters</h4>
-<dl class="params">
-<dt id="dial_state1" class=""><a name="dial_state1"><var>state1</var></a></dt>
-<dd class="">a property map in <code><a href="set.html" class="func">set()</a></code> syntax describing the first state of the properties. The properties will be set for all elements of the list.</dd>
-<dt id="dial_state2" class=""><a name="dial_state2"><var>state2</var></a></dt>
-<dd class="">a property map describing the second state of the properties. Uses <code><a href="set.html" class="func">set()</a></code> syntax.</dd>
-<dt id="dial_linearity" class=""><a name="dial_linearity"><var>linearity (optional)</var></a></dt>
-<dd class="">defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.</dd>
-<dt id="dial_interpolationFunc" class=""><a name="dial_interpolationFunc"><var>interpolationFunc (optional)</var></a></dt>
-<dd class="">an interpolation <code>function(startValue, endValue, t)</code> which will be called every time
-an interpolated value is required:
-<dl>
-<dt>startValue</dt><dd>The start value of the transition.</dd>
-<dt>endValue</dt><dd>The end value of the transition.</dd>
-<dt>t</dt><dd>A value between 0 and 1 that specifies the state of the transition.</dd>
-<dt class="returnValue">(callback return value)</dt><dd>The value at the time <span class="var">t</span>.</dd>
-</dl></dd>
-<dt id="dial_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="dial_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">a dial function <code>function(newPosition)</code> that will set the state.
-<dl>
-<dt>newPosition</dt><dd>If 0 or lower, set the list members to the first state.
-If 1 or higher, sets them to the second state. For any value betweeen 0 and 1, the list members
-will be set to interpolated values.</dd>
-</dl>
-</dd>
-</dl>
 
 <h4>Description</h4>
 <div class="description"><p>
-Creates a function allows you to set all list members to one of two states or any transitional state between them.
-The states are specified using <code><a href="set.html" class="func">set()</a></code> - compatible object maps containing the properties to set.
-Pass 0 to the function to set the first state for all list members, or 1 to set the second state.
-Any value between 0 and 1 will cause <span class="var">dial()</span> to interpolate between the two states.
-Interpolation is supported for all numeric values, including those that have a string suffix (e.g. 'px' unit),
-and for colors in all RGB notations (e.g. '#f00', '#f0d1ff' or 'rgb(23,0,100)').</p><p>You can use the optional third parameter to define the kind of interpolation to use for values between 0 and 1.
-If 0, the dial uses a smooth, cubic interpolation. For 1 it uses linear interpolation. Values between 0 and 1
-will mix both algorithms. You can also specify your own interpolation function.</p><p></p></div>
+Exposes a map of prefix handlers used by <code><a href="get.html" class="func">get()</a></code>. You can add support for a new prefix in <span class="var">get()</span>
+by adding a function to this map. The prefix can be any string consisting solely of non-alphanumeric characters
+that's not already used by Minified.</p><p>You must not replace <span class="var">getters</span> by a new map, but must always modify the existing map.</p><p>The function's signature is <code>function(list, name)</code> where
+<dl><dt>list</dt><dd>Is the Minified list to get the value from. By convention you should always use only the first element. The list is
+                     non-empty and the first elememt can't be null or undefined (get() automatically returns <span class="var">undefined</span> in
+                     all other case).</dd>
+    <dt>name</dt><dd>The name of the property. That's the part AFTER the prefix.</dd>
+    <dt class="returnValue">(callback return value)</dt><dd>The value to return to the user.</dd></dl></p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Creates a dial function that changes the background color of the page.
+<div class="example"><p>Adding a shortcut '||' for accessing border style properties:
 <pre>
-var light = $('body').dial({$backgroundColor: #000}, {$backgroundColor: #fff});
-light(0);     // set the first state (background color to #000)
-light(1);     // sets second state (background color to #fff).
-light(0.5);  // interpolates between two states, sets background color to #888.
-light(0.25);  // interpolates between two states, sets background color to #444.
+MINI.getter['||'] = function(list, name) {
+	return list.get('$border' + name.replace(/^[a-z]/, function(a) { return a.toUpperCase()});
+};
+
+var borderColor = $('#box').get('||color'); // same as '$borderColor'
+var borderLeftRadius = $('#box').get('||leftRadius'); // same as '$borderLeftRadius'
 </pre>
 </p></div>
+<h4>Example</h4>
+<div class="example"><p>Adding XLink attribute support to get(). This is useful if you work with SVG. The prefix is '>'.
+<pre>
+MINI.getter['>'] = function(list, name) {
+	return list[0].getAttributeNS('http://www.w3.org/1999/xlink', name);
+};
+
+var xlinkHref = $('#svgLink').get('>href');
+</pre></p></div>
 </div>
 
-<h4>See also..</h4>
-<ul><li><code><a href="toggle.html" class="func">toggle()</a></code> is a related function that allows you to define two states and automatically animate between them.</li>
-</ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-dial";
-var disqus_url = "http://minifiedjs.com/api/dial.html";
+var disqus_identifier = "api-getter";
+var disqus_url = "http://minifiedjs.com/api/getter.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";

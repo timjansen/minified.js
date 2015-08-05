@@ -77,13 +77,13 @@ describe('minified-web-promises-test.js', function() {
 			})
 			.then(function(txt) {
 				var p = _.promise();
-				p(true, ["123"]);
+				p.fire(true, ["123"]);
 				return p;
 			})
 			.then(function(txt) {
 				check(txt, "123");
 				var p = _.promise();
-				p(false, ["xxx"]);
+				p.fire(false, ["xxx"]);
 				return p;
 			})
 			.then(function(value) {

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>.dial() - Minified.js</title>
+<title>$.paramEncode() - Minified.js</title>
 
 
 <link rel="stylesheet" type="text/css" href="../css/reference.css">
@@ -32,77 +32,49 @@
 <div id="main">
 	<div class="container">
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-dial">.dial()</a></h2>
-<div class="summary">
-Creates a function allows you to set all list members to one of two states or any transitional state between them.</div>
+<h2><a name="doc-paramEncode">$.paramEncode()</a></h2>
+<div class="summary">Serializes a map of key/value strings into a form-encoded string that can be used as post argument or
+be appended to an URL.</div>
 
-<div class="availability">Web module only.</div><h4>Syntax Variants</h4>
+<div class="availability">Complete distribution only, not available in stand-alone modules.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">list.dial(state1, state2)</div>
-<div class="syntax">list.dial(state1, state2, linearity)</div>
-<div class="syntax">list.dial(state1, state2, interpolationFunc)</div>
+<div class="syntax">$.paramEncode(valueMap)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="dial_state1" class=""><a name="dial_state1"><var>state1</var></a></dt>
-<dd class="">a property map in <code><a href="set.html" class="func">set()</a></code> syntax describing the first state of the properties. The properties will be set for all elements of the list.</dd>
-<dt id="dial_state2" class=""><a name="dial_state2"><var>state2</var></a></dt>
-<dd class="">a property map describing the second state of the properties. Uses <code><a href="set.html" class="func">set()</a></code> syntax.</dd>
-<dt id="dial_linearity" class=""><a name="dial_linearity"><var>linearity (optional)</var></a></dt>
-<dd class="">defines whether the animation should be linear (1), very smooth (0) or something in between. Default: 0. Ignored if durationMs is 0.</dd>
-<dt id="dial_interpolationFunc" class=""><a name="dial_interpolationFunc"><var>interpolationFunc (optional)</var></a></dt>
-<dd class="">an interpolation <code>function(startValue, endValue, t)</code> which will be called every time
-an interpolated value is required:
-<dl>
-<dt>startValue</dt><dd>The start value of the transition.</dd>
-<dt>endValue</dt><dd>The end value of the transition.</dd>
-<dt>t</dt><dd>A value between 0 and 1 that specifies the state of the transition.</dd>
-<dt class="returnValue">(callback return value)</dt><dd>The value at the time <span class="var">t</span>.</dd>
-</dl></dd>
-<dt id="dial_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="dial_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">a dial function <code>function(newPosition)</code> that will set the state.
-<dl>
-<dt>newPosition</dt><dd>If 0 or lower, set the list members to the first state.
-If 1 or higher, sets them to the second state. For any value betweeen 0 and 1, the list members
-will be set to interpolated values.</dd>
-</dl>
+<dt id="paramEncode_valueMap" class=""><a name="paramEncode_valueMap"><var>valueMap</var></a></dt>
+<dd class="">an object containing key/value parameters as properties. If the value is an array or list,
+the parameter will be multiple times in the result string. If the value is null, the name
+will be in the string without value.</dd>
+<dt id="paramEncode_RETURN" class="returnValue inSyntax0"><a name="paramEncode_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0">the form-encoded string.
 </dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>
-Creates a function allows you to set all list members to one of two states or any transitional state between them.
-The states are specified using <code><a href="set.html" class="func">set()</a></code> - compatible object maps containing the properties to set.
-Pass 0 to the function to set the first state for all list members, or 1 to set the second state.
-Any value between 0 and 1 will cause <span class="var">dial()</span> to interpolate between the two states.
-Interpolation is supported for all numeric values, including those that have a string suffix (e.g. 'px' unit),
-and for colors in all RGB notations (e.g. '#f00', '#f0d1ff' or 'rgb(23,0,100)').</p><p>You can use the optional third parameter to define the kind of interpolation to use for values between 0 and 1.
-If 0, the dial uses a smooth, cubic interpolation. For 1 it uses linear interpolation. Values between 0 and 1
-will mix both algorithms. You can also specify your own interpolation function.</p><p></p></div>
+<div class="description"><p>Serializes a map of key/value strings into a form-encoded string that can be used as post argument or
+be appended to an URL.</p><p>The map format is compatible with <code><a href="values.html" class="func">values()</a></code>: you can have several parameters of the same name by
+using a list or array for the values.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Creates a dial function that changes the background color of the page.
+<div class="example"><p>Encodes the parameters of the form and appends them to the URL:
 <pre>
-var light = $('body').dial({$backgroundColor: #000}, {$backgroundColor: #fff});
-light(0);     // set the first state (background color to #000)
-light(1);     // sets second state (background color to #fff).
-light(0.5);  // interpolates between two states, sets background color to #888.
-light(0.25);  // interpolates between two states, sets background color to #444.
+var URL = 'http://example.com/postIt?' + $.paramEncode($('#myForm').values());
 </pre>
 </p></div>
 </div>
 
 <h4>See also..</h4>
-<ul><li><code><a href="toggle.html" class="func">toggle()</a></code> is a related function that allows you to define two states and automatically animate between them.</li>
+<ul><li><code><a href="values.html" class="func">$.values()</a></code> create a parameter map from a form.</li>
 </ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-dial";
-var disqus_url = "http://minifiedjs.com/api/dial.html";
+var disqus_identifier = "api-paramEncode";
+var disqus_url = "http://minifiedjs.com/api/paramEncode.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
@@ -119,6 +91,7 @@ var disqus_url = "http://minifiedjs.com/api/dial.html";
 </li><li><a href="getcookie.html" class="func">$.getCookie()</a> 
 </li><li><a href="loop.html" class="func">$.loop()</a> <span class="tocMod">Web</span>
 </li><li><a href="off.html" class="func">$.off()</a> <span class="tocMod">Web</span>
+</li><li><a href="paramEncode.html" class="func">$.paramEncode()</a> 
 </li><li><a href="parsejson.html" class="func">$.parseJSON()</a> <span class="tocMod">Web</span>
 </li><li><a href="ready.html" class="func">$.ready()</a> <span class="tocMod">Web</span>
 </li><li><a href="request.html" class="func">$.request()</a> <span class="tocMod">Web</span>
@@ -149,7 +122,7 @@ var disqus_url = "http://minifiedjs.com/api/dial.html";
 </li><li><a href="intersection.html" class="func">.intersection()</a> <span class="tocMod">Util</span>
 </li><li><a href="is.html" class="func">.is()</a> <span class="tocMod">Web</span>
 </li><li><a href="join.html" class="func">.join()</a> <span class="tocMod">Util</span>
-</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Util</span>
+</li><li><a href="map.html" class="func">.map()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="merge.html" class="func">.merge()</a> <span class="tocMod">Util</span>
 </li><li><a href="next.html" class="func">.next()</a> <span class="tocMod">Web</span>
 </li><li><a href="not.html" class="func">.not()</a> <span class="tocMod">Web</span>
@@ -226,9 +199,8 @@ var disqus_url = "http://minifiedjs.com/api/dial.html";
 </li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
-</li><li><a href="fire.html" class="func">promise.fire()</a> 
 </li><li><a href="stop.html" class="func">promise.stop()</a> 
-</li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web</span>
+</li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
 

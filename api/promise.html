@@ -39,38 +39,22 @@ Creates a new Promise, optionally assimilating other promises.</div>
 <div class="availability">Complete distribution only, not available in stand-alone modules.</div><h4>Syntax Variants</h4>
 <div class="syntaxVariant">
 <div class="syntax">_.promise()</div>
-<div class="syntax">_.promise(callback)</div>
-<div class="syntax">_.promise(otherPromise...)</div>
+<div class="syntax">_.promise(otherPromises...)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="promise_callback" class=""><a name="promise_callback"><var>callback</var></a></dt>
-<dd class="">a <code>function(resolve, reject)</code> that will be immediately invoked. The promise will be fulfilled when the callback
-calls <span class="var">resolve</span> and will be rejected if <span class="var">reject</span> is called. <span class="var">resolve</span> and <span class="var">reject</span> can be called asynchronously,
-after the callback returned. Both can have any number of parameters, which will be passed to the <code><a href="then.html" class="func">then()</a></code> handler. Please note that this is a Minified
-extension, and the Promises/A+ standard supports only a single argument.</dd>
-<dt id="promise_otherPromise" class=""><a name="promise_otherPromise"><var>otherPromise</var></a></dt>
-<dd class="">one or more promises to assimilate</dd>
-<dt id="promise_RETURN" class="returnValue inSyntax0 inSyntax1 inSyntax2"><a name="promise_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1 inSyntax2">the new promise. It is also a <code>function(state, args)</code> that should be called to set the state when the Promise's work is done:
-<dl><dt>state</dt><dd><span class="var">true</span> to set the Promise to fulfilled, <span class="var">false</span> to set the state as rejected. If you pass <span class="var">null</span> or
-<span class="var">undefined</span>, the promise's state does not change. The latter may be useful to obtain the promises current state.</dd>
-<dt>args</dt><dd>An array of arguments to pass to the fulfillment or rejection handler (which one is called depends on
-<span class="var">state</span>).</dd>
-<dt class="returnValue">(return value)</dt><dd><span class="var">true</span> if the promise has been fulfilled, <span class="var">false</span> if its state is rejected,
-<span class="var">undefined</span> if it is still pending. If you only want to obtain the promise's state, call the function without arguments.</dd></dl>
-</dd></dl>
-The function can be called several times, but only the first invocation modifies the Promise. All subsequent calls will
-be ignored.
-
+<dt id="promise_otherPromises" class=""><a name="promise_otherPromises"><var>otherPromises</var></a></dt>
+<dd class="">one or more promises to assimilate (varargs). You can also pass lists of promises.</dd>
+<dt id="promise_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="promise_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0 inSyntax1">the new promise.</dd>
+</dl>
 
 <h4>Description</h4>
 <div class="description"><p>
 Creates a new <a href="promiseclass.html" class="func">Promise</a>, optionally assimilating other promises. If no other promise is given,
-a fresh new promise is returned. The returned promise is a function that can be called directly to change the
-promise's state.</p><p>Alternatively you can provide a callback that will be invoked with one function to fulfill the promise and a function
-to reject it. This is the ES6-compatible way of using Minified's promise implementation.</p><p>If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards
+a fresh new promise is returned.</p><p>The returned promise provides the methods <code><a href="fulfill.html" class="func">fulfill()</a></code> and <code><a href="reject.html" class="func">reject()</a></code> that can be called directly to change the promise's state,
+as well as the more powerful <code><a href="fire.html" class="func">fire()</a></code>.</p><p>If one promise is given as parameter, the new promise assimilates the given promise as-is, and just forwards
 fulfillment and rejection with the original values.</p><p>If more than one promise are given, it will assimilate all of them with slightly different rules:
 <ul><li>the new promise is fulfilled if all assimilated promises have been fulfilled. The fulfillment values
         of all assimilated promises are given to the handler as arguments. Note that the fulfillment values themselves are always
@@ -86,14 +70,21 @@ fulfillment and rejection with the original values.</p><p>If more than one promi
 <div class="example"><p>A simple promise that is fulfilled after 1 second, using Minified's invocation syntax:
 <pre>var p = _.promise();
 setTimeout(function() {
-    p(true, []);
+    p.fire(true);
 }, 1000);
 </pre>
-/</p></div>
+</p></div>
 <h4>Example</h4>
-<div class="example"><p>A simple promise that is fulfilled after 1 second, using the ES6 syntax:
-<pre>var p = _.promise(function(resolve, reject) {
-		setTimeout(resolve, 1000);
+<div class="example"><p>Request three files in parallel. When all three have been downloaded, concatenate them into a single string.
+<pre>
+var files = _('fileA.txt', 'fileA.txt', 'fileC.txt');
+var content;
+_.promise(files.map(function(file) {
+     return $.request('get', '/txts/' + file);
+})).then(function(fileRslt1, fileRslt2, fileRslt3) {
+     content = _(fileRslt1, fileRslt2, fileRslt3).map( function(result) { return result[0]; }).join('');
+}).error(function(status, response, xhr, url) {
+   alert('failed to load file '+url);
 });
 </pre>
 </p></div>
@@ -228,8 +219,9 @@ var disqus_url = "http://minifiedjs.com/api/promise.html";
 </li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="fire.html" class="func">promise.fire()</a> 
 </li><li><a href="stop.html" class="func">promise.stop()</a> 
-</li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web, Util</span>
+</li><li><a href="then.html" class="func">promise.then()</a> <span class="tocMod">Web</span>
 </li><li><a href="require.html" class="func">require()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="/docs/howto.html" class="func">How to...</a></li></ul></div>
 

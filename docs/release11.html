@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Minified.js 1.1 Release Notes</title>
+
+
+<link rel="stylesheet" type="text/css" href="../css/doc.css">
+
+
+
+
+</head>
+<body>
+<div id="head">
+	<div class="container">
+		
+		<a href="/"><!--[if lte IE 8]><img src='/img/minified-small.png' alt='Minified'><![endif]-->
+		<!--[if gt IE 8]><img src='/img/minified.svg' alt='Minified'><![endif]-->
+		<!--[if !IE]>--><img src="/img/minified.svg" alt="Minified"><!--<![endif]--></a>
+
+		<div id="topMenu">
+			<a class="notSelected" href="/">Home</a>
+			<a class="notSelected" href="/download/">Download</a>
+			<a class="notSelected" href="/builder/">Build</a>
+			<a class="selected" href="/docs/">Documentation</a>
+			<a class="notSelected" href="/api/">API</a>
+			<a class="notSelected" href="/about/">About</a>
+		</div>
+	</div>
+</div>
+<div id="main">
+	<div class="container"><div>
+  <h1>Minified.js 1.1 Release Notes</h1>
+
+<p>Release 1.1 features a new promise implementation that improves error reporting, as well as some minor bug fixes.</p>
+
+<h2 style="color: red">Backward-incompatible Changes</h2>
+<p>
+<ul>
+<li>Exceptions in <var><a href="/api/then.html">then()</a></var> handlers will not be caught anymore. (WEB-MODULE ONLY!)</li>
+<li>Promises returned by <var><a href="/api/promise.html">promise()</a></var> are now objects, not functions. Use
+<var><a href="/api/fire.html">fire()</a></var> to fulfill or reject them.</li>
+<li><span class="var"><a href="/api/request.html">$.request()</a></span> will consider all 2xx codes a success.</li>
+</ul>
+</p>
+
+<h2>Fix #54: Web-Module Promises handlers don't handle exceptions</h2>
+<p>Exeptions thrown by <span class="var"><a href="/api/then.html">then()</a></span> handlers have better error handling. In the Web module, they 
+won't be caught and will be reported by the browser. In the full distribution, they will only be caught when you have no error handler for the
+returned promise. The full distribution uses Nia's new implementation of the promises specification. 
+Because of this, you need to call the new method <var><a href="/api/fire.html">fire()</a></var> to change the status of a promise,
+instead of calling the promise function.</p>
+<pre>var p = _.promise();
+setTimeout(function() { 
+	 p.<b>fire(true)</b>; 
+}, 1000);
+</pre>
+
+<h2>Fix #51: $.request() accepts all 2xx status codes as success</h2>
+<p><span class="var"><a href="/api/request.html">$.request()</a></span> will accept all 2xx status codes as success, and not only 200 anymore.</p>
+
+<h2>Fix #56: Webpack Incompatibility</h2>
+<p>Minified 1.0 used <span class="var">this</span> as a shortcut to get the browser's <span class="var">window</span>. This caused issues
+with webpack, so 1.1 is using only  <span class="var">window</span>.</p>
+
+<h2>Fix: Timezone handling in format()/parseDate()</h2>
+<p><span class="var"><a href="/api/format.html">_.format()</a></span> and <span class="var"><a href="/api/parsedate.html">_.parseDate()</a></span>
+did not handle timezones correctly that had an offset using the minutes field (e.g. "+0530").</p>
+
+
+
+<h2>Download</h2>
+<p>You can download Minified 1.1 on the <a href="/download">download page</a>.</p>
+
+  </div>
+	
+	<a name="comments">&nbsp;</a>
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+	var disqus_shortname = "minifiedjs";
+	var disqus_identifier = "docs-beta6";
+	if (!///localhost/.test(window.location))
+		(function() {
+		 var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true; dsq.src = "//minifiedjs.disqus.com/embed.js";
+		 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+		})();
+	</script>
+	
+	</div>
+	
+</div>
+
+<div id="foot">
+	<div class="container">
+		<p>Please send feedback to <a href="mailto:tim@tjansen.de">tim@tjansen.de</a>. For updates follow me on Minified's
+		<a href="http://google.com/+Minifiedjs">Google+ page</a> or on <a href="https://twitter.com/timjansen">Twitter</a>. 
+		<a href="/impressum.html">Legal Notice / Impressum</a>.</p>
+	</div>
+</div>
+
+
+</body>
+</html>
