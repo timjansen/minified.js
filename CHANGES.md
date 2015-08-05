@@ -1,7 +1,7 @@
 Minified Change Log
 ====================
 
-1.1 (2015-08-04)
+1.1 (2015-08-05)
 -------------
 * broke the 4kb/8kb barrier
 * New implementation for promise(), backported from Nia, with better error handling. Unhandled exceptions are re-thrown to the event loop. 
