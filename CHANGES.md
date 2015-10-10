@@ -1,6 +1,10 @@
 Minified Change Log
 ====================
 
+1.2 (in progress, on-going)
+* #59: use HTTP body for PUT in $.request()
+
+
 1.1 (2015-08-05)
 -------------
 * broke the 4kb/8kb barrier
