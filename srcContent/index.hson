@@ -91,10 +91,10 @@ own. Or go to <a href="https://docs.google.com/presentation/d/12Nq1LRNguHFO80_xQ
 <h2><a name="sizeCmp">Size Comparison</a></h2>
 <table>
 <tr><th>Name</th><th>Legacy IE Support</th><th>Compiled Size</th><th>Compiled and GZip'd</th></tr>
-<tr><th>Minified (complete)</th><td>no</td><td>{{Math.round(this['minified.js'].uncompressed/1024)::#kb}}</td><td><strong>{{Math.round(this['minified.js'].compressed/1024)::#.#kb}}</strong></td></tr>
-<tr><th>...plus IE6-8 support</th><td>no</td><td>{{Math.round(this['minified-legacyie.js'].uncompressed/1024)::#kb}}</td><td>{{Math.round(this['minified-legacyie.js'].compressed/1024)::#.#kb}}</td></tr>
-<tr><th>...Web Module only</th><td>yes</td><td>{{Math.round(this['minified-web.js'].uncompressed/1024)::#kb}}</td><td><strong>{{Math.round(this['minified-web.js'].compressed/1024)::#.#kb}}</strong></td></tr>
-<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>{{Math.round(this['minified-legacyie-web.js'].uncompressed/1024)::#kb}}</td><td>{{Math.round(this['minified-legacyie-web.js'].compressed/1024)::#.#kb}}</td></tr>
+<tr><th>Minified (complete)</th><td>no</td><td>{{this['minified.js'].uncompressed/1024::#kb}}</td><td><strong>{{Math.round(this['minified.js'].compressed/1024)::#.0kb}}</strong></td></tr>
+<tr><th>...plus IE6-8 support</th><td>no</td><td>{{this['minified-legacyie.js'].uncompressed/1024::#kb}}</td><td>{{Math.round(this['minified-legacyie.js'].compressed/1024)::#.0kb}}</td></tr>
+<tr><th>...Web Module only</th><td>yes</td><td>{{this['minified-web.js'].uncompressed/1024::#kb}}</td><td><strong>{{Math.round(this['minified-web.js'].compressed/1024)::#.0kb}}</strong></td></tr>
+<tr><th>...Web Module with IE6-8 support</th><td>yes</td><td>{{Math.round(this['minified-legacyie-web.js'].uncompressed/1024)::#kb}}</td><td>{{this['minified-legacyie-web.js'].compressed/1024::#.0kb}}</td></tr>
 <tr><th>jQuery 1.11.3</th><td>yes</td><td>94kb</td><td>32kb</td></tr>
 <tr><th>jQuery 2.1.4</th><td>no</td><td>82kb</td><td>29kb</td></tr>
 <tr><th>MooTools Core NoCompat 1.5.0</th><td>yes</td><td>88kb</td><td>29kb</td></tr>

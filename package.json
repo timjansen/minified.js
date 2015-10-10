@@ -2,7 +2,7 @@
   "name": "minified",
   "version": "2015.1.1",
   "description": "Minified is a universal, lightweight library for the web",
-  "main": "WebContent/minified.js",
+  "main": "dist/minified.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
