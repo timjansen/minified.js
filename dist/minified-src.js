@@ -6504,7 +6504,7 @@ define('minified', function() {
 		 * <pre>
 		 * var names = [ {first: 'James', last: 'Sullivan'}, 
 		 *               {first: 'Michael', last: 'Wazowski'} ];
-		 * $('#list').add(HTML('{{each}}&lt;li>{{this.first}} {{this.last}}&lt;/li>{{/each}}', names);
+		 * $('#list').add(HTML('{{each}}&lt;li>{{this.first}} {{this.last}}&lt;/li>{{/each}}', names));
 		 * </pre>
 		 * The code adds this to #list:
 		 * <pre>
