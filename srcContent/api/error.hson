@@ -15,31 +15,10 @@
 <div class="syntax">promise.error(callback)</div>
 </div>
 
-<h4>Parameters</h4>
-<dl class="params">
-<dt id="error_callback" class=""><a name="error_callback"><var>callback</var></a></dt>
-<dd class="">a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a <a href='promise.html' class='func'>Promise</a>, that Promise will
-be evaluated to determine the state of the returned Promise. If it returns regularly, the returned Promise will
-have success status. If it throws an error, the returned Promise will be in error state.</dd>
-<dt id="error_RETURN" class="returnValue inSyntax0"><a name="error_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0">a new <a href='promise.html' class='func'>Promise</a> object. Its state is determined by the callback.</dd>
-</dl>
-
 <h4>Description</h4>
 <div class="description"><p>Registers a callback that will be called when the operation failed.
-This is a convenience function that will invoke <code><a href='then.html' class='func'>then()</a></code> with only the second argument set.  It shares all of its semantics.</p><p></p></div>
-
-<div class="examples">
-<h4>Example</h4>
-<div class="example"><p>Simple handler for a HTTP request.
-<pre>
-$.request('get', '/weather.html')
-    .error(function() {
-       alert('Got error!');
-    });
-</pre>
+This method name is deprecated. Please use <code><a href='catch.html' class='func'>catch()</a></code>.
 </p></div>
-</div>
 
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
@@ -169,6 +148,7 @@ var disqus_url = "http://minifiedjs.com/api/error.html";
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
 </li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
+</li><li><a href="catch.html" class="func">promise.catch()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="fire.html" class="func">promise.fire()</a> 
 </li><li><a href="stop.html" class="func">promise.stop()</a> 

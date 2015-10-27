@@ -368,6 +368,9 @@ until <span class="var">end</span> (exclusive).</div>
 <h3><a href="always.html">promise.always()</a></h3>
 <div class="summary">Registers a callback that will always be called when the Promise's operation ended, no matter whether the operation succeeded or not.</div>
 
+<h3><a href="catch.html">promise.catch()</a></h3>
+<div class="summary">Registers a callback that will be called when the operation failed.</div>
+
 <h3><a href="error.html">promise.error()</a></h3>
 <div class="summary">Registers a callback that will be called when the operation failed.</div>
 
@@ -500,6 +503,7 @@ successfully (<span class="var">onSuccess</span>) or an error occurred (<span cl
 </li><li><a href="objvalues.html" class="func">_.values()</a> <span class="tocMod">Util</span>
 </li><li><a href="define.html" class="func">define()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="always.html" class="func">promise.always()</a> 
+</li><li><a href="catch.html" class="func">promise.catch()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="error.html" class="func">promise.error()</a> <span class="tocMod">Web, Util</span>
 </li><li><a href="fire.html" class="func">promise.fire()</a> 
 </li><li><a href="stop.html" class="func">promise.stop()</a> 

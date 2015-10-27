@@ -356,12 +356,24 @@ function dummy() {
 		 * @configurable default
 		 * @module WEB, UTIL
 		 * Registers a callback that will be called when the operation failed.
+		 * This method name is deprecated. Please use ##catch().
+		 */  
+		/*$
+		 * @id catch
+		 * @group REQUEST
+		 * @name promise.catch()
+		 * @syntax promise.catch(callback)
+		 * @configurable default
+		 * @module WEB, UTIL
+		 * Registers a callback that will be called when the operation failed.
 		 * This is a convenience function that will invoke ##then() with only the second argument set.  It shares all of its semantics.
+		 *
+		 * This method used to be called ##error(), and the old name will still work. It has been renamed for ES6 backward compatibility.
 		 *
 		 * @example Simple handler for a HTTP request.
 		 * <pre>
 		 * $.request('get', '/weather.html')
-		 *     .error(function() {
+		 *     .catch(function() {
 		 *        alert('Got error!');
 		 *     });
 		 * </pre>
@@ -371,7 +383,7 @@ function dummy() {
 		 *                           have success status. If it throws an error, the returned Promise will be in error state.
 		 * @return a new ##promise#Promise## object. Its state is determined by the callback.
 		 */  
-        obj['error'] = function(func) { return then(0, func); };
+        obj['catch'] = obj['error'] = function(func) { return then(0, func); };
 
         return obj;
     }

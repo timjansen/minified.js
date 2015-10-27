@@ -738,9 +738,16 @@ define('minified', function() {
     		 * @id error
     		 * @group REQUEST
     		 * @module WEB, UTIL
+    		 * See ##catch().
+    		 */  
+    		'error': function(func) { return then(0, func); },
+    		/*$
+    		 * @id catch
+    		 * @group REQUEST
+    		 * @module WEB, UTIL
     		 * See util module for documentation.
     		 */  
-    		'error': function(func) { return then(0, func); }
+    		'catch': function(func) { return then(0, func); }
      	 	    
  	 	}; 
 	 	return obj;

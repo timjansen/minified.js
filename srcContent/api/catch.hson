@@ -2,63 +2,51 @@
 /*
    Auto-generated using docbuilder.js. Do not edit manually. 
 */
-	title: `_.mapObj() - Minified.js`,
+	title: `promise.catch() - Minified.js`,
 	section:"reference",
 	externalCss: ["../css/reference.css"],
 	main: `
 <div id="docmain"><p class="docHead"><a href="index.html" class="backOverview">back to Overview</a></p>
-<h2><a name="doc-mapobj">_.mapObj()</a></h2>
-<div class="summary">Creates a new object with the same properties but different values using the given callback function.</div>
+<h2><a name="doc-catch">promise.catch()</a></h2>
+<div class="summary">Registers a callback that will be called when the operation failed.</div>
 
-<div class="availability">Util module only.</div><h4>Syntax Variants</h4>
+<div class="availability">Available in all modules.</div><h4>Syntax</h4>
 <div class="syntaxVariant">
-<div class="syntax">_.mapObj(obj, callback)</div>
-<div class="syntax">_.mapObj(obj, callback, ctx)</div>
+<div class="syntax">promise.catch(callback)</div>
 </div>
 
 <h4>Parameters</h4>
 <dl class="params">
-<dt id="mapobj_obj" class=""><a name="mapobj_obj"><var>obj</var></a></dt>
-<dd class="">the object to use</dd>
-<dt id="mapobj_callback" class=""><a name="mapobj_callback"><var>callback</var></a></dt>
-<dd class="">The callback <code>function(key, value)</code> to invoke for each property.
-<dl><dt>key</dt><dd>The name of the current property.</dd>
-<dt>value</dt><dd>The value of the current property.</dd>
-<dt class="this">this</dt><dd>The given context. If not set, the object itself.</dd>
-<dt class="returnValue">(callback return value)</dt><dd>This value will replace the original value in the new object.</dd></dl></dd>
-<dt id="mapobj_ctx" class=""><a name="mapobj_ctx"><var>ctx (optional)</var></a></dt>
-<dd class="">a context to pass to the callback as 'this'.</dd>
-<dt id="mapobj_RETURN" class="returnValue inSyntax0 inSyntax1"><a name="mapobj_RETURN"><var>(return value)</var></a></dt>
-<dd class="inSyntax0 inSyntax1">the new object
-</dd>
+<dt id="catch_callback" class=""><a name="catch_callback"><var>callback</var></a></dt>
+<dd class="">a function to be called when the operation has failed. The exact arguments depend on the operation. If the function returns a <a href='promise.html' class='func'>Promise</a>, that Promise will
+be evaluated to determine the state of the returned Promise. If it returns regularly, the returned Promise will
+have success status. If it throws an error, the returned Promise will be in error state.</dd>
+<dt id="catch_RETURN" class="returnValue inSyntax0"><a name="catch_RETURN"><var>(return value)</var></a></dt>
+<dd class="inSyntax0">a new <a href='promise.html' class='func'>Promise</a> object. Its state is determined by the callback.</dd>
 </dl>
 
 <h4>Description</h4>
-<div class="description"><p>Creates a new object with the same properties but different values using the given callback function. The function is called
-for each property of the input object to provice a new value for the property.</p><p></p></div>
+<div class="description"><p>Registers a callback that will be called when the operation failed.
+This is a convenience function that will invoke <code><a href='then.html' class='func'>then()</a></code> with only the second argument set.  It shares all of its semantics.</p><p>This method used to be called <code><a href='error.html' class='func'>error()</a></code>, and the old name will still work. It has been renamed for ES6 backward compatibility.</p><p></p></div>
 
 <div class="examples">
 <h4>Example</h4>
-<div class="example"><p>Increases the values of all properties.
+<div class="example"><p>Simple handler for a HTTP request.
 <pre>
-var r = _.mapObj({a: 1, b: 5, c: 2}, function(key, value) {
-    return value + 1;
-});
-// r is now {a: 2, b: 6, c: 2}
+$.request('get', '/weather.html')
+    .catch(function() {
+       alert('Got error!');
+    });
 </pre>
 </p></div>
 </div>
 
-<h4>See also..</h4>
-<ul><li><code><a href='filterobj.html' class='func'>_.filterObj()</a></code> filters an object.</li>
-<li><code><a href='map.html' class='func'>map()</a></code> maps a list.</li>
-</ul>
 <h4>Comments</h4>
  <div id="disqus_thread"></div>
 <script type="text/javascript">
 var disqus_shortname = "minifiedjs";
-var disqus_identifier = "api-mapobj";
-var disqus_url = "http://minifiedjs.com/api/mapobj.html";
+var disqus_identifier = "api-catch";
+var disqus_url = "http://minifiedjs.com/api/catch.html";
 (function() {
  var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
  dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";

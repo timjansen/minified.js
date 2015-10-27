@@ -116,7 +116,7 @@
  * If enabled, Minified will create stubs so you can use it without an AMD framework.
  * It requires AMD's <code>define()</code> function.
  */
-if (/^u/.test(typeof define)) { // no AMD support available ? define a minimal version
+if (/^u/.test(typeof define) || !define.amd) { // no AMD support available ? define a minimal version
 	(function(def){
 		var require = this['require'] = function(name) { return def[name]; };
 		this['define'] = function(name, f) { def[name] = def[name] || f(require); };
@@ -637,9 +637,16 @@ define('minified', function() {
     		 * @id error
     		 * @group REQUEST
     		 * @module WEB, UTIL
+    		 * See ##catch().
+    		 */  
+    		'error': function(func) { return then(0, func); },
+    		/*$
+    		 * @id catch
+    		 * @group REQUEST
+    		 * @module WEB, UTIL
     		 * See util module for documentation.
     		 */  
-    		'error': function(func) { return then(0, func); }
+    		'catch': function(func) { return then(0, func); }
 
  	 	}; 
 	 	return obj;
@@ -3095,7 +3102,7 @@ define('minified', function() {
 	*             on the server, and 'get' to request data). Not case sensitive.
 	* @param url the server URL to request. May be a relative URL (relative to the document) or an absolute URL. Note that unless you do something 
 	*             fancy on the server (keyword to google:  Access-Control-Allow-Origin), you can only call URLs on the server your script originates from.
-	* @param data optional data to send in the request, either as POST body or as URL parameters. It can be either a plain object as map of 
+	* @param data optional data to send in the request, either as POST/PUT body or as URL parameters. It can be either a plain object as map of 
 	*             parameters (for all HTTP methods), a string (for all HTTP methods), a DOM document ('post' only) or a FormData object ('post' only). 
 	*             If the method is 'post', it will be sent as body, otherwise parameters are appended to the URL. In order to send several parameters with the 
 	*             same name, use an array of values in the map. Use null as value for a parameter without value.
@@ -3127,6 +3134,8 @@ define('minified', function() {
 	'request': function (method, url, data, settings0) {
 		var settings = settings0 || {}; 
 		var xhr, callbackCalled = 0, prom = promise(), dataIsMap = data && (data['constructor'] == settings['constructor']);
+		var usesBody = /post|put/i.test(method);
+
 		try {
 			// @condblock ie6compatibility
 			prom['xhr'] = xhr = (_window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Msxml2.XMLHTTP.3.0"));
@@ -3147,13 +3156,13 @@ define('minified', function() {
 				}).join('&');
 			}
 
-			if (data != _null && !/post/i.test(method)) {
+			if (data != _null && !usesBody) {
 				url += '?' + data;
 				data = _null;
 			}
 
 			xhr['open'](method, url, true, settings['user'], settings['pass']);
-			if (dataIsMap && /post/i.test(method))
+			if (dataIsMap && usesBody)
 				xhr['setRequestHeader']('Content-Type', 'application/x-www-form-urlencoded');
 
 			eachObj(settings['headers'], function(hdrName, hdrValue) {
