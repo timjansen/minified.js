@@ -4,6 +4,7 @@ Minified Change Log
 1.2 (in progress, on-going)
 * #59: use HTTP body for PUT in $.request
 * #64: provide Promise.error() via Promise.catch() for ES6 compatibility  
+* #65: overrideMimeType support for $.request()
 
 
 1.1 (2015-08-05)

@@ -4950,6 +4950,7 @@ define('minified', function() {
 	* <dl><dt>headers</dt><dd>a map of HTTP headers to add to the request. Note that you should use the proper capitalization for the
 	*                header 'Content-Type', if you set it, because otherwise it may be overwritten.</dd>
 	* <dt>xhr</dt><dd>a map of properties to set in the XMLHttpRequest object before the request is sent, for example <code>{withCredentials: true}</code>.</dd>
+	* <dt>overrideMimeType</dt><dd>if set, the response will will be treated as if it had this MIME type.</code>.</dd>
 	* <dt>user</dt><dd>username for HTTP authentication, together with the <var>pass</var> parameter</dd>
 	* <dt>pass</dt><dd>password for HTTP authentication, together with the <var>user</var> parameter</dd>
 	* </dl>
@@ -5008,6 +5009,9 @@ define('minified', function() {
 			eachObj(settings['xhr'], function(name, value) {
 				xhr[name] = value;
 			});
+
+			if (settings['overrideMimeType'])
+				xhr['overrideMimeType'](settings['overrideMimeType']);
 
 			xhr['onreadystatechange'] = function() {
 				if (xhr['readyState'] == 4 && !callbackCalled++) {
